@@ -4,6 +4,9 @@
 	const $ = ( s, r = document ) => r.querySelector( s );
 	const $$ = ( s, r = document ) => Array.from( r.querySelectorAll( s ) );
 
+	/* 侧栏多层导航（树形展开 / 记忆 / 桌面悬停飞出 / 可折叠门户）：与 preview 共用 src/sidebar-tree.js */
+	require( './sidebar-tree.js' );
+
 	/* Theme: 使用 MW clientPrefs（html.skin-theme-clientpref-*），未登录亦持久化 */
 	function currentTheme() {
 		const c = document.documentElement.className.match( /skin-theme-clientpref-(os|day|night)/ );
@@ -50,7 +53,6 @@
 		const tab = e.target.closest( '.ak-tabs[data-tabs] .ak-tab' );
 		if ( tab ) { e.preventDefault(); const tabs = tab.closest( '.ak-tabs' ); $$( '.ak-tab', tabs ).forEach( ( t ) => { t.classList.toggle( 'is-active', t === tab ); t.setAttribute( 'aria-selected', t === tab ); } ); $$( '.ak-tabpanel[data-tabs="' + tabs.dataset.tabs + '"]' ).forEach( ( p ) => { p.hidden = p.dataset.tab !== tab.dataset.tab; } ); }
 		const ph = e.target.closest( '.ak-panel--collapsible > .ak-panel__head' ); if ( ph ) { ph.parentElement.classList.toggle( 'is-collapsed' ); }
-		const pt = e.target.closest( '.ak-portlet--collapsible > .ak-portlet__title' ); if ( pt ) { pt.parentElement.classList.toggle( 'is-collapsed' ); }
 		const chip = e.target.closest( '.ak-chip' ); if ( chip && !chip.closest( '[data-no-toggle]' ) ) { chip.classList.toggle( 'is-active' ); chip.setAttribute( 'aria-pressed', chip.classList.contains( 'is-active' ) ); }
 		const grp = e.target.closest( '.ak-btn-group > .ak-btn, .ak-phase-tabs > button, .ak-skill-levels > button' );
 		if ( grp ) { const parent = grp.parentElement; $$( ':scope > *', parent ).forEach( ( b ) => b.classList.toggle( 'is-active', b === grp ) ); parent.dispatchEvent( new CustomEvent( 'akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } } ) ); }

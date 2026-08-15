@@ -11,7 +11,7 @@
       <span class="ak-header__wordmark">{{msg-sitetitle}}<small>{{msg-tagline}}</small></span>
     </a>
     {{#data-portlets-sidebar.data-portlets-first}}
-    <nav class="ak-header__nav" aria-label="{{label}}">{{{html-items}}}</nav>
+    <nav class="ak-header__nav" aria-label="{{label}}"><ul class="ak-header__nav-list">{{{html-items}}}</ul></nav>
     {{/data-portlets-sidebar.data-portlets-first}}
     {{#data-search-box}}
     <form class="ak-header__search ak-search" role="search" action="{{form-action}}" id="searchform">
@@ -36,15 +36,19 @@
 </header>
 
 <div class="ak-layout{{^data-toc}} ak-layout--no-toc{{/data-toc}}">
+  {{! 侧栏：多层导航由 resources/sidebar-tree.js 增强（li > ul 任意深度 → 树形展开 + 桌面悬停飞出；data-flyout="off" 可关闭飞出）。
+      #mw-panel 保留给站点脚本兼容（PRTS 现有内联脚本把 #MenuSidebar 移入 #mw-panel 并读取 #p-tb ul）。 }}
   <aside class="ak-sidebar" id="ak-sidebar" aria-label="{{msg-navigation-heading}}">
     <button class="ak-btn ak-btn--sm ak-sidebar__close ak-only-mobile" aria-label="close">✕</button>
+    <div class="ak-sidebar__panel" id="mw-panel">
     {{#data-portlets-sidebar.data-portlets-first}}
-    <div class="ak-portlet ak-portlet--grid" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3>{{{html-items}}}</div>
+    <div class="ak-portlet ak-portlet--grid" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3><ul>{{{html-items}}}</ul></div>
     {{/data-portlets-sidebar.data-portlets-first}}
     {{#data-portlets-sidebar.array-portlets-rest}}
-    <div class="ak-portlet ak-portlet--collapsible {{class}}" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3>{{{html-items}}}{{{html-after-portal}}}</div>
+    <div class="ak-portlet ak-portlet--collapsible {{class}}" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3><ul>{{{html-items}}}</ul>{{{html-after-portal}}}</div>
     {{/data-portlets-sidebar.array-portlets-rest}}
-    {{#data-portlets.data-languages}}<div class="ak-portlet ak-portlet--collapsible" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3>{{{html-items}}}</div>{{/data-portlets.data-languages}}
+    {{#data-portlets.data-languages}}<div class="ak-portlet ak-portlet--collapsible" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3><ul>{{{html-items}}}</ul></div>{{/data-portlets.data-languages}}
+    </div>
     <div class="ak-sidebar__foot">{{msg-akds-toc-title}}</div>
   </aside>
 

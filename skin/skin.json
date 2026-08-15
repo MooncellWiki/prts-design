@@ -39,7 +39,7 @@
       "targets": ["desktop", "mobile"]
     },
     "skins.akds.js": {
-      "packageFiles": ["skin.js"],
+      "packageFiles": ["skin.js", "sidebar-tree.js"],
       "dependencies": ["mediawiki.user", "mediawiki.util", "mediawiki.cookie"],
       "messages": ["akds-toc-title"]
     }
