@@ -59,7 +59,8 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | 搜索 | `.ak-search` + `#searchform` | 左图标 + `/` 快捷键提示 | CommandPalette | ✅（建议 Gadget 做 ⌘K 面板） |
 | 主题切换 | `.ak-theme-toggle` (os/day/night) | 写入 `mw.user.clientPrefs` | ThemeSwitcher | ✅🧩 |
 | 通知 / 用户菜单 | `.ak-badge` `.ak-header__user` + `#p-personal` | Echo 徽标 | Badge / Avatar | ✅ |
-| 侧栏 | `.ak-sidebar` `.ak-portlet` `--grid --collapsible` + `#p-navigation` `#p-tb` | 粘性；<1120 抽屉；网格快捷入口 | DocsSidebar | ✅ |
+| 侧栏 | `.ak-sidebar` `__panel(#mw-panel)` `.ak-portlet` `--grid --collapsible` + `#p-navigation` `#p-tb` | 粘性；<1120 抽屉；网格快捷入口；门户折叠状态记忆 | DocsSidebar | ✅🧩 |
+| 侧栏多层导航 | `li.ak-tree__branch(.is-open .is-current-path .is-peek)` `> .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list`；`.ak-flyout` `__title` | 由 `sidebar-tree.js` 增强 `.ak-sidebar` 内任意 `li > ul`（含 PRTS `#MenuSidebar` 的 `p / ul / li > b` 原始输出）：任意深度树形展开、缩进导轨、当前页路径自动展开高亮、`localStorage` 记忆、← → 键盘；桌面(hover+fine, ≥1120)悬停折叠分支右侧飞出预览（`data-flyout="off"` 关闭） | Tree / NavMenu | ✅🧩 |
 | 页面头 | `.ak-page-header` `__top __ns __title __bar` + `#firstHeading` | 面包屑 + 指示器；标题 8px 青条 + 英文副标 | SectionHeader | ✅ |
 | 页面标签 | `.ak-page-tabs` + `#p-views` `#p-cactions` `#p-namespaces` | 下划线 + 选中角标；`--actions` 右对齐 | Tabs | ✅ |
 | 内容区 | `.ak-body` `--flat` `.ak-body-foot` | 1px 卡片；最后编辑/版权 | Card | ✅ |

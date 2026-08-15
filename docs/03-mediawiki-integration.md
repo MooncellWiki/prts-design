@@ -68,7 +68,32 @@ skins/AKDS/
    aside.ak-toc  ul[data-toc] ← 由 data-toc 或 skin.js 生成
 <footer class="ak-footer"> {{#data-footer.data-places}} {{#data-footer.data-icons}}
 ```
-Portlet 渲染用 `Skin::getPortletsTemplateData()` 输出的 `html-items`，外层类由 mustache 加；`li.selected` 与 CSS `.ak-page-tabs li.selected` 对应（MW 原生类名）。
+Portlet 渲染用 `Skin::getPortletsTemplateData()` 输出的 `html-items`（只含 `<li>`，mustache 负责包 `<ul>`），外层类由 mustache 加；`li.selected` 与 CSS `.ak-page-tabs li.selected` 对应（MW 原生类名）。
+
+### 3.1 侧栏与 PRTS 现网的多层菜单（#MenuSidebar）
+
+现网 prts.wiki（Vector legacy）的侧栏**不是** `MediaWiki:Sidebar` 门户，而是一段由 wikitext 生成、放在页面末尾的 `div#MenuSidebar`，再由内联脚本在 `DOMContentLoaded` 时移入 `#mw-panel`（并把 `#p-tb ul` 的内容复制进 `#MSToolbox`、删掉其余门户）。其结构为：
+
+```
+div#MenuSidebar
+  ul > li > a                       ← 无标题的首组（首页 / 复制短链接 / 支持我们 …）
+  p  分组标题（热门页面 / 菜单 / 探索 / 管理与编辑 / Languages / 工具#vmsTB）
+  ul > li > b 分组项 + ul > li > a  ← '''粗体''' 表示有子级；子级 CSS 悬停飞出（left:100%）
+  …任意深度（现网 CSS 对 li ul 递归飞出）
+```
+
+AKDS 的适配方式（无需改动现网 wikitext / 站点脚本即可工作）：
+
+| 层 | 处理 |
+|---|---|
+| mustache | `.ak-sidebar > .ak-sidebar__panel#mw-panel` 保留 `#mw-panel` id 与 `#p-tb > ul`，现网内联脚本可原样运行 |
+| skin.css | `.ak-sidebar p` 与 `.ak-portlet__title` 同一套分组标题样式；`.ak-sidebar li > b` 与 `li > a` 同一套行样式；`li > ul` 缩进 + 导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页 |
+| sidebar-tree.js | 对 `.ak-sidebar` 内所有 `li > ul` 幂等增强（MutationObserver 兼容晚注入）：`li.ak-tree__branch` + `button.ak-tree__toggle[aria-expanded][aria-controls][aria-labelledby]`；点击非链接标签整行可切换；`localStorage['akds-sidebar-tree']` 记忆（键 = 分组标题/标签路径，门户为 `portlet:<id>`）；含 `a.selflink / li.is-active / href==location` 的分支自动展开并加 `.is-current-path`；← → 键盘展开/收起；桌面 hover+fine ≥1120px 悬停折叠分支 → 右侧 `.ak-flyout` 预览（`position:fixed`，不受侧栏 `overflow` 裁切；点击即行内展开并记忆） |
+
+- 关闭悬停飞出：`<aside class="ak-sidebar" data-flyout="off">` 或 `<html data-akds-flyout="off">`（移动端 / 触屏自动不启用）。
+- 作者默认展开：给 `li` 加 `class="is-open"`（用户操作后以记忆为准）。
+- 建议后续把 `#MenuSidebar` 的注入改成皮肤钩子（`SidebarBeforeOutput` / `SkinAfterPortlet` 解析 `MediaWiki:MenuSidebar`）以去掉内联脚本，结构与类名不变。
+- 现网 `<span style="…">NEW</span>` 角标建议改用 `.ak-tag.ak-tag--sm.ak-tag--new`。
 
 ## 4. 明暗主题（clientPrefs）
 
@@ -110,7 +135,7 @@ Portlet 渲染用 `Skin::getPortletsTemplateData()` 输出的 `html-items`，外
 ## 8. 性能与工程
 
 - CSS 合计 ~90KB 未压缩（tokens 15 / base 25 / components 30 / arknights 30 / skin 12 / utilities 6），gzip 后 < 20KB。可按需拆 `arknights.css` 为独立模块，仅内容页加载。
-- 无 JS 依赖的组件为主；skin.js < 6KB。
+- 无 JS 依赖的组件为主；skin.js < 6KB，sidebar-tree.js ≈ 7KB（与 preview 共用）。
 - 字体：思源黑体子集（常用 3500 字 + 页面动态子集）；标题拉丁字用系统回退时视觉退化可接受（预览即为回退效果）。
 - 图片：白色线稿 PNG 已在 100–200px；建议转 SVG/WebP。
 - 缓存：ResourceLoader 版本化；主题类在 `<html>` 上，无 FOUC（clientPrefs 内联脚本早于样式）。
@@ -119,7 +144,8 @@ Portlet 渲染用 `Skin::getPortletsTemplateData()` 输出的 `html-items`，外
 
 - [ ] 亮/暗/跟随系统三态切换无闪烁；未登录持久化
 - [ ] 干员页 / 关卡页 / 首页 / 特殊页（搜索、历史、差异、偏好设置）截图对比
-- [ ] 键盘可达：页眉、侧栏、页面标签、Tabber、Dialog、Dropdown
+- [ ] 键盘可达：页眉、侧栏（树形展开 Enter/Space/←/→）、页面标签、Tabber、Dialog、Dropdown
+- [ ] 侧栏：现网 #MenuSidebar 注入后各层级可展开/记忆；`a.selflink` 路径自动展开；飞出不被裁切
 - [ ] 对比度：`.ak-rt-*` 亮色值、`--ak-link`、`--ak-fg-muted` 全部 ≥ 4.5:1
 - [ ] 移动端 ≤ 390：无横向滚动（表格走 `.ak-table-scroll` / display:block）
 - [ ] Gadget 兼容：列出依赖 Vector 选择器的小工具并迁移
