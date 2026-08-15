@@ -74,12 +74,13 @@
 .ak-tag__remove:hover { opacity: 1; }
 .ak-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 /* Chip: 可交互（筛选） */
-.ak-chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; font: 500 var(--ak-fs-sm)/1 var(--ak-font-body);
+.ak-chip { position: relative; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; font: 500 var(--ak-fs-sm)/1 var(--ak-font-body);
   color: var(--ak-fg-secondary); background: var(--ak-bg-surface); border: 1px solid var(--ak-border-strong); cursor: pointer; user-select: none;
   transition: all var(--ak-dur-fast); }
 .ak-chip:hover { border-color: var(--ak-fg-muted); color: var(--ak-fg); }
 .ak-chip.is-active, .ak-chip[aria-pressed="true"] { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); font-weight: 600; }
-.ak-chip.is-active::before { content: ""; width: 0; height: 0; border-style: solid; border-width: 5px 5px 0 0; border-color: currentColor transparent transparent; opacity: .7; margin-left: -6px; align-self: flex-start; }
+/* 选中角标：绝对定位在左上角（与 .ak-tab / .ak-page-tabs / .ak-card 的选中角标一致），不占据行内宽度 */
+.ak-chip.is-active::before, .ak-chip[aria-pressed="true"]::before { content: ""; position: absolute; top: 0; left: 0; border-style: solid; border-width: 5px 5px 0 0; border-color: currentColor transparent transparent; opacity: .7; pointer-events: none; }
 
 /* Count badge (通知红点/数字) */
 .ak-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px;
