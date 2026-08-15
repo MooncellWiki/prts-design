@@ -1,0 +1,372 @@
+{
+ "4001": {
+  "name": "龙门币",
+  "iconId": "GOLD",
+  "rarity": "TIER_4"
+ },
+ "4002": {
+  "name": "至纯源石",
+  "iconId": "DIAMOND",
+  "rarity": "TIER_6"
+ },
+ "4006": {
+  "name": "采购凭证",
+  "iconId": "EXGG_SHD",
+  "rarity": "TIER_3"
+ },
+ "30012": {
+  "name": "固源岩",
+  "iconId": "MTL_SL_G2",
+  "rarity": "TIER_2"
+ },
+ "30013": {
+  "name": "固源岩组",
+  "iconId": "MTL_SL_G3",
+  "rarity": "TIER_3"
+ },
+ "30014": {
+  "name": "提纯源岩",
+  "iconId": "MTL_SL_G4",
+  "rarity": "TIER_4"
+ },
+ "30021": {
+  "name": "代糖",
+  "iconId": "MTL_SL_STRG1",
+  "rarity": "TIER_1"
+ },
+ "30033": {
+  "name": "聚酸酯组",
+  "iconId": "MTL_SL_RUSH3",
+  "rarity": "TIER_3"
+ },
+ "30044": {
+  "name": "异铁块",
+  "iconId": "MTL_SL_IRON4",
+  "rarity": "TIER_4"
+ },
+ "30073": {
+  "name": "扭转醇",
+  "iconId": "MTL_SL_ALCOHOL1",
+  "rarity": "TIER_3"
+ },
+ "30084": {
+  "name": "三水锰矿",
+  "iconId": "MTL_SL_MANGANESE2",
+  "rarity": "TIER_4"
+ },
+ "30094": {
+  "name": "五水研磨石",
+  "iconId": "MTL_SL_PG2",
+  "rarity": "TIER_4"
+ },
+ "30104": {
+  "name": "RMA70-24",
+  "iconId": "MTL_SL_RMA7024",
+  "rarity": "TIER_4"
+ },
+ "3301": {
+  "name": "技巧概要·卷1",
+  "iconId": "MTL_SKILL1",
+  "rarity": "TIER_2"
+ },
+ "3302": {
+  "name": "技巧概要·卷2",
+  "iconId": "MTL_SKILL2",
+  "rarity": "TIER_3"
+ },
+ "3303": {
+  "name": "技巧概要·卷3",
+  "iconId": "MTL_SKILL3",
+  "rarity": "TIER_4"
+ },
+ "2004": {
+  "name": "高级作战记录",
+  "iconId": "sprite_exp_card_t4",
+  "rarity": "TIER_5"
+ },
+ "3221": {
+  "name": "近卫芯片",
+  "iconId": "MTL_ASC_GRD1",
+  "rarity": "TIER_3"
+ },
+ "3223": {
+  "name": "近卫双芯片",
+  "iconId": "MTL_ASC_GRD3",
+  "rarity": "TIER_5"
+ },
+ "30062": {
+  "name": "装置",
+  "iconId": "MTL_SL_BOSS2",
+  "rarity": "TIER_2"
+ },
+ "30115": {
+  "name": "聚合剂",
+  "iconId": "MTL_SL_PP",
+  "rarity": "TIER_5"
+ },
+ "30074": {
+  "name": "白马醇",
+  "iconId": "MTL_SL_ALCOHOL2",
+  "rarity": "TIER_4"
+ },
+ "30063": {
+  "name": "全新装置",
+  "iconId": "MTL_SL_BOSS3",
+  "rarity": "TIER_3"
+ },
+ "30083": {
+  "name": "轻锰矿",
+  "iconId": "MTL_SL_MANGANESE1",
+  "rarity": "TIER_3"
+ },
+ "mod_unlock_token": {
+  "name": "模组数据块",
+  "iconId": "mod_unlock_token",
+  "rarity": "TIER_5"
+ },
+ "32001": {
+  "name": "芯片助剂",
+  "iconId": "MTL_ASC_DI",
+  "rarity": "TIER_4"
+ },
+ "30135": {
+  "name": "D32钢",
+  "iconId": "MTL_SL_DS",
+  "rarity": "TIER_5"
+ },
+ "30145": {
+  "name": "晶体电子单元",
+  "iconId": "MTL_SL_OEU",
+  "rarity": "TIER_5"
+ },
+ "30011": {
+  "name": "源岩",
+  "iconId": "MTL_SL_G1",
+  "rarity": "TIER_1"
+ },
+ "30061": {
+  "name": "破损装置",
+  "iconId": "MTL_SL_BOSS1",
+  "rarity": "TIER_1"
+ },
+ "30022": {
+  "name": "糖",
+  "iconId": "MTL_SL_STRG2",
+  "rarity": "TIER_2"
+ },
+ "30032": {
+  "name": "聚酸酯",
+  "iconId": "MTL_SL_RUSH2",
+  "rarity": "TIER_2"
+ },
+ "30042": {
+  "name": "异铁",
+  "iconId": "MTL_SL_IRON2",
+  "rarity": "TIER_2"
+ },
+ "30053": {
+  "name": "酮凝集组",
+  "iconId": "MTL_SL_KETONE3",
+  "rarity": "TIER_3"
+ },
+ "3213": {
+  "name": "先锋双芯片",
+  "iconId": "MTL_ASC_PIO3",
+  "rarity": "TIER_5"
+ },
+ "3233": {
+  "name": "重装双芯片",
+  "iconId": "MTL_ASC_TNK3",
+  "rarity": "TIER_5"
+ },
+ "3243": {
+  "name": "狙击双芯片",
+  "iconId": "MTL_ASC_SNP3",
+  "rarity": "TIER_5"
+ },
+ "3253": {
+  "name": "术师双芯片",
+  "iconId": "MTL_ASC_CST3",
+  "rarity": "TIER_5"
+ },
+ "3263": {
+  "name": "医疗双芯片",
+  "iconId": "MTL_ASC_MED3",
+  "rarity": "TIER_5"
+ },
+ "3273": {
+  "name": "辅助双芯片",
+  "iconId": "MTL_ASC_SUP3",
+  "rarity": "TIER_5"
+ },
+ "3283": {
+  "name": "特种双芯片",
+  "iconId": "MTL_ASC_SPC3",
+  "rarity": "TIER_5"
+ },
+ "2001": {
+  "name": "基础作战记录",
+  "iconId": "sprite_exp_card_t1",
+  "rarity": "TIER_2"
+ },
+ "2002": {
+  "name": "初级作战记录",
+  "iconId": "sprite_exp_card_t2",
+  "rarity": "TIER_3"
+ },
+ "2003": {
+  "name": "中级作战记录",
+  "iconId": "sprite_exp_card_t3",
+  "rarity": "TIER_4"
+ },
+ "4003": {
+  "name": "合成玉",
+  "iconId": "DIAMOND_SHD",
+  "rarity": "TIER_5"
+ },
+ "30125": {
+  "name": "双极纳米片",
+  "iconId": "MTL_SL_BN",
+  "rarity": "TIER_5"
+ },
+ "31013": {
+  "name": "凝胶",
+  "iconId": "MTL_SL_PGEL3",
+  "rarity": "TIER_3"
+ },
+ "31014": {
+  "name": "聚合凝胶",
+  "iconId": "MTL_SL_PGEL4",
+  "rarity": "TIER_4"
+ },
+ "31023": {
+  "name": "炽合金",
+  "iconId": "MTL_SL_IAM3",
+  "rarity": "TIER_3"
+ },
+ "31024": {
+  "name": "炽合金块",
+  "iconId": "MTL_SL_IAM4",
+  "rarity": "TIER_4"
+ },
+ "31033": {
+  "name": "晶体元件",
+  "iconId": "MTL_SL_OC3",
+  "rarity": "TIER_3"
+ },
+ "31034": {
+  "name": "晶体电路",
+  "iconId": "MTL_SL_OC4",
+  "rarity": "TIER_4"
+ },
+ "31043": {
+  "name": "半自然溶剂",
+  "iconId": "MTL_SL_SS",
+  "rarity": "TIER_3"
+ },
+ "31044": {
+  "name": "精炼溶剂",
+  "iconId": "MTL_SL_RS",
+  "rarity": "TIER_4"
+ },
+ "31053": {
+  "name": "化合切削液",
+  "iconId": "MTL_SL_CCF",
+  "rarity": "TIER_3"
+ },
+ "31054": {
+  "name": "切削原液",
+  "iconId": "MTL_SL_PLCF",
+  "rarity": "TIER_4"
+ },
+ "31063": {
+  "name": "转质盐组",
+  "iconId": "MTL_SL_ZY",
+  "rarity": "TIER_3"
+ },
+ "31064": {
+  "name": "转质盐聚块",
+  "iconId": "MTL_SL_ZYK",
+  "rarity": "TIER_4"
+ },
+ "31073": {
+  "name": "褐素纤维",
+  "iconId": "MTL_SL_XW",
+  "rarity": "TIER_3"
+ },
+ "31074": {
+  "name": "固化纤维板",
+  "iconId": "MTL_SL_XWB",
+  "rarity": "TIER_4"
+ },
+ "31083": {
+  "name": "环烃聚质",
+  "iconId": "MTL_SL_HT",
+  "rarity": "TIER_3"
+ },
+ "31084": {
+  "name": "环烃预制体",
+  "iconId": "MTL_SL_HTT",
+  "rarity": "TIER_4"
+ },
+ "30093": {
+  "name": "研磨石",
+  "iconId": "MTL_SL_PG1",
+  "rarity": "TIER_3"
+ },
+ "30103": {
+  "name": "RMA70-12",
+  "iconId": "MTL_SL_RMA7012",
+  "rarity": "TIER_3"
+ },
+ "30064": {
+  "name": "改量装置",
+  "iconId": "MTL_SL_BOSS4",
+  "rarity": "TIER_4"
+ },
+ "30034": {
+  "name": "聚酸酯块",
+  "iconId": "MTL_SL_RUSH4",
+  "rarity": "TIER_4"
+ },
+ "30043": {
+  "name": "异铁组",
+  "iconId": "MTL_SL_IRON3",
+  "rarity": "TIER_3"
+ },
+ "30054": {
+  "name": "酮阵列",
+  "iconId": "MTL_SL_KETONE4",
+  "rarity": "TIER_4"
+ },
+ "30023": {
+  "name": "糖组",
+  "iconId": "MTL_SL_STRG3",
+  "rarity": "TIER_3"
+ },
+ "30024": {
+  "name": "糖聚块",
+  "iconId": "MTL_SL_STRG4",
+  "rarity": "TIER_4"
+ },
+ "30031": {
+  "name": "酯原料",
+  "iconId": "MTL_SL_RUSH1",
+  "rarity": "TIER_1"
+ },
+ "30041": {
+  "name": "异铁碎片",
+  "iconId": "MTL_SL_IRON1",
+  "rarity": "TIER_1"
+ },
+ "30051": {
+  "name": "双酮",
+  "iconId": "MTL_SL_KETONE1",
+  "rarity": "TIER_1"
+ },
+ "30052": {
+  "name": "酮凝集",
+  "iconId": "MTL_SL_KETONE2",
+  "rarity": "TIER_2"
+ }
+}

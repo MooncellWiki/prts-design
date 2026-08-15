@@ -1,0 +1,416 @@
+/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS · arknights.css — 方舟特色（Signature）组件与装饰
+ *  这些是让界面"像明日方舟"而不是通用后台的部分：
+ *    装饰语言：左侧色条 / 短横条 / 切角 / 斜切 / 斜纹 / 半调网点 / 角标三角 / 黑白反转 / 大写拉丁字 / 白色线稿图标
+ *    数据组件：稀有度 / 职业 / 精英化 / 潜能 / 专精 / 干员卡 / 道具 / 技能 / 攻击范围 / 材料 / 富文本 / 模组 / 语音 / 档案 / 关卡
+ *  依赖：tokens.css（图标资源路径由 --ak-asset-base 指定，默认相对 preview/assets）
+ * ═══════════════════════════════════════════════════════════════════════════ */
+:root { --ak-asset-base: assets; }
+
+/* ═══ A. 装饰语言 (Decoration primitives) ═══ */
+
+/* A1. 切角（chamfer）· 游戏内面板/标签常见的 45° 切角 */
+.ak-chamfer      { clip-path: polygon(0 0, calc(100% - var(--ak-cut)) 0, 100% var(--ak-cut), 100% 100%, var(--ak-cut) 100%, 0 calc(100% - var(--ak-cut))); }
+.ak-chamfer--sm  { --ak-cut: var(--ak-cut-sm); }
+.ak-chamfer--lg  { --ak-cut: var(--ak-cut-lg); }
+.ak-chamfer--tr  { clip-path: polygon(0 0, calc(100% - var(--ak-cut)) 0, 100% var(--ak-cut), 100% 100%, 0 100%); }
+.ak-chamfer--br  { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--ak-cut)), calc(100% - var(--ak-cut)) 100%, 0 100%); }
+.ak-chamfer--all { clip-path: polygon(var(--ak-cut) 0, calc(100% - var(--ak-cut)) 0, 100% var(--ak-cut), 100% calc(100% - var(--ak-cut)), calc(100% - var(--ak-cut)) 100%, var(--ak-cut) 100%, 0 calc(100% - var(--ak-cut)), 0 var(--ak-cut)); }
+/* 带边框的切角需要双层：外层 .ak-chamfer-frame 用背景色模拟边框 */
+.ak-chamfer-frame { --_bd: var(--ak-border-strong); --_pad: 1px; background: var(--_bd); padding: var(--_pad); display: inline-block; }
+.ak-chamfer-frame > * { background: var(--ak-bg-surface); }
+.ak-chamfer-frame, .ak-chamfer-frame > * { clip-path: polygon(0 0, calc(100% - var(--ak-cut)) 0, 100% var(--ak-cut), 100% 100%, var(--ak-cut) 100%, 0 calc(100% - var(--ak-cut))); }
+.ak-chamfer-frame--accent { --_bd: var(--ak-accent); }
+
+/* A2. 斜切（parallelogram）· 游戏内标签页/公告标题 */
+.ak-skew { display: inline-block; white-space: nowrap; clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); padding-inline: 18px; }
+.ak-skew--l { clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%); }
+.ak-skew--r { clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
+.ak-skew--arrow { clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%); padding-right: 22px; }
+.ak-skew-text { display: inline-block; transform: skewX(var(--ak-skew)); }
+.ak-skew-text > * { display: inline-block; transform: skewX(calc(-1 * var(--ak-skew))); }
+
+/* A3. 斜纹（hazard stripes）· 危险 / 施工 / 禁用 / 分隔 */
+.ak-stripes { background-image: repeating-linear-gradient(-45deg, var(--ak-stripe-color) 0 var(--ak-stripe-size), transparent var(--ak-stripe-size) calc(var(--ak-stripe-size) * 2)); }
+.ak-stripes--strong { --ak-stripe-color: rgba(127,127,127,.25); }
+.ak-stripes--warning { --ak-stripe-color: rgba(255,216,0,.55); }
+.ak-stripes--danger  { background-image: repeating-linear-gradient(-45deg, #a40000 0 var(--ak-stripe-size), #1d1f20 var(--ak-stripe-size) calc(var(--ak-stripe-size) * 2)); }
+.ak-stripes--hazard  { background-image: repeating-linear-gradient(-45deg, var(--ak-yellow-500) 0 var(--ak-stripe-size), #1d1f20 var(--ak-stripe-size) calc(var(--ak-stripe-size) * 2)); }
+.ak-stripe-bar { height: 6px; }
+.ak-stripe-edge { position: relative; }
+.ak-stripe-edge::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: repeating-linear-gradient(-45deg, var(--ak-yellow-500) 0 5px, #1d1f20 5px 10px); }
+
+/* A4. 半调网点（halftone）· 游戏内蓝色标题条的网点渐隐 */
+.ak-halftone { position: relative; isolation: isolate; }
+.ak-halftone::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--ak-halftone-color) 1.2px, transparent 1.3px); background-size: var(--ak-halftone-size) var(--ak-halftone-size);
+  -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000 100%); mask-image: linear-gradient(90deg, transparent 30%, #000 100%); }
+.ak-halftone--l::after { -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 70%); mask-image: linear-gradient(90deg, #000 0%, transparent 70%); }
+.ak-halftone--full::after { -webkit-mask-image: none; mask-image: none; }
+.ak-halftone-fade { -webkit-mask-image: radial-gradient(circle, #000 1px, transparent 1.5px), linear-gradient(90deg, #000 60%, transparent); mask-composite: intersect; }
+/* 游戏内蓝色标题条 */
+.ak-blue-band { --ak-halftone-color: rgba(255,255,255,.35); background: var(--ak-blue-500); color: #fff; padding: 6px 16px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
+.ak-blue-band.ak-halftone::after { z-index: 0; }
+.ak-blue-band > * { position: relative; z-index: 1; }
+
+/* A5. 网格 / 点阵背景（PRTS 终端 / 蓝图） */
+.ak-bg-grid { background-image: linear-gradient(var(--ak-grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--ak-grid-color) 1px, transparent 1px); background-size: var(--ak-grid-size) var(--ak-grid-size); }
+.ak-bg-dots { background-image: radial-gradient(var(--ak-grid-color) 1px, transparent 1.2px); background-size: 12px 12px; }
+.ak-bg-diag { background-image: repeating-linear-gradient(-45deg, transparent 0 6px, var(--ak-grid-color) 6px 7px); }
+.ak-scanlines { position: relative; }
+.ak-scanlines::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.05) 2px 3px); }
+
+/* A6. 角标（corner triangle）· 官网右上角三角 / 游戏内选中角标 */
+.ak-corner { position: relative; }
+.ak-corner::before { content: ""; position: absolute; top: 0; left: 0; border-style: solid; border-width: 10px 10px 0 0; border-color: var(--ak-accent) transparent transparent transparent; z-index: 1; }
+.ak-corner--tr::before { left: auto; right: 0; border-width: 0 10px 10px 0; border-color: transparent var(--ak-accent) transparent transparent; }
+.ak-corner--yellow::before { border-color: var(--ak-yellow-500) transparent transparent; }
+.ak-corner--tr.ak-corner--yellow::before { border-color: transparent var(--ak-yellow-500) transparent transparent; }
+.ak-corner--red::before { border-color: var(--ak-red-600) transparent transparent; }
+.ak-corner--tr.ak-corner--red::before { border-color: transparent var(--ak-red-600) transparent transparent; }
+.ak-corner--lg::before { border-width: 18px 18px 0 0; }
+.ak-corner--tr.ak-corner--lg::before { border-width: 0 18px 18px 0; }
+/* 带文字的角标 */
+.ak-corner-tag { position: absolute; top: 0; right: 0; width: 56px; height: 56px; overflow: hidden; pointer-events: none; }
+.ak-corner-tag > span { position: absolute; top: 10px; right: -22px; width: 90px; transform: rotate(45deg); background: var(--ak-accent); color: var(--ak-accent-fg); text-align: center; font: 700 10px/18px var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; }
+.ak-corner-tag--red > span { background: var(--ak-red-600); color: #fff; }
+.ak-corner-tag--yellow > span { background: var(--ak-yellow-500); color: #1d1f20; }
+
+/* A7. 边角括号（HUD bracket）— 与终末地不同，方舟只用细线角标记于图片/大图 */
+.ak-brackets { position: relative; }
+.ak-brackets::before, .ak-brackets::after { content: ""; position: absolute; width: 14px; height: 14px; border-color: var(--ak-fg-muted); border-style: solid; pointer-events: none; }
+.ak-brackets::before { top: 4px; left: 4px; border-width: 1px 0 0 1px; }
+.ak-brackets::after { bottom: 4px; right: 4px; border-width: 0 1px 1px 0; }
+
+/* A8. 拉丁展示字 / 标签字（Novecento / Bender 语言） */
+.ak-en, .ak-display { font-family: var(--ak-font-display); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-weight: 700; }
+.ak-display { font-size: var(--ak-fs-display); line-height: var(--ak-lh-display); letter-spacing: var(--ak-tracking-display); }
+.ak-display--xl { font-size: var(--ak-fs-display-xl); }
+.ak-overline { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }
+.ak-label { font-family: var(--ak-font-label); }
+.ak-num { font-family: var(--ak-font-label); font-variant-numeric: tabular-nums; font-weight: 700; }
+.ak-code-id { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .1em; color: var(--ak-fg-muted); text-transform: uppercase; }   /* LM04 / R001 类编号 */
+.ak-watermark { position: absolute; right: 8px; bottom: -6px; font: 800 4rem/1 var(--ak-font-display); letter-spacing: -.02em; color: var(--ak-fg); opacity: .05; pointer-events: none; user-select: none; text-transform: uppercase; white-space: nowrap; }
+
+/* A9. 白色线稿图标在亮色主题下反相 */
+.ak-glyph { filter: var(--ak-glyph-filter); }
+.ak-glyph--keep { filter: none; }
+.ak-glyph--white { filter: none; }
+.ak-glyph-box { display: inline-grid; place-items: center; background: #1d1f20; }   /* 深底白图标，两主题不变 */
+.ak-glyph-box > .ak-glyph { filter: none; }
+
+/* A10. 反转块（in-game btn_on 白 / btn_off 黑） */
+.ak-inverse { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-inverse a { color: inherit; }
+
+/* A11. 双语标题（CJK + EN） */
+.ak-bilingual { display: flex; flex-direction: column; line-height: 1.1; }
+.ak-bilingual__cn { font-weight: 800; }
+.ak-bilingual__en { font-family: var(--ak-font-display); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-size: .55em; color: var(--ak-fg-muted); font-weight: 700; }
+.ak-bilingual--row { flex-direction: row; align-items: baseline; gap: .5em; }
+
+/* A12. 双箭头 >> (transferarrow) */
+.ak-chevrons::after { content: "»"; font-family: var(--ak-font-label); margin-left: .35em; transition: transform var(--ak-dur-fast); display: inline-block; }
+a.ak-chevrons:hover::after { transform: translateX(3px); }
+
+/* ═══ B. 游戏数据组件 (Game-data components) ═══ */
+
+/* B1. 稀有度 ─ 星级 & 色阶 */
+.ak-rarity { display: inline-flex; align-items: center; gap: 1px; height: 1em; vertical-align: middle; --_c: var(--ak-yellow-500); }
+.ak-rarity > i { width: .9em; height: .9em; background: var(--_c); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.ak-rarity--white { --_c: var(--ak-fg); }
+.ak-rarity--r1 { --_c: var(--ak-rarity-1-text); } .ak-rarity--r2 { --_c: var(--ak-rarity-2-text); } .ak-rarity--r3 { --_c: var(--ak-rarity-3-text); }
+.ak-rarity--r4 { --_c: var(--ak-rarity-4-text); } .ak-rarity--r5 { --_c: var(--ak-rarity-5-text); } .ak-rarity--r6 { --_c: var(--ak-rarity-6-text); }
+.ak-rarity--lg { font-size: 1.4em; } .ak-rarity--sm { font-size: .8em; }
+/* 使用游戏原图 */
+.ak-rarity-img { display: inline-block; height: 14px; width: auto; vertical-align: middle; }
+/* 稀有度色轨（用于表格/卡片的左边缘、文字色、背景色） */
+[data-rarity="1"] { --ak-r: var(--ak-rarity-1); --ak-r-text: var(--ak-rarity-1-text); }
+[data-rarity="2"] { --ak-r: var(--ak-rarity-2); --ak-r-text: var(--ak-rarity-2-text); }
+[data-rarity="3"] { --ak-r: var(--ak-rarity-3); --ak-r-text: var(--ak-rarity-3-text); }
+[data-rarity="4"] { --ak-r: var(--ak-rarity-4); --ak-r-text: var(--ak-rarity-4-text); }
+[data-rarity="5"] { --ak-r: var(--ak-rarity-5); --ak-r-text: var(--ak-rarity-5-text); }
+[data-rarity="6"] { --ak-r: var(--ak-rarity-6); --ak-r-text: var(--ak-rarity-6-text); }
+.ak-r-text { color: var(--ak-r-text); } .ak-r-bg { background: var(--ak-r); color: #1d1f20; } .ak-r-border { border-color: var(--ak-r) !important; }
+.ak-r-bar { border-left: var(--ak-bar-w) solid var(--ak-r); }
+.ak-r-chip { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); background: var(--ak-r); color: #1d1f20; }
+.ak-r-swatch { display: inline-block; width: 1em; height: 1em; background: var(--ak-r); vertical-align: -.15em; margin-right: .3em; }
+
+/* B2. 职业 / 分支图标 */
+.ak-prof { --_s: 32px; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); flex: none; }
+.ak-prof > img { width: 82%; height: 82%; object-fit: contain; filter: var(--ak-glyph-filter); }
+.ak-prof--box { background: #1d1f20; }
+.ak-prof--box > img { filter: none; }
+.ak-prof--sm { --_s: 22px; } .ak-prof--lg { --_s: 48px; } .ak-prof--xl { --_s: 72px; }
+.ak-prof--outline { border: 1px solid var(--ak-border-strong); }
+.ak-subprof { --_s: 26px; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); flex: none; }
+.ak-subprof > img { width: 90%; height: 90%; object-fit: contain; filter: var(--ak-glyph-filter); }
+.ak-prof-label { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.ak-prof-label .ak-en { color: var(--ak-fg-muted); font-size: .8em; }
+/* 8 职业色（用于图表/筛选高亮，非官方，源自社区常用配色并降饱和） */
+:root { --ak-prof-pioneer: #c9a94b; --ak-prof-warrior: #c96a4b; --ak-prof-tank: #5e8fc9; --ak-prof-sniper: #4bb3c9; --ak-prof-caster: #9b6fc9; --ak-prof-medic: #5fc98c; --ak-prof-support: #c95fa2; --ak-prof-special: #8a8f99; }
+[data-prof="pioneer"] { --ak-p: var(--ak-prof-pioneer); } [data-prof="warrior"] { --ak-p: var(--ak-prof-warrior); } [data-prof="tank"] { --ak-p: var(--ak-prof-tank); } [data-prof="sniper"] { --ak-p: var(--ak-prof-sniper); }
+[data-prof="caster"] { --ak-p: var(--ak-prof-caster); } [data-prof="medic"] { --ak-p: var(--ak-prof-medic); } [data-prof="support"] { --ak-p: var(--ak-prof-support); } [data-prof="special"] { --ak-p: var(--ak-prof-special); }
+
+/* B3. 精英化 / 潜能 / 专精 / 等级 */
+.ak-elite { display: inline-flex; align-items: center; gap: 4px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); }
+.ak-elite > img { height: 16px; width: auto; filter: var(--ak-glyph-filter); }
+.ak-elite--lg > img { height: 28px; }
+.ak-potential, .ak-spec { display: inline-grid; place-items: center; background: #1d1f20; padding: 2px; vertical-align: middle; }
+.ak-potential > img, .ak-spec > img { height: 20px; width: auto; display: block; }
+.ak-potential--bare, .ak-spec--bare { background: none; padding: 0; }
+.ak-level { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; font-family: var(--ak-font-label); }
+.ak-level__lv { font-size: 10px; letter-spacing: .1em; color: var(--ak-fg-muted); }
+.ak-level__n { font-size: 24px; font-weight: 800; }
+.ak-level--badge { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); padding: 4px 8px; }
+.ak-level--badge .ak-level__lv { color: inherit; opacity: .6; }
+/* 精英化阶段选择器（E0 / E1 / E2） */
+.ak-phase-tabs { display: inline-flex; border: 1px solid var(--ak-border-strong); }
+.ak-phase-tabs > button { all: unset; cursor: pointer; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }
+.ak-phase-tabs > button + button { border-left: 1px solid var(--ak-border-strong); }
+.ak-phase-tabs > button > img { height: 14px; filter: var(--ak-glyph-filter); opacity: .6; }
+.ak-phase-tabs > button.is-active { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-phase-tabs > button.is-active > img { filter: none; opacity: 1; }
+:root:not([data-theme="dark"]):not(.skin-theme-clientpref-night) .ak-phase-tabs > button.is-active > img { filter: none; }
+:root[data-theme="dark"] .ak-phase-tabs > button.is-active > img, html.skin-theme-clientpref-night .ak-phase-tabs > button.is-active > img { filter: invert(1); }
+/* 信赖 */
+.ak-trust { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ak-font-label); font-weight: 700; }
+.ak-trust::before { content: ""; width: 12px; height: 12px; background: var(--ak-red-500); clip-path: polygon(50% 100%, 0 38%, 15% 10%, 50% 30%, 85% 10%, 100% 38%); }
+
+/* B4. 干员卡（游戏内干员列表卡） */
+.ak-op-card { --_w: 128px; width: var(--_w); position: relative; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; text-decoration: none; color: var(--ak-fg); display: block; transition: transform var(--ak-dur-normal) var(--ak-ease), border-color var(--ak-dur-normal), box-shadow var(--ak-dur-normal); }
+.ak-op-card:hover { transform: translateY(-3px); border-color: var(--ak-accent); box-shadow: var(--ak-shadow-md); text-decoration: none; color: var(--ak-fg); }
+.ak-op-card__portrait { display: block; position: relative; aspect-ratio: 1; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
+.ak-op-card__portrait > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ak-op-card__portrait::after { content: ""; position: absolute; inset: auto 0 0 0; height: 40%; background: linear-gradient(180deg, transparent, rgba(0,0,0,.75)); }
+.ak-op-card__rarity { position: absolute; left: 4px; top: 4px; z-index: 1; height: 12px; }
+.ak-op-card__rarity img { height: 100%; width: auto; display: block; }
+.ak-op-card__prof { position: absolute; left: 4px; bottom: 4px; z-index: 1; width: 26px; height: 26px; background: rgba(0,0,0,.6); display: grid; place-items: center; }
+.ak-op-card__prof img { width: 22px; height: 22px; }
+.ak-op-card__elite { position: absolute; right: 4px; bottom: 4px; z-index: 1; height: 16px; }
+.ak-op-card__elite img { height: 100%; width: auto; }
+.ak-op-card__name { display: block; padding: 6px 8px 7px; font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top: 3px solid var(--ak-r, var(--ak-border)); }
+.ak-op-card__sub { display: block; font: 500 10px/1 var(--ak-font-label); color: var(--ak-fg-muted); margin-top: 3px; letter-spacing: .06em; text-transform: uppercase; }
+.ak-op-card--sm { --_w: 88px; } .ak-op-card--sm .ak-op-card__name { font-size: var(--ak-fs-xs); padding: 4px 6px; }
+.ak-op-card--lg { --_w: 180px; }
+.ak-op-card--rail { border-left: 3px solid var(--ak-r); }
+.ak-op-card--rail .ak-op-card__name { border-top: 0; }
+.ak-op-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: var(--ak-space-3); }
+.ak-op-grid > .ak-op-card { --_w: auto; width: auto; }
+/* 干员横向条目（列表/表格内） */
+.ak-op-row { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
+.ak-op-row .ak-avatar { --_s: 36px; border-left: 3px solid var(--ak-r, var(--ak-border)); }
+.ak-op-row__name { font-weight: 700; line-height: 1.2; }
+.ak-op-row__meta { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); display: flex; gap: 6px; align-items: center; }
+
+/* B5. 道具（稀有度框 + 数量） */
+.ak-item { --_s: 56px; position: relative; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); background: var(--ak-bg-surface-2); border: 2px solid var(--ak-r, var(--ak-border-strong)); vertical-align: middle; text-decoration: none; }
+.ak-item > img { width: 88%; height: 88%; object-fit: contain; }
+.ak-item__count { position: absolute; right: -2px; bottom: -2px; padding: 0 5px; min-width: 20px; height: 18px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font: 700 11px/1 var(--ak-font-label); border: 1px solid var(--ak-bg-surface); }
+.ak-item__count.is-short { background: var(--ak-red-700); color: #fff; }
+.ak-item--sm { --_s: 40px; } .ak-item--sm .ak-item__count { height: 15px; font-size: 10px; min-width: 16px; }
+.ak-item--lg { --_s: 76px; }
+.ak-item--round { border-radius: 50%; }
+.ak-item--cut { clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
+.ak-item.is-disabled > img { filter: grayscale(1) brightness(.6); }
+.ak-item-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ak-item-inline { display: inline-flex; align-items: center; gap: 4px; }
+.ak-item-inline .ak-item { --_s: 22px; border-width: 1px; }
+.ak-item-inline .ak-item__count { display: none; }
+/* 材料表：阶段/技能等级 → 材料 */
+.ak-materials { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; align-items: center; }
+.ak-materials__label { font: 700 var(--ak-fs-xs)/1.2 var(--ak-font-label); text-transform: uppercase; letter-spacing: .06em; color: var(--ak-fg-muted); display: flex; align-items: center; gap: 6px; }
+.ak-materials__label img { height: 16px; filter: var(--ak-glyph-filter); }
+
+/* B6. 技能（图标 + SP 类型 + 触发类型） */
+.ak-skill { display: grid; grid-template-columns: 64px 1fr; gap: 12px 14px; padding: 12px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); position: relative; }
+.ak-skill.is-selected { border-color: var(--ak-blue-500); box-shadow: inset 0 0 0 2px var(--ak-blue-500); }
+.ak-skill.is-selected::before { content: ""; position: absolute; left: 0; top: 0; border-style: solid; border-width: 12px 12px 0 0; border-color: var(--ak-blue-500) transparent transparent; }
+.ak-skill__icon { --_sp: var(--ak-sp-auto); position: relative; width: 64px; height: 64px; background: #1d1f20; border: 2px solid var(--_sp); overflow: hidden; }
+.ak-skill__icon > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ak-skill__icon::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: var(--_sp); }
+.ak-skill__icon--auto { --_sp: var(--ak-sp-auto); } .ak-skill__icon--attack { --_sp: var(--ak-sp-attack); } .ak-skill__icon--hit { --_sp: var(--ak-sp-hit); } .ak-skill__icon--passive { --_sp: var(--ak-sp-passive); }
+.ak-skill__icon.is-locked > img { filter: grayscale(1) brightness(.4); }
+.ak-skill__icon.is-locked::before { content: "🔒"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; z-index: 1; }
+.ak-skill__head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ak-skill__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }
+.ak-skill__meta { display: flex; gap: 6px; flex-wrap: wrap; font-size: var(--ak-fs-xs); }
+.ak-skill__desc { grid-column: 1 / -1; font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); line-height: 1.7; }
+.ak-skill__stats { grid-column: 1 / -1; display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--ak-font-label); font-size: var(--ak-fs-sm); }
+.ak-skill__stats b { font-weight: 800; }
+/* SP 类型标签（游戏内：绿=自动 橙=攻击 黄=受击 灰=被动） */
+.ak-sp { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: #1d1f20; background: var(--ak-sp-auto); }
+.ak-sp--attack { background: var(--ak-sp-attack); } .ak-sp--hit { background: var(--ak-sp-hit); } .ak-sp--passive { background: var(--ak-sp-passive); color: #fff; }
+.ak-sp-trigger { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-sp-trigger--auto { background: var(--ak-gray-500); color: #fff; }
+/* SP 数值条（游戏内 skill_sp_cost_bkg 荧光绿闪电） */
+.ak-sp-cost { display: inline-flex; align-items: center; gap: 4px; padding: 0 8px 0 4px; height: 20px; background: var(--ak-lime-400); color: #1d1f20; font: 800 12px/1 var(--ak-font-label); }
+.ak-sp-cost::before { content: "⚡"; font-size: 11px; }
+.ak-sp-init { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; background: var(--ak-gray-800); color: #fff; font: 800 12px/1 var(--ak-font-label); }
+.ak-sp-init::before { content: "▶"; font-size: 9px; margin-right: 4px; }
+/* 技能等级选择器 1-7 + M1-M3 */
+.ak-skill-levels { display: inline-flex; border: 1px solid var(--ak-border-strong); }
+.ak-skill-levels > button { all: unset; cursor: pointer; width: 30px; height: 26px; display: grid; place-items: center; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }
+.ak-skill-levels > button + button { border-left: 1px solid var(--ak-border); }
+.ak-skill-levels > button.is-mastery { color: var(--ak-rt-vup); }
+.ak-skill-levels > button.is-active { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-skill-levels > button.is-mastery.is-active { background: var(--ak-blue-500); color: #fff; }
+.ak-skill-levels > button.is-mastery > img { height: 14px; filter: var(--ak-glyph-filter); }
+.ak-skill-levels > button.is-mastery.is-active > img { filter: none; }
+/* 天赋 */
+.ak-talent { padding: 10px 12px; border-left: var(--ak-bar-w) solid var(--ak-accent); background: var(--ak-bg-surface-2); margin-bottom: 8px; }
+.ak-talent__name { margin: 0 0 4px; font-weight: 800; display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+.ak-talent__req { font: 600 10px/1 var(--ak-font-label); color: var(--ak-fg-muted); display: inline-flex; gap: 4px; align-items: center; letter-spacing: .06em; }
+.ak-talent__req img { height: 12px; filter: var(--ak-glyph-filter); }
+.ak-talent__desc { font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); }
+
+/* B7. 游戏内富文本（<@ba.vup> 等 → span 类） */
+.ak-rt-vup, .ba-vup, .ak-buff { color: var(--ak-rt-vup); font-weight: 600; }
+.ak-rt-vdown, .ba-vdown, .ak-debuff { color: var(--ak-rt-vdown); font-weight: 600; }
+.ak-rt-rem, .ba-rem { color: var(--ak-rt-rem); font-weight: 600; }
+.ak-rt-kw, .ba-kw { color: var(--ak-rt-kw); font-weight: 600; }
+.ak-rt-imp, .ba-imp, .tu-imp { color: var(--ak-rt-imp); font-weight: 700; }
+.ak-rt-drop, .ba-drop { color: var(--ak-rt-drop); }
+.ak-rt-enemy, .ba-enemy { color: var(--ak-rt-enemy); font-weight: 600; }
+.ak-rt-gild, .ba-gild { color: var(--ak-rt-gild); }
+.ak-rt-acrem, .ba-acrem { color: var(--ak-rt-acrem); }
+.ak-rt-level, .ba-level { color: var(--ak-rt-level); font-weight: 700; }
+.ak-rt-talpu, .ba-talpu { color: var(--ak-rt-vup); }   /* 潜能加成 (+1%) */
+.ak-rt-term, .ba-term { border-bottom: 1px dashed currentColor; cursor: help; }   /* <$ba.stun> 术语 */
+.ak-rt-pn, .ba-pn { font-style: italic; }
+/* 数值变化对比 */
+.ak-delta-up::after { content: "▲"; font-size: .7em; margin-left: 2px; color: var(--ak-rt-vup); }
+.ak-delta-down::after { content: "▼"; font-size: .7em; margin-left: 2px; color: var(--ak-rt-vdown); }
+
+/* B8. 属性表（干员面板） */
+.ak-attrs { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px; background: var(--ak-border); border: 1px solid var(--ak-border); }
+.ak-attr { background: var(--ak-bg-surface); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.ak-attr__label { font: 600 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); display: flex; align-items: center; gap: 4px; }
+.ak-attr__label .cn { font-family: var(--ak-font-body); letter-spacing: 0; text-transform: none; }
+.ak-attr__value { font: 800 var(--ak-fs-h3)/1.1 var(--ak-font-label); font-variant-numeric: tabular-nums; }
+.ak-attr__value small { font-size: .55em; color: var(--ak-fg-muted); font-weight: 600; margin-left: 2px; }
+.ak-attr--accent { border-top: 2px solid var(--ak-accent); }
+.ak-attrs--compact .ak-attr { flex-direction: row; justify-content: space-between; align-items: baseline; padding: 6px 12px; }
+.ak-attrs--compact .ak-attr__value { font-size: var(--ak-fs-body); }
+/* 键值表（信息栏） */
+.ak-kv { display: grid; grid-template-columns: max-content 1fr; gap: 0; font-size: var(--ak-fs-sm); border-top: 1px solid var(--ak-border); }
+.ak-kv > dt { padding: 6px 12px 6px 0; color: var(--ak-fg-muted); font-weight: 600; border-bottom: 1px solid var(--ak-border-subtle); }
+.ak-kv > dd { padding: 6px 0 6px 12px; margin: 0; border-bottom: 1px solid var(--ak-border-subtle); border-left: 1px solid var(--ak-border-subtle); }
+.ak-kv--boxed { border: 1px solid var(--ak-border); }
+.ak-kv--boxed > dt { padding-left: 12px; background: var(--ak-bg-surface-2); }
+
+/* B9. 攻击范围格 */
+.ak-range { --_cell: 14px; display: inline-grid; gap: 2px; grid-template-columns: repeat(var(--cols, 5), var(--_cell)); }
+.ak-range > i { width: var(--_cell); height: var(--_cell); border: 1px solid var(--ak-border-strong); background: transparent; }
+.ak-range > i.on { background: var(--ak-blue-500); border-color: var(--ak-blue-500); }
+.ak-range > i.self { background: var(--ak-fg); border-color: var(--ak-fg); }
+.ak-range > i.off { border-color: transparent; }
+.ak-range--lg { --_cell: 20px; } .ak-range--sm { --_cell: 10px; }
+
+/* B10. 模组卡 */
+.ak-module { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 14px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left: var(--ak-bar-w-lg) solid var(--ak-fg); }
+.ak-module__img { width: 96px; height: 96px; background: #1d1f20; display: grid; place-items: center; overflow: hidden; }
+.ak-module__img img { max-width: 90%; max-height: 90%; }
+.ak-module__type { font: 800 var(--ak-fs-h3)/1 var(--ak-font-display); letter-spacing: -.01em; }
+.ak-module__type small { font-family: var(--ak-font-label); font-size: .55em; color: var(--ak-fg-muted); margin-left: 6px; letter-spacing: .1em; }
+.ak-module__name { font-weight: 700; margin: 4px 0 6px; }
+.ak-module__stage { display: inline-flex; gap: 2px; }
+.ak-module__stage > i { width: 22px; height: 6px; background: var(--ak-bg-surface-3); }
+.ak-module__stage > i.on { background: var(--ak-accent); }
+.ak-module__mission { font-size: var(--ak-fs-xs); color: var(--ak-fg-secondary); padding-left: 10px; border-left: 2px solid var(--ak-border-strong); }
+
+/* B11. 语音条目 */
+.ak-voice { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: start; }
+.ak-voice__play { all: unset; width: 32px; height: 32px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; }
+.ak-voice__play::before { content: ""; width: 0; height: 0; border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor; margin-left: 2px; }
+.ak-voice__play.is-playing::before { width: 10px; height: 12px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; margin: 0; }
+.ak-voice__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; }
+.ak-voice__lang { font: 600 10px/1 var(--ak-font-label); letter-spacing: .1em; padding: 2px 5px; border: 1px solid var(--ak-border-strong); }
+.ak-voice__text { font-size: var(--ak-fs-sm); line-height: 1.7; }
+.ak-voice__wave { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
+.ak-voice__wave > i { width: 2px; background: var(--ak-accent); height: 40%; }
+.is-playing ~ * .ak-voice__wave > i { animation: ak-bars 1s ease-in-out infinite; }
+
+/* B12. 档案 / 剧情文本块（含未解锁遮罩） */
+.ak-dossier { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: 16px 20px; position: relative; font-size: var(--ak-fs-sm); line-height: 1.85; }
+.ak-dossier__title { display: flex; align-items: center; gap: 10px; font-weight: 800; margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--ak-border); }
+.ak-dossier__title .ak-en { color: var(--ak-fg-muted); font-size: .8em; }
+.ak-dossier__unlock { margin-left: auto; font: 600 10px/1 var(--ak-font-label); letter-spacing: .08em; color: var(--ak-fg-muted); text-transform: uppercase; }
+.ak-dossier p { margin: 0 0 .8em; white-space: pre-line; }
+.ak-dossier p:last-child { margin: 0; }
+.ak-dossier.is-locked > *:not(.ak-dossier__title) { filter: blur(4px); user-select: none; pointer-events: none; }
+.ak-dossier.is-locked::after { content: "🔒 " attr(data-unlock); position: absolute; inset: 44px 0 0; display: grid; place-items: center; background: repeating-linear-gradient(-45deg, transparent 0 8px, var(--ak-stripe-color) 8px 16px); font: 700 var(--ak-fs-sm)/1 var(--ak-font-body); color: var(--ak-fg-secondary); }
+.ak-redacted { background: var(--ak-fg); color: transparent; user-select: none; }
+.ak-redacted:hover { color: var(--ak-bg-canvas); }
+/* 剧情对话 */
+.ak-dialogue { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: var(--ak-fs-sm); }
+.ak-dialogue > dt { font-weight: 800; color: var(--ak-accent); text-align: right; }
+.ak-dialogue > dd { margin: 0; }
+.ak-dialogue > dt.narrator, .ak-dialogue > dd.narrator { color: var(--ak-fg-muted); font-style: italic; }
+
+/* B13. 关卡卡 / 关卡编号 */
+.ak-stage { display: grid; grid-template-columns: max-content 1fr; gap: 12px; align-items: center; padding: 10px 14px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); text-decoration: none; color: inherit; position: relative; }
+.ak-stage:hover { border-color: var(--ak-accent); text-decoration: none; color: inherit; }
+.ak-stage__code { font: 800 var(--ak-fs-h3)/1 var(--ak-font-display); letter-spacing: -.02em; min-width: 72px; }
+.ak-stage__code small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .12em; color: var(--ak-fg-muted); margin-top: 3px; }
+.ak-stage__name { font-weight: 700; }
+.ak-stage__meta { display: flex; gap: 10px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); margin-top: 4px; }
+.ak-stage__meta b { color: var(--ak-fg); }
+.ak-stage--hard { border-left: 4px solid var(--ak-red-600); }
+.ak-stage--ex { border-left: 4px solid var(--ak-red-700); }
+.ak-stage--story { border-left: 4px solid var(--ak-fg-muted); }
+.ak-stage-code { display: inline-block; font: 800 1em/1 var(--ak-font-display); letter-spacing: -.02em; padding: 2px 6px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-stage-code--hard { background: var(--ak-red-700); color: #fff; }
+/* 理智 / 消耗 */
+.ak-sanity { display: inline-flex; align-items: center; gap: 4px; font: 800 var(--ak-fs-sm)/1 var(--ak-font-label); }
+.ak-sanity::before { content: ""; width: 12px; height: 14px; background: currentColor; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+
+/* B14. 阵营 / 势力 logo */
+.ak-camp { display: inline-flex; align-items: center; gap: 8px; }
+.ak-camp > img { height: 28px; width: auto; filter: var(--ak-glyph-filter); }
+.ak-camp--lg > img { height: 48px; }
+.ak-camp--box { background: #1d1f20; padding: 6px 10px; color: #fff; }
+.ak-camp--box > img { filter: none; }
+.ak-camp__name { font-weight: 700; }
+
+/* B15. 敌人卡 */
+.ak-enemy { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 10px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+.ak-enemy__img { width: 64px; height: 64px; background: #1d1f20; border-radius: 50%; overflow: hidden; }
+.ak-enemy__code { font: 700 10px/1 var(--ak-font-label); letter-spacing: .12em; color: var(--ak-fg-muted); }
+.ak-enemy__name { font-weight: 800; }
+.ak-enemy__level { display: inline-flex; gap: 2px; }
+.ak-enemy__level > i { width: 12px; height: 12px; background: var(--ak-bg-surface-3); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+.ak-enemy__level > i.on { background: var(--ak-red-500); }
+.ak-enemy--boss { border-left: 4px solid var(--ak-red-700); }
+.ak-enemy--elite { border-left: 4px solid var(--ak-orange-500); }
+
+/* B16. 活动 / 倒计时 */
+.ak-countdown { display: inline-flex; gap: 6px; font-family: var(--ak-font-label); }
+.ak-countdown > span { display: inline-flex; flex-direction: column; align-items: center; min-width: 40px; padding: 4px 6px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-countdown > span > b { font-size: var(--ak-fs-h3); line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ak-countdown > span > small { font-size: 9px; letter-spacing: .12em; opacity: .6; text-transform: uppercase; }
+.ak-event { position: relative; display: grid; grid-template-columns: 1fr; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; }
+.ak-event__banner { aspect-ratio: 21/9; background: #1d1f20; object-fit: cover; width: 100%; }
+.ak-event__body { padding: 12px 14px; }
+.ak-event__type { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-accent); }
+.ak-event__title { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 4px 0; }
+.ak-event__time { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }
+.ak-event.is-live .ak-event__type::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--ak-red-500); margin-right: 6px; animation: ak-blink 1.2s step-end infinite; }
+
+/* B17. Breaking-news 横幅（游戏内主界面）*/
+.ak-news { display: flex; align-items: stretch; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-sm); overflow: hidden; }
+.ak-news__label { background: var(--ak-red-700); color: #fff; padding: 6px 12px; font: 800 var(--ak-fs-xs)/1.4 var(--ak-font-display); letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%); padding-right: 18px; }
+.ak-news__text { padding: 6px 14px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ak-news__text a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
+/* B18. 大标题横幅（页面 Hero，官网风：黑底 + 大拉丁字 + 青色横条） */
+.ak-hero { position: relative; overflow: hidden; background: #0f0f10; color: #fff; padding: 40px 32px; }
+.ak-hero__eyebrow { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-cyan-500); }
+.ak-hero__title { border: 0; padding: 0; color: #fff; font: 800 clamp(2rem, 6vw, 4rem)/1 var(--ak-font-display); letter-spacing: -.02em; text-transform: uppercase; margin: 8px 0 12px; }
+.ak-hero__title .cn { display: block; font-family: var(--ak-font-body); font-size: .5em; letter-spacing: .1em; font-weight: 700; margin-top: 4px; }
+.ak-hero__bar { width: 220px; height: 8px; background: var(--ak-cyan-500); margin: 16px 0; }
+.ak-hero__title::after { display: none; }
+.ak-hero__desc { max-width: 60ch; color: rgba(255,255,255,.7); font-size: var(--ak-fs-sm); }
+.ak-hero__side { position: absolute; right: 0; top: 0; bottom: 0; width: 26%; background: var(--ak-cyan-500); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%); opacity: .9; }
+.ak-hero__side::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,0,0,.35) 1.2px, transparent 1.4px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(90deg, #000, transparent 70%); mask-image: linear-gradient(90deg, #000, transparent 70%); }

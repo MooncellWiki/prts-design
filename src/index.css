@@ -1,0 +1,7 @@
+/*! AKDS — 明日方舟网页设计系统 · 汇总入口（本地预览/普通站点用；MW 中按 ResourceLoader 模块拆分加载） */
+@import url("tokens.css");
+@import url("base.css");
+@import url("components.css");
+@import url("arknights.css");
+@import url("skin.css");
+@import url("utilities.css");

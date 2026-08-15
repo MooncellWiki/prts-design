@@ -1,0 +1,387 @@
+/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS · base.css — MediaWiki 内容基础样式
+ *  作用域：.mw-body-content / .mw-parser-output（wikitext 解析产物）以及 MW 常见 UI 结构
+ *  依赖：tokens.css
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Typography ────────────────────────────────────────────────────────── */
+.mw-body-content { font-size: var(--ak-fs-body); line-height: var(--ak-lh-body); color: var(--ak-fg); }
+.mw-parser-output p { margin: 0 0 var(--ak-space-4); }
+.mw-parser-output p:last-child { margin-bottom: 0; }
+strong, b { font-weight: 700; }
+small, .ak-text-sm { font-size: var(--ak-fs-sm); }
+.ak-text-xs { font-size: var(--ak-fs-xs); }
+.ak-muted { color: var(--ak-fg-muted); }
+
+/* Headings — 方舟式：左侧色条 + 细底线；h1 页面标题由 skin.css 处理 */
+:where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--ak-font-body);
+  font-weight: 700;
+  line-height: var(--ak-lh-tight);
+  color: var(--ak-fg);
+  margin: 1.6em 0 0.6em;
+  scroll-margin-top: calc(var(--ak-header-h) + 16px);
+  border: 0;
+}
+:where(.mw-body-content) h2 {
+  font-size: var(--ak-fs-h2);
+  padding: 0 0 var(--ak-space-2) var(--ak-space-3);
+  border-left: var(--ak-bar-w) solid var(--ak-accent);
+  border-bottom: 1px solid var(--ak-border);
+  position: relative;
+}
+:where(.mw-body-content) h2::after {  /* 官网标题下的短横条 */
+  content: ""; position: absolute; left: calc(-1 * var(--ak-bar-w)); bottom: -1px; height: 2px; width: 96px;
+  background: var(--ak-accent);
+}
+:where(.mw-body-content) h3 { font-size: var(--ak-fs-h3); padding-left: var(--ak-space-3); border-left: 3px solid var(--ak-border-strong); }
+:where(.mw-body-content) h4 { font-size: var(--ak-fs-h4); }
+:where(.mw-body-content) h5 { font-size: var(--ak-fs-body); color: var(--ak-fg-secondary); }
+:where(.mw-body-content) h6 { font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); }
+.mw-heading { display: flex; align-items: baseline; gap: var(--ak-space-2); flex-wrap: wrap; }
+.mw-heading > h2, .mw-heading > h3, .mw-heading > h4 { flex: 1 1 auto; margin: 0; }
+.mw-heading { margin: 1.6em 0 0.6em; }
+.mw-heading2 { border-bottom: 1px solid var(--ak-border); }
+.mw-heading2 > h2 { border-bottom: 0; }
+
+/* Edit section links */
+.mw-editsection { font-size: var(--ak-fs-xs); font-weight: 400; font-family: var(--ak-font-body); margin-left: auto; white-space: nowrap; }
+.mw-editsection-bracket { color: var(--ak-fg-subtle); }
+.mw-editsection a { color: var(--ak-fg-muted); text-decoration: none; padding: 2px 4px; }
+.mw-editsection a:hover { color: var(--ak-accent); background: var(--ak-accent-subtle); }
+.mw-heading:not(:hover) .mw-editsection { opacity: .5; }
+@media (hover: none) { .mw-heading .mw-editsection { opacity: 1; } }
+
+/* Links */
+a { color: var(--ak-link); text-decoration: none; transition: color var(--ak-dur-fast) var(--ak-ease); }
+a:hover { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:visited { color: var(--ak-link-visited); }
+a.new, a.new:visited { color: var(--ak-link-new); }
+a.mw-selflink { color: inherit; font-weight: 700; }
+a.external { color: var(--ak-link-external); }
+.mw-parser-output a.external { background: none; padding-right: 0; }
+.mw-parser-output a.external::after {
+  content: ""; display: inline-block; width: .8em; height: .8em; margin-left: .2em; vertical-align: -0.05em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 1h5v5L9 4 5 8 4 7l4-4zM1 3h3v1H2v6h6V8h1v3H1z'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 1h5v5L9 4 5 8 4 7l4-4zM1 3h3v1H2v6h6V8h1v3H1z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.mw-parser-output a.external.text::after, .mw-parser-output a.external.autonumber::after { display: inline-block; }
+.plainlinks a.external::after { display: none !important; }
+
+/* Lists */
+.mw-parser-output ul { list-style: none; margin: 0 0 var(--ak-space-4) 0; padding-left: 1.4em; }
+.mw-parser-output ul > li { position: relative; margin: .25em 0; }
+.mw-parser-output ul > li::before {   /* 方形项目符号 → 方舟的直角语言 */
+  content: ""; position: absolute; left: -1.05em; top: .72em; width: 5px; height: 5px;
+  background: var(--ak-accent); transform: rotate(45deg);
+}
+.mw-parser-output ul ul > li::before { background: var(--ak-fg-subtle); }
+.mw-parser-output ol { margin: 0 0 var(--ak-space-4); padding-left: 1.8em; }
+.mw-parser-output ol > li { margin: .25em 0; padding-left: .2em; }
+.mw-parser-output ol > li::marker { font-family: var(--ak-font-label); font-weight: 700; color: var(--ak-accent); }
+.mw-parser-output dl { margin: 0 0 var(--ak-space-4); }
+.mw-parser-output dt { font-weight: 700; margin-top: var(--ak-space-2); }
+.mw-parser-output dd { margin: .2em 0 .5em 1.6em; }
+.mw-parser-output li > ul, .mw-parser-output li > ol { margin-bottom: 0; }
+
+/* Emphasis / misc inline */
+hr { border: 0; height: 1px; background: var(--ak-border); margin: var(--ak-space-8) 0; }
+.mw-parser-output hr.ak-hr-accent { height: 2px; background: linear-gradient(90deg, var(--ak-accent) 0 96px, var(--ak-border) 96px); }
+abbr[title] { text-decoration: underline dotted; text-underline-offset: 2px; cursor: help; }
+mark { background: rgba(255,216,0,.35); color: inherit; padding: 0 .15em; }
+kbd { font-family: var(--ak-font-mono); font-size: .85em; padding: .1em .4em; border: 1px solid var(--ak-border-strong); border-bottom-width: 2px; background: var(--ak-bg-surface-2); }
+sup, sub { line-height: 0; }
+
+/* Blockquote / poem */
+.mw-parser-output blockquote {
+  margin: var(--ak-space-4) 0; padding: var(--ak-space-3) var(--ak-space-5);
+  border-left: var(--ak-bar-w) solid var(--ak-accent);
+  background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary);
+}
+.mw-parser-output blockquote p:last-child { margin-bottom: 0; }
+.mw-parser-output .poem { padding-left: var(--ak-space-4); border-left: 1px solid var(--ak-border); }
+
+/* Code */
+code, .mw-code, pre, tt { font-family: var(--ak-font-mono); font-size: .9em; }
+:not(pre) > code { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: .1em .35em; color: var(--ak-fg); }
+pre, .mw-code, .mw-highlight pre {
+  background: var(--ak-bg-inset); border: 1px solid var(--ak-border); border-left: 3px solid var(--ak-accent);
+  padding: var(--ak-space-3) var(--ak-space-4); overflow-x: auto; line-height: 1.55; color: var(--ak-fg);
+  margin: 0 0 var(--ak-space-4);
+}
+.mw-highlight { margin: 0 0 var(--ak-space-4); }
+.mw-highlight .linenos { color: var(--ak-fg-subtle); user-select: none; padding-right: 1em; border-right: 1px solid var(--ak-border); }
+
+/* ─── Tables ────────────────────────────────────────────────────────────── */
+.mw-parser-output table { border-collapse: collapse; border-spacing: 0; }
+.wikitable {
+  margin: var(--ak-space-4) 0; background: var(--ak-bg-surface); color: var(--ak-fg);
+  border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); line-height: 1.5;
+}
+.wikitable > * > tr > th, .wikitable > * > tr > td { border: 1px solid var(--ak-border); padding: .45em .7em; vertical-align: middle; }
+.wikitable > * > tr > th {
+  background: var(--ak-bg-surface-2); font-weight: 700; text-align: center; color: var(--ak-fg);
+  border-bottom: 2px solid var(--ak-border-strong);
+}
+.wikitable > thead > tr > th, .wikitable > tbody > tr:first-child > th { position: relative; }
+.wikitable caption { caption-side: top; text-align: left; font-weight: 700; padding: .4em 0; color: var(--ak-fg-secondary); font-size: var(--ak-fs-sm); }
+.wikitable > tbody > tr:hover > td { background: var(--ak-bg-hover); }
+.wikitable.ak-striped > tbody > tr:nth-child(even) > td { background: var(--ak-bg-surface-2); }
+.wikitable.ak-compact > * > tr > th, .wikitable.ak-compact > * > tr > td { padding: .25em .5em; }
+.wikitable.ak-dense { font-size: var(--ak-fs-xs); }
+.wikitable.ak-borderless, .wikitable.ak-borderless > * > tr > th, .wikitable.ak-borderless > * > tr > td { border-left: 0; border-right: 0; }
+.wikitable.ak-borderless { border-left: 0; border-right: 0; }
+.wikitable th.ak-th-accent { border-top: 3px solid var(--ak-accent); }
+.wikitable .ak-num, .wikitable td.num { font-family: var(--ak-font-label); font-variant-numeric: tabular-nums; text-align: right; }
+/* sortable (jquery.tablesorter) */
+.jquery-tablesorter th.headerSort { cursor: pointer; padding-right: 1.6em; background-image: none; }
+.jquery-tablesorter th.headerSort::after { content: "⇅"; position: absolute; right: .5em; color: var(--ak-fg-subtle); font-size: .85em; }
+.jquery-tablesorter th.headerSortUp::after { content: "↑"; color: var(--ak-accent); }
+.jquery-tablesorter th.headerSortDown::after { content: "↓"; color: var(--ak-accent); }
+/* responsive wrapper: <div class="ak-table-scroll">…</div> */
+.ak-table-scroll { overflow-x: auto; max-width: 100%; margin: var(--ak-space-4) 0; -webkit-overflow-scrolling: touch; }
+.ak-table-scroll > .wikitable { margin: 0; }
+/* sticky header */
+.wikitable.ak-sticky-head > * > tr:first-child > th { position: sticky; top: var(--ak-header-h); z-index: 1; }
+/* Cargo / mw-datatable */
+.cargoTable, table.mw-datatable { border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); }
+.cargoTable th, table.mw-datatable th { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: .4em .6em; }
+.cargoTable td, table.mw-datatable td { border: 1px solid var(--ak-border); padding: .4em .6em; }
+table.mw-datatable tr:hover td { background: var(--ak-bg-hover); }
+
+/* ─── Figures / thumbs / galleries ─────────────────────────────────────── */
+figure[typeof~="mw:File/Thumb"], figure[typeof~="mw:File/Frame"], .thumb {
+  background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: var(--ak-space-1);
+  margin: 0 0 var(--ak-space-4); font-size: var(--ak-fs-xs); color: var(--ak-fg-muted);
+}
+figure[typeof~="mw:File/Thumb"] > a > img, .thumbimage { display: block; max-width: 100%; height: auto; background: var(--ak-bg-inset); }
+figure[typeof~="mw:File/Thumb"] > figcaption, .thumbcaption { padding: var(--ak-space-2) var(--ak-space-2) var(--ak-space-1); border-top: 1px solid var(--ak-border-subtle); line-height: 1.5; }
+figure[typeof~="mw:File/Thumb"] > figcaption::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--ak-accent); margin-right: .5em; vertical-align: .05em; }
+.mw-halign-right, .tright, figure.mw-halign-right { float: right; clear: right; margin: .25em 0 var(--ak-space-4) var(--ak-space-5); }
+.mw-halign-left, .tleft, figure.mw-halign-left { float: left; clear: left; margin: .25em var(--ak-space-5) var(--ak-space-4) 0; }
+.mw-halign-center, .center { text-align: center; }
+figure.mw-halign-center { margin-left: auto; margin-right: auto; }
+.magnify { display: none; }
+img { max-width: 100%; height: auto; }
+.mw-parser-output img.ak-pixel { image-rendering: pixelated; }
+/* gallery */
+ul.gallery { display: flex; flex-wrap: wrap; gap: var(--ak-space-3); margin: var(--ak-space-4) 0; padding: 0; }
+ul.gallery > li::before { display: none; }
+li.gallerybox { margin: 0 !important; width: auto !important; }
+li.gallerybox > div { width: auto !important; }
+li.gallerybox div.thumb { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0; padding: var(--ak-space-1); width: auto !important; }
+li.gallerybox div.thumb > div { margin: 0 !important; }
+li.gallerybox .gallerytext { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); padding: var(--ak-space-1) var(--ak-space-2); }
+li.gallerybox .gallerytext p { margin: 0; }
+.gallerycaption { font-weight: 700; margin-bottom: var(--ak-space-2); }
+ul.gallery.mw-gallery-packed li.gallerybox, ul.gallery.mw-gallery-packed-hover li.gallerybox { flex: 0 0 auto; }
+
+/* ─── TOC (inline, legacy) ─────────────────────────────────────────────── */
+.toc, .mw-parser-output .toc, #toc {
+  display: inline-block; background: var(--ak-bg-surface); border: 1px solid var(--ak-border);
+  border-top: 3px solid var(--ak-accent); padding: var(--ak-space-3) var(--ak-space-4); margin: 0 0 var(--ak-space-4);
+  font-size: var(--ak-fs-sm); min-width: 240px;
+}
+.toc .toctitle { display: flex; align-items: center; gap: var(--ak-space-3); }
+.toc .toctitle h2 { font-size: var(--ak-fs-sm); border: 0; padding: 0; margin: 0; letter-spacing: var(--ak-tracking-caps); text-transform: uppercase; }
+.toc .toctitle h2::after { display: none; }
+.toc ul { list-style: none; margin: var(--ak-space-2) 0 0; padding: 0; }
+.toc ul ul { margin: 0 0 0 1em; }
+.toc li { margin: .15em 0; }
+.toc li::before { display: none !important; }
+.tocnumber { color: var(--ak-fg-muted); font-family: var(--ak-font-label); margin-right: .4em; font-variant-numeric: tabular-nums; }
+.toctogglecheckbox:checked ~ ul { display: none; }
+.toctogglespan { font-size: var(--ak-fs-xs); }
+.toctogglelabel { color: var(--ak-link); cursor: pointer; }
+
+/* ─── Collapsible (jquery.makeCollapsible) ─────────────────────────────── */
+.mw-collapsible-toggle { float: right; font-size: var(--ak-fs-xs); font-weight: 400; user-select: none; }
+.mw-collapsible-toggle a { color: var(--ak-link); }
+.mw-collapsible-toggle-default::before { content: "["; color: var(--ak-fg-subtle); }
+.mw-collapsible-toggle-default::after { content: "]"; color: var(--ak-fg-subtle); }
+.mw-collapsed > .mw-collapsible-content { display: none; }
+.mw-collapsible.ak-collapse-box { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: var(--ak-space-4) 0; }
+.mw-collapsible.ak-collapse-box > .mw-collapsible-toggle { float: none; display: block; padding: var(--ak-space-2) var(--ak-space-4); background: var(--ak-bg-surface-2); }
+.mw-collapsible.ak-collapse-box > .mw-collapsible-content { padding: var(--ak-space-3) var(--ak-space-4); }
+
+/* ─── References / citations ───────────────────────────────────────────── */
+sup.reference { font-size: .75em; font-family: var(--ak-font-label); }
+sup.reference a { padding: 0 .1em; }
+.mw-cite-backlink, .reference-text { font-size: var(--ak-fs-sm); }
+.references, ol.references { font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); column-gap: var(--ak-space-8); }
+.reflist.ak-cols-2 .references { column-count: 2; }
+.references li:target, sup.reference:target { background: var(--ak-accent-subtle); outline: 1px solid var(--ak-accent-muted); }
+.mw-references-wrap { margin: var(--ak-space-4) 0; }
+
+/* ─── Hatnotes / message boxes / notices ───────────────────────────────── */
+.hatnote, .dablink, .rellink { font-style: normal; color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); padding: .3em 0 .3em 1em; border-left: 2px solid var(--ak-border-strong); margin: 0 0 var(--ak-space-3); }
+.mw-message-box, .cdx-message {
+  border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); background: var(--ak-bg-surface);
+  color: var(--ak-fg); padding: var(--ak-space-3) var(--ak-space-4); margin: 0 0 var(--ak-space-4); font-size: var(--ak-fs-sm);
+}
+.mw-message-box-notice, .cdx-message--notice { border-left-color: var(--ak-info); background: var(--ak-info-bg); }
+.mw-message-box-warning, .cdx-message--warning { border-left-color: var(--ak-warning); background: var(--ak-warning-bg); }
+.mw-message-box-error, .cdx-message--error { border-left-color: var(--ak-danger); background: var(--ak-danger-bg); }
+.mw-message-box-success, .cdx-message--success { border-left-color: var(--ak-success); background: var(--ak-success-bg); }
+.mw-parser-output .messagebox, .mw-parser-output .ambox { border: 1px solid var(--ak-border); border-left: var(--ak-bar-w) solid var(--ak-fg-muted); background: var(--ak-bg-surface-2); margin: 0 0 var(--ak-space-3); font-size: var(--ak-fs-sm); }
+.ambox td, .messagebox td { padding: .5em .8em; }
+.ambox-notice { border-left-color: var(--ak-info); }
+.ambox-content { border-left-color: var(--ak-warning); }
+.ambox-delete, .ambox-serious { border-left-color: var(--ak-danger); }
+.ambox-style { border-left-color: var(--ak-yellow-600); }
+
+/* ─── Category links, indicators, misc MW ──────────────────────────────── */
+.catlinks {
+  border: 1px solid var(--ak-border); background: var(--ak-bg-surface); padding: var(--ak-space-3) var(--ak-space-4);
+  margin: var(--ak-space-8) 0 0; font-size: var(--ak-fs-sm); clear: both;
+}
+.catlinks ul { display: inline; margin: 0; padding: 0; list-style: none; }
+.catlinks li { display: inline-block; margin: 2px 4px 2px 0; padding: 0; }
+.catlinks li::before { display: none; }
+.catlinks li a { display: inline-block; padding: 1px 8px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); font-size: var(--ak-fs-xs); }
+.catlinks li a:hover { border-color: var(--ak-accent); color: var(--ak-accent); text-decoration: none; }
+.catlinks .mw-normal-catlinks > a { font-weight: 700; margin-right: .5em; }
+.mw-indicators { display: flex; gap: var(--ak-space-2); float: right; font-size: var(--ak-fs-xs); }
+.mw-indicator { display: inline-flex; align-items: center; }
+#siteSub, .printfooter, .mw-jump-link { display: none; }
+#contentSub, #contentSub2 { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin: 0 0 var(--ak-space-3); }
+#contentSub .subpages a { color: var(--ak-fg-muted); }
+.mw-empty-elt { display: none; }
+.noprint {}
+.mw-redirectedfrom { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+.redirectMsg { font-size: var(--ak-fs-body-lg); }
+.redirectText { list-style: none; padding: 0; }
+.mw-parser-output .center, .mw-parser-output .mw-halign-center { text-align: center; }
+.mw-parser-output .floatright, .mw-parser-output .floatleft { margin: .3em 0 .5em 1em; }
+.mw-parser-output .floatleft { margin: .3em 1em .5em 0; }
+.mw-parser-output .clear, .clearfix::after { clear: both; }
+.clearfix::after { content: ""; display: table; }
+.mw-parser-output .nowrap { white-space: nowrap; }
+.mw-parser-output .noresize { max-width: none; }
+.mw-parser-output .plainlist ul, .mw-parser-output .plainlist ol { list-style: none; padding: 0; margin: 0; }
+.mw-parser-output .plainlist li::before { display: none; }
+.mw-parser-output .hlist ul { display: inline; padding: 0; margin: 0; }
+.mw-parser-output .hlist li { display: inline; }
+.mw-parser-output .hlist li::before { display: none; }
+.mw-parser-output .hlist li:not(:last-child)::after { content: " · "; color: var(--ak-fg-subtle); }
+.mw-parser-output .toccolours { border: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); padding: var(--ak-space-2) var(--ak-space-3); }
+.mw-parser-output .infobox { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); font-size: var(--ak-fs-sm); }
+.mw-parser-output .navbox { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); font-size: var(--ak-fs-xs); margin: var(--ak-space-4) 0 0; clear: both; }
+.mw-parser-output .navbox th, .mw-parser-output .navbox-title, .mw-parser-output .navbox-group { background: var(--ak-bg-surface-2); padding: .3em .6em; }
+.mw-parser-output .navbox-title { border-left: var(--ak-bar-w) solid var(--ak-accent); text-align: left; font-weight: 700; }
+.mw-parser-output .navbox-list { padding: .3em .6em; }
+.mw-parser-output .navbox-even { background: var(--ak-bg-surface-2); }
+
+/* ─── TabberNeue (ext.tabberNeue) ──────────────────────────────────────── */
+.tabber { margin: var(--ak-space-4) 0; }
+.tabber__header { box-shadow: none; border-bottom: 1px solid var(--ak-border); position: relative; background: transparent; }
+.tabber__header::after { display: none; }
+.tabber__tabs { display: flex; gap: var(--ak-space-1); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.tabber__tabs::-webkit-scrollbar { display: none; }
+.tabber__tab {
+  flex: none; white-space: nowrap;
+  font-family: var(--ak-font-body); font-weight: 600; font-size: var(--ak-fs-sm); color: var(--ak-fg-muted);
+  padding: var(--ak-space-2) var(--ak-space-4); border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px;
+  text-decoration: none; transition: color var(--ak-dur-fast), border-color var(--ak-dur-fast), background var(--ak-dur-fast);
+  position: relative;
+}
+.tabber__tab:hover { color: var(--ak-fg); background: var(--ak-bg-hover); text-decoration: none; }
+.tabber__tab[aria-selected="true"] { color: var(--ak-accent); border-bottom-color: var(--ak-accent); }
+.tabber__tab[aria-selected="true"]::before {   /* 游戏内选中角标 */
+  content: ""; position: absolute; left: 0; top: 0; border-style: solid; border-width: 6px 6px 0 0; border-color: var(--ak-accent) transparent transparent transparent;
+}
+.tabber__indicator { display: none; }
+.tabber__section { padding-top: var(--ak-space-4); }
+.tabber__panel:focus-visible { outline: none; }
+.tabber__header__prev, .tabber__header__next { background: var(--ak-bg-surface); }
+/* 皮肤内变体：卡片式 */
+.tabber.ak-tabber-boxed .tabber__header { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); border-bottom: 0; }
+.tabber.ak-tabber-boxed .tabber__section { border: 1px solid var(--ak-border); padding: var(--ak-space-4); background: var(--ak-bg-surface); }
+/* 游戏内“斜切标签页”变体 */
+.tabber.ak-tabber-skew .tabber__header { border-bottom: 2px solid var(--ak-fg); }
+.tabber.ak-tabber-skew .tabber__tab { background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); border: 0; margin: 0 -6px 0 0; padding: 6px 22px 6px 20px; clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
+.tabber.ak-tabber-skew .tabber__tab[aria-selected="true"] { background: var(--ak-fg); color: var(--ak-bg-canvas); border: 0; }
+.tabber.ak-tabber-skew .tabber__tab[aria-selected="true"]::before { display: none; }
+
+/* ─── Forms (core mw-ui / OOUI / Codex minimal harmonisation) ──────────── */
+input[type="text"], input[type="search"], input[type="number"], input[type="password"], input[type="email"], input[type="url"], textarea, select {
+  font: inherit; font-size: var(--ak-fs-sm); color: var(--ak-fg); background: var(--ak-bg-surface);
+  border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm); padding: 6px 10px; min-height: 34px;
+  transition: border-color var(--ak-dur-fast), box-shadow var(--ak-dur-fast);
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
+input::placeholder, textarea::placeholder { color: var(--ak-fg-subtle); }
+input:disabled, textarea:disabled, select:disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); }
+textarea { line-height: 1.5; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--ak-accent); width: 16px; height: 16px; }
+label { cursor: pointer; }
+.mw-ui-button, .cdx-button, .oo-ui-buttonElement-button {
+  font-family: var(--ak-font-body); font-weight: 600; font-size: var(--ak-fs-sm); border-radius: var(--ak-radius);
+  border: 1px solid var(--ak-border-strong); background: var(--ak-bg-surface); color: var(--ak-fg); padding: 6px 14px; min-height: 34px; cursor: pointer;
+}
+.mw-ui-button:hover, .cdx-button:hover { background: var(--ak-bg-hover); border-color: var(--ak-fg-muted); }
+.mw-ui-button.mw-ui-progressive, .cdx-button--action-progressive.cdx-button--weight-primary { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); }
+.mw-ui-button.mw-ui-progressive:hover, .cdx-button--action-progressive.cdx-button--weight-primary:hover { background: var(--ak-accent-hover); border-color: var(--ak-accent-hover); }
+.mw-ui-button.mw-ui-destructive, .cdx-button--action-destructive.cdx-button--weight-primary { background: var(--ak-danger); color: #fff; border-color: var(--ak-danger); }
+.cdx-text-input__input, .oo-ui-textInputWidget input, .oo-ui-textInputWidget textarea { background: var(--ak-bg-surface); color: var(--ak-fg); border-color: var(--ak-border-strong); }
+.oo-ui-window-frame, .oo-ui-panelLayout-framed, .oo-ui-popupWidget-popup { background: var(--ak-bg-surface); color: var(--ak-fg); border-color: var(--ak-border); }
+.oo-ui-labelElement-label { color: inherit; }
+.oo-ui-fieldsetLayout-header .oo-ui-labelElement-label { color: var(--ak-fg); }
+.oo-ui-tabSelectWidget-framed { background: var(--ak-bg-surface-2); }
+.oo-ui-tabOptionWidget.oo-ui-optionWidget-selected { background: var(--ak-bg-surface); color: var(--ak-accent); }
+.mw-editform, #wpTextbox1 { font-family: var(--ak-font-mono); }
+.mw-editTools, .editOptions { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: var(--ak-space-3) var(--ak-space-4); }
+.wikiEditor-ui, .wikiEditor-ui-toolbar { background: var(--ak-bg-surface); border-color: var(--ak-border) !important; }
+.wikiEditor-ui-toolbar .tabs span.tab a, .wikiEditor-ui-toolbar .group .label { color: var(--ak-fg-secondary); }
+.cm-editor { background: var(--ak-bg-inset); color: var(--ak-fg); }
+
+/* ─── Diff / history / recent changes / search ─────────────────────────── */
+table.diff { font-size: var(--ak-fs-sm); }
+table.diff td { padding: .3em .5em; }
+.diff-context { background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); }
+.diff-addedline { border-left: 3px solid var(--ak-success); }
+.diff-deletedline { border-left: 3px solid var(--ak-danger); }
+.diff-addedline .diffchange { background: var(--ak-success-bg); color: var(--ak-fg); }
+.diff-deletedline .diffchange { background: var(--ak-danger-bg); color: var(--ak-fg); }
+.diff-lineno { color: var(--ak-fg-muted); font-family: var(--ak-font-label); }
+.mw-changeslist, #pagehistory { font-size: var(--ak-fs-sm); }
+#pagehistory li, .mw-changeslist li { padding: .3em .5em; border-left: 3px solid transparent; }
+#pagehistory li.selected { background: var(--ak-accent-subtle); border-left-color: var(--ak-accent); }
+.mw-changeslist .mw-plusminus-pos { color: var(--ak-success); font-family: var(--ak-font-label); }
+.mw-changeslist .mw-plusminus-neg { color: var(--ak-danger); font-family: var(--ak-font-label); }
+.mw-changeslist .mw-plusminus-null { color: var(--ak-fg-muted); font-family: var(--ak-font-label); }
+.mw-changeslist-line-inner .comment, .history-user, .mw-usertoollinks { color: var(--ak-fg-secondary); }
+.mw-search-results { list-style: none; padding: 0; }
+.mw-search-result { padding: var(--ak-space-3) 0; border-bottom: 1px solid var(--ak-border-subtle); }
+.mw-search-result-heading { font-weight: 700; font-size: var(--ak-fs-body-lg); }
+.searchmatch { font-weight: 700; color: var(--ak-accent); }
+.searchresult { color: var(--ak-fg-secondary); font-size: var(--ak-fs-sm); }
+.mw-search-result-data { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+.mw-search-profile-tabs { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
+.mw-search-profile-tabs .search-types ul li.current a { color: var(--ak-accent); border-bottom: 2px solid var(--ak-accent); }
+.mw-notification-area { z-index: var(--ak-z-toast); }
+.mw-notification { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left: var(--ak-bar-w) solid var(--ak-accent); box-shadow: var(--ak-shadow-lg); color: var(--ak-fg); border-radius: 0; }
+.mw-notification-type-error { border-left-color: var(--ak-danger); }
+.mw-notification-type-warn { border-left-color: var(--ak-warning); }
+.mw-notification-type-success { border-left-color: var(--ak-success); }
+.usermessage { background: var(--ak-warning-bg); border: 1px solid var(--ak-warning); padding: var(--ak-space-3); }
+.mw-special-Specialpages .mw-specialpagegroup { border-bottom: 1px solid var(--ak-border); }
+.error, .errorbox { color: var(--ak-danger); }
+.warningbox { color: var(--ak-warning); }
+.successbox { color: var(--ak-success); }
+.mw-body-content .mw-tag-markers, .mw-tag-marker { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); padding: 0 6px; }
+.mw-body-content .mw-tag-marker-mobile-edit { border-color: var(--ak-accent-muted); }
+/* Echo */
+.mw-echo-ui-notificationItemWidget { background: var(--ak-bg-surface); border-color: var(--ak-border); color: var(--ak-fg); }
+.mw-echo-ui-notificationItemWidget-unread { background: var(--ak-accent-subtle); }
+.mw-echo-ui-notificationBadgeButtonPopupWidget-popup .oo-ui-popupWidget-popup { background: var(--ak-bg-surface); }
+/* MobileFrontend/Minerva overrides when AKDS tokens are loaded */
+.minerva-header, .header-container { background: var(--ak-bg-surface); border-color: var(--ak-border); }
+/* Print */
+@media print {
+  body { background: #fff; color: #000; }
+  .mw-editsection, .noprint, .catlinks, .mw-indicators, .toc { display: none !important; }
+  a { color: inherit; text-decoration: underline; }
+  .wikitable > * > tr > th { background: #eee; }
+}

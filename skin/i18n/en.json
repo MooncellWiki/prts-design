@@ -1,0 +1,12 @@
+{ "@metadata": { "authors": ["PRTS.wiki"] },
+  "skinname-akds": "AKDS",
+  "akds-skin-desc": "Arknights Web Design System skin for PRTS.wiki — terminal/archive dual theme",
+  "akds-toc-title": "Contents",
+  "akds-theme-os": "Follow system",
+  "akds-theme-day": "Archive mode (light)",
+  "akds-theme-night": "Terminal mode (dark)",
+  "akds-menu": "Menu",
+  "akds-search-placeholder": "Search PRTS…",
+  "akds-back-to-top": "Back to top",
+  "akds-skip": "Skip to content"
+}

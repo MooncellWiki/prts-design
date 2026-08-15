@@ -1,0 +1,55 @@
+{
+  "name": "AKDS",
+  "version": "0.1.0",
+  "author": ["PRTS.wiki"],
+  "url": "https://prts.wiki/",
+  "descriptionmsg": "akds-skin-desc",
+  "namemsg": "skinname-akds",
+  "license-name": "MIT",
+  "type": "skin",
+  "requires": { "MediaWiki": ">= 1.43.0" },
+  "ValidSkinNames": {
+    "akds": {
+      "class": "SkinMustache",
+      "args": [{
+        "name": "akds",
+        "template": "skin",
+        "responsive": true,
+        "supportsMwHeading": true,
+        "toc": false,
+        "wrapSiteNotice": true,
+        "clientPrefEnabled": true,
+        "bodyClasses": ["skin-akds"],
+        "styles": ["skins.akds.tokens", "skins.akds.styles"],
+        "scripts": ["skins.akds.js"],
+        "messages": ["akds-toc-title", "akds-theme-os", "akds-theme-day", "akds-theme-night", "akds-menu", "akds-search-placeholder", "akds-back-to-top", "akds-skip"]
+      }]
+    }
+  },
+  "MessagesDirs": { "AKDS": ["i18n"] },
+  "ResourceFileModulePaths": { "localBasePath": "resources", "remoteSkinPath": "AKDS/resources" },
+  "ResourceModules": {
+    "skins.akds.tokens": {
+      "class": "MediaWiki\\ResourceLoader\\SkinModule",
+      "features": { "normalize": true, "elements": true, "content-media": true, "interface-message-box": true, "interface-category": true, "toc": false, "logo": true },
+      "styles": ["tokens.css"]
+    },
+    "skins.akds.styles": {
+      "styles": ["base.css", "skin.css", "components.css", "arknights.css", "utilities.css"],
+      "targets": ["desktop", "mobile"]
+    },
+    "skins.akds.js": {
+      "packageFiles": ["skin.js"],
+      "dependencies": ["mediawiki.user", "mediawiki.util", "mediawiki.cookie"],
+      "messages": ["akds-toc-title"]
+    }
+  },
+  "ClientPreferences": {
+    "skin-theme": { "options": ["os", "day", "night"], "default": "os", "callback": "skins.akds.js" }
+  },
+  "config": {
+    "AKDSDefaultTheme": { "value": "os", "description": "os | day | night" },
+    "AKDSHeaderNavPortlet": { "value": "navigation", "description": "Which sidebar portlet id renders as the primary header nav" }
+  },
+  "manifest_version": 2
+}

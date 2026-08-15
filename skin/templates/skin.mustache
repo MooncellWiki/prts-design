@@ -1,0 +1,97 @@
+{{! AKDS · skin.mustache — 与 src/skin.css 的类名一一对应；保留 MW 标准 id 以兼容 Gadget }}
+<a class="ak-skip" href="#content">{{msg-akds-skip}}</a>
+
+<header class="ak-header" id="mw-head">
+  <div class="ak-header__inner">
+    <button class="ak-btn ak-btn--icon ak-header__menu" aria-label="{{msg-akds-menu}}" aria-controls="ak-sidebar" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </button>
+    <a class="ak-header__logo" href="{{link-mainpage}}" {{{html-logo-attributes}}}>
+      {{#data-logos.icon}}<img src="{{data-logos.icon}}" alt="" class="ak-glyph">{{/data-logos.icon}}
+      <span class="ak-header__wordmark">{{msg-sitetitle}}<small>{{msg-tagline}}</small></span>
+    </a>
+    {{#data-portlets-sidebar.data-portlets-first}}
+    <nav class="ak-header__nav" aria-label="{{label}}">{{{html-items}}}</nav>
+    {{/data-portlets-sidebar.data-portlets-first}}
+    {{#data-search-box}}
+    <form class="ak-header__search ak-search" role="search" action="{{form-action}}" id="searchform">
+      <svg class="ak-search__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></svg>
+      {{{html-input}}}
+      <span class="ak-search__kbd">/</span>
+      {{{html-button-search-fallback}}}
+    </form>
+    {{/data-search-box}}
+    <div class="ak-header__tools">
+      <div class="ak-theme-toggle" role="group" aria-label="theme">
+        <button data-theme="os" title="{{msg-akds-theme-os}}">◐</button>
+        <button data-theme="day" title="{{msg-akds-theme-day}}">☼</button>
+        <button data-theme="night" title="{{msg-akds-theme-night}}">☾</button>
+      </div>
+      {{#data-portlets.data-notifications}}<div id="{{id}}" class="ak-header__notifications {{class}}">{{{html-items}}}</div>{{/data-portlets.data-notifications}}
+      {{#data-portlets.data-user-menu}}
+      <div class="ak-dropdown" id="p-personal"><details><summary class="ak-btn ak-btn--ghost ak-header__user">{{label}}</summary><ul class="ak-menu ak-menu--right">{{{html-items}}}</ul></details></div>
+      {{/data-portlets.data-user-menu}}
+    </div>
+  </div>
+</header>
+
+<div class="ak-layout{{^data-toc}} ak-layout--no-toc{{/data-toc}}">
+  <aside class="ak-sidebar" id="ak-sidebar" aria-label="{{msg-navigation-heading}}">
+    <button class="ak-btn ak-btn--sm ak-sidebar__close ak-only-mobile" aria-label="close">✕</button>
+    {{#data-portlets-sidebar.data-portlets-first}}
+    <div class="ak-portlet ak-portlet--grid" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3>{{{html-items}}}</div>
+    {{/data-portlets-sidebar.data-portlets-first}}
+    {{#data-portlets-sidebar.array-portlets-rest}}
+    <div class="ak-portlet ak-portlet--collapsible {{class}}" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3>{{{html-items}}}{{{html-after-portal}}}</div>
+    {{/data-portlets-sidebar.array-portlets-rest}}
+    {{#data-portlets.data-languages}}<div class="ak-portlet ak-portlet--collapsible" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3>{{{html-items}}}</div>{{/data-portlets.data-languages}}
+    <div class="ak-sidebar__foot">{{msg-akds-toc-title}}</div>
+  </aside>
+
+  <main class="ak-main" id="content" role="main">
+    <div class="ak-main__inner">
+      <header class="ak-page-header">
+        <div class="ak-page-header__top">
+          {{#html-subtitle}}<div id="contentSub">{{{html-subtitle}}}</div>{{/html-subtitle}}
+          {{{html-indicators}}}
+        </div>
+        {{{html-title-heading}}}
+        <div class="ak-page-header__bar">
+          {{#data-portlets.data-namespaces}}<ul class="ak-page-tabs" id="{{id}}">{{{html-items}}}</ul>{{/data-portlets.data-namespaces}}
+          {{#data-portlets.data-views}}<ul class="ak-page-tabs" id="{{id}}">{{{html-items}}}</ul>{{/data-portlets.data-views}}
+          {{#data-portlets.data-actions}}<ul class="ak-page-tabs ak-page-tabs--actions" id="{{id}}">{{{html-items}}}</ul>{{/data-portlets.data-actions}}
+          {{#data-portlets.data-variants}}<ul class="ak-page-tabs" id="{{id}}">{{{html-items}}}</ul>{{/data-portlets.data-variants}}
+        </div>
+      </header>
+      <div class="ak-body" id="bodyContent">
+        {{{html-site-notice}}}
+        {{{html-user-message}}}
+        {{{html-undelete-link}}}
+        <div class="mw-body-content" id="mw-content-text" lang="{{page-langcode}}" dir="{{page-dir}}">{{{html-body-content}}}</div>
+        {{{html-after-content}}}
+        <div class="ak-body-foot" id="footer-info">{{#data-footer.data-info}}{{{html-items}}}{{/data-footer.data-info}}</div>
+      </div>
+      {{{html-categories}}}
+    </div>
+  </main>
+
+  {{#data-toc}}
+  <aside class="ak-toc" aria-label="{{msg-akds-toc-title}}">
+    <div class="ak-toc__title">{{msg-akds-toc-title}}</div>
+    <div class="ak-toc__progress"><i></i></div>
+    <ul data-auto-toc>{{#array-sections}}<li class="toclevel-{{toclevel}}"><a href="#{{anchor}}">{{{line}}}</a></li>{{/array-sections}}</ul>
+  </aside>
+  {{/data-toc}}
+</div>
+
+<footer class="ak-footer" id="footer">
+  <div class="ak-footer__inner">
+    <div class="ak-footer__brand"><span class="ak-header__wordmark">{{msg-sitetitle}}<small>{{msg-tagline}}</small></span><p>{{msg-sitesubtitle}}</p></div>
+    {{#data-footer.data-places}}<div class="ak-footer__col" id="{{id}}"><h4>{{label}}</h4>{{{html-items}}}</div>{{/data-footer.data-places}}
+    {{#data-footer.data-icons}}<div class="ak-footer__col" id="{{id}}"><h4>{{label}}</h4>{{{html-items}}}</div>{{/data-footer.data-icons}}
+  </div>
+  <div class="ak-footer__bottom"><span>{{msg-sitetitle}}</span><span class="ak-en">Powered by MediaWiki · Skin AKDS</span></div>
+  <span class="ak-watermark" aria-hidden="true">{{msg-sitetitle}}</span>
+</footer>
+<button class="ak-fab" aria-label="{{msg-akds-back-to-top}}">↑</button>
+{{{html-printtail}}}

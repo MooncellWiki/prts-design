@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="skin-theme-clientpref-night" data-default-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>陈 - PRTS · 干员页样例</title>
+<link rel="stylesheet" href="../src/tokens.css">
+<link rel="stylesheet" href="../src/base.css">
+<link rel="stylesheet" href="../src/components.css">
+<link rel="stylesheet" href="../src/arknights.css">
+<link rel="stylesheet" href="../src/skin.css">
+<link rel="stylesheet" href="../src/utilities.css">
+<style>
+/* preview-only helpers */
+.demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
+.demo--col { flex-direction: column; align-items: stretch; }
+.demo--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.demo-box { border: 1px dashed var(--ak-border-strong); padding: 16px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 12px 0 20px; }
+.ak-swatch { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); cursor: pointer; font-size: 11px; }
+.ak-swatch__chip { height: 52px; border-bottom: 1px solid var(--ak-border); }
+.ak-swatch__name { padding: 6px 8px 0; font-weight: 700; font-family: var(--ak-font-mono); font-size: 10.5px; overflow-wrap: anywhere; }
+.ak-swatch__value { padding: 0 8px 6px; color: var(--ak-fg-muted); font-family: var(--ak-font-mono); font-size: 10px; }
+.ak-swatch__note { padding: 0 8px 6px; color: var(--ak-fg-muted); }
+.type-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--ak-border-subtle); }
+.type-row .meta { font: 600 11px/1.5 var(--ak-font-mono); color: var(--ak-fg-muted); }
+.spec-table td:first-child { font-family: var(--ak-font-mono); font-size: 12px; white-space: nowrap; }
+.section-anchor { scroll-margin-top: 80px; }
+.dark-only-demo { background: #0f0f10; padding: 16px; color: #f0f0f0; }
+
+/* operator page */
+.op-hero { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+.op-hero__art { position: relative; background: #1d1f20 linear-gradient(180deg,#2b2d2f,#0f0f10); border: 1px solid var(--ak-border); aspect-ratio: 3/4; overflow: hidden; display: grid; place-items: center; }
+.op-hero__art > img { width: 80%; height: auto; image-rendering: auto; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+.op-hero__art-tools { position: absolute; left: 10px; bottom: 10px; display: flex; gap: 4px; }
+@media (max-width: 900px) { .op-hero { grid-template-columns: 1fr; } .op-hero__art { aspect-ratio: 16/10; } }
+</style>
+</head>
+<body class="skin-akds">
+<a class="ak-skip" href="#content">跳到内容</a>
+
+<!-- ═══ SVG sprite ═══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 17V11a6 6 0 1 1 12 0v6l2 2H4l2-2zm4 4h4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9c0-4 3.6-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0-6v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M4.9 19.1 7 17m10-10 2.1-2.1"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 4h18v12H3zm5 16h8m-4-4v4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 20h4l11-11-4-4L4 16v4zM13 7l4 4"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5m4-1v5l3 2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zm16 0h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></symbol>
+  <symbol id="i-talk" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 8v5m0-9v1"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3l10 18H2zm0 7v5m0 3v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 15l7-7 7 7"/></symbol>
+  <symbol id="i-empty" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10"/></symbol>
+</svg>
+
+<!-- ═══ HEADER ═══ -->
+<header class="ak-header">
+  <div class="ak-header__inner">
+    <button class="ak-btn ak-btn--icon ak-header__menu" aria-label="菜单"><svg width="20" height="20"><use href="#i-menu"/></svg></button>
+    <a class="ak-header__logo" href="#">
+      <img src="assets/camp/rhodes.png" alt="">
+      <span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span>
+    </a>
+    <nav class="ak-header__nav" aria-label="主导航">
+      <a href="#" class="is-active">干员</a><a href="#">敌人</a><a href="#">关卡</a><a href="#">道具</a><a href="#">活动</a><a href="#">剧情</a><a href="#">家具</a><a href="#">时装</a>
+    </nav>
+    <form class="ak-header__search ak-search" role="search" onsubmit="return false">
+      <svg class="ak-search__icon"><use href="#i-search"/></svg>
+      <input class="ak-input" type="search" placeholder="搜索 PRTS…" aria-label="搜索">
+      <span class="ak-search__kbd">/</span>
+    </form>
+    <div class="ak-header__tools">
+      <button class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="搜索"><svg><use href="#i-search"/></svg></button>
+      <div class="ak-theme-toggle" role="group" aria-label="主题">
+        <button data-theme="os" title="跟随系统"><svg><use href="#i-monitor"/></svg></button>
+        <button data-theme="light" title="档案模式（亮）"><svg><use href="#i-sun"/></svg></button>
+        <button data-theme="dark" title="终端模式（暗）"><svg><use href="#i-moon"/></svg></button>
+      </div>
+      <button class="ak-btn ak-btn--icon" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-badge">3</span></button>
+      <a class="ak-btn ak-btn--ghost ak-header__user" href="#"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="ak-layout">
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="ak-sidebar" id="ak-sidebar">
+    <div class="ak-portlet ak-portlet--grid" id="p-navigation">
+      <h3 class="ak-portlet__title">导航 · NAV</h3>
+      <ul>
+        <li><a href="#">干员档案</a></li><li><a href="#">敌人档案</a></li><li><a href="#">道具资料</a></li><li><a href="#">后勤技能</a></li>
+        <li><a href="#">关卡一览</a></li><li><a href="#">剧情记录</a></li><li><a href="#">家具一览</a></li><li><a href="#">时装回廊</a></li>
+        <li><a href="#">采购中心</a></li><li><a href="#">卡池一览</a></li><li><a href="#">活动一览</a></li><li><a href="#">公招计算</a></li>
+      </ul>
+    </div>
+    <div class="ak-portlet ak-portlet--collapsible">
+      <h3 class="ak-portlet__title">设计系统 · AKDS</h3>
+      <ul>
+        <li><a href="index.html#s-philosophy">设计理念</a></li>
+        <li><a href="index.html#s-color">色彩</a></li>
+        <li><a href="index.html#s-type">字体排印</a></li>
+        <li><a href="index.html#s-deco">装饰语言</a></li>
+        <li><a href="index.html#s-mw">MediaWiki 内容</a></li>
+        <li><a href="index.html#s-components">通用组件</a></li>
+        <li><a href="index.html#s-ak">方舟组件</a></li>
+        <li class="is-active"><a href="operator.html">干员页样例 »</a></li>
+      </ul>
+    </div>
+    <div class="ak-portlet ak-portlet--collapsible" id="p-tb">
+      <h3 class="ak-portlet__title">工具 · TOOLS</h3>
+      <ul><li><a href="#">链入页面</a></li><li><a href="#">相关更改</a></li><li><a href="#">上传文件</a></li><li><a href="#">特殊页面</a></li><li><a href="#">页面信息</a></li></ul>
+    </div>
+    <div class="ak-sidebar__foot">MediaWiki 1.43 · Skin: AKDS 0.1<br>Theme tokens: <code>--ak-*</code></div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="ak-main" id="content">
+    <div class="ak-main__inner">
+      <header class="ak-page-header">
+        <div class="ak-page-header__top">
+          <ul class="ak-breadcrumb ak-m-0"><li><a href="#">干员</a></li><li><a href="#">近卫</a></li><li><a href="#">剑豪</a></li><li aria-current="page">陈</li></ul>
+          <div class="mw-indicators"><span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">2.7.61</span><span class="ak-tag ak-tag--sm ak-tag--accent-soft ak-tag--label">Cargo ✓</span></div>
+        </div>
+        <h1 id="firstHeading" class="ak-page-header__title">陈<span class="ak-en">Ch'en · LM04 · Operator</span></h1>
+        <div class="ak-page-header__bar">
+          <ul class="ak-page-tabs" id="p-views">
+            <li class="selected"><a href="#"><svg class="ak-icon"><use href="#i-book"/></svg>阅读</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-edit"/></svg>编辑</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-history"/></svg>历史</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-talk"/></svg>讨论</a></li>
+          </ul>
+          <ul class="ak-page-tabs ak-page-tabs--actions"><li><a href="#">★ 监视</a></li><li><a href="#"><svg class="ak-icon"><use href="#i-more"/></svg>更多</a></li></ul>
+        </div>
+      </header>
+
+      <div class="ak-body" id="bodyContent">
+      <div class="mw-body-content mw-parser-output">
+
+<!-- ═══ 干员页顶部：立绘 + 身份栏 ═══ -->
+<div class="ak-message ak-message--neutral ak-fs-xs"><div class="ak-message__body">这是<b>干员页整页样例</b>（数据取自 gamedata 2.7.61 · char_010_chen）。用来验证设计系统在 PRTS 最复杂页面上的表现；立绘处以头像占位。</div></div>
+<div class="op-hero ak-mb-6" data-rarity="6" data-scope>
+  <div class="op-hero__art ak-brackets">
+    <img src="assets/avatar/char_010_chen_2.png" alt="陈">
+    <span class="ak-watermark" style="font-size:5rem;right:12px;bottom:0;color:#fff;opacity:.08">CH'EN</span>
+    <div class="op-hero__art-tools"><button class="ak-btn ak-btn--sm ak-btn--contrast">立绘</button><button class="ak-btn ak-btn--sm">精二</button><button class="ak-btn ak-btn--sm">初晴</button><button class="ak-btn ak-btn--sm">岁红霞</button></div>
+  </div>
+  <div class="op-hero__info">
+    <div class="ak-flex ak-items-center ak-gap-3 ak-wrap ak-mb-2">
+      <img class="ak-rarity-img" src="assets/rarity/rarity_yellow_5.png" alt="六星" style="height:20px">
+      <span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/warrior.png" alt=""></span>近卫</span>
+      <span class="ak-prof-label"><span class="ak-subprof"><img src="assets/subprofession/sword.png" alt=""></span>剑豪</span>
+      <span class="ak-tag ak-tag--outline">近战位</span><span class="ak-tag ak-tag--outline">爆发</span><span class="ak-tag ak-tag--outline">输出</span>
+      <span class="ak-tag ak-tag--yellow ak-tag--skew" style="margin-left:auto">标准寻访</span>
+    </div>
+    <div class="ak-fs-sm ak-fg-2 ak-mb-3">普通攻击连续造成<span class="ak-rt-kw">两次</span>伤害</div>
+    <dl class="ak-kv ak-kv--boxed ak-mb-3">
+      <dt>代号</dt><dd>陈 <span class="ak-code-id">Ch'en</span> <span class="ak-fg-muted ak-fs-xs">· 编号 <span class="ak-code-id">LM04</span></span></dd>
+      <dt>阵营</dt><dd><span class="ak-camp"><img src="assets/camp/lgd.png" alt="">龙门近卫局</span> <span class="ak-fg-muted">/ 龙门</span></dd>
+      <dt>获取</dt><dd>标准寻访 · 公开招募 <span class="ak-fg-muted ak-fs-xs">· 上线 <span class="ak-num" style="font-weight:600">2019.05.01</span></span></dd>
+      <dt>画师 / CV</dt><dd><a href="#">唯@W</a> <span class="ak-fg-muted">/</span> <a href="#">石上静香</a> <span class="ak-voice__lang">JP</span></dd>
+      <dt>信赖加成</dt><dd><span class="ak-trust">200%</span> <span class="ak-fs-xs ak-fg-muted">攻击 <span class="ak-rt-vup">+50</span> 防御 <span class="ak-rt-vup">+50</span></span></dd>
+    </dl>
+    <div class="ak-flex ak-items-center ak-gap-3 ak-wrap">
+      <div class="ak-phase-tabs" data-bind="phase"><button data-value="e0"><img src="assets/elite/elite_0.png" alt="">E0</button><button data-value="e1"><img src="assets/elite/elite_1.png" alt="">E1</button><button class="is-active" data-value="e2"><img src="assets/elite/elite_2.png" alt="">E2</button></div>
+      <span class="ak-level ak-level--badge"><span class="ak-level__lv">LV</span><span class="ak-level__n" data-bind-phase='{"e0":"50","e1":"80","e2":"90"}'>90</span></span>
+      <label class="ak-switch ak-fs-xs"><input type="checkbox" checked>信赖满</label>
+      <label class="ak-switch ak-fs-xs"><input type="checkbox">潜能6</label>
+    </div>
+    <div class="ak-attrs ak-mt-3">
+      <div class="ak-attr ak-attr--accent"><span class="ak-attr__label">HP <span class="cn">生命上限</span></span><span class="ak-attr__value" data-bind-phase='{"e0":"1684","e1":"2188","e2":"2880"}'>2880</span></div>
+      <div class="ak-attr ak-attr--accent"><span class="ak-attr__label">ATK <span class="cn">攻击</span></span><span class="ak-attr__value" data-bind-phase='{"e0":"411","e1":"519","e2":"660"}'>660</span></div>
+      <div class="ak-attr ak-attr--accent"><span class="ak-attr__label">DEF <span class="cn">防御</span></span><span class="ak-attr__value" data-bind-phase='{"e0":"271","e1":"338","e2":"402"}'>402</span></div>
+      <div class="ak-attr ak-attr--accent"><span class="ak-attr__label">RES <span class="cn">法术抗性</span></span><span class="ak-attr__value">0</span></div>
+      <div class="ak-attr"><span class="ak-attr__label">COST <span class="cn">部署费用</span></span><span class="ak-attr__value" data-bind-phase='{"e0":"19","e1":"21","e2":"23"}'>23</span></div>
+      <div class="ak-attr"><span class="ak-attr__label">BLOCK <span class="cn">阻挡数</span></span><span class="ak-attr__value">2</span></div>
+      <div class="ak-attr"><span class="ak-attr__label">INTERVAL <span class="cn">攻击间隔</span></span><span class="ak-attr__value">1.3<small>s</small></span></div>
+      <div class="ak-attr"><span class="ak-attr__label">REDEPLOY <span class="cn">再部署</span></span><span class="ak-attr__value">70<small>s</small></span></div>
+    </div>
+    <div class="ak-flex ak-gap-4 ak-items-center ak-mt-3 ak-fs-xs ak-fg-muted"><span class="ak-overline">攻击范围</span><div class="ak-range" style="--cols:3"><i class="off"></i><i class="off"></i><i class="off"></i><i class="off"></i><i class="self"></i><i class="on"></i><i class="off"></i><i class="off"></i><i class="off"></i></div><span>· 满信赖 · 数值含信赖加成</span></div>
+  </div>
+</div>
+
+<div class="mw-heading mw-heading2"><h2 id="talent">天赋 <span class="ak-en ak-fs-sm ak-fg-muted">Talents</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<div class="ak-grid-2 ak-gap-3">
+  <div class="ak-talent"><div class="ak-talent__name">呵斥 <span class="ak-talent__req"><img src="assets/elite/elite_2.png" alt="">精英二 · 1级</span></div><div class="ak-talent__desc">在场时每4秒回复全场友方角色1点攻击/受击技力</div></div>
+  <div class="ak-talent"><div class="ak-talent__name">持刀格斗术 <span class="ak-talent__req"><img src="assets/elite/elite_2.png" alt="">精英二 · 1级</span></div><div class="ak-talent__desc">攻击力+6%<span class="ak-rt-talpu">（+1%）</span>，防御力+6%<span class="ak-rt-talpu">（+1%）</span>，物理闪避+13%<span class="ak-rt-talpu">（+3%）</span><div class="ak-fs-xs ak-fg-muted ak-mt-2">括号内为潜能5加成。</div></div></div>
+</div>
+
+<div class="mw-heading mw-heading2"><h2 id="potential">潜能 <span class="ak-en ak-fs-sm ak-fg-muted">Potential</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<table class="wikitable ak-compact" style="width:100%">
+<tr><th style="width:80px">潜能</th><th>效果</th><th style="width:80px">潜能</th><th>效果</th></tr>
+<tr><td><span class="ak-potential"><img src="assets/potential/potential_1.png" alt="潜能2"></span></td><td>部署费用<span class="ak-rt-vup">-1</span></td><td><span class="ak-potential"><img src="assets/potential/potential_4.png" alt="潜能5"></span></td><td>第二天赋效果增强</td></tr>
+<tr><td><span class="ak-potential"><img src="assets/potential/potential_2.png" alt="潜能3"></span></td><td>再部署时间<span class="ak-rt-vup">-4秒</span></td><td><span class="ak-potential"><img src="assets/potential/potential_5.png" alt="潜能6"></span></td><td>部署费用<span class="ak-rt-vup">-1</span></td></tr>
+<tr><td><span class="ak-potential"><img src="assets/potential/potential_3.png" alt="潜能4"></span></td><td>攻击力<span class="ak-rt-vup">+23</span></td><td></td><td></td></tr>
+</table>
+
+<div class="mw-heading mw-heading2"><h2 id="skills">技能 <span class="ak-en ak-fs-sm ak-fg-muted">Skills</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<div class="ak-flex ak-items-center ak-gap-3 ak-wrap ak-mb-3" data-scope="skills">
+  <span class="ak-overline">技能等级</span>
+  <div class="ak-skill-levels" data-bind="lv"><button data-value="1">1</button><button data-value="2">2</button><button data-value="3">3</button><button data-value="4">4</button><button data-value="5">5</button><button data-value="6">6</button><button data-value="7" class="is-active">7</button><button class="is-mastery" data-value="8"><img src="assets/specialized/specialized_tiny_1.png" alt="M1"></button><button class="is-mastery" data-value="9"><img src="assets/specialized/specialized_tiny_2.png" alt="M2"></button><button class="is-mastery" data-value="10"><img src="assets/specialized/specialized_tiny_3.png" alt="M3"></button></div>
+  <span class="ak-fs-xs ak-fg-muted">切换等级查看数值（此处演示 7 与 M3）</span>
+</div>
+<div class="ak-flex-col ak-gap-3 ak-mb-4" data-scope="skills">
+  <div class="ak-skill"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_1.png" alt=""></div><div><div class="ak-skill__head"><h3 class="ak-skill__name" id="skill1">鞘击</h3><span class="ak-sp ak-sp--attack">攻击回复</span><span class="ak-sp-trigger ak-sp-trigger--auto">自动触发</span></div><div class="ak-skill__stats ak-mt-2"><span><span class="ak-sp-cost" data-bind-lv='{"7":"5","10":"4"}'>5</span></span><span><span class="ak-sp-init">0</span></span></div></div><div class="ak-skill__desc">下次攻击使用刀鞘砸向敌人，造成相当于攻击力<span class="ak-rt-vup" data-bind-lv='{"7":"260%","10":"320%"}'>260%</span>的物理伤害，令命中目标<span class="ak-rt-term" data-ak-tip="晕眩：无法移动、攻击、使用技能">晕眩</span><span class="ak-rt-vup">1.5</span>秒</div></div>
+  <div class="ak-skill"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_2.png" alt=""></div><div><div class="ak-skill__head"><h3 class="ak-skill__name" id="skill2">赤霄·拔刀</h3><span class="ak-sp ak-sp--attack">攻击回复</span><span class="ak-sp-trigger">手动触发</span></div><div class="ak-skill__stats ak-mt-2"><span><span class="ak-sp-cost" data-bind-lv='{"7":"25","10":"20"}'>25</span></span><span><span class="ak-sp-init" data-bind-lv='{"7":"14","10":"20"}'>14</span></span></div></div><div class="ak-skill__desc">对前方范围内最多<span class="ak-rt-vup" data-bind-lv='{"7":"6","10":"7"}'>6</span>名敌人造成相当于攻击力<span class="ak-rt-vup" data-bind-lv='{"7":"410%","10":"500%"}'>410%</span>的<span class="ak-rt-rem">物理</span>和相当于攻击力<span class="ak-rt-vup" data-bind-lv='{"7":"410%","10":"500%"}'>410%</span>的<span class="ak-rt-rem">法术</span>伤害<div class="ak-mt-2 ak-flex ak-gap-3 ak-items-center"><span class="ak-overline">技能范围</span><div class="ak-range ak-range--sm" style="--cols:3"><i class="on"></i><i class="on"></i><i class="on"></i><i class="self"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div></div></div>
+  <div class="ak-skill is-selected"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_3.png" alt=""></div><div><div class="ak-skill__head"><h3 class="ak-skill__name" id="skill3">赤霄·绝影</h3><span class="ak-sp ak-sp--attack">攻击回复</span><span class="ak-sp-trigger">手动触发</span><span class="ak-tag ak-tag--sm ak-tag--accent-soft">推荐专三</span></div><div class="ak-skill__stats ak-mt-2"><span><span class="ak-sp-cost" data-bind-lv='{"7":"36","10":"30"}'>36</span></span><span><span class="ak-sp-init" data-bind-lv='{"7":"10","10":"20"}'>10</span></span></div></div><div class="ak-skill__desc">向周围寻找最近的敌方目标，对其发动<span class="ak-rt-vup">10</span>次连续斩击，每次造成相当于攻击力<span class="ak-rt-vup" data-bind-lv='{"7":"260%","10":"320%"}'>260%</span>的物理伤害，并在最后一击时使目标<span class="ak-rt-term" data-ak-tip="晕眩：无法移动、攻击、使用技能">晕眩</span><span class="ak-rt-vup" data-bind-lv='{"7":"3","10":"4"}'>3</span>秒</div></div>
+</div>
+<h3>技能升级材料</h3>
+<div class="ak-materials ak-mb-3">
+  <span class="ak-materials__label">1 → 2</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/3301.png" alt=""><span class="ak-item__count">5</span></span></span>
+  <span class="ak-materials__label">2 → 3</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/3301.png" alt=""><span class="ak-item__count">5</span></span><span class="ak-item ak-item--sm" data-rarity="1"><img src="assets/item/30011.png" alt=""><span class="ak-item__count">6</span></span><span class="ak-item ak-item--sm" data-rarity="1"><img src="assets/item/30061.png" alt=""><span class="ak-item__count">4</span></span></span>
+  <span class="ak-materials__label">3 → 4</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/3302.png" alt=""><span class="ak-item__count">8</span></span><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/30022.png" alt=""><span class="ak-item__count">5</span></span></span>
+  <span class="ak-materials__label">4 → 5</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/3302.png" alt=""><span class="ak-item__count">8</span></span><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/30032.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/30042.png" alt=""><span class="ak-item__count">4</span></span></span>
+  <span class="ak-materials__label">5 → 6</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/3302.png" alt=""><span class="ak-item__count">8</span></span><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/30063.png" alt=""><span class="ak-item__count">4</span></span></span>
+  <span class="ak-materials__label">6 → 7</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/3303.png" alt=""><span class="ak-item__count">8</span></span><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/30073.png" alt=""><span class="ak-item__count">5</span></span><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/30053.png" alt=""><span class="ak-item__count">4</span></span></span>
+</div>
+<div class="tabber ak-tabber-boxed">
+  <header class="tabber__header"><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" href="#m-s1" aria-selected="true">鞘击 专精</a><a class="tabber__tab" role="tab" href="#m-s2">赤霄·拔刀 专精</a><a class="tabber__tab" role="tab" href="#m-s3">赤霄·绝影 专精</a></nav></header>
+  <section class="tabber__section">
+    <article class="tabber__panel" id="m-s1" role="tabpanel"><div class="ak-materials"><span class="ak-materials__label"><img src="assets/specialized/specialized_tiny_1.png" alt=""> 专精一</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/3303.png" alt=""><span class="ak-item__count">8</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30084.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/30063.png" alt=""><span class="ak-item__count">4</span></span></span><span class="ak-materials__label"><img src="assets/specialized/specialized_tiny_2.png" alt=""> 专精二</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/3303.png" alt=""><span class="ak-item__count">12</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30014.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30104.png" alt=""><span class="ak-item__count">8</span></span></span><span class="ak-materials__label"><img src="assets/specialized/specialized_tiny_3.png" alt=""> 专精三</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/3303.png" alt=""><span class="ak-item__count">15</span></span><span class="ak-item ak-item--sm" data-rarity="5"><img src="assets/item/30135.png" alt=""><span class="ak-item__count">6</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30094.png" alt=""><span class="ak-item__count">6</span></span></span></div></article>
+    <article class="tabber__panel" id="m-s2" role="tabpanel"><div class="ak-materials"><span class="ak-materials__label"><img src="assets/specialized/specialized_tiny_1.png" alt=""> 专精一</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/3303.png" alt=""><span class="ak-item__count">8</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30094.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/30073.png" alt=""><span class="ak-item__count">7</span></span></span></div></article>
+    <article class="tabber__panel" id="m-s3" role="tabpanel"><div class="ak-materials"><span class="ak-materials__label"><img src="assets/specialized/specialized_tiny_1.png" alt=""> 专精一</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/3303.png" alt=""><span class="ak-item__count">8</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30104.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/30083.png" alt=""><span class="ak-item__count">5</span></span></span></div></article>
+  </section>
+</div>
+
+<div class="mw-heading mw-heading2"><h2 id="modules">模组 <span class="ak-en ak-fs-sm ak-fg-muted">Modules</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<div class="ak-flex-col ak-gap-3">
+  <div class="ak-module" style="border-left-color:var(--ak-fg-muted)"><div class="ak-module__img"><img src="assets/subprofession/sword.png" alt="" style="width:52px"></div><div><div class="ak-module__type">ORIGINAL<small>陈证章</small></div><div class="ak-module__name">陈证章</div><div class="ak-module__mission ak-mt-2">干员陈擅长于近身搏斗中对敌人造成多段杀伤。根据外勤部门决议，在外勤任务中划分为近卫干员，行使剑豪职责，特别颁发此证章，以兹证明。</div></div></div>
+  <div class="ak-module"><div class="ak-module__img"><img src="assets/subprofession/sword.png" alt="" style="width:52px"></div><div><div class="ak-module__type">SWO-X<small>剑豪 · X型</small></div><div class="ak-module__name">罗德岛制式剑</div><div class="ak-module__stage ak-mb-2"><i class="on"></i><i class="on"></i><i class="on"></i></div><table class="wikitable ak-compact ak-mb-2" style="width:100%"><tr><th>阶段</th><th>属性</th><th>特性 / 天赋</th><th>材料</th></tr><tr><td class="ak-num">1</td><td>攻击<span class="ak-rt-vup">+38</span> 生命<span class="ak-rt-vup">+150</span></td><td>特性追加：<span class="ak-rt-vup">攻击时有 20% 概率造成 2 倍伤害</span></td><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="5"><img src="assets/item/mod_unlock_token.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30014.png" alt=""><span class="ak-item__count">3</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/4001.png" alt=""><span class="ak-item__count">80K</span></span></span></td></tr><tr><td class="ak-num">2</td><td>攻击<span class="ak-rt-vup">+55</span> 生命<span class="ak-rt-vup">+220</span></td><td>呵斥：在场时每<span class="ak-rt-vup">3.5</span>秒回复…</td><td>…</td></tr><tr><td class="ak-num">3</td><td>攻击<span class="ak-rt-vup">+70</span> 生命<span class="ak-rt-vup">+280</span></td><td>呵斥：在场时每<span class="ak-rt-vup">3</span>秒回复…</td><td>…</td></tr></table><div class="ak-module__mission">解锁任务：使用陈击倒 15 名敌人；在 <a href="#" class="ak-stage-code" style="font-size:.9em">4-4</a> 三星通关且陈击倒至少 4 名敌人</div></div></div>
+  <div class="ak-module"><div class="ak-module__img"><img src="assets/subprofession/sword.png" alt="" style="width:52px"></div><div><div class="ak-module__type">SWO-Y<small>剑豪 · Y型</small></div><div class="ak-module__name">往昔时光</div><div class="ak-module__stage ak-mb-2"><i class="on"></i><i class="on"></i><i class="on"></i></div><div class="ak-module__mission">「这里荒废多久了？」陈站在废墟上远眺，身后的石碑上那些曾经……</div></div></div>
+</div>
+
+<div class="mw-heading mw-heading2"><h2 id="promotion">精英化 <span class="ak-en ak-fs-sm ak-fg-muted">Promotion</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<div class="ak-grid-2 ak-gap-4">
+  <div class="ak-materials">
+    <span class="ak-materials__label"><img src="assets/elite/elite_0.png" alt="">→<img src="assets/elite/elite_1.png" alt=""> 精英一</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/4001.png" alt=""><span class="ak-item__count">30K</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/3221.png" alt=""><span class="ak-item__count">5</span></span><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/30012.png" alt=""><span class="ak-item__count">12</span></span><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/30062.png" alt=""><span class="ak-item__count">3</span></span></span>
+    <span class="ak-materials__label"><img src="assets/elite/elite_1.png" alt="">→<img src="assets/elite/elite_2.png" alt=""> 精英二</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/4001.png" alt=""><span class="ak-item__count">180K</span></span><span class="ak-item ak-item--sm" data-rarity="5"><img src="assets/item/3223.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="5"><img src="assets/item/30115.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30074.png" alt=""><span class="ak-item__count">6</span></span></span>
+  </div>
+  <div><div class="ak-stepper ak-mb-3"><div class="ak-step is-done">精英零 · 50</div><div class="ak-step is-done">精英一 · 80</div><div class="ak-step is-active">精英二 · 90</div></div><div class="ak-message ak-message--neutral ak-fs-xs ak-mb-0"><div class="ak-message__body">精英一开放第一天赋，精英二解锁第二天赋与第三技能，攻击范围不变。</div></div></div>
+</div>
+
+<div class="mw-heading mw-heading2"><h2 id="base">后勤技能 <span class="ak-en ak-fs-sm ak-fg-muted">Base skills</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<table class="wikitable" style="width:100%"><tr><th style="width:110px">解锁</th><th style="width:160px">技能</th><th>设施</th><th>效果</th></tr>
+<tr><td><span class="ak-elite"><img src="assets/elite/elite_0.png" alt="">精英零</span></td><td><b>近卫局督察</b></td><td>会客室</td><td>进驻会客室时，线索搜集速度<span class="ak-rt-vup">+20%</span>，且更容易获得<span class="ak-rt-kw">龙门近卫局</span>线索</td></tr>
+<tr><td><span class="ak-elite"><img src="assets/elite/elite_2.png" alt="">精英二</span></td><td><b>督察·组长</b></td><td>会客室</td><td>进驻会客室时，线索搜集速度<span class="ak-rt-vup">+30%</span></td></tr></table>
+
+<div class="mw-heading mw-heading2"><h2 id="files">干员档案 <span class="ak-en ak-fs-sm ak-fg-muted">Files</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<div class="tabber">
+  <header class="tabber__header"><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" href="#f-1" aria-selected="true">基础档案</a><a class="tabber__tab" role="tab" href="#f-2">综合体检测试</a><a class="tabber__tab" role="tab" href="#f-3">客观履历</a><a class="tabber__tab" role="tab" href="#f-4">临床诊断分析</a><a class="tabber__tab" role="tab" href="#f-5">档案资料一</a><a class="tabber__tab" role="tab" href="#f-6">档案资料二</a></nav></header>
+  <section class="tabber__section">
+    <article class="tabber__panel" id="f-1" role="tabpanel"><div class="ak-dossier"><div class="ak-dossier__title">基础档案<span class="ak-en">Profile</span><span class="ak-dossier__unlock">直接解锁</span></div><dl class="ak-kv"><dt>代号</dt><dd>陈</dd><dt>性别</dt><dd>女</dd><dt>战斗经验</dt><dd>四年</dd><dt>出身地</dt><dd>龙门</dd><dt>生日</dt><dd>7月7日</dd><dt>种族</dt><dd>龙</dd><dt>身高</dt><dd>168cm</dd><dt>矿石病感染情况</dt><dd><span class="ak-redacted">未公开</span></dd></dl></div></article>
+    <article class="tabber__panel" id="f-2" role="tabpanel"><div class="ak-dossier"><div class="ak-dossier__title">综合体检测试<span class="ak-en">Physical Exam</span></div><div class="ak-attrs ak-attrs--compact"><div class="ak-attr"><span class="ak-attr__label">物理强度</span><span class="ak-attr__value">优良</span></div><div class="ak-attr"><span class="ak-attr__label">战场机动</span><span class="ak-attr__value">标准</span></div><div class="ak-attr"><span class="ak-attr__label">生理耐受</span><span class="ak-attr__value">优良</span></div><div class="ak-attr"><span class="ak-attr__label">战术规划</span><span class="ak-attr__value">优良</span></div><div class="ak-attr"><span class="ak-attr__label">战斗技巧</span><span class="ak-attr__value ak-fg-accent">卓越</span></div><div class="ak-attr"><span class="ak-attr__label">源石技艺适应性</span><span class="ak-attr__value">标准</span></div></div></div></article>
+    <article class="tabber__panel" id="f-3" role="tabpanel"><div class="ak-dossier"><div class="ak-dossier__title">客观履历<span class="ak-en">Profile</span><span class="ak-dossier__unlock">直接解锁</span></div><p>陈，龙门高级警司，龙门近卫局特别督察组组长，毕业于维多利亚皇家近卫学校，成绩优异，表现突出。在龙门近卫局供职期间，力主取缔龙门境内非法活动，对抗暴力犯罪和有组织犯罪，追缉武装逃犯与国际重犯等行动，并取得多项重大成果。</p><p>现作为特别人员协助罗德岛行动，并为现场提供战术指挥支援。</p></div></article>
+    <article class="tabber__panel" id="f-4" role="tabpanel"><div class="ak-dossier"><div class="ak-dossier__title">临床诊断分析<span class="ak-en">Clinical Analysis</span><span class="ak-dossier__unlock">信赖 25%</span></div><p><span class="ak-redacted">【应龙门近卫局要求，不予公开】</span></p><p>她是有来做体检啦，只是档案被拿走了，我这里可没留底。嗯？是龙门方面的要求啊。</p><p class="ak-fg-muted">——医疗干员R.T.</p></div></article>
+    <article class="tabber__panel" id="f-5" role="tabpanel"><div class="ak-dossier is-locked" data-unlock="信赖达到 50% 解锁"><div class="ak-dossier__title">档案资料一<span class="ak-en">Archive 1</span><span class="ak-dossier__unlock">信赖 50%</span></div><p>此处内容在信赖不足时模糊显示，覆盖斜纹与解锁条件说明。文本仍在 DOM 中，可被搜索索引，但对读者不可选中。此处内容在信赖不足时模糊显示，覆盖斜纹与解锁条件说明。</p></div></article>
+    <article class="tabber__panel" id="f-6" role="tabpanel"><div class="ak-dossier is-locked" data-unlock="信赖达到 100% 解锁"><div class="ak-dossier__title">档案资料二<span class="ak-en">Archive 2</span><span class="ak-dossier__unlock">信赖 100%</span></div><p>此处内容在信赖不足时模糊显示。此处内容在信赖不足时模糊显示。此处内容在信赖不足时模糊显示。</p></div></article>
+  </section>
+</div>
+
+<div class="mw-heading mw-heading2"><h2 id="voice">语音记录 <span class="ak-en ak-fs-sm ak-fg-muted">Voice</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<div class="ak-flex ak-gap-2 ak-mb-3"><span class="ak-chip is-active">中文</span><span class="ak-chip">日本語</span><span class="ak-chip">English</span><span class="ak-chip">한국어</span></div>
+<div class="ak-card ak-card--flat" style="padding:0 6px">
+  <div class="ak-voice"><button class="ak-voice__play" aria-label="播放"></button><div><div class="ak-voice__title">任命助理 <span class="ak-voice__lang">CN</span><span class="ak-voice__wave"><i></i><i></i><i></i><i></i><i></i></span></div><div class="ak-voice__text">博士，现在起由我担任你的护卫。</div></div></div>
+  <div class="ak-voice"><button class="ak-voice__play" aria-label="播放"></button><div><div class="ak-voice__title">交谈1 <span class="ak-voice__lang">CN</span></div><div class="ak-voice__text">我一直觉得你们罗德岛很可疑，现在也一样。</div></div></div>
+  <div class="ak-voice"><button class="ak-voice__play" aria-label="播放"></button><div><div class="ak-voice__title">交谈2 <span class="ak-voice__lang">CN</span></div><div class="ak-voice__text">你怎么还在盯着我看？你的工作呢？</div></div></div>
+  <div class="ak-voice"><button class="ak-voice__play" aria-label="播放"></button><div><div class="ak-voice__title">晋升后交谈1 <span class="ak-voice__lang">CN</span><span class="ak-tag ak-tag--sm ak-tag--outline"><img src="assets/elite/elite_1.png" alt="" style="height:10px;filter:var(--ak-glyph-filter)"> 精英一</span></div><div class="ak-voice__text">龙门的大街小巷我都走过。码头、招牌、坡道，那些风景印在我的心上。我永远都不会忘记。</div></div></div>
+  <div class="ak-voice" style="border:0"><button class="ak-voice__play" aria-label="播放"></button><div><div class="ak-voice__title">晋升后交谈2 <span class="ak-voice__lang">CN</span><span class="ak-tag ak-tag--sm ak-tag--outline"><img src="assets/elite/elite_2.png" alt="" style="height:10px;filter:var(--ak-glyph-filter)"> 精英二</span></div><div class="ak-voice__text">周边地区的局势并不稳定，虽然我会时刻保持警戒，但你也不能疏忽大意。</div></div></div>
+</div>
+
+<div class="mw-heading mw-heading2"><h2 id="related">相关干员 <span class="ak-en ak-fs-sm ak-fg-muted">Related</span></h2></div>
+<div class="ak-panel"><div class="ak-panel__head"><h4 class="ak-panel__title">剑豪 <span class="ak-en">Swordmaster</span></h4><a class="ak-chevrons ak-fs-xs" href="#" style="margin-left:auto">全部剑豪</a></div><div class="ak-panel__body"><div class="ak-flex ak-gap-3 ak-wrap"><a class="ak-op-card ak-op-card--sm" href="#" data-rarity="6"><span class="ak-op-card__portrait"><img src="assets/avatar/char_010_chen_2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt=""></span></span><span class="ak-op-card__name">陈</span></a><a class="ak-op-card ak-op-card--sm" href="#" data-rarity="6"><span class="ak-op-card__portrait"><img src="assets/avatar/char_1013_chen2_2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt=""></span></span><span class="ak-op-card__name">假日威龙陈</span></a><a class="ak-op-card ak-op-card--sm" href="#" data-rarity="6"><span class="ak-op-card__portrait"><img src="assets/avatar/char_1014_nearl2_2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt=""></span></span><span class="ak-op-card__name">耀骑士临光</span></a></div></div></div>
+<div class="mw-parser-output navbox" style="width:100%"><table style="width:100%"><tr><th class="navbox-title" colspan="2">近卫干员 · Guards</th></tr><tr><th class="navbox-group" style="width:120px">剑豪</th><td class="navbox-list hlist"><ul><li><a href="#">陈</a></li><li><a href="#">假日威龙陈</a></li><li><a href="#">耀骑士临光</a></li></ul></td></tr><tr><th class="navbox-group">领主</th><td class="navbox-list hlist navbox-even"><ul><li><a href="#">银灰</a></li><li><a href="#">拉普兰德</a></li><li><a href="#">诗怀雅</a></li></ul></td></tr></table></div>
+<div class="mw-references-wrap ak-mt-4"><ol class="references"><li><span class="mw-cite-backlink"><a href="#">↑</a></span> <span class="reference-text">数据来源：gamedata 2.7.61 · character_table / skill_table / uniequip_table / handbook_info_table / charword_table。</span></li></ol></div>
+
+      </div><!-- /.mw-body-content -->
+      <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2026年8月2日 (六) 00:12。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
+      </div><!-- /.ak-body -->
+      <div class="catlinks"><div class="mw-normal-catlinks"><a href="#">分类</a>：<ul><li><a href="#">干员</a></li><li><a href="#">六星干员</a></li><li><a href="#">近卫</a></li><li><a href="#">剑豪</a></li><li><a href="#">龙门近卫局</a></li><li><a href="#">龙门</a></li></ul></div></div>
+    </div>
+  </main>
+
+  <!-- ═══ TOC ═══ -->
+  <aside class="ak-toc" aria-label="目录">
+    <div class="ak-toc__title">目录 · Contents</div>
+    <div class="ak-toc__progress"><i></i></div>
+    <ul data-auto-toc></ul>
+  </aside>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="ak-footer">
+  <div class="ak-footer__inner">
+    <div class="ak-footer__brand"><span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span><p>玩家自建的明日方舟中文维基。本站与上海鹰角网络科技有限公司无隶属关系。游戏内素材版权归鹰角网络所有。</p></div>
+    <div class="ak-footer__col"><h4>浏览</h4><ul><li><a href="#">干员</a></li><li><a href="#">敌人</a></li><li><a href="#">关卡</a></li><li><a href="#">道具</a></li></ul></div>
+    <div class="ak-footer__col"><h4>参与</h4><ul><li><a href="#">编辑指南</a></li><li><a href="#">模板文档</a></li><li><a href="#">最近更改</a></li><li><a href="#">社区门户</a></li></ul></div>
+    <div class="ak-footer__col"><h4>关于</h4><ul><li><a href="#">关于 PRTS</a></li><li><a href="#">免责声明</a></li><li><a href="#">隐私政策</a></li><li><a href="#">API</a></li></ul></div>
+  </div>
+  <div class="ak-footer__bottom"><span>© 2019–2026 PRTS.wiki · CC BY-NC-SA 4.0</span><span class="ak-en">Powered by MediaWiki 1.43 · Skin AKDS</span></div>
+  <span class="ak-watermark">PRTS</span>
+</footer>
+<button class="ak-fab" aria-label="回到顶部"><svg width="18" height="18"><use href="#i-up"/></svg></button>
+<script src="preview.js"></script>
+</body>
+</html>

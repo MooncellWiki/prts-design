@@ -1,0 +1,467 @@
+/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS — 明日方舟网页设计系统 · Design Tokens
+ *  Arknights Web Design System for MediaWiki skins (prts.wiki)
+ *
+ *  层级：
+ *    1. Primitive  --ak-{hue}-{step}      原始色板（来源：官网 CSS / 游戏解包 / gamedata）
+ *    2. Semantic   --ak-{role}            语义令牌（随主题变化）
+ *    3. Bridge     Codex / MediaWiki 令牌   让 MW 核心 & 扩展 UI 自动跟随主题
+ *
+ *  主题机制（与 MediaWiki 1.43 clientPrefs 一致）：
+ *    <html class="skin-theme-clientpref-os">    跟随系统（默认）
+ *    <html class="skin-theme-clientpref-night"> 终端模式（暗）
+ *    <html class="skin-theme-clientpref-day">   档案模式（亮）
+ *  非 MW 环境亦可用 data-theme="dark|light"。
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── 1. PRIMITIVE PALETTE ─────────────────────────────────────────────── */
+
+  /* Neutrals · 取自游戏内 UI 灰阶（btn #313131 / panel #F5F5F5）与官网灰阶 */
+  --ak-gray-0:    #ffffff;
+  --ak-gray-50:   #f5f5f5;   /* in-game light panel */
+  --ak-gray-100:  #ebebeb;
+  --ak-gray-200:  #d2d2d2;   /* site */
+  --ak-gray-300:  #b1b1b1;
+  --ak-gray-400:  #8d8d8d;   /* site */
+  --ak-gray-500:  #626262;   /* in-game btn_done */
+  --ak-gray-600:  #535353;
+  --ak-gray-700:  #3b3b3b;
+  --ak-gray-800:  #313131;   /* in-game standard button */
+  --ak-gray-850:  #272727;   /* site */
+  --ak-gray-900:  #1d1f20;   /* site panel */
+  --ak-gray-950:  #181818;   /* in-game deep */
+  --ak-gray-1000: #000000;
+
+  /* Brand cyan / blue · 官网 #18D1FF，游戏内选中蓝 #0098DC */
+  --ak-cyan-200:  #7ee5ff;
+  --ak-cyan-300:  #5ddcff;
+  --ak-cyan-400:  #22bbff;   /* in-game select_round */
+  --ak-cyan-500:  #18d1ff;   /* ★ site brand accent */
+  --ak-blue-400:  #00b0ff;   /* in-game <ba.kw> */
+  --ak-blue-500:  #0098dc;   /* ★ in-game UI blue / <ba.vup> */
+  --ak-blue-600:  #0075a9;   /* in-game toggle-on */
+  --ak-blue-700:  #005a82;
+
+  /* Yellow · 稀有度星 / 商店 / 关卡名 */
+  --ak-yellow-400: #ffe75a;
+  --ak-yellow-500: #ffd800;  /* ★ in-game yellow (rarity #FFDE00) */
+  --ak-yellow-600: #ffc90e;  /* <ga.subtitle> */
+  --ak-yellow-700: #eab841;
+
+  /* Lime · SP / 官网次级强调 */
+  --ak-lime-400:  #caec46;   /* in-game SP cost */
+  --ak-lime-500:  #c8eb21;   /* site */
+  --ak-lime-600:  #8fc31f;   /* site */
+
+  /* Orange */
+  --ak-orange-400: #ff9433;  /* 6★ */
+  --ak-orange-500: #f49800;  /* <ba.rem> */
+  --ak-orange-600: #e5622b;  /* in-game mission track */
+
+  /* Red */
+  --ak-red-400:   #ff6237;   /* <ba.vdown> */
+  --ak-red-500:   #d83c3c;   /* <ba.enemy> */
+  --ak-red-600:   #c82a36;   /* in-game NEW mark */
+  --ak-red-700:   #a40000;   /* in-game BREAKING NEWS */
+  --ak-red-800:   #711111;   /* in-game confirm button */
+  --ak-red-900:   #860101;   /* specialization */
+  --ak-magenta-500: #e40043; /* in-game monthly card */
+
+  /* Green / Purple */
+  --ak-green-500: #2fac78;   /* <ba.gild> */
+  --ak-green-400: #4ffaa5;
+  --ak-purple-400: #bf96ed;  /* 4★ */
+  --ak-purple-500: #9266b2;
+
+  /* Rarity · 官方色阶 (gamedata sandbox_table.charRarityColorList) */
+  --ak-rarity-1: #bababa;
+  --ak-rarity-2: #d3dc35;
+  --ak-rarity-3: #82c5f5;
+  --ak-rarity-4: #bf96ed;
+  --ak-rarity-5: #efd691;
+  --ak-rarity-6: #ff9433;
+
+  /* Skill SP 回复类型（对应游戏内技能框配色，近似取值） */
+  --ak-sp-auto:    #8fc31f;  /* 自动回复 INCREASE_WITH_TIME */
+  --ak-sp-attack:  #ff8a00;  /* 攻击回复 INCREASE_WHEN_ATTACK */
+  --ak-sp-hit:     #ffd800;  /* 受击回复 INCREASE_WHEN_TAKEN_DAMAGE */
+  --ak-sp-passive: #8d8d8d;  /* 被动 */
+
+  /* ─── 2a. THEME-INDEPENDENT SEMANTICS ──────────────────────────────────── */
+
+  /* Typography */
+  --ak-font-body: "Source Han Sans SC", "Noto Sans SC", "Noto Sans CJK SC", "PingFang SC",
+                  "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --ak-font-display: "Novecento Sans Wide", "Novecentosanswide-Bold", "Bender", "Oswald",
+                     "Michroma", "Arial Narrow", system-ui, sans-serif;      /* 拉丁展示字（大写） */
+  --ak-font-label: "Bender", "Bender-Bold", "Rajdhani", "Chakra Petch", "Saira", "Oswald",
+                   system-ui, sans-serif;                                     /* HUD 标签 / 数值 */
+  --ak-font-condensed: "Oswald", "Roboto Condensed", "Arial Narrow", sans-serif;
+  --ak-font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --ak-fs-display-xl: 3.5rem;   /* 56 */
+  --ak-fs-display:    2.5rem;   /* 40 */
+  --ak-fs-h1:  2rem;            /* 32 */
+  --ak-fs-h2:  1.5rem;          /* 24 */
+  --ak-fs-h3:  1.25rem;         /* 20 */
+  --ak-fs-h4:  1.0625rem;       /* 17 */
+  --ak-fs-body-lg: 1.125rem;    /* 18 */
+  --ak-fs-body: 1rem;           /* 16 */
+  --ak-fs-sm:   0.875rem;       /* 14 */
+  --ak-fs-xs:   0.75rem;        /* 12 */
+  --ak-fs-overline: 0.6875rem;  /* 11 */
+  --ak-lh-body: 1.7;            /* CJK 正文 */
+  --ak-lh-tight: 1.25;
+  --ak-lh-display: 1.05;
+  --ak-tracking-caps: 0.08em;
+  --ak-tracking-overline: 0.14em;
+  --ak-tracking-display: -0.02em;
+
+  /* Spacing (4px grid) */
+  --ak-space-1: 4px;  --ak-space-2: 8px;   --ak-space-3: 12px; --ak-space-4: 16px;
+  --ak-space-5: 20px; --ak-space-6: 24px;  --ak-space-8: 32px; --ak-space-10: 40px;
+  --ak-space-12: 48px; --ak-space-16: 64px; --ak-space-20: 80px; --ak-space-24: 96px;
+
+  /* Shape · 方舟 = 直角；仅极小圆角用于输入框 */
+  --ak-radius: 0px;
+  --ak-radius-sm: 2px;
+  --ak-radius-pill: 999px;
+  --ak-cut: 8px;               /* 切角尺寸 (.ak-chamfer) */
+  --ak-cut-sm: 5px;
+  --ak-cut-lg: 14px;
+  --ak-skew: -14deg;           /* 平行四边形斜切 (.ak-skew) */
+  --ak-bar-w: 4px;             /* 标题左侧色条宽度 */
+  --ak-bar-w-lg: 8px;
+
+  /* Motion */
+  --ak-dur-instant: 80ms;
+  --ak-dur-fast: 150ms;
+  --ak-dur-normal: 250ms;
+  --ak-dur-slow: 400ms;
+  --ak-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ak-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ak-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ak-ease-sharp: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout · 与 Codex 断点一致: 320 / 640 / 1120 / 1680 */
+  --ak-header-h: 56px;
+  --ak-sidebar-w: 248px;
+  --ak-toc-w: 240px;
+  --ak-content-max: 1240px;    /* 阅读区最大宽度；表格密集页可加 .ak-wide */
+  --ak-content-narrow: 760px;
+  --ak-gutter: 24px;
+  --ak-gutter-sm: 16px;
+
+  /* Z-index */
+  --ak-z-dropdown: 100;
+  --ak-z-sticky: 200;
+  --ak-z-header: 1000;
+  --ak-z-overlay: 1500;
+  --ak-z-modal: 2000;
+  --ak-z-toast: 3000;
+  --ak-z-tooltip: 4000;
+
+  /* Icon sizes */
+  --ak-icon-xs: 14px; --ak-icon-sm: 18px; --ak-icon-md: 24px; --ak-icon-lg: 32px; --ak-icon-xl: 48px;
+
+  /* Signature decorations */
+  --ak-stripe-size: 8px;
+  --ak-halftone-size: 6px;
+  --ak-grid-size: 32px;
+}
+
+/* ═══ 2b. SEMANTIC TOKENS · LIGHT ("档案模式" · in-game archive/white UI) ═══ */
+:root {
+  color-scheme: light;
+
+  --ak-bg-canvas:     var(--ak-gray-50);
+  --ak-bg-surface:    var(--ak-gray-0);
+  --ak-bg-surface-2:  var(--ak-gray-50);
+  --ak-bg-surface-3:  var(--ak-gray-100);
+  --ak-bg-inset:      #eef0f1;
+  --ak-bg-hover:      rgba(0, 0, 0, 0.05);
+  --ak-bg-active:     rgba(0, 0, 0, 0.09);
+  --ak-bg-inverse:    var(--ak-gray-900);
+  --ak-bg-overlay:    rgba(15, 15, 16, 0.6);
+  --ak-bg-header:     rgba(255, 255, 255, 0.86);
+
+  --ak-fg:            var(--ak-gray-900);
+  --ak-fg-secondary:  #454647;
+  --ak-fg-muted:      var(--ak-gray-500);
+  --ak-fg-subtle:     var(--ak-gray-400);
+  --ak-fg-disabled:   var(--ak-gray-300);
+  --ak-fg-inverse:    var(--ak-gray-0);
+
+  --ak-accent:        var(--ak-blue-500);   /* 亮色下用游戏内蓝 #0098DC，对比更稳 */
+  --ak-accent-hover:  var(--ak-blue-600);
+  --ak-accent-fg:     #ffffff;
+  --ak-accent-subtle: rgba(0, 152, 220, 0.10);
+  --ak-accent-muted:  rgba(0, 152, 220, 0.28);
+  --ak-accent-2:      var(--ak-yellow-500);  /* 次强调：黄 */
+  --ak-accent-2-fg:   #1d1f20;
+
+  --ak-link:          #0072a8;
+  --ak-link-hover:    #005a82;
+  --ak-link-visited:  #6a4aa8;
+  --ak-link-new:      #c82a36;   /* 红链 */
+  --ak-link-external: #0072a8;
+
+  --ak-border:        #d9dbdc;
+  --ak-border-subtle: #e8eaeb;
+  --ak-border-strong: #b1b1b1;
+  --ak-border-accent: var(--ak-blue-500);
+  --ak-focus:         var(--ak-blue-500);
+  --ak-selection:     rgba(0, 152, 220, 0.25);
+
+  --ak-info:      #0072a8; --ak-info-bg:    rgba(0, 152, 220, 0.10);
+  --ak-success:   #1f8f5f; --ak-success-bg: rgba(47, 172, 120, 0.12);
+  --ak-warning:   #b86f00; --ak-warning-bg: rgba(244, 152, 0, 0.14);
+  --ak-danger:    #c8102e; --ak-danger-bg:  rgba(200, 42, 54, 0.10);
+
+  /* Rich text（游戏内 <color> 标签）· 亮色下微调以满足 AA */
+  --ak-rt-vup:    #007bb5;
+  --ak-rt-vdown:  #d0421c;
+  --ak-rt-rem:    #b86f00;
+  --ak-rt-kw:     #0077b3;
+  --ak-rt-imp:    #d40000;
+  --ak-rt-drop:   #1d78b8;
+  --ak-rt-enemy:  #c22f2f;
+  --ak-rt-gild:   #1f8f5f;
+  --ak-rt-acrem:  #727272;
+  --ak-rt-level:  #9a7b00;
+
+  /* Rarity text-safe（用于文字/描边） */
+  --ak-rarity-1-text: #6f6f6f;
+  --ak-rarity-2-text: #7f8a00;
+  --ak-rarity-3-text: #1d78b8;
+  --ak-rarity-4-text: #7d4fc2;
+  --ak-rarity-5-text: #a87a00;
+  --ak-rarity-6-text: #d45f00;
+
+  --ak-shadow-sm: 0 1px 2px rgba(0,0,0,.08);
+  --ak-shadow-md: 0 4px 12px rgba(0,0,0,.10), 0 1px 3px rgba(0,0,0,.06);
+  --ak-shadow-lg: 0 12px 32px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.08);
+  --ak-shadow-accent: 0 0 0 3px var(--ak-accent-subtle);
+
+  --ak-glyph-filter: invert(1);   /* 游戏白色线稿图标在亮色下反相为黑 */
+  --ak-stripe-color: rgba(0,0,0,.08);
+  --ak-grid-color:   rgba(0,0,0,.06);
+  --ak-halftone-color: rgba(0,0,0,.14);
+  --ak-scrollbar: #c4c6c8;
+}
+
+/* ═══ 2c. SEMANTIC TOKENS · DARK ("终端模式" · main menu / PRTS terminal) ═══ */
+:root[data-theme="dark"],
+html.skin-theme-clientpref-night {
+  color-scheme: dark;
+
+  --ak-bg-canvas:     #0f0f10;
+  --ak-bg-surface:    #1a1b1c;
+  --ak-bg-surface-2:  #232425;
+  --ak-bg-surface-3:  #2d2e30;
+  --ak-bg-inset:      #141516;
+  --ak-bg-hover:      rgba(255, 255, 255, 0.06);
+  --ak-bg-active:     rgba(255, 255, 255, 0.11);
+  --ak-bg-inverse:    var(--ak-gray-0);
+  --ak-bg-overlay:    rgba(0, 0, 0, 0.7);
+  --ak-bg-header:     rgba(15, 15, 16, 0.82);
+
+  --ak-fg:            #f0f0f0;
+  --ak-fg-secondary:  #c9c9c9;
+  --ak-fg-muted:      var(--ak-gray-400);
+  --ak-fg-subtle:     #6f7071;
+  --ak-fg-disabled:   #4a4b4c;
+  --ak-fg-inverse:    var(--ak-gray-950);
+
+  --ak-accent:        var(--ak-cyan-500);   /* 暗色下用官网青 #18D1FF */
+  --ak-accent-hover:  var(--ak-cyan-200);
+  --ak-accent-fg:     #000000;
+  --ak-accent-subtle: rgba(24, 209, 255, 0.10);
+  --ak-accent-muted:  rgba(24, 209, 255, 0.30);
+  --ak-accent-2:      var(--ak-yellow-500);
+  --ak-accent-2-fg:   #000000;
+
+  --ak-link:          var(--ak-cyan-300);
+  --ak-link-hover:    var(--ak-cyan-200);
+  --ak-link-visited:  #c3a6ff;
+  --ak-link-new:      #ff6b6b;
+  --ak-link-external: var(--ak-cyan-300);
+
+  --ak-border:        #2f3133;
+  --ak-border-subtle: #262729;
+  --ak-border-strong: #4a4c4f;
+  --ak-border-accent: var(--ak-cyan-500);
+  --ak-focus:         var(--ak-cyan-500);
+  --ak-selection:     rgba(24, 209, 255, 0.28);
+
+  --ak-info:      var(--ak-cyan-300); --ak-info-bg:    rgba(24, 209, 255, 0.10);
+  --ak-success:   #4fd18f;            --ak-success-bg: rgba(47, 172, 120, 0.14);
+  --ak-warning:   #ffb340;            --ak-warning-bg: rgba(244, 152, 0, 0.14);
+  --ak-danger:    #ff5c5c;            --ak-danger-bg:  rgba(216, 60, 60, 0.14);
+
+  --ak-rt-vup:    var(--ak-blue-500);
+  --ak-rt-vdown:  var(--ak-red-400);
+  --ak-rt-rem:    var(--ak-orange-500);
+  --ak-rt-kw:     var(--ak-blue-400);
+  --ak-rt-imp:    #ff3b3b;
+  --ak-rt-drop:   #36acff;
+  --ak-rt-enemy:  var(--ak-red-500);
+  --ak-rt-gild:   var(--ak-green-500);
+  --ak-rt-acrem:  #8a8a8a;
+  --ak-rt-level:  #ffde00;
+
+  --ak-rarity-1-text: var(--ak-rarity-1);
+  --ak-rarity-2-text: var(--ak-rarity-2);
+  --ak-rarity-3-text: var(--ak-rarity-3);
+  --ak-rarity-4-text: var(--ak-rarity-4);
+  --ak-rarity-5-text: var(--ak-rarity-5);
+  --ak-rarity-6-text: var(--ak-rarity-6);
+
+  --ak-shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --ak-shadow-md: 0 4px 14px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
+  --ak-shadow-lg: 0 16px 40px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.4);
+  --ak-shadow-accent: 0 0 0 3px var(--ak-accent-subtle);
+
+  --ak-glyph-filter: none;
+  --ak-stripe-color: rgba(255,255,255,.07);
+  --ak-grid-color:   rgba(255,255,255,.05);
+  --ak-halftone-color: rgba(255,255,255,.16);
+  --ak-scrollbar: #3b3d40;
+}
+
+/* 跟随系统：仅当未显式指定时生效 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.skin-theme-clientpref-day):not([data-theme="dark"]):not(.skin-theme-clientpref-night) {
+    color-scheme: dark;
+    --ak-bg-canvas: #0f0f10; --ak-bg-surface: #1a1b1c; --ak-bg-surface-2: #232425; --ak-bg-surface-3: #2d2e30;
+    --ak-bg-inset: #141516; --ak-bg-hover: rgba(255,255,255,.06); --ak-bg-active: rgba(255,255,255,.11);
+    --ak-bg-inverse: var(--ak-gray-0); --ak-bg-overlay: rgba(0,0,0,.7); --ak-bg-header: rgba(15,15,16,.82);
+    --ak-fg: #f0f0f0; --ak-fg-secondary: #c9c9c9; --ak-fg-muted: var(--ak-gray-400); --ak-fg-subtle: #6f7071;
+    --ak-fg-disabled: #4a4b4c; --ak-fg-inverse: var(--ak-gray-950);
+    --ak-accent: var(--ak-cyan-500); --ak-accent-hover: var(--ak-cyan-200); --ak-accent-fg: #000;
+    --ak-accent-subtle: rgba(24,209,255,.10); --ak-accent-muted: rgba(24,209,255,.30);
+    --ak-accent-2: var(--ak-yellow-500); --ak-accent-2-fg: #000;
+    --ak-link: var(--ak-cyan-300); --ak-link-hover: var(--ak-cyan-200); --ak-link-visited: #c3a6ff;
+    --ak-link-new: #ff6b6b; --ak-link-external: var(--ak-cyan-300);
+    --ak-border: #2f3133; --ak-border-subtle: #262729; --ak-border-strong: #4a4c4f;
+    --ak-border-accent: var(--ak-cyan-500); --ak-focus: var(--ak-cyan-500); --ak-selection: rgba(24,209,255,.28);
+    --ak-info: var(--ak-cyan-300); --ak-info-bg: rgba(24,209,255,.10); --ak-success: #4fd18f; --ak-success-bg: rgba(47,172,120,.14);
+    --ak-warning: #ffb340; --ak-warning-bg: rgba(244,152,0,.14); --ak-danger: #ff5c5c; --ak-danger-bg: rgba(216,60,60,.14);
+    --ak-rt-vup: var(--ak-blue-500); --ak-rt-vdown: var(--ak-red-400); --ak-rt-rem: var(--ak-orange-500); --ak-rt-kw: var(--ak-blue-400);
+    --ak-rt-imp: #ff3b3b; --ak-rt-drop: #36acff; --ak-rt-enemy: var(--ak-red-500); --ak-rt-gild: var(--ak-green-500); --ak-rt-acrem: #8a8a8a; --ak-rt-level: #ffde00;
+    --ak-rarity-1-text: var(--ak-rarity-1); --ak-rarity-2-text: var(--ak-rarity-2); --ak-rarity-3-text: var(--ak-rarity-3);
+    --ak-rarity-4-text: var(--ak-rarity-4); --ak-rarity-5-text: var(--ak-rarity-5); --ak-rarity-6-text: var(--ak-rarity-6);
+    --ak-shadow-sm: 0 1px 2px rgba(0,0,0,.4); --ak-shadow-md: 0 4px 14px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
+    --ak-shadow-lg: 0 16px 40px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.4);
+    --ak-glyph-filter: none; --ak-stripe-color: rgba(255,255,255,.07); --ak-grid-color: rgba(255,255,255,.05);
+    --ak-halftone-color: rgba(255,255,255,.16); --ak-scrollbar: #3b3d40;
+  }
+}
+
+/* ═══ 3. CODEX / MEDIAWIKI BRIDGE ═══════════════════════════════════════════
+ * MediaWiki 1.43 核心与扩展（Codex 组件、mw-message-box、OOUI WikimediaUI 主题的部分）
+ * 读取这些 CSS 变量。把它们映射到 AKDS 语义令牌，皮肤外的 UI 即可自动换肤。
+ * ═════════════════════════════════════════════════════════════════════════ */
+:root, html.skin-theme-clientpref-night, :root[data-theme="dark"] {
+  --background-color-base: var(--ak-bg-surface);
+  --background-color-neutral: var(--ak-bg-surface-2);
+  --background-color-neutral-subtle: var(--ak-bg-canvas);
+  --background-color-interactive: var(--ak-bg-surface-2);
+  --background-color-interactive-subtle: var(--ak-bg-surface-2);
+  --background-color-interactive--hover: var(--ak-bg-hover);
+  --background-color-interactive--active: var(--ak-bg-active);
+  --background-color-disabled: var(--ak-bg-surface-3);
+  --background-color-disabled-subtle: var(--ak-bg-surface-2);
+  --background-color-inverted: var(--ak-bg-inverse);
+  --background-color-progressive: var(--ak-accent);
+  --background-color-progressive--hover: var(--ak-accent-hover);
+  --background-color-progressive-subtle: var(--ak-accent-subtle);
+  --background-color-destructive: var(--ak-danger);
+  --background-color-destructive-subtle: var(--ak-danger-bg);
+  --background-color-error-subtle: var(--ak-danger-bg);
+  --background-color-warning-subtle: var(--ak-warning-bg);
+  --background-color-success-subtle: var(--ak-success-bg);
+  --background-color-notice-subtle: var(--ak-info-bg);
+  --background-color-backdrop-light: var(--ak-bg-overlay);
+  --background-color-backdrop-dark: var(--ak-bg-overlay);
+  --color-base: var(--ak-fg);
+  --color-base--hover: var(--ak-fg);
+  --color-emphasized: var(--ak-fg);
+  --color-subtle: var(--ak-fg-muted);
+  --color-placeholder: var(--ak-fg-subtle);
+  --color-disabled: var(--ak-fg-disabled);
+  --color-inverted: var(--ak-fg-inverse);
+  --color-progressive: var(--ak-link);
+  --color-progressive--hover: var(--ak-link-hover);
+  --color-progressive--active: var(--ak-link-hover);
+  --color-visited: var(--ak-link-visited);
+  --color-destructive: var(--ak-danger);
+  --color-destructive--visited: var(--ak-link-new);
+  --color-error: var(--ak-danger);
+  --color-warning: var(--ak-warning);
+  --color-success: var(--ak-success);
+  --color-notice: var(--ak-fg-secondary);
+  --color-link-red: var(--ak-link-new);
+  --color-link-red--visited: var(--ak-link-new);
+  --color-icon-base: var(--ak-fg-secondary);
+  --border-color-base: var(--ak-border);
+  --border-color-subtle: var(--ak-border-subtle);
+  --border-color-muted: var(--ak-border-subtle);
+  --border-color-interactive: var(--ak-border-strong);
+  --border-color-disabled: var(--ak-border-subtle);
+  --border-color-progressive: var(--ak-accent);
+  --border-color-progressive--focus: var(--ak-focus);
+  --border-color-destructive: var(--ak-danger);
+  --border-color-error: var(--ak-danger);
+  --border-color-warning: var(--ak-warning);
+  --border-color-success: var(--ak-success);
+  --border-color-notice: var(--ak-border-strong);
+  --border-color-transparent: transparent;
+  --border-radius-base: var(--ak-radius);
+  --border-radius-sharp: 0;
+  --border-radius-pill: var(--ak-radius-pill);
+  --box-shadow-drop-small: var(--ak-shadow-sm);
+  --box-shadow-drop-medium: var(--ak-shadow-md);
+  --box-shadow-drop-xx-large: var(--ak-shadow-lg);
+  --box-shadow-color-progressive--focus: var(--ak-focus);
+  --font-family-base: var(--ak-font-body);
+  --font-family-heading-main: var(--ak-font-body);
+  --font-family-monospace: var(--ak-font-mono);
+  --font-size-medium: var(--ak-fs-body);
+  --font-size-small: var(--ak-fs-sm);
+  --font-size-x-small: var(--ak-fs-xs);
+  --line-height-medium: var(--ak-lh-body);
+  --opacity-icon-base: 0.87;
+  --opacity-icon-subtle: 0.67;
+  --z-index-dropdown: var(--ak-z-dropdown);
+  --z-index-sticky: var(--ak-z-sticky);
+  --z-index-fixed: var(--ak-z-header);
+  --z-index-overlay: var(--ak-z-overlay);
+  --z-index-overlay-backdrop: var(--ak-z-overlay);
+  --z-index-toast-notification: var(--ak-z-toast);
+  --z-index-tooltip: var(--ak-z-tooltip);
+}
+
+/* ═══ Global base ═══ */
+html { background: var(--ak-bg-canvas); }
+body {
+  background: var(--ak-bg-canvas);
+  color: var(--ak-fg);
+  font-family: var(--ak-font-body);
+  font-size: var(--ak-fs-body);
+  line-height: var(--ak-lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--ak-selection); }
+:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+* { scrollbar-color: var(--ak-scrollbar) transparent; scrollbar-width: thin; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--ak-scrollbar); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+@media (prefers-contrast: more) {
+  :root { --ak-border: var(--ak-border-strong); --ak-fg-muted: var(--ak-fg-secondary); }
+}
