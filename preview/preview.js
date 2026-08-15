@@ -81,10 +81,9 @@
   });
   $$('.tabber').forEach(tb => { const sel = $('.tabber__tab[aria-selected="true"]', tb); if (sel) { const id = sel.getAttribute('href').slice(1); $$('.tabber__panel', tb).forEach(p => p.hidden = p.id !== id); } });
 
-  /* ── Collapsible panels / portlets ─────────────────────────── */
+  /* ── Collapsible panels（侧栏门户折叠 / 多层树 / 悬停飞出 → 见 ../src/sidebar-tree.js，皮肤与预览共用） ── */
   document.addEventListener('click', e => {
     const h = e.target.closest('.ak-panel--collapsible > .ak-panel__head'); if (h) h.parentElement.classList.toggle('is-collapsed');
-    const t = e.target.closest('.ak-portlet--collapsible > .ak-portlet__title'); if (t) t.parentElement.classList.toggle('is-collapsed');
     const mwt = e.target.closest('.mw-collapsible-toggle'); if (mwt) { const c = mwt.closest('.mw-collapsible'); c.classList.toggle('mw-collapsed'); const a = $('a', mwt); if (a) a.textContent = c.classList.contains('mw-collapsed') ? '展开' : '折叠'; }
   });
 

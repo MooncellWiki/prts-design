@@ -27,8 +27,8 @@ for name in ['index.html', 'operator.html']:
         href = m.group(1); p = (prev / href).resolve()
         return '<style>\n%s\n</style>' % css_inline(p)
     html = re.sub(r'<link rel="stylesheet" href="([^"]+)">', repl_css, html)
-    # js
-    html = re.sub(r'<script src="preview.js"></script>', lambda m: '<script>\n%s\n</script>' % (prev / 'preview.js').read_text(encoding='utf-8'), html)
+    # js（preview.js 与共用的 src/sidebar-tree.js 都内联）
+    html = re.sub(r'<script src="((?:\.\./src/|)[\w.-]+\.js)"></script>', lambda m: '<script>\n%s\n</script>' % (prev / m.group(1)).resolve().read_text(encoding='utf-8'), html)
     # images
     html = re.sub(r'(src|href)="(assets/[^"]+\.png)"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)
     # cross links between the two pages → keep relative (both in dist)
