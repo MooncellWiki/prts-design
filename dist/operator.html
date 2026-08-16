@@ -2034,7 +2034,8 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-palette__item::before { display: none !important; }
 .ak-palette__link { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 7px 16px 7px 14px; border: 0; border-left: 2px solid transparent; background: transparent; color: inherit; font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
 .ak-palette__link:hover, .ak-palette__link:visited { color: inherit; text-decoration: none; }
-.ak-palette__item.is-active > .ak-palette__link { background: var(--ak-accent-subtle); border-left-color: var(--ak-accent); }   /* 与侧栏当前项 / 菜单项同一套语言 */
+.ak-palette__item.is-active { background: var(--ak-accent-subtle); }   /* 淡青底铺满整行（含右侧动作列） */
+.ak-palette__item.is-active > .ak-palette__link { border-left-color: var(--ak-accent); }   /* 左 2px 青条：与侧栏当前项 / 菜单项同一套语言 */
 .ak-palette__item.is-active .ak-palette__title { color: var(--ak-fg); }
 .ak-palette__thumb { flex: none; width: 40px; height: 40px; display: grid; place-items: center; overflow: hidden; background: var(--ak-bg-surface-3); border: 1px solid var(--ak-border); color: var(--ak-fg-muted); }
 .ak-palette__thumb > img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -2054,8 +2055,9 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-palette__meta .ak-prof { --_s: 22px; }
 .ak-palette__meta .ak-rarity { font-size: 11px; }
 .ak-palette__meta .ak-kbd { color: var(--ak-fg-muted); }
-.ak-palette__actions { flex: none; display: none; align-items: center; gap: 2px; padding-right: 8px; }
-.ak-palette__item.is-active > .ak-palette__actions, .ak-palette__item:focus-within > .ak-palette__actions { display: flex; }
+/* 行内动作（目前只有最近访问的「移除 ×」）：始终占位、非高亮时不可见 —— 同组每行宽度一致，高亮时右侧元数据不会跳 */
+.ak-palette__actions { flex: none; display: flex; align-items: center; gap: 2px; padding-right: 8px; visibility: hidden; }
+.ak-palette__item.is-active > .ak-palette__actions, .ak-palette__item:focus-within > .ak-palette__actions { visibility: visible; }
 .ak-palette__action { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid transparent; background: transparent; color: var(--ak-fg-muted); cursor: pointer; }
 .ak-palette__action:hover, .ak-palette__action:focus-visible { border-color: var(--ak-border-strong); color: var(--ak-fg); outline: 0; }
 .ak-palette__action svg { width: 14px; height: 14px; }
@@ -2829,7 +2831,7 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
  *    }
  *    Item = { id?, type: 'page'|'operator'|'item'|'category'|'action'|…, label, url?, desc?, thumb?(url), icon?(svg id: 'page'|'search'|'category'|'user'|'file'|'action'|'clock'),
  *             glyph?(单字，深底), meta?: [{ text?, html?, kbd? }], match?: boolean(默认 true：高亮已输入部分), en?, keepOpen?, noRecent?, onSelect?() ,
- *             actions?: [{ id, label, icon: 'edit'|'close'|'external', url?, onClick?(item) }] }
+ *             actions?: [{ id, label, icon: 'edit'|'close'|'external', url?, onClick?(item) }] }   ← 行内动作始终占位、高亮时可见；设计上只给最近访问用「移除」，搜索结果不放额外点击动作
  * ═══════════════════════════════════════════════════════════════════════════ */
 ( function () {
 	'use strict';
@@ -3616,7 +3618,7 @@ window.AKDS_ASSET_MAP = {"avatar/char_002_amiya_1p.png": "data:image/png;base64,
 
 	function opItem( o ) {
 		return { type: 'operator', label: o.name, en: o.en, url: '#op-' + o.avatar, thumb: asset( 'avatar/' + o.avatar + '.png' ), desc: PROF[ o.cls ] + ' · ' + o.branch + ' · ' + o.faction,
-			meta: [ { html: prof( o.cls ) }, { html: stars( o.rarity ) } ], actions: [ { id: 'edit', label: '编辑', icon: 'edit', url: '#edit-' + o.avatar } ] };
+			meta: [ { html: prof( o.cls ) }, { html: stars( o.rarity ) } ] };
 	}
 	function itemItem( it ) {
 		return { type: 'item', label: it.name, url: '#item-' + it.id, thumb: asset( 'item/' + it.id + '.png' ), desc: '道具 · T' + it.rarity, meta: [ { text: 'T' + it.rarity, cls: 'ak-tag ak-tag--sm ak-tag--label' } ] };
