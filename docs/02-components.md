@@ -53,11 +53,11 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 | 组件 | 类 / MW 数据 | 说明 | 状态 |
 |---|---|---|---|
-| 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools` | 56px 粘性；毛玻璃底；1px 底线（曾有的左下 160px 青短条已去掉——短横条只保留在标题语境）；`--dark` 变体（亮色主题下仍可黑页眉） | ✅ |
-| 主导航 | `.ak-header__nav a.is-active` | 3px 青色下划线 | ✅ |
+| 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools` `__screen __tool __tool-label __burger __burger-icon` + `.ak-nav-cb` | 56px 粘性；毛玻璃底；1px 底线（曾有的左下 160px 青短条已去掉——短横条只保留在标题语境）；`--dark` 变体（亮色主题下仍可黑页眉）。**<1120 参考 VitePress NavScreen**：主行只留 品牌 / 搜索 / ≡，主导航 + 工具都在 `.ak-header__screen`（桌面 `display:contents`，窄屏 = ≡ 拉下的全屏面板；纯 CSS 开合 `.ak-nav-cb` + `label.ak-header__burger`，`body:has(:checked)` 锁滚动；JS 补 Esc / 选中锚点 / 回到桌面宽度收起）。DOM 只一份，Echo / `#p-personal` id 不重复 | ✅ |
+| 主导航 | `.ak-header__nav a.is-active` | 3px 青色下划线；<1120 在导航屏里竖排成 48px 整行链接，当前项左 2px 青条 + 淡青底 | ✅ |
 | 搜索（悬浮面板） | 触发器 `button.ak-search-trigger`（有 JS 时替换页眉里的 `form.ak-header__search`；无 JS 保留真表单）· 面板 `.ak-palette-backdrop` + `.ak-palette[role=dialog]` `__head( __back __icon __chip form.__form>#searchInput __clear __close __loading )` `__body>__viewport>__list[role=listbox]>__group>__label+__item[role=option]>__link( __thumb __text( __title __desc ) __meta )[+__actions]` `__empty( __empty-title __empty-desc __shortcuts>__shortcut )` `__foot( __foot-left __hints )` · 状态 `.has-query .has-mode .is-loading .is-closing`；核心 `search-palette.js`（与预览共用），数据源 `skin/resources/search-providers.js` / `preview/search-mock.js` | 参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是居中悬浮的「终端窗口」——直角、顶部 3px 青条、56px 输入行、结果区高度过渡、`--ak-bg-surface-2` 键位页脚；高亮行 = 左 2px 青条 + 淡青底（与侧栏当前项 / 菜单项同一语言）；命令模式用斜切 chip；页眉真表单被**原样搬进面板**（`#searchform #searchInput` 保留 → Gadget / 无 JS 提交不受影响）。开：点触发器 / 手机图标 `.ak-header__search-toggle` / `/`、Ctrl(⌘)K、accesskey F；关：Esc（有字先清空 → 模式中返回 → 关闭）/ 遮罩 / 关闭按钮 / 选中。空态 = 最近访问（localStorage `akds-recent`）+ 提示 + 快捷入口（取页眉主导航）；有字 = 分组结果 + 末尾固定「全文搜索」行，首项自动高亮、↵ 打开、⇧↵ 全文、⌘/Ctrl↵ 新标签；结果未到就回车 → MW 原生 Go。`/` 列命令，`>` 动作 `#` 分类 `@` 用户 `~` 文件 进入模式（退格空输入 / ← / 返回键退出）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时可见，不会让右侧元数据跳动）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。a11y：`role=dialog aria-modal`、输入框 `role=combobox aria-activedescendant`、`aria-live` 播报条数、Tab 在面板内循环、关闭后焦点回到触发器。≤639：8px 内边距的全宽卡片，右上 Esc 换成「取消」，触屏隐藏键位提示 | ✅🧩 |
-| 主题切换 | `.ak-theme-toggle` (os/day/night) | 写入 `mw.user.clientPrefs` | ✅🧩 |
-| 通知 / 用户菜单 | `.ak-badge` `.ak-header__user` + `#p-personal` | Echo 徽标 | ✅ |
+| 主题切换 | `.ak-theme-toggle` (os/day/night)，外面包一层 `.ak-header__tool` + `.ak-header__tool-label`（「外观」，只在窄屏面板显示） | 写入 `mw.user.clientPrefs`；<1120 变成面板里的「外观」行，三个按钮加大到 40×32 | ✅🧩 |
+| 通知 / 用户菜单 | `.ak-badge` `.ak-header__bell` `.ak-header__user` + `#p-personal` | Echo 徽标；<1120 变成面板里的「通知」行（徽标靠右）与用户行（`#p-personal` 的 `.ak-menu` 就地展开，不再浮出） | ✅ |
 | 侧栏 | `.ak-sidebar` `__panel(#mw-panel)` `.ak-portlet` `--grid --collapsible` + `#p-navigation` `#p-tb` | 粘性；<1120 抽屉（由二级吸顶栏「菜单」打开；收起时 `visibility:hidden`，不进 Tab 序、阴影也不会从屏幕左缘漏进来）；网格快捷入口；门户折叠状态记忆 | ✅🧩 |
 | 侧栏多层导航 | `li.ak-tree__branch(.is-open .is-current-path .is-peek)` `> .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list`；`.ak-flyout` `__title` | 由 `sidebar-tree.js` 增强 `.ak-sidebar` 内任意 `li > ul`（含 PRTS `#MenuSidebar` 的 `p / ul / li > b` 原始输出）：任意深度树形展开、缩进导轨、当前页路径自动展开高亮、`localStorage` 记忆、← → 键盘；桌面(hover+fine, ≥1120)悬停折叠分支右侧飞出预览（`data-flyout="off"` 关闭） | ✅🧩 |
 | 页面头 | `.ak-page-header` `__top __ns __title __bar` + `#firstHeading` | 面包屑 + 指示器；标题 8px 青条 + 英文副标 | ✅ |
@@ -69,7 +69,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 回到顶部 | `.ak-fab` | 仅 ≥1400 显示（右下浮动）；<1400 隐藏，改由目录浮层首项 `.ak-toc__top` 承担——手机上浮动按钮太挡视野。**注意**：只要页面有元素横向溢出，移动端 Chrome 会把布局视口撑宽，fixed 元素就会被推到可见区外——见 §命名与约定 | ✅🧩 |
 | 抽屉 / 遮罩 | `.ak-drawer` `.ak-overlay` | 移动端侧栏 | ✅🧩 |
 | 跳转链接 | `.ak-skip` | a11y | ✅ |
-| 移动端 | ≤639 规则 | 页眉压缩、搜索收成图标按钮（打开同一个悬浮面板）、表格横滚、浮动图取消 | ✅ |
+| 移动端 | <1120 / ≤639 规则 | <1120：主导航 + 工具收进 ≡ 导航屏（见「页眉」）；≤639：页眉压缩、搜索收成图标按钮（打开同一个悬浮面板）、表格横滚、浮动图取消 | ✅ |
 
 ---
 

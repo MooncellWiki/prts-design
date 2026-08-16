@@ -7,7 +7,7 @@
 - 设计系统展示（运行在皮肤骨架内）：https://claude.ai/code/artifact/f04aa56e-c8bb-4491-ae2c-7711f330d396
 - 干员页整页样例（陈）：https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2
 
-本地：直接打开 `preview/index.html` / `preview/operator.html`（右上角切换 终端(暗) / 档案(亮) / 跟随系统）。预览侧栏使用 prts.wiki 现网 `#MenuSidebar` 的真实结构（分组 → 分组项 → 子项，可多层），悬停可预览、点击展开并记忆。搜索是参考 Citizen（starcitizen.tools）的悬浮面板：点页眉搜索框或按 `/`、`⌘K` 打开，试试 `陈`、`yh`（拼音首字母）、`>`（动作）、`/`（命令列表）。
+本地：直接打开 `preview/index.html` / `preview/operator.html`（右上角切换 终端(暗) / 档案(亮) / 跟随系统；窗口 <1120 时主导航与外观切换 / 通知 / 用户收进右上角 ≡ 拉下的导航屏，参考 VitePress）。预览侧栏使用 prts.wiki 现网 `#MenuSidebar` 的真实结构（分组 → 分组项 → 子项，可多层），悬停可预览、点击展开并记忆。搜索是参考 Citizen（starcitizen.tools）的悬浮面板：点页眉搜索框或按 `/`、`⌘K` 打开，试试 `陈`、`yh`（拼音首字母）、`>`（动作）、`/`（命令列表）。
 
 ## 目录
 
