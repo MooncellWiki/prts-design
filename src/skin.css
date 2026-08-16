@@ -17,10 +17,30 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 /* ═══ Header ═══
  *  两行结构：.ak-header__inner（品牌 / 导航 / 搜索 / 工具，56px）
  *          + .ak-local-nav（二级吸顶栏，仅 <1400 出现，48px）
- *  <1400 向下滚动时整个页眉上移一个 __inner 的高度 —— 主行滑出视口，二级栏贴顶。 */
+ *  <1400 向下滚动时整个页眉上移一个 __inner 的高度 —— 主行滑出视口，二级栏贴顶。
+ *  <1120 参考 VitePress 的 NavScreen：主行只留 品牌 / 搜索 / ≡；主导航 + 工具（外观 / 通知 / 用户）都在
+ *  .ak-header__screen 里 —— 桌面 display:contents（子项直接参与主行 flex，用 order 排成 logo · nav · search · tools），
+ *  窄屏变成 ≡ 拉下的全屏面板。开合是纯 CSS：input.ak-nav-cb + label.ak-header__burger（同目录浮层的 .ak-toc-cb 做法），
+ *  DOM 顺序固定为 logo · search · search-toggle · nav-cb · screen[nav, tools] · burger（checkbox 在前才能用 ~ 联动）。
+ *  面板 position:fixed 在页眉里：.ak-header 的 backdrop-filter 令它成为包含块，但页眉贴着视口左上、宽度就是视口宽，
+ *  所以 top/left/right 与相对视口一致（不用 bottom:0，用 100dvh 减页眉高度）。 */
 .ak-header { position: sticky; top: 0; z-index: var(--ak-z-header); background: var(--ak-bg-header); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
   border-bottom: 1px solid var(--ak-border); color: var(--ak-fg); transition: transform var(--ak-dur-normal) var(--ak-ease); }
 .ak-header__inner { height: var(--ak-header-h); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); display: flex; align-items: center; gap: var(--ak-space-4); position: relative; }
+.ak-header__screen, .ak-header__tool { display: contents; }   /* 桌面：只是分组，不产生盒子；窄屏见「Responsive」段 */
+.ak-header__nav { order: 1; } .ak-header__search { order: 2; } .ak-header__tools, .ak-header__search-toggle { order: 3; } .ak-header__burger { order: 4; }
+.ak-header__tool-label { display: none; }   /* 「外观」「通知」这类行标签只在窄屏面板里出现（桌面是图标） */
+.ak-nav-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 窄屏 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
+.ak-header__burger { display: none; flex: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; color: var(--ak-fg-secondary); cursor: pointer; }
+.ak-header__burger:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
+.ak-header__burger-icon { position: relative; display: block; width: 18px; height: 14px; }
+.ak-header__burger-icon i { position: absolute; left: 0; width: 18px; height: 2px; background: currentColor; transition: transform var(--ak-dur-fast) var(--ak-ease), opacity var(--ak-dur-fast); }
+.ak-header__burger-icon i:nth-child(1) { top: 0; } .ak-header__burger-icon i:nth-child(2) { top: 6px; } .ak-header__burger-icon i:nth-child(3) { top: 12px; }
+.ak-nav-cb:checked ~ .ak-header__burger { color: var(--ak-fg); }
+.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.ak-nav-cb:focus-visible ~ .ak-header__burger { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 .ak-header__logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; padding-right: var(--ak-space-4); border-right: 1px solid var(--ak-border); }
 .ak-header__logo:hover { text-decoration: none; color: inherit; }
 .ak-header__logo img { height: 28px; width: auto; filter: var(--ak-glyph-filter); }
@@ -45,9 +65,9 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-search-trigger__icon { width: 16px; height: 16px; flex: none; }
 .ak-search-trigger__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ak-header__tools { display: flex; align-items: center; gap: 4px; flex: none; margin-left: auto; }
-.ak-header__tools .ak-btn--icon { border-color: transparent; background: transparent; color: var(--ak-fg-secondary); }
-.ak-header__tools .ak-btn--icon:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
-.ak-header__tools .ak-btn--icon svg { width: 20px; height: 20px; }
+.ak-header__tools .ak-btn--icon, .ak-header__search-toggle { border-color: transparent; background: transparent; color: var(--ak-fg-secondary); }
+.ak-header__tools .ak-btn--icon:hover, .ak-header__search-toggle:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
+.ak-header__tools .ak-btn--icon svg, .ak-header__search-toggle svg { width: 20px; height: 20px; }
 .ak-header__user { display: inline-flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; }
 .ak-header__user .ak-avatar { --_s: 28px; }
 .ak-header--dark { --ak-bg-header: rgba(15,15,16,.86); --ak-fg: #f0f0f0; --ak-fg-secondary: #c9c9c9; --ak-fg-muted: #8d8d8d; --ak-border: #2f3133; --ak-bg-hover: rgba(255,255,255,.06); --ak-bg-surface-2: #232425; --ak-bg-surface: #1a1b1c; --ak-glyph-filter: none; --ak-accent: #18d1ff; --ak-accent-fg: #000; }   /* 亮色主题下仍可选择黑色页眉 */
@@ -70,7 +90,8 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-toc-cb:checked ~ .ak-local-nav__toc { color: var(--ak-accent); }
 .ak-toc-cb:checked ~ .ak-local-nav__toc .ak-local-nav__chevron { transform: translateY(2px) rotate(-135deg); }
 .ak-toc-cb:focus-visible ~ .ak-local-nav__toc { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
-@media (prefers-reduced-motion: reduce) { .ak-header, .ak-local-nav__chevron { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .ak-header, .ak-local-nav__chevron, .ak-header__burger-icon i { transition: none; } .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
+@keyframes ak-nav-screen-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 
 /* ═══ Layout ═══
  *  两列网格：侧栏 + 主列。目录导轨不是第三列，而是由 .ak-main 的右内边距预留出来的
@@ -414,10 +435,37 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); padding: var(--ak-space-4); transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
   .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
   .ak-sidebar__close { display: block; }
-  .ak-header__nav { display: none; }
-  .ak-header__logo { border-right: 0; padding-right: 0; }
+  .ak-header__logo { border-right: 0; padding-right: 0; margin-right: auto; }   /* 品牌靠左，其余（搜索 / ≡）靠右 */
   .ak-header__search { flex: 1; }
   .ak-body { padding: var(--ak-space-5) var(--ak-space-5); }
+
+  /* 主行只留 品牌 / 搜索 / ≡（VitePress NavScreen）：主导航 + 工具收进汉堡拉下的全屏面板；页面滚动锁住，面板自己可滚 */
+  .ak-nav-cb { display: block; }
+  .ak-header__burger { display: inline-flex; }
+  .ak-header__screen { position: fixed; top: var(--ak-header-h); left: 0; right: 0; height: calc(100vh - var(--ak-header-h)); height: calc(100dvh - var(--ak-header-h)); z-index: 1;
+    display: none; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; padding: var(--ak-space-3) var(--ak-gutter) var(--ak-space-12);
+    background: var(--ak-bg-surface); color: var(--ak-fg); }
+  .ak-nav-cb:checked ~ .ak-header__screen { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
+  body:has(.ak-nav-cb:checked) { overflow: hidden; }
+  /* 主导航 → 竖排列表：整行可点、底线分隔，当前项左青条 + 淡青底（与侧栏当前项同一语言） */
+  .ak-header__nav { display: flex; flex-direction: column; align-items: stretch; flex: none; height: auto; overflow: visible; gap: 0; }
+  .ak-header__nav a, .ak-header__nav > .ak-dropdown > summary { height: auto; min-height: 48px; padding: 0 var(--ak-space-4); font-size: var(--ak-fs-body); color: var(--ak-fg); border-bottom: 1px solid var(--ak-border); border-left: 2px solid transparent; }
+  .ak-header__nav a.is-active { color: var(--ak-accent); border-left-color: var(--ak-accent); background: var(--ak-accent-subtle); }
+  .ak-header__nav a.is-active::after { display: none; }
+  /* 工具 → 「外观 / 通知 / 用户」三行（对应 Vite 面板下半的 Appearance 组）：浅底 + 左青条 */
+  .ak-header__tools { flex-direction: column; align-items: stretch; gap: 0; margin: var(--ak-space-6) 0 0; padding: var(--ak-space-1) 0; background: var(--ak-bg-surface-2); border-left: 3px solid var(--ak-accent); }
+  .ak-header__tools > * { display: flex; align-items: center; justify-content: space-between; gap: var(--ak-space-3); min-height: 48px; padding: 0 var(--ak-space-4); }
+  .ak-header__tool-label { display: inline; font-size: var(--ak-fs-body); color: var(--ak-fg); }
+  .ak-header__tools .ak-btn--icon, .ak-header__tools .ak-header__user { width: auto; height: auto; justify-content: flex-start; border: 0; border-radius: 0; font-size: var(--ak-fs-body); font-weight: 400; color: var(--ak-fg); background: transparent; }
+  .ak-header__tools .ak-btn--icon:hover, .ak-header__tools .ak-header__user:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
+  .ak-header__tools .ak-badge { position: static; margin-left: auto; }
+  .ak-header__tools .ak-theme-toggle > button { width: 40px; height: 32px; }   /* 触屏加大点按面积 */
+  .ak-header__user .ak-avatar { --_s: 32px; }
+  /* MW 用户菜单（#p-personal = .ak-dropdown > details > summary.ak-header__user + ul.ak-menu）：面板里就地展开，不再浮出 */
+  .ak-header__tools > .ak-dropdown { display: block; min-height: 0; padding: 0; }
+  .ak-header__tools .ak-dropdown > details > summary.ak-header__user { display: flex; align-items: center; min-height: 48px; padding: 0 var(--ak-space-4); }
+  .ak-header__tools .ak-dropdown .ak-menu { position: static; min-width: 0; margin: 0 var(--ak-space-4) var(--ak-space-2); border: 0; border-top: 1px solid var(--ak-border); box-shadow: none; background: transparent; }
+  .ak-header__tools .ak-header__notifications ul { display: flex; flex-wrap: wrap; gap: var(--ak-space-2); margin: 0; padding: 0; list-style: none; }   /* Echo 徽标（#pt-notifications-*）并排 */
 }
 @media (max-width: 639px) {
   :root { --ak-gutter: var(--ak-gutter-sm); --ak-header-h: 52px; }
@@ -425,10 +473,7 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   .ak-header__logo img { height: 24px; }
   .ak-header__wordmark { font-size: 17px; }
   .ak-header__wordmark small { display: none; }
-  .ak-theme-toggle > button[data-theme="os"] { display: none; }
-  .ak-header__tools .ak-header__user { padding-right: 0; }
-  .ak-header__search { display: none; }   /* 手机：搜索收成工具区的图标按钮（.ak-header__search-toggle），同样打开悬浮面板 */
-  .ak-header__tools .ak-header__user span { display: none; }
+  .ak-header__search { display: none; }   /* 手机：搜索收成主行里的图标按钮（.ak-header__search-toggle），同样打开悬浮面板 */
   .ak-page-header__title, .skin-akds #firstHeading { font-size: var(--ak-fs-h2); }
   .ak-body { padding: var(--ak-space-4) var(--ak-space-3); border-left: 0; border-right: 0; margin: 0 calc(-1 * var(--ak-gutter)); }
   .ak-local-nav { padding: 0 calc(var(--ak-gutter) - 8px); }

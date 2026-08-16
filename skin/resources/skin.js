@@ -76,11 +76,24 @@
 		document.addEventListener( 'keydown', ( e ) => { if ( e.key === 'Escape' ) { tocCb.checked = false; } } );
 	}
 
+	/* 导航屏（<1120 页眉 ≡ 拉下的全屏面板；开合本身是纯 CSS 的 .ak-nav-cb）：Esc / 选中链接 / 回到桌面宽度时收起 */
+	const navCb = $( '.ak-nav-cb' );
+	if ( navCb ) {
+		const closeNav = () => { if ( navCb.checked ) { navCb.checked = false; } };
+		document.addEventListener( 'keydown', ( e ) => { if ( e.key === 'Escape' && navCb.checked ) { closeNav(); navCb.focus(); } } );
+		document.addEventListener( 'click', ( e ) => {
+			if ( !navCb.checked ) { return; }
+			if ( e.target.closest( '.ak-header__screen a[href^="#"], .ak-header__search-toggle' ) ) { closeNav(); }   // 页内锚点不会整页刷新；去开搜索面板了
+		} );
+		const mq = window.matchMedia( '(min-width: 1120px)' );
+		mq.addEventListener( 'change', ( e ) => { if ( e.matches ) { closeNav(); } } );
+	}
+
 	/* 页眉收起：向下滚动只留二级吸顶栏，向上滚 / 回到顶部再展开（无 JS 则始终两行） */
 	let lastY = window.scrollY, ticking = false;
 	function onScroll() {
 		const y = Math.max( 0, window.scrollY ), root = document.documentElement;
-		if ( !( tocCb && tocCb.checked ) ) {
+		if ( !( tocCb && tocCb.checked ) && !( navCb && navCb.checked ) ) {
 			if ( y < 120 ) { root.classList.remove( 'ak-condensed' ); }
 			else if ( y > lastY + 4 ) { root.classList.add( 'ak-condensed' ); }
 			else if ( y < lastY - 4 ) { root.classList.remove( 'ak-condensed' ); }

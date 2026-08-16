@@ -7,9 +7,6 @@
       {{#data-logos.icon}}<img src="{{data-logos.icon}}" alt="" class="ak-glyph">{{/data-logos.icon}}
       <span class="ak-header__wordmark">{{msg-sitetitle}}<small>{{msg-tagline}}</small></span>
     </a>
-    {{#data-portlets-sidebar.data-portlets-first}}
-    <nav class="ak-header__nav" aria-label="{{label}}"><ul class="ak-header__nav-list">{{{html-items}}}</ul></nav>
-    {{/data-portlets-sidebar.data-portlets-first}}
     {{! 搜索：无 JS 时是这条真表单；有 JS 时 search-palette.js 把它换成 button.ak-search-trigger，并把表单本身搬进悬浮面板（#searchform / #searchInput 保留） }}
     {{#data-search-box}}
     <form class="ak-header__search ak-search" role="search" action="{{form-action}}" id="searchform">
@@ -19,19 +16,31 @@
       {{{html-button-search-fallback}}}
     </form>
     {{/data-search-box}}
-    <div class="ak-header__tools">
-      {{! 手机（≤639）：搜索收成图标按钮，同样打开悬浮面板；桌面由 CSS 隐藏 }}
-      <button type="button" class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="{{msg-akds-search-label}}" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></svg></button>
-      <div class="ak-theme-toggle" role="group" aria-label="theme">
-        <button data-theme="os" title="{{msg-akds-theme-os}}">◐</button>
-        <button data-theme="day" title="{{msg-akds-theme-day}}">☼</button>
-        <button data-theme="night" title="{{msg-akds-theme-night}}">☾</button>
+    {{! 手机（≤639）：搜索收成主行里的图标按钮，同样打开悬浮面板；≥640 由 CSS 隐藏 }}
+    <button type="button" class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="{{msg-akds-search-label}}" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></svg></button>
+    {{! <1120（VitePress NavScreen）：主导航 + 工具（外观 / 通知 / 用户菜单）收进 ≡ 拉下的全屏面板 .ak-header__screen；桌面它 display:contents，子项直接参与主行 flex。
+        开合纯 CSS：input.ak-nav-cb 必须在面板与 label.ak-header__burger 之前（~ 联动）；JS 只补 Esc / 选中链接 / 回到桌面宽度时收起。DOM 只此一份 → Echo / #p-personal 的 id 不重复。 }}
+    <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
+    <div class="ak-header__screen" id="ak-nav-screen">
+      {{#data-portlets-sidebar.data-portlets-first}}
+      <nav class="ak-header__nav" aria-label="{{label}}"><ul class="ak-header__nav-list">{{{html-items}}}</ul></nav>
+      {{/data-portlets-sidebar.data-portlets-first}}
+      <div class="ak-header__tools">
+        <div class="ak-header__tool">
+          <span class="ak-header__tool-label" id="ak-theme-label">{{msg-akds-appearance}}</span>
+          <div class="ak-theme-toggle" role="group" aria-labelledby="ak-theme-label">
+            <button data-theme="os" title="{{msg-akds-theme-os}}">◐</button>
+            <button data-theme="day" title="{{msg-akds-theme-day}}">☼</button>
+            <button data-theme="night" title="{{msg-akds-theme-night}}">☾</button>
+          </div>
+        </div>
+        {{#data-portlets.data-notifications}}<div id="{{id}}" class="ak-header__notifications {{class}}">{{{html-items}}}</div>{{/data-portlets.data-notifications}}
+        {{#data-portlets.data-user-menu}}
+        <div class="ak-dropdown" id="p-personal"><details><summary class="ak-btn ak-btn--ghost ak-header__user">{{label}}</summary><ul class="ak-menu ak-menu--right">{{{html-items}}}</ul></details></div>
+        {{/data-portlets.data-user-menu}}
       </div>
-      {{#data-portlets.data-notifications}}<div id="{{id}}" class="ak-header__notifications {{class}}">{{{html-items}}}</div>{{/data-portlets.data-notifications}}
-      {{#data-portlets.data-user-menu}}
-      <div class="ak-dropdown" id="p-personal"><details><summary class="ak-btn ak-btn--ghost ak-header__user">{{label}}</summary><ul class="ak-menu ak-menu--right">{{{html-items}}}</ul></details></div>
-      {{/data-portlets.data-user-menu}}
     </div>
+    <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">{{msg-akds-nav-screen}}</span></label>
   </div>
 
   {{! 二级吸顶栏：<1400 出现；页眉主行向下滚动收起后它仍贴顶 }}
