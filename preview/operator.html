@@ -74,12 +74,9 @@
       <span class="ak-search__kbd">/</span>
     </form>
     <button class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="搜索"><svg><use href="#i-search"/></svg></button>
-    <!-- <1120：主导航 + 工具收进 ≡ 拉下的全屏面板（VitePress NavScreen）；开合纯 CSS：checkbox 在前，面板与汉堡在后 -->
+    <!-- 页眉不放站点级主导航（与侧栏「通用」组重复，导航只由侧栏承担）。<1120：工具（外观 / 通知 / 用户）收进 ≡ 拉下的右对齐卡片；开合纯 CSS：checkbox 在前，卡片与汉堡在后 -->
     <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
     <div class="ak-header__screen" id="ak-nav-screen">
-      <nav class="ak-header__nav" aria-label="主导航">
-        <a href="#" class="is-active">干员</a><a href="#">敌人</a><a href="#">关卡</a><a href="#">道具</a><a href="#">活动</a><a href="#">剧情</a><a href="#">家具</a><a href="#">时装</a>
-      </nav>
       <div class="ak-header__tools">
         <div class="ak-header__tool">
           <span class="ak-header__tool-label" id="ak-theme-label">外观</span>
@@ -93,7 +90,7 @@
         <a class="ak-btn ak-btn--ghost ak-header__user" href="#"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></a>
       </div>
     </div>
-    <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">导航与设置</span></label>
+    <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
   </div>
 
   <!-- ═══ LOCAL NAV ═══ 二级吸顶栏：<1400 出现；页眉主行下滑收起后它仍贴顶 -->

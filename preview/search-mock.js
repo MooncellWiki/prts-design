@@ -123,8 +123,11 @@
 			search: ( q, signal ) => delay( 100, signal ).then( () => [ { id: 'files', label: '文件', en: 'Files', items: FILES.filter( ( f ) => !q || f.includes( q ) ).map( ( f ) => ( { type: 'file', label: '文件:' + f, url: '#file-' + f, desc: 'PNG · 512×512' } ) ) } ] ) }
 	];
 
+	/* 快捷入口：页眉没有主导航，取侧栏「菜单 › 通用」组的前 6 项（sidebar-tree.js 增强后 ul 仍是 li 的直接子级） */
 	function shortcuts() {
-		const nav = Array.from( document.querySelectorAll( '.ak-header__nav a' ) ).slice( 0, 6 ).map( ( a ) => ( { label: a.textContent.trim(), url: a.getAttribute( 'href' ) || '#' } ) );
+		const group = Array.from( document.querySelectorAll( '#MenuSidebar > ul > li' ) ).find( ( li ) => /^通用/.test( ( li.firstElementChild && li.firstElementChild.textContent || '' ).trim() ) );
+		const links = group ? Array.from( group.querySelectorAll( ':scope > ul a' ) ) : Array.from( document.querySelectorAll( '#MenuSidebar a[href]' ) );
+		const nav = links.slice( 0, 6 ).map( ( a ) => ( { label: a.textContent.trim(), url: a.getAttribute( 'href' ) || '#' } ) );
 		return nav.concat( [ { label: '随机页面', url: '#random' } ] );
 	}
 

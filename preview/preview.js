@@ -86,15 +86,17 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeToc(); });
   }
 
-  /* ── 导航屏（<1120 页眉 ≡ 拉下的全屏面板；开合本身是纯 CSS 的 .ak-nav-cb）：Esc / 选了链接 / 回到桌面宽度时收起 ── */
+  /* ── 工具卡片（<1120 页眉 ≡ 拉下的 外观 / 通知 / 用户 卡片；开合本身是纯 CSS 的 .ak-nav-cb）：Esc / 选了链接 / 点卡片外 / 回到桌面宽度时收起 ── */
   const navCb = $('.ak-nav-cb');
   if (navCb) {
     const closeNav = () => { if (navCb.checked) navCb.checked = false; };
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && navCb.checked) { closeNav(); navCb.focus(); } });
     document.addEventListener('click', e => {
       if (!navCb.checked) return;
-      if (e.target.closest('.ak-header__screen a[href]')) closeNav();          // 演示页链接都是 #，不会整页刷新，主动收起
-      if (e.target.closest('.ak-header__search-toggle')) closeNav();          // 去开搜索面板了
+      if (e.target.closest('.ak-header__screen a[href]')) { closeNav(); return; }   // 演示页链接都是 #，不会整页刷新，主动收起
+      if (e.target.closest('.ak-header__search-toggle')) { closeNav(); return; }   // 去开搜索面板了
+      // 点卡片外收起。放行 .ak-nav-cb：点 label 会再向 checkbox 派发一次 click，那次不算「外部」
+      if (!e.target.closest('.ak-header__screen, .ak-header__burger, .ak-nav-cb')) closeNav();
     });
     const mq = window.matchMedia('(min-width: 1120px)');
     (mq.addEventListener ? mq.addEventListener('change', e => { if (e.matches) closeNav(); }) : mq.addListener(e => { if (e.matches) closeNav(); }));
@@ -104,7 +106,7 @@
   let lastY = window.scrollY, ticking = false;
   function onScroll() {
     const y = Math.max(0, window.scrollY), root = document.documentElement;
-    if (!(tocCb && tocCb.checked) && !(navCb && navCb.checked)) {   // 目录浮层 / 导航屏开着时不动，免得浮层跟着跳
+    if (!(tocCb && tocCb.checked) && !(navCb && navCb.checked)) {   // 目录浮层 / 工具卡片开着时不动，免得浮层跟着跳
       if (y < 120) root.classList.remove('ak-condensed');
       else if (y > lastY + 4) root.classList.add('ak-condensed');
       else if (y < lastY - 4) root.classList.remove('ak-condensed');
