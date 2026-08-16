@@ -86,11 +86,25 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeToc(); });
   }
 
+  /* ── 导航屏（<1120 页眉 ≡ 拉下的全屏面板；开合本身是纯 CSS 的 .ak-nav-cb）：Esc / 选了链接 / 回到桌面宽度时收起 ── */
+  const navCb = $('.ak-nav-cb');
+  if (navCb) {
+    const closeNav = () => { if (navCb.checked) navCb.checked = false; };
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && navCb.checked) { closeNav(); navCb.focus(); } });
+    document.addEventListener('click', e => {
+      if (!navCb.checked) return;
+      if (e.target.closest('.ak-header__screen a[href]')) closeNav();          // 演示页链接都是 #，不会整页刷新，主动收起
+      if (e.target.closest('.ak-header__search-toggle')) closeNav();          // 去开搜索面板了
+    });
+    const mq = window.matchMedia('(min-width: 1120px)');
+    (mq.addEventListener ? mq.addEventListener('change', e => { if (e.matches) closeNav(); }) : mq.addListener(e => { if (e.matches) closeNav(); }));
+  }
+
   /* ── 页眉收起：向下滚动只留二级吸顶栏，向上滚 / 回到顶部再展开 ── */
   let lastY = window.scrollY, ticking = false;
   function onScroll() {
     const y = Math.max(0, window.scrollY), root = document.documentElement;
-    if (!(tocCb && tocCb.checked)) {   // 目录浮层开着时不动，免得浮层跟着跳
+    if (!(tocCb && tocCb.checked) && !(navCb && navCb.checked)) {   // 目录浮层 / 导航屏开着时不动，免得浮层跟着跳
       if (y < 120) root.classList.remove('ak-condensed');
       else if (y > lastY + 4) root.classList.add('ak-condensed');
       else if (y < lastY - 4) root.classList.remove('ak-condensed');
