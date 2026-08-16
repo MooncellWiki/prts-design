@@ -28,6 +28,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 链接 | `a` `.new` `.external` `.mw-selflink` `:visited` | 主题化色 + 外链 SVG 图标（mask） | ✅ |
 | 列表 | `ul li::before` | 旋转方块项目符号（青）；`ol::marker` Bender | ✅ |
 | 表格 | `.wikitable` + `.ak-striped .ak-compact .ak-dense .ak-borderless .ak-sticky-head` + `.ak-table-scroll` | 1px 边框、表头 surface-2、悬停行；移动端 display:block 横向滚动 | ✅ |
+| 表格 | `.wikitable` `.ak-striped .ak-compact .ak-dense .ak-borderless .ak-sticky-head` + `.ak-table-scroll` | th 底色 `--ak-bg-surface-2`、居中加粗；**加粗的 2px 底线只压「整行都是 th、且下一行是数据行」的真正表头行**（`tr:not(:has(td)):has(+ tr > td)` / `thead > tr:last-child`），PRTS 常见的竖排行头 th 只有普通 1px 线，与右侧 td 对齐；老浏览器退化为一律 1px | ✅ |
 | 排序表头 | `.jquery-tablesorter th.headerSort*` | ⇅ ↑ ↓ 指示 | ✅ |
 | 缩略图 / 图库 | `figure[typeof~=mw:File/Thumb]` `.thumb` `ul.gallery` | 1px 框 + 青色方块图注；弹性图库 | ✅ |
 | 目录（内联） | `.toc` | 顶部 3px 青条卡片 | ✅ |

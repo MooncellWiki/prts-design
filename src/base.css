@@ -130,10 +130,11 @@ pre, .mw-code, .mw-highlight pre {
   border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); line-height: 1.5;
 }
 .wikitable > * > tr > th, .wikitable > * > tr > td { border: 1px solid var(--ak-border); padding: .45em .7em; vertical-align: middle; }
-.wikitable > * > tr > th {
-  background: var(--ak-bg-surface-2); font-weight: 700; text-align: center; color: var(--ak-fg);
-  border-bottom: 2px solid var(--ak-border-strong);
-}
+.wikitable > * > tr > th { background: var(--ak-bg-surface-2); font-weight: 700; text-align: center; color: var(--ak-fg); }
+/* 表头行的加粗底线只给「整行都是 th、且下一行是数据行」的那一行（多行表头只压最后一行）——PRTS 大量表格把 th 竖着当行头用（属性表 / 信息表），
+ * 早先给所有 th 一律 2px 底线，行头列每一格下面都多出一道，与右侧 td 的 1px 线对不齐、显得冗余。不支持 :has() 的浏览器退化为一律 1px，只靠底色区分。 */
+.wikitable > thead > tr:last-child:not(:has(td)) > th,
+.wikitable > tbody > tr:not(:has(td)):has(+ tr > td) > th { border-bottom: 2px solid var(--ak-border-strong); }
 .wikitable > thead > tr > th, .wikitable > tbody > tr:first-child > th { position: relative; }
 .wikitable caption { caption-side: top; text-align: left; font-weight: 700; padding: .4em 0; color: var(--ak-fg-secondary); font-size: var(--ak-fs-sm); }
 .wikitable > tbody > tr:hover > td { background: var(--ak-bg-hover); }
