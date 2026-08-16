@@ -4,8 +4,11 @@
 
 ## 在线预览
 
-- 设计系统展示（运行在皮肤骨架内）：https://claude.ai/code/artifact/f04aa56e-c8bb-4491-ae2c-7711f330d396
-- 干员页整页样例（陈）：https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2
+GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 自动部署，站点内容 = `preview/` 提到根目录 + `src/` + `dist/`）：
+
+- 设计系统展示（运行在皮肤骨架内）：https://mooncellwiki.github.io/prts-design/
+- 干员页整页样例（陈）：https://mooncellwiki.github.io/prts-design/operator.html
+- 单文件版（图片内联，可另存离线）：https://mooncellwiki.github.io/prts-design/dist/index.html · https://mooncellwiki.github.io/prts-design/dist/operator.html
 
 本地：直接打开 `preview/index.html` / `preview/operator.html`（右上角切换 终端(暗) / 档案(亮) / 跟随系统；页眉不放站点级主导航——那 8 项与侧栏「通用」组重复，导航只由侧栏承担；桌面页眉是与正文三列对齐的 品牌 · 搜索 · 工具，窗口 <1120 时外观切换 / 通知 / 用户收进右上角 ≡ 拉下的卡片）。预览侧栏使用 prts.wiki 现网 `#MenuSidebar` 的真实结构（分组 → 分组项 → 子项，可多层），悬停可预览、点击展开并记忆。搜索是参考 Citizen（starcitizen.tools）的悬浮面板：点页眉搜索框或按 `/`、`⌘K` 打开，试试 `陈`、`yh`（拼音首字母）、`>`（动作）、`/`（命令列表）。
 
@@ -30,7 +33,7 @@ skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustach
 tokens/tokens.json  机器可读令牌（scripts/export-tokens.py 生成）
 preview/            展示页 + 干员页样例 + preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；badge/ 为 prts.wiki 现网页脚徽章）
 dist/               单文件打包（图片内联，用于发布/分享；scripts/build-dist.py 生成）
-scripts/            export-tokens.py · build-dist.py
+scripts/            export-tokens.py · build-dist.py · build-site.sh（组装 GitHub Pages 站点）
 ```
 
 ## 三句话看懂这套系统
@@ -58,6 +61,7 @@ scripts/            export-tokens.py · build-dist.py
 ```bash
 python3 scripts/export-tokens.py                       # tokens.css → tokens/tokens.json
 python3 scripts/build-dist.py                          # preview → dist（需要 Pillow）
+bash scripts/build-site.sh _site                       # 组装 Pages 站点（CI 用同一脚本；本地 `python3 -m http.server -d _site` 可自查）
 ```
 
 ## 说明
