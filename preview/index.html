@@ -205,7 +205,7 @@
   <div class="ak-hero__eyebrow">PRTS.WIKI · NEW SKIN DESIGN SYSTEM</div>
   <h2 class="ak-hero__title" style="border:0;padding:0;margin:8px 0 12px;font-size:clamp(2rem,6vw,4rem)">AKDS<span class="cn">明日方舟网页设计系统</span></h2>
   <div class="ak-hero__bar"></div>
-  <p class="ak-hero__desc">以明日方舟官网与游戏内 UI 为视觉母体，参考 ReEnd（终末地）设计系统的令牌—组件—模式分层，为 prts.wiki 的 MediaWiki 皮肤定义色彩、字体、间距、装饰语言与组件库。所有颜色均可追溯至官网 CSS、游戏解包精灵或 gamedata。</p>
+  <p class="ak-hero__desc">以明日方舟官网与游戏内 UI 为视觉母体，按令牌—组件—模式分层，为 prts.wiki 的 MediaWiki 皮肤定义色彩、字体、间距、装饰语言与组件库。所有颜色均可追溯至官网 CSS、游戏解包精灵或 gamedata。</p>
   <div class="ak-hero__side"></div>
 </div>
 
@@ -213,10 +213,10 @@
 
 <!-- ═══════════ 1. PHILOSOPHY ═══════════ -->
 <h2 id="s-philosophy" class="section-anchor">设计理念 <span class="ak-en ak-fs-sm ak-fg-muted">Philosophy</span></h2>
-<p>ReEnd 的关键词是「战术 HUD · 黑金 · 菱形 · 辉光」。方舟本体的关键词不同：<b>纯黑与纯白的对撞、青蓝强调、直角与斜切、拉丁大写字、白色线稿图标、半调网点与斜纹</b>。UI 是「档案 / 终端」而不是「驾驶舱」。</p>
+<p>方舟本体的关键词：<b>纯黑与纯白的对撞、青蓝强调、直角与斜切、拉丁大写字、白色线稿图标、半调网点与斜纹</b>。UI 是「档案 / 终端」而不是「驾驶舱」。</p>
 <div class="ak-grid-3 ak-gap-3 ak-mb-4">
   <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">01 · Monochrome first</span><b>黑白为体，青为用</b><p class="ak-fs-sm ak-fg-2 ak-mb-0">大面积黑/白/灰承载信息，青色 <code>#18D1FF</code>（官网）/ <code>#0098DC</code>（游戏内）只用于选中、链接、强调条与主要动作；黄色 <code>#FFD800</code> 为次强调（稀有度、提示）。</p></div></div>
-  <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">02 · Cut, not rounded</span><b>直角、斜切、切角</b><p class="ak-fs-sm ak-fg-2 ak-mb-0">圆角为 0；用切角（chamfer）、平行四边形（skew）、角标三角表达层级与状态。与终末地的菱形和边角括号区分。</p></div></div>
+  <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">02 · Cut, not rounded</span><b>直角、斜切、切角</b><p class="ak-fs-sm ak-fg-2 ak-mb-0">圆角为 0；用切角（chamfer）、平行四边形（skew）、角标三角表达层级与状态；不用菱形和边角括号。</p></div></div>
   <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">03 · Latin display</span><b>大写拉丁字作装饰层</b><p class="ak-fs-sm ak-fg-2 ak-mb-0">Novecento Sans Wide / Bender / Oswald 只用于标题旁的英文、编号、数值与水印；中文正文一律思源黑体，保证维基长文可读性。</p></div></div>
   <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">04 · Two canonical themes</span><b>终端 / 档案 双主题</b><p class="ak-fs-sm ak-fg-2 ak-mb-0">游戏本身就是双色世界：主界面/作战为黑，干员档案/商店为白灰。两套主题都是「正典」，用 MW 1.43 的 clientPrefs 机制切换。</p></div></div>
   <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">05 · Wiki-native</span><b>先服务内容，再谈风格</b><p class="ak-fs-sm ak-fg-2 ak-mb-0">wikitable、TOC、引用、图库、TabberNeue、Cargo 表都在设计范围内；组件用纯 CSS 类表达，可直接写进模板与 TemplateStyles。</p></div></div>
@@ -224,7 +224,7 @@
 </div>
 <div class="ak-grid-2 ak-gap-3">
   <div class="ak-message ak-message--success ak-mb-0"><div class="ak-message__body"><div class="ak-message__title">DO</div><ul class="ak-mb-0"><li>标题左侧粗色条 + 短横条</li><li>切角 / 斜切 / 角标三角表示选中与层级</li><li>数值、编号用 Bender/Oswald 类字体，中文用思源</li><li>白色线稿图标在亮色主题下 <code>filter: invert(1)</code></li><li>只在选中/主动作/链接使用青色</li><li>斜纹表示危险、施工、禁用</li></ul></div></div>
-  <div class="ak-message ak-message--danger ak-mb-0"><div class="ak-message__body"><div class="ak-message__title">DON'T</div><ul class="ak-mb-0"><li>圆角卡片、阴影堆叠、玻璃拟态</li><li>菱形项目符号、辉光文字（那是终末地）</li><li>用金黄 <code>#FFD429</code> 做主强调色</li><li>大写英文替代中文标题</li><li>正文用 Orbitron/等宽</li><li>稀有度用非官方色阶</li></ul></div></div>
+  <div class="ak-message ak-message--danger ak-mb-0"><div class="ak-message__body"><div class="ak-message__title">DON'T</div><ul class="ak-mb-0"><li>圆角卡片、阴影堆叠、玻璃拟态</li><li>菱形项目符号、辉光文字</li><li>用金黄 <code>#FFD429</code> 做主强调色</li><li>大写英文替代中文标题</li><li>正文用 Orbitron/等宽</li><li>稀有度用非官方色阶</li></ul></div></div>
 </div>
 
 <!-- ═══════════ 2. COLOR ═══════════ -->
@@ -470,12 +470,12 @@
 </div>
 <h3>手风琴 / 数据表</h3>
 <details class="ak-details" open><summary>什么是 AKDS？</summary><div class="ak-details__body ak-fs-sm">明日方舟网页设计系统，为 prts.wiki 皮肤设计。</div></details>
-<details class="ak-details"><summary>与 ReEnd 的关系？</summary><div class="ak-details__body ak-fs-sm">借鉴其令牌—组件分层与文档结构，视觉语言完全按明日方舟本体重建。</div></details>
+<details class="ak-details"><summary>为什么不用 Codex 默认外观？</summary><div class="ak-details__body ak-fs-sm">Codex 令牌被桥接到 <code>--ak-*</code>，核心 / 扩展 UI 自动跟随；但视觉语言完全按明日方舟本体重建，而不是套一层配色。</div></details>
 <table class="ak-table ak-table--striped ak-mt-4"><thead><tr><th aria-sort="descending">阶段</th><th>等级上限</th><th class="num">生命</th><th class="num">攻击</th><th class="num">防御</th></tr></thead><tbody><tr><td>精英零</td><td>50</td><td class="num">1684</td><td class="num">361</td><td class="num">221</td></tr><tr class="is-selected"><td>精英一</td><td>80</td><td class="num">2188</td><td class="num">469</td><td class="num">288</td></tr><tr><td>精英二</td><td>90</td><td class="num">2880</td><td class="num">610</td><td class="num">352</td></tr></tbody></table>
 
 <!-- ═══════════ 7. ARKNIGHTS COMPONENTS ═══════════ -->
-<h2 id="s-ak" class="section-anchor">方舟组件 <span class="ak-en ak-fs-sm ak-fg-muted">Signature · game-data components</span></h2>
-<p>对应 ReEnd 的「Signature」层。这里的组件直接绑定游戏数据结构（稀有度、职业、精英化、技能、材料、模组…），图标来自 torappu 解包的游戏原图。</p>
+<h2 id="s-ak" class="section-anchor">方舟组件 <span class="ak-en ak-fs-sm ak-fg-muted">Game-data components</span></h2>
+<p>这里的组件直接绑定游戏数据结构（稀有度、职业、精英化、技能、材料、模组…），图标来自 torappu 解包的游戏原图。</p>
 <h3>稀有度 / 职业 / 精英化 / 潜能 / 专精</h3>
 <div class="demo"><span class="ak-rarity ak-rarity--lg"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="ak-rarity ak-rarity--r5 ak-rarity--lg"><i></i><i></i><i></i><i></i><i></i></span><span class="ak-rarity ak-rarity--white ak-rarity--lg"><i></i><i></i><i></i><i></i></span><img class="ak-rarity-img" src="assets/rarity/rarity_yellow_5.png" alt="六星" style="height:18px"><img class="ak-rarity-img ak-glyph" src="assets/rarity/rarity_4.png" alt="五星" style="height:18px"><span class="ak-fs-xs ak-fg-muted">← CSS 星形 / 游戏原图（白色版自动反相）</span></div>
 <div class="demo">
