@@ -48,6 +48,11 @@ small, .ak-text-sm { font-size: var(--ak-fs-sm); }
 .mw-editsection { font-size: var(--ak-fs-xs); font-weight: 400; font-family: var(--ak-font-body); margin-left: auto; white-space: nowrap; }
 .mw-editsection-bracket { color: var(--ak-fg-subtle); }
 .mw-editsection a { color: var(--ak-fg-muted); text-decoration: none; padding: 2px 4px; }
+/* core 给章节编辑链接带了 'icon' => 'edit'，皮肤的 Link 模板会渲染成 .ak-icon。默认 20px
+   的图标配 12px 的「编辑」二字既过大又直接贴着文字，这里按标签的字号收一档并留出间距。
+   保持 inline（不用 inline-flex）：章节标题既可能是 .mw-heading 的 flex 项，也可能是
+   wikitext 里裸写的 <h2>，inline 盒在两种排版下的基线对齐都更稳。 */
+.mw-editsection a .ak-icon { width: 14px; height: 14px; margin-right: 3px; }
 .mw-editsection a:hover { color: var(--ak-accent); background: var(--ak-accent-subtle); }
 .mw-heading:not(:hover) .mw-editsection { opacity: .5; }
 @media (hover: none) { .mw-heading .mw-editsection { opacity: 1; } }
@@ -240,11 +245,13 @@ sup.reference a { padding: 0 .1em; }
 .ak-body--flat + .catlinks { border-top: 1px solid var(--ak-border); padding-top: var(--ak-space-3); }
 .catlinks > div { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-height: 24px; }
 .catlinks > div + div { margin-top: 4px; }
-.catlinks > div::before {   /* 树状「分类」图标（lucide folder-tree 线稿，白色线稿语言，随文字色） */
+.catlinks > div::before {   /* 「分类」标签图标：OOUI / Codex 的 tag（cdxIconTag，两边同一份图形），
+                               和皮肤其余 .ak-icon 同源，不必再自带第三方 SVG */
   content: ""; flex: none; width: 16px; height: 16px; background: currentColor; color: var(--ak-fg-muted);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z'/%3E%3Cpath d='M20 21a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.88-.55l-.42-.85a1 1 0 0 0-.92-.6H13a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z'/%3E%3Cpath d='M3 5a2 2 0 0 0 2 2h3'/%3E%3Cpath d='M3 3v13a2 2 0 0 0 2 2h3'/%3E%3C/svg%3E") center/contain no-repeat;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z'/%3E%3Cpath d='M20 21a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.88-.55l-.42-.85a1 1 0 0 0-.92-.6H13a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z'/%3E%3Cpath d='M3 5a2 2 0 0 0 2 2h3'/%3E%3Cpath d='M3 3v13a2 2 0 0 0 2 2h3'/%3E%3C/svg%3E") center/contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23000' d='M9 1.28A1 1 0 0 0 8.35 1H2a1 1 0 0 0-1 1v6.35a1 1 0 0 0 .28.65L11 18.72a1 1 0 0 0 1.37 0l6.38-6.38a1 1 0 0 0-.03-1.34zM5 7a2 2 0 1 1 2-2 2 2 0 0 1-2 2'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23000' d='M9 1.28A1 1 0 0 0 8.35 1H2a1 1 0 0 0-1 1v6.35a1 1 0 0 0 .28.65L11 18.72a1 1 0 0 0 1.37 0l6.38-6.38a1 1 0 0 0-.03-1.34zM5 7a2 2 0 1 1 2-2 2 2 0 0 1-2 2'/%3E%3C/svg%3E") center/contain no-repeat;
 }
+
 .catlinks .mw-hidden-catlinks::before { color: var(--ak-fg-subtle); }
 .catlinks .mw-normal-catlinks { font-size: 0; }                                        /* 吞掉「：」文本节点 */
 .catlinks .mw-normal-catlinks > a, .catlinks .mw-normal-catlinks > ul { font-size: var(--ak-fs-sm); }
@@ -253,12 +260,12 @@ sup.reference a { padding: 0 .1em; }
 .catlinks .mw-normal-catlinks > a:hover { color: var(--ak-accent); text-decoration: none; }
 .catlinks .mw-hidden-catlinks { color: var(--ak-fg-muted); }
 .catlinks .mw-hidden-catlinks .ak-catlinks__label { color: var(--ak-fg-subtle); }
-/* 链接：与正文链接同色，常显 1px 下划线（正文链接悬停时的同一几何：offset 3px） */
+/* 链接：与正文链接同色，默认无下划线，悬停才出（与全局 a 的行为一致：1px / offset 3px） */
 .catlinks ul { display: contents; margin: 0; padding: 0; list-style: none; }
 .catlinks li, .catlinks li:first-child { display: inline; margin: 0; padding: 0; border: 0; line-height: inherit; }
 .catlinks li::before { display: none !important; }
-.catlinks li a { color: var(--ak-link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.catlinks li a:hover { color: var(--ak-link-hover); }
+.catlinks li a { color: var(--ak-link); text-decoration: none; }
+.catlinks li a:hover { color: var(--ak-link-hover); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .catlinks li a.mw-redirect { font-style: italic; }
 .catlinks .mw-hidden-catlinks li a { color: var(--ak-fg-secondary); }
 .catlinks .mw-hidden-catlinks li a:hover { color: var(--ak-link-hover); }
@@ -342,11 +349,35 @@ label { cursor: pointer; }
    通知徽标 <a class="oo-ui-buttonElement-button … oo-ui-icon-bell">。这里的 background 简写会
    把图标的 background-image 一并清成 none，徽标就变成一个空白方块。有框 OOUI 按钮由皮肤的
    skinStyles/ooui/oojs-ui-core.less（.oo-ui-buttonElement-framed > .oo-ui-buttonElement-button）负责。 */
+/* 站点脚本 / gadget 经常直接吐裸 <button> 或 <input type=button|submit|reset>（样板选择器的
+   「加载」、edittools 的字符按钮…），身上没有 cdx-button / mw-ui-button / oo-ui-* 任何 class，
+   浏览器默认外观（Arial 13px + outset 边框 + #efefef 底）就这么露在页面上。这里兜个底。
+   整条选择器包在 :where() 里让特指度归零：任何带 class 的框架按钮（含皮肤自己的
+   .ak-tree__toggle / .ak-fab）都稳稳压在它上面。也正因如此不设 min-height —— 那会强行撑高
+   自带固定尺寸的按钮，而 min-height 是没法靠 class 的 height 覆盖掉的。 */
+:where(button, input[type="button"], input[type="submit"], input[type="reset"]) {
+  appearance: none; -webkit-appearance: none;
+  font-family: var(--ak-font-body); font-size: var(--ak-fs-sm); font-weight: 600; line-height: 1.4;
+  color: var(--ak-fg); background: var(--ak-bg-surface);
+  border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius);
+  padding: 5px 12px; cursor: pointer;
+}
+:where(button, input[type="button"], input[type="submit"], input[type="reset"]):hover { background: var(--ak-bg-hover); border-color: var(--ak-fg-muted); }
+:where(button, input[type="button"], input[type="submit"], input[type="reset"]):disabled { color: var(--ak-fg-disabled); background: var(--ak-bg-surface-3); border-color: var(--ak-border); cursor: default; }
 .mw-ui-button, .cdx-button {
   font-family: var(--ak-font-body); font-weight: 600; font-size: var(--ak-fs-sm); border-radius: var(--ak-radius);
   border: 1px solid var(--ak-border-strong); background: var(--ak-bg-surface); color: var(--ak-fg); padding: 6px 14px; min-height: 34px; cursor: pointer;
 }
 .mw-ui-button:hover, .cdx-button:hover { background: var(--ak-bg-hover); border-color: var(--ak-fg-muted); }
+/* core 的 .cdx-button:enabled（0,2,0）优先级高于上面的 .cdx-button（0,1,0），它取的是 Codex
+   token：--background-color-interactive-subtle → --ak-bg-surface-2，--border-color-base →
+   --ak-border。中性按钮于是和同为 --ak-bg-surface-2 的面板底色撞成同一个灰（历史页的
+   .mw-history-compareselectedversions 就是这样把「对比选择的版本」按钮吞掉的）。这里用同等
+   优先级把它拉回皮肤的按钮配色；quiet / primary 变体在 core 里的优先级更高，不受影响。 */
+.cdx-button:enabled, .cdx-button.cdx-button--fake-button--enabled {
+  background: var(--ak-bg-surface); color: var(--ak-fg); border-color: var(--ak-border-strong);
+}
+.cdx-button:enabled:hover, .cdx-button.cdx-button--fake-button--enabled:hover { background: var(--ak-bg-hover); border-color: var(--ak-fg-muted); }
 .mw-ui-button.mw-ui-progressive, .cdx-button--action-progressive.cdx-button--weight-primary { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); }
 .mw-ui-button.mw-ui-progressive:hover, .cdx-button--action-progressive.cdx-button--weight-primary:hover { background: var(--ak-accent-hover); border-color: var(--ak-accent-hover); }
 .mw-ui-button.mw-ui-destructive, .cdx-button--action-destructive.cdx-button--weight-primary { background: var(--ak-danger); color: #fff; border-color: var(--ak-danger); }
@@ -356,7 +387,12 @@ label { cursor: pointer; }
 .oo-ui-fieldsetLayout-header .oo-ui-labelElement-label { color: var(--ak-fg); }
 .oo-ui-tabSelectWidget-framed { background: var(--ak-bg-surface-2); }
 .oo-ui-tabOptionWidget.oo-ui-optionWidget-selected { background: var(--ak-bg-surface); color: var(--ak-accent); }
-.mw-editform, #wpTextbox1 { font-family: var(--ak-font-mono); }
+/* 只给编辑框上等宽，不要给整个 form：.mw-editform 里还有摘要输入框、版权声明、编辑工具条，
+   它们跟着变等宽后拉丁字母会和正文脱节。 */
+.mw-editform textarea, #wpTextbox1 { font-family: var(--ak-font-mono); }
+/* 查看源代码页（无编辑权时的 action=edit）的 textarea 不在 form.mw-editform 里，
+   核心也不给它宽度，会退回 cols=80 的窄框——按内容区拉满。 */
+#wpTextbox1 { box-sizing: border-box; width: 100%; }
 .mw-editTools, .editOptions { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: var(--ak-space-3) var(--ak-space-4); }
 .wikiEditor-ui, .wikiEditor-ui-toolbar { background: var(--ak-bg-surface); border-color: var(--ak-border) !important; }
 .wikiEditor-ui-toolbar .tabs span.tab a, .wikiEditor-ui-toolbar .group .label { color: var(--ak-fg-secondary); }
