@@ -50,22 +50,33 @@ skins/AKDS/
 ```
 `toc:false` + 自己渲染 `data-toc`（1.40+ 提供 `data-toc.array-sections`），实现右侧粘性目录。
 
+**窄屏（<1400）参考 VitePress 的 LocalNav**：页眉长出第二行 `.ak-local-nav` 吸顶栏，左「菜单」拉出侧栏抽屉、右「本页目录」拉下同一个 `aside.ak-toc`（它此时 `position:fixed`，顶边贴着吸顶栏下沿）。向下滚动时 `skin.js` 给 `<html>` 加 `.ak-condensed`，页眉整体 `translateY(-56px)`，品牌 / 搜索 / 工具那一行滑出视口，只留 48px 的二级栏贴顶；向上滚或回到顶部再展开。
+
+- 开合本身是纯 CSS（`.ak-toc-cb` + `label.ak-local-nav__toc`，两者非兄弟节点故用 `body:has(...)` 桥接），**无 JS 也能开合**；JS 只补「点击浮层外 / Esc / 跳转后关闭」和页眉收起。不支持 `:has()` 时 `@supports` 兜底为正文流内的静态卡片。
+- 点 `label` 浏览器会再向 checkbox 派发一次 click，写「点击外部关闭」时必须放行 `.ak-toc-cb`，否则一点就关。
+- **不要**改成角落 FAB + 侧边抽屉：按钮与面板方位割裂、<1120 时与左侧侧栏抽屉语义打架，还要跟 `.ak-fab`（回到顶部）抢屏幕角落。
+
 ## 3. skin.mustache 结构 ↔ CSS 类
 
 ```
 <div class="ak-skip">…
 <header class="ak-header"> .ak-header__inner
-   button.ak-header__menu | a.ak-header__logo{{data-logos}} | nav.ak-header__nav{{#data-portlets.data-navigation}} (可改为 MediaWiki:Sidebar 首个 portlet)
+   a.ak-header__logo{{data-logos}} | nav.ak-header__nav{{#data-portlets.data-navigation}} (可改为 MediaWiki:Sidebar 首个 portlet)   ← 主行不再放汉堡按钮，抽屉入口只在二级栏
    form.ak-header__search{{data-search-box}} | .ak-header__tools [theme-toggle][{{data-portlets.data-notifications}}][{{data-portlets.data-user-menu}}]
+   .ak-local-nav   ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）
+      button.ak-local-nav__menu（开侧栏抽屉）| input.ak-toc-cb + label.ak-local-nav__toc[for]（开目录浮层，纯 CSS）
+      （aside.ak-toc 首项 a.ak-toc__top「回到顶部」仅 <1400 显示，届时 .ak-fab 隐藏）
 <div class="ak-layout">
    aside.ak-sidebar {{#data-portlets-sidebar}} .ak-portlet(.ak-portlet--grid for first) …
-   main.ak-main#content
+   main.ak-main#content        ← position:relative + 右内边距预留目录导轨（.ak-layout 只有侧栏/主列两列）
       header.ak-page-header  [breadcrumb from {{html-subtitle}}] {{html-indicators}} h1#firstHeading {{{html-title}}}
          .ak-page-header__bar  ul.ak-page-tabs{{data-portlets.data-views}} ul.ak-page-tabs--actions{{data-portlets.data-actions}}
+      aside.ak-toc#ak-toc      ← 目录：DOM 上属于页面、紧跟标题（≥1400 抬进右侧导轨，<1400 变成二级栏拉下的浮层）
+         a.ak-toc__top「回到顶部」（仅 <1400）
+         .ak-toc__inner  .ak-toc__title#ak-toc-label + .ak-toc__progress > i + ul.ak-toc__list[data-toc] ← 由 data-toc 或 skin.js 生成
       div.ak-body#bodyContent  {{{html-site-notice}}} {{{html-user-message}}} .mw-body-content{{{html-body-content}}}
          ul.ak-body-foot#footer-info {{#data-footer.data-info}}{{#array-items}} li#footer-info-lastmod / -copyright
       {{{html-categories}}}   ← div#catlinks（样式见 base.css「Category links」；skin.js tidyCatlinks() 去冒号）
-   aside.ak-toc  ul[data-toc] ← 由 data-toc 或 skin.js 生成
 <footer class="ak-footer">
    .ak-footer__inner   .ak-footer__brand | .ak-footer__col > h4{{msg-akds-footer-about}} + ul#footer-places {{#data-footer.data-places}}{{#array-items}}
    .ak-footer__bottom  .ak-footer__bottom-text | ul.ak-footer__icons#footer-icons {{#data-footer.data-icons}}{{#array-items}} li#footer-copyrightico / -poweredbyico / …

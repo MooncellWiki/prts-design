@@ -3,9 +3,6 @@
 
 <header class="ak-header" id="mw-head">
   <div class="ak-header__inner">
-    <button class="ak-btn ak-btn--icon ak-header__menu" aria-label="{{msg-akds-menu}}" aria-controls="ak-sidebar" aria-expanded="false">
-      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
-    </button>
     <a class="ak-header__logo" href="{{link-mainpage}}" {{{html-logo-attributes}}}>
       {{#data-logos.icon}}<img src="{{data-logos.icon}}" alt="" class="ak-glyph">{{/data-logos.icon}}
       <span class="ak-header__wordmark">{{msg-sitetitle}}<small>{{msg-tagline}}</small></span>
@@ -32,6 +29,15 @@
       <div class="ak-dropdown" id="p-personal"><details><summary class="ak-btn ak-btn--ghost ak-header__user">{{label}}</summary><ul class="ak-menu ak-menu--right">{{{html-items}}}</ul></details></div>
       {{/data-portlets.data-user-menu}}
     </div>
+  </div>
+
+  {{! 二级吸顶栏：<1400 出现；页眉主行向下滚动收起后它仍贴顶 }}
+  <div class="ak-local-nav">
+    <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon" aria-hidden="true"><use href="#i-menu"/></svg>{{msg-akds-menu}}</button>
+    {{#data-toc}}
+    <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
+    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle">{{msg-akds-toc-title}}<span class="ak-local-nav__chevron" aria-hidden="true"></span></label>
+    {{/data-toc}}
   </div>
 </header>
 
@@ -67,6 +73,17 @@
           {{#data-portlets.data-variants}}<ul class="ak-page-tabs" id="{{id}}">{{{html-items}}}</ul>{{/data-portlets.data-variants}}
         </div>
       </header>
+      {{! 目录：紧跟页面标题。≥1400 由 CSS 抬进 .ak-main 右侧导轨（粘性）；<1400 变成二级吸顶栏拉下的浮层（开关是上面那个 .ak-toc-cb） }}
+      {{#data-toc}}
+      <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+        <a class="ak-toc__top" href="#"><svg class="ak-icon" aria-hidden="true"><use href="#i-up"/></svg>{{msg-akds-back-to-top}}</a>
+        <div class="ak-toc__inner">
+          <div class="ak-toc__title" id="ak-toc-label">{{msg-akds-toc-title}}</div>
+          <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
+          <ul class="ak-toc__list" data-auto-toc>{{#array-sections}}<li class="toclevel-{{toclevel}}"><a href="#{{anchor}}">{{{line}}}</a></li>{{/array-sections}}</ul>
+        </div>
+      </aside>
+      {{/data-toc}}
       <div class="ak-body" id="bodyContent">
         {{{html-site-notice}}}
         {{{html-user-message}}}
@@ -79,14 +96,6 @@
       {{{html-categories}}}
     </div>
   </main>
-
-  {{#data-toc}}
-  <aside class="ak-toc" aria-label="{{msg-akds-toc-title}}">
-    <div class="ak-toc__title">{{msg-akds-toc-title}}</div>
-    <div class="ak-toc__progress"><i></i></div>
-    <ul data-auto-toc>{{#array-sections}}<li class="toclevel-{{toclevel}}"><a href="#{{anchor}}">{{{line}}}</a></li>{{/array-sections}}</ul>
-  </aside>
-  {{/data-toc}}
 </div>
 
 <footer class="ak-footer" id="footer">

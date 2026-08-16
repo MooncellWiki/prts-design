@@ -157,8 +157,9 @@ html.skin-theme-clientpref-night  终端模式（暗）
 - 形状：`--ak-radius 0`、`--ak-radius-sm 2px`、`--ak-cut 8px`（切角）、`--ak-skew -14deg`、`--ak-bar-w 4px / -lg 8px`
 - 动效：`--ak-dur-fast 150ms / normal 250ms / slow 400ms`；`--ak-ease cubic-bezier(.2,.8,.2,1)`；`prefers-reduced-motion` 全局关闭
 - z-index：dropdown 100 · sticky 200 · header 1000 · overlay 1500 · modal 2000 · toast 3000 · tooltip 4000
-- 断点（与 Codex 一致）：640 / 1120 / 1680；TOC 在 <1400 隐藏，侧栏在 <1120 变抽屉
-- 布局：`--ak-header-h 56` · `--ak-sidebar-w 248` · `--ak-toc-w 240` · `--ak-content-max 1240`
+- 断点（与 Codex 一致）：640 / 1120 / 1680，另有 1400 作为目录导轨断点
+- **窄屏导航（<1400，参考 VitePress）**：页眉长出第二行 `.ak-local-nav`「二级吸顶栏」——左「菜单」拉出侧栏抽屉（<1120）、右「本页目录」拉下目录浮层；向下滚动时页眉主行（品牌 / 搜索 / 工具）上移收起，只留这条 48px 的二级栏贴顶，向上滚或回到顶部再展开；「回到顶部」放在目录浮层首项，`.ak-fab` 只在 ≥1400 显示。**不用角落浮动按钮开目录**（方位与面板割裂、和回到顶部抢屏幕角落）
+- 布局：`--ak-header-h 56` · `--ak-local-nav-h 48` · `--ak-sidebar-w 248` · `--ak-toc-w 240` · `--ak-content-max 1240`
 
 ---
 

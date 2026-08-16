@@ -3,7 +3,9 @@
  *  DOM 约定（见 docs/03-mediawiki-integration.md 中的 skin.mustache 结构）：
  *    body.skin-akds
  *      header.ak-header > .ak-header__inner > [menu][logo][nav][search][tools]
- *      .ak-layout > aside.ak-sidebar + main.ak-main + aside.ak-toc
+ *      .ak-layout > aside.ak-sidebar + main.ak-main
+ *        main.ak-main > .ak-main__inner > header.ak-page-header + aside.ak-toc + .ak-body + …
+ *        （目录在 DOM 上属于页面、紧跟标题；宽屏时才被抬到主列右侧导轨，见「TOC」段）
  *      footer.ak-footer
  * ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -12,11 +14,13 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-skip { position: absolute; left: 8px; top: 8px; z-index: 9999; background: var(--ak-accent); color: var(--ak-accent-fg); padding: 8px 12px; font-weight: 700; line-height: 1.3; transform: translateY(calc(-100% - 12px)); }   /* 完全移出视口（此前 top:-40px 会在页眉顶部露出一条青色边） */
 .ak-skip:focus { transform: none; }
 
-/* ═══ Header ═══ */
-.ak-header { position: sticky; top: 0; z-index: var(--ak-z-header); height: var(--ak-header-h); background: var(--ak-bg-header); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
-  border-bottom: 1px solid var(--ak-border); color: var(--ak-fg); }
-.ak-header__inner { height: 100%; max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); display: flex; align-items: center; gap: var(--ak-space-4); }
-.ak-header__menu { display: none; }
+/* ═══ Header ═══
+ *  两行结构：.ak-header__inner（品牌 / 导航 / 搜索 / 工具，56px）
+ *          + .ak-local-nav（二级吸顶栏，仅 <1400 出现，48px）
+ *  <1400 向下滚动时整个页眉上移一个 __inner 的高度 —— 主行滑出视口，二级栏贴顶。 */
+.ak-header { position: sticky; top: 0; z-index: var(--ak-z-header); background: var(--ak-bg-header); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--ak-border); color: var(--ak-fg); transition: transform var(--ak-dur-normal) var(--ak-ease); }
+.ak-header__inner { height: var(--ak-header-h); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); display: flex; align-items: center; gap: var(--ak-space-4); position: relative; }
 .ak-header__logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; padding-right: var(--ak-space-4); border-right: 1px solid var(--ak-border); }
 .ak-header__logo:hover { text-decoration: none; color: inherit; }
 .ak-header__logo img { height: 28px; width: auto; filter: var(--ak-glyph-filter); }
@@ -45,13 +49,32 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-header__tools .ak-badge { position: absolute; top: 4px; right: 4px; }
 .ak-header__tools .ak-btn--icon { position: relative; }
 
-/* ═══ Layout ═══ */
-.ak-layout { flex: 1; display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr) var(--ak-toc-w); gap: var(--ak-gutter); max-width: 1680px; width: 100%; margin: 0 auto; padding: var(--ak-space-6) var(--ak-gutter) var(--ak-space-16); box-sizing: border-box; align-items: start; }
-.ak-layout--no-toc { grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr); }
+/* ═══ Local nav（二级吸顶栏）═══
+ *  页眉第二行，只在 <1400（导轨/侧栏收起时）出现：左「菜单」拉出侧栏抽屉、右「本页目录」拉下目录浮层。
+ *  它是收起页眉后仍然贴顶的那一条 —— 所以两个入口在任何滚动位置都够得着，不需要角落里的浮动按钮。 */
+.ak-local-nav { display: none; height: var(--ak-local-nav-h); max-width: 1680px; margin: 0 auto; padding: 0 calc(var(--ak-gutter) - 10px); align-items: center; border-top: 1px solid var(--ak-border); }
+.ak-local-nav__btn { display: inline-flex; align-items: center; gap: 8px; height: var(--ak-local-nav-h); padding: 0 10px; border: 0; background: transparent; color: var(--ak-fg-secondary); font-family: inherit; font-size: var(--ak-fs-sm); font-weight: 600; line-height: 1; cursor: pointer; }
+.ak-local-nav__btn:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
+.ak-local-nav__btn .ak-icon { width: 18px; height: 18px; }
+.ak-local-nav__menu { display: none; }   /* 侧栏还在左边时（≥1120）不需要这个入口 */
+.ak-local-nav__toc { margin-left: auto; }
+.ak-local-nav__chevron { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform var(--ak-dur-fast) var(--ak-ease); }
+.ak-toc-cb { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 视觉隐藏但可 Tab 聚焦 / 空格切换；见「TOC」段 */
+.ak-toc-cb:checked ~ .ak-local-nav__toc { color: var(--ak-accent); }
+.ak-toc-cb:checked ~ .ak-local-nav__toc .ak-local-nav__chevron { transform: translateY(2px) rotate(-135deg); }
+.ak-toc-cb:focus-visible ~ .ak-local-nav__toc { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+@media (prefers-reduced-motion: reduce) { .ak-header, .ak-local-nav__chevron { transition: none; } }
+
+/* ═══ Layout ═══
+ *  两列网格：侧栏 + 主列。目录导轨不是第三列，而是由 .ak-main 的右内边距预留出来的
+ *  —— 这样 aside.ak-toc 在 DOM 上可以待在页面标题下方（属于页面而非布局），
+ *  窄屏收起时直接落回正文流，不需要浮层，也不需要第二份 DOM。 */
+.ak-layout { flex: 1; display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr); gap: var(--ak-gutter); max-width: 1680px; width: 100%; margin: 0 auto; padding: var(--ak-space-6) var(--ak-gutter) var(--ak-space-16); box-sizing: border-box; align-items: start; }
 .ak-layout--no-toc .ak-toc { display: none; }
+.ak-layout--no-toc .ak-main { padding-right: 0; }
 .ak-layout--wide { max-width: none; }
-.ak-layout--reading { grid-template-columns: var(--ak-sidebar-w) minmax(0, var(--ak-content-max)) var(--ak-toc-w); justify-content: center; }
-.ak-main { min-width: 0; }
+.ak-layout--reading { grid-template-columns: var(--ak-sidebar-w) minmax(0, calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter))); justify-content: center; }
+.ak-main { min-width: 0; position: relative; padding-right: calc(var(--ak-toc-w) + var(--ak-gutter)); }   /* 右侧导轨给 .ak-toc 让位 */
 .ak-main__inner { max-width: var(--ak-content-max); }
 .ak-layout--wide .ak-main__inner { max-width: none; }
 
@@ -160,9 +183,17 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-body-foot #footer-info-lastmod, .ak-body-foot .ak-lastmod { font-family: var(--ak-font-label); letter-spacing: .02em; }
 .ak-body-foot #footer-info-copyright { flex-basis: 100%; }
 
-/* ═══ Sticky TOC ═══ */
-.ak-toc { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-8)); overflow-y: auto; overscroll-behavior: contain; font-size: var(--ak-fs-xs); scrollbar-width: thin; }
-.ak-toc__title { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-accent); }
+/* ═══ TOC ═══
+ *  一份 DOM、两种形态（不做第二份目录，也不用角落浮动按钮）：
+ *   ≥1400  绝对定位进 .ak-main 右侧预留的导轨，.ak-toc__inner 粘性跟随滚动；
+ *   <1400  变成由二级吸顶栏「本页目录」拉下来的浮层，顶边始终贴着吸顶栏下沿。
+ *  开合是纯 CSS：.ak-toc-cb（checkbox，在 .ak-local-nav 里）+ label.ak-local-nav__toc。
+ *  浮层与按钮不是兄弟节点，故用 :has() 桥接；不支持 :has() 的浏览器退回正文流内的静态卡片。
+ *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、收起页眉与点击外部关闭。 */
+.ak-toc { position: absolute; top: 0; right: 0; bottom: 0; width: var(--ak-toc-w); font-size: var(--ak-fs-xs); }
+.ak-toc__inner { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-8)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.ak-toc__title { display: block; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-accent); }
+.ak-toc__top { display: none; }   /* 浮层首项「回到顶部」：仅 <1400 出现，届时 .ak-fab 隐藏（手机上浮动按钮太挡视野） */
 .ak-toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--ak-border); }
 .ak-toc li::before { display: none !important; }
 .ak-toc li a { display: block; padding: 4px 10px; color: var(--ak-fg-muted); text-decoration: none; border-left: 2px solid transparent; margin-left: -1px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -173,8 +204,6 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-toc .tocnumber { display: none; }
 .ak-toc__progress { height: 2px; background: var(--ak-border); margin: 0 0 8px; overflow: hidden; }
 .ak-toc__progress > i { display: block; height: 100%; width: var(--_p, 0%); background: var(--ak-accent); transition: width .1s linear; }
-/* Mobile TOC button */
-.ak-toc-fab { display: none; }
 
 /* ═══ Footer ═══ */
 .ak-footer { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); margin-top: auto; position: relative; overflow: hidden; }
@@ -219,18 +248,46 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .skin-akds .mw-htmlform-field-HTMLTextField, .skin-akds .oo-ui-fieldLayout { margin-bottom: var(--ak-space-3); }
 
 /* ═══ Responsive ═══ */
+/* < 1400：右侧导轨收起 —— 页眉长出二级吸顶栏，目录改由它拉下的浮层承载 */
 @media (max-width: 1400px) {
-  .ak-layout { grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr); }
-  .ak-toc { display: none; }
-  .ak-toc-fab { display: grid; }
+  .ak-local-nav { display: flex; }
+  .ak-fab { display: none; }   /* 回到顶部收进目录浮层，不再浮在内容上 */
+  .ak-main { padding-right: 0; }
+  /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
+  :root.ak-condensed .ak-header { transform: translateY(calc(-1 * var(--ak-header-h))); }
+  .ak-header__search.is-open { top: var(--ak-header-h); z-index: 1; }   /* 展开的搜索盖住二级栏而不是被它挤开 */
+  :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标 */
+
+  /* 目录浮层：顶边跟着吸顶栏下沿走，右对齐于二级栏 */
+  .ak-toc { --_top: calc(var(--ak-header-h) + var(--ak-local-nav-h)); position: fixed; top: var(--_top); right: var(--ak-gutter); left: auto; bottom: auto; z-index: var(--ak-z-dropdown);
+    display: none; flex-direction: column; width: min(360px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--_top) - var(--ak-space-4));
+    background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top: 3px solid var(--ak-accent); box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); }
+  :root.ak-condensed .ak-toc { --_top: var(--ak-local-nav-h); }
+  body:has(.ak-toc-cb:checked) .ak-toc { display: flex; }
+  .ak-toc__top { display: flex; align-items: center; gap: 8px; flex: none; padding: var(--ak-space-3) var(--ak-space-4); color: var(--ak-accent); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--ak-border); }
+  .ak-toc__top:hover { background: var(--ak-bg-hover); text-decoration: none; }
+  .ak-toc__top .ak-icon { width: 16px; height: 16px; }
+  .ak-toc__inner { position: static; min-height: 0; max-height: none; overflow-y: auto; padding: var(--ak-space-3) var(--ak-space-4); }
+  .ak-toc__title, .ak-toc__progress { display: none; }   /* 标题已经写在按钮上；阅读进度属于导轨，不进浮层 */
+  .ak-toc li a { white-space: normal; }   /* 浮层比导轨宽松，长标题换行而非截断 */
+  /* 不支持 :has() 的浏览器：目录退回正文流内的静态卡片，始终展开 */
+  @supports not selector(:has(*)) {
+    .ak-local-nav__toc, .ak-toc__top { display: none; }
+    .ak-fab { display: grid; }
+    .ak-toc { position: static; display: flex; width: auto; max-height: none; box-shadow: none; margin: 0 0 var(--ak-space-5); }
+  }
+}
+/* 1120–1400 且页面无目录（.ak-layout--no-toc）：两个入口都不需要，别留一条空栏 */
+@media (min-width: 1120px) and (max-width: 1400px) {
+  .ak-local-nav:not(:has(.ak-toc-cb)) { display: none; }
 }
 @media (max-width: 1119px) {
+  .ak-local-nav__menu { display: inline-flex; }   /* 侧栏变抽屉后才需要这个入口 */
   .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
   /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截） */
   .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); padding: var(--ak-space-4); transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
   .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
   .ak-sidebar__close { display: block; }
-  .ak-header__menu { display: inline-grid; }
   .ak-header__nav { display: none; }
   .ak-header__logo { border-right: 0; padding-right: 0; }
   .ak-header__search { flex: 1; }
@@ -249,6 +306,9 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   .ak-header__tools .ak-header__user span { display: none; }
   .ak-page-header__title, .skin-akds #firstHeading { font-size: var(--ak-fs-h2); }
   .ak-body { padding: var(--ak-space-4) var(--ak-space-3); border-left: 0; border-right: 0; margin: 0 calc(-1 * var(--ak-gutter)); }
+  .ak-local-nav { padding: 0 calc(var(--ak-gutter) - 8px); }
+  .ak-local-nav__btn { padding: 0 8px; }
+  .ak-toc { left: var(--ak-gutter); width: auto; }   /* 手机上目录浮层拉满可用宽度 */
   .ak-page-tabs li a { padding: 0 8px; font-size: var(--ak-fs-xs); }
   .ak-footer__inner { grid-template-columns: 1fr 1fr; gap: var(--ak-space-6); }
   .ak-footer__brand { grid-column: 1 / -1; }
@@ -261,7 +321,8 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   .ak-layout { --ak-sidebar-w: 268px; --ak-toc-w: 268px; }
 }
 @media print {
-  .ak-header, .ak-sidebar, .ak-toc, .ak-footer, .ak-page-tabs, .ak-fab { display: none !important; }
+  .ak-header, .ak-sidebar, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tabs, .ak-fab { display: none !important; }
   .ak-layout { display: block; padding: 0; }
+  .ak-main { padding-right: 0; }
   .ak-body { border: 0; padding: 0; }
 }

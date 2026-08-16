@@ -32,7 +32,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | 排序表头 | `.jquery-tablesorter th.headerSort*` | ⇅ ↑ ↓ 指示 | ✅ |
 | 缩略图 / 图库 | `figure[typeof~=mw:File/Thumb]` `.thumb` `ul.gallery` | 1px 框 + 青色方块图注；弹性图库 | ✅ |
 | 目录（内联） | `.toc` | 顶部 3px 青条卡片 | ✅ |
-| 目录（侧栏） | `.ak-toc` | 见 L2 | ✅🧩 |
+| 目录（皮肤） | `.ak-toc` | 宽屏右侧导轨 / 窄屏由二级吸顶栏拉下的浮层，见 L2 | ✅🧩 |
 | 折叠 | `.mw-collapsible` + `.ak-collapse-box` | 盒式变体 | ✅ |
 | 引用 | `sup.reference` `.references` `.reflist.ak-cols-2` | 目标高亮 | ✅ |
 | 消息框 | `.mw-message-box-*` `.cdx-message` `.ambox` `.hatnote` | 左色条 + 浅底 | ✅ |
@@ -54,7 +54,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 
 | 组件 | 类 / MW 数据 | 说明 | ReEnd 对照 | 状态 |
 |---|---|---|---|---|
-| 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools __menu` | 56px 粘性；毛玻璃底；1px 底线（曾有的左下 160px 青短条已去掉——短横条只保留在标题语境）；`--dark` 变体（亮色主题下仍可黑页眉） | DocsHeader / StatusBar | ✅ |
+| 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools` | 56px 粘性；毛玻璃底；1px 底线（曾有的左下 160px 青短条已去掉——短横条只保留在标题语境）；`--dark` 变体（亮色主题下仍可黑页眉） | DocsHeader / StatusBar | ✅ |
 | 主导航 | `.ak-header__nav a.is-active` | 3px 青色下划线 | Tabs underline | ✅ |
 | 搜索 | `.ak-search` + `#searchform` | 左图标 + `/` 快捷键提示 | CommandPalette | ✅（建议 Gadget 做 ⌘K 面板） |
 | 主题切换 | `.ak-theme-toggle` (os/day/night) | 写入 `mw.user.clientPrefs` | ThemeSwitcher | ✅🧩 |
@@ -64,9 +64,10 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | 页面头 | `.ak-page-header` `__top __ns __title __bar` + `#firstHeading` | 面包屑 + 指示器；标题 8px 青条 + 英文副标 | SectionHeader | ✅ |
 | 页面标签 | `.ak-page-tabs` + `#p-views` `#p-cactions` `#p-namespaces` | 下划线 + 选中角标；`--actions` 右对齐 | Tabs | ✅ |
 | 内容区 | `.ak-body` `--flat` `.ak-body-foot` | 1px 卡片；最后编辑/版权 | Card | ✅ |
-| 侧栏目录 | `.ak-toc` `__title __progress` + `data-auto-toc` | 粘性、scrollspy、阅读进度条 | ScrollProgress + SectionNav | ✅🧩 |
+| 二级吸顶栏 | `.ak-local-nav` `__btn __menu __toc __chevron` | 仅 <1400 出现的页眉第二行（48px）：左「菜单」拉出侧栏抽屉（仅 <1120）、右「本页目录」拉下目录浮层。向下滚动时 `<html>` 加 `.ak-condensed`，页眉整体上移 `--ak-header-h`，主行滑出、这条贴顶；向上滚 / 回到顶部（<120px）再展开。参考 VitePress LocalNav | — | ✅🧩 |
+| 目录 | `.ak-toc` `__inner __title __top __progress __list` + `.ak-toc-cb` | DOM 上紧跟 `.ak-page-header`，一份 DOM 两种形态：**≥1400** 绝对定位进 `.ak-main` 右侧导轨（`__inner` 粘性 + scrollspy + 阅读进度条）；**<1400** 变成二级吸顶栏拉下的浮层（顶边跟随吸顶栏下沿，首项 `__top`「回到顶部」，限高内滚，≤639 拉满可用宽度）。开合是纯 CSS：`.ak-toc-cb` checkbox 在二级栏里，浮层与它非兄弟节点故用 `:has()` 桥接，`@supports not selector(:has(*))` 时退回正文流内的静态卡片 | ScrollProgress + SectionNav | ✅🧩 |
 | 页脚 | `.ak-footer` `__inner __brand __col __bottom __bottom-text __icons` + `#footer-places` `#footer-icons` | 反转底 + 顶部斜纹 + 水印；底栏左文字、右 `$wgFooterIcons` 徽章（结构同 Vector/Citizen：`ul#footer-icons > li#footer-*ico > a.cdx-button > img`）——徽章为浅底设计（1.43 的 MediaWiki 徽章是透明底黑字），故仿 Citizen 给链接固定浅色底板，默认灰度 + 62% 透明、悬停/聚焦恢复彩色；右侧为 `.ak-fab` 让位 | Footer | ✅ |
-| 回到顶部 | `.ak-fab` | | BackToTop | ✅🧩 |
+| 回到顶部 | `.ak-fab` | 仅 ≥1400 显示（右下浮动）；<1400 隐藏，改由目录浮层首项 `.ak-toc__top` 承担——手机上浮动按钮太挡视野。**注意**：只要页面有元素横向溢出，移动端 Chrome 会把布局视口撑宽，fixed 元素就会被推到可见区外——见 §命名与约定 | BackToTop | ✅🧩 |
 | 抽屉 / 遮罩 | `.ak-drawer` `.ak-overlay` | 移动端侧栏 | BottomSheet | ✅🧩 |
 | 跳转链接 | `.ak-skip` | a11y | | ✅ |
 | 移动端 | ≤639 规则 | 页眉压缩、搜索折叠、表格横滚、浮动图取消 | | ✅ |
@@ -174,7 +175,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | 页面 | 结构 | 样例 |
 |---|---|---|
 | 干员页 | 顶部：立绘 + 身份栏（稀有度/职业/分支/标签/kv）+ 阶段选择 + 属性 + 范围 → 天赋 → 潜能 → 技能（等级选择 + 卡片 + 材料 Tabber）→ 模组 → 精英化 → 后勤 → 档案（Tabber + 锁）→ 语音 → 相关 → navbox | `preview/operator.html` |
-| 设计系统 / 长文 | 卡片内容区 + 右侧粘性 TOC + 左侧栏 | `preview/index.html` |
+| 设计系统 / 长文 | 卡片内容区 + 右侧粘性 TOC（<1400 收为标题下折叠条）+ 左侧栏 | `preview/index.html` |
 | 首页 | Hero + Breaking news + 今日信息面板 + 亮点干员 op-grid + 活动 event 卡 + 近期新增 | 📝 |
 | 列表 / 筛选页（干员一览） | Chip 筛选栏 + `.ak-op-grid` / `.wikitable.ak-sticky-head` | 📝 |
 | 关卡页 | `.ak-stage` 头 + 地图 + 敌人 `.ak-enemy` 列表 + 掉落 `.ak-item-list` | 📝 |
@@ -185,6 +186,6 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 
 - 前缀 `ak-`；BEM-lite：`.ak-block__elem--mod`；状态 `.is-*` 或 ARIA 属性。
 - 数据属性驱动主题色：`data-rarity`、`data-prof`、`data-theme`。
-- 组件不依赖 JS 也应可读（渐进增强）；JS 只做：主题、抽屉、TOC scrollspy、标签页、阶段/等级切换、Toast、Dialog。
+- 组件不依赖 JS 也应可读（渐进增强）；JS 只做：主题、抽屉、TOC scrollspy、页眉收起、标签页、阶段/等级切换、Toast、Dialog。目录开合是纯 CSS，JS 只补「点击浮层外 / Esc / 跳转后关闭」这类收尾。
 - 所有尺寸用 rem/px 令牌，不写魔法数；颜色只引用令牌。
 - **`width:100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外——`.ak-input / .ak-select / .ak-textarea / .ak-stat / .ak-blue-band` 已处理，新组件照做。

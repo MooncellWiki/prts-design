@@ -39,7 +39,7 @@
 	/* Sidebar drawer */
 	document.addEventListener( 'click', ( e ) => {
 		const sb = $( '.ak-sidebar' );
-		if ( e.target.closest( '.ak-header__menu' ) ) { sb.classList.toggle( 'is-open' ); overlay( sb.classList.contains( 'is-open' ) ); }
+		if ( e.target.closest( '.ak-local-nav__menu' ) ) { sb.classList.toggle( 'is-open' ); overlay( sb.classList.contains( 'is-open' ) ); }
 		if ( e.target.closest( '.ak-sidebar__close, .ak-overlay--sidebar' ) ) { sb.classList.remove( 'is-open' ); overlay( false ); }
 	} );
 	function overlay( on ) {
@@ -61,6 +61,31 @@
 		const prog = $( '.ak-toc__progress > i' );
 		if ( prog ) { window.addEventListener( 'scroll', () => { const d = document.documentElement; prog.style.setProperty( '--_p', ( d.scrollTop / ( d.scrollHeight - d.clientHeight ) * 100 ) + '%' ); }, { passive: true } ); }
 	}
+
+	/* 目录浮层收尾（开合本身是纯 CSS 的 .ak-toc-cb）：跳转后 / 点击浮层外 / Esc 收起 */
+	const tocCb = $( '.ak-toc-cb' );
+	if ( tocCb ) {
+		document.addEventListener( 'click', ( e ) => {
+			if ( !tocCb.checked ) { return; }
+			if ( e.target.closest( '.ak-toc a' ) ) { tocCb.checked = false; return; }
+			// 放行 .ak-toc-cb：点 label 会再向 checkbox 派发一次 click，那次不算「外部」
+			if ( !e.target.closest( '.ak-toc, .ak-local-nav__toc, .ak-toc-cb' ) ) { tocCb.checked = false; }
+		} );
+		document.addEventListener( 'keydown', ( e ) => { if ( e.key === 'Escape' ) { tocCb.checked = false; } } );
+	}
+
+	/* 页眉收起：向下滚动只留二级吸顶栏，向上滚 / 回到顶部再展开（无 JS 则始终两行） */
+	let lastY = window.scrollY, ticking = false;
+	function onScroll() {
+		const y = Math.max( 0, window.scrollY ), root = document.documentElement;
+		if ( !( tocCb && tocCb.checked ) ) {
+			if ( y < 120 ) { root.classList.remove( 'ak-condensed' ); }
+			else if ( y > lastY + 4 ) { root.classList.add( 'ak-condensed' ); }
+			else if ( y < lastY - 4 ) { root.classList.remove( 'ak-condensed' ); }
+		}
+		lastY = y; ticking = false;
+	}
+	window.addEventListener( 'scroll', () => { if ( !ticking ) { ticking = true; requestAnimationFrame( onScroll ); } }, { passive: true } );
 
 	/* Tabs / panels / phase & level selectors / data-bind（与 preview.js 相同约定） */
 	document.addEventListener( 'click', ( e ) => {
@@ -92,6 +117,8 @@
 	/* Back to top */
 	const fab = $( '.ak-fab' );
 	if ( fab ) { window.addEventListener( 'scroll', () => fab.classList.toggle( 'is-visible', window.scrollY > 600 ), { passive: true } ); fab.addEventListener( 'click', () => window.scrollTo( { top: 0, behavior: 'smooth' } ) ); }
+	// 目录浮层里的「回到顶部」（<1400 时替代 .ak-fab）：同样平滑滚动，且不往 URL 里塞 #
+	document.addEventListener( 'click', ( e ) => { if ( e.target.closest( '.ak-toc__top' ) ) { e.preventDefault(); window.scrollTo( { top: 0, behavior: 'smooth' } ); } } );
 
 	/* Search shortcut "/" */
 	document.addEventListener( 'keydown', ( e ) => { if ( e.key === '/' && !/input|textarea|select/i.test( document.activeElement.tagName ) && !document.activeElement.isContentEditable ) { const i = $( '#searchInput, .ak-header__search input' ); if ( i ) { e.preventDefault(); i.focus(); } } } );

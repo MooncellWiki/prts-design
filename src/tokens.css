@@ -146,6 +146,7 @@
 
   /* Layout · 与 Codex 断点一致: 320 / 640 / 1120 / 1680 */
   --ak-header-h: 56px;
+  --ak-local-nav-h: 48px;      /* 二级吸顶栏（<1400 出现：菜单 / 本页目录） */
   --ak-sidebar-w: 248px;
   --ak-toc-w: 240px;
   --ak-content-max: 1240px;    /* 阅读区最大宽度；表格密集页可加 .ak-wide */
