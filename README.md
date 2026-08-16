@@ -31,7 +31,7 @@ src/
   index.css         本地汇总入口
 skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源：REST 标题搜索 / 动作 / 分类 / 用户 / 文件）（CSS、sidebar-tree.js、search-palette.js 为 src 的符号链接）· i18n
 tokens/tokens.json  机器可读令牌（scripts/export-tokens.py 生成）
-preview/            展示页 + 干员页样例 + preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；keyart/ 为罗德岛主界面昼夜背景裁出的头图 / 顶栏底图；badge/ 为 prts.wiki 现网页脚徽章）
+preview/            展示页 + 干员页样例 + preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；keyart/ 为罗德岛主界面昼夜背景裁出的头图 / 顶栏底图；badge/ 为 prts.wiki 现网页脚徽章，badge/mono/ 为 MW / SMW / CC 三枚通用徽章的白描版）
 dist/               单文件打包（图片内联，用于发布/分享；scripts/build-dist.py 生成）
 scripts/            export-tokens.py · build-dist.py · build-site.sh（组装 GitHub Pages 站点）
 ```

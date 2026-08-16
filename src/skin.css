@@ -285,17 +285,20 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-footer__bottom-text .ak-en { opacity: .8; }
 /* 页脚徽章（$wgFooterIcons：CC 许可 / Powered by MediaWiki / SMW / 站点自定义…）
  * 结构 = MW 原生 #footer-icons：ul > li#footer-*ico > a.cdx-button.cdx-button--fake-button > img（一个 li 内可有多个徽章）
- * 徽章多为浅底设计（1.43 的 poweredby_mediawiki.svg 是透明底黑字），故仿 Vector / Citizen 给链接一块固定浅色底板；
- * 默认灰度 + 降透明使之退为页脚的一行「印章」，悬停 / 聚焦恢复彩色。 */
-.ak-footer__icons { list-style: none; margin: 0 0 0 auto; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--ak-space-2); }
-.ak-footer__icons li { display: contents; }   /* 同组徽章（poweredby 一个 li 装 3 个）与其他组一起均匀换行 */
+ * 徽章原样显示：26px 高、无底板、不灰度、不降透明、无悬停效果（只保留键盘焦点描边）。通用徽章（MW / SMW / CC BY-NC-SA）建议用
+ * preview/assets/badge/mono/ 的白描版（白色单色、透明底，由官方矢量重着色——透明底黑字的 poweredby_mediawiki.svg 在黑页脚上看不见），
+ * 站点自己的徽章（HoRain / Mooncell）就用原图；顺序由 $wgFooterIcons 的键序决定。
+ * 若某枚通用徽章仍是原彩色，给 ul 加 .ak-footer__icons--plate：恢复浅色底板。 */
+.ak-footer__icons { list-style: none; margin: 0 0 0 auto; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--ak-space-3); }
+.ak-footer__icons li { display: contents; }   /* 同组徽章（一个 li 装多个）与其他组一起均匀换行 */
 .ak-footer__icons li::before { display: none !important; }
-.ak-footer__icons a, .ak-footer__icons a.cdx-button { display: inline-flex; align-items: center; height: 31px; min-height: 0; padding: 0 4px; margin: 0; border: 0; border-radius: 0; box-sizing: content-box; font: inherit; line-height: 0; background: #f5f5f5; opacity: .62; transition: opacity var(--ak-dur-fast) var(--ak-ease); }
-.ak-footer__icons a:hover, .ak-footer__icons a:focus-visible { opacity: 1; background: #fff; }
-.ak-footer__icons a:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 2px; }
-.ak-footer__icons img { display: block; height: 31px; width: auto; margin: 0 !important; filter: grayscale(1); transition: filter var(--ak-dur-fast) var(--ak-ease); }   /* !important 覆盖站点配置里的内联 margin */
-.ak-footer__icons a:hover img, .ak-footer__icons a:focus-visible img { filter: none; }
-@media (prefers-reduced-motion: reduce) { .ak-footer__icons a, .ak-footer__icons img { transition: none; } }
+.ak-footer__icons a, .ak-footer__icons a.cdx-button { display: inline-flex; align-items: center; height: 26px; min-height: 0; padding: 0; margin: 0; border: 0; border-radius: 0; box-sizing: content-box; font: inherit; line-height: 0; background: transparent; opacity: 1; }
+.ak-footer__icons a:hover { opacity: 1; }
+.ak-footer__icons a:focus-visible { outline: 2px solid var(--ak-theme-accent); outline-offset: 4px; }
+.ak-footer__icons img { display: block; height: 26px; width: auto; margin: 0 !important; }   /* !important 覆盖站点配置里的内联 margin */
+.ak-footer__icons--plate { gap: var(--ak-space-2); }
+.ak-footer__icons--plate a, .ak-footer__icons--plate a.cdx-button { height: 31px; padding: 0 4px; background: #f5f5f5; }
+.ak-footer__icons--plate img { height: 31px; }
 .ak-footer .ak-watermark { font-size: 9rem; right: -10px; bottom: -30px; opacity: .04; color: currentColor; }
 
 /* ═══ Theme toggle (3-state: os / day / night) ═══ */

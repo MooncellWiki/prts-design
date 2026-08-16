@@ -181,6 +181,19 @@ html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/
 - 头图上要放活动标题 / 倒计时，可用 Gadget 往 `.ak-keyart__inner` 里塞内容（它与页眉三列同宽）；`.ak-keyart` 带 `aria-hidden`，放可读内容时记得去掉。
 - 卸载 Gadget 即恢复默认；无需 purge 页面缓存（都是变量）。
 
+页脚徽章（`$wgFooterIcons`）原样显示（26px 高、无底板、不灰度、无悬停效果），顺序 = 数组键序。通用徽章建议换成**白描版**（白色单色、透明底，见 `preview/assets/badge/mono/`：MediaWiki / SMW / CC BY-NC-SA 由官方矢量重着色——透明底黑字的 `poweredby_mediawiki.svg` 在黑页脚上看不见），站点自己的徽章（Mooncell / HoRain）用原图即可：
+
+```php
+$wgFooterIcons = [
+  'sponsors'  => [ 'mooncell' => [ 'src' => '//static.prts.wiki/…/mooncell.png', 'url' => 'https://project.mooncell.wiki', 'alt' => 'a Mooncell project' ],
+                   'horain'   => [ 'src' => '//static.prts.wiki/…/horain.png',   'url' => 'https://www.horain.net/',        'alt' => 'HoRain' ] ],
+  'poweredby' => [ 'mediawiki' => [ 'src' => '/skins/AKDS/resources/badge/mediawiki.svg', 'url' => 'https://www.mediawiki.org/', 'alt' => 'Powered by MediaWiki' ] ],
+  // SMW 会自己追加 poweredbysmw；换 src 用 $smwgFooterIcon 或 SkinTemplateNavigation::Universal 钩子
+  'copyright' => [ 'copyright' => [ 'src' => '/skins/AKDS/resources/badge/cc-by-nc-sa.svg', 'url' => 'https://creativecommons.org/licenses/by-nc-sa/4.0/', 'alt' => 'CC BY-NC-SA 4.0' ] ],
+];
+```
+若某枚通用徽章仍是原彩色，给 `#footer-icons` 加 `.ak-footer__icons--plate` 恢复浅色底板。
+
 ## 4. 明暗主题（clientPrefs）
 
 - HTML 类：`skin-theme-clientpref-os | -day | -night`（与 Vector 2022 一致；MW 核心 `mediawiki.page.ready` 在 `<html>` 上读写 cookie/localStorage `mwclientpreferences`）。
