@@ -1,7 +1,6 @@
 # AKDS · 组件清单与划分
 
-> 对照 ReEnd-Components 的组件划分（Core / Data display / Navigation / Feedback / Overlay / Signature），
-> 按 **MediaWiki 皮肤** 的实际需要重新分层。每个组件给出：类名 · 用途 · 变体/状态 · 对应 MW DOM 或模板 · ReEnd 对照 · 状态（✅ 已实现 CSS / 🧩 需 JS/Gadget / 📝 规划）。
+> 按 **MediaWiki 皮肤** 的实际需要分层。每个组件给出：类名 · 用途 · 变体/状态 · 对应 MW DOM 或模板 · 状态（✅ 已实现 CSS / 🧩 需 JS/Gadget / 📝 规划）。
 
 ## 分层总览
 
@@ -10,11 +9,11 @@ L0  Tokens          令牌 / 主题 / Codex 桥接                         token
 L1  MW Content      wikitext 产物样式（编辑者不需知道设计系统存在）  base.css
 L2  Skin Chrome     皮肤骨架：页眉/侧栏/页面头/TOC/页脚/移动端       skin.css
 L3  Core            通用组件（纯 CSS，可写入模板/TemplateStyles）     components.css
-L4  Arknights       方舟装饰 + 游戏数据组件（Signature 层）           arknights.css
+L4  Arknights       方舟装饰 + 游戏数据组件                          arknights.css
 L5  Patterns        页面模式：干员页/关卡页/首页/列表页              docs + preview
 ```
 
-ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定好的 HTML 结构 + 类名**。模板作者（Lua/wikitext）输出该结构即可，皮肤保证外观与主题。
+AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构 + 类名**。模板作者（Lua/wikitext）输出该结构即可，皮肤保证外观与主题。
 
 ---
 
@@ -52,61 +51,61 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 
 ## L2 · 皮肤骨架（skin.css）
 
-| 组件 | 类 / MW 数据 | 说明 | ReEnd 对照 | 状态 |
-|---|---|---|---|---|
-| 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools` | 56px 粘性；毛玻璃底；1px 底线（曾有的左下 160px 青短条已去掉——短横条只保留在标题语境）；`--dark` 变体（亮色主题下仍可黑页眉） | DocsHeader / StatusBar | ✅ |
-| 主导航 | `.ak-header__nav a.is-active` | 3px 青色下划线 | Tabs underline | ✅ |
-| 搜索（悬浮面板） | 触发器 `button.ak-search-trigger`（有 JS 时替换页眉里的 `form.ak-header__search`；无 JS 保留真表单）· 面板 `.ak-palette-backdrop` + `.ak-palette[role=dialog]` `__head( __back __icon __chip form.__form>#searchInput __clear __close __loading )` `__body>__viewport>__list[role=listbox]>__group>__label+__item[role=option]>__link( __thumb __text( __title __desc ) __meta )[+__actions]` `__empty( __empty-title __empty-desc __shortcuts>__shortcut )` `__foot( __foot-left __hints )` · 状态 `.has-query .has-mode .is-loading .is-closing`；核心 `search-palette.js`（与预览共用），数据源 `skin/resources/search-providers.js` / `preview/search-mock.js` | 参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是居中悬浮的「终端窗口」——直角、顶部 3px 青条、56px 输入行、结果区高度过渡、`--ak-bg-surface-2` 键位页脚；高亮行 = 左 2px 青条 + 淡青底（与侧栏当前项 / 菜单项同一语言）；命令模式用斜切 chip；页眉真表单被**原样搬进面板**（`#searchform #searchInput` 保留 → Gadget / 无 JS 提交不受影响）。开：点触发器 / 手机图标 `.ak-header__search-toggle` / `/`、Ctrl(⌘)K、accesskey F；关：Esc（有字先清空 → 模式中返回 → 关闭）/ 遮罩 / 关闭按钮 / 选中。空态 = 最近访问（localStorage `akds-recent`）+ 提示 + 快捷入口（取页眉主导航）；有字 = 分组结果 + 末尾固定「全文搜索」行，首项自动高亮、↵ 打开、⇧↵ 全文、⌘/Ctrl↵ 新标签；结果未到就回车 → MW 原生 Go。`/` 列命令，`>` 动作 `#` 分类 `@` 用户 `~` 文件 进入模式（退格空输入 / ← / 返回键退出）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时可见，不会让右侧元数据跳动）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。a11y：`role=dialog aria-modal`、输入框 `role=combobox aria-activedescendant`、`aria-live` 播报条数、Tab 在面板内循环、关闭后焦点回到触发器。≤639：8px 内边距的全宽卡片，右上 Esc 换成「取消」，触屏隐藏键位提示 | CommandPalette | ✅🧩 |
-| 主题切换 | `.ak-theme-toggle` (os/day/night) | 写入 `mw.user.clientPrefs` | ThemeSwitcher | ✅🧩 |
-| 通知 / 用户菜单 | `.ak-badge` `.ak-header__user` + `#p-personal` | Echo 徽标 | Badge / Avatar | ✅ |
-| 侧栏 | `.ak-sidebar` `__panel(#mw-panel)` `.ak-portlet` `--grid --collapsible` + `#p-navigation` `#p-tb` | 粘性；<1120 抽屉（由二级吸顶栏「菜单」打开；收起时 `visibility:hidden`，不进 Tab 序、阴影也不会从屏幕左缘漏进来）；网格快捷入口；门户折叠状态记忆 | DocsSidebar | ✅🧩 |
-| 侧栏多层导航 | `li.ak-tree__branch(.is-open .is-current-path .is-peek)` `> .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list`；`.ak-flyout` `__title` | 由 `sidebar-tree.js` 增强 `.ak-sidebar` 内任意 `li > ul`（含 PRTS `#MenuSidebar` 的 `p / ul / li > b` 原始输出）：任意深度树形展开、缩进导轨、当前页路径自动展开高亮、`localStorage` 记忆、← → 键盘；桌面(hover+fine, ≥1120)悬停折叠分支右侧飞出预览（`data-flyout="off"` 关闭） | Tree / NavMenu | ✅🧩 |
-| 页面头 | `.ak-page-header` `__top __ns __title __bar` + `#firstHeading` | 面包屑 + 指示器；标题 8px 青条 + 英文副标 | SectionHeader | ✅ |
-| 页面标签 | `.ak-page-tabs` + `#p-views` `#p-cactions` `#p-namespaces` | 下划线 + 选中角标；`--actions` 右对齐 | Tabs | ✅ |
-| 内容区 | `.ak-body` `--flat` `.ak-body-foot` | 1px 卡片；最后编辑/版权 | Card | ✅ |
-| 二级吸顶栏 | `.ak-local-nav` `__btn __menu __toc __chevron` | 仅 <1400 出现的页眉第二行（48px）：左「菜单」拉出侧栏抽屉（仅 <1120）、右「本页目录」拉下目录浮层。向下滚动时 `<html>` 加 `.ak-condensed`，页眉整体上移 `--ak-header-h`，主行滑出、这条贴顶；向上滚 / 回到顶部（<120px）再展开。参考 VitePress LocalNav | — | ✅🧩 |
-| 目录 | `.ak-toc` `__inner __title __top __progress __list` + `.ak-toc-cb` | DOM 上紧跟 `.ak-page-header`，一份 DOM 两种形态：**≥1400** 绝对定位进 `.ak-main` 右侧导轨（`__inner` 粘性 + scrollspy + 阅读进度条）；**<1400** 变成二级吸顶栏拉下的浮层（顶边跟随吸顶栏下沿，首项 `__top`「回到顶部」，限高内滚，≤639 拉满可用宽度）。开合是纯 CSS：`.ak-toc-cb` checkbox 在二级栏里，浮层与它非兄弟节点故用 `:has()` 桥接，`@supports not selector(:has(*))` 时退回正文流内的静态卡片 | ScrollProgress + SectionNav | ✅🧩 |
-| 页脚 | `.ak-footer` `__inner __brand __col __bottom __bottom-text __icons` + `#footer-places` `#footer-icons` | 反转底 + 顶部斜纹 + 水印；底栏左文字、右 `$wgFooterIcons` 徽章（结构同 Vector/Citizen：`ul#footer-icons > li#footer-*ico > a.cdx-button > img`）——徽章为浅底设计（1.43 的 MediaWiki 徽章是透明底黑字），故仿 Citizen 给链接固定浅色底板，默认灰度 + 62% 透明、悬停/聚焦恢复彩色；右侧为 `.ak-fab` 让位 | Footer | ✅ |
-| 回到顶部 | `.ak-fab` | 仅 ≥1400 显示（右下浮动）；<1400 隐藏，改由目录浮层首项 `.ak-toc__top` 承担——手机上浮动按钮太挡视野。**注意**：只要页面有元素横向溢出，移动端 Chrome 会把布局视口撑宽，fixed 元素就会被推到可见区外——见 §命名与约定 | BackToTop | ✅🧩 |
-| 抽屉 / 遮罩 | `.ak-drawer` `.ak-overlay` | 移动端侧栏 | BottomSheet | ✅🧩 |
-| 跳转链接 | `.ak-skip` | a11y | | ✅ |
-| 移动端 | ≤639 规则 | 页眉压缩、搜索收成图标按钮（打开同一个悬浮面板）、表格横滚、浮动图取消 | | ✅ |
+| 组件 | 类 / MW 数据 | 说明 | 状态 |
+|---|---|---|---|
+| 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools` | 56px 粘性；毛玻璃底；1px 底线（曾有的左下 160px 青短条已去掉——短横条只保留在标题语境）；`--dark` 变体（亮色主题下仍可黑页眉） | ✅ |
+| 主导航 | `.ak-header__nav a.is-active` | 3px 青色下划线 | ✅ |
+| 搜索（悬浮面板） | 触发器 `button.ak-search-trigger`（有 JS 时替换页眉里的 `form.ak-header__search`；无 JS 保留真表单）· 面板 `.ak-palette-backdrop` + `.ak-palette[role=dialog]` `__head( __back __icon __chip form.__form>#searchInput __clear __close __loading )` `__body>__viewport>__list[role=listbox]>__group>__label+__item[role=option]>__link( __thumb __text( __title __desc ) __meta )[+__actions]` `__empty( __empty-title __empty-desc __shortcuts>__shortcut )` `__foot( __foot-left __hints )` · 状态 `.has-query .has-mode .is-loading .is-closing`；核心 `search-palette.js`（与预览共用），数据源 `skin/resources/search-providers.js` / `preview/search-mock.js` | 参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是居中悬浮的「终端窗口」——直角、顶部 3px 青条、56px 输入行、结果区高度过渡、`--ak-bg-surface-2` 键位页脚；高亮行 = 左 2px 青条 + 淡青底（与侧栏当前项 / 菜单项同一语言）；命令模式用斜切 chip；页眉真表单被**原样搬进面板**（`#searchform #searchInput` 保留 → Gadget / 无 JS 提交不受影响）。开：点触发器 / 手机图标 `.ak-header__search-toggle` / `/`、Ctrl(⌘)K、accesskey F；关：Esc（有字先清空 → 模式中返回 → 关闭）/ 遮罩 / 关闭按钮 / 选中。空态 = 最近访问（localStorage `akds-recent`）+ 提示 + 快捷入口（取页眉主导航）；有字 = 分组结果 + 末尾固定「全文搜索」行，首项自动高亮、↵ 打开、⇧↵ 全文、⌘/Ctrl↵ 新标签；结果未到就回车 → MW 原生 Go。`/` 列命令，`>` 动作 `#` 分类 `@` 用户 `~` 文件 进入模式（退格空输入 / ← / 返回键退出）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时可见，不会让右侧元数据跳动）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。a11y：`role=dialog aria-modal`、输入框 `role=combobox aria-activedescendant`、`aria-live` 播报条数、Tab 在面板内循环、关闭后焦点回到触发器。≤639：8px 内边距的全宽卡片，右上 Esc 换成「取消」，触屏隐藏键位提示 | ✅🧩 |
+| 主题切换 | `.ak-theme-toggle` (os/day/night) | 写入 `mw.user.clientPrefs` | ✅🧩 |
+| 通知 / 用户菜单 | `.ak-badge` `.ak-header__user` + `#p-personal` | Echo 徽标 | ✅ |
+| 侧栏 | `.ak-sidebar` `__panel(#mw-panel)` `.ak-portlet` `--grid --collapsible` + `#p-navigation` `#p-tb` | 粘性；<1120 抽屉（由二级吸顶栏「菜单」打开；收起时 `visibility:hidden`，不进 Tab 序、阴影也不会从屏幕左缘漏进来）；网格快捷入口；门户折叠状态记忆 | ✅🧩 |
+| 侧栏多层导航 | `li.ak-tree__branch(.is-open .is-current-path .is-peek)` `> .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list`；`.ak-flyout` `__title` | 由 `sidebar-tree.js` 增强 `.ak-sidebar` 内任意 `li > ul`（含 PRTS `#MenuSidebar` 的 `p / ul / li > b` 原始输出）：任意深度树形展开、缩进导轨、当前页路径自动展开高亮、`localStorage` 记忆、← → 键盘；桌面(hover+fine, ≥1120)悬停折叠分支右侧飞出预览（`data-flyout="off"` 关闭） | ✅🧩 |
+| 页面头 | `.ak-page-header` `__top __ns __title __bar` + `#firstHeading` | 面包屑 + 指示器；标题 8px 青条 + 英文副标 | ✅ |
+| 页面标签 | `.ak-page-tabs` + `#p-views` `#p-cactions` `#p-namespaces` | 下划线 + 选中角标；`--actions` 右对齐 | ✅ |
+| 内容区 | `.ak-body` `--flat` `.ak-body-foot` | 1px 卡片；最后编辑/版权 | ✅ |
+| 二级吸顶栏 | `.ak-local-nav` `__btn __menu __toc __chevron` | 仅 <1400 出现的页眉第二行（48px）：左「菜单」拉出侧栏抽屉（仅 <1120）、右「本页目录」拉下目录浮层。向下滚动时 `<html>` 加 `.ak-condensed`，页眉整体上移 `--ak-header-h`，主行滑出、这条贴顶；向上滚 / 回到顶部（<120px）再展开。参考 VitePress LocalNav | ✅🧩 |
+| 目录 | `.ak-toc` `__inner __title __top __progress __list` + `.ak-toc-cb` | DOM 上紧跟 `.ak-page-header`，一份 DOM 两种形态：**≥1400** 绝对定位进 `.ak-main` 右侧导轨（`__inner` 粘性 + scrollspy + 阅读进度条）；**<1400** 变成二级吸顶栏拉下的浮层（顶边跟随吸顶栏下沿，首项 `__top`「回到顶部」，限高内滚，≤639 拉满可用宽度）。开合是纯 CSS：`.ak-toc-cb` checkbox 在二级栏里，浮层与它非兄弟节点故用 `:has()` 桥接，`@supports not selector(:has(*))` 时退回正文流内的静态卡片 | ✅🧩 |
+| 页脚 | `.ak-footer` `__inner __brand __col __bottom __bottom-text __icons` + `#footer-places` `#footer-icons` | 反转底 + 顶部斜纹 + 水印；底栏左文字、右 `$wgFooterIcons` 徽章（结构同 Vector/Citizen：`ul#footer-icons > li#footer-*ico > a.cdx-button > img`）——徽章为浅底设计（1.43 的 MediaWiki 徽章是透明底黑字），故仿 Citizen 给链接固定浅色底板，默认灰度 + 62% 透明、悬停/聚焦恢复彩色；右侧为 `.ak-fab` 让位 | ✅ |
+| 回到顶部 | `.ak-fab` | 仅 ≥1400 显示（右下浮动）；<1400 隐藏，改由目录浮层首项 `.ak-toc__top` 承担——手机上浮动按钮太挡视野。**注意**：只要页面有元素横向溢出，移动端 Chrome 会把布局视口撑宽，fixed 元素就会被推到可见区外——见 §命名与约定 | ✅🧩 |
+| 抽屉 / 遮罩 | `.ak-drawer` `.ak-overlay` | 移动端侧栏 | ✅🧩 |
+| 跳转链接 | `.ak-skip` | a11y | ✅ |
+| 移动端 | ≤639 规则 | 页眉压缩、搜索收成图标按钮（打开同一个悬浮面板）、表格横滚、浮动图取消 | ✅ |
 
 ---
 
 ## L3 · 通用组件（components.css）
 
-| 组件 | 类 | 变体 | 状态 | ReEnd 对照 |
-|---|---|---|---|---|
-| Button | `.ak-btn` | `--primary --contrast --outline --ghost --danger --link`；`--xs --sm --lg --xl --icon --block --skew --pill`；`.is-loading` `disabled`；`.ak-btn-group` | ✅ | Button |
-| Tag / Badge | `.ak-tag` | `--sm --lg --outline --accent --accent-soft --yellow --info --success --warning --danger --danger-solid --new --inverse --skew --label`；`__dot __remove`；`.ak-badge --dot --accent` | ✅ | Badge / TacticalBadge |
-| Chip（筛选） | `.ak-chip.is-active` | 选中角标 | ✅🧩 | FilterBar |
-| Card | `.ak-card` | `--hover --selected --flat --inset --accent-top --accent-left --horizontal`；`__header __eyebrow __title __body __footer __media`；`.ak-card-grid` | ✅ | Card / HoloCard |
-| Panel | `.ak-panel` | `__head --inverse __title __body`；`--collapsible` | ✅🧩 | TacticalPanel |
-| Section heading | `.ak-heading` | `--stack --lg --underline`；`__title __en __aside` | ✅ | SectionHeader |
-| Tabs | `.ak-tabs` `.ak-tab` `.ak-tabpanel` | `--pill --skew --vertical` | ✅🧩 | Tabs |
-| Message | `.ak-message` | `--success --warning --danger --neutral --accent --banner --stripes` | ✅ | Alert / WarningBanner |
-| Tooltip | `[data-ak-tip]` `.ak-tooltip` `.ak-term` | CSS-only + JS 增强 | ✅ | Tooltip |
-| Popover | `.ak-popover` | | ✅🧩 | Popover |
-| Dropdown / Menu | `.ak-dropdown` `.ak-menu` | `details/summary` 原生 | ✅ | Dropdown |
-| Dialog | `.ak-dialog` `<dialog>` | `--sm --lg --full`；`__head __body __foot` | ✅🧩 | Dialog |
-| Drawer / Overlay | `.ak-drawer --left/--right` `.ak-overlay` | | ✅🧩 | BottomSheet |
-| Toast | `.ak-toasts` `.ak-toast` | `--success --warning --danger` + 进度条 | ✅🧩 | Toast |
-| Progress | `.ak-progress` | `--sm --lg --yellow --success --danger --stripes --indeterminate --segmented`；`.ak-ring` | ✅ | Progress |
-| Stat | `.ak-stat` `.ak-stat-row` | `--inline`；`__delta--up/--down` | ✅ | Stat |
-| Skeleton / Spinner / Loader | `.ak-skeleton --text --rect --square --circle` `.ak-spinner` `.ak-loader` | | ✅ | Skeleton / DiamondLoader |
-| Empty | `.ak-empty` `__icon __title __code` | | ✅ | EmptyState |
-| Avatar | `.ak-avatar` | `--xs --sm --lg --xl --round --cut`；`__status`；`.ak-avatar-group` | ✅ | Avatar |
-| Breadcrumb | `.ak-breadcrumb` | | ✅ | Breadcrumb |
-| Pagination | `.ak-pagination` | | ✅ | Pagination |
-| Timeline | `.ak-timeline` | `.is-done .is-active` | ✅ | Timeline |
-| Stepper | `.ak-stepper .ak-step` | | ✅ | Stepper |
-| Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg` | ✅ | Input/Select/Checkbox/Switch/NumberInput |
-| Kbd | `.ak-kbd`（`.ak-search__kbd` 为其绝对定位变体） | 键帽：直角 1px 边、底边略重、mono 10px；用于快捷键提示 / 触发器右侧 / 面板页脚 | ✅ | Kbd |
-| Table | `.ak-table` | `--striped --compact`；`th[aria-sort]` | ✅ | Table / TacticalTable |
-| Accordion | `.ak-details` (`<details>`) | | ✅ | Accordion |
-| Divider | `.ak-divider` | `--accent --stripes --text --vertical` | ✅ | Separator / ScanDivider |
-| FAB | `.ak-fab` | | ✅🧩 | BackToTop |
+| 组件 | 类 | 变体 | 状态 |
+|---|---|---|---|
+| Button | `.ak-btn` | `--primary --contrast --outline --ghost --danger --link`；`--xs --sm --lg --xl --icon --block --skew --pill`；`.is-loading` `disabled`；`.ak-btn-group` | ✅ |
+| Tag / Badge | `.ak-tag` | `--sm --lg --outline --accent --accent-soft --yellow --info --success --warning --danger --danger-solid --new --inverse --skew --label`；`__dot __remove`；`.ak-badge --dot --accent` | ✅ |
+| Chip（筛选） | `.ak-chip.is-active` | 选中角标 | ✅🧩 |
+| Card | `.ak-card` | `--hover --selected --flat --inset --accent-top --accent-left --horizontal`；`__header __eyebrow __title __body __footer __media`；`.ak-card-grid` | ✅ |
+| Panel | `.ak-panel` | `__head --inverse __title __body`；`--collapsible` | ✅🧩 |
+| Section heading | `.ak-heading` | `--stack --lg --underline`；`__title __en __aside` | ✅ |
+| Tabs | `.ak-tabs` `.ak-tab` `.ak-tabpanel` | `--pill --skew --vertical` | ✅🧩 |
+| Message | `.ak-message` | `--success --warning --danger --neutral --accent --banner --stripes` | ✅ |
+| Tooltip | `[data-ak-tip]` `.ak-tooltip` `.ak-term` | CSS-only + JS 增强 | ✅ |
+| Popover | `.ak-popover` | | ✅🧩 |
+| Dropdown / Menu | `.ak-dropdown` `.ak-menu` | `details/summary` 原生 | ✅ |
+| Dialog | `.ak-dialog` `<dialog>` | `--sm --lg --full`；`__head __body __foot` | ✅🧩 |
+| Drawer / Overlay | `.ak-drawer --left/--right` `.ak-overlay` | | ✅🧩 |
+| Toast | `.ak-toasts` `.ak-toast` | `--success --warning --danger` + 进度条 | ✅🧩 |
+| Progress | `.ak-progress` | `--sm --lg --yellow --success --danger --stripes --indeterminate --segmented`；`.ak-ring` | ✅ |
+| Stat | `.ak-stat` `.ak-stat-row` | `--inline`；`__delta--up/--down` | ✅ |
+| Skeleton / Spinner / Loader | `.ak-skeleton --text --rect --square --circle` `.ak-spinner` `.ak-loader` | | ✅ |
+| Empty | `.ak-empty` `__icon __title __code` | | ✅ |
+| Avatar | `.ak-avatar` | `--xs --sm --lg --xl --round --cut`；`__status`；`.ak-avatar-group` | ✅ |
+| Breadcrumb | `.ak-breadcrumb` | | ✅ |
+| Pagination | `.ak-pagination` | | ✅ |
+| Timeline | `.ak-timeline` | `.is-done .is-active` | ✅ |
+| Stepper | `.ak-stepper .ak-step` | | ✅ |
+| Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg` | ✅ |
+| Kbd | `.ak-kbd`（`.ak-search__kbd` 为其绝对定位变体） | 键帽：直角 1px 边、底边略重、mono 10px；用于快捷键提示 / 触发器右侧 / 面板页脚 | ✅ |
+| Table | `.ak-table` | `--striped --compact`；`th[aria-sort]` | ✅ |
+| Accordion | `.ak-details` (`<details>`) | | ✅ |
+| Divider | `.ak-divider` | `--accent --stripes --text --vertical` | ✅ |
+| FAB | `.ak-fab` | | ✅🧩 |
 
 未纳入（wiki 场景低优先）：OTP、日期选择、富文本编辑器、评分、文件上传（MW 自带 Special:Upload）、Cookie 同意、会话超时、Kanban、Pricing。需要时按同一令牌补充。
 
@@ -147,27 +146,6 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | 活动 / 倒计时 | `.ak-event.is-live` `__banner __type __title __time`；`.ak-countdown` | | ✅🧩 |
 | Breaking news | `.ak-news __label __text` | 游戏主界面横幅 | ✅ |
 | Hero | `.ak-hero __eyebrow __title __bar __desc __side` | 官网风黑底 + 青斜块 + 网点 | ✅ |
-
-### C. 与 ReEnd Signature 的对应关系
-
-| ReEnd Signature | AKDS 对应 | 说明 |
-|---|---|---|
-| GlitchText | — （不采用） | 方舟无故障字美学 |
-| DiamondLoader | `.ak-loader`（三竖条） | |
-| TacticalPanel | `.ak-panel` + `.ak-panel__head--inverse` | |
-| HoloCard | `.ak-card--hover` | 无辉光倾斜 |
-| DataStream / CommandOutput | 📝 `.ak-terminal`（PRTS 终端日志块） | 规划 |
-| TacticalBadge | `.ak-tag--label` / `.ak-tag--new` | |
-| WarningBanner | `.ak-message--stripes` / `.ak-news` | |
-| ScanDivider | `.ak-divider--stripes` | |
-| CoordinateTag | `.ak-code-id` | |
-| RadarChart | 📝 干员六维/属性雷达（Gadget） | |
-| HUDOverlay | `.ak-brackets` + `.ak-watermark` | 只用于图片/立绘 |
-| MissionCard | `.ak-stage` / `.ak-event` | |
-| OperatorCard | `.ak-op-card` | 忠于游戏内卡片 |
-| StatusBar | `.ak-header` | |
-| MatrixGrid / FrequencyBars | `.ak-bg-grid` / `.ak-voice__wave` | |
-| TacticalTable | `.ak-table` + `.wikitable` | |
 
 ---
 

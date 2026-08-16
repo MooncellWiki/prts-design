@@ -76,7 +76,7 @@
 .ak-corner-tag--red > span { background: var(--ak-red-600); color: #fff; }
 .ak-corner-tag--yellow > span { background: var(--ak-yellow-500); color: #1d1f20; }
 
-/* A7. 边角括号（HUD bracket）— 与终末地不同，方舟只用细线角标记于图片/大图 */
+/* A7. 边角括号（HUD bracket）— 只用细线角标记于图片/大图 */
 .ak-brackets { position: relative; }
 .ak-brackets::before, .ak-brackets::after { content: ""; position: absolute; width: 14px; height: 14px; border-color: var(--ak-fg-muted); border-style: solid; pointer-events: none; }
 .ak-brackets::before { top: 4px; left: 4px; border-width: 1px 0 0 1px; }

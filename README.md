@@ -1,7 +1,6 @@
 # AKDS · 明日方舟网页设计系统（for prts.wiki 新皮肤）
 
-> Arknights Web Design System — 参考 [ReEnd-Components](thirdparty/ReEnd-Components)（终末地）的令牌→组件→模式分层，
-> 视觉母体为 [明日方舟官网](https://ak.hypergryph.com/) 与游戏内 UI（torappu 解包），目标是 prts.wiki（MediaWiki 1.43）的新皮肤。
+> Arknights Web Design System — 令牌 → 组件 → 模式分层，视觉母体为 [明日方舟官网](https://ak.hypergryph.com/) 与游戏内 UI（torappu 解包），目标是 prts.wiki（MediaWiki 1.43）的新皮肤。
 
 ## 在线预览
 
@@ -15,7 +14,7 @@
 ```
 docs/
   01-design-system.md          规范：理念、令牌（含每个颜色的出处）、字体、间距、装饰语言、图标、可访问性
-  02-components.md             组件清单：L1 MW 内容 / L2 皮肤骨架 / L3 通用 / L4 方舟 / L5 页面模式；ReEnd 对照 + MW 映射
+  02-components.md             组件清单：L1 MW 内容 / L2 皮肤骨架 / L3 通用 / L4 方舟 / L5 页面模式；MW 映射
   03-mediawiki-integration.md  皮肤落地：skin.json、RL 模块、mustache 结构、clientPrefs 主题、Codex 桥接、TemplateStyles/Lua 用法、迁移路线
 src/
   tokens.css        令牌 + 双主题 + Codex/MW 令牌桥接（必须最先加载）
@@ -37,7 +36,7 @@ scripts/            export-tokens.py · build-dist.py
 ## 三句话看懂这套系统
 
 1. **黑白为体、青为用**：大面积黑/白/灰；青 `#18D1FF`（官网，暗色主题）/ `#0098DC`（游戏内，亮色主题）只做选中、链接、主动作与强调条；黄 `#FFD800` 为次强调；红只表示危险/NEW。
-2. **直角、斜切、斜纹、半调网点、角标三角、黑白反转、大写拉丁装饰字、白色线稿图标**——这组几何装饰语言（`.ak-chamfer .ak-skew .ak-stripes .ak-halftone .ak-corner .ak-inverse .ak-en .ak-glyph`）取代了终末地的菱形/辉光。
+2. **直角、斜切、斜纹、半调网点、角标三角、黑白反转、大写拉丁装饰字、白色线稿图标**——这组几何装饰语言（`.ak-chamfer .ak-skew .ak-stripes .ak-halftone .ak-corner .ak-inverse .ak-en .ak-glyph`）就是方舟本体的形状语言：不做圆角，不做辉光。
 3. **终端 / 档案双主题**是双正典（游戏本身就是双色 UI），走 MediaWiki 1.43 的 `skin-theme-clientpref-*` 机制，并把 Codex 令牌桥接到 `--ak-*`，核心/扩展 UI 自动跟随。
 
 ## 颜色出处（可追溯）
