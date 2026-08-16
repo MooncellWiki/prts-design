@@ -56,12 +56,16 @@ skins/AKDS/
 - 点 `label` 浏览器会再向 checkbox 派发一次 click，写「点击外部关闭」时必须放行 `.ak-toc-cb`，否则一点就关。
 - **不要**改成角落 FAB + 侧边抽屉：按钮与面板方位割裂、<1120 时与左侧侧栏抽屉语义打架，还要跟 `.ak-fab`（回到顶部）抢屏幕角落。
 
-**窄屏（<1120）页眉主行参考 VitePress 的 NavScreen**：主行只留 品牌 / 搜索（≤639 收成图标）/ ≡。主导航与工具（外观切换 / 通知 / 用户菜单）都包在 `.ak-header__screen` 里 —— 桌面它 `display:contents`，子项直接参与主行 flex（用 `order` 排成 logo · nav · search · tools）；窄屏它变成 ≡ 拉下的全屏面板（`position:fixed`，顶边贴主行下沿、盖住二级栏，`100dvh` 减页眉高），主导航竖排成 48px 整行链接、工具变成「外观 / 通知 / 用户」三行。
+**页眉主行（≥1120）是与 `.ak-layout` 对齐的三列网格** `var(--ak-sidebar-w) minmax(0,1fr) auto`（`gap` 同为 `--ak-gutter`）：品牌盖着侧栏列，搜索从正文列左缘起（≤560px，与面包屑 / 标题左缘同一条线），工具靠右盖着目录列。**页眉不放站点级主导航**——`MediaWiki:Sidebar` 首个门户（`data-portlets-first`）只在侧栏渲染一次：那 8 项与侧栏「通用」组 1:1 重复、没有哪个宽度上「顶栏可见而侧栏不可见」、顶栏下划线与侧栏青条两处 active 还会打架，导航只由侧栏承担。
 
-- 开合纯 CSS：`input.ak-nav-cb` + `label.ak-header__burger`（三条线 → ×），checkbox 在 DOM 上必须排在面板与汉堡之前才能用 `~` 联动；`body:has(.ak-nav-cb:checked)` 锁页面滚动，面板自己可滚。**无 JS 也能开合**；JS 只补 Esc / 选中页内锚点 / 回到 ≥1120 时收起，以及页眉收起逻辑在面板开着时不动。
-- DOM 只有一份：Echo 徽标（`#pt-notifications-*`）、`#p-personal`、`.ak-theme-toggle` 都不用复制 —— 桌面和面板是同一批节点换了布局。所以主行 DOM 顺序固定为 `logo · search · search-toggle · nav-cb · screen[nav, tools] · burger`，桌面 Tab 顺序因此是 logo → 搜索 → 主导航 → 工具（与视觉的「导航在搜索前」略有出入，属可接受范围）。
-- 面板在 `.ak-header` 内部 `position:fixed`：`.ak-header` 的 `backdrop-filter` 使它成为包含块，但页眉贴视口左上、宽度即视口宽，所以 `top/left/right` 与相对视口一致；不用 `bottom:0`（那会相对页眉底），用 `height: calc(100dvh - var(--ak-header-h))`。
-- 二级栏「菜单」（侧栏抽屉）与主行 ≡（导航屏）并存，与 VitePress 的 Menu / hamburger 分工一致：前者是本站的完整侧栏树，后者是站点级导航 + 个人设置。
+- 页眉 / 二级栏 / 页脚这几个 1680 容器与 `.ak-layout` 同为 `box-sizing:border-box`——否则超过 1680+2·gutter 后页眉比布局宽 48px，品牌与侧栏左缘差一个 gutter。≥1680 的 `--ak-sidebar-w / --ak-toc-w: 268px` 覆盖写在 `:root` 上，页眉网格与布局共用。
+- `.ak-layout--reading`（居中版式）下页眉列与正文列不再对齐；目前没有页面用它，若启用需另给页眉一套列宽。
+
+**窄屏（<1120）页眉主行**回到 flex，只留 品牌 / 搜索（≤639 收成图标）/ ≡。工具（外观切换 / 通知 / 用户菜单）都包在 `.ak-header__screen` 里 —— 桌面它 `display:contents`，子项直接参与主行网格；窄屏它变成 ≡ 拉下、贴主行右下沿的 320px 卡片（`position:absolute` 于 `.ak-header__inner`，`top:100%`，盖住二级栏；不再是全屏面板——里面只有「外观 / 通知 / 用户」三行）。
+
+- 开合纯 CSS：`input.ak-nav-cb` + `label.ak-header__burger`（三条线 → ×），checkbox 在 DOM 上必须排在卡片与汉堡之前才能用 `~` 联动；不锁页面滚动，卡片自己可滚（`max-height: 100dvh − 页眉高`）。**无 JS 也能开合**；JS 只补 Esc / 选中页内锚点 / 点卡片外（放行 `.ak-nav-cb`，同目录浮层）/ 回到 ≥1120 时收起，以及页眉收起逻辑在卡片开着时不动。
+- DOM 只有一份：Echo 徽标（`#pt-notifications-*`）、`#p-personal`、`.ak-theme-toggle` 都不用复制 —— 桌面和卡片是同一批节点换了布局。主行 DOM 顺序固定为 `logo · search · search-toggle · nav-cb · screen[tools] · burger`，Tab 顺序与视觉一致（品牌 → 搜索 → 工具）。
+- 二级栏「菜单」（侧栏抽屉 = 本站唯一的导航）与主行 ≡（外观 / 账户）分工明确，两个入口互不重复。
 
 ## 3. skin.mustache 结构 ↔ CSS 类
 
@@ -71,9 +75,8 @@ skins/AKDS/
    a.ak-header__logo{{data-logos}}
    form.ak-header__search{{data-search-box}}   ← 无 JS 的真表单；有 JS 时被 search-palette.js 换成 button.ak-search-trigger，表单本身搬进悬浮面板（见 §3.3）
    button.ak-header__search-toggle（≤639 图标）
-   input.ak-nav-cb#ak-nav-toggle                ← <1120 导航屏开关（纯 CSS）；必须排在下面两个之前
-   .ak-header__screen#ak-nav-screen             ← 桌面 display:contents；<1120 = ≡ 拉下的全屏面板
-      nav.ak-header__nav{{#data-portlets-sidebar.data-portlets-first}}   ← MediaWiki:Sidebar 首个 portlet（侧栏里再渲染一份 .ak-portlet--grid）
+   input.ak-nav-cb#ak-nav-toggle                ← <1120 工具卡片开关（纯 CSS）；必须排在下面两个之前
+   .ak-header__screen#ak-nav-screen             ← 桌面 display:contents；<1120 = ≡ 拉下、贴主行右下沿的卡片（页眉不放主导航：MediaWiki:Sidebar 首个 portlet 只在侧栏渲染成 .ak-portlet--grid）
       .ak-header__tools [.ak-header__tool > .ak-header__tool-label + .ak-theme-toggle][{{data-portlets.data-notifications}}][{{data-portlets.data-user-menu}} = .ak-dropdown#p-personal]
    label.ak-header__burger[for=ak-nav-toggle]   ← 三条线 → ×，仅 <1120 显示；主行不放侧栏抽屉的入口（那个在二级栏）
    .ak-local-nav   ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）
