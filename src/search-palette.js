@@ -31,7 +31,7 @@
  *    }
  *    Item = { id?, type: 'page'|'operator'|'item'|'category'|'action'|…, label, url?, desc?, thumb?(url), icon?(svg id: 'page'|'search'|'category'|'user'|'file'|'action'|'clock'),
  *             glyph?(单字，深底), meta?: [{ text?, html?, kbd? }], match?: boolean(默认 true：高亮已输入部分), en?, keepOpen?, noRecent?, onSelect?() ,
- *             actions?: [{ id, label, icon: 'edit'|'close'|'external', url?, onClick?(item) }] }
+ *             actions?: [{ id, label, icon: 'edit'|'close'|'external', url?, onClick?(item) }] }   ← 行内动作始终占位、高亮时可见；设计上只给最近访问用「移除」，搜索结果不放额外点击动作
  * ═══════════════════════════════════════════════════════════════════════════ */
 ( function () {
 	'use strict';

@@ -26,8 +26,8 @@
 		const url = scriptPath + '/rest.php/v1/search/title?' + new URLSearchParams( { q: q, limit: String( limit || 10 ) } );
 		return fetch( url, { headers: { accept: 'application/json' }, signal: signal } ).then( ( r ) => { if ( !r.ok ) { throw new Error( 'HTTP ' + r.status ); } return r.json(); } ).then( ( data ) => ( data.pages || [] ).map( ( p ) => {
 			const redirect = p.matched_title && isRedirectUseful( p.title, p.matched_title ) ? mw.msg( 'akds-search-redirect', p.matched_title ) : null;
-			return { type: 'page', label: p.title, url: pageUrl( p.matched_title || p.title ), desc: p.description || '', thumb: p.thumbnail && p.thumbnail.url ? p.thumbnail.url : '', redirect: redirect,
-				actions: [ { id: 'edit', label: mw.msg( 'akds-search-edit' ), icon: 'edit', url: pageUrl( p.title, { action: 'edit' } ) } ] };
+			// 不放「编辑」等行内动作（Citizen 有）：面板里唯一的主动作是「打开」，编辑离页面本身只差一步；只有最近访问保留「移除 ×」
+			return { type: 'page', label: p.title, url: pageUrl( p.matched_title || p.title ), desc: p.description || '', thumb: p.thumbnail && p.thumbnail.url ? p.thumbnail.url : '', redirect: redirect };
 		} ) );
 	}
 	function search( q, signal ) {

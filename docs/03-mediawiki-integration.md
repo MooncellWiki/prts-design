@@ -129,7 +129,7 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 
 | 层 | 来源 | 说明 |
 |---|---|---|
-| 标题搜索 | `GET /rest.php/v1/search/title?q=&limit=10` | 与 Vector 2022 / Citizen 相同；`thumbnail` 需 PageImages、`description` 需 ShortDescription / Description2（PRTS 可用 `{{SHORTDESC:…}}` 补短描述）；`matched_title` 只在「别名式重定向」时显示 |
+| 标题搜索 | `GET /rest.php/v1/search/title?q=&limit=10` | 与 Vector 2022 / Citizen 相同；`thumbnail` 需 PageImages、`description` 需 ShortDescription / Description2（PRTS 可用 `{{SHORTDESC:…}}` 补短描述）；`matched_title` 只在「别名式重定向」时显示；不加每行「编辑」动作（Citizen 有，我们认为面板里不该有第二个点击目标） |
 | 本地即时索引（可选，PRTS 特色） | `mw.hook('akds.search.local').fire(fn)` 注入 `fn(q) → Group[]` | 干员 / 道具 / 关卡 JSON（Cargo 定时导出到 `MediaWiki:*.json` 或 API 缓存到 IndexedDB），支持拼音首字母 / 别名，0 网络等待，且能给结构化元数据（职业图标 `.ak-prof`、稀有度 `.ak-rarity`）——预览页 `search-mock.js` 演示的就是这一层（`yh` → 银灰、`nts` → 能天使） |
 | `>` 动作 | 本页菜单 `#p-views #p-cactions #p-tb #p-personal .ak-page-tabs` + 常用特殊页面 | 同 Citizen「从页面菜单拉动作」 |
 | `#` 分类 | 空查询：本页所属分类（`prop=categories`）；有字：`list=prefixsearch&psnamespace=14` | 可再加「进入分类浏览成员」 |

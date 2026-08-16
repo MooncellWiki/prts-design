@@ -84,7 +84,7 @@
 
 	function opItem( o ) {
 		return { type: 'operator', label: o.name, en: o.en, url: '#op-' + o.avatar, thumb: asset( 'avatar/' + o.avatar + '.png' ), desc: PROF[ o.cls ] + ' · ' + o.branch + ' · ' + o.faction,
-			meta: [ { html: prof( o.cls ) }, { html: stars( o.rarity ) } ], actions: [ { id: 'edit', label: '编辑', icon: 'edit', url: '#edit-' + o.avatar } ] };
+			meta: [ { html: prof( o.cls ) }, { html: stars( o.rarity ) } ] };
 	}
 	function itemItem( it ) {
 		return { type: 'item', label: it.name, url: '#item-' + it.id, thumb: asset( 'item/' + it.id + '.png' ), desc: '道具 · T' + it.rarity, meta: [ { text: 'T' + it.rarity, cls: 'ak-tag ak-tag--sm ak-tag--label' } ] };
