@@ -18,13 +18,11 @@
     {{/data-search-box}}
     {{! 手机（≤639）：搜索收成主行里的图标按钮，同样打开悬浮面板；≥640 由 CSS 隐藏 }}
     <button type="button" class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="{{msg-akds-search-label}}" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></svg></button>
-    {{! <1120（VitePress NavScreen）：主导航 + 工具（外观 / 通知 / 用户菜单）收进 ≡ 拉下的全屏面板 .ak-header__screen；桌面它 display:contents，子项直接参与主行 flex。
-        开合纯 CSS：input.ak-nav-cb 必须在面板与 label.ak-header__burger 之前（~ 联动）；JS 只补 Esc / 选中链接 / 回到桌面宽度时收起。DOM 只此一份 → Echo / #p-personal 的 id 不重复。 }}
+    {{! 页眉不放站点级主导航：MediaWiki:Sidebar 首个门户只在侧栏渲染一次（与侧栏重复的顶栏已去掉）。
+        <1120：工具（外观 / 通知 / 用户菜单）收进 ≡ 拉下、贴主行右下沿的卡片 .ak-header__screen；桌面它 display:contents，子项直接参与主行网格。
+        开合纯 CSS：input.ak-nav-cb 必须在卡片与 label.ak-header__burger 之前（~ 联动）；JS 只补 Esc / 选中锚点 / 点卡片外 / 回到桌面宽度时收起。DOM 只此一份 → Echo / #p-personal 的 id 不重复。 }}
     <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
     <div class="ak-header__screen" id="ak-nav-screen">
-      {{#data-portlets-sidebar.data-portlets-first}}
-      <nav class="ak-header__nav" aria-label="{{label}}"><ul class="ak-header__nav-list">{{{html-items}}}</ul></nav>
-      {{/data-portlets-sidebar.data-portlets-first}}
       <div class="ak-header__tools">
         <div class="ak-header__tool">
           <span class="ak-header__tool-label" id="ak-theme-label">{{msg-akds-appearance}}</span>

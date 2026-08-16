@@ -74,8 +74,11 @@
 			search: ( q ) => api.get( { action: 'query', generator: 'prefixsearch', gpssearch: q, gpsnamespace: NS_FILE, gpslimit: 10, prop: 'pageimages', piprop: 'thumbnail', pithumbsize: 80, format: 'json', formatversion: 2 } ).then( ( d ) => [ { id: 'files', label: mw.msg( 'akds-search-mode-file' ), en: 'Files', items: ( d.query && d.query.pages || [] ).sort( ( a, b ) => a.index - b.index ).map( ( p ) => ( { type: 'file', label: p.title, url: pageUrl( p.title ), thumb: p.thumbnail && p.thumbnail.source } ) ) } ] ) }
 	];
 
+	/* 快捷入口：页眉没有主导航，取侧栏首个门户（MediaWiki:Sidebar 第一组 = #p-navigation）；没有就退到侧栏里的前几个链接 */
 	function shortcuts() {
-		return Array.from( document.querySelectorAll( '.ak-header__nav a' ) ).slice( 0, 8 ).map( ( a ) => ( { label: ( a.textContent || '' ).trim(), url: a.href } ) ).filter( ( s ) => s.label );
+		let links = Array.from( document.querySelectorAll( '#p-navigation a[href]' ) );
+		if ( !links.length ) { links = Array.from( document.querySelectorAll( '#mw-panel a[href]' ) ); }
+		return links.slice( 0, 8 ).map( ( a ) => ( { label: ( a.textContent || '' ).trim(), url: a.href } ) ).filter( ( s ) => s.label );
 	}
 
 	const M = {
