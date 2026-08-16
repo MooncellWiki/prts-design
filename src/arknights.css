@@ -49,7 +49,7 @@
 .ak-halftone--full::after { -webkit-mask-image: none; mask-image: none; }
 .ak-halftone-fade { -webkit-mask-image: radial-gradient(circle, #000 1px, transparent 1.5px), linear-gradient(90deg, #000 60%, transparent); mask-composite: intersect; }
 /* 游戏内蓝色标题条 */
-.ak-blue-band { --ak-halftone-color: rgba(255,255,255,.35); background: var(--ak-blue-500); color: #fff; padding: 6px 16px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
+.ak-blue-band { --ak-halftone-color: rgba(255,255,255,.35); box-sizing: border-box; background: var(--ak-blue-500); color: #fff; padding: 6px 16px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
 .ak-blue-band.ak-halftone::after { z-index: 0; }
 .ak-blue-band > * { position: relative; z-index: 1; }
 

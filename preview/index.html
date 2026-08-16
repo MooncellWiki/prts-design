@@ -24,6 +24,8 @@
 .ak-swatch__note { padding: 0 8px 6px; color: var(--ak-fg-muted); }
 .type-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--ak-border-subtle); }
 .type-row .meta { font: 600 11px/1.5 var(--ak-font-mono); color: var(--ak-fg-muted); }
+.type-row > * { min-width: 0; }
+@media (max-width: 639px) { .type-row { grid-template-columns: 1fr; gap: 4px; } }   /* 200px 元数据列 + 56px 展示字在手机上放不下一行 */
 .spec-table td:first-child { font-family: var(--ak-font-mono); font-size: 12px; white-space: nowrap; }
 .section-anchor { scroll-margin-top: 80px; }
 .dark-only-demo { background: #0f0f10; padding: 16px; color: #f0f0f0; }

@@ -187,3 +187,4 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 - 数据属性驱动主题色：`data-rarity`、`data-prof`、`data-theme`。
 - 组件不依赖 JS 也应可读（渐进增强）；JS 只做：主题、抽屉、TOC scrollspy、标签页、阶段/等级切换、Toast、Dialog。
 - 所有尺寸用 rem/px 令牌，不写魔法数；颜色只引用令牌。
+- **`width:100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外——`.ak-input / .ak-select / .ak-textarea / .ak-stat / .ak-blue-band` 已处理，新组件照做。

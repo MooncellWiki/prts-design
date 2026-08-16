@@ -251,13 +251,14 @@
 .ak-ring { position: relative; } .ak-ring > span { position: relative; }
 
 /* ═══ Stat ═══ */
-.ak-stat { display: flex; flex-direction: column; gap: 2px; padding: var(--ak-space-3) var(--ak-space-4); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top: 2px solid var(--ak-accent); min-width: 120px; }
+.ak-stat { box-sizing: border-box; display: flex; flex-direction: column; gap: 2px; padding: var(--ak-space-3) var(--ak-space-4); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top: 2px solid var(--ak-accent); min-width: 120px; }
 .ak-stat__label { font: 600 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }
 .ak-stat__value { font: 700 var(--ak-fs-h2)/1.1 var(--ak-font-label); font-variant-numeric: tabular-nums; color: var(--ak-fg); }
 .ak-stat__value small { font-size: .5em; color: var(--ak-fg-muted); margin-left: 2px; }
 .ak-stat__delta { font-size: var(--ak-fs-xs); font-family: var(--ak-font-label); }
 .ak-stat__delta--up { color: var(--ak-rt-vup); } .ak-stat__delta--down { color: var(--ak-rt-vdown); }
 .ak-stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--ak-space-3); }
+.ak-stat-row > .ak-stat { min-width: 0; }   /* 轨道最小值由 minmax 管，条目自己别再撑 */
 .ak-stat--inline { flex-direction: row; align-items: baseline; gap: var(--ak-space-2); border: 0; padding: 0; background: none; min-width: 0; }
 .ak-stat--inline .ak-stat__value { font-size: var(--ak-fs-body-lg); }
 
@@ -320,7 +321,7 @@
 .ak-label .req { color: var(--ak-danger); }
 .ak-help { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
 .ak-help--error { color: var(--ak-danger); }
-.ak-input, .ak-select, .ak-textarea { font: inherit; font-size: var(--ak-fs-sm); color: var(--ak-fg); background: var(--ak-bg-surface); border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm); padding: 0 10px; min-height: 36px; width: 100%; transition: border-color var(--ak-dur-fast), box-shadow var(--ak-dur-fast); }
+.ak-input, .ak-select, .ak-textarea { box-sizing: border-box; font: inherit; font-size: var(--ak-fs-sm); color: var(--ak-fg); background: var(--ak-bg-surface); border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm); padding: 0 10px; min-height: 36px; width: 100%; transition: border-color var(--ak-dur-fast), box-shadow var(--ak-dur-fast); }   /* border-box：MW 没有全局 box-sizing 重置，width:100% + padding 会在窄屏撑破容器 */
 .ak-textarea { padding: 8px 10px; min-height: 90px; line-height: 1.5; resize: vertical; }
 .ak-input:focus, .ak-select:focus, .ak-textarea:focus { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
 .ak-input.is-invalid, .ak-field.is-invalid .ak-input { border-color: var(--ak-danger); }

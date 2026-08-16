@@ -159,6 +159,6 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 - [ ] 键盘可达：页眉、侧栏（树形展开 Enter/Space/←/→）、页面标签、Tabber、Dialog、Dropdown
 - [ ] 侧栏：现网 #MenuSidebar 注入后各层级可展开/记忆；`a.selflink` 路径自动展开；飞出不被裁切
 - [ ] 对比度：`.ak-rt-*` 亮色值、`--ak-link`、`--ak-fg-muted` 全部 ≥ 4.5:1
-- [ ] 移动端 ≤ 390：无横向滚动（表格走 `.ak-table-scroll` / display:block）
+- [x] 移动端 ≤ 390：无横向滚动（表格走 `.ak-table-scroll` / display:block；`width:100%` 组件一律 `box-sizing:border-box`）。预览页已在 360 / 414 用脚本核过 `scrollWidth === clientWidth`。**这条一旦破，移动端 Chrome 会把布局视口撑宽、整页缩小，`.ak-fab` 会被推到可见区外**——上线前用真机 / DevTools 移动模式再核一遍
 - [ ] Gadget 兼容：列出依赖 Vector 选择器的小工具并迁移
 - [ ] 打印样式
