@@ -377,6 +377,7 @@ html.skin-theme-clientpref-night {
   --background-color-inverted: var(--ak-bg-inverse);
   --background-color-progressive: var(--ak-accent);
   --background-color-progressive--hover: var(--ak-accent-hover);
+  --background-color-progressive--active: var(--ak-accent-hover);
   --background-color-progressive-subtle: var(--ak-accent-subtle);
   --background-color-destructive: var(--ak-danger);
   --background-color-destructive-subtle: var(--ak-danger-bg);
@@ -413,6 +414,9 @@ html.skin-theme-clientpref-night {
   --border-color-disabled: var(--ak-border-subtle);
   --border-color-progressive: var(--ak-accent);
   --border-color-progressive--focus: var(--ak-focus);
+  --border-color-input-binary: var(--ak-border-strong);   /* 复选框/单选框/开关：OOUI 用 6px 边框画选中态的圆点，不映射就是 Codex 默认的 #36c，和强调色对不上 */
+  --border-color-input-binary--checked: var(--ak-accent);
+  --border-color-input-binary--active: var(--ak-accent-hover);
   --border-color-destructive: var(--ak-danger);
   --border-color-error: var(--ak-danger);
   --border-color-warning: var(--ak-warning);
@@ -426,6 +430,7 @@ html.skin-theme-clientpref-night {
   --box-shadow-drop-medium: var(--ak-shadow-md);
   --box-shadow-drop-xx-large: var(--ak-shadow-lg);
   --box-shadow-color-progressive--focus: var(--ak-focus);
+  --box-shadow-color-progressive--active: var(--ak-accent-hover);
   --font-family-base: var(--ak-font-body);
   --font-family-heading-main: var(--ak-font-body);
   --font-family-monospace: var(--ak-font-mono);

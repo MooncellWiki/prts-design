@@ -337,7 +337,12 @@ input:disabled, textarea:disabled, select:disabled { background: var(--ak-bg-sur
 textarea { line-height: 1.5; }
 input[type="checkbox"], input[type="radio"] { accent-color: var(--ak-accent); width: 16px; height: 16px; }
 label { cursor: pointer; }
-.mw-ui-button, .cdx-button, .oo-ui-buttonElement-button {
+/* 注意：不要把 .oo-ui-buttonElement-button 加进来。该类同时出现在有框和无框的 OOUI 按钮上，
+   且常常与图标类（.oo-ui-icon-*，靠 background-image 画图标）落在同一元素上——例如 Echo 的
+   通知徽标 <a class="oo-ui-buttonElement-button … oo-ui-icon-bell">。这里的 background 简写会
+   把图标的 background-image 一并清成 none，徽标就变成一个空白方块。有框 OOUI 按钮由皮肤的
+   skinStyles/ooui/oojs-ui-core.less（.oo-ui-buttonElement-framed > .oo-ui-buttonElement-button）负责。 */
+.mw-ui-button, .cdx-button {
   font-family: var(--ak-font-body); font-weight: 600; font-size: var(--ak-fs-sm); border-radius: var(--ak-radius);
   border: 1px solid var(--ak-border-strong); background: var(--ak-bg-surface); color: var(--ak-fg); padding: 6px 14px; min-height: 34px; cursor: pointer;
 }
