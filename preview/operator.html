@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="../src/arknights.css">
 <link rel="stylesheet" href="../src/skin.css">
 <link rel="stylesheet" href="../src/utilities.css">
+<link rel="stylesheet" href="demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖 tokens.css §2d 的接口变量 -->
 <style>
 /* preview-only helpers */
 .demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
@@ -101,10 +102,10 @@
   </div>
 </header>
 
-<div class="ak-layout">
 <!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、preview/demo-theme.css） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
+<div class="ak-layout">
   <!-- ═══ SIDEBAR ═══ -->
   <aside class="ak-sidebar" id="ak-sidebar" aria-label="导航">
     <div class="ak-sidebar__panel" id="mw-panel">
@@ -113,6 +114,7 @@
       <ul>
         <li><a href="index.html">设计系统展示</a></li>
         <li class="is-active"><a href="operator.html">干员页样例（陈）</a></li>
+        <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
       </ul>
     </div>
     <!-- ↓ 与 prts.wiki 现网 #MenuSidebar 的原始输出结构一致：段落 = 分组标题；* 列表；'''粗体''' = 有子级的分组项；** 子项。

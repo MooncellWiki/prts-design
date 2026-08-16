@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="../src/arknights.css">
 <link rel="stylesheet" href="../src/skin.css">
 <link rel="stylesheet" href="../src/utilities.css">
+<link rel="stylesheet" href="demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖 tokens.css §2d 的接口变量 -->
 <style>
 /* preview-only helpers */
 .demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
@@ -26,7 +27,7 @@
 .type-row .meta { font: 600 11px/1.5 var(--ak-font-mono); color: var(--ak-fg-muted); }
 .type-row > * { min-width: 0; }
 @media (max-width: 639px) { .type-row { grid-template-columns: 1fr; gap: 4px; } }   /* 200px 元数据列 + 56px 展示字在手机上放不下一行 */
-.spec-table td:first-child { font-family: var(--ak-font-mono); font-size: 12px; white-space: nowrap; }
+.spec-table td:first-child, .spec-table tr:has(td) > th:first-child { font-family: var(--ak-font-mono); font-size: 12px; white-space: nowrap; text-align: left; font-weight: 600; }
 .section-anchor { scroll-margin-top: 80px; }
 .dark-only-demo { background: #0f0f10; padding: 16px; color: #f0f0f0; }
 </style>
@@ -96,10 +97,10 @@
   </div>
 </header>
 
-<div class="ak-layout">
 <!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、preview/demo-theme.css） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
+<div class="ak-layout">
   <!-- ═══ SIDEBAR ═══ -->
   <aside class="ak-sidebar" id="ak-sidebar" aria-label="导航">
     <div class="ak-sidebar__panel" id="mw-panel">
@@ -108,6 +109,7 @@
       <ul>
         <li class="is-active"><a href="index.html">设计系统展示</a></li>
         <li><a href="operator.html">干员页样例（陈）</a></li>
+        <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
       </ul>
     </div>
     <!-- ↓ 与 prts.wiki 现网 #MenuSidebar 的原始输出结构一致：段落 = 分组标题；* 列表；'''粗体''' = 有子级的分组项；** 子项。
@@ -365,6 +367,45 @@
 </div>
 
 <!-- ═══════════ 5. MEDIAWIKI CONTENT ═══════════ -->
+<h2 id="s-chrome" class="section-anchor">皮肤骨架 · 页眉与主题接口 <span class="ak-en ak-fs-sm ak-fg-muted">Chrome &amp; theme hooks</span></h2>
+<p>页眉在两套主题下都是<b>黑色「终端」顶栏</b>：官网导航栏（黑底 · 青色当前项 · 白线稿图标）、游戏主界面顶栏（深底 · 半调网点 · 青色选中块）、干员档案页顶部那道黑边——「黑框白纸 / 黑框黑纸」是方舟本体的框架语言。它的配色<b>不读明暗主题</b>，只读 <code>--ak-chrome-*</code>；<code>skin.css</code> 在 <code>.ak-header</code> 内把语义令牌重映射过去，页眉里的按钮 / 搜索 / 头像 / 菜单自动是页眉配色。</p>
+<div class="ak-grid-2 ak-gap-4 ak-mb-4">
+  <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">默认页眉 · 由这些构件组成</span>
+    <ul class="ak-fs-sm ak-mb-0">
+      <li><b>黑底</b> <code>rgba(8,9,10,.9)</code> + 毛玻璃，1px 亮线收边；头图 / 画布图滚到下面时透出来</li>
+      <li><b>半调网点场</b>从右缘向左渐隐，只铺到工具区背后（游戏顶栏 <code>img_back</code> / 官网左缘网点）；<code>--ak-chrome-texture</code> 调强弱或关掉</li>
+      <li><b>标语</b>（ARKNIGHTS WIKI）与<b>悬停</b>用活动主色——官网导航当前项那一点青</li>
+      <li><b>搜索触发器</b>：左端深色图标框（游戏 HUD <code>announce_title_on</code> 的图标位）+ 矩形浅条；打开时边框与图标框都变主色（斜切试过，Tab 焦点描边会被裁断，作罢）</li>
+      <li><b>外观开关</b>选中项 = 主色实底（游戏 <code>selected_back</code> / <code>toggle_on</code>），亮暗主题下页眉配色完全一致、不反色；通知红标 <code>#C82A36</code>；头像方形细框；页眉内链接不分已访问色</li>
+    </ul></div></div>
+  <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">活动主题 · 只改变量，不碰选择器</span>
+    <p class="ak-fs-sm">prts.wiki 大活期间会换头图 / 顶栏底图 / 站标 / 侧栏配色（现网 <code>ext.gadget.seventhStyle</code> 改的就是这些）。新皮肤把这些位置抽成 <code>tokens.css §2d</code> 的一组变量，Gadget / <code>MediaWiki:Common.css</code> 在 <code>:root</code> 上覆盖即可。下面这个按钮就是一份示例（<code>preview/demo-theme.css</code>）：罗德岛主界面昼 / 夜背景做头图（跟随 档案 / 终端 主题）、警示黄做活动主色、顶栏底图、换站标、画布点阵。</p>
+    <button type="button" class="ak-btn ak-btn--primary ak-demo-theme-toggle" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></button>
+  </div></div>
+</div>
+<table class="wikitable ak-compact spec-table" style="width:100%">
+<tr><th style="width:26%">接口变量</th><th style="width:22%">默认</th><th>作用</th></tr>
+<tr><th>--ak-theme-accent / -fg</th><td>#18D1FF / #000</td><td>活动主色：页眉标语与悬停、搜索图标框、开关选中项、侧栏 / 目录分组条、页脚斜纹、窄屏工具卡片顶条（正文链接 / 选中仍是 <code>--ak-accent</code>，想一起换就连它也覆盖）</td></tr>
+<tr><th>--ak-chrome-bg / -bg-solid</th><td>rgba(8,9,10,.9) / #0E0F10</td><td>页眉底色（半透明 + 毛玻璃）/ 不透明处（窄屏工具卡片）</td></tr>
+<tr><th>--ak-chrome-fg / -fg-2 / -fg-muted</th><td>#F2F2F2 …</td><td>页眉前景三级</td></tr>
+<tr><th>--ak-chrome-line / -line-strong · -hover · -field</th><td>rgba(255,255,255,.14 / .32 / .08 / .07)</td><td>底线与分隔线 · 悬停底 · 搜索触发器底</td></tr>
+<tr><th>--ak-chrome-image / -position / -size / -repeat</th><td>none / right top / auto 100% / no-repeat</td><td><b>顶栏底图</b>：<code>url(left.png), url(right.png)</code>（现网 PRTSheadleft / Garanheadright 的位置）</td></tr>
+<tr><th>--ak-chrome-texture</th><td>.55</td><td>右侧半调网点强度 0–1，有底图时设 0</td></tr>
+<tr><th>--ak-keyart-image / -h / -position / -size / -bg / -fade</th><td>none / 0 / center 30% / cover / #0E0F10 / 96px</td><td><b>头图</b> <code>.ak-keyart</code>：页眉之下、布局之上的通栏画，<code>-h</code> 为 0 时不占位；底部按 <code>-fade</code> 渐隐进画布；≤639 限高 40vw</td></tr>
+<tr><th>--ak-canvas-image / -position / -size / -repeat / -attachment</th><td>none …</td><td><b>画布底纹</b>：叠在 body 的 <code>--ak-bg-canvas</code> 之上（现网 body 的 bkg 位置）；侧栏 / 目录没有底色，宜低对比</td></tr>
+<tr><th>--ak-logo-image</th><td>（未设）</td><td><b>站标</b>：设了就用 <code>content</code> 替换 <code>.ak-header__logo img</code>（Chromium / WebKit；Firefox 请改 <code>$wgLogos</code>）</td></tr>
+</table>
+<div class="ak-message ak-message--warning ak-mb-4"><svg class="ak-message__icon"><use href="#i-warn"/></svg><div class="ak-message__body">接口变量里的 <code>url()</code> 请写<b>绝对地址</b>（<code>//media.prts.wiki/…</code>）：Chromium 把自定义属性里的相对 <code>url()</code> 按「使用处」（<code>skin.css</code>）解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录。</div></div>
+<pre class="ak-mb-4"><code>/* MediaWiki:Gadget-eventStyle.css —— 一次活动主题就这么多 */
+:root {
+  --ak-theme-accent: #72a330;
+  --ak-keyart-image: url(//media.prts.wiki/…/kv.jpg);  --ak-keyart-h: 220px;
+  --ak-chrome-image: url(//media.prts.wiki/…/headright.png);  --ak-chrome-texture: 0;
+  --ak-logo-image:   url(//media.prts.wiki/…/logo.png);
+  --ak-canvas-image: url(//media.prts.wiki/…/bkg.png);  --ak-canvas-size: 100% auto;  --ak-canvas-repeat: no-repeat;
+}
+html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/kv-night.jpg); }   /* 终端模式换夜景（可选） */</code></pre>
+
 <h2 id="s-mw" class="section-anchor">MediaWiki 内容样式 <span class="ak-en ak-fs-sm ak-fg-muted">.mw-parser-output</span></h2>
 <p>皮肤最重要的工作是把编辑者写出的 wikitext 渲染得好看：标题、链接、列表、表格、图片、目录、引用、消息框、折叠、TabberNeue。以下均为 MW 原生 DOM。</p>
 <h3>链接与行内</h3>
@@ -392,6 +433,22 @@
 <tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="5"><img src="assets/avatar/char_102_texas_2.png" alt=""></span><span><span class="ak-op-row__name">德克萨斯</span><span class="ak-op-row__meta">尖兵 · PL03</span></span></a></td><td><span class="ak-rarity ak-rarity--r5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/pioneer.png" alt=""></span>先锋</span></td><td class="num">2050</td><td class="num">545</td><td class="num">371</td><td>企鹅物流</td></tr>
 <tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="4"><img src="assets/avatar/char_151_myrtle_2.png" alt=""></span><span><span class="ak-op-row__name">桃金娘</span><span class="ak-op-row__meta">执旗手 · PL33</span></span></a></td><td><span class="ak-rarity ak-rarity--r4"><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/pioneer.png" alt=""></span>先锋</span></td><td class="num">1583</td><td class="num">386</td><td class="num">223</td><td>—</td></tr>
 </table></div>
+<p class="ak-fs-sm ak-fg-2">PRTS 大量表格把 <code>th</code> 竖着当行头用（属性表 / 信息表）。加粗的 2px 底线只压在「整行都是 th、且下一行是数据行」的真正表头行下面（<code>:has()</code>，老浏览器退化为一律 1px）；行头列每格只有普通 1px 线，与右侧 td 对齐，不再一格一道。</p>
+<div class="ak-grid-2 ak-gap-4 ak-mb-4">
+<table class="wikitable ak-mb-0" style="width:100%">
+<tr><th style="width:28%">再部署时间</th><td>70s</td><th style="width:28%">初始部署费用</th><td>16→18</td></tr>
+<tr><th>阻挡数</th><td>2</td><th>攻击间隔</th><td>1.5s</td></tr>
+<tr><th>所属势力</th><td colspan="3"><a href="#">罗德岛</a></td></tr>
+<tr><th>隐藏势力</th><td colspan="3"><a href="#">叙拉古</a></td></tr>
+</table>
+<table class="wikitable ak-mb-0" style="width:100%">
+<tr><th></th><th>精英0 1级</th><th>精英0 满级</th><th>精英1 满级</th><th>精英2 满级</th></tr>
+<tr><th>生命上限</th><td class="num">1001</td><td class="num">1431</td><td class="num">1884</td><td class="num">2385</td></tr>
+<tr><th>攻击</th><td class="num">333</td><td class="num">477</td><td class="num">628</td><td class="num">796</td></tr>
+<tr><th>防御</th><td class="num">217</td><td class="num">311</td><td class="num">410</td><td class="num">520</td></tr>
+<tr><th>法术抗性</th><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+</table>
+</div>
 <div class="ak-grid-2 ak-gap-4">
 <div>
 <h3>缩略图与图库</h3>
@@ -436,22 +493,6 @@
 <div class="demo"><button class="ak-btn ak-btn--xs">XS</button><button class="ak-btn ak-btn--sm">SM</button><button class="ak-btn">MD</button><button class="ak-btn ak-btn--lg">LG</button><button class="ak-btn ak-btn--xl ak-btn--primary">XL 主动作</button><button class="ak-btn ak-btn--primary ak-btn--skew">斜切</button><button class="ak-btn ak-btn--icon" aria-label="搜索"><svg width="18" height="18"><use href="#i-search"/></svg></button><div class="ak-btn-group"><button class="ak-btn ak-btn--sm is-active" data-value="e0">E0</button><button class="ak-btn ak-btn--sm" data-value="e1">E1</button><button class="ak-btn ak-btn--sm" data-value="e2">E2</button></div></div>
 <h3>标签 · Tag / Chip / Badge</h3>
 <div class="demo"><span class="ak-tag">默认</span><span class="ak-tag ak-tag--outline">描边</span><span class="ak-tag ak-tag--accent">强调</span><span class="ak-tag ak-tag--accent-soft">浅强调</span><span class="ak-tag ak-tag--yellow">黄</span><span class="ak-tag ak-tag--info">信息</span><span class="ak-tag ak-tag--success">成功</span><span class="ak-tag ak-tag--warning">警告</span><span class="ak-tag ak-tag--danger">危险</span><span class="ak-tag ak-tag--inverse">反转</span><span class="ak-tag ak-tag--new">NEW</span><span class="ak-tag ak-tag--label ak-tag--outline">Label</span><span class="ak-tag ak-tag--skew ak-tag--accent">斜切</span><span class="ak-tag ak-tag--outline">可移除<button class="ak-tag__remove" aria-label="移除">✕</button></span><span class="ak-badge">12</span><span class="ak-badge ak-badge--accent">NEW</span><span class="ak-badge ak-badge--dot"></span></div>
-<p class="ak-fs-sm ak-fg-2">PRTS 大量表格把 <code>th</code> 竖着当行头用（属性表 / 信息表）。加粗的 2px 底线只压在「整行都是 th、且下一行是数据行」的真正表头行下面（<code>:has()</code>，老浏览器退化为一律 1px）；行头列每格只有普通 1px 线，与右侧 td 对齐，不再一格一道。</p>
-<div class="ak-grid-2 ak-gap-4 ak-mb-4">
-<table class="wikitable ak-mb-0" style="width:100%">
-<tr><th style="width:28%">再部署时间</th><td>70s</td><th style="width:28%">初始部署费用</th><td>16→18</td></tr>
-<tr><th>阻挡数</th><td>2</td><th>攻击间隔</th><td>1.5s</td></tr>
-<tr><th>所属势力</th><td colspan="3"><a href="#">罗德岛</a></td></tr>
-<tr><th>隐藏势力</th><td colspan="3"><a href="#">叙拉古</a></td></tr>
-</table>
-<table class="wikitable ak-mb-0" style="width:100%">
-<tr><th></th><th>精英0 1级</th><th>精英0 满级</th><th>精英1 满级</th><th>精英2 满级</th></tr>
-<tr><th>生命上限</th><td class="num">1001</td><td class="num">1431</td><td class="num">1884</td><td class="num">2385</td></tr>
-<tr><th>攻击</th><td class="num">333</td><td class="num">477</td><td class="num">628</td><td class="num">796</td></tr>
-<tr><th>防御</th><td class="num">217</td><td class="num">311</td><td class="num">410</td><td class="num">520</td></tr>
-<tr><th>法术抗性</th><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
-</table>
-</div>
 <div class="demo"><span class="ak-overline">筛选 Chips</span><span class="ak-chip is-active">近卫</span><span class="ak-chip">狙击</span><span class="ak-chip">术师</span><span class="ak-chip is-active">六星</span><span class="ak-chip">五星</span><span class="ak-chip">可公招</span></div>
 <h3>卡片与面板 · Card / Panel</h3>
 <div class="ak-card-grid ak-mb-4">

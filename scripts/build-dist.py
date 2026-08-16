@@ -15,6 +15,10 @@ def img_uri(rel):
     if p.suffix == '.svg':   # 页脚徽章等矢量图：原样内联
         uri = 'data:image/svg+xml;base64,' + base64.b64encode(p.read_bytes()).decode()
         cache[rel] = uri; return uri
+    if rel.startswith('assets/keyart/'):   # 示例活动主题的头图 / 顶栏底图 / 站标：整幅内联，不缩到 256（jpg 保持 jpg）
+        mime = 'image/jpeg' if p.suffix in ('.jpg', '.jpeg') else 'image/png'
+        uri = 'data:%s;base64,' % mime + base64.b64encode(p.read_bytes()).decode()
+        cache[rel] = uri; return uri
     im = Image.open(p).convert('RGBA')
     if max(im.size) > MAX: im.thumbnail((MAX, MAX), Image.LANCZOS)
     buf = io.BytesIO(); im.save(buf, 'PNG', optimize=True)
@@ -22,7 +26,8 @@ def img_uri(rel):
     cache[rel] = uri; return uri
 def css_inline(path):
     css = path.read_text(encoding='utf-8')
-    return re.sub(r'url\("assets/([^"]+)"\)', lambda m: 'url("%s")' % img_uri('assets/' + m.group(1)), css)
+    # demo-theme.css 里的 url("../preview/assets/…")（见该文件头注释：Chromium 按使用处解析自定义属性里的相对 url）与其余 css 的 url("assets/…") 都内联
+    return re.sub(r'url\("(?:\.\./preview/)?assets/([^"]+)"\)', lambda m: 'url("%s")' % img_uri('assets/' + m.group(1)), css)
 for name in ['index.html', 'operator.html']:
     html = (prev / name).read_text(encoding='utf-8')
     # css links

@@ -28,6 +28,23 @@
     if (b) applyTheme(b.dataset.theme);
   });
 
+  /* ── 示例活动主题（demo-theme.css：只覆盖 tokens.css §2d 的接口变量）：html.ak-theme-demo 开关，记忆到 localStorage；MW 上对应 Gadget 加载/卸载 ── */
+  const DEMO_KEY = 'akds-demo-theme';
+  function applyDemoTheme(on) {
+    document.documentElement.classList.toggle('ak-theme-demo', on);
+    $$('.ak-demo-theme-toggle').forEach(b => { b.setAttribute('aria-pressed', on); const st = $('[data-demo-state]', b); if (st) st.textContent = on ? '开' : '关'; });
+    try { localStorage.setItem(DEMO_KEY, on ? '1' : '0'); } catch (e) {}
+  }
+  window.akdsSetDemoTheme = applyDemoTheme;
+  let demoSaved = null;
+  try { demoSaved = localStorage.getItem(DEMO_KEY); } catch (e) {}
+  const dq = new URLSearchParams(location.search).get('demo'); if (dq != null) demoSaved = dq === '1' || dq === 'on' ? '1' : '0';
+  applyDemoTheme(demoSaved === '1');
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.ak-demo-theme-toggle');
+    if (b) { e.preventDefault(); applyDemoTheme(!document.documentElement.classList.contains('ak-theme-demo')); }
+  });
+
   /* ── Catlinks tidy：去掉 MW 输出的「：」文本节点，把「隐藏分类」文字标签包成 span（CSS 已能无 JS 吞掉冒号，这里做归一） ── */
   function tidyCatlinks(root) {
     $$('.catlinks > div', root || document).forEach(div => {
