@@ -31,7 +31,7 @@ skins/AKDS/
 |---|---|---|
 | `skins.akds.tokens` | tokens.css | **所有页面**，`<head>` 顶部（`skin.json` `SkinStyles`/`styles`） |
 | `skins.akds.styles` | base.css + skin.css + components.css + arknights.css + utilities.css | 所有页面 |
-| `skins.akds.js` | skin.js（`mw.user.clientPrefs`、抽屉、TOC、标签页、data-bind） | 所有页面（defer） |
+| `skins.akds.js` | skin.js（`mw.user.clientPrefs`、抽屉、TOC、标签页、data-bind）+ sidebar-tree.js + search-palette.js（悬浮搜索面板核心）+ search-providers.js（MW 数据源）；依赖 `mediawiki.api` | 所有页面（defer）。面板核心 ≈ 35KB 未压缩（含注释；gzip ≈ 11KB），可拆成独立模块在触发器 hover/focus 时 `mw.loader.using` 预取（Citizen 做法） |
 | `skins.akds.mobile` | 移动端追加（若同时供 Minerva 使用则改为 `skinStyles` 注入） | 按 target |
 | `skins.akds.fonts` | @font-face（可选） | 可由用户偏好/Gadget 关闭 |
 
@@ -62,7 +62,8 @@ skins/AKDS/
 <div class="ak-skip">…
 <header class="ak-header"> .ak-header__inner
    a.ak-header__logo{{data-logos}} | nav.ak-header__nav{{#data-portlets.data-navigation}} (可改为 MediaWiki:Sidebar 首个 portlet)   ← 主行不再放汉堡按钮，抽屉入口只在二级栏
-   form.ak-header__search{{data-search-box}} | .ak-header__tools [theme-toggle][{{data-portlets.data-notifications}}][{{data-portlets.data-user-menu}}]
+   form.ak-header__search{{data-search-box}}   ← 无 JS 的真表单；有 JS 时被 search-palette.js 换成 button.ak-search-trigger，表单本身搬进悬浮面板（见 §3.3）
+   .ak-header__tools [button.ak-header__search-toggle（≤639 图标）][theme-toggle][{{data-portlets.data-notifications}}][{{data-portlets.data-user-menu}}]
    .ak-local-nav   ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）
       button.ak-local-nav__menu（开侧栏抽屉）| input.ak-toc-cb + label.ak-local-nav__toc[for]（开目录浮层，纯 CSS）
       （aside.ak-toc 首项 a.ak-toc__top「回到顶部」仅 <1400 显示，届时 .ak-fab 隐藏）
@@ -118,6 +119,29 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 - 站点配置里的内联 `style="margin-left:5px"`（HoRain）用 `img { margin:0 !important }` 覆盖；`cdx-button` 假按钮的圆角 / 最小高度 / 内边距一并归零。
 - 若想像 starcitizen.tools 那样做成一套单色徽章：那是站点层的事——它用 `$wgFooterIcons` 把 `src` 换成了自绘的 `badge-*.svg`（统一 32px 高、白色线稿），皮肤不需要改。PRTS 若愿意，可同样在 LocalSettings 覆盖 `$wgFooterIcons['poweredby']['mediawiki']['src']` 等为自托管的单色版；届时把 `.ak-footer__icons a` 的底板与 grayscale 去掉即可（保留结构）。
 
+### 3.3 搜索面板（Command Palette）
+
+参考 Citizen 的 `skins.citizen.commandPalette`（starcitizen.tools），但不引 Vue/Codex：核心 `resources/search-palette.js`（≈35KB 未压缩 / gzip ≈ 11KB，与 `preview/` 共用，纯 DOM）+ MW 数据源 `resources/search-providers.js`。
+
+**渐进增强**：mustache 里先渲染真表单 `form.ak-header__search#searchform > {{{html-input}}}(#searchInput) + {{{html-button-search-fallback}}}`。JS 到位后：① 把表单换成 `button.ak-search-trigger`（长得像输入框，`aria-haspopup=dialog aria-keyshortcuts`）；② 把**同一个** `<form>` 搬进面板 `.ak-palette__head`（`id/action/hidden title/#searchInput` 全保留 → 依赖 `#searchform #searchInput` 的 Gadget 不受影响，回车在无高亮项时仍可原生提交 = MW 的 Go）；③ 接管 `/`、Ctrl/⌘K、accesskey F。无 JS：表单直接提交到 Special:Search。
+
+**数据源（providers）**——`search(q, signal)` 返回 `Group[]`（`{ id, label, en, items }`）：
+
+| 层 | 来源 | 说明 |
+|---|---|---|
+| 标题搜索 | `GET /rest.php/v1/search/title?q=&limit=10` | 与 Vector 2022 / Citizen 相同；`thumbnail` 需 PageImages、`description` 需 ShortDescription / Description2（PRTS 可用 `{{SHORTDESC:…}}` 补短描述）；`matched_title` 只在「别名式重定向」时显示 |
+| 本地即时索引（可选，PRTS 特色） | `mw.hook('akds.search.local').fire(fn)` 注入 `fn(q) → Group[]` | 干员 / 道具 / 关卡 JSON（Cargo 定时导出到 `MediaWiki:*.json` 或 API 缓存到 IndexedDB），支持拼音首字母 / 别名，0 网络等待，且能给结构化元数据（职业图标 `.ak-prof`、稀有度 `.ak-rarity`）——预览页 `search-mock.js` 演示的就是这一层（`yh` → 银灰、`nts` → 能天使） |
+| `>` 动作 | 本页菜单 `#p-views #p-cactions #p-tb #p-personal .ak-page-tabs` + 常用特殊页面 | 同 Citizen「从页面菜单拉动作」 |
+| `#` 分类 | 空查询：本页所属分类（`prop=categories`）；有字：`list=prefixsearch&psnamespace=14` | 可再加「进入分类浏览成员」 |
+| `@` 用户 / `~` 文件 | `list=allusers&auprefix=` / `generator=prefixsearch&gpsnamespace=6&prop=pageimages` | |
+| 兜底 | `urls.go(q)` = `Special:Search?search=q&go=Go`；`urls.fulltext(q)` = `…&fulltext=1` | 结果未到就回车 → Go（精确标题直达，否则全文结果页）；⇧↵ / 末尾固定行 → 全文 |
+
+**必须处理**：核心 `Skin::getDefaultModules()` 会给所有皮肤加载 `mediawiki.searchSuggest`（它会在 `#searchInput` 上挂旧式建议下拉，与面板打架）。和 Vector 2022 / Citizen 一样，需要一个极小的 `SkinAKDS extends SkinMustache` 覆盖 `getDefaultModules()`，把 `$modules['search'] = []`（`skin.json` 的 `class` 改指向它）；退而求其次可在 `search-providers.js` 里 `mw.loader.getState('mediawiki.searchSuggest')` 时把 `#searchInput` 的 `id` 换掉，但那样 Gadget 兼容就丢了。
+
+**配置 / 文案**：`$wgAKDSSearchPalette=false` 关闭面板保留原表单（要暴露给 JS 需在 `ResourceLoaderGetConfigVars` 钩子里输出 `wgAKDSSearchPalette`）；文案全部走 `akds-search-*` 消息（i18n 已含 zh-hans / en）。最近访问存 `localStorage['akds-recent']`（≤8 条，只存 label/url/desc/thumb）。
+
+**待办**：`/ns:` 命名空间模式（REST 标题搜索本身支持 `模板:xx` 前缀，所以优先级低）；Related（RelatedArticles）；`Cargo` 查询模式；把面板拆成独立 RL 模块做 intent prefetch。
+
 ## 4. 明暗主题（clientPrefs）
 
 - HTML 类：`skin-theme-clientpref-os | -day | -night`（与 Vector 2022 一致；MW 核心 `mediawiki.page.ready` 在 `<html>` 上读写 cookie/localStorage `mwclientpreferences`）。
@@ -146,6 +170,7 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 | MobileFrontend + Minerva | 两条路：(a) 皮肤 `responsive:true` 后可直接作为移动端皮肤（≤639 规则已写）；(b) 保留 Minerva 时，把 `skins.akds.tokens` 通过 `skinStyles` 注入 Minerva，仅换色。推荐 (a) 分阶段替换 |
 | UniversalLanguageSelector | 触发器放 `.ak-header__tools` |
 | Gadgets | 现有小工具若依赖 Vector 类名（`#mw-panel`、`.vector-*`），需迁移；`skin.mustache` 保留 MW 标准 id（`#p-personal #p-views #p-cactions #p-navigation #p-tb #searchform #firstHeading #bodyContent #catlinks`） |
+| 搜索（core `mediawiki.searchSuggest`） | 与面板冲突，需 `SkinAKDS::getDefaultModules()` 清空 `search` 组（见 §3.3） |
 
 ## 7. 迁移路线
 
@@ -158,7 +183,7 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 ## 8. 性能与工程
 
 - CSS 合计 ~90KB 未压缩（tokens 15 / base 25 / components 30 / arknights 30 / skin 12 / utilities 6），gzip 后 < 20KB。可按需拆 `arknights.css` 为独立模块，仅内容页加载。
-- 无 JS 依赖的组件为主；skin.js < 6KB，sidebar-tree.js ≈ 7KB（与 preview 共用）。
+- 无 JS 依赖的组件为主；skin.js < 6KB，sidebar-tree.js ≈ 7KB，search-palette.js ≈ 35KB 未压缩（gzip ≈ 11KB）+ search-providers.js ≈ 9KB（前者与 preview 共用）。
 - 字体：思源黑体子集（常用 3500 字 + 页面动态子集）；标题拉丁字用系统回退时视觉退化可接受（预览即为回退效果）。
 - 图片：白色线稿 PNG 已在 100–200px；建议转 SVG/WebP。
 - 缓存：ResourceLoader 版本化；主题类在 `<html>` 上，无 FOUC（clientPrefs 内联脚本早于样式）。

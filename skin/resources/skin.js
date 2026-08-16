@@ -6,6 +6,8 @@
 
 	/* 侧栏多层导航（树形展开 / 记忆 / 桌面悬停飞出 / 可折叠门户）：与 preview 共用 src/sidebar-tree.js */
 	require( './sidebar-tree.js' );
+	/* 悬浮搜索面板：核心 src/search-palette.js（共用）+ MW 数据源 search-providers.js（REST 标题搜索 / 动作 / 分类 / 用户 / 文件） */
+	if ( mw.config.get( 'wgAKDSSearchPalette', true ) !== false ) { require( './search-providers.js' ); }
 
 	/* Theme: 使用 MW clientPrefs（html.skin-theme-clientpref-*），未登录亦持久化 */
 	function currentTheme() {
@@ -120,6 +122,5 @@
 	// 目录浮层里的「回到顶部」（<1400 时替代 .ak-fab）：同样平滑滚动，且不往 URL 里塞 #
 	document.addEventListener( 'click', ( e ) => { if ( e.target.closest( '.ak-toc__top' ) ) { e.preventDefault(); window.scrollTo( { top: 0, behavior: 'smooth' } ); } } );
 
-	/* Search shortcut "/" */
-	document.addEventListener( 'keydown', ( e ) => { if ( e.key === '/' && !/input|textarea|select/i.test( document.activeElement.tagName ) && !document.activeElement.isContentEditable ) { const i = $( '#searchInput, .ak-header__search input' ); if ( i ) { e.preventDefault(); i.focus(); } } } );
+	/* 搜索快捷键（/、Ctrl/⌘K、accesskey F）由 search-palette.js 接管 */
 }() );

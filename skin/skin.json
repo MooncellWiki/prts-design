@@ -1,55 +1,176 @@
 {
   "name": "AKDS",
   "version": "0.1.0",
-  "author": ["PRTS.wiki"],
+  "author": [
+    "PRTS.wiki"
+  ],
   "url": "https://prts.wiki/",
   "descriptionmsg": "akds-skin-desc",
   "namemsg": "skinname-akds",
   "license-name": "MIT",
   "type": "skin",
-  "requires": { "MediaWiki": ">= 1.43.0" },
+  "requires": {
+    "MediaWiki": ">= 1.43.0"
+  },
   "ValidSkinNames": {
     "akds": {
       "class": "SkinMustache",
-      "args": [{
-        "name": "akds",
-        "template": "skin",
-        "responsive": true,
-        "supportsMwHeading": true,
-        "toc": false,
-        "wrapSiteNotice": true,
-        "clientPrefEnabled": true,
-        "bodyClasses": ["skin-akds"],
-        "styles": ["skins.akds.tokens", "skins.akds.styles"],
-        "scripts": ["skins.akds.js"],
-        "messages": ["akds-toc-title", "akds-theme-os", "akds-theme-day", "akds-theme-night", "akds-menu", "akds-search-placeholder", "akds-back-to-top", "akds-skip", "akds-footer-about"]
-      }]
+      "args": [
+        {
+          "name": "akds",
+          "template": "skin",
+          "responsive": true,
+          "supportsMwHeading": true,
+          "toc": false,
+          "wrapSiteNotice": true,
+          "clientPrefEnabled": true,
+          "bodyClasses": [
+            "skin-akds"
+          ],
+          "styles": [
+            "skins.akds.tokens",
+            "skins.akds.styles"
+          ],
+          "scripts": [
+            "skins.akds.js"
+          ],
+          "messages": [
+            "akds-toc-title",
+            "akds-theme-os",
+            "akds-theme-day",
+            "akds-theme-night",
+            "akds-menu",
+            "akds-search-placeholder",
+            "akds-back-to-top",
+            "akds-skip",
+            "akds-footer-about",
+            "akds-search-label"
+          ]
+        }
+      ]
     }
   },
-  "MessagesDirs": { "AKDS": ["i18n"] },
-  "ResourceFileModulePaths": { "localBasePath": "resources", "remoteSkinPath": "AKDS/resources" },
+  "MessagesDirs": {
+    "AKDS": [
+      "i18n"
+    ]
+  },
+  "ResourceFileModulePaths": {
+    "localBasePath": "resources",
+    "remoteSkinPath": "AKDS/resources"
+  },
   "ResourceModules": {
     "skins.akds.tokens": {
       "class": "MediaWiki\\ResourceLoader\\SkinModule",
-      "features": { "normalize": true, "elements": true, "content-media": true, "interface-message-box": true, "interface-category": true, "toc": false, "logo": true },
-      "styles": ["tokens.css"]
+      "features": {
+        "normalize": true,
+        "elements": true,
+        "content-media": true,
+        "interface-message-box": true,
+        "interface-category": true,
+        "toc": false,
+        "logo": true
+      },
+      "styles": [
+        "tokens.css"
+      ]
     },
     "skins.akds.styles": {
-      "styles": ["base.css", "skin.css", "components.css", "arknights.css", "utilities.css"],
-      "targets": ["desktop", "mobile"]
+      "styles": [
+        "base.css",
+        "skin.css",
+        "components.css",
+        "arknights.css",
+        "utilities.css"
+      ],
+      "targets": [
+        "desktop",
+        "mobile"
+      ]
     },
     "skins.akds.js": {
-      "packageFiles": ["skin.js", "sidebar-tree.js"],
-      "dependencies": ["mediawiki.user", "mediawiki.util", "mediawiki.cookie"],
-      "messages": ["akds-toc-title"]
+      "packageFiles": [
+        "skin.js",
+        "sidebar-tree.js",
+        "search-palette.js",
+        "search-providers.js"
+      ],
+      "dependencies": [
+        "mediawiki.user",
+        "mediawiki.util",
+        "mediawiki.cookie",
+        "mediawiki.api"
+      ],
+      "messages": [
+        "akds-toc-title",
+        "akds-search-label",
+        "akds-search-placeholder",
+        "akds-search-recent",
+        "akds-search-pages",
+        "akds-search-modes",
+        "akds-search-fulltext",
+        "akds-search-fulltext-desc",
+        "akds-search-empty-title",
+        "akds-search-empty-desc",
+        "akds-search-shortcuts",
+        "akds-search-noresults",
+        "akds-search-noresults-desc",
+        "akds-search-error",
+        "akds-search-results",
+        "akds-search-redirect",
+        "akds-search-edit",
+        "akds-search-hint-navigate",
+        "akds-search-hint-open",
+        "akds-search-hint-fulltext",
+        "akds-search-hint-close",
+        "akds-search-hint-clear",
+        "akds-search-hint-back",
+        "akds-search-hint-commands",
+        "akds-search-close",
+        "akds-search-clear",
+        "akds-search-back",
+        "akds-search-remove",
+        "akds-search-mode-action",
+        "akds-search-mode-action-desc",
+        "akds-search-mode-action-placeholder",
+        "akds-search-mode-category",
+        "akds-search-mode-category-desc",
+        "akds-search-mode-category-placeholder",
+        "akds-search-mode-category-thispage",
+        "akds-search-mode-user",
+        "akds-search-mode-user-desc",
+        "akds-search-mode-user-placeholder",
+        "akds-search-mode-user-row",
+        "akds-search-mode-file",
+        "akds-search-mode-file-desc",
+        "akds-search-mode-file-placeholder"
+      ]
     }
   },
   "ClientPreferences": {
-    "skin-theme": { "options": ["os", "day", "night"], "default": "os", "callback": "skins.akds.js" }
+    "skin-theme": {
+      "options": [
+        "os",
+        "day",
+        "night"
+      ],
+      "default": "os",
+      "callback": "skins.akds.js"
+    }
   },
   "config": {
-    "AKDSDefaultTheme": { "value": "os", "description": "os | day | night" },
-    "AKDSHeaderNavPortlet": { "value": "navigation", "description": "Which sidebar portlet id renders as the primary header nav" }
+    "AKDSDefaultTheme": {
+      "value": "os",
+      "description": "os | day | night"
+    },
+    "AKDSHeaderNavPortlet": {
+      "value": "navigation",
+      "description": "Which sidebar portlet id renders as the primary header nav"
+    },
+    "AKDSSearchPalette": {
+      "value": true,
+      "description": "Floating command-palette search (search-palette.js). Set false to keep the plain header form. Exposed to JS as wgAKDSSearchPalette."
+    }
   },
   "manifest_version": 2
 }

@@ -10,6 +10,7 @@
     {{#data-portlets-sidebar.data-portlets-first}}
     <nav class="ak-header__nav" aria-label="{{label}}"><ul class="ak-header__nav-list">{{{html-items}}}</ul></nav>
     {{/data-portlets-sidebar.data-portlets-first}}
+    {{! 搜索：无 JS 时是这条真表单；有 JS 时 search-palette.js 把它换成 button.ak-search-trigger，并把表单本身搬进悬浮面板（#searchform / #searchInput 保留） }}
     {{#data-search-box}}
     <form class="ak-header__search ak-search" role="search" action="{{form-action}}" id="searchform">
       <svg class="ak-search__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></svg>
@@ -19,6 +20,8 @@
     </form>
     {{/data-search-box}}
     <div class="ak-header__tools">
+      {{! 手机（≤639）：搜索收成图标按钮，同样打开悬浮面板；桌面由 CSS 隐藏 }}
+      <button type="button" class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="{{msg-akds-search-label}}" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></svg></button>
       <div class="ak-theme-toggle" role="group" aria-label="theme">
         <button data-theme="os" title="{{msg-akds-theme-os}}">◐</button>
         <button data-theme="day" title="{{msg-akds-theme-day}}">☼</button>

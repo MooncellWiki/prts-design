@@ -160,6 +160,7 @@ html.skin-theme-clientpref-night  终端模式（暗）
 - 断点（与 Codex 一致）：640 / 1120 / 1680，另有 1400 作为目录导轨断点
 - **窄屏导航（<1400，参考 VitePress）**：页眉长出第二行 `.ak-local-nav`「二级吸顶栏」——左「菜单」拉出侧栏抽屉（<1120）、右「本页目录」拉下目录浮层；向下滚动时页眉主行（品牌 / 搜索 / 工具）上移收起，只留这条 48px 的二级栏贴顶，向上滚或回到顶部再展开；「回到顶部」放在目录浮层首项，`.ak-fab` 只在 ≥1400 显示。**不用角落浮动按钮开目录**（方位与面板割裂、和回到顶部抢屏幕角落）
 - 布局：`--ak-header-h 56` · `--ak-local-nav-h 48` · `--ak-sidebar-w 248` · `--ak-toc-w 240` · `--ak-content-max 1240`
+- **搜索（参考 Citizen Command Palette / starcitizen.tools）**：页眉里那条「输入框」其实是触发器（无 JS 时是真表单），点击或按 `/`、`⌘K` 打开居中悬浮的搜索面板：直角、顶部 3px 青条、56px 输入行、`--ak-bg-overlay` 遮罩 + 2px 模糊；空态给最近访问 + 快捷入口，有字给分组结果（干员带头像 / 职业 / 稀有度）+ 末尾固定「全文搜索」行；`/` 列命令、`>` `#` `@` `~` 进入模式（斜切 chip）。高亮行沿用「左 2px 青条 + 淡青底」；键位提示用 `.ak-kbd`。**不做**页眉内下拉建议（Vector 式）：内容页面宽、页眉是玻璃底，下拉在毛玻璃上叠层次会脏；居中面板一层遮罩把注意力收拢，也天然适配手机（8px 内边距全宽卡片）
 
 ---
 
@@ -208,7 +209,9 @@ src/tokens.css       令牌 + 主题 + Codex 桥接（必须最先加载）
 src/base.css         MW 内容样式（.mw-parser-output、wikitable、toc、tabber、表单、diff…）
 src/components.css   通用组件（.ak-btn/.ak-tag/.ak-card/.ak-panel/.ak-tabs/.ak-message/…）
 src/arknights.css    方舟装饰 + 游戏数据组件（.ak-rarity/.ak-op-card/.ak-skill/…）
-src/skin.css         皮肤骨架（页眉/侧栏/页面标签/TOC/页脚/响应式）
+src/skin.css         皮肤骨架（页眉/侧栏/页面标签/TOC/页脚/搜索面板/响应式）
+src/search-palette.js 悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
+src/sidebar-tree.js  侧栏多层导航
 src/utilities.css    工具类
 src/index.css        本地预览汇总入口
 preview/index.html   设计系统展示（运行在皮肤骨架内）

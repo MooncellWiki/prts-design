@@ -8,7 +8,7 @@
 - 设计系统展示（运行在皮肤骨架内）：https://claude.ai/code/artifact/f04aa56e-c8bb-4491-ae2c-7711f330d396
 - 干员页整页样例（陈）：https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2
 
-本地：直接打开 `preview/index.html` / `preview/operator.html`（右上角切换 终端(暗) / 档案(亮) / 跟随系统）。预览侧栏使用 prts.wiki 现网 `#MenuSidebar` 的真实结构（分组 → 分组项 → 子项，可多层），悬停可预览、点击展开并记忆。
+本地：直接打开 `preview/index.html` / `preview/operator.html`（右上角切换 终端(暗) / 档案(亮) / 跟随系统）。预览侧栏使用 prts.wiki 现网 `#MenuSidebar` 的真实结构（分组 → 分组项 → 子项，可多层），悬停可预览、点击展开并记忆。搜索是参考 Citizen（starcitizen.tools）的悬浮面板：点页眉搜索框或按 `/`、`⌘K` 打开，试试 `陈`、`yh`（拼音首字母）、`>`（动作）、`/`（命令列表）。
 
 ## 目录
 
@@ -22,13 +22,14 @@ src/
   base.css          .mw-parser-output / wikitable / toc / tabber / 表单 / diff …
   components.css    通用组件 .ak-btn .ak-tag .ak-card .ak-panel .ak-tabs .ak-message …
   arknights.css     方舟装饰（切角/斜切/斜纹/网点/角标）+ 游戏数据组件（稀有度/职业/技能/道具/干员卡/模组/档案…）
-  skin.css          皮肤骨架：页眉/侧栏（含多层树 + 悬停飞出）/页面头/TOC/页脚/响应式
+  skin.css          皮肤骨架：页眉/侧栏（含多层树 + 悬停飞出）/页面头/TOC/搜索面板/页脚/响应式
   sidebar-tree.js   侧栏多层导航增强（树形展开/记忆/当前页路径/桌面飞出；皮肤与预览共用）
+  search-palette.js 悬浮搜索面板核心（触发器替换 / 分组结果 / 命令模式 / 键盘 / 最近访问；数据源由调用方注入，皮肤与预览共用）
   utilities.css     工具类
   index.css         本地汇总入口
-skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js（CSS 与 sidebar-tree.js 为 src 的符号链接）· i18n
+skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源：REST 标题搜索 / 动作 / 分类 / 用户 / 文件）（CSS、sidebar-tree.js、search-palette.js 为 src 的符号链接）· i18n
 tokens/tokens.json  机器可读令牌（scripts/export-tokens.py 生成）
-preview/            展示页 + 干员页样例 + preview.js + assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；badge/ 为 prts.wiki 现网页脚徽章）
+preview/            展示页 + 干员页样例 + preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；badge/ 为 prts.wiki 现网页脚徽章）
 dist/               单文件打包（图片内联，用于发布/分享；scripts/build-dist.py 生成）
 scripts/            export-tokens.py · build-dist.py
 ```

@@ -56,7 +56,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 |---|---|---|---|---|
 | 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools` | 56px 粘性；毛玻璃底；1px 底线（曾有的左下 160px 青短条已去掉——短横条只保留在标题语境）；`--dark` 变体（亮色主题下仍可黑页眉） | DocsHeader / StatusBar | ✅ |
 | 主导航 | `.ak-header__nav a.is-active` | 3px 青色下划线 | Tabs underline | ✅ |
-| 搜索 | `.ak-search` + `#searchform` | 左图标 + `/` 快捷键提示 | CommandPalette | ✅（建议 Gadget 做 ⌘K 面板） |
+| 搜索（悬浮面板） | 触发器 `button.ak-search-trigger`（有 JS 时替换页眉里的 `form.ak-header__search`；无 JS 保留真表单）· 面板 `.ak-palette-backdrop` + `.ak-palette[role=dialog]` `__head( __back __icon __chip form.__form>#searchInput __clear __close __loading )` `__body>__viewport>__list[role=listbox]>__group>__label+__item[role=option]>__link( __thumb __text( __title __desc ) __meta )+__actions` `__empty( __empty-title __empty-desc __shortcuts>__shortcut )` `__foot( __foot-left __hints )` · 状态 `.has-query .has-mode .is-loading .is-closing`；核心 `search-palette.js`（与预览共用），数据源 `skin/resources/search-providers.js` / `preview/search-mock.js` | 参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是居中悬浮的「终端窗口」——直角、顶部 3px 青条、56px 输入行、结果区高度过渡、`--ak-bg-surface-2` 键位页脚；高亮行 = 左 2px 青条 + 淡青底（与侧栏当前项 / 菜单项同一语言）；命令模式用斜切 chip；页眉真表单被**原样搬进面板**（`#searchform #searchInput` 保留 → Gadget / 无 JS 提交不受影响）。开：点触发器 / 手机图标 `.ak-header__search-toggle` / `/`、Ctrl(⌘)K、accesskey F；关：Esc（有字先清空 → 模式中返回 → 关闭）/ 遮罩 / 关闭按钮 / 选中。空态 = 最近访问（localStorage `akds-recent`）+ 提示 + 快捷入口（取页眉主导航）；有字 = 分组结果 + 末尾固定「全文搜索」行，首项自动高亮、↵ 打开、⇧↵ 全文、⌘/Ctrl↵ 新标签；结果未到就回车 → MW 原生 Go。`/` 列命令，`>` 动作 `#` 分类 `@` 用户 `~` 文件 进入模式（退格空输入 / ← / 返回键退出）。a11y：`role=dialog aria-modal`、输入框 `role=combobox aria-activedescendant`、`aria-live` 播报条数、Tab 在面板内循环、关闭后焦点回到触发器。≤639：8px 内边距的全宽卡片，右上 Esc 换成「取消」，触屏隐藏键位提示 | CommandPalette | ✅🧩 |
 | 主题切换 | `.ak-theme-toggle` (os/day/night) | 写入 `mw.user.clientPrefs` | ThemeSwitcher | ✅🧩 |
 | 通知 / 用户菜单 | `.ak-badge` `.ak-header__user` + `#p-personal` | Echo 徽标 | Badge / Avatar | ✅ |
 | 侧栏 | `.ak-sidebar` `__panel(#mw-panel)` `.ak-portlet` `--grid --collapsible` + `#p-navigation` `#p-tb` | 粘性；<1120 抽屉（由二级吸顶栏「菜单」打开；收起时 `visibility:hidden`，不进 Tab 序、阴影也不会从屏幕左缘漏进来）；网格快捷入口；门户折叠状态记忆 | DocsSidebar | ✅🧩 |
@@ -70,7 +70,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | 回到顶部 | `.ak-fab` | 仅 ≥1400 显示（右下浮动）；<1400 隐藏，改由目录浮层首项 `.ak-toc__top` 承担——手机上浮动按钮太挡视野。**注意**：只要页面有元素横向溢出，移动端 Chrome 会把布局视口撑宽，fixed 元素就会被推到可见区外——见 §命名与约定 | BackToTop | ✅🧩 |
 | 抽屉 / 遮罩 | `.ak-drawer` `.ak-overlay` | 移动端侧栏 | BottomSheet | ✅🧩 |
 | 跳转链接 | `.ak-skip` | a11y | | ✅ |
-| 移动端 | ≤639 规则 | 页眉压缩、搜索折叠、表格横滚、浮动图取消 | | ✅ |
+| 移动端 | ≤639 规则 | 页眉压缩、搜索收成图标按钮（打开同一个悬浮面板）、表格横滚、浮动图取消 | | ✅ |
 
 ---
 
@@ -102,6 +102,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | Timeline | `.ak-timeline` | `.is-done .is-active` | ✅ | Timeline |
 | Stepper | `.ak-stepper .ak-step` | | ✅ | Stepper |
 | Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg` | ✅ | Input/Select/Checkbox/Switch/NumberInput |
+| Kbd | `.ak-kbd`（`.ak-search__kbd` 为其绝对定位变体） | 键帽：直角 1px 边、底边略重、mono 10px；用于快捷键提示 / 触发器右侧 / 面板页脚 | ✅ | Kbd |
 | Table | `.ak-table` | `--striped --compact`；`th[aria-sort]` | ✅ | Table / TacticalTable |
 | Accordion | `.ak-details` (`<details>`) | | ✅ | Accordion |
 | Divider | `.ak-divider` | `--accent --stripes --text --vertical` | ✅ | Separator / ScanDivider |
@@ -186,6 +187,6 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 
 - 前缀 `ak-`；BEM-lite：`.ak-block__elem--mod`；状态 `.is-*` 或 ARIA 属性。
 - 数据属性驱动主题色：`data-rarity`、`data-prof`、`data-theme`。
-- 组件不依赖 JS 也应可读（渐进增强）；JS 只做：主题、抽屉、TOC scrollspy、页眉收起、标签页、阶段/等级切换、Toast、Dialog。目录开合是纯 CSS，JS 只补「点击浮层外 / Esc / 跳转后关闭」这类收尾。
+- 组件不依赖 JS 也应可读（渐进增强）；JS 只做：主题、抽屉、TOC scrollspy、页眉收起、标签页、阶段/等级切换、Toast、Dialog、搜索面板。目录开合是纯 CSS，JS 只补「点击浮层外 / Esc / 跳转后关闭」这类收尾；搜索面板是纯 JS 组件，但**页眉里先渲染的是真表单**，JS 到了才换成触发器并把表单搬进面板——无 JS 照常提交到 Special:Search。
 - 所有尺寸用 rem/px 令牌，不写魔法数；颜色只引用令牌。
 - **`width:100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外——`.ak-input / .ak-select / .ak-textarea / .ak-stat / .ak-blue-band` 已处理，新组件照做。

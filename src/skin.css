@@ -35,8 +35,15 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-header__nav a.is-active { color: var(--ak-accent); }
 .ak-header__nav a.is-active::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 0; height: 3px; background: var(--ak-accent); }
 .ak-header__search { flex: 0 1 320px; min-width: 160px; }
-.ak-header__search .ak-input { min-height: 34px; background: var(--ak-bg-surface-2); border-color: transparent; }
-.ak-header__search .ak-input:focus { background: var(--ak-bg-surface); border-color: var(--ak-accent); }
+.ak-header__search .ak-input, .ak-header__search input[type="search"] { min-height: 34px; background: var(--ak-bg-surface-2); border-color: transparent; }   /* 无 JS 回退：真表单 */
+.ak-header__search .ak-input:focus, .ak-header__search input[type="search"]:focus { background: var(--ak-bg-surface); border-color: var(--ak-accent); }
+/* 有 JS 时 search-palette.js 把上面的表单换成这个「长得像输入框的按钮」，点击 / 聚焦回车 → 打开悬浮面板；真表单被搬进面板 */
+.ak-search-trigger { display: inline-flex; align-items: center; gap: 8px; height: 34px; width: 100%; padding: 0 8px 0 10px; box-sizing: border-box; border: 1px solid transparent; background: var(--ak-bg-surface-2); color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-sm); text-align: left; cursor: text; transition: border-color var(--ak-dur-fast), background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger:hover { border-color: var(--ak-border-strong); color: var(--ak-fg-secondary); }
+.ak-search-trigger:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
+.ak-search-trigger[aria-expanded="true"] { border-color: var(--ak-accent); background: var(--ak-bg-surface); }
+.ak-search-trigger__icon { width: 16px; height: 16px; flex: none; }
+.ak-search-trigger__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ak-header__tools { display: flex; align-items: center; gap: 4px; flex: none; margin-left: auto; }
 .ak-header__tools .ak-btn--icon { border-color: transparent; background: transparent; color: var(--ak-fg-secondary); }
 .ak-header__tools .ak-btn--icon:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
@@ -243,6 +250,124 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-theme-toggle > button.is-active { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
 .ak-theme-toggle svg { width: 15px; height: 15px; }
 
+/* ═══ Search palette（悬浮搜索面板）═══
+ *  参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是一块居中悬浮的「终端窗口」。
+ *  页眉里的 form.ak-header__search 在有 JS 时被 search-palette.js 换成 button.ak-search-trigger（长得像输入框），
+ *  真正的 <form id="searchform"> 被原样搬进面板顶部 —— #searchInput / action / hidden title 都还在，Gadget 与无 JS 提交不受影响。
+ *  DOM（由 JS 生成，类名即契约）：
+ *    .ak-palette-backdrop
+ *    .ak-palette[role=dialog]
+ *      __head   [ __back ] __icon [ __chip ] form.__form > input#searchInput  [ __clear ] __close  __loading
+ *      __body > __viewport > __list[role=listbox] > __group[role=group] > __label + __item[role=option] > __link( __thumb __text( __title __desc ) __meta ) + __actions
+ *                          | __empty( __empty-title __empty-desc __shortcuts )
+ *      __foot   __foot-left  __hints > span > kbd.ak-kbd
+ *  开：点触发器 / 手机图标 / 键 "/"、Ctrl(⌘)K、accesskey F。关：Esc（有字先清空）/ 点遮罩 / 关闭按钮 / 选中结果。
+ *  高亮：↑↓ 循环，回车打开；⇧回车全文搜索；结果未到时回车走 MW 原生 Go（精确跳转，无则全文）。 */
+.ak-palette-backdrop { position: fixed; inset: 0; z-index: var(--ak-z-modal); background: var(--ak-bg-overlay); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); animation: ak-fade-in var(--ak-dur-normal) var(--ak-ease-out); }
+.ak-palette { --_top: clamp(48px, 10vh, 120px); --_head-h: 56px; --_foot-h: 40px; position: fixed; z-index: calc(var(--ak-z-modal) + 1); top: var(--_top); left: 0; right: 0; margin-inline: auto; width: min(720px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--_top) * 2);
+  display: flex; flex-direction: column; background: var(--ak-bg-surface); color: var(--ak-fg); border: 1px solid var(--ak-border); border-top: 3px solid var(--ak-accent); box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); line-height: 1.4; animation: ak-palette-in var(--ak-dur-normal) var(--ak-ease-out); }
+.ak-palette[hidden], .ak-palette-backdrop[hidden] { display: none !important; }
+.ak-palette.is-closing { animation: ak-palette-out var(--ak-dur-fast) var(--ak-ease-in) forwards; pointer-events: none; }
+.ak-palette-backdrop.is-closing { animation: ak-fade-out var(--ak-dur-fast) var(--ak-ease-in) forwards; }
+@keyframes ak-palette-in { from { opacity: 0; transform: translateY(-8px); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0 0 0 0); } }
+@keyframes ak-palette-out { to { opacity: 0; transform: translateY(-6px); } }
+@keyframes ak-fade-out { to { opacity: 0; } }
+/* 头：图标 · [模式 chip] · 输入 · [清空] · 关闭 · 进度条 */
+.ak-palette__head { position: relative; flex: none; display: flex; align-items: center; gap: 4px; height: var(--_head-h); padding-right: 10px; border-bottom: 1px solid var(--ak-border); }
+.ak-palette__icon { flex: none; width: 20px; height: 20px; margin: 0 14px 0 18px; color: var(--ak-fg-muted); }
+.ak-palette__back { display: none; flex: none; width: 32px; height: 32px; margin-left: 10px; border: 0; background: transparent; color: var(--ak-fg-secondary); cursor: pointer; place-items: center; }
+.ak-palette__back:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
+.ak-palette__back svg { width: 18px; height: 18px; }
+.ak-palette.has-mode .ak-palette__back { display: grid; }
+.ak-palette.has-mode .ak-palette__icon { margin-left: 4px; }
+.ak-palette__chip { display: none; flex: none; align-items: center; height: 24px; margin-right: 6px; padding: 0 14px 0 12px; background: var(--ak-accent); color: var(--ak-accent-fg); font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .08em; text-transform: uppercase; clip-path: polygon(0 0, 100% 0, calc(100% - 7px) 100%, 0 100%); }   /* 斜切标签（游戏 announce_title_on） */
+.ak-palette.has-mode .ak-palette__chip { display: inline-flex; }
+.ak-palette__form { flex: 1; min-width: 0; display: flex; align-items: center; margin: 0; }
+.ak-palette__form input[type="search"], .ak-palette__form input[type="text"] { flex: 1; min-width: 0; height: var(--_head-h); margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; font: inherit; font-size: var(--ak-fs-body); line-height: var(--_head-h); outline: 0; box-shadow: none; appearance: none; -webkit-appearance: none; }
+.ak-palette__form input::placeholder { color: var(--ak-fg-subtle); }
+.ak-palette__form input::-webkit-search-cancel-button, .ak-palette__form input::-webkit-search-decoration { -webkit-appearance: none; display: none; }
+.ak-palette__form button, .ak-palette__form .searchButton, .ak-palette__form .ak-search__icon, .ak-palette__form .ak-search__kbd { display: none; }   /* 表单自带的图标 / 键帽 / 无 JS 提交按钮在面板里不需要 */
+@supports (-webkit-touch-callout: none) { .ak-palette__form input[type="search"] { font-size: 16px; } }   /* iOS Safari：≥16px 才不会聚焦时自动缩放页面 */
+.ak-palette__clear, .ak-palette__close { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; min-width: 28px; padding: 0 4px; border: 1px solid transparent; background: transparent; color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-xs); cursor: pointer; }
+.ak-palette__clear:hover, .ak-palette__close:hover { color: var(--ak-fg); border-color: var(--ak-border-strong); }
+.ak-palette__clear:focus-visible, .ak-palette__close:focus-visible, .ak-palette__back:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ak-palette__clear { display: none; }
+.ak-palette.has-query .ak-palette__clear { display: inline-flex; }
+.ak-palette__clear svg { width: 16px; height: 16px; }
+.ak-palette__close > span { display: none; }   /* 桌面只显示 Esc 键帽；手机换成文字「取消」 */
+.ak-palette__loading { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; visibility: hidden; }
+.ak-palette.is-loading .ak-palette__loading { visibility: visible; }
+/* 体：高度过渡容器（JS 用 ResizeObserver 把 __viewport 的高度写到 __body 上） */
+.ak-palette__body { flex: 1 1 auto; min-height: 0; overflow: hidden; transition: height var(--ak-dur-normal) var(--ak-ease-out); }
+.ak-palette__list { max-height: calc(100vh - var(--_top) * 2 - var(--_head-h) - var(--_foot-h) - 4px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; margin: 0; padding: 6px 0; list-style: none; }
+.ak-palette__list:empty { padding: 0; }
+.ak-palette__group + .ak-palette__group { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--ak-border-subtle); }
+.ak-palette__group--tail { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--ak-border-subtle); }   /* 末尾固定的「全文搜索」 */
+.ak-palette__label { display: flex; align-items: baseline; gap: 8px; padding: 8px 16px 4px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }
+.ak-palette__label .ak-en { color: var(--ak-fg-subtle); font-size: 10px; letter-spacing: var(--ak-tracking-caps); }
+.ak-palette__label small { margin-left: auto; font: 500 10px/1 var(--ak-font-mono); letter-spacing: 0; text-transform: none; color: var(--ak-fg-subtle); }
+.ak-palette__item { position: relative; display: flex; align-items: stretch; margin: 0; }
+.ak-palette__item::before { display: none !important; }
+.ak-palette__link { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 7px 16px 7px 14px; border: 0; border-left: 2px solid transparent; background: transparent; color: inherit; font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
+.ak-palette__link:hover, .ak-palette__link:visited { color: inherit; text-decoration: none; }
+.ak-palette__item.is-active > .ak-palette__link { background: var(--ak-accent-subtle); border-left-color: var(--ak-accent); }   /* 与侧栏当前项 / 菜单项同一套语言 */
+.ak-palette__item.is-active .ak-palette__title { color: var(--ak-fg); }
+.ak-palette__thumb { flex: none; width: 40px; height: 40px; display: grid; place-items: center; overflow: hidden; background: var(--ak-bg-surface-3); border: 1px solid var(--ak-border); color: var(--ak-fg-muted); }
+.ak-palette__thumb > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ak-palette__thumb > svg { width: 20px; height: 20px; }
+.ak-palette__thumb--icon { background: var(--ak-bg-surface-2); }
+.ak-palette__thumb--dark { background: #1d1f20; border-color: #1d1f20; color: #fff; }   /* 命令 / 全文搜索：深底白线稿（.ak-glyph-box） */
+.ak-palette__thumb--mono { font: 700 15px/1 var(--ak-font-mono); }
+.ak-palette__thumb--sm { width: 32px; height: 32px; }
+.ak-palette__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ak-palette__title { display: flex; align-items: baseline; gap: 8px; min-width: 0; font-size: var(--ak-fs-body); font-weight: 600; color: var(--ak-fg); }
+.ak-palette__title > bdi { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ak-palette__title mark { background: none; color: inherit; font-weight: 400; }   /* Codex 约定：已输入部分常规、补全部分加粗 */
+.ak-palette__title .ak-en { flex: none; font-size: 10px; font-weight: 700; color: var(--ak-fg-subtle); }
+.ak-palette__desc { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ak-palette__desc .ak-icon { width: 12px; height: 12px; vertical-align: -2px; margin-right: 3px; }
+.ak-palette__meta { flex: none; display: flex; align-items: center; gap: 8px; margin-left: 4px; color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); white-space: nowrap; }
+.ak-palette__meta .ak-prof { --_s: 22px; }
+.ak-palette__meta .ak-rarity { font-size: 11px; }
+.ak-palette__meta .ak-kbd { color: var(--ak-fg-muted); }
+.ak-palette__actions { flex: none; display: none; align-items: center; gap: 2px; padding-right: 8px; }
+.ak-palette__item.is-active > .ak-palette__actions, .ak-palette__item:focus-within > .ak-palette__actions { display: flex; }
+.ak-palette__action { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid transparent; background: transparent; color: var(--ak-fg-muted); cursor: pointer; }
+.ak-palette__action:hover, .ak-palette__action:focus-visible { border-color: var(--ak-border-strong); color: var(--ak-fg); outline: 0; }
+.ak-palette__action svg { width: 14px; height: 14px; }
+/* 空态：提示 + 快捷入口 */
+.ak-palette__empty { padding: 20px 0 14px; }
+.ak-palette__empty--compact { padding: 4px 0 12px; border-top: 1px solid var(--ak-border-subtle); }   /* 最近访问下方：只剩快捷入口 */
+.ak-palette__empty-title { margin: 0 20px 6px; font-size: var(--ak-fs-body); font-weight: 700; }
+.ak-palette__empty-desc { margin: 0 20px 10px; color: var(--ak-fg-muted); }
+.ak-palette__empty-desc .ak-kbd { margin: 0 2px; }
+.ak-palette__shortcuts { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 16px 0; }
+.ak-palette__shortcut { display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border: 1px solid var(--ak-border-strong); color: var(--ak-fg-secondary); font-size: var(--ak-fs-xs); font-weight: 500; text-decoration: none; }
+.ak-palette__shortcut:hover { border-color: var(--ak-accent); color: var(--ak-accent); text-decoration: none; }
+.ak-palette__notice { padding: 14px 16px; color: var(--ak-fg-muted); }
+.ak-palette__notice--error { color: var(--ak-danger); }
+/* 脚：左说明 · 右快捷键 */
+.ak-palette__foot { flex: none; display: flex; align-items: center; gap: 12px; height: var(--_foot-h); padding: 0 12px 0 16px; border-top: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+.ak-palette__foot-left { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; overflow: hidden; white-space: nowrap; }
+.ak-palette__foot-left .ak-en { color: var(--ak-fg-subtle); font-size: 10px; }
+.ak-palette__foot-btn { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 6px; border: 0; background: transparent; color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-xs); cursor: pointer; }
+.ak-palette__foot-btn:hover { color: var(--ak-fg); }
+.ak-palette__hints { display: flex; align-items: center; gap: 12px; margin-left: auto; white-space: nowrap; }
+.ak-palette__hints > span { display: inline-flex; align-items: center; gap: 4px; }
+.ak-palette__hints .ak-kbd { color: var(--ak-fg-muted); }
+.ak-palette__live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (hover: none) and (pointer: coarse) { .ak-palette__hints { display: none; } }   /* 触屏不显示键盘提示 */
+@media (max-width: 639px) {
+  .ak-palette { --_top: 8px; left: 8px; right: 8px; width: auto; max-height: calc(100dvh - 16px); }
+  .ak-palette__list { max-height: calc(100dvh - 16px - var(--_head-h) - var(--_foot-h) - 4px); }
+  .ak-palette__icon { margin: 0 10px 0 14px; }
+  .ak-palette__close .ak-kbd { display: none; }
+  .ak-palette__close > span { display: inline; }
+  .ak-palette__meta .ak-tag, .ak-palette__title .ak-en { display: none; }   /* 窄行：省掉类型标签与英文副标 */
+  .ak-palette__foot-left .ak-en { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .ak-palette, .ak-palette-backdrop, .ak-palette.is-closing, .ak-palette-backdrop.is-closing { animation: none; } .ak-palette__body { transition: none; } }
+
 /* ═══ Special pages / forms container ═══ */
 .mw-special-Search .ak-body, .ns-special .ak-body { padding: var(--ak-space-5); }
 .skin-akds .mw-htmlform-field-HTMLTextField, .skin-akds .oo-ui-fieldLayout { margin-bottom: var(--ak-space-3); }
@@ -255,7 +380,6 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   .ak-main { padding-right: 0; }
   /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
   :root.ak-condensed .ak-header { transform: translateY(calc(-1 * var(--ak-header-h))); }
-  .ak-header__search.is-open { top: var(--ak-header-h); z-index: 1; }   /* 展开的搜索盖住二级栏而不是被它挤开 */
   :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标 */
 
   /* 目录浮层：顶边跟着吸顶栏下沿走，右对齐于二级栏 */
@@ -301,8 +425,7 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   .ak-header__wordmark small { display: none; }
   .ak-theme-toggle > button[data-theme="os"] { display: none; }
   .ak-header__tools .ak-header__user { padding-right: 0; }
-  .ak-header__search { display: none; }
-  .ak-header__search.is-open { display: block; position: absolute; left: 0; right: 0; top: var(--ak-header-h); padding: 8px var(--ak-gutter); background: var(--ak-bg-surface); border-bottom: 1px solid var(--ak-border); }
+  .ak-header__search { display: none; }   /* 手机：搜索收成工具区的图标按钮（.ak-header__search-toggle），同样打开悬浮面板 */
   .ak-header__tools .ak-header__user span { display: none; }
   .ak-page-header__title, .skin-akds #firstHeading { font-size: var(--ak-fs-h2); }
   .ak-body { padding: var(--ak-space-4) var(--ak-space-3); border-left: 0; border-right: 0; margin: 0 calc(-1 * var(--ak-gutter)); }

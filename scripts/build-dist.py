@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bundle preview/*.html into self-contained single files (inline CSS/JS, images → data URIs) under dist/.
 Images are downscaled (max 256px) to keep the bundle small."""
-import re, base64, io, pathlib, sys
+import re, base64, io, pathlib, sys, json
 from PIL import Image
 root = pathlib.Path(__file__).resolve().parent.parent
 prev = root / 'preview'
@@ -30,8 +30,17 @@ for name in ['index.html', 'operator.html']:
         href = m.group(1); p = (prev / href).resolve()
         return '<style>\n%s\n</style>' % css_inline(p)
     html = re.sub(r'<link rel="stylesheet" href="([^"]+)">', repl_css, html)
-    # js（preview.js 与共用的 src/sidebar-tree.js 都内联）
-    html = re.sub(r'<script src="((?:\.\./src/|)[\w.-]+\.js)"></script>', lambda m: '<script>\n%s\n</script>' % (prev / m.group(1)).resolve().read_text(encoding='utf-8'), html)
+    # js（preview.js、共用的 src/sidebar-tree.js / src/search-palette.js、search-mock.js 都内联）
+    def repl_js(m):
+        js = (prev / m.group(1)).resolve().read_text(encoding='utf-8')
+        if m.group(1) == 'search-mock.js':   # 演示数据里动态拼接的图片：注入 data URI 表（见 search-mock.js 的 asset()）
+            rels = set('avatar/%s.png' % a for a in re.findall(r"char_\d+_[a-z0-9]+_(?:1p|2)", js))
+            rels |= set('item/%s.png' % i for i in re.findall(r"\[ '[^']*', '([0-9a-z_]+)', [1-6],", js))
+            rels |= set('profession/%s.png' % c for c in ['warrior','sniper','caster','medic','pioneer','tank','support','special'])
+            amap = {r: img_uri('assets/' + r) for r in sorted(rels) if (prev / 'assets' / r).exists()}
+            js = 'window.AKDS_ASSET_MAP = %s;\n%s' % (json.dumps(amap), js)
+        return '<script>\n%s\n</script>' % js
+    html = re.sub(r'<script src="((?:\.\./src/|)[\w.-]+\.js)"></script>', repl_js, html)
     # images
     html = re.sub(r'(src|href)="(assets/[^"]+\.(?:png|svg))"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)
     # cross links between the two pages → keep relative (both in dist)

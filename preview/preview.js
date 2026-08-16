@@ -41,11 +41,10 @@
   }
   window.akdsTidyCatlinks = tidyCatlinks; tidyCatlinks();
 
-  /* ── Sidebar drawer (mobile) ───────────────────────────────── */
+  /* ── Sidebar drawer (mobile)（搜索面板 → ../src/search-palette.js + search-mock.js，皮肤与预览共用核心）── */
   document.addEventListener('click', e => {
     if (e.target.closest('.ak-local-nav__menu')) { $('.ak-sidebar').classList.toggle('is-open'); toggleOverlay($('.ak-sidebar').classList.contains('is-open')); }
     if (e.target.closest('.ak-sidebar__close') || e.target.closest('.ak-overlay')) { $('.ak-sidebar').classList.remove('is-open'); toggleOverlay(false); }
-    if (e.target.closest('.ak-header__search-toggle')) { $('.ak-header__search').classList.toggle('is-open'); }
   });
   function toggleOverlay(on) {
     let o = $('.ak-overlay.ak-overlay--sidebar');

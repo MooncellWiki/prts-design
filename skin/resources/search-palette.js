@@ -1,0 +1,1 @@
+../../src/search-palette.js
