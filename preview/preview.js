@@ -28,6 +28,19 @@
     if (b) applyTheme(b.dataset.theme);
   });
 
+  /* ── Catlinks tidy：去掉 MW 输出的「：」文本节点，把「隐藏分类」文字标签包成 span（CSS 已能无 JS 吞掉冒号，这里做归一） ── */
+  function tidyCatlinks(root) {
+    $$('.catlinks > div', root || document).forEach(div => {
+      Array.from(div.childNodes).forEach(n => {
+        if (n.nodeType !== 3) return;
+        const t = n.nodeValue.replace(/[\s\u200b\u200e\u200f\ufeff:：]+$/, '').trim();
+        if (!t) { n.remove(); return; }
+        const span = document.createElement('span'); span.className = 'ak-catlinks__label'; span.textContent = t; div.replaceChild(span, n);
+      });
+    });
+  }
+  window.akdsTidyCatlinks = tidyCatlinks; tidyCatlinks();
+
   /* ── Sidebar drawer (mobile) ───────────────────────────────── */
   document.addEventListener('click', e => {
     if (e.target.closest('.ak-header__menu')) { $('.ak-sidebar').classList.toggle('is-open'); toggleOverlay($('.ak-sidebar').classList.contains('is-open')); }

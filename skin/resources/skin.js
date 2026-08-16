@@ -22,6 +22,20 @@
 	} );
 	syncToggle();
 
+	/* Catlinks tidy：去掉核心输出的 colon-separator 文本节点，把「隐藏分类」文字标签包成 span.ak-catlinks__label（CSS 已能无 JS 吞掉冒号） */
+	function tidyCatlinks( root ) {
+		$$( '.catlinks > div', root || document ).forEach( ( div ) => {
+			Array.from( div.childNodes ).forEach( ( n ) => {
+				if ( n.nodeType !== Node.TEXT_NODE ) { return; }
+				const t = n.nodeValue.replace( /[\s\u200b\u200e\u200f\ufeff:：]+$/, '' ).trim();
+				if ( !t ) { n.remove(); return; }
+				const span = document.createElement( 'span' ); span.className = 'ak-catlinks__label'; span.textContent = t; div.replaceChild( span, n );
+			} );
+		} );
+	}
+	tidyCatlinks();
+	if ( window.mw && mw.hook ) { mw.hook( 'wikipage.categories' ).add( ( $c ) => tidyCatlinks( $c && $c[ 0 ] ? $c[ 0 ] : document ) ); }   /* 预览 / VE 保存后重渲染 */
+
 	/* Sidebar drawer */
 	document.addEventListener( 'click', ( e ) => {
 		const sb = $( '.ak-sidebar' );

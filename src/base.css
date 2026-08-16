@@ -231,17 +231,38 @@ sup.reference a { padding: 0 .1em; }
 .ambox-delete, .ambox-serious { border-left-color: var(--ak-danger); }
 .ambox-style { border-left-color: var(--ak-yellow-600); }
 
-/* ─── Category links, indicators, misc MW ──────────────────────────────── */
-.catlinks {
-  border: 1px solid var(--ak-border); background: var(--ak-bg-surface); padding: var(--ak-space-3) var(--ak-space-4);
-  margin: var(--ak-space-8) 0 0; font-size: var(--ak-fs-sm); clear: both;
+/* ─── Category links（页面底部分类栏）─────────────────────────────────────
+ *  MW 输出：div.catlinks > div.mw-normal-catlinks( a[分类] + "：" 文本节点 + ul > li > a ) [+ div.mw-hidden-catlinks( "隐藏分类：" 文本 + ul )]
+ *  设计（参考 fz.wiki）：不再做芯片盒；一行 = 树状图标 + overline 小标签 + 普通下划线链接。
+ *  「：」来自 colon-separator 消息、是裸文本节点：容器 font-size:0 吞掉它（无 JS 亦生效），子元素再恢复字号；
+ *  skin.js / preview.js 的 tidyCatlinks() 会进一步移除该文本并把「隐藏分类」文字标签包成 span.ak-catlinks__label。 */
+.catlinks { margin: var(--ak-space-3) 0 0; padding: 0 var(--ak-space-1); font-size: var(--ak-fs-sm); line-height: 1.5; clear: both; border: 0; background: transparent; }
+.ak-body--flat + .catlinks { border-top: 1px solid var(--ak-border); padding-top: var(--ak-space-3); }
+.catlinks > div { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-height: 24px; }
+.catlinks > div + div { margin-top: 4px; }
+.catlinks > div::before {   /* 树状「分类」图标（lucide folder-tree 线稿，白色线稿语言，随文字色） */
+  content: ""; flex: none; width: 16px; height: 16px; background: currentColor; color: var(--ak-fg-muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z'/%3E%3Cpath d='M20 21a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.88-.55l-.42-.85a1 1 0 0 0-.92-.6H13a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z'/%3E%3Cpath d='M3 5a2 2 0 0 0 2 2h3'/%3E%3Cpath d='M3 3v13a2 2 0 0 0 2 2h3'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z'/%3E%3Cpath d='M20 21a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.88-.55l-.42-.85a1 1 0 0 0-.92-.6H13a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z'/%3E%3Cpath d='M3 5a2 2 0 0 0 2 2h3'/%3E%3Cpath d='M3 3v13a2 2 0 0 0 2 2h3'/%3E%3C/svg%3E") center/contain no-repeat;
 }
-.catlinks ul { display: inline; margin: 0; padding: 0; list-style: none; }
-.catlinks li { display: inline-block; margin: 2px 4px 2px 0; padding: 0; }
-.catlinks li::before { display: none; }
-.catlinks li a { display: inline-block; padding: 1px 8px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); font-size: var(--ak-fs-xs); }
-.catlinks li a:hover { border-color: var(--ak-accent); color: var(--ak-accent); text-decoration: none; }
-.catlinks .mw-normal-catlinks > a { font-weight: 700; margin-right: .5em; }
+.catlinks .mw-hidden-catlinks::before { color: var(--ak-fg-subtle); }
+.catlinks .mw-normal-catlinks { font-size: 0; }                                        /* 吞掉「：」文本节点 */
+.catlinks .mw-normal-catlinks > a, .catlinks .mw-normal-catlinks > ul { font-size: var(--ak-fs-sm); }
+/* 标签：分类（链到 Special:Categories）/ 隐藏分类（JS 包成 span） */
+.catlinks .mw-normal-catlinks > a, .catlinks .ak-catlinks__label { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); text-decoration: none; margin-right: 2px; }
+.catlinks .mw-normal-catlinks > a:hover { color: var(--ak-accent); text-decoration: none; }
+.catlinks .mw-hidden-catlinks { color: var(--ak-fg-muted); }
+.catlinks .mw-hidden-catlinks .ak-catlinks__label { color: var(--ak-fg-subtle); }
+/* 链接：与正文链接同色，常显 1px 下划线（正文链接悬停时的同一几何：offset 3px） */
+.catlinks ul { display: contents; margin: 0; padding: 0; list-style: none; }
+.catlinks li, .catlinks li:first-child { display: inline; margin: 0; padding: 0; border: 0; line-height: inherit; }
+.catlinks li::before { display: none !important; }
+.catlinks li a { color: var(--ak-link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.catlinks li a:hover { color: var(--ak-link-hover); }
+.catlinks li a.mw-redirect { font-style: italic; }
+.catlinks .mw-hidden-catlinks li a { color: var(--ak-fg-secondary); }
+.catlinks .mw-hidden-catlinks li a:hover { color: var(--ak-link-hover); }
+.catlinks > .mw-hidden-cats-hidden, .catlinks.catlinks-allhidden { display: none; }   /* 特异性需高于 .catlinks > div 的 flex */
 .mw-indicators { display: flex; gap: var(--ak-space-2); float: right; font-size: var(--ak-fs-xs); }
 .mw-indicator { display: inline-flex; align-items: center; }
 #siteSub, .printfooter, .mw-jump-link { display: none; }

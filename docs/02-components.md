@@ -38,7 +38,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | 消息框 | `.mw-message-box-*` `.cdx-message` `.ambox` `.hatnote` | 左色条 + 浅底 | ✅ |
 | 代码 | `pre` `code` `.mw-highlight` | inset 底 + 左青条 | ✅ |
 | 引言 / 诗 | `blockquote` `.poem` | 左青条 surface-2 | ✅ |
-| 分类 | `.catlinks` | 芯片式 | ✅ |
+| 分类 | `.catlinks` `.mw-normal-catlinks` `.mw-hidden-catlinks`（JS 加 `.ak-catlinks__label`） | 参考 fz.wiki：不再做芯片盒——树状线稿图标（CSS mask）+ overline 小标签「分类」+ 常显 1px 下划线的普通链接；`colon-separator` 的「：」由容器 `font-size:0` 吞掉（无 JS 亦可），`tidyCatlinks()` 再把「隐藏分类」文字包成标签；`a.mw-redirect` 斜体 | ✅ |
 | 指示器 / 副标题 | `.mw-indicators` `#contentSub` | | ✅ |
 | navbox / infobox 基线 | `.navbox` `.infobox` | 与卡片同语言（模板可覆盖） | ✅ |
 | TabberNeue | `.tabber__*` + `.ak-tabber-boxed .ak-tabber-skew` | 下划线 + 选中角标；斜切变体 | ✅ |
