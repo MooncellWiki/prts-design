@@ -9,13 +9,12 @@
 
 body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 .ak-sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.ak-skip { position: absolute; left: 8px; top: -40px; z-index: 9999; background: var(--ak-accent); color: var(--ak-accent-fg); padding: 8px 12px; font-weight: 700; }
-.ak-skip:focus { top: 8px; }
+.ak-skip { position: absolute; left: 8px; top: 8px; z-index: 9999; background: var(--ak-accent); color: var(--ak-accent-fg); padding: 8px 12px; font-weight: 700; line-height: 1.3; transform: translateY(calc(-100% - 12px)); }   /* 完全移出视口（此前 top:-40px 会在页眉顶部露出一条青色边） */
+.ak-skip:focus { transform: none; }
 
 /* ═══ Header ═══ */
 .ak-header { position: sticky; top: 0; z-index: var(--ak-z-header); height: var(--ak-header-h); background: var(--ak-bg-header); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
   border-bottom: 1px solid var(--ak-border); color: var(--ak-fg); }
-.ak-header::after { content: ""; position: absolute; left: 0; bottom: -1px; height: 2px; width: 160px; background: var(--ak-accent); }   /* 官网风短横条 */
 .ak-header__inner { height: 100%; max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); display: flex; align-items: center; gap: var(--ak-space-4); }
 .ak-header__menu { display: none; }
 .ak-header__logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; padding-right: var(--ak-space-4); border-right: 1px solid var(--ak-border); }

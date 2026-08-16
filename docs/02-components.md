@@ -54,7 +54,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 
 | 组件 | 类 / MW 数据 | 说明 | ReEnd 对照 | 状态 |
 |---|---|---|---|---|
-| 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools __menu` | 56px 粘性；毛玻璃底；左下 160px 青短条；`--dark` 变体（亮色主题下仍可黑页眉） | DocsHeader / StatusBar | ✅ |
+| 页眉 | `.ak-header` `__logo __wordmark __nav __search __tools __menu` | 56px 粘性；毛玻璃底；1px 底线（曾有的左下 160px 青短条已去掉——短横条只保留在标题语境）；`--dark` 变体（亮色主题下仍可黑页眉） | DocsHeader / StatusBar | ✅ |
 | 主导航 | `.ak-header__nav a.is-active` | 3px 青色下划线 | Tabs underline | ✅ |
 | 搜索 | `.ak-search` + `#searchform` | 左图标 + `/` 快捷键提示 | CommandPalette | ✅（建议 Gadget 做 ⌘K 面板） |
 | 主题切换 | `.ak-theme-toggle` (os/day/night) | 写入 `mw.user.clientPrefs` | ThemeSwitcher | ✅🧩 |
