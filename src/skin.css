@@ -226,8 +226,9 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 }
 @media (max-width: 1119px) {
   .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
-  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); padding: var(--ak-space-4); box-shadow: var(--ak-shadow-lg); transform: translateX(-100%); transition: transform var(--ak-dur-normal) var(--ak-ease); }
-  .ak-sidebar.is-open { transform: none; }
+  /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截） */
+  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); padding: var(--ak-space-4); transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
+  .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
   .ak-sidebar__close { display: block; }
   .ak-header__menu { display: inline-grid; }
   .ak-header__nav { display: none; }
