@@ -185,7 +185,6 @@
   --ak-bg-active:     rgba(0, 0, 0, 0.09);
   --ak-bg-inverse:    var(--ak-gray-900);
   --ak-bg-overlay:    rgba(15, 15, 16, 0.6);
-  --ak-bg-header:     rgba(255, 255, 255, 0.86);
 
   --ak-fg:            var(--ak-gray-900);
   --ak-fg-secondary:  #454647;
@@ -266,7 +265,6 @@ html.skin-theme-clientpref-night {
   --ak-bg-active:     rgba(255, 255, 255, 0.11);
   --ak-bg-inverse:    var(--ak-gray-0);
   --ak-bg-overlay:    rgba(0, 0, 0, 0.7);
-  --ak-bg-header:     rgba(15, 15, 16, 0.82);
 
   --ak-fg:            #f0f0f0;
   --ak-fg-secondary:  #c9c9c9;
@@ -337,7 +335,7 @@ html.skin-theme-clientpref-night {
     color-scheme: dark;
     --ak-bg-canvas: #0f0f10; --ak-bg-surface: #1a1b1c; --ak-bg-surface-2: #232425; --ak-bg-surface-3: #2d2e30;
     --ak-bg-inset: #141516; --ak-bg-hover: rgba(255,255,255,.06); --ak-bg-active: rgba(255,255,255,.11);
-    --ak-bg-inverse: var(--ak-gray-0); --ak-bg-overlay: rgba(0,0,0,.7); --ak-bg-header: rgba(15,15,16,.82);
+    --ak-bg-inverse: var(--ak-gray-0); --ak-bg-overlay: rgba(0,0,0,.7);
     --ak-fg: #f0f0f0; --ak-fg-secondary: #c9c9c9; --ak-fg-muted: var(--ak-gray-400); --ak-fg-subtle: #6f7071;
     --ak-fg-disabled: #4a4b4c; --ak-fg-inverse: var(--ak-gray-950);
     --ak-accent: var(--ak-cyan-500); --ak-accent-hover: var(--ak-cyan-200); --ak-accent-fg: #000;
@@ -358,6 +356,43 @@ html.skin-theme-clientpref-night {
     --ak-glyph-filter: none; --ak-stripe-color: rgba(255,255,255,.07); --ak-grid-color: rgba(255,255,255,.05);
     --ak-halftone-color: rgba(255,255,255,.16); --ak-scrollbar: #3b3d40;
   }
+}
+
+/* ═══ 2d. CHROME · 页眉 / 头图 / 画布 的主题接口（活动主题只改这里）═══════════
+ * 皮肤的「框」（页眉主行 + 二级栏 + 窄屏工具卡片）在两套主题下都是黑的：官网导航栏、游戏主界面顶栏、
+ * 干员档案页的顶部黑边都是"黑框白纸 / 黑框黑纸"——所以 chrome 令牌不随明暗主题变，只跟着活动主题变。
+ * prts.wiki 大活期间会换头图 / 顶栏底图 / 站标 / 侧栏配色（现网 ext.gadget.seventhStyle 就是改这些）：
+ * 新皮肤把这些位置抽成下面这组变量，Gadget / MediaWiki:Common.css 只需在 :root（或 html.ak-theme-xxx）上覆盖，
+ * 不必碰选择器。skin.css 里的 .ak-header 把语义令牌重映射到 --ak-chrome-*，页眉内的按钮 / 输入 / 头像 / 菜单自动跟随。 */
+:root {
+  --ak-theme-accent:     var(--ak-cyan-500);        /* 活动主色：页眉标语 / 悬停、侧栏与目录分组条、页脚斜纹、窄屏卡片顶条 …（正文里的链接 / 选中仍是 --ak-accent；想一起换就连 --ak-accent 也覆盖） */
+  --ak-theme-accent-fg:  #000;
+  --ak-chrome-bg:        rgba(8, 9, 10, .9);         /* 页眉底色（半透明 + 毛玻璃：头图 / 画布图滚到下面时透出来） */
+  --ak-chrome-bg-solid:  #0e0f10;                    /* 不透明处：窄屏工具卡片、飞出菜单 */
+  --ak-chrome-fg:        #f2f2f2;
+  --ak-chrome-fg-2:      rgba(255, 255, 255, .74);
+  --ak-chrome-fg-muted:  rgba(255, 255, 255, .5);
+  --ak-chrome-line:      rgba(255, 255, 255, .14);   /* 页眉底线 / 分隔线 */
+  --ak-chrome-line-strong: rgba(255, 255, 255, .32);
+  --ak-chrome-hover:     rgba(255, 255, 255, .08);
+  --ak-chrome-field:     rgba(255, 255, 255, .07);   /* 搜索触发器底 */
+  --ak-chrome-image:     none;                       /* 顶栏底图：url(left.png), url(right.png)（现网 PRTSheadleft / Garanheadright 的位置） */
+  --ak-chrome-image-position: right top;
+  --ak-chrome-image-size: auto 100%;
+  --ak-chrome-image-repeat: no-repeat;
+  --ak-chrome-texture:   .55;                        /* 右侧半调网点强度 0–1（游戏顶栏 img_back / 官网左缘网点），0 关闭 */
+  --ak-keyart-image:         none;                       /* 头图（Key Visual）：页眉之下、布局之上的一条通栏画；--ak-keyart-h 为 0 时不占位 */
+  --ak-keyart-h:             0px;
+  --ak-keyart-position:      center 30%;
+  --ak-keyart-size:          cover;
+  --ak-keyart-bg:            #0e0f10;
+  --ak-keyart-fade:          96px;                       /* 底部渐隐进画布的高度，0 关闭 */
+  --ak-canvas-image:     none;                       /* 页面画布底纹 / 底图（body 背景，叠在 --ak-bg-canvas 之上；现网 body 的 bkg 图位置） */
+  --ak-canvas-position:  center top;
+  --ak-canvas-size:      auto;
+  --ak-canvas-repeat:    repeat;
+  --ak-canvas-attachment: scroll;
+  /* --ak-logo-image: url(...);  站标：设置后 .ak-header__logo img 用 content 替换（Chromium / WebKit；Firefox 请改 $wgLogos） */
 }
 
 /* ═══ 3. CODEX / MEDIAWIKI BRIDGE ═══════════════════════════════════════════

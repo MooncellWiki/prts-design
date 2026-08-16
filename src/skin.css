@@ -14,9 +14,14 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-skip { position: absolute; left: 8px; top: 8px; z-index: 9999; background: var(--ak-accent); color: var(--ak-accent-fg); padding: 8px 12px; font-weight: 700; line-height: 1.3; transform: translateY(calc(-100% - 12px)); }   /* 完全移出视口（此前 top:-40px 会在页眉顶部露出一条青色边） */
 .ak-skip:focus { transform: none; }
 
-/* ═══ Header ═══
+/* ═══ Header（黑色「终端」顶栏）═══
  *  两行结构：.ak-header__inner（品牌 · 搜索 · 工具，56px）
  *          + .ak-local-nav（二级吸顶栏，仅 <1400 出现，48px）
+ *  页眉在两套主题下都是黑的：官网导航栏（#000 底 + 青色当前项 + 白线稿图标）、游戏主界面顶栏（深底 + 半调网点 + 青色选中块）、
+ *  干员档案页顶部那道黑边——"黑框白纸 / 黑框黑纸"是方舟本体的框架语言。颜色不读明暗主题，只读 tokens.css §2d 的 --ak-chrome-*，
+ *  并在这里把语义令牌重映射过去（--ak-fg → --ak-chrome-fg …），页眉里的按钮 / 搜索触发器 / 头像 / 徽标 / 菜单 / 开关就自动是页眉配色，
+ *  不必逐个写；活动主题（Gadget / Common.css）覆盖 --ak-chrome-* / --ak-theme-accent / --ak-chrome-image 即可换皮，不碰选择器。
+ *  装饰：右侧半调网点场（::before，--ak-chrome-texture 调强弱 / 关闭）· 底部 1px 亮线 · 标语 / 悬停 / 开关选中项 / 搜索图标框都用活动主色（游戏 selected_back / toggle_on 的那块青），亮暗主题下页眉配色完全一致。
  *  主行是三列网格，与 .ak-layout 的 侧栏 / 正文 两列对齐：品牌在侧栏列上方，搜索从正文列左缘起（≤560px，与面包屑 / 标题同一条线），
  *  工具靠右 —— 页眉是三列各自的「列头」，不是游离的一条。页眉里不放站点级主导航：那 8 项与侧栏「通用」组 1:1 重复，导航只由侧栏承担
  *  （MW 的 data-portlets-first 也只在侧栏渲染一次）。1680 容器与 .ak-layout 同为 border-box，超宽时左右缘才对得齐。
@@ -26,8 +31,26 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
  *  input.ak-nav-cb + label.ak-header__burger（同目录浮层的 .ak-toc-cb 做法），DOM 顺序固定为
  *  logo · search · search-toggle · nav-cb · screen[tools] · burger（checkbox 在前才能用 ~ 联动）。
  *  卡片 position:absolute 于 .ak-header__inner（position:relative），top:100% 即贴主行下沿、盖住二级栏；JS 补 Esc / 点卡片外 / 回到桌面宽度收起。 */
-.ak-header { position: sticky; top: 0; z-index: var(--ak-z-header); background: var(--ak-bg-header); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
-  border-bottom: 1px solid var(--ak-border); color: var(--ak-fg); transition: transform var(--ak-dur-normal) var(--ak-ease); }
+.ak-header {
+  /* 语义令牌 → 页眉配色（只在页眉子树内生效；搜索面板 / 侧栏飞出挂在 body 下，不受影响） */
+  --ak-fg: var(--ak-chrome-fg); --ak-fg-secondary: var(--ak-chrome-fg-2); --ak-fg-muted: var(--ak-chrome-fg-muted); --ak-fg-subtle: var(--ak-chrome-fg-muted);
+  --ak-bg-surface: var(--ak-chrome-bg-solid); --ak-bg-surface-2: var(--ak-chrome-field); --ak-bg-surface-3: rgba(255,255,255,.12);
+  --ak-bg-hover: var(--ak-chrome-hover); --ak-bg-active: rgba(255,255,255,.14);
+  --ak-border: var(--ak-chrome-line); --ak-border-subtle: var(--ak-chrome-line); --ak-border-strong: var(--ak-chrome-line-strong);
+  --ak-bg-inverse: #fff; --ak-fg-inverse: #000;
+  --ak-accent: var(--ak-theme-accent); --ak-accent-fg: var(--ak-theme-accent-fg); --ak-accent-hover: var(--ak-theme-accent); --ak-focus: var(--ak-theme-accent);
+  --ak-accent-subtle: color-mix(in srgb, var(--ak-theme-accent) 14%, transparent);
+  --ak-glyph-filter: none;   /* 游戏白色线稿站标在黑页眉上不反相 */
+  --ak-shadow-lg: 0 16px 40px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
+  color-scheme: dark;        /* 页眉内的原生控件（无 JS 时的真搜索框）也走深色 */
+  position: sticky; top: 0; z-index: var(--ak-z-header); color: var(--ak-fg);
+  background: var(--ak-chrome-image) var(--ak-chrome-image-position) / var(--ak-chrome-image-size) var(--ak-chrome-image-repeat), var(--ak-chrome-bg);
+  backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--ak-chrome-line); transition: transform var(--ak-dur-normal) var(--ak-ease); }
+/* 右侧半调网点场：游戏顶栏 img_back / bkg_openserver、官网页面左缘那片网点。从右缘向左渐隐，只铺到工具区背后，不碰品牌 */
+.ak-header::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--ak-chrome-texture);
+  background-image: radial-gradient(rgba(255,255,255,.34) 1px, transparent 1.4px); background-size: 6px 6px; background-position: 0 1px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 52%, #000 100%); mask-image: linear-gradient(90deg, transparent 52%, #000 100%); }
 .ak-header__inner { height: var(--ak-header-h); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; position: relative;
   display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr) auto; gap: var(--ak-gutter); align-items: center; }   /* 三列 = 侧栏 / 正文 / 工具，列宽与 .ak-layout 相同 */
 .ak-header__screen, .ak-header__tool { display: contents; }   /* 桌面：只是分组，不产生盒子；窄屏见「Responsive」段 */
@@ -43,28 +66,35 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-nav-cb:checked ~ .ak-header__burger i:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .ak-nav-cb:checked ~ .ak-header__burger i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 .ak-nav-cb:focus-visible ~ .ak-header__burger { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
-.ak-header__logo { grid-column: 1; justify-self: start; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; }   /* 品牌盖着侧栏列；不再有右侧分隔线（那是「品牌 | 导航」的分界，导航没了它就是一根悬着的线） */
+.ak-header__logo { grid-column: 1; justify-self: start; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; }   /* 品牌盖着侧栏列；不带任何分隔线 / 底线（右侧竖线是「品牌 | 导航」的分界，导航没了它就是悬着的；品牌列底下的主色横线也试过——意味不明，去掉） */
 .ak-header__logo:hover { text-decoration: none; color: inherit; }
-.ak-header__logo img { height: 28px; width: auto; filter: var(--ak-glyph-filter); }
+.ak-header__logo img { height: 28px; width: auto; filter: var(--ak-glyph-filter); content: var(--ak-logo-image, normal); }   /* --ak-logo-image 设了就换站标（Chromium / WebKit 支持 content 替换 <img>；Firefox 忽略，请改 $wgLogos） */
 .ak-header__wordmark { font: 800 20px/1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; }
-.ak-header__wordmark small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .18em; color: var(--ak-fg-muted); margin-top: 3px; }
+.ak-header__wordmark small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .18em; color: var(--ak-theme-accent); margin-top: 3px; }   /* 标语用活动主色：官网导航当前项那一点青 */
 .ak-header__search { grid-column: 2; justify-self: start; width: 100%; max-width: 560px; min-width: 0; }   /* 从正文列左缘起，与面包屑 / 标题左缘同线；有 JS 时这是 button.ak-search-trigger（保留此类名，它自带 width:100%，所以上限用 max-width 写） */
-.ak-header__search .ak-input, .ak-header__search input[type="search"] { min-height: 34px; background: var(--ak-bg-surface-2); border-color: transparent; }   /* 无 JS 回退：真表单 */
-.ak-header__search .ak-input:focus, .ak-header__search input[type="search"]:focus { background: var(--ak-bg-surface); border-color: var(--ak-accent); }
-/* 有 JS 时 search-palette.js 把上面的表单换成这个「长得像输入框的按钮」，点击 / 聚焦回车 → 打开悬浮面板；真表单被搬进面板 */
-.ak-search-trigger { display: inline-flex; align-items: center; gap: 8px; height: 34px; width: 100%; padding: 0 8px 0 10px; box-sizing: border-box; border: 1px solid transparent; background: var(--ak-bg-surface-2); color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-sm); text-align: left; cursor: text; transition: border-color var(--ak-dur-fast), background var(--ak-dur-fast), color var(--ak-dur-fast); }
-.ak-search-trigger:hover { border-color: var(--ak-border-strong); color: var(--ak-fg-secondary); }
+.ak-header__search .ak-input, .ak-header__search input[type="search"] { min-height: 34px; background: var(--ak-bg-surface-2); border-color: var(--ak-chrome-line); color: var(--ak-fg); }   /* 无 JS 回退：真表单 */
+.ak-header__search .ak-input:focus, .ak-header__search input[type="search"]:focus { background: rgba(0,0,0,.35); border-color: var(--ak-accent); box-shadow: none; }
+/* 有 JS 时 search-palette.js 把上面的表单换成这个「长得像输入框的按钮」，点击 / 聚焦回车 → 打开悬浮面板；真表单被搬进面板。
+ * 左端一格深色图标框（游戏 HUD announce_title_on 的图标位）+ 矩形浅条；曾试过右端斜切，Tab 聚焦的描边会被 clip-path 裁断，作罢 */
+.ak-search-trigger { display: inline-flex; align-items: center; gap: 10px; height: 34px; width: 100%; padding: 0 8px 0 0; box-sizing: border-box; border: 1px solid var(--ak-chrome-line); background: var(--ak-bg-surface-2); color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-sm); text-align: left; cursor: text; transition: background var(--ak-dur-fast), border-color var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger:hover { border-color: var(--ak-chrome-line-strong); color: var(--ak-fg-secondary); }
 .ak-search-trigger:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
-.ak-search-trigger[aria-expanded="true"] { border-color: var(--ak-accent); background: var(--ak-bg-surface); }
-.ak-search-trigger__icon { width: 16px; height: 16px; flex: none; }
+.ak-search-trigger[aria-expanded="true"] { border-color: var(--ak-theme-accent); background: rgba(0,0,0,.35); color: var(--ak-fg); }
+.ak-search-trigger__icon { flex: none; align-self: stretch; width: 32px; height: auto; padding: 8px; box-sizing: border-box; background: rgba(0,0,0,.35); color: var(--ak-theme-accent); transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger[aria-expanded="true"] .ak-search-trigger__icon { background: var(--ak-theme-accent); color: var(--ak-theme-accent-fg); }   /* 打开时图标框反成主色实底（游戏 selected 态） */
 .ak-search-trigger__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ak-header .ak-search__kbd, .ak-header .ak-kbd { background: rgba(0,0,0,.4); border-color: var(--ak-chrome-line-strong); box-shadow: inset 0 -1px 0 var(--ak-chrome-line-strong); color: var(--ak-fg-muted); }
 .ak-header__tools { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: 4px; flex: none; }
 .ak-header__tools .ak-btn--icon, .ak-header__search-toggle { border-color: transparent; background: transparent; color: var(--ak-fg-secondary); }
-.ak-header__tools .ak-btn--icon:hover, .ak-header__search-toggle:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
+.ak-header__tools .ak-btn--icon:hover, .ak-header__search-toggle:hover { background: var(--ak-bg-hover); color: var(--ak-theme-accent); }   /* 悬停变活动主色：官网导航项的 hover */
 .ak-header__tools .ak-btn--icon svg, .ak-header__search-toggle svg { width: 20px; height: 20px; }
 .ak-header__user { display: inline-flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; }
-.ak-header__user .ak-avatar { --_s: 28px; }
-.ak-header--dark { --ak-bg-header: rgba(15,15,16,.86); --ak-fg: #f0f0f0; --ak-fg-secondary: #c9c9c9; --ak-fg-muted: #8d8d8d; --ak-border: #2f3133; --ak-bg-hover: rgba(255,255,255,.06); --ak-bg-surface-2: #232425; --ak-bg-surface: #1a1b1c; --ak-glyph-filter: none; --ak-accent: #18d1ff; --ak-accent-fg: #000; }   /* 亮色主题下仍可选择黑色页眉 */
+.ak-header__user:hover { --_fg: var(--ak-theme-accent); }   /* 走 .ak-btn 的 --_fg（下面 :visited 也读它），悬停变活动主色 */
+.ak-header__user .ak-avatar { --_s: 28px; border-color: var(--ak-chrome-line-strong); }
+.ak-header__notifications a:hover { color: var(--ak-theme-accent); }
+/* 页眉里的链接不分已访问：base.css 的 a:visited（紫）在黑底上发暗，用户名 / #p-personal / Echo 一律用自己的颜色 */
+.ak-header a:visited { color: inherit; }
+.ak-header .ak-btn:visited { color: var(--_fg); }
 
 /* Notification badge on header icon */
 .ak-header__tools .ak-badge { position: absolute; top: 4px; right: 4px; }
@@ -86,6 +116,16 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-toc-cb:focus-visible ~ .ak-local-nav__toc { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 @media (prefers-reduced-motion: reduce) { .ak-header, .ak-local-nav__chevron, .ak-header__burger-icon i { transition: none; } }   /* .ak-header__screen 的 animation:none 见 <1120 块之后——写在这里会被后面同选择器的 animation 覆盖 */
 @keyframes ak-nav-screen-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* ═══ Key art（头图带）＋ 画布底图 ═══
+ *  .ak-keyart 是页眉之下、.ak-layout 之上的一条通栏画，默认 --ak-keyart-h: 0 不占位、无 DOM 副作用；活动主题设 --ak-keyart-image + --ak-keyart-h 即出现
+ *  （现网 body 背景里那幅头图的位置）。底部按 --ak-keyart-fade 渐隐进画布色，页眉是半透明毛玻璃，头图滚到页眉下时透出来。
+ *  --ak-canvas-image 叠在 body 的 --ak-bg-canvas 之上（现网 body 的 bkg 底纹 / 大图位置）；侧栏与目录没有底色，所以画布图应当是低对比的底纹。 */
+.ak-keyart { position: relative; height: var(--ak-keyart-h); overflow: hidden; margin: 0; background: var(--ak-keyart-bg) var(--ak-keyart-image) var(--ak-keyart-position) / var(--ak-keyart-size) no-repeat; }
+.ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--ak-keyart-fade); background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)); pointer-events: none; }
+.ak-keyart__inner { position: relative; height: 100%; max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽 */
+@media (max-width: 639px) { .ak-keyart { height: min(var(--ak-keyart-h), 40vw); } }
+body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak-canvas-position) / var(--ak-canvas-size) var(--ak-canvas-repeat); background-attachment: var(--ak-canvas-attachment); }
 
 /* ═══ Layout ═══
  *  两列网格：侧栏 + 主列。目录导轨不是第三列，而是由 .ak-main 的右内边距预留出来的
@@ -110,7 +150,7 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-sidebar__panel { display: block; }
 .ak-portlet { margin-bottom: var(--ak-space-5); }
 /* 分组标题：门户 h3 / MW 原生 heading / 原始 p */
-.ak-portlet__title, .ak-sidebar .vector-menu-heading, .ak-sidebar h3, .ak-sidebar p { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 6px; padding: 0 0 6px 10px; border-left: 2px solid var(--ak-accent); display: flex; align-items: center; gap: 6px; }
+.ak-portlet__title, .ak-sidebar .vector-menu-heading, .ak-sidebar h3, .ak-sidebar p { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 6px; padding: 0 0 6px 10px; border-left: 2px solid var(--ak-theme-accent); display: flex; align-items: center; gap: 6px; }   /* 分组条用活动主色（--ak-theme-accent）：活动主题换色时侧栏跟着换，当前项 / 链接仍是 --ak-accent */
 .ak-sidebar ul + p, .ak-sidebar ul + h3, .ak-sidebar div + p { margin-top: var(--ak-space-5); }
 .ak-sidebar p:empty, .ak-sidebar li.mw-empty-elt, .ak-sidebar li:empty { display: none; }
 .ak-portlet ul, .ak-sidebar ul { list-style: none; margin: 0; padding: 0; }
@@ -214,7 +254,7 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
  *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、收起页眉与点击外部关闭。 */
 .ak-toc { position: absolute; top: 0; right: 0; bottom: 0; width: var(--ak-toc-w); font-size: var(--ak-fs-xs); }
 .ak-toc__inner { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-8)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
-.ak-toc__title { display: block; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-accent); }
+.ak-toc__title { display: block; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-theme-accent); }
 .ak-toc__top { display: none; }   /* 浮层首项「回到顶部」：仅 <1400 出现，届时 .ak-fab 隐藏（手机上浮动按钮太挡视野） */
 .ak-toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--ak-border); }
 .ak-toc li::before { display: none !important; }
@@ -228,8 +268,9 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-toc__progress > i { display: block; height: 100%; width: var(--_p, 0%); background: var(--ak-accent); transition: width .1s linear; }
 
 /* ═══ Footer ═══ */
-.ak-footer { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); margin-top: auto; position: relative; overflow: hidden; }
-.ak-footer::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: repeating-linear-gradient(-45deg, var(--ak-accent) 0 12px, transparent 12px 24px); opacity: .9; }
+/* 页脚和页眉一样是「框」：两套主题下都黑，读 --ak-chrome-*（此前读 --ak-bg-inverse——那是给反白组件用的，暗色下是白；显式选 night 时有覆盖、跟随系统为暗时没有，页脚就白了） */
+.ak-footer { background: var(--ak-chrome-bg-solid); color: var(--ak-chrome-fg); margin-top: auto; position: relative; overflow: hidden; }
+.ak-footer::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: repeating-linear-gradient(-45deg, var(--ak-theme-accent) 0 12px, transparent 12px 24px); opacity: .9; }
 .ak-footer__inner { max-width: 1680px; margin: 0 auto; padding: var(--ak-space-10) var(--ak-gutter) var(--ak-space-6); box-sizing: border-box; display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: var(--ak-space-8); }
 .ak-footer__brand .ak-header__wordmark { font-size: 26px; }
 .ak-footer__brand p { font-size: var(--ak-fs-xs); opacity: .6; max-width: 40ch; margin: 12px 0 0; line-height: 1.7; }
@@ -238,7 +279,7 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-footer__col li { margin: 0 0 8px; }
 .ak-footer__col li::before { display: none !important; }
 .ak-footer a { color: inherit; opacity: .8; font-size: var(--ak-fs-sm); text-decoration: none; }
-.ak-footer a:hover { opacity: 1; color: var(--ak-accent); text-decoration: none; }
+.ak-footer a:hover { opacity: 1; color: var(--ak-theme-accent); text-decoration: none; }
 .ak-footer__bottom { border-top: 1px solid rgba(127,127,127,.25); padding: var(--ak-space-4) calc(var(--ak-gutter) + 60px) var(--ak-space-4) var(--ak-gutter); font-size: var(--ak-fs-xs); display: flex; align-items: center; gap: var(--ak-space-3) var(--ak-space-6); flex-wrap: wrap; justify-content: space-between; max-width: 1680px; margin: 0 auto; box-sizing: border-box; }   /* 右内边距为 .ak-fab（44px + 20px 边距）让位，滚到底时不压住徽章 */
 .ak-footer__bottom-text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--ak-space-4); opacity: .6; }
 .ak-footer__bottom-text .ak-en { opacity: .8; }
@@ -256,13 +297,12 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-footer__icons a:hover img, .ak-footer__icons a:focus-visible img { filter: none; }
 @media (prefers-reduced-motion: reduce) { .ak-footer__icons a, .ak-footer__icons img { transition: none; } }
 .ak-footer .ak-watermark { font-size: 9rem; right: -10px; bottom: -30px; opacity: .04; color: currentColor; }
-:root[data-theme="dark"] .ak-footer, html.skin-theme-clientpref-night .ak-footer { background: #0a0a0b; color: #f0f0f0; }
 
 /* ═══ Theme toggle (3-state: os / day / night) ═══ */
 .ak-theme-toggle { display: inline-flex; border: 1px solid var(--ak-border-strong); }
 .ak-theme-toggle > button { all: unset; cursor: pointer; width: 30px; height: 28px; display: grid; place-items: center; color: var(--ak-fg-muted); }
 .ak-theme-toggle > button + button { border-left: 1px solid var(--ak-border); }
-.ak-theme-toggle > button.is-active { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-theme-toggle > button.is-active { background: var(--ak-accent); color: var(--ak-accent-fg); }   /* 选中项用强调色实底（游戏 selected_back / toggle_on）：页眉里 --ak-accent 已重映射为 --ak-theme-accent，亮暗主题下都是同一块青，不再黑白反色 */
 .ak-theme-toggle svg { width: 15px; height: 15px; }
 
 /* ═══ Search palette（悬浮搜索面板）═══

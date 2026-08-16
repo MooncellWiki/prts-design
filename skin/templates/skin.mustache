@@ -51,6 +51,9 @@
   </div>
 </header>
 
+{{! 头图带（Key Visual）：默认 --ak-keyart-h: 0 不占位；活动主题（Gadget / MediaWiki:Common.css）设 --ak-keyart-image / --ak-keyart-h 即出现，见 tokens.css §2d }}
+<div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
+
 <div class="ak-layout{{^data-toc}} ak-layout--no-toc{{/data-toc}}">
   {{! 侧栏：多层导航由 resources/sidebar-tree.js 增强（li > ul 任意深度 → 树形展开 + 桌面悬停飞出；data-flyout="off" 可关闭飞出）。
       #mw-panel 保留给站点脚本兼容（PRTS 现有内联脚本把 #MenuSidebar 移入 #mw-panel 并读取 #p-tb ul）。 }}

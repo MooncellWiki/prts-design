@@ -20,11 +20,11 @@ docs/
   02-components.md             组件清单：L1 MW 内容 / L2 皮肤骨架 / L3 通用 / L4 方舟 / L5 页面模式；MW 映射
   03-mediawiki-integration.md  皮肤落地：skin.json、RL 模块、mustache 结构、clientPrefs 主题、Codex 桥接、TemplateStyles/Lua 用法、迁移路线
 src/
-  tokens.css        令牌 + 双主题 + Codex/MW 令牌桥接（必须最先加载）
+  tokens.css        令牌 + 双主题 + 页眉/头图/画布主题接口（§2d）+ Codex/MW 令牌桥接（必须最先加载）
   base.css          .mw-parser-output / wikitable / toc / tabber / 表单 / diff …
   components.css    通用组件 .ak-btn .ak-tag .ak-card .ak-panel .ak-tabs .ak-message …
   arknights.css     方舟装饰（切角/斜切/斜纹/网点/角标）+ 游戏数据组件（稀有度/职业/技能/道具/干员卡/模组/档案…）
-  skin.css          皮肤骨架：页眉/侧栏（含多层树 + 悬停飞出）/页面头/TOC/搜索面板/页脚/响应式
+  skin.css          皮肤骨架：黑色页眉/头图带 .ak-keyart/侧栏（含多层树 + 悬停飞出）/页面头/TOC/搜索面板/页脚/响应式
   sidebar-tree.js   侧栏多层导航增强（树形展开/记忆/当前页路径/桌面飞出；皮肤与预览共用）
   search-palette.js 悬浮搜索面板核心（触发器替换 / 分组结果 / 命令模式 / 键盘 / 最近访问；数据源由调用方注入，皮肤与预览共用）
   utilities.css     工具类
@@ -47,7 +47,7 @@ scripts/            export-tokens.py · build-dist.py · build-site.sh（组装 
 | 来源 | 取得的令牌 |
 |---|---|
 | 官网 CSS（`web.hycdn.cn/arknights/official/_next/static/css/*`） | `#18D1FF` 青、灰阶 `#1D1F20 #8D8D8D #D2D2D2`、字体 Novecento Sans Wide / Bender / Oswald / 思源黑体、标题左 8px 色条与短横条、右上三角 |
-| 游戏解包精灵（torappu：`ui/pages/home_page` `ui/character/*` `arts/*_hub` …） | 选中蓝 `#0098DC`、`#22BBFF`、开关 `#0075A9`、黄 `#FFD800`、SP 荧光绿 `#CAEC46`、红 `#A40000/#711111/#C82A36`、标准按钮灰 `#313131`、亮色面板 `#F5F5F5`、稀有度星/职业/精英/潜能/专精/势力图标 |
+| 游戏解包精灵（torappu：`ui/pages/home_page` `ui/character/*` `arts/*_hub` `arts/ui/hometheme/*` `arts/ui/homebackground/*` …） | 选中蓝 `#0098DC`、`#22BBFF`、开关 `#0075A9`、黄 `#FFD800`、SP 荧光绿 `#CAEC46`、红 `#A40000/#711111/#C82A36`、标准按钮灰 `#313131`、亮色面板 `#F5F5F5`、稀有度星/职业/精英/潜能/专精/势力图标；页眉的半调网点（`img_back` / `bkg_openserver`）、搜索触发器的图标框（`announce_title_on`）、选中块的青（`selected_back` / `toggle_on`）；示例头图 = 主界面「罗德岛 · 昼 / 夜」背景 |
 | gamedata（`gamedata_const.richTextStyles`、`sandbox_table.charRarityColorList`） | 富文本 `ba.vup #0098DC / ba.vdown #FF6237 / ba.rem #F49800 / ba.kw #00B0FF …`；稀有度 `#BABABA #D3DC35 #82C5F5 #BF96ED #EFD691 #FF9433` |
 
 ## 使用

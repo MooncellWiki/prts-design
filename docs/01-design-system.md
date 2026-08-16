@@ -161,7 +161,26 @@ html.skin-theme-clientpref-night  终端模式（暗）
 - **窄屏导航（<1400，参考 VitePress）**：页眉长出第二行 `.ak-local-nav`「二级吸顶栏」——左「菜单」拉出侧栏抽屉（<1120）、右「本页目录」拉下目录浮层；向下滚动时页眉主行（品牌 / 搜索 / 工具）上移收起，只留这条 48px 的二级栏贴顶，向上滚或回到顶部再展开；「回到顶部」放在目录浮层首项，`.ak-fab` 只在 ≥1400 显示。**不用角落浮动按钮开目录**（方位与面板割裂、和回到顶部抢屏幕角落）
 - 布局：`--ak-header-h 56` · `--ak-local-nav-h 48` · `--ak-sidebar-w 248` · `--ak-toc-w 240` · `--ak-content-max 1240`（≥1680 侧栏 / 目录 268，写在 `:root`）
 - **页眉 = 三列的列头**：主行网格 `var(--ak-sidebar-w) minmax(0,1fr) auto` 与 `.ak-layout` 同列同 gutter——品牌盖着侧栏、搜索从正文列左缘起（≤560px，与标题左缘同线）、工具盖着目录列；1680 容器一律 `border-box`。**页眉不放站点级主导航**（与侧栏「通用」组重复），导航只由侧栏承担；<1120 外观 / 通知 / 用户收进 ≡ 拉下的 320px 卡片
+- **页眉是黑色「终端」顶栏，两套主题下都不变**：官网导航栏（#000 底 · 青色当前项 · 白线稿图标）、游戏主界面顶栏（深底 · 半调网点 · 青色选中块）、干员档案页顶部那道黑边——「黑框白纸 / 黑框黑纸」是方舟本体的框架语言。配色不读明暗主题，只读 §2.10 的 `--ak-chrome-*`（`skin.css` 在 `.ak-header` 内把语义令牌重映射过去，页眉里的按钮 / 搜索 / 头像 / 菜单自动跟随）。构件：`rgba(8,9,10,.9)` 底 + 毛玻璃 + 1px 亮线；右侧半调网点场向左渐隐；标语与悬停用活动主色；搜索触发器 = 左端深色图标框（游戏 HUD `announce_title_on` 的图标位）+ 矩形浅条，打开时图标框反成主色实底（曾试过右端斜切，Tab 焦点描边会被 clip-path 裁断，作罢）；外观开关选中项用主色实底（游戏 `selected_back` / `toggle_on`），亮暗主题下不反色；页眉内链接不分已访问色
 - **搜索（参考 Citizen Command Palette / starcitizen.tools）**：页眉里那条「输入框」其实是触发器（无 JS 时是真表单），点击或按 `/`、`⌘K` 打开居中悬浮的搜索面板：直角、顶部 3px 青条、56px 输入行、`--ak-bg-overlay` 遮罩 + 2px 模糊；空态给最近访问 + 快捷入口，有字给分组结果（干员带头像 / 职业 / 稀有度）+ 末尾固定「全文搜索」行；`/` 列命令、`>` `#` `@` `~` 进入模式（斜切 chip）。高亮行沿用「左 2px 青条 + 淡青底」；键位提示用 `.ak-kbd`。**不做**页眉内下拉建议（Vector 式）：内容页面宽、页眉是玻璃底，下拉在毛玻璃上叠层次会脏；居中面板一层遮罩把注意力收拢，也天然适配手机（8px 内边距全宽卡片）
+
+### 2.10 页眉 / 头图 / 画布的主题接口（活动主题只改这些）
+
+prts.wiki 大活期间会换头图、顶栏底图、站标、侧栏配色（现网 `ext.gadget.seventhStyle` 改的就是这些）。新皮肤把这些位置抽成 `tokens.css §2d` 的一组变量，Gadget / `MediaWiki:Common.css` 在 `:root`（或 `html.skin-theme-clientpref-*` 分昼夜）上覆盖即可，不碰任何选择器；示例见 `preview/demo-theme.css`（罗德岛主界面昼 / 夜背景做头图、警示黄做活动主色）。
+
+| 变量 | 默认 | 作用 |
+|---|---|---|
+| `--ak-theme-accent` / `-fg` | `#18D1FF` / `#000` | 活动主色：页眉标语与悬停、搜索图标框、开关选中项、侧栏 / 目录分组条、页脚斜纹、窄屏工具卡片顶条。正文链接 / 选中仍是 `--ak-accent`，想一起换就连它也覆盖 |
+| `--ak-chrome-bg` / `-bg-solid` | `rgba(8,9,10,.9)` / `#0E0F10` | 页眉底色（半透明 + 毛玻璃）/ 不透明处（窄屏工具卡片） |
+| `--ak-chrome-fg` / `-fg-2` / `-fg-muted` | `#F2F2F2` / `.74` / `.5` 白 | 页眉前景三级 |
+| `--ak-chrome-line` / `-line-strong` / `-hover` / `-field` | 白 `.14` / `.32` / `.08` / `.07` | 底线与分隔线 / 悬停底 / 搜索触发器底 |
+| `--ak-chrome-image` / `-position` / `-size` / `-repeat` | `none` / `right top` / `auto 100%` / `no-repeat` | **顶栏底图**：`url(left.png), url(right.png)`（现网 PRTSheadleft / Garanheadright 的位置） |
+| `--ak-chrome-texture` | `.55` | 右侧半调网点强度 0–1，有底图时设 0 |
+| `--ak-keyart-image` / `-h` / `-position` / `-size` / `-bg` / `-fade` | `none` / `0` / `center 30%` / `cover` / `#0E0F10` / `96px` | **头图** `.ak-keyart`：页眉之下、`.ak-layout` 之上的通栏画；`-h` 为 0 时不占位；底部按 `-fade` 渐隐进画布；≤639 限高 40vw；`.ak-keyart__inner` 与页眉三列同宽，主题可往里放活动标题 |
+| `--ak-canvas-image` / `-position` / `-size` / `-repeat` / `-attachment` | `none` … | **画布底纹**：叠在 body 的 `--ak-bg-canvas` 之上（现网 body 的 bkg 位置）；侧栏 / 目录没有底色，宜低对比 |
+| `--ak-logo-image` | 未设 | **站标**：设了就用 `content` 替换 `.ak-header__logo img`（Chromium / WebKit；Firefox 请改 `$wgLogos`） |
+
+⚠ 接口变量里的 `url()` 请写**绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`skin.css`）的路径解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录。
 
 ---
 
