@@ -73,7 +73,8 @@
         {{{html-undelete-link}}}
         <div class="mw-body-content" id="mw-content-text" lang="{{page-langcode}}" dir="{{page-dir}}">{{{html-body-content}}}</div>
         {{{html-after-content}}}
-        <div class="ak-body-foot" id="footer-info">{{#data-footer.data-info}}{{{html-items}}}{{/data-footer.data-info}}</div>
+        {{! data-footer.* 只有 array-items（核心 formatFooterDataForCurrentSpec 已剥掉 html-items / label） }}
+        {{#data-footer.data-info}}<ul class="ak-body-foot" id="{{id}}">{{#array-items}}<li id="{{id}}">{{{html}}}</li>{{/array-items}}</ul>{{/data-footer.data-info}}
       </div>
       {{{html-categories}}}
     </div>
@@ -91,10 +92,14 @@
 <footer class="ak-footer" id="footer">
   <div class="ak-footer__inner">
     <div class="ak-footer__brand"><span class="ak-header__wordmark">{{msg-sitetitle}}<small>{{msg-tagline}}</small></span><p>{{msg-sitesubtitle}}</p></div>
-    {{#data-footer.data-places}}<div class="ak-footer__col" id="{{id}}"><h4>{{label}}</h4>{{{html-items}}}</div>{{/data-footer.data-places}}
-    {{#data-footer.data-icons}}<div class="ak-footer__col" id="{{id}}"><h4>{{label}}</h4>{{{html-items}}}</div>{{/data-footer.data-icons}}
+    {{! 站点链接（隐私 / 关于 / 免责声明 + SkinAddFooterLinks 钩子加的 ICP、手机版等） }}
+    {{#data-footer.data-places}}<div class="ak-footer__col"><h4>{{msg-akds-footer-about}}</h4><ul id="{{id}}"{{#className}} class="{{.}}"{{/className}}>{{#array-items}}<li id="{{id}}">{{{html}}}</li>{{/array-items}}</ul></div>{{/data-footer.data-places}}
   </div>
-  <div class="ak-footer__bottom"><span>{{msg-sitetitle}}</span><span class="ak-en">Powered by MediaWiki · Skin AKDS</span></div>
+  {{! 底栏：左 = 站名 + 皮肤；右 = $wgFooterIcons 徽章（结构同 Vector/Citizen：ul#footer-icons > li#footer-*ico > a > img；见 skin.css .ak-footer__icons） }}
+  <div class="ak-footer__bottom">
+    <div class="ak-footer__bottom-text"><span>{{msg-sitetitle}}</span><span class="ak-en">Skin AKDS</span></div>
+    {{#data-footer.data-icons}}<ul class="ak-footer__icons{{#className}} {{.}}{{/className}}" id="{{id}}">{{#array-items}}<li id="{{id}}">{{{html}}}</li>{{/array-items}}</ul>{{/data-footer.data-icons}}
+  </div>
   <span class="ak-watermark" aria-hidden="true">{{msg-sitetitle}}</span>
 </footer>
 <button class="ak-fab" aria-label="{{msg-akds-back-to-top}}">↑</button>

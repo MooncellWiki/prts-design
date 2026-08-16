@@ -12,6 +12,9 @@ def img_uri(rel):
     if rel in cache: return cache[rel]
     p = (prev / rel).resolve()
     if not p.exists(): print('  missing', rel); return rel
+    if p.suffix == '.svg':   # 页脚徽章等矢量图：原样内联
+        uri = 'data:image/svg+xml;base64,' + base64.b64encode(p.read_bytes()).decode()
+        cache[rel] = uri; return uri
     im = Image.open(p).convert('RGBA')
     if max(im.size) > MAX: im.thumbnail((MAX, MAX), Image.LANCZOS)
     buf = io.BytesIO(); im.save(buf, 'PNG', optimize=True)
@@ -30,7 +33,7 @@ for name in ['index.html', 'operator.html']:
     # js（preview.js 与共用的 src/sidebar-tree.js 都内联）
     html = re.sub(r'<script src="((?:\.\./src/|)[\w.-]+\.js)"></script>', lambda m: '<script>\n%s\n</script>' % (prev / m.group(1)).resolve().read_text(encoding='utf-8'), html)
     # images
-    html = re.sub(r'(src|href)="(assets/[^"]+\.png)"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)
+    html = re.sub(r'(src|href)="(assets/[^"]+\.(?:png|svg))"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)
     # cross links between the two pages → keep relative (both in dist)
     # theme default note: artifacts render in viewer theme; keep script default
     # artifact skeleton strips <html>/<body> tags → restore body class + set a product-like title

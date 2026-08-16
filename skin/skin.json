@@ -22,7 +22,7 @@
         "bodyClasses": ["skin-akds"],
         "styles": ["skins.akds.tokens", "skins.akds.styles"],
         "scripts": ["skins.akds.js"],
-        "messages": ["akds-toc-title", "akds-theme-os", "akds-theme-day", "akds-theme-night", "akds-menu", "akds-search-placeholder", "akds-back-to-top", "akds-skip"]
+        "messages": ["akds-toc-title", "akds-theme-os", "akds-theme-day", "akds-theme-night", "akds-menu", "akds-search-placeholder", "akds-back-to-top", "akds-skip", "akds-footer-about"]
       }]
     }
   },

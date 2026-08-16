@@ -63,12 +63,16 @@ skins/AKDS/
       header.ak-page-header  [breadcrumb from {{html-subtitle}}] {{html-indicators}} h1#firstHeading {{{html-title}}}
          .ak-page-header__bar  ul.ak-page-tabs{{data-portlets.data-views}} ul.ak-page-tabs--actions{{data-portlets.data-actions}}
       div.ak-body#bodyContent  {{{html-site-notice}}} {{{html-user-message}}} .mw-body-content{{{html-body-content}}}
-         .ak-body-foot {{#data-footer.data-info}}
-      {{{html-categories}}}
+         ul.ak-body-foot#footer-info {{#data-footer.data-info}}{{#array-items}} li#footer-info-lastmod / -copyright
+      {{{html-categories}}}   ← div#catlinks（样式见 base.css「Category links」；skin.js tidyCatlinks() 去冒号）
    aside.ak-toc  ul[data-toc] ← 由 data-toc 或 skin.js 生成
-<footer class="ak-footer"> {{#data-footer.data-places}} {{#data-footer.data-icons}}
+<footer class="ak-footer">
+   .ak-footer__inner   .ak-footer__brand | .ak-footer__col > h4{{msg-akds-footer-about}} + ul#footer-places {{#data-footer.data-places}}{{#array-items}}
+   .ak-footer__bottom  .ak-footer__bottom-text | ul.ak-footer__icons#footer-icons {{#data-footer.data-icons}}{{#array-items}} li#footer-copyrightico / -poweredbyico / …
 ```
 Portlet 渲染用 `Skin::getPortletsTemplateData()` 输出的 `html-items`（只含 `<li>`，mustache 负责包 `<ul>`），外层类由 mustache 加；`li.selected` 与 CSS `.ak-page-tabs li.selected` 对应（MW 原生类名）。
+
+**注意 `data-footer.*` 与门户不同**：核心 `SkinComponentFooter::formatFooterDataForCurrentSpec()` 会剥掉 `html-items` / `label` / `class`，只留下 `id`、`className`、`array-items[{id, html}]`（见 [Manual:SkinMustache.php#DataFooter](https://www.mediawiki.org/wiki/Manual:SkinMustache.php)），所以页脚三处必须像 Vector `Footer__row.mustache` 一样写成 `{{#array-items}}<li id="{{id}}">{{{html}}}</li>{{/array-items}}`，用 `{{{html-items}}}` 会渲染成空。
 
 ### 3.1 侧栏与 PRTS 现网的多层菜单（#MenuSidebar）
 
@@ -94,6 +98,14 @@ AKDS 的适配方式（无需改动现网 wikitext / 站点脚本即可工作）
 - 作者默认展开：给 `li` 加 `class="is-open"`（用户操作后以记忆为准）。
 - 建议后续把 `#MenuSidebar` 的注入改成皮肤钩子（`SidebarBeforeOutput` / `SkinAfterPortlet` 解析 `MediaWiki:MenuSidebar`）以去掉内联脚本，结构与类名不变。
 - 现网 `<span style="…">NEW</span>` 角标建议改用 `.ak-tag.ak-tag--sm.ak-tag--new`。
+
+### 3.2 页脚徽章（`$wgFooterIcons` → `#footer-icons`）
+
+prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、Powered by MediaWiki + HoRain + a Mooncell project（`poweredby`，后两个由 LocalSettings 追加）、Powered by Semantic MediaWiki（SMW 扩展加的 `poweredbysmw`）。核心把每个徽章输出为 `<a class="cdx-button cdx-button--fake-button cdx-button--size-large …"><img width=88 height=31 loading=lazy></a>`，同一组（如 poweredby）的多个徽章在同一个 `<li>` 内。
+
+- 这些徽章都按浅底设计——1.43 的 `poweredby_mediawiki.svg` 和 SMW 的 `logo_footer.svg` 是**透明底黑字**，直接放在黑色页脚上会隐形。Vector（T256190，`#f8f9fa`）与 Citizen（`--background-color-base-fixed`）的做法都是给 `a` 一块**不随暗色翻转的固定浅色底板**；AKDS 同样（`.ak-footer__icons a { background:#f5f5f5 }`），并默认 `grayscale(1)` + 62% 透明，悬停 / 聚焦恢复彩色，让徽章退成页脚的一行「印章」而不是五块彩色广告。
+- 站点配置里的内联 `style="margin-left:5px"`（HoRain）用 `img { margin:0 !important }` 覆盖；`cdx-button` 假按钮的圆角 / 最小高度 / 内边距一并归零。
+- 若想像 starcitizen.tools 那样做成一套单色徽章：那是站点层的事——它用 `$wgFooterIcons` 把 `src` 换成了自绘的 `badge-*.svg`（统一 32px 高、白色线稿），皮肤不需要改。PRTS 若愿意，可同样在 LocalSettings 覆盖 `$wgFooterIcons['poweredby']['mediawiki']['src']` 等为自托管的单色版；届时把 `.ak-footer__icons a` 的底板与 grayscale 去掉即可（保留结构）。
 
 ## 4. 明暗主题（clientPrefs）
 

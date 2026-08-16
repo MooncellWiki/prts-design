@@ -154,7 +154,9 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-body { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: var(--ak-space-6) var(--ak-space-8); }
 .ak-body--flat { background: transparent; border: 0; padding: 0; }
 .ak-body > .mw-body-content > *:first-child { margin-top: 0; }
-.ak-body-foot { display: flex; flex-wrap: wrap; gap: var(--ak-space-3) var(--ak-space-6); align-items: center; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin-top: var(--ak-space-6); padding-top: var(--ak-space-3); border-top: 1px solid var(--ak-border); }
+.ak-body-foot { display: flex; flex-wrap: wrap; gap: var(--ak-space-3) var(--ak-space-6); align-items: center; list-style: none; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin: var(--ak-space-6) 0 0; padding: var(--ak-space-3) 0 0; border-top: 1px solid var(--ak-border); }   /* MW：ul#footer-info > li#footer-info-lastmod / -copyright */
+.ak-body-foot li { margin: 0; padding: 0; }
+.ak-body-foot li::before { display: none !important; }
 .ak-body-foot #footer-info-lastmod, .ak-body-foot .ak-lastmod { font-family: var(--ak-font-label); letter-spacing: .02em; }
 .ak-body-foot #footer-info-copyright { flex-basis: 100%; }
 
@@ -186,8 +188,22 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-footer__col li::before { display: none !important; }
 .ak-footer a { color: inherit; opacity: .8; font-size: var(--ak-fs-sm); text-decoration: none; }
 .ak-footer a:hover { opacity: 1; color: var(--ak-accent); text-decoration: none; }
-.ak-footer__bottom { border-top: 1px solid rgba(127,127,127,.25); padding: var(--ak-space-4) var(--ak-gutter); font-size: var(--ak-fs-xs); opacity: .6; display: flex; gap: var(--ak-space-4); flex-wrap: wrap; justify-content: space-between; max-width: 1680px; margin: 0 auto; }
-.ak-footer__bottom .ak-en { opacity: .8; }
+.ak-footer__bottom { border-top: 1px solid rgba(127,127,127,.25); padding: var(--ak-space-4) calc(var(--ak-gutter) + 60px) var(--ak-space-4) var(--ak-gutter); font-size: var(--ak-fs-xs); display: flex; align-items: center; gap: var(--ak-space-3) var(--ak-space-6); flex-wrap: wrap; justify-content: space-between; max-width: 1680px; margin: 0 auto; }   /* 右内边距为 .ak-fab（44px + 20px 边距）让位，滚到底时不压住徽章 */
+.ak-footer__bottom-text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--ak-space-4); opacity: .6; }
+.ak-footer__bottom-text .ak-en { opacity: .8; }
+/* 页脚徽章（$wgFooterIcons：CC 许可 / Powered by MediaWiki / SMW / 站点自定义…）
+ * 结构 = MW 原生 #footer-icons：ul > li#footer-*ico > a.cdx-button.cdx-button--fake-button > img（一个 li 内可有多个徽章）
+ * 徽章多为浅底设计（1.43 的 poweredby_mediawiki.svg 是透明底黑字），故仿 Vector / Citizen 给链接一块固定浅色底板；
+ * 默认灰度 + 降透明使之退为页脚的一行「印章」，悬停 / 聚焦恢复彩色。 */
+.ak-footer__icons { list-style: none; margin: 0 0 0 auto; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--ak-space-2); }
+.ak-footer__icons li { display: contents; }   /* 同组徽章（poweredby 一个 li 装 3 个）与其他组一起均匀换行 */
+.ak-footer__icons li::before { display: none !important; }
+.ak-footer__icons a, .ak-footer__icons a.cdx-button { display: inline-flex; align-items: center; height: 31px; min-height: 0; padding: 0 4px; margin: 0; border: 0; border-radius: 0; box-sizing: content-box; font: inherit; line-height: 0; background: #f5f5f5; opacity: .62; transition: opacity var(--ak-dur-fast) var(--ak-ease); }
+.ak-footer__icons a:hover, .ak-footer__icons a:focus-visible { opacity: 1; background: #fff; }
+.ak-footer__icons a:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 2px; }
+.ak-footer__icons img { display: block; height: 31px; width: auto; margin: 0 !important; filter: grayscale(1); transition: filter var(--ak-dur-fast) var(--ak-ease); }   /* !important 覆盖站点配置里的内联 margin */
+.ak-footer__icons a:hover img, .ak-footer__icons a:focus-visible img { filter: none; }
+@media (prefers-reduced-motion: reduce) { .ak-footer__icons a, .ak-footer__icons img { transition: none; } }
 .ak-footer .ak-watermark { font-size: 9rem; right: -10px; bottom: -30px; opacity: .04; color: currentColor; }
 :root[data-theme="dark"] .ak-footer, html.skin-theme-clientpref-night .ak-footer { background: #0a0a0b; color: #f0f0f0; }
 
@@ -235,6 +251,8 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   .ak-page-tabs li a { padding: 0 8px; font-size: var(--ak-fs-xs); }
   .ak-footer__inner { grid-template-columns: 1fr 1fr; gap: var(--ak-space-6); }
   .ak-footer__brand { grid-column: 1 / -1; }
+  .ak-footer__bottom { flex-direction: column; align-items: flex-start; }
+  .ak-footer__icons { margin-left: 0; }
   .mw-parser-output table.wikitable { display: block; overflow-x: auto; max-width: 100%; }
   .mw-halign-right, .tright, figure.mw-halign-right, .mw-halign-left, .tleft, figure.mw-halign-left { float: none; margin-left: 0; margin-right: 0; }
 }

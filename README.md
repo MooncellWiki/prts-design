@@ -28,7 +28,7 @@ src/
   index.css         本地汇总入口
 skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js（CSS 与 sidebar-tree.js 为 src 的符号链接）· i18n
 tokens/tokens.json  机器可读令牌（scripts/export-tokens.py 生成）
-preview/            展示页 + 干员页样例 + preview.js + assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像）
+preview/            展示页 + 干员页样例 + preview.js + assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；badge/ 为 prts.wiki 现网页脚徽章）
 dist/               单文件打包（图片内联，用于发布/分享；scripts/build-dist.py 生成）
 scripts/            export-tokens.py · build-dist.py
 ```

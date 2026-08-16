@@ -65,7 +65,7 @@ ReEnd 是 React 库，组件 = 函数；AKDS 是皮肤，组件 = **一段约定
 | 页面标签 | `.ak-page-tabs` + `#p-views` `#p-cactions` `#p-namespaces` | 下划线 + 选中角标；`--actions` 右对齐 | Tabs | ✅ |
 | 内容区 | `.ak-body` `--flat` `.ak-body-foot` | 1px 卡片；最后编辑/版权 | Card | ✅ |
 | 侧栏目录 | `.ak-toc` `__title __progress` + `data-auto-toc` | 粘性、scrollspy、阅读进度条 | ScrollProgress + SectionNav | ✅🧩 |
-| 页脚 | `.ak-footer` `__inner __brand __col __bottom` | 反转底 + 顶部斜纹 + 水印 | Footer | ✅ |
+| 页脚 | `.ak-footer` `__inner __brand __col __bottom __bottom-text __icons` + `#footer-places` `#footer-icons` | 反转底 + 顶部斜纹 + 水印；底栏左文字、右 `$wgFooterIcons` 徽章（结构同 Vector/Citizen：`ul#footer-icons > li#footer-*ico > a.cdx-button > img`）——徽章为浅底设计（1.43 的 MediaWiki 徽章是透明底黑字），故仿 Citizen 给链接固定浅色底板，默认灰度 + 62% 透明、悬停/聚焦恢复彩色；右侧为 `.ak-fab` 让位 | Footer | ✅ |
 | 回到顶部 | `.ak-fab` | | BackToTop | ✅🧩 |
 | 抽屉 / 遮罩 | `.ak-drawer` `.ak-overlay` | 移动端侧栏 | BottomSheet | ✅🧩 |
 | 跳转链接 | `.ak-skip` | a11y | | ✅ |
