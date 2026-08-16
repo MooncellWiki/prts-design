@@ -48,14 +48,19 @@ small, .ak-text-sm { font-size: var(--ak-fs-sm); }
 .mw-editsection { font-size: var(--ak-fs-xs); font-weight: 400; font-family: var(--ak-font-body); margin-left: auto; white-space: nowrap; }
 .mw-editsection-bracket { color: var(--ak-fg-subtle); }
 .mw-editsection a { color: var(--ak-fg-muted); text-decoration: none; padding: 2px 4px; }
-/* core 给章节编辑链接带了 'icon' => 'edit'，皮肤的 Link 模板会渲染成 .ak-icon。默认 20px
-   的图标配 12px 的「编辑」二字既过大又直接贴着文字，这里按标签的字号收一档并留出间距。
-   保持 inline（不用 inline-flex）：章节标题既可能是 .mw-heading 的 flex 项，也可能是
-   wikitext 里裸写的 <h2>，inline 盒在两种排版下的基线对齐都更稳。 */
-.mw-editsection a .ak-icon { width: 14px; height: 14px; margin-right: 3px; }
+/* 多条链接（VisualEditor 会经 SkinEditSectionLinks 再加一条「编辑源代码」）之间补分隔符。
+   皮肤的 SectionLinks 模板没法在 Mustache 里判断「非第一项」，所以由 CSS 兄弟选择器来画。 */
+.mw-editsection a + a::before { content: "|"; color: var(--ak-fg-subtle); margin-right: 4px; }
 .mw-editsection a:hover { color: var(--ak-accent); background: var(--ak-accent-subtle); }
+/* 悬停标题才显形。要求页面走新版标题 DOM（<div class=mw-heading><h2>…</h2><span
+   class=mw-editsection>…</span></div>）：站点须设 $wgParserEnableLegacyHeadingDOM = false，
+   否则解析器仍吐 <h2><span class=mw-headline>…</span><span class=mw-editsection>…</span></h2>，
+   .mw-heading 根本不存在，这条和上面的 margin-left:auto 一起全是死规则。 */
 .mw-heading:not(:hover) .mw-editsection { opacity: .5; }
-@media (hover: none) { .mw-heading .mw-editsection { opacity: 1; } }
+.mw-editsection { transition: opacity var(--ak-dur-fast) var(--ak-ease); }
+/* 触屏没有 hover，:not(:hover) 会一直命中——这里得用同等特指度才压得住（原来只写
+   `.mw-heading .mw-editsection`，0,2,0 输给 0,3,0，编辑链接在触屏上一直是半透明的）。 */
+@media (hover: none) { .mw-heading:not(:hover) .mw-editsection { opacity: 1; } }
 
 /* Links */
 a { color: var(--ak-link); text-decoration: none; transition: color var(--ak-dur-fast) var(--ak-ease); }
