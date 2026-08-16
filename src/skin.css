@@ -84,7 +84,7 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-toc-cb:checked ~ .ak-local-nav__toc { color: var(--ak-accent); }
 .ak-toc-cb:checked ~ .ak-local-nav__toc .ak-local-nav__chevron { transform: translateY(2px) rotate(-135deg); }
 .ak-toc-cb:focus-visible ~ .ak-local-nav__toc { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
-@media (prefers-reduced-motion: reduce) { .ak-header, .ak-local-nav__chevron, .ak-header__burger-icon i { transition: none; } .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .ak-header, .ak-local-nav__chevron, .ak-header__burger-icon i { transition: none; } }   /* .ak-header__screen 的 animation:none 见 <1120 块之后——写在这里会被后面同选择器的 animation 覆盖 */
 @keyframes ak-nav-screen-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 
 /* ═══ Layout ═══
@@ -456,6 +456,8 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   .ak-header__tools .ak-dropdown .ak-menu { position: static; min-width: 0; margin: 0 var(--ak-space-4) var(--ak-space-2); border: 0; border-top: 1px solid var(--ak-border); box-shadow: none; background: transparent; }
   .ak-header__tools .ak-header__notifications ul { display: flex; flex-wrap: wrap; gap: var(--ak-space-2); margin: 0; padding: 0; list-style: none; }   /* Echo 徽标（#pt-notifications-*）并排 */
 }
+/* 紧跟上面的块：同选择器同特异性，reduced-motion 的 animation:none 必须排在 animation: ak-nav-screen-in 之后才能生效 */
+@media (max-width: 1119px) and (prefers-reduced-motion: reduce) { .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
 @media (max-width: 639px) {
   :root { --ak-gutter: var(--ak-gutter-sm); --ak-header-h: 52px; }
   .ak-header__inner { gap: 8px; }
