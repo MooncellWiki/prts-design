@@ -15,7 +15,7 @@ def img_uri(rel):
     if p.suffix == '.svg':   # 页脚徽章等矢量图：原样内联
         uri = 'data:image/svg+xml;base64,' + base64.b64encode(p.read_bytes()).decode()
         cache[rel] = uri; return uri
-    if rel.startswith('assets/keyart/'):   # 示例活动主题的头图 / 顶栏底图 / 站标：整幅内联，不缩到 256（jpg 保持 jpg）
+    if rel.startswith('assets/keyart/'):   # 示例活动主题的头图 / 站标：整幅内联，不缩到 256（jpg 保持 jpg）
         mime = 'image/jpeg' if p.suffix in ('.jpg', '.jpeg') else 'image/png'
         uri = 'data:%s;base64,' % mime + base64.b64encode(p.read_bytes()).decode()
         cache[rel] = uri; return uri

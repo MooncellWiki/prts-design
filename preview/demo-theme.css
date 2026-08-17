@@ -1,7 +1,10 @@
 /*! AKDS · demo-theme.css — 「活动主题」示例（仅预览用；MW 上这就是一份 Gadget 样式 / MediaWiki:Common.css）
- *  它只覆盖 tokens.css §2d 暴露的接口变量，不碰任何选择器 —— 换头图 / 顶栏底图 / 站标 / 活动主色 / 画布底纹，五件事五个变量。
+ *  它只覆盖 tokens.css §2d 暴露的接口变量，不碰任何选择器 —— 换头图 / 站标 / 活动主色 / 画布底纹 / 页眉玻璃透度，五件事五个变量。
  *  素材取自游戏主界面「罗德岛 · 昼 / 夜」背景（arts/ui/homebackground/wrapper/bg_rhodes_day|night，torappu 解包），
- *  正好一一对应 档案模式（亮）/ 终端模式（暗）两套主题；顶栏底图是同一幅画右段压暗后左缘渐隐（现网 Garanheadright.png 的做法）。
+ *  正好一一对应 档案模式（亮）/ 终端模式（暗）两套主题。
+ *  头图从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃：可读性由玻璃保证，画在玻璃后面透出来 —— 所以这里不再有「顶栏底图」：
+ *  此前把同一幅画右段裁一条、左缘渐隐塞进页眉（现网 Garanheadright 的做法），白色图标压在天空上读不清，横向渐入也像贴上去的，去掉了。
+ *  --ak-chrome-image 留给深色角饰 / 底纹（活动徽章那种），本示例不用。
  *  开关：<html class="ak-theme-demo">（preview.js 的侧栏 / 展示页按钮切换并记忆到 localStorage akds-demo-theme）。
  *  MW 上：Gadget 直接写 :root { … } 即全站生效；想按主题分昼夜就像下面那样按 html.skin-theme-clientpref-* 分写。
  *  ⚠ 接口变量里的 url() 请写绝对地址（//media.prts.wiki/…）：Chromium 把自定义属性里的相对 url() 按「使用处」（src/skin.css）的路径解析，
@@ -10,11 +13,10 @@
 html.ak-theme-demo {
   --ak-theme-accent: #ffd800;                                   /* 罗德岛甲板的警示黄（游戏 go_to_shop / 稀有度黄）；页眉标语 / 悬停 / 开关选中项 / 搜索图标框、侧栏与目录分组条、页脚斜纹一起换 */
   --ak-theme-accent-fg: #000;
-  --ak-keyart-image: url("../preview/assets/keyart/rhodes_day.jpg");       /* 头图：页眉之下一条 220px 通栏，底部渐隐进画布 */
+  --ak-keyart-image: url("../preview/assets/keyart/rhodes_day.jpg");       /* 头图：从页面顶端铺起，页眉之下露 220px，底部渐隐进画布 */
   --ak-keyart-h: 220px;
-  --ak-keyart-position: center 46%;
-  --ak-chrome-image: url("../preview/assets/keyart/chrome_day.png");       /* 顶栏底图：右对齐、等高铺；左缘已在图里渐隐，所以不遮品牌与搜索 */
-  --ak-chrome-texture: 0;                                       /* 有底图时关掉默认网点 */
+  --ak-keyart-position: center 40%;                             /* 相对整块（56px 页眉 + 220px）取景 */
+  --ak-chrome-bg: rgba(8, 9, 10, .8);                           /* 页眉玻璃调淡一点（默认 .9），让画在页眉后面多透一些；仍是均匀一层，可读性不赌画面 */
   --ak-logo-image: url("../preview/assets/keyart/rhodes_tri.png");         /* 站标换成罗德岛三角章（Chromium / WebKit 生效；Firefox 请用 $wgLogos） */
   --ak-canvas-image: radial-gradient(var(--ak-grid-color) 1px, transparent 1.3px);   /* 画布底纹：淡点阵（也可以是 url() 大图，注意侧栏 / 目录没有底色） */
   --ak-canvas-size: 24px 24px;
@@ -22,11 +24,9 @@ html.ak-theme-demo {
 /* 终端模式（暗）换夜景：显式选了 night，或跟随系统且系统为暗 */
 html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-night {
   --ak-keyart-image: url("../preview/assets/keyart/rhodes_night.jpg");
-  --ak-chrome-image: url("../preview/assets/keyart/chrome_night.png");
 }
 @media (prefers-color-scheme: dark) {
   html.ak-theme-demo:not([data-theme="light"]):not(.skin-theme-clientpref-day):not([data-theme="dark"]):not(.skin-theme-clientpref-night) {
     --ak-keyart-image: url("../preview/assets/keyart/rhodes_night.jpg");
-    --ak-chrome-image: url("../preview/assets/keyart/chrome_night.png");
   }
 }
