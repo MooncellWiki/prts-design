@@ -80,7 +80,7 @@ skins/AKDS/
       .ak-header__tools [.ak-header__tool > .ak-header__tool-label + .ak-theme-toggle][{{data-portlets.data-notifications}}][{{data-portlets.data-user-menu}} = .ak-dropdown#p-personal]
    label.ak-header__burger[for=ak-nav-toggle]   ← 三条线 → ×，仅 <1120 显示；主行不放侧栏抽屉的入口（那个在二级栏）
    .ak-local-nav   ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）
-div.ak-keyart > .ak-keyart__inner   ← 头图带：恒输出，--ak-keyart-h 为 0 时不占位；活动主题设 --ak-keyart-image / -h 即出现（§3.5）
+div.ak-keyart > .ak-keyart__inner   ← 头图带：恒输出，--ak-keyart-h 为 0 时不占位；活动主题设 --ak-keyart-image / -h 即出现（§3.5）；画从页面顶端铺起、页眉玻璃压在它上面（CSS 负外边距，DOM 顺序不变）
       button.ak-local-nav__menu（开侧栏抽屉）| input.ak-toc-cb + label.ak-local-nav__toc[for]（开目录浮层，纯 CSS）
       （aside.ak-toc 首项 a.ak-toc__top「回到顶部」仅 <1400 显示，届时 .ak-fab 隐藏）
 <div class="ak-layout">
@@ -158,7 +158,7 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 
 **待办**：`/ns:` 命名空间模式（REST 标题搜索本身支持 `模板:xx` 前缀，所以优先级低）；Related（RelatedArticles）；`Cargo` 查询模式；把面板拆成独立 RL 模块做 intent prefetch。
 
-## 3.5 活动主题（Gadget / MediaWiki:Common.css）——头图 · 顶栏底图 · 站标 · 主色
+## 3.5 活动主题（Gadget / MediaWiki:Common.css）——头图 · 顶栏角饰 · 站标 · 主色
 
 现网大活换皮的做法（`ext.gadget.seventhStyle`）是改 `body` 背景大图、`#mw-head` 左右底图、`.mw-wiki-logo`、`#MenuSidebar > p` 渐变。新皮肤把这几个位置抽成 `tokens.css §2d` 的接口变量，活动 Gadget 只写变量、不碰选择器（完整列表见 `01-design-system.md §2.10`，可运行示例见 `preview/demo-theme.css`）：
 
@@ -166,16 +166,17 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 /* MediaWiki:Gadget-eventStyle.css（或直接写进 MediaWiki:Common.css）*/
 :root {
   --ak-theme-accent: #72a330;                                          /* 页眉标语 / 悬停 / 开关选中项 / 搜索图标框、侧栏 / 目录分组条、页脚斜纹一起换 */
-  --ak-keyart-image: url(//media.prts.wiki/…/kv.jpg);   --ak-keyart-h: 220px;   /* 头图：.ak-keyart 通栏（mustache 恒输出，默认 0 高不占位） */
-  --ak-chrome-image: url(//media.prts.wiki/…/headleft.png), url(//media.prts.wiki/…/headright.png);
-  --ak-chrome-image-position: left top, right top;   --ak-chrome-texture: 0;      /* 顶栏底图：现网 PRTSheadleft / Garanheadright 的位置；有底图就关网点 */
+  --ak-keyart-image: url(//media.prts.wiki/…/kv.jpg);   --ak-keyart-h: 220px;   /* 头图：从页面顶端铺起，页眉玻璃压在它上面，页眉之下露 220px（mustache 恒输出，默认 0 高不占位） */
+  --ak-chrome-bg: rgba(8, 9, 10, .8);                                  /* 可选：页眉玻璃调淡一点让头图多透一些（默认 .9；别低于 .72） */
+  --ak-chrome-image: url(//media.prts.wiki/…/headleft.png);  --ak-chrome-image-position: left top;   /* 可选：顶栏角饰（现网 PRTSheadleft 那种活动徽章 / 深色底纹）——画在玻璃之上、不被压暗，别放照片 */
   --ak-logo-image: url(//media.prts.wiki/…/logo.png);                              /* 站标（Chromium / WebKit 生效；Firefox 请改 $wgLogos） */
   --ak-canvas-image: url(//media.prts.wiki/…/bkg.png);  --ak-canvas-size: 100% auto;  --ak-canvas-repeat: no-repeat;   /* 画布底纹 / 大图 */
 }
 html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/kv-night.jpg); }   /* 终端模式换夜景（可选；跟随系统时另加 @media (prefers-color-scheme: dark) 分支） */
 ```
 
-- **页眉本身在两套主题下都是黑的**（`--ak-chrome-*` 不随明暗变），所以顶栏底图 / 站标只需准备一套；头图与画布图若要分昼夜，按 `html.skin-theme-clientpref-day|night` 分写。
+- **页眉本身在两套主题下都是黑的**（`--ak-chrome-*` 不随明暗变），所以角饰 / 站标只需准备一套；头图与画布图若要分昼夜，按 `html.skin-theme-clientpref-day|night` 分写。
+- **页眉是压在头图上的一块均匀黑玻璃**：可读性由 `--ak-chrome-bg` 的 alpha 保证，与头图是什么无关——所以头图不必自己压暗顶部、也不要再裁一条「顶栏底图」从左缘渐入（现网 Garanheadright 的做法在新皮肤里既压不住白色图标又像贴上去的）。`--ak-keyart-position` / `-size` 相对「页眉 + 可见段」整块取景（桌面 56 + `-h`，<1400 再加 48 二级栏）。
 - **`url()` 必须是绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`skin.css` 所在的 `load.php`）解析，Firefox / WebKit 按声明处解析，相对地址两边会指向不同目录。
 - 想连正文的链接 / 选中色一起换，再覆盖 `--ak-accent`（亮 / 暗两套各写一次）；只换 `--ak-theme-accent` 时正文不动，只有「框」在换——这是有意的：活动皮不该把内容页读起来的对比度也一起赌上。
 - 头图上要放活动标题 / 倒计时，可用 Gadget 往 `.ak-keyart__inner` 里塞内容（它与页眉三列同宽）；`.ak-keyart` 带 `aria-hidden`，放可读内容时记得去掉。
