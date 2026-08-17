@@ -211,6 +211,7 @@ $wgFooterIcons = [
 - Lua（Scribunto）把 gamedata 富文本 `<@ba.vup>x</>` 转 `<span class="ak-rt-vup">x</span>`；`<$ba.stun>` 转 `<span class="ak-rt-term" data-ak-tip="…">`。
 - 稀有度：容器 `data-rarity="6"`；子元素用 `.ak-r-*`。职业：`data-prof="warrior"`。
 - 图标资源：建议把 `preview/assets/{profession,elite,potential,specialized,rarity,subprofession,camp}` 上传为 `File:AKDS_*.png` 或放皮肤 `resources/images/`，模板通过 `{{filepath:}}` 或 `--ak-asset-base` 引用。
+- 表单：Widget / 模板里直接写裸 `<input>` `<select>` `<button>` 即可，皮肤按 `01-design-system.md §4` 兜底（表格里自动紧凑 + 跟随单元格对齐）；要标签 / 帮助 / 错误文案、前后缀拼接、常显 − / + 步进、方舟风勾选开关，再用 `.ak-field / .ak-input-group / .ak-number / .ak-check / .ak-switch`。
 - 交互增强（等级切换、阶段切换）：`data-bind-*` 约定已在 preview.js 演示（`data-scope` + `data-bind="phase"` + `data-bind-phase='{"e0":…}'`），可作为 Gadget 或皮肤 JS 的一部分。
 
 ## 6. 与现有扩展的配合
@@ -224,6 +225,7 @@ $wgFooterIcons = [
 | MobileFrontend + Minerva | 两条路：(a) 皮肤 `responsive:true` 后可直接作为移动端皮肤（≤639 规则已写）；(b) 保留 Minerva 时，把 `skins.akds.tokens` 通过 `skinStyles` 注入 Minerva，仅换色。推荐 (a) 分阶段替换 |
 | UniversalLanguageSelector | 触发器放 `.ak-header__tools` |
 | Gadgets | 现有小工具若依赖 Vector 类名（`#mw-panel`、`.vector-*`），需迁移；`skin.mustache` 保留 MW 标准 id（`#p-personal #p-views #p-cactions #p-navigation #p-tb #searchform #firstHeading #bodyContent #catlinks`） |
+| Widgets / Gadgets 吐出的裸表单控件（`Widget:PropertyCalc` 的属性计算器、各计算器 / 筛选栏的 `<input>` `<select>` `<button>`） | 皮肤 base.css 兜底（规范 `01 §4`）：36px 定高、表格单元格里 30px 且对齐跟随单元格、主题化颜色与状态；Widget 里那些针对旧皮肤的样式补丁（`.skin-minerva #calc input { border… }`、`width: calc(100% - .8em)`）可以删掉——只保留 `width:100%` 这类布局意图 |
 | 搜索（core `mediawiki.searchSuggest`） | 与面板冲突，需 `SkinAKDS::getDefaultModules()` 清空 `search` 组（见 §3.3） |
 
 ## 7. 迁移路线

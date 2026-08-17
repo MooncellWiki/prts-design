@@ -323,7 +323,11 @@
 .ak-input, .ak-select, .ak-textarea { box-sizing: border-box; font: inherit; font-size: var(--ak-fs-sm); color: var(--ak-fg); background: var(--ak-bg-surface); border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm); padding: 0 10px; min-height: 36px; width: 100%; transition: border-color var(--ak-dur-fast), box-shadow var(--ak-dur-fast); }   /* border-box：MW 没有全局 box-sizing 重置，width:100% + padding 会在窄屏撑破容器 */
 .ak-textarea { padding: 8px 10px; min-height: 90px; line-height: 1.5; resize: vertical; }
 .ak-input:focus, .ak-select:focus, .ak-textarea:focus { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
-.ak-input.is-invalid, .ak-field.is-invalid .ak-input { border-color: var(--ak-danger); }
+/* 状态与裸控件同一套（base.css Forms 段 / 规范 §4）。裸控件那边是零特指度，这里要显式再写一遍，否则 .ak-input 的底色会把它们盖掉 */
+.ak-input[readonly], .ak-textarea[readonly] { background: var(--ak-bg-inset); }
+.ak-input:disabled, .ak-select:disabled, .ak-textarea:disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); -webkit-text-fill-color: var(--ak-fg-disabled); opacity: 1; border-color: var(--ak-border); cursor: not-allowed; }
+.ak-input.is-invalid, .ak-field.is-invalid .ak-input, :is(.ak-input, .ak-select, .ak-textarea):where(:user-invalid, [aria-invalid="true"]) { border-color: var(--ak-danger); }
+.ak-input.is-invalid:focus, .ak-field.is-invalid .ak-input:focus, :is(.ak-input, .ak-select, .ak-textarea):where(:user-invalid, [aria-invalid="true"]):focus { box-shadow: 0 0 0 3px var(--ak-danger-bg); }
 .ak-input.is-valid { border-color: var(--ak-success); }
 .ak-input--sm { min-height: 30px; font-size: var(--ak-fs-xs); } .ak-input--lg { min-height: 44px; font-size: var(--ak-fs-body); }
 .ak-input-group { display: flex; align-items: stretch; }

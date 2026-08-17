@@ -43,7 +43,8 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | navbox / infobox 基线 | `.navbox` `.infobox` | 与卡片同语言（模板可覆盖） | ✅ |
 | TabberNeue | `.tabber__*` + `.ak-tabber-boxed .ak-tabber-skew` | 下划线 + 选中角标；斜切变体 | ✅ |
 | Cargo / DPL 表 | `.cargoTable` `table.mw-datatable` | 与 wikitable 一致 | ✅ |
-| 表单 / OOUI / Codex | `input` `select` `.mw-ui-button` `.cdx-button` `.oo-ui-*` | 直角、青色焦点环 | ✅（Codex 主要靠桥接令牌） |
+| 裸表单控件（Widget / Gadget / 模板产物） | `input`（排除法覆盖所有文本类 type，含不写 type 的）`select` `textarea` `button` `input[type=button/submit/reset]`；全部 `:where()` 零特指度 | 规范 §4：36px 定高（border-box + 0 上下内边距 + min-height，不随容器行高漂）、2px 角、`--ak-border-strong`、`:focus` 青边 + 淡青环、`[readonly]` 下沉底、`:disabled` surface-3、`:user-invalid` / `aria-invalid` 红边、勾选 / 单选 / 滑杆原生 + `accent-color`、`type=number` `tabular-nums` 保留原生步进；**`.mw-body-content` 表格单元格里收到 30px、字号跟表格、文本类输入 `text-align: inherit`**（属性计算器的数字与结果同样居中）；宽度不接管，只 `max-width:100%`；iPhone ≤639 提到 16px 防聚焦缩放 | ✅ |
+| OOUI / Codex / mw-ui | `.mw-ui-button` `.cdx-button` `.oo-ui-*` `.cdx-text-input__input` | 颜色靠桥接令牌 + 少量覆盖（中性 `.cdx-button:enabled` 拉回 surface 底）；尺寸不改 | ✅ |
 | Diff / 历史 / 最近更改 / 搜索 | `table.diff` `#pagehistory` `.mw-changeslist` `.mw-search-results` | 语义色 | ✅ |
 | 通知 | `.mw-notification` | 左青条卡 | ✅ |
 | 打印 | `@media print` | | ✅ |
@@ -101,7 +102,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | Pagination | `.ak-pagination` | | ✅ |
 | Timeline | `.ak-timeline` | `.is-done .is-active` | ✅ |
 | Stepper | `.ak-stepper .ak-step` | | ✅ |
-| Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg` | ✅ |
+| Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg`；与裸控件同一套尺寸 / 颜色 / 状态（规范 §4），多出：`--sm` 30 / `--lg` 44 变体、`.ak-select` 自绘箭头、`.ak-check` 直角勾选 + 菱形单选、`.ak-switch` 方形开关（游戏 `toggle_on`）、`.ak-number` 常显 − / +、`.ak-input-group` 前后缀拼接、`.ak-field` 标签 + 帮助 + 错误文案 | ✅ |
 | Kbd | `.ak-kbd`（`.ak-search__kbd` 为其绝对定位变体） | 键帽：直角 1px 边、底边略重、mono 10px；用于快捷键提示 / 触发器右侧 / 面板页脚 | ✅ |
 | Table | `.ak-table` | `--striped --compact`；`th[aria-sort]` | ✅ |
 | Accordion | `.ak-details` (`<details>`) | | ✅ |
@@ -168,4 +169,4 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 - 数据属性驱动主题色：`data-rarity`、`data-prof`、`data-theme`。
 - 组件不依赖 JS 也应可读（渐进增强）；JS 只做：主题、抽屉、TOC scrollspy、页眉收起、标签页、阶段/等级切换、Toast、Dialog、搜索面板。目录开合是纯 CSS，JS 只补「点击浮层外 / Esc / 跳转后关闭」这类收尾；搜索面板是纯 JS 组件，但**页眉里先渲染的是真表单**，JS 到了才换成触发器并把表单搬进面板——无 JS 照常提交到 Special:Search。
 - 所有尺寸用 rem/px 令牌，不写魔法数；颜色只引用令牌。
-- **`width:100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外——`.ak-input / .ak-select / .ak-textarea / .ak-stat / .ak-blue-band` 已处理，新组件照做。
+- **`width:100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外——`.ak-input / .ak-select / .ak-textarea / .ak-stat / .ak-blue-band` 已处理，裸 `input / select / textarea / button` 由 base.css 统一设了 border-box，新组件照做。

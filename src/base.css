@@ -340,17 +340,40 @@ sup.reference a { padding: 0 .1em; }
 .tabber.ak-tabber-skew .tabber__tab[aria-selected="true"] { background: var(--ak-fg); color: var(--ak-bg-canvas); border: 0; }
 .tabber.ak-tabber-skew .tabber__tab[aria-selected="true"]::before { display: none; }
 
-/* ─── Forms (core mw-ui / OOUI / Codex minimal harmonisation) ──────────── */
-input[type="text"], input[type="search"], input[type="number"], input[type="password"], input[type="email"], input[type="url"], textarea, select {
-  font: inherit; font-size: var(--ak-fs-sm); color: var(--ak-fg); background: var(--ak-bg-surface);
-  border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm); padding: 6px 10px; min-height: 34px;
+/* ─── Forms · 裸控件（Widget / Gadget / 模板直接吐出、身上没有任何 class 的 <input> <select> <textarea>）
+   规范见 docs/01-design-system.md §4。这里只管「裸」控件：.ak-input 等设计系统组件在 components.css；
+   Codex / OOUI 靠 tokens.css 的令牌桥接 + 本段末尾几条颜色覆盖，尺寸不动（它们成组出现、内部自洽）。
+   · 整组选择器包在 :where() 里让特指度归零（与下面裸 <button> 的做法相同）：.ak-input / .cdx-text-input__input /
+     .oo-ui-inputWidget-input 以及模板自己的 class 都稳稳压在它上面，不必再和 input[type=…] 的 (0,1,1) 较劲。
+   · border-box + 上下 0 内边距 + min-height：<input> / <select> 的单行文字由浏览器在内容盒里垂直居中，高度因此是
+     确定的 36px（与 .ak-btn / .ak-input 同一档），不再随所在容器的 line-height（正文 1.7 / 表格 1.5）漂移。此前
+     content-box 下 min-height 34 + 上下 6px 内边距 + 边框 = 48px，落进 wikitable 就比表头行高出一截（干员页
+     「属性计算器」的样子）。
+   · 用排除法而不是白名单：不写 type 的 <input>（= text）、date / time / tel 等浏览器自绘外观的类型、以及未知 type
+     （浏览器按 text 渲染）都跟着走；勾选 / 滑杆 / 文件 / 颜色 / 按钮类另行处理。 */
+:where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"]), select, textarea) {
+  box-sizing: border-box; max-width: 100%;
+  font: inherit; font-size: var(--ak-fs-sm); font-weight: 400; line-height: 1.5;
+  color: var(--ak-fg); background: var(--ak-bg-surface);
+  border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm);
+  padding: 0 10px; min-height: 36px;
   transition: border-color var(--ak-dur-fast), box-shadow var(--ak-dur-fast);
 }
-input:focus, textarea:focus, select:focus { outline: none; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
-input::placeholder, textarea::placeholder { color: var(--ak-fg-subtle); }
-input:disabled, textarea:disabled, select:disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); }
-textarea { line-height: 1.5; }
-input[type="checkbox"], input[type="radio"] { accent-color: var(--ak-accent); width: 16px; height: 16px; }
+:where(textarea) { padding: 8px 10px; min-height: 72px; resize: vertical; }
+:where(select[multiple]) { padding: 4px 0; }
+:where(input[type="search"]) { -webkit-appearance: none; appearance: none; }   /* Safari 会给 search 强加圆角与内边距 */
+:where(input[type="number"]) { font-variant-numeric: tabular-nums; }        /* 数字位宽一致，改值时不跳动；原生 ▲▼ 步进器保留（Chrome 悬停 / 聚焦时才显示） */
+/* 状态：焦点 = 青边 + 3px 淡青环（文本类控件用 :focus，鼠标点进去也该亮）；只读 = 下沉底（inset）；禁用 = surface-3 + 禁用色 + 禁用光标；
+   校验失败 = 红边（:user-invalid 只在用户交互过之后才成立，不会一进页面满屏红；老浏览器只认 aria-invalid） */
+:where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"]), select, textarea):focus { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
+:where(input, textarea)::placeholder { color: var(--ak-fg-subtle); opacity: 1; }
+:where(input, textarea)[readonly] { background: var(--ak-bg-inset); }   /* 只读 = 下沉底：计算器里「只显示不编辑」的结果格 */
+:where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]), select, textarea):disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); -webkit-text-fill-color: var(--ak-fg-disabled); opacity: 1; border-color: var(--ak-border); cursor: not-allowed; }
+:where(input, textarea, select):where(:user-invalid, [aria-invalid="true"]) { border-color: var(--ak-danger); }
+:where(input, textarea, select):where(:user-invalid, [aria-invalid="true"]):focus { box-shadow: 0 0 0 3px var(--ak-danger-bg); }
+/* 勾选 / 单选 / 滑杆：保留原生控件，只上主色（Chrome / FF / Safari 都会自动挑对比色的勾），与行内文字中线对齐 */
+:where(input[type="checkbox"], input[type="radio"]) { accent-color: var(--ak-accent); width: 16px; height: 16px; vertical-align: middle; }
+:where(input[type="range"]) { accent-color: var(--ak-accent); vertical-align: middle; }
 label { cursor: pointer; }
 /* 注意：不要把 .oo-ui-buttonElement-button 加进来。该类同时出现在有框和无框的 OOUI 按钮上，
    且常常与图标类（.oo-ui-icon-*，靠 background-image 画图标）落在同一元素上——例如 Echo 的
@@ -362,16 +385,30 @@ label { cursor: pointer; }
    浏览器默认外观（Arial 13px + outset 边框 + #efefef 底）就这么露在页面上。这里兜个底。
    整条选择器包在 :where() 里让特指度归零：任何带 class 的框架按钮（含皮肤自己的
    .ak-tree__toggle / .ak-fab）都稳稳压在它上面。也正因如此不设 min-height —— 那会强行撑高
-   自带固定尺寸的按钮，而 min-height 是没法靠 class 的 height 覆盖掉的。 */
+   自带固定尺寸的按钮，而 min-height 是没法靠 class 的 height 覆盖掉的；36px（与裸输入框 / .ak-btn 同一档）
+   靠 20px 行高 + 上下 7px 内边距 + 边框凑出来，表格里由下面的紧凑规则收到 30。 */
 :where(button, input[type="button"], input[type="submit"], input[type="reset"]) {
-  appearance: none; -webkit-appearance: none;
-  font-family: var(--ak-font-body); font-size: var(--ak-fs-sm); font-weight: 600; line-height: 1.4;
+  box-sizing: border-box; appearance: none; -webkit-appearance: none;
+  font-family: var(--ak-font-body); font-size: var(--ak-fs-sm); font-weight: 600; line-height: 20px;
   color: var(--ak-fg); background: var(--ak-bg-surface);
   border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius);
-  padding: 5px 12px; cursor: pointer;
+  padding: 7px 12px; cursor: pointer;
 }
 :where(button, input[type="button"], input[type="submit"], input[type="reset"]):hover { background: var(--ak-bg-hover); border-color: var(--ak-fg-muted); }
 :where(button, input[type="button"], input[type="submit"], input[type="reset"]):disabled { color: var(--ak-fg-disabled); background: var(--ak-bg-surface-3); border-color: var(--ak-border); cursor: default; }
+/* 表格里的裸控件：紧凑档 30px（与 .ak-btn--sm / .ak-input--sm 同一档），字号跟表格；文字对齐跟随单元格——
+   text-align:center 的属性计算器里，输入的数字和下面的结果一样居中，td.num 右对齐的列里输入也右对齐。
+   不强制满宽：一格里常有「输入框 + 按钮」，要满宽自己写 width:100%（已是 border-box，不必再 calc(100% - padding)）。 */
+:where(.mw-body-content :is(td, th) input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"])) { min-height: 30px; padding: 0 8px; font-size: inherit; text-align: inherit; }
+:where(.mw-body-content :is(td, th) select) { min-height: 30px; padding: 0 8px; font-size: inherit; }
+:where(.mw-body-content :is(td, th) :is(button, input[type="button"], input[type="submit"], input[type="reset"])) { padding: 4px 10px; font-size: inherit; }
+/* iPhone：iOS Safari 对字号 <16px 的文本类控件聚焦时会把整页放大且不缩回（搜索面板同一处理），手机断点下提到 16px；
+   放在紧凑规则之后，表格里的 font-size: inherit 才不会把它压回去 */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 639px) {
+    :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"]), select, textarea) { font-size: 16px; }
+  }
+}
 .mw-ui-button, .cdx-button {
   font-family: var(--ak-font-body); font-weight: 600; font-size: var(--ak-fs-sm); border-radius: var(--ak-radius);
   border: 1px solid var(--ak-border-strong); background: var(--ak-bg-surface); color: var(--ak-fg); padding: 6px 14px; min-height: 34px; cursor: pointer;

@@ -222,7 +222,57 @@ prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现�
 
 ---
 
-## 4. 图标
+## 4. 表单控件（Form controls）
+
+wiki 里的表单来自三处，皮肤对它们的态度不同：
+
+| 来源 | 例子 | 谁负责 |
+|---|---|---|
+| **裸控件**——Widget / Gadget / 模板直接吐出的 `<input>` `<select>` `<textarea>` `<button>`，身上没有任何 class | 干员页「属性计算器」（`Widget:PropertyCalc`：wikitable 里四个 `<input type="number">`）、公招 / 材料 / 掉落计算器、各种筛选栏、edittools 字符按钮 | **皮肤兜底**（`src/base.css` Forms 段，本节的规则）；模板什么样式都不用写 |
+| **设计系统组件** `.ak-input .ak-select .ak-textarea .ak-check .ak-switch .ak-slider .ak-number .ak-field .ak-input-group …` | 模板 / TemplateStyles 里显式使用（预览页「表单 · Forms」） | `components.css`：与裸控件同一套尺寸 / 颜色 / 状态，多了尺寸变体、自绘勾选 / 开关、校验态与文案 |
+| **核心 UI**——Codex `.cdx-*` / OOUI `.oo-ui-*` / `.mw-ui-*`（编辑页、参数设置、特殊页面、Echo） | 颜色经 `tokens.css` 令牌桥接自动跟随，**尺寸不改**（它们自己的 32px 档，成组出现、内部自洽） | 皮肤只桥接 |
+
+裸控件的正确写法就是**什么都别写**：`<input type="number">` 落进 wikitable 就该是对的。皮肤的规则全部包在 `:where()` 里（特指度 0），所以 `.ak-input`、Codex / OOUI、模板自己的 class 都稳稳压在它上面，不必和 `input[type=…]` 较劲。
+
+### 4.1 形状与尺寸
+
+- **直角**：输入类控件 `--ak-radius-sm` 2px（§1.1 已允许的唯一例外），按钮 0；边框 1px `--ak-border-strong`。无阴影、无内阴影、无辉光。
+- **高度三档 30 / 36 / 44**（`--sm` / 默认 / `--lg`），与 `.ak-btn` 同一刻度。裸控件默认 **36**（`.ak-input` / `.ak-btn` / 裸 `<button>` 都是 36，一行里混排齐平）；**落在表格单元格里自动收到 30**（紧凑档，字号跟表格）——wikitable 一行本身只有 ~35px，36 的控件会把这一行顶成 50，30 正好比表头行高一点，读得出「这一行是输入」又不抢戏。表格里想要 36 就显式用 `.ak-input`。
+- **高度是确定的**：`box-sizing: border-box` + 上下内边距 0 + `min-height` 定高，单行文字由浏览器在盒内垂直居中，所以正文（行高 1.7）和表格（1.5）里一样高。**不要靠 padding 撑高度**——以前 content-box 下 `min-height 34 + 上下 6px + 边框 = 48px`，就是属性计算器那种比表头还高一截的输入框。
+- **宽度不接管**：裸控件保留浏览器的 `size` 宽度（约 20 字符），皮肤只加 `max-width: 100%` 保证不撑破容器；一格里常常是「输入框 + 按钮」，强制满宽会把按钮挤到下一行。要满宽写 `width: 100%` 即可（已是 border-box，不必再 `calc(100% - .8em)`）；要窄写 `size="4"` 或 `style="width:5em"`。
+- 内边距 `0 10px`（表格里 `0 8px`）；`textarea` `8px 10px`、最小高 72px、只允许竖向拖拽（`resize: vertical`）。
+- 字：14px（`--ak-fs-sm`）正文字体、常规字重（在 `th` 里也不加粗）、行高 1.5；数字输入 `tabular-nums`。iPhone 上文本类控件在 ≤639 断点提到 16px——iOS Safari 对 <16px 的输入框聚焦时会把整页放大且不缩回。
+
+### 4.2 颜色与状态
+
+两套主题各自取语义令牌（§2.6），不写死色值。
+
+| 状态 | 表现 |
+|---|---|
+| 默认 | 底 `--ak-bg-surface`、字 `--ak-fg`、边 `--ak-border-strong` |
+| 占位符 | `--ak-fg-subtle`（Firefox 的默认 opacity 归 1）；只做提示，不承载必填信息 |
+| 悬停 | **无**——输入框不做悬停态，按钮才有 |
+| 焦点 | 边 `--ak-accent` + `--ak-shadow-accent`（3px 淡青环，同 `.ak-input`）；用 `:focus` 而非 `:focus-visible`——鼠标点进文本框也该亮。勾选 / 单选 / 滑杆不走这条，保留全局 `:focus-visible` 2px 描边（§6） |
+| 只读 `[readonly]` | 底 `--ak-bg-inset`（下沉），边框不变，仍可选中复制。计算器「只显示不编辑」的结果格用它，**不要用 disabled 表示「只是显示」** |
+| 禁用 `:disabled` | 底 `--ak-bg-surface-3`、字 `--ak-fg-disabled`（Safari 需同时写 `-webkit-text-fill-color`）、边 `--ak-border`、`cursor: not-allowed` |
+| 校验失败 | 边 `--ak-danger`，聚焦时环换 `--ak-danger-bg`。触发条件是 `:user-invalid`（用户改过之后才判）或 `aria-invalid="true"`；**不用 `:invalid`**——它一进页面就把 required 空框全标红。设计系统组件另有 `.is-invalid / .is-valid` + `.ak-help--error` 文案 |
+| 勾选 / 单选 / 滑杆 | 保留原生控件，只上 `accent-color: var(--ak-accent)`（浏览器自动挑对比色的勾 / 圆点），16px，`vertical-align: middle` 与行内文字中线对齐。要「方舟风」自绘——直角勾选框、菱形单选、方形开关——用 `.ak-check` / `.ak-switch` / `.ak-slider` |
+| 数字 `type=number` | `tabular-nums`（改值不跳动）；保留原生 ▲▼ 步进器（Chrome 悬停 / 聚焦时才现身，Firefox 常显）；要一直可见的 − / + 用 `.ak-number` |
+| 下拉 `select` | 保留原生箭头（`appearance: auto`，各浏览器都能画进深色主题）；`.ak-select` 才自绘箭头。`select[multiple]` 上下 4px 内边距 |
+| 表格里 | 30px；文本类输入的**对齐跟随单元格**（`text-align: inherit`）：`text-align:center` 的计算器里，输入的数字和下一行的结果一样居中；`td.num` 右对齐列里的输入也右对齐；`select` 不跟。裸 `<button>` 在表格里同样收到 30 |
+| 日期 / 时间 / 电话等 | 一律按文本框处理（选择器用排除法：不写 `type` 的 `<input>`、未知 type 都算文本框），不留浏览器 2px inset 默认外观 |
+
+### 4.3 给 Widget / 模板作者
+
+- 直接写 `<input>`，不要给它写内联样式，高度 / 对齐 / 颜色 / 主题都会自己对；宽度要满就 `width:100%`。
+- 列头当标签：`<th><label for="elite">精英等级</label></th>` + `<td><input id="elite">`（PropertyCalc 已经这么写），读屏器和点击标签聚焦都能用；不方便放 label 的加 `aria-label`。
+- 结果格用 `readonly` 输入或直接文本，不用 `disabled`。
+- 一行里要拼「前缀 / 输入 / 按钮」用 `.ak-input-group`；带标签 + 帮助 + 错误文案的字段用 `.ak-field`；步进用 `.ak-number`。
+- 手机（≤639）上 wikitable 横向滚动，按 `size` 定宽的控件不会缩；写了 `width:100%` 的会随列宽缩（属性计算器写的 `calc(100% - .8em)` 就是这么活下来的，现在直接 `100%` 更好）。
+
+---
+
+## 5. 图标
 
 - **游戏原图**（torappu 解包）：职业 8 + 分支 ~70 + 精英化 4 + 潜能 6 + 专精 4 + 稀有度星 + 势力 logo 43 + 道具/技能/头像。全部白色线稿或彩色精灵；白色线稿类加 `.ak-glyph` 或所在组件内已内置 `filter: var(--ak-glyph-filter)`。
 - **UI 图标**：单色 SVG，24 网格、2px 描边、`currentColor`；尺寸 14/18/24/32/48。预览页 `<symbol id="i-*">`。
@@ -230,17 +280,17 @@ prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现�
 
 ---
 
-## 5. 可访问性
+## 6. 可访问性
 
-- 所有交互元素 `:focus-visible` 2px 青色描边（`--ak-focus`）。
+- 所有交互元素 `:focus-visible` 2px 青色描边（`--ak-focus`）；文本类输入框改用 `:focus` 的青边 + 3px 淡青环（§4.2），鼠标点进去也亮。
 - 颜色不作为唯一信息载体：稀有度同时有星数；SP 类型同时有文字标签；增减益同时有 +/- 与 ▲▼。
-- 触控目标 ≥ 36px（`.ak-btn` 默认 36，`.ak-btn--lg` 44）。
+- 触控目标 ≥ 36px（`.ak-btn` / `.ak-input` / 裸控件默认 36，`--lg` 44）；表格里的紧凑档 30 是唯一例外——宽度远大于高度、外面还包着单元格内边距，且不承担主动作（§4.1）。
 - `prefers-reduced-motion` / `prefers-contrast: more` / `forced-colors` 均有处理（`tokens.css` / `base.css`）。
 - 折叠/标签页/对话框使用原生 `details` / `dialog` / `aria-selected`。
 
 ---
 
-## 6. 文件与用法
+## 7. 文件与用法
 
 ```
 src/tokens.css       令牌 + 主题 + Codex 桥接（必须最先加载）
