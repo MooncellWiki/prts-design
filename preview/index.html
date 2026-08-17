@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AKDS · 明日方舟网页设计系统</title>
+<link rel="stylesheet" href="../src/fonts.css">   <!-- 自托管 web 字体（Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono，OFL；scripts/fetch-fonts.py 生成） -->
 <link rel="stylesheet" href="../src/tokens.css">
 <link rel="stylesheet" href="../src/base.css">
 <link rel="stylesheet" href="../src/components.css">
@@ -326,7 +327,7 @@
 
 <!-- ═══════════ 3. TYPOGRAPHY ═══════════ -->
 <h2 id="s-type" class="section-anchor">字体排印 <span class="ak-en ak-fs-sm ak-fg-muted">Typography</span></h2>
-<div class="ak-message ak-message--warning"><svg class="ak-message__icon"><use href="#i-warn"/></svg><div class="ak-message__body">官网使用 <b>Novecento Sans Wide</b>（商用授权）、<b>Bender</b>、<b>Oswald</b>（OFL）、<b>思源黑体</b>（OFL）。本预览未内嵌字体，Latin 展示字回退到系统字体；上线时建议通过 ResourceLoader 自托管 Oswald + 思源黑体子集，Novecento/Bender 视授权决定，回退顺序已写入 <code>--ak-font-display / --ak-font-label</code>。</div></div>
+<div class="ak-message ak-message--accent"><svg class="ak-message__icon"><use href="#i-info"/></svg><div class="ak-message__body">本页自托管全部 web 字体（<code>src/fonts.css</code>），不论装没装字体看到的都一样，即上线效果：展示字 <b>Novecento Sans Wide</b> 500–800、HUD 标签 / 数值 <b>Bender</b> 400/700 取自官网静态资源（PRTS 为官方赞助站点，与鹰角同一组织下共用授权；官网发布的是 ASCII 子集，<code>·</code> <code>»</code> <code>—</code> 等非 ASCII 字符逐字落到后一段）；正文 <b>Noto Sans SC</b>（= 思源黑体，可变字重，Google 的 101 片切分、只下用到的片）、压缩字 <b>Oswald</b>、接 Bender 缺字的 <b>Chakra Petch</b>、等宽 <b>JetBrains Mono</b> 为 OFL。</div></div>
 <div class="type-row"><div class="meta">display-xl · 56/1.05<br>--ak-font-display</div><div class="ak-display ak-display--xl">ARKNIGHTS</div></div>
 <div class="type-row"><div class="meta">display · 40/1.05</div><div class="ak-display">OPERATOR<span class="ak-fg-muted"> / 干员</span></div></div>
 <div class="type-row"><div class="meta">h1 · 32/1.2 · 800</div><div style="font-size:var(--ak-fs-h1);font-weight:800;line-height:1.2">页面标题 · 干员「陈」</div></div>
@@ -334,7 +335,7 @@
 <div class="type-row"><div class="meta">h3 · 20/1.25 · 700</div><div style="font-size:var(--ak-fs-h3);font-weight:700">小节标题 · 精英化材料</div></div>
 <div class="type-row"><div class="meta">body · 16/1.7</div><div>正文：龙门近卫局特别督察组组长陈，正依合约前来协助罗德岛的任务。生气的时候很可怕，平常也最好别惹她。</div></div>
 <div class="type-row"><div class="meta">body-sm · 14/1.6</div><div class="ak-fs-sm">辅助正文：用于表格、卡片描述、图注。行高 1.6，中文最小 12px。</div></div>
-<div class="type-row"><div class="meta">label · Bender/Oswald</div><div class="ak-num" style="font-size:28px">HP 2880 · ATK 610 · DEF 352 · RES 0</div></div>
+<div class="type-row"><div class="meta">label · Bender<br>--ak-font-label</div><div class="ak-num" style="font-size:28px">HP 2880 · ATK 610 · DEF 352 · RES 0</div></div>
 <div class="type-row"><div class="meta">overline · 11 · 0.14em</div><div class="ak-overline">Section · 干员档案 · Operator Files</div></div>
 <div class="type-row"><div class="meta">code-id</div><div><span class="ak-code-id">LM04</span> &nbsp; <span class="ak-code-id">R001</span> &nbsp; <span class="ak-stage-code">1-7</span> <span class="ak-stage-code ak-stage-code--hard">H6-4</span></div></div>
 <div class="type-row"><div class="meta">mono · JetBrains Mono</div><div><code>{{干员|陈|稀有度=6}}</code></div></div>

@@ -141,13 +141,24 @@ html.skin-theme-clientpref-night  终端模式（暗）
 ### 2.8 字体
 
 ```
---ak-font-body     "Source Han Sans SC","Noto Sans SC","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",system-ui
---ak-font-display  "Novecento Sans Wide","Bender","Oswald","Michroma","Arial Narrow",system-ui   （大写拉丁展示字）
---ak-font-label    "Bender","Rajdhani","Chakra Petch","Saira","Oswald",system-ui                （HUD 标签 / 数值）
---ak-font-condensed "Oswald","Roboto Condensed","Arial Narrow"
---ak-font-mono     "JetBrains Mono","SF Mono",Menlo,Consolas,monospace
+--ak-font-body     "Source Han Sans SC","Noto Sans SC"*,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",system-ui
+--ak-font-display  "Novecento Sans Wide"*,"Bender"*,"Oswald"*,"Michroma","Arial Narrow",system-ui   （大写拉丁展示字）
+--ak-font-label    "Bender"*,"Chakra Petch"*,"Rajdhani","Saira","Oswald",system-ui                （HUD 标签 / 数值）
+--ak-font-condensed "Oswald"*,"Roboto Condensed","Arial Narrow"
+--ak-font-mono     "JetBrains Mono"*,"SF Mono",Menlo,Consolas,monospace
 ```
-官网实际加载 Novecento Sans Wide（商用授权）/ Bender / Oswald（OFL）/ 思源黑体（OFL）。建议：ResourceLoader 自托管 **Oswald + 思源黑体子集**（OFL 可分发）；Novecento / Bender 视授权决定，回退顺序已保证降级可读。
+带 \* 的都由 `src/fonts.css` 用 `@font-face` 自托管（`src/fonts/`，`scripts/fetch-fonts.py` 生成），因此不论访客装没装字体，看到的都是同一套——这也就是上线效果。链的后段（装机备选 → 系统字）只在字体模块被关掉时起作用。
+
+| 角色 | 自托管 | 来源 / 说明 |
+|---|---|---|
+| 展示字 | **Novecento Sans Wide** 500 / 600 / 700 / 800 | 官网静态资源原文件（web.hycdn.cn）。商用字（Synthview）；PRTS.wiki 为明日方舟官方赞助站点，按与鹰角同一组织下共用授权使用（`src/fonts/novecento-sans-wide/NOTICE.md`） |
+| HUD 标签 / 数值 | **Bender** 400 / 700 | 同上（`src/fonts/bender/NOTICE.md`）。Bender 也是展示链第二位 |
+| 正文 | Noto Sans SC 可变字重 100–900 | OFL；= 思源黑体的 Google 构建，沿用 Google Fonts 的 101 片 `unicode-range` 切分（共 4.4MB），一页只下载用到的几片 |
+| 压缩字 | Oswald 可变字重 200–700 | OFL；官网也自托管 Oswald。同时是展示链在 Novecento / Bender 之后的接字 |
+| 标签缺字接住 | Chakra Petch 400 / 500 / 600 / 700 | OFL；同为切角方形的 HUD 字，只在 Bender 缺字时逐字顶上 |
+| 等宽 | JetBrains Mono 可变字重 100–800，正体 + 斜体 | OFL；语法高亮的注释用斜体 |
+
+**官网发布的 Novecento / Bender 是 ASCII 子集**（各 101 字形：A–Z a–z 0–9 及 ASCII 标点），`·` `»` `—` `–` `…` `×` `°` 等非 ASCII 字符不在其中，浏览器会按链逐字回退——展示字落到 Oswald、标签落到 Chakra Petch，两者风格相近，视觉上是间隔号 / 破折号级别的差异；若日后拿到全字符集文件，替换 `src/fonts/` 里同名 woff2 即可。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
 
 字号：display-xl 56 / display 40 / h1 32 / h2 24 / h3 20 / h4 17 / body 16 / sm 14 / xs 12 / overline 11。行高：正文 1.7、标题 1.25、展示 1.05。字距：大写 `.08em`、overline `.14em`、展示 `-.02em`。
 

@@ -24,10 +24,23 @@ def img_uri(rel):
     buf = io.BytesIO(); im.save(buf, 'PNG', optimize=True)
     uri = 'data:image/png;base64,' + base64.b64encode(buf.getvalue()).decode()
     cache[rel] = uri; return uri
+FONT_LINK_ONLY = ('fonts/noto-sans-sc/',)   # 思源黑体 101 片共 4.4MB 不内联，指回 ../src/fonts/；拉丁字体（Oswald / Chakra Petch / JetBrains Mono，合计 ≈ 240KB）内联进单文件
+font_stats = {'inline': 0, 'linked': 0}
+def font_uri(css_path, rel):
+    p = (css_path.parent / rel).resolve()
+    if not p.exists(): print('  missing font', rel); return rel
+    if not rel.startswith(FONT_LINK_ONLY):
+        font_stats['inline'] += 1
+        return 'data:font/woff2;base64,' + base64.b64encode(p.read_bytes()).decode()
+    font_stats['linked'] += 1
+    return '../src/' + rel     # dist/ 与 src/ 同级（仓库里、Pages 站点里都是）；另存离线时退到 tokens.css 链后段的装机 / 系统字
 def css_inline(path):
     css = path.read_text(encoding='utf-8')
     # demo-theme.css 里的 url("../preview/assets/…")（见该文件头注释：Chromium 按使用处解析自定义属性里的相对 url）与其余 css 的 url("assets/…") 都内联
-    return re.sub(r'url\("(?:\.\./preview/)?assets/([^"]+)"\)', lambda m: 'url("%s")' % img_uri('assets/' + m.group(1)), css)
+    css = re.sub(r'url\("(?:\.\./preview/)?assets/([^"]+)"\)', lambda m: 'url("%s")' % img_uri('assets/' + m.group(1)), css)
+    # fonts.css 的 url("fonts/…")：小的内联、大的指回 src/
+    css = re.sub(r'url\("(fonts/[^"]+)"\)', lambda m: 'url("%s")' % font_uri(path, m.group(1)), css)
+    return css
 for name in ['index.html', 'operator.html']:
     html = (prev / name).read_text(encoding='utf-8')
     # css links
@@ -56,4 +69,5 @@ for name in ['index.html', 'operator.html']:
     # cross-links between the two published artifacts
     html = html.replace('href="operator.html"', 'href="https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2"').replace('href="index.html', 'href="https://claude.ai/code/artifact/f04aa56e-c8bb-4491-ae2c-7711f330d396')
     (dist / name).write_text(html, encoding='utf-8')
-    print(name, '->', round((dist / name).stat().st_size / 1e6, 2), 'MB', 'images', len(cache))
+    print(name, '->', round((dist / name).stat().st_size / 1e6, 2), 'MB', 'images', len(cache), 'fonts inline/linked', font_stats['inline'], font_stats['linked'])
+    font_stats['inline'] = font_stats['linked'] = 0

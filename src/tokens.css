@@ -90,15 +90,18 @@
 
   /* ─── 2a. THEME-INDEPENDENT SEMANTICS ──────────────────────────────────── */
 
-  /* Typography */
+  /* Typography —— 每条链的前两段都由 fonts.css 自托管（人人一致，也是「上线效果」）：
+     ① 官网同源的 Novecento Sans Wide / Bender（ASCII 子集：· » — × ° 等非 ASCII 会逐字落到 ②）
+     ② OFL 的 Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono
+     之后是装机备选 → 系统字。fonts.css 没加载（Gadget 关掉 / 离线单文件）时自然退到后两段。 */
   --ak-font-body: "Source Han Sans SC", "Noto Sans SC", "Noto Sans CJK SC", "PingFang SC",
                   "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
   --ak-font-display: "Novecento Sans Wide", "Novecentosanswide-Bold", "Bender", "Oswald",
-                     "Michroma", "Arial Narrow", system-ui, sans-serif;      /* 拉丁展示字（大写） */
-  --ak-font-label: "Bender", "Bender-Bold", "Rajdhani", "Chakra Petch", "Saira", "Oswald",
-                   system-ui, sans-serif;                                     /* HUD 标签 / 数值 */
-  --ak-font-condensed: "Oswald", "Roboto Condensed", "Arial Narrow", sans-serif;
-  --ak-font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+                     "Michroma", "Arial Narrow", system-ui, sans-serif;      /* 拉丁展示字（大写）：Novecento 500–800 → Bender → Oswald 接非 ASCII */
+  --ak-font-label: "Bender", "Bender-Bold", "Chakra Petch", "Rajdhani", "Saira", "Oswald",
+                   system-ui, sans-serif;                                     /* HUD 标签 / 数值：Bender 400/700 → Chakra Petch 接非 ASCII */
+  --ak-font-condensed: "Oswald", "Roboto Condensed", "Arial Narrow", sans-serif;   /* 自托管 Oswald 200–700 */
+  --ak-font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;   /* 自托管 JetBrains Mono 100–800 正 / 斜 */
 
   --ak-fs-display-xl: 3.5rem;   /* 56 */
   --ak-fs-display:    2.5rem;   /* 40 */

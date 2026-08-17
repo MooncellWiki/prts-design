@@ -20,6 +20,8 @@ docs/
   02-components.md             组件清单：L1 MW 内容 / L2 皮肤骨架 / L3 通用 / L4 方舟 / L5 页面模式；MW 映射
   03-mediawiki-integration.md  皮肤落地：skin.json、RL 模块、mustache 结构、clientPrefs 主题、Codex 桥接、TemplateStyles/Lua 用法、迁移路线
 src/
+  fonts.css         自托管 web 字体的 @font-face（scripts/fetch-fonts.py 生成；最先加载）
+  fonts/            woff2 + 各族 LICENSE / NOTICE：官网同源 Novecento Sans Wide 500–800 · Bender 400/700（ASCII 子集，来源见 NOTICE.md）；OFL 的 Noto Sans SC 可变字重（101 片）· Oswald VF · Chakra Petch 400–700 · JetBrains Mono VF（合计 ≈4.9MB）
   tokens.css        令牌 + 双主题 + 页眉/头图/画布主题接口（§2d）+ Codex/MW 令牌桥接（必须最先加载）
   base.css          .mw-parser-output / wikitable / toc / tabber / 表单 / diff …
   components.css    通用组件 .ak-btn .ak-tag .ak-card .ak-panel .ak-tabs .ak-message …
@@ -29,11 +31,11 @@ src/
   search-palette.js 悬浮搜索面板核心（触发器替换 / 分组结果 / 命令模式 / 键盘 / 最近访问；数据源由调用方注入，皮肤与预览共用）
   utilities.css     工具类
   index.css         本地汇总入口
-skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源：REST 标题搜索 / 动作 / 分类 / 用户 / 文件）（CSS、sidebar-tree.js、search-palette.js 为 src 的符号链接）· i18n
+skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源：REST 标题搜索 / 动作 / 分类 / 用户 / 文件）（CSS、fonts/、sidebar-tree.js、search-palette.js 为 src 的符号链接）· i18n
 tokens/tokens.json  机器可读令牌（scripts/export-tokens.py 生成）
 preview/            展示页 + 干员页样例 + preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；keyart/ 为罗德岛主界面昼夜背景做的头图 + 罗德岛三角章站标；badge/ 为 prts.wiki 现网页脚徽章，badge/mono/ 为 MW / SMW / CC 三枚通用徽章的白描版）
-dist/               单文件打包（图片内联，用于发布/分享；scripts/build-dist.py 生成）
-scripts/            export-tokens.py · build-dist.py · build-site.sh（组装 GitHub Pages 站点）
+dist/               单文件打包（图片 + 拉丁字体内联，思源黑体指回 ../src/fonts/；scripts/build-dist.py 生成）
+scripts/            fetch-fonts.py（拉字体、生成 src/fonts.css）· export-tokens.py · build-dist.py · build-site.sh（组装 GitHub Pages 站点）
 ```
 
 ## 三句话看懂这套系统
@@ -52,13 +54,14 @@ scripts/            export-tokens.py · build-dist.py · build-site.sh（组装 
 
 ## 使用
 
-- 任何页面：`<link rel="stylesheet" href="src/index.css">`（或分文件按需）。
-- MediaWiki：把 `skin/` 复制到 `skins/AKDS/`，`wfLoadSkin('AKDS')`；`resources/*.css` 由 `src/` 同步。详见 `docs/03-mediawiki-integration.md`。
+- 任何页面：`<link rel="stylesheet" href="src/index.css">`（或分文件按需，`fonts.css` 放最前）。
+- MediaWiki：把 `skin/` 复制到 `skins/AKDS/`，`wfLoadSkin('AKDS')`；`resources/*.css`、`resources/fonts/` 由 `src/` 同步（符号链接）。字体是独立模块 `skins.akds.fonts`，可整体关掉。详见 `docs/03-mediawiki-integration.md`。
 - 模板/TemplateStyles：直接输出 `.ak-*` 结构（示例见 `preview/*.html` 源码），令牌可在 TemplateStyles 中 `var(--ak-accent)` 引用。
 
 ## 重新生成
 
 ```bash
+python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → src/fonts/ + src/fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/export-tokens.py                       # tokens.css → tokens/tokens.json
 python3 scripts/build-dist.py                          # preview → dist（需要 Pillow）
 bash scripts/build-site.sh _site                       # 组装 Pages 站点（CI 用同一脚本；本地 `python3 -m http.server -d _site` 可自查）
@@ -66,5 +69,5 @@ bash scripts/build-site.sh _site                       # 组装 Pages 站点（C
 
 ## 说明
 
-- 字体：预览未内嵌商用字体（Novecento/Bender），Latin 展示字回退到系统字体；上线建议自托管 Oswald + 思源黑体子集（OFL）。
+- 字体：预览与皮肤自托管全部 web 字体（`src/fonts.css`），人人看到一致——展示字 **Novecento Sans Wide**、HUD 标签 / 数值 **Bender** 取自官网静态资源（PRTS 为官方赞助站点，与鹰角同一组织下共用授权；官网发布的是 ASCII 子集，非 ASCII 字符逐字落到后一段）；正文 Noto Sans SC（= 思源黑体，Google 的 101 片切分、页面只下用到的片）、压缩字 Oswald、Chakra Petch（接 Bender 缺字）、等宽 JetBrains Mono 为 OFL。
 - 游戏素材版权归鹰角网络所有；本仓库仅作 PRTS 皮肤设计用途。

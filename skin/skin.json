@@ -28,6 +28,7 @@
             "skin-akds"
           ],
           "styles": [
+            "skins.akds.fonts",
             "skins.akds.tokens",
             "skins.akds.styles"
           ],
@@ -62,6 +63,15 @@
     "remoteSkinPath": "AKDS/resources"
   },
   "ResourceModules": {
+    "skins.akds.fonts": {
+      "styles": [
+        "fonts.css"
+      ],
+      "targets": [
+        "desktop",
+        "mobile"
+      ]
+    },
     "skins.akds.tokens": {
       "class": "MediaWiki\\ResourceLoader\\SkinModule",
       "features": {

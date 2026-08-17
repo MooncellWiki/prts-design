@@ -1,0 +1,26 @@
+[
+{
+"file": "Novecentosanswide-Medium.woff2",
+"weight": "500",
+"style": "normal",
+"url": "https://web.hycdn.cn/arknights/official/_next/static/media/Novecentosanswide-Medium.7a5c757a.woff2"
+},
+{
+"file": "Novecentosanswide-DemiBold.woff2",
+"weight": "600",
+"style": "normal",
+"url": "https://web.hycdn.cn/arknights/official/_next/static/media/Novecentosanswide-DemiBold.e7b6abe4.woff2"
+},
+{
+"file": "Novecentosanswide-Bold.woff2",
+"weight": "700",
+"style": "normal",
+"url": "https://web.hycdn.cn/arknights/official/_next/static/media/Novecentosanswide-Bold.9c78a9fd.woff2"
+},
+{
+"file": "Novecentosanswide-UltraBold.woff2",
+"weight": "800",
+"style": "normal",
+"url": "https://web.hycdn.cn/arknights/official/_next/static/media/Novecentosanswide-UltraBold.e5e00ac9.woff2"
+}
+]

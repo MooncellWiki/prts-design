@@ -12,6 +12,8 @@ skins/AKDS/
 ├── templates/
 │   └── skin.mustache            ← 骨架（SkinMustache，无需 PHP）
 ├── resources/
+│   ├── fonts.css                ← = src/fonts.css（@font-face，scripts/fetch-fonts.py 生成）
+│   ├── fonts/                   ← = src/fonts/（官网同源 Novecento Sans Wide · Bender；OFL 的 Noto Sans SC 101 片 · Oswald · Chakra Petch · JetBrains Mono；≈4.9MB）
 │   ├── tokens.css               ← = src/tokens.css
 │   ├── base.css                 ← = src/base.css
 │   ├── components.css           ← = src/components.css
@@ -19,8 +21,7 @@ skins/AKDS/
 │   ├── skin.css                 ← = src/skin.css
 │   ├── utilities.css            ← = src/utilities.css
 │   ├── skin.js                  ← 主题切换 / 抽屉 / TOC scrollspy / 标签页 / toast
-│   ├── images/                  ← 职业/精英/稀有度等白色线稿（或走 File: 命名空间）
-│   └── fonts/                   ← Oswald + 思源黑体子集（OFL），可选
+│   └── images/                  ← 职业/精英/稀有度等白色线稿（或走 File: 命名空间）
 └── i18n/{en,zh-hans}.json
 ```
 `skin/` 目录已提供 `skin.json` 与 `skin.mustache` 骨架，`resources/` 用符号链接或构建脚本从 `src/` 同步。
@@ -29,11 +30,11 @@ skins/AKDS/
 
 | 模块 | 内容 | 加载 |
 |---|---|---|
+| `skins.akds.fonts` | fonts.css（121 条 `@font-face`：Novecento Sans Wide + Bender（官网同源）+ Noto Sans SC 101 片 + Oswald + Chakra Petch + JetBrains Mono，`font-display: swap`）| **所有页面**，`styles` 首位。独立成模块是为了能整体关掉（用户偏好 / Gadget / 低带宽），关掉后 `tokens.css` 的字体链自然退到装机 / 系统字。RL 只重写 `url()` 路径不内联（没写 `@embed`），浏览器按 `unicode-range` 只取用到的片；MW 上要过一遍 CSSMin 后确认 `unicode-range` 未被改动 |
 | `skins.akds.tokens` | tokens.css | **所有页面**，`<head>` 顶部（`skin.json` `SkinStyles`/`styles`） |
 | `skins.akds.styles` | base.css + skin.css + components.css + arknights.css + utilities.css | 所有页面 |
 | `skins.akds.js` | skin.js（`mw.user.clientPrefs`、抽屉、TOC、标签页、data-bind）+ sidebar-tree.js + search-palette.js（悬浮搜索面板核心）+ search-providers.js（MW 数据源）；依赖 `mediawiki.api` | 所有页面（defer）。面板核心 ≈ 35KB 未压缩（含注释；gzip ≈ 11KB），可拆成独立模块在触发器 hover/focus 时 `mw.loader.using` 预取（Citizen 做法） |
 | `skins.akds.mobile` | 移动端追加（若同时供 Minerva 使用则改为 `skinStyles` 注入） | 按 target |
-| `skins.akds.fonts` | @font-face（可选） | 可由用户偏好/Gadget 关闭 |
 
 `skin.json` 关键项：
 ```json
@@ -41,7 +42,7 @@ skins/AKDS/
   "name": "akds", "template": "skin",
   "responsive": true,
   "bodyClasses": ["skin-akds"],
-  "styles": ["skins.akds.tokens", "skins.akds.styles"],
+  "styles": ["skins.akds.fonts", "skins.akds.tokens", "skins.akds.styles"],
   "scripts": ["skins.akds.js"],
   "clientPrefEnabled": true,
   "wrapSiteNotice": true, "toc": false
@@ -237,7 +238,7 @@ $wgFooterIcons = [
 
 - CSS 合计 ~90KB 未压缩（tokens 15 / base 25 / components 30 / arknights 30 / skin 12 / utilities 6），gzip 后 < 20KB。可按需拆 `arknights.css` 为独立模块，仅内容页加载。
 - 无 JS 依赖的组件为主；skin.js < 6KB，sidebar-tree.js ≈ 7KB，search-palette.js ≈ 35KB 未压缩（gzip ≈ 11KB）+ search-providers.js ≈ 9KB（前者与 preview 共用）。
-- 字体：思源黑体子集（常用 3500 字 + 页面动态子集）；标题拉丁字用系统回退时视觉退化可接受（预览即为回退效果）。
+- 字体：`skins.akds.fonts` ≈ 4.9MB 落盘但按需下载——Noto Sans SC 沿用 Google 的 101 片 `unicode-range` 切分，一页典型下 5–15 片（每片 2–77KB）；Novecento（4 × 11KB）+ Bender（2 × 12KB）+ 拉丁 OFL 三族（≈ 240KB）按用到的字重一次性。预览显示的即上线效果。
 - 图片：白色线稿 PNG 已在 100–200px；建议转 SVG/WebP。
 - 缓存：ResourceLoader 版本化；主题类在 `<html>` 上，无 FOUC（clientPrefs 内联脚本早于样式）。
 
