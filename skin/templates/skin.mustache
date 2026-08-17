@@ -51,7 +51,7 @@
   </div>
 </header>
 
-{{! 头图带（Key Visual）：默认 --ak-keyart-h: 0 不占位；活动主题（Gadget / MediaWiki:Common.css）设 --ak-keyart-image / --ak-keyart-h 即出现，见 tokens.css §2d }}
+{{! 头图带（Key Visual）：默认 --ak-keyart-h: 0 不占位；活动主题（Gadget / MediaWiki:Common.css）设 --ak-keyart-image / --ak-keyart-h 即出现，见 tokens.css §2d。画从页面顶端铺起、页眉玻璃压在它上面（skin.css 用负外边距实现，DOM 顺序不变） }}
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout{{^data-toc}} ak-layout--no-toc{{/data-toc}}">

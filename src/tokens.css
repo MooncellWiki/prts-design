@@ -361,13 +361,15 @@ html.skin-theme-clientpref-night {
 /* ═══ 2d. CHROME · 页眉 / 头图 / 画布 的主题接口（活动主题只改这里）═══════════
  * 皮肤的「框」（页眉主行 + 二级栏 + 窄屏工具卡片）在两套主题下都是黑的：官网导航栏、游戏主界面顶栏、
  * 干员档案页的顶部黑边都是"黑框白纸 / 黑框黑纸"——所以 chrome 令牌不随明暗主题变，只跟着活动主题变。
- * prts.wiki 大活期间会换头图 / 顶栏底图 / 站标 / 侧栏配色（现网 ext.gadget.seventhStyle 就是改这些）：
+ * prts.wiki 大活期间会换头图 / 顶栏角饰 / 站标 / 侧栏配色（现网 ext.gadget.seventhStyle 就是改这些）：
  * 新皮肤把这些位置抽成下面这组变量，Gadget / MediaWiki:Common.css 只需在 :root（或 html.ak-theme-xxx）上覆盖，
- * 不必碰选择器。skin.css 里的 .ak-header 把语义令牌重映射到 --ak-chrome-*，页眉内的按钮 / 输入 / 头像 / 菜单自动跟随。 */
+ * 不必碰选择器。skin.css 里的 .ak-header 把语义令牌重映射到 --ak-chrome-*，页眉内的按钮 / 输入 / 头像 / 菜单自动跟随。
+ * 页眉与头图的关系：头图 .ak-keyart 从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃（--ak-chrome-bg + 毛玻璃）——
+ * 玻璃保证页眉可读，画从玻璃后面透出来；照片一律走 --ak-keyart-image，--ak-chrome-image 只放画在玻璃之上的深色角饰 / 底纹。 */
 :root {
   --ak-theme-accent:     var(--ak-cyan-500);        /* 活动主色：页眉标语 / 悬停、侧栏与目录分组条、页脚斜纹、窄屏卡片顶条 …（正文里的链接 / 选中仍是 --ak-accent；想一起换就连 --ak-accent 也覆盖） */
   --ak-theme-accent-fg:  #000;
-  --ak-chrome-bg:        rgba(8, 9, 10, .9);         /* 页眉底色（半透明 + 毛玻璃：头图 / 画布图滚到下面时透出来） */
+  --ak-chrome-bg:        rgba(8, 9, 10, .9);         /* 页眉玻璃：半透明 + 毛玻璃，头图 / 滚过来的正文在下面均匀透出。活动主题想让头图多透一点可调 alpha 到 .78–.85；别低于 .72（白色画面之下 #F2F2F2 仍 ≥7:1） */
   --ak-chrome-bg-solid:  #0e0f10;                    /* 不透明处：窄屏工具卡片、飞出菜单 */
   --ak-chrome-fg:        #f2f2f2;
   --ak-chrome-fg-2:      rgba(255, 255, 255, .74);
@@ -376,16 +378,16 @@ html.skin-theme-clientpref-night {
   --ak-chrome-line-strong: rgba(255, 255, 255, .32);
   --ak-chrome-hover:     rgba(255, 255, 255, .08);
   --ak-chrome-field:     rgba(255, 255, 255, .07);   /* 搜索触发器底 */
-  --ak-chrome-image:     none;                       /* 顶栏底图：url(left.png), url(right.png)（现网 PRTSheadleft / Garanheadright 的位置） */
+  --ak-chrome-image:     none;                       /* 顶栏角饰 / 底纹：url(left.png), url(right.png)（现网 PRTSheadleft 的活动徽章 / Garanheadright 的波纹那种）。画在玻璃之上、不会被压暗——只放深色低对比素材，照片请走 --ak-keyart-image */
   --ak-chrome-image-position: right top;
   --ak-chrome-image-size: auto 100%;
   --ak-chrome-image-repeat: no-repeat;
   --ak-chrome-texture:   .55;                        /* 右侧半调网点强度 0–1（游戏顶栏 img_back / 官网左缘网点），0 关闭 */
-  --ak-keyart-image:         none;                       /* 头图（Key Visual）：页眉之下、布局之上的一条通栏画；--ak-keyart-h 为 0 时不占位 */
-  --ak-keyart-h:             0px;
-  --ak-keyart-position:      center 30%;
+  --ak-keyart-image:         none;                       /* 头图（Key Visual）：从页面顶端铺起、页眉压在它上面的一条通栏画；--ak-keyart-h 为 0 时不占位（只在页眉后面透） */
+  --ak-keyart-h:             0px;                        /* 页眉之下可见的那段高度 */
+  --ak-keyart-position:      center 30%;                 /* -position / -size 相对整块（页眉高 + -h）计算 */
   --ak-keyart-size:          cover;
-  --ak-keyart-bg:            #0e0f10;
+  --ak-keyart-bg:            transparent;                /* 画未铺满 / 未加载时的底色；默认透明，没有头图时页眉背后什么也不多画 */
   --ak-keyart-fade:          96px;                       /* 底部渐隐进画布的高度，0 关闭 */
   --ak-canvas-image:     none;                       /* 页面画布底纹 / 底图（body 背景，叠在 --ak-bg-canvas 之上；现网 body 的 bkg 图位置） */
   --ak-canvas-position:  center top;

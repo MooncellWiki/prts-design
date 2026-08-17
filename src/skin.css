@@ -20,8 +20,11 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
  *  页眉在两套主题下都是黑的：官网导航栏（#000 底 + 青色当前项 + 白线稿图标）、游戏主界面顶栏（深底 + 半调网点 + 青色选中块）、
  *  干员档案页顶部那道黑边——"黑框白纸 / 黑框黑纸"是方舟本体的框架语言。颜色不读明暗主题，只读 tokens.css §2d 的 --ak-chrome-*，
  *  并在这里把语义令牌重映射过去（--ak-fg → --ak-chrome-fg …），页眉里的按钮 / 搜索触发器 / 头像 / 徽标 / 菜单 / 开关就自动是页眉配色，
- *  不必逐个写；活动主题（Gadget / Common.css）覆盖 --ak-chrome-* / --ak-theme-accent / --ak-chrome-image 即可换皮，不碰选择器。
+ *  不必逐个写；活动主题（Gadget / Common.css）覆盖 --ak-chrome-* / --ak-theme-accent / --ak-keyart-* 即可换皮，不碰选择器。
  *  装饰：右侧半调网点场（::before，--ak-chrome-texture 调强弱 / 关闭）· 底部 1px 亮线 · 标语 / 悬停 / 开关选中项 / 搜索图标框都用活动主色（游戏 selected_back / toggle_on 的那块青），亮暗主题下页眉配色完全一致。
+ *  页眉是一块均匀的黑玻璃（--ak-chrome-bg 半透明 + 毛玻璃），压在头图 .ak-keyart 的顶端之上（头图从 y=0 铺起，见「Key art」段）：可读性由这层玻璃保证，
+ *  与底下是什么画无关；活动主题想让画多透一点，只把 --ak-chrome-bg 的 alpha 调到 .78–.85（≥.72 时白色画面之下仍 ≥7:1）。不做横向渐隐、不做纵向渐变
+ *  —— 那种「右半张照片从左缘渐入」的顶栏底图既压不住白色图标又像贴上去的（试过，作罢）。--ak-chrome-image 只用于画在玻璃之上的深色角饰 / 底纹。
  *  主行是三列网格，与 .ak-layout 的 侧栏 / 正文 两列对齐：品牌在侧栏列上方，搜索从正文列左缘起（≤560px，与面包屑 / 标题同一条线），
  *  工具靠右 —— 页眉是三列各自的「列头」，不是游离的一条。页眉里不放站点级主导航：那 8 项与侧栏「通用」组 1:1 重复，导航只由侧栏承担
  *  （MW 的 data-portlets-first 也只在侧栏渲染一次）。1680 容器与 .ak-layout 同为 border-box，超宽时左右缘才对得齐。
@@ -44,7 +47,7 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
   --ak-shadow-lg: 0 16px 40px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
   color-scheme: dark;        /* 页眉内的原生控件（无 JS 时的真搜索框）也走深色 */
   position: sticky; top: 0; z-index: var(--ak-z-header); color: var(--ak-fg);
-  background: var(--ak-chrome-image) var(--ak-chrome-image-position) / var(--ak-chrome-image-size) var(--ak-chrome-image-repeat), var(--ak-chrome-bg);
+  background: var(--ak-chrome-image) var(--ak-chrome-image-position) / var(--ak-chrome-image-size) var(--ak-chrome-image-repeat), var(--ak-chrome-bg);   /* 角饰在玻璃色之上（不被压暗，所以只放深色低对比素材）；玻璃色之下才是头图 / 滚过来的正文 */
   backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
   border-bottom: 1px solid var(--ak-chrome-line); transition: transform var(--ak-dur-normal) var(--ak-ease); }
 /* 右侧半调网点场：游戏顶栏 img_back / bkg_openserver、官网页面左缘那片网点。从右缘向左渐隐，只铺到工具区背后，不碰品牌 */
@@ -118,13 +121,18 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 @keyframes ak-nav-screen-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 
 /* ═══ Key art（头图带）＋ 画布底图 ═══
- *  .ak-keyart 是页眉之下、.ak-layout 之上的一条通栏画，默认 --ak-keyart-h: 0 不占位、无 DOM 副作用；活动主题设 --ak-keyart-image + --ak-keyart-h 即出现
- *  （现网 body 背景里那幅头图的位置）。底部按 --ak-keyart-fade 渐隐进画布色，页眉是半透明毛玻璃，头图滚到页眉下时透出来。
+ *  .ak-keyart 是 .ak-layout 之上的一条通栏画，默认 --ak-keyart-h: 0 不占位、无 DOM 副作用；活动主题设 --ak-keyart-image + --ak-keyart-h 即出现
+ *  （现网 body 背景里那幅头图的位置）。画从页面顶端铺起：盒子上移一个页眉高、再用同样的 padding-top 把内容压回页眉之下，于是画的顶端在
+ *  粘性页眉（更高的 z-index）背后 —— 页眉是压在画上的一块黑玻璃，画在玻璃后面均匀地透出来（多少由 --ak-chrome-bg 的 alpha 决定），
+ *  黑框 + 画是一整块，不再有「顶栏一张、头图一张」两段裁切。--ak-keyart-h 是页眉之下可见的那段高度；-position / -size 相对整块（页眉 + 可见段）算。
+ *  底部按 --ak-keyart-fade 渐隐进画布色（min() 兜住 -h: 0 时不往页眉后面画一道）；-bg 默认透明，所以没有头图时页眉背后什么也不多画。
  *  --ak-canvas-image 叠在 body 的 --ak-bg-canvas 之上（现网 body 的 bkg 底纹 / 大图位置）；侧栏与目录没有底色，所以画布图应当是低对比的底纹。 */
-.ak-keyart { position: relative; height: var(--ak-keyart-h); overflow: hidden; margin: 0; background: var(--ak-keyart-bg) var(--ak-keyart-image) var(--ak-keyart-position) / var(--ak-keyart-size) no-repeat; }
-.ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--ak-keyart-fade); background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)); pointer-events: none; }
-.ak-keyart__inner { position: relative; height: 100%; max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽 */
-@media (max-width: 639px) { .ak-keyart { height: min(var(--ak-keyart-h), 40vw); } }
+.ak-keyart { --_over: var(--ak-header-h);   /* 往上探进页眉背后的高度；<1400 页眉多一行二级栏，见 Responsive 段 */
+  position: relative; box-sizing: content-box; height: var(--ak-keyart-h); padding-top: var(--_over); margin: calc(-1 * var(--_over)) 0 0; overflow: hidden;
+  background: var(--ak-keyart-bg) var(--ak-keyart-image) var(--ak-keyart-position) / var(--ak-keyart-size) no-repeat; }
+.ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: min(var(--ak-keyart-fade), var(--ak-keyart-h)); background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)); pointer-events: none; }
+.ak-keyart__inner { position: relative; height: 100%; max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽，且在页眉之下（padding-top 之内不算） */
+@media (max-width: 639px) { .ak-keyart { height: min(var(--ak-keyart-h), 40vw); } .ak-keyart::after { height: min(var(--ak-keyart-fade), var(--ak-keyart-h), 40vw); } }
 body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak-canvas-position) / var(--ak-canvas-size) var(--ak-canvas-repeat); background-attachment: var(--ak-canvas-attachment); }
 
 /* ═══ Layout ═══
@@ -436,6 +444,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 /* < 1400：右侧导轨收起 —— 页眉长出二级吸顶栏，目录改由它拉下的浮层承载 */
 @media (max-width: 1400px) {
   .ak-local-nav { display: flex; }
+  .ak-keyart { --_over: calc(var(--ak-header-h) + var(--ak-local-nav-h)); }   /* 头图探到两行页眉的背后，两行玻璃底下是同一幅画 */
   .ak-fab { display: none; }   /* 回到顶部收进目录浮层，不再浮在内容上 */
   .ak-main { padding-right: 0; }
   /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
@@ -525,7 +534,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
   :root { --ak-sidebar-w: 268px; --ak-toc-w: 268px; }   /* 写在 :root：页眉网格与 .ak-layout 共用这两个宽度 */
 }
 @media print {
-  .ak-header, .ak-sidebar, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tabs, .ak-fab { display: none !important; }
+  .ak-header, .ak-keyart, .ak-sidebar, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tabs, .ak-fab { display: none !important; }
   .ak-layout { display: block; padding: 0; }
   .ak-main { padding-right: 0; }
   .ak-body { border: 0; padding: 0; }
