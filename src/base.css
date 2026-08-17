@@ -386,7 +386,10 @@ label { cursor: pointer; }
    整条选择器包在 :where() 里让特指度归零：任何带 class 的框架按钮（含皮肤自己的
    .ak-tree__toggle / .ak-fab）都稳稳压在它上面。也正因如此不设 min-height —— 那会强行撑高
    自带固定尺寸的按钮，而 min-height 是没法靠 class 的 height 覆盖掉的；36px（与裸输入框 / .ak-btn 同一档）
-   靠 20px 行高 + 上下 7px 内边距 + 边框凑出来，表格里由下面的紧凑规则收到 30。 */
+   靠 20px 行高 + 上下 7px 内边距 + 边框凑出来，表格里由下面的紧凑规则收到 30。
+   ⚠ 这里的 padding: 7px 12px 会落到所有没自己写 padding 的 <button> 上：带 class 的定尺寸图标按钮
+   （width/height 定死 + place-items:center 那种）必须自己写 padding: 0，否则内容区被挤成几像素，
+   图标从内容区起点排、看起来偏右偏下（.ak-palette__action / __back / .ak-fab 都踩过）。 */
 :where(button, input[type="button"], input[type="submit"], input[type="reset"]) {
   box-sizing: border-box; appearance: none; -webkit-appearance: none;
   font-family: var(--ak-font-body); font-size: var(--ak-fs-sm); font-weight: 600; line-height: 20px;

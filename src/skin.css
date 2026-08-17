@@ -341,7 +341,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 /* 头：图标 · [模式 chip] · 输入 · [清空] · 关闭 · 进度条 */
 .ak-palette__head { position: relative; flex: none; display: flex; align-items: center; gap: 4px; height: var(--_head-h); padding-right: 10px; border-bottom: 1px solid var(--ak-border); }
 .ak-palette__icon { flex: none; width: 20px; height: 20px; margin: 0 14px 0 18px; color: var(--ak-fg-muted); }
-.ak-palette__back { display: none; flex: none; width: 32px; height: 32px; margin-left: 10px; border: 0; background: transparent; color: var(--ak-fg-secondary); cursor: pointer; place-items: center; }
+.ak-palette__back { display: none; flex: none; width: 32px; height: 32px; margin-left: 10px; padding: 0; border: 0; background: transparent; color: var(--ak-fg-secondary); cursor: pointer; place-items: center; }
 .ak-palette__back:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
 .ak-palette__back svg { width: 18px; height: 18px; }
 .ak-palette.has-mode .ak-palette__back { display: grid; }
@@ -400,7 +400,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 /* 行内动作（目前只有最近访问的「移除 ×」）：始终占位、非高亮时不可见 —— 同组每行宽度一致，高亮时右侧元数据不会跳 */
 .ak-palette__actions { flex: none; display: flex; align-items: center; gap: 2px; padding-right: 8px; visibility: hidden; }
 .ak-palette__item.is-active > .ak-palette__actions, .ak-palette__item:focus-within > .ak-palette__actions { visibility: visible; }
-.ak-palette__action { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid transparent; background: transparent; color: var(--ak-fg-muted); cursor: pointer; }
+.ak-palette__action { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 1px solid transparent; background: transparent; color: var(--ak-fg-muted); cursor: pointer; }
 .ak-palette__action:hover, .ak-palette__action:focus-visible { border-color: var(--ak-border-strong); color: var(--ak-fg); outline: 0; }
 .ak-palette__action svg { width: 14px; height: 14px; }
 /* 空态：提示 + 快捷入口 */

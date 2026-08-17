@@ -393,7 +393,7 @@
 .ak-divider--vertical { width: 1px; height: 1em; display: inline-block; margin: 0 var(--ak-space-2); vertical-align: middle; }
 
 /* ═══ Back-to-top / floating action ═══ */
-.ak-fab { position: fixed; right: var(--ak-space-5); bottom: var(--ak-space-5); width: 44px; height: 44px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); border: 0; cursor: pointer; z-index: var(--ak-z-sticky); box-shadow: var(--ak-shadow-md); opacity: 0; transform: translateY(8px); transition: all var(--ak-dur-normal) var(--ak-ease); }
+.ak-fab { position: fixed; right: var(--ak-space-5); bottom: var(--ak-space-5); width: 44px; height: 44px; padding: 0; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); border: 0; cursor: pointer; z-index: var(--ak-z-sticky); box-shadow: var(--ak-shadow-md); opacity: 0; transform: translateY(8px); transition: all var(--ak-dur-normal) var(--ak-ease); }
 .ak-fab.is-visible { opacity: 1; transform: none; }
 .ak-fab:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
 
