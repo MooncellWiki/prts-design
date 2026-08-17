@@ -255,7 +255,7 @@
 .ak-stat__label { font: 600 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }
 .ak-stat__value { font: 700 var(--ak-fs-h2)/1.1 var(--ak-font-label); font-variant-numeric: tabular-nums; color: var(--ak-fg); }
 .ak-stat__value small { font-size: .5em; color: var(--ak-fg-muted); margin-left: 2px; }
-.ak-stat__delta { font-size: var(--ak-fs-xs); font-family: var(--ak-font-label); }
+.ak-stat__delta { font-size: var(--ak-fs-xs); font-variant-numeric: tabular-nums; }
 .ak-stat__delta--up { color: var(--ak-rt-vup); } .ak-stat__delta--down { color: var(--ak-rt-vdown); }
 .ak-stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--ak-space-3); }
 .ak-stat-row > .ak-stat { min-width: 0; }   /* 轨道最小值由 minmax 管，条目自己别再撑 */
@@ -290,13 +290,12 @@
 .ak-breadcrumb li + li::before { content: ""; display: inline-block !important; position: static; width: 5px; height: 5px; border-right: 1px solid var(--ak-fg-subtle); border-top: 1px solid var(--ak-fg-subtle); transform: rotate(45deg); margin: 0 6px 1px 2px; background: none; }
 .ak-breadcrumb a { color: var(--ak-fg-muted); } .ak-breadcrumb a:hover { color: var(--ak-accent); }
 .ak-breadcrumb [aria-current] { color: var(--ak-fg); font-weight: 600; }
-.ak-pagination { display: inline-flex; gap: 2px; align-items: center; font-family: var(--ak-font-label); }
+.ak-pagination { display: inline-flex; gap: 2px; align-items: center; font-variant-numeric: tabular-nums; }
 .ak-pagination__item, .ak-pagination a { min-width: 32px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--ak-border); color: var(--ak-fg-secondary); text-decoration: none; font-weight: 600; font-size: var(--ak-fs-sm); }
 .ak-pagination a:hover { border-color: var(--ak-accent); color: var(--ak-accent); text-decoration: none; }
 .ak-pagination .is-active { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); }
 .ak-pagination .is-disabled { opacity: .4; pointer-events: none; }
 .ak-pagination__ellipsis { padding: 0 6px; color: var(--ak-fg-subtle); }
-.mw-pager-navigation-bar, .mw-prevlink, .mw-nextlink, .mw-numlink { font-family: var(--ak-font-label); }
 
 /* ═══ Timeline / Stepper ═══ */
 .ak-timeline { list-style: none; margin: 0; padding: 0 0 0 20px; border-left: 2px solid var(--ak-border); }
@@ -354,9 +353,9 @@
 .ak-kbd, .ak-search__kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; font: 600 10px/1 var(--ak-font-mono); color: var(--ak-fg-subtle); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: inset 0 -1px 0 var(--ak-border); vertical-align: middle; white-space: nowrap; }
 .ak-search__kbd { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
 .ak-number { display: inline-flex; border: 1px solid var(--ak-border-strong); }
-.ak-number > button { all: unset; width: 32px; text-align: center; cursor: pointer; background: var(--ak-bg-surface-2); font-family: var(--ak-font-label); font-weight: 700; }
+.ak-number > button { all: unset; width: 32px; text-align: center; cursor: pointer; background: var(--ak-bg-surface-2); font-family: inherit; font-weight: 700; }
 .ak-number > button:hover { background: var(--ak-bg-hover); }
-.ak-number > input { width: 56px; border: 0; border-left: 1px solid var(--ak-border); border-right: 1px solid var(--ak-border); text-align: center; font-family: var(--ak-font-label); background: var(--ak-bg-surface); color: var(--ak-fg); }
+.ak-number > input { width: 56px; border: 0; border-left: 1px solid var(--ak-border); border-right: 1px solid var(--ak-border); text-align: center; font-family: inherit; font-variant-numeric: tabular-nums; background: var(--ak-bg-surface); color: var(--ak-fg); }
 
 /* ═══ Table helpers (design-system table, 非 wikitable) ═══ */
 .ak-table { width: 100%; border-collapse: collapse; font-size: var(--ak-fs-sm); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
@@ -366,7 +365,7 @@
 .ak-table tbody tr.is-selected td { background: var(--ak-accent-subtle); }
 .ak-table--striped tbody tr:nth-child(even) td { background: var(--ak-bg-surface-2); }
 .ak-table--compact th, .ak-table--compact td { padding: 4px 8px; }
-.ak-table .num { font-family: var(--ak-font-label); text-align: right; font-variant-numeric: tabular-nums; }
+.ak-table .num { text-align: right; font-variant-numeric: tabular-nums; }   /* 正文字体：见 base.css 数字列说明 */
 .ak-table th[aria-sort] { cursor: pointer; }
 .ak-table th[aria-sort="ascending"]::after { content: " ↑"; color: var(--ak-accent); }
 .ak-table th[aria-sort="descending"]::after { content: " ↓"; color: var(--ak-accent); }

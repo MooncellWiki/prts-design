@@ -144,7 +144,9 @@ pre, .mw-code, .mw-highlight pre {
 .wikitable.ak-borderless, .wikitable.ak-borderless > * > tr > th, .wikitable.ak-borderless > * > tr > td { border-left: 0; border-right: 0; }
 .wikitable.ak-borderless { border-left: 0; border-right: 0; }
 .wikitable th.ak-th-accent { border-top: 3px solid var(--ak-accent); }
-.wikitable .ak-num, .wikitable td.num { font-family: var(--ak-font-label); font-variant-numeric: tabular-nums; text-align: right; }
+/* 数字列：正文字体（Noto Sans SC 数字默认等宽，天然对齐；Bender 数字是比例宽度、子集无 tnum，小字号又细，不进表格）。.ak-num 是显式的 HUD 数字（粗体 Bender），表格里只在面板级数值上用 */
+.wikitable td.num, .wikitable .num { font-variant-numeric: tabular-nums; text-align: right; }
+.wikitable .ak-num { text-align: right; }
 /* sortable (jquery.tablesorter) */
 .jquery-tablesorter th.headerSort { cursor: pointer; padding-right: 1.6em; background-image: none; }
 .jquery-tablesorter th.headerSort::after { content: "⇅"; position: absolute; right: .5em; color: var(--ak-fg-subtle); font-size: .85em; }
@@ -201,7 +203,7 @@ ul.gallery.mw-gallery-packed li.gallerybox, ul.gallery.mw-gallery-packed-hover l
 .toc ul ul { margin: 0 0 0 1em; }
 .toc li { margin: .15em 0; }
 .toc li::before { display: none !important; }
-.tocnumber { color: var(--ak-fg-muted); font-family: var(--ak-font-label); margin-right: .4em; font-variant-numeric: tabular-nums; }
+.tocnumber { color: var(--ak-fg-muted); margin-right: .4em; font-variant-numeric: tabular-nums; }
 .toctogglecheckbox:checked ~ ul { display: none; }
 .toctogglespan { font-size: var(--ak-fs-xs); }
 .toctogglelabel { color: var(--ak-link); cursor: pointer; }
@@ -217,7 +219,7 @@ ul.gallery.mw-gallery-packed li.gallerybox, ul.gallery.mw-gallery-packed-hover l
 .mw-collapsible.ak-collapse-box > .mw-collapsible-content { padding: var(--ak-space-3) var(--ak-space-4); }
 
 /* ─── References / citations ───────────────────────────────────────────── */
-sup.reference { font-size: .75em; font-family: var(--ak-font-label); }
+sup.reference { font-size: .75em; }
 sup.reference a { padding: 0 .1em; }
 .mw-cite-backlink, .reference-text { font-size: var(--ak-fs-sm); }
 .references, ol.references { font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); column-gap: var(--ak-space-8); }
@@ -412,13 +414,13 @@ table.diff td { padding: .3em .5em; }
 .diff-deletedline { border-left: 3px solid var(--ak-danger); }
 .diff-addedline .diffchange { background: var(--ak-success-bg); color: var(--ak-fg); }
 .diff-deletedline .diffchange { background: var(--ak-danger-bg); color: var(--ak-fg); }
-.diff-lineno { color: var(--ak-fg-muted); font-family: var(--ak-font-label); }
+.diff-lineno { color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; }
 .mw-changeslist, #pagehistory { font-size: var(--ak-fs-sm); }
 #pagehistory li, .mw-changeslist li { padding: .3em .5em; border-left: 3px solid transparent; }
 #pagehistory li.selected { background: var(--ak-accent-subtle); border-left-color: var(--ak-accent); }
-.mw-changeslist .mw-plusminus-pos { color: var(--ak-success); font-family: var(--ak-font-label); }
-.mw-changeslist .mw-plusminus-neg { color: var(--ak-danger); font-family: var(--ak-font-label); }
-.mw-changeslist .mw-plusminus-null { color: var(--ak-fg-muted); font-family: var(--ak-font-label); }
+.mw-changeslist .mw-plusminus-pos { color: var(--ak-success); font-variant-numeric: tabular-nums; }
+.mw-changeslist .mw-plusminus-neg { color: var(--ak-danger); font-variant-numeric: tabular-nums; }
+.mw-changeslist .mw-plusminus-null { color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; }
 .mw-changeslist-line-inner .comment, .history-user, .mw-usertoollinks { color: var(--ak-fg-secondary); }
 .mw-search-results { list-style: none; padding: 0; }
 .mw-search-result { padding: var(--ak-space-3) 0; border-bottom: 1px solid var(--ak-border-subtle); }

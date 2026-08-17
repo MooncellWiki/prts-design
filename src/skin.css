@@ -250,7 +250,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-body-foot { display: flex; flex-wrap: wrap; gap: var(--ak-space-3) var(--ak-space-6); align-items: center; list-style: none; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin: var(--ak-space-6) 0 0; padding: var(--ak-space-3) 0 0; border-top: 1px solid var(--ak-border); }   /* MW：ul#footer-info > li#footer-info-lastmod / -copyright */
 .ak-body-foot li { margin: 0; padding: 0; }
 .ak-body-foot li::before { display: none !important; }
-.ak-body-foot #footer-info-lastmod, .ak-body-foot .ak-lastmod { font-family: var(--ak-font-label); letter-spacing: .02em; }
+.ak-body-foot #footer-info-lastmod, .ak-body-foot .ak-lastmod { font-variant-numeric: tabular-nums; }
 .ak-body-foot #footer-info-copyright { flex-basis: 100%; }
 
 /* ═══ TOC ═══
