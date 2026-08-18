@@ -56,10 +56,48 @@
 		if ( !toc.children.length ) {
 			$$( '.mw-parser-output h2, .mw-parser-output h3' ).forEach( ( h ) => { if ( !h.id ) { return; } const li = document.createElement( 'li' ); li.className = h.tagName === 'H2' ? 'toclevel-1' : 'toclevel-2'; li.innerHTML = '<a href="#' + h.id + '">' + h.textContent + '</a>'; toc.appendChild( li ); } );
 		}
-		const links = $$( 'a', toc );
-		const heads = links.map( ( a ) => document.getElementById( decodeURIComponent( a.getAttribute( 'href' ).slice( 1 ) ) ) ).filter( Boolean );
-		const io = new IntersectionObserver( ( entries ) => entries.forEach( ( en ) => { if ( en.isIntersecting ) { links.forEach( ( l ) => l.parentElement.classList.toggle( 'is-active', decodeURIComponent( l.getAttribute( 'href' ) ) === '#' + en.target.id ) ); } } ), { rootMargin: '-80px 0px -70% 0px' } );
-		heads.forEach( ( h ) => io.observe( h ) );
+		/* scrollspy —— 参考 VitePress useActiveAnchor / Docusaurus useTOCHighlight：滚动驱动、按 DOM 顺序取「基准线以上最后一个标题」（与 preview.js 相同）。
+		 * 不用 IntersectionObserver：锚点跳转后目标标题与紧随其后的标题同批进观察带、回调里排后者赢，高亮会跳到下一项。
+		 *  · 基准线 = 标题自己的 scroll-margin-top（锚点跳转后标题恰好停在这里）+ 4px 容差，点目录跳到哪项就亮哪项；
+		 *  · 点击目录时立即高亮并忽略随之而来的那一次 scroll（页底几节滚不到基准线）；页顶不高亮，页底亮最后一项；
+		 *  · display:none 的标题（收起的折叠块 / tab）跳过；active 项保持在目录自身滚动区可见（只滚目录，不动窗口）。 */
+		const byId = new Map();
+		$$( 'a[href^="#"]', toc ).forEach( ( a ) => byId.set( decodeURIComponent( a.getAttribute( 'href' ).slice( 1 ) ), a ) );
+		const heads = Array.from( byId.keys(), ( id ) => document.getElementById( id ) ).filter( Boolean );
+		const box = toc.closest( '.ak-toc__inner' ) || toc.parentElement;
+		const shown = ( h ) => { const r = h.getBoundingClientRect(); return r.width > 0 || r.height > 0; };
+		let prev = null, ignoreOnce = false, raf = 0;
+		function activate( h ) {
+			const a = ( h && byId.get( h.id ) ) || null; if ( a === prev ) { return; }
+			if ( prev ) { prev.parentElement.classList.remove( 'is-active' ); }
+			prev = a; if ( !a ) { return; }
+			a.parentElement.classList.add( 'is-active' );
+			const rb = box.getBoundingClientRect(), ra = a.getBoundingClientRect();
+			if ( ra.top < rb.top ) { box.scrollTop -= rb.top - ra.top; } else if ( ra.bottom > rb.bottom ) { box.scrollTop += ra.bottom - rb.bottom; }
+		}
+		function update() {
+			raf = 0;
+			if ( ignoreOnce ) { ignoreOnce = false; return; }
+			const y = window.scrollY, d = document.documentElement;
+			if ( y < 1 ) { activate( null ); return; }
+			if ( y + window.innerHeight >= d.scrollHeight - 1 ) { activate( heads.slice().reverse().find( shown ) ); return; }
+			let cur = null;
+			for ( const h of heads ) {
+				if ( !shown( h ) ) { continue; }
+				if ( h.getBoundingClientRect().top > ( parseFloat( getComputedStyle( h ).scrollMarginTop ) || 0 ) + 4 ) { break; }
+				cur = h;
+			}
+			activate( cur );
+		}
+		const schedule = () => { if ( !raf ) { raf = requestAnimationFrame( update ); } };
+		window.addEventListener( 'scroll', schedule, { passive: true } );
+		window.addEventListener( 'resize', schedule );
+		toc.addEventListener( 'click', ( e ) => {
+			const a = e.target.closest( 'a[href^="#"]' ); if ( !a ) { return; }
+			const h = document.getElementById( decodeURIComponent( a.getAttribute( 'href' ).slice( 1 ) ) );
+			if ( h ) { ignoreOnce = true; activate( h ); }
+		} );
+		update();
 		const prog = $( '.ak-toc__progress > i' );
 		if ( prog ) { window.addEventListener( 'scroll', () => { const d = document.documentElement; prog.style.setProperty( '--_p', ( d.scrollTop / ( d.scrollHeight - d.clientHeight ) * 100 ) + '%' ); }, { passive: true } ); }
 	}
