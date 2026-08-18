@@ -172,6 +172,7 @@ html.skin-theme-clientpref-night  终端模式（暗）
 - 间距 4px 基准：`--ak-space-1..24`（4 8 12 16 20 24 32 40 48 64 80 96）
 - 形状：`--ak-radius 0`、`--ak-radius-sm 2px`、`--ak-cut 8px`（切角）、`--ak-skew -14deg`、`--ak-bar-w 4px / -lg 8px`
 - 动效：`--ak-dur-fast 150ms / normal 250ms / slow 400ms`；`--ak-ease cubic-bezier(.2,.8,.2,1)`；`prefers-reduced-motion` 全局关闭
+- 加载指示只有一种：**菱形涟漪**（`.ak-spinner` / `.ak-btn.is-loading`）——游戏内 loading：中央常驻一枚空心菱形（= 中坚术师分支图标那枚），另一枚环从它身上冒出来、边扩边淡到没，下一枚再来（1.2s 一枚；游戏里环出生时还带随机剪切，按钮高度里施展不开、没做）。不用圆环转圈：本体没有圆
 - z-index：dropdown 100 · sticky 200 · header 1000 · overlay 1500 · modal 2000 · toast 3000 · tooltip 4000
 - 断点（与 Codex 一致）：640 / 1120 / 1680，另有 1400 作为目录导轨断点
 - **窄屏导航（<1400，参考 VitePress）**：页眉长出第二行 `.ak-local-nav`「二级吸顶栏」——左「菜单」拉出侧栏抽屉（<1120）、右「本页目录」拉下目录浮层；向下滚动时页眉主行（品牌 / 搜索 / 工具）上移收起，只留这条 48px 的二级栏贴顶，向上滚或回到顶部再展开；「回到顶部」放在目录浮层首项，`.ak-fab` 只在 ≥1400 显示。**不用角落浮动按钮开目录**（方位与面板割裂、和回到顶部抢屏幕角落）

@@ -79,7 +79,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 | 组件 | 类 | 变体 | 状态 |
 |---|---|---|---|
-| Button | `.ak-btn` | `--primary --contrast --outline --ghost --danger --link`；`--xs --sm --lg --xl --icon --block --skew --pill`；`.is-loading` `disabled`；`.ak-btn-group` | ✅ |
+| Button | `.ak-btn` | `--primary --contrast --outline --ghost --danger --link`；`--xs --sm --lg --xl --icon --block --skew --pill`；`.is-loading`（文字隐去，居中一枚菱形涟漪，见下 Spinner）`disabled`；`.ak-btn-group` | ✅ |
 | Tag / Badge | `.ak-tag` | `--sm --lg --outline --accent --accent-soft --yellow --info --success --warning --danger --danger-solid --new --inverse --skew --label`；`__dot __remove`；`.ak-badge --dot --accent` | ✅ |
 | Chip（筛选） | `.ak-chip.is-active` | 选中角标 | ✅🧩 |
 | Card | `.ak-card` | `--hover --selected --flat --inset --accent-top --accent-left --horizontal`；`__header __eyebrow __title __body __footer __media`；`.ak-card-grid` | ✅ |
@@ -95,7 +95,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | Toast | `.ak-toasts` `.ak-toast` | `--success --warning --danger` + 进度条 | ✅🧩 |
 | Progress | `.ak-progress` | `--sm --lg --yellow --success --danger --stripes --indeterminate --segmented`；`.ak-ring` | ✅ |
 | Stat | `.ak-stat` `.ak-stat-row` | `--inline`；`__delta--up/--down` | ✅ |
-| Skeleton / Spinner / Loader | `.ak-skeleton --text --rect --square --circle` `.ak-spinner` `.ak-loader` | | ✅ |
+| Skeleton / Spinner / Loader | `.ak-skeleton --text --rect --square --circle` `.ak-spinner` `.ak-loader` | Spinner = **菱形涟漪**（游戏内 loading：中央常驻一枚空心菱形——中坚术师分支图标那枚——另一枚环从它身上冒出来、边扩边淡到没，下一枚再来）。`::before` = 中央菱形（.75em、2px 线）；`::after` = 环，用 border 画：`width/height` 从箍住中央那枚外沿扩到 1.65em（线宽恒 2px）+ `opacity` 淡出，各一条 1.2s 动画，无圆环；游戏里环出生时还带随机剪切，按钮 36px 高里施展不开、没做；`font-size` 定大小（默认 12px → 29px 见方）、`--_c` 换色；`.ak-btn.is-loading` 用同一套画法（颜色跟按钮 `--_fg`，xs 整体缩 .8）。减弱动效时环不出、只留中央静止的菱形 | ✅ |
 | Empty | `.ak-empty` `__icon __title __code` | | ✅ |
 | Avatar | `.ak-avatar` | `--xs --sm --lg --xl --round --cut`；`__status`；`.ak-avatar-group` | ✅ |
 | Breadcrumb | `.ak-breadcrumb` | | ✅ |
