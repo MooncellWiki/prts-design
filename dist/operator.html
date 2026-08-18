@@ -1210,9 +1210,10 @@ table.diff td { padding: .3em .5em; }
 .ak-btn--skew { clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); padding-inline: calc(var(--ak-space-4) + 6px); border: 0; }
 .ak-btn--pill { border-radius: var(--ak-radius-pill); }
 .ak-btn__icon { width: 1.1em; height: 1.1em; flex: none; }
-.ak-btn.is-loading { color: transparent !important; pointer-events: none; }
-.ak-btn.is-loading::after { content: ""; position: absolute; width: 14px; height: 14px; border: 2px solid var(--_fg); border-right-color: transparent; animation: ak-spin .7s linear infinite; }
-.ak-btn--primary.is-loading::after { border-color: var(--ak-accent-fg); border-right-color: transparent; }
+/* 加载态：菱形涟漪——游戏内 loading：中央常驻一枚空心菱形（中坚术师分支图标那枚），另一枚环从它身上冒出来、边扩边淡到没，下一枚再来。
+ * 颜色读按钮自己的 --_fg（文字已 transparent，不能用 currentColor）；尺寸随 em 走（xs 整体缩 .8）；画法见 .ak-spinner 处共用规则 */
+.ak-btn.is-loading { color: transparent !important; pointer-events: none; --_ld: var(--_fg); }
+.ak-btn--xs.is-loading::before, .ak-btn--xs.is-loading::after { font-size: .8em; }
 .ak-btn-group { display: inline-flex; }
 .ak-btn-group > .ak-btn:not(:first-child) { margin-left: -1px; }
 .ak-btn-group > .ak-btn.is-active { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); z-index: 1; }
@@ -1436,7 +1437,19 @@ table.diff td { padding: .3em .5em; }
 .ak-skeleton { background: linear-gradient(90deg, var(--ak-bg-surface-2) 25%, var(--ak-bg-surface-3) 50%, var(--ak-bg-surface-2) 75%); background-size: 200% 100%; animation: ak-shimmer 1.4s infinite; display: block; height: 1em; }
 .ak-skeleton--text { height: .9em; margin: .35em 0; } .ak-skeleton--text:last-child { width: 60%; }
 .ak-skeleton--rect { height: 120px; } .ak-skeleton--square { aspect-ratio: 1; height: auto; } .ak-skeleton--circle { border-radius: 50%; aspect-ratio: 1; height: auto; }
-.ak-spinner { display: inline-block; width: 22px; height: 22px; border: 2px solid var(--ak-border-strong); border-top-color: var(--ak-accent); border-radius: 50%; animation: ak-spin .8s linear infinite; }
+/* Spinner = 同一枚菱形涟漪（与 .ak-btn.is-loading 共用画法）：font-size 定大小（默认 12px → 29px 见方），--_c 换色。
+ * ::before = 中央常驻的空心菱形（.75em、2px 线）；::after = 涟漪环，同一枚菱形从中央那枚身上冒出来：
+ *   尺寸走 width/height（不用 scale，线宽恒 2px）从「中央那枚 + 两道线宽 + 1px」（刚好箍在它外沿）→ 1.65em、ease-out；透明度另一条 ease-in 淡到 0；
+ *   1.2s 一枚。曾试过给环加出生时随机剪切（游戏里有），按钮 36px 高里施展不开、反而脏，去掉了。减弱动效时环不出、只留中央静止的菱形 */
+.ak-spinner { display: inline-block; position: relative; flex: none; vertical-align: middle; width: 2.4em; height: 2.4em; font-size: 12px; --_ld: var(--_c, var(--ak-accent)); }
+.ak-btn.is-loading::before, .ak-btn.is-loading::after, .ak-spinner::before, .ak-spinner::after {
+  content: ""; position: absolute; inset: 0; margin: auto; width: .75em; height: .75em; box-sizing: border-box;
+  border: 2px solid var(--_ld); transform: rotate(45deg);
+}
+.ak-btn.is-loading::after, .ak-spinner::after {
+  opacity: 0;
+  animation: ak-ripple 1.2s cubic-bezier(.2,.6,.4,1) infinite, ak-ripple-fade 1.2s cubic-bezier(.4,0,.8,.6) infinite;
+}
 .ak-loader { display: inline-flex; gap: 4px; align-items: center; }
 .ak-loader > i { width: 6px; height: 14px; background: var(--ak-accent); animation: ak-bars 1s ease-in-out infinite; }
 .ak-loader > i:nth-child(2) { animation-delay: .15s; } .ak-loader > i:nth-child(3) { animation-delay: .3s; }
@@ -1574,7 +1587,8 @@ table.diff td { padding: .3em .5em; }
 .ak-heading__title::after { display: none; }
 
 /* ═══ Keyframes ═══ */
-@keyframes ak-spin { to { transform: rotate(360deg); } }
+@keyframes ak-ripple { from { width: calc(.75em + 5px); height: calc(.75em + 5px); } to { width: 1.65em; height: 1.65em; } }   /* 涟漪环外扩：出生时刚好箍在中央菱形外沿 */
+@keyframes ak-ripple-fade { from { opacity: 1; } to { opacity: 0; } }
 @keyframes ak-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 @keyframes ak-slide-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @keyframes ak-fade-in { from { opacity: 0; } to { opacity: 1; } }
