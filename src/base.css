@@ -174,7 +174,6 @@ figure[typeof~="mw:File/Thumb"], figure[typeof~="mw:File/Frame"], .thumb {
 }
 figure[typeof~="mw:File/Thumb"] > a > img, .thumbimage { display: block; max-width: 100%; height: auto; background: var(--ak-bg-inset); }
 figure[typeof~="mw:File/Thumb"] > figcaption, .thumbcaption { padding: var(--ak-space-2) var(--ak-space-2) var(--ak-space-1); border-top: 1px solid var(--ak-border-subtle); line-height: 1.5; }
-figure[typeof~="mw:File/Thumb"] > figcaption::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--ak-accent); margin-right: .5em; vertical-align: .05em; }
 .mw-halign-right, .tright, figure.mw-halign-right { float: right; clear: right; margin: .25em 0 var(--ak-space-4) var(--ak-space-5); }
 .mw-halign-left, .tleft, figure.mw-halign-left { float: left; clear: left; margin: .25em var(--ak-space-5) var(--ak-space-4) 0; }
 .mw-halign-center, .center { text-align: center; }
