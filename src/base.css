@@ -102,7 +102,7 @@ a.external { color: var(--ak-link-external); }
 hr { border: 0; height: 1px; background: var(--ak-border); margin: var(--ak-space-8) 0; }
 .mw-parser-output hr.ak-hr-accent { height: 2px; background: linear-gradient(90deg, var(--ak-accent) 0 96px, var(--ak-border) 96px); }
 abbr[title] { text-decoration: underline dotted; text-underline-offset: 2px; cursor: help; }
-mark { background: rgba(255,216,0,.35); color: inherit; padding: 0 .15em; }
+mark { background: var(--ak-mark-bg); color: inherit; padding: 0 .15em; }   /* 淡青底（tokens.css --ak-mark-bg 有取舍说明）：与 :target 引用 / tr.is-hl / 面板当前项同一套高亮语言，不是荧光笔黄 */
 kbd { font-family: var(--ak-font-mono); font-size: .85em; padding: .1em .4em; border: 1px solid var(--ak-border-strong); border-bottom-width: 2px; background: var(--ak-bg-surface-2); }
 sup, sub { line-height: 0; }
 

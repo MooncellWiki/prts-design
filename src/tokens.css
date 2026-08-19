@@ -222,6 +222,8 @@
   --ak-border-accent: var(--ak-blue-500);
   --ak-focus:         var(--ak-blue-500);
   --ak-selection:     rgba(0, 152, 220, 0.25);
+  --ak-mark-bg:       rgba(0, 152, 220, 0.14);   /* <mark> 文字高亮：同 :target 引用 / 表格 is-hl / 面板当前项一套「淡青底」语言，比 --ak-accent-subtle 深一档、比 ::selection 浅一档（选中时仍看得出变化）；
+                                    不用黄——黄留给稀有度 / 警示条纹，且半透明黄叠在暗色面上会发闷成橄榄色；不用红——红链 / danger 已占满红的语义，红底高亮会像报错，红链落在里面也看不清 */
 
   --ak-info:      #0072a8; --ak-info-bg:    rgba(0, 152, 220, 0.10);
   --ak-success:   #1f8f5f; --ak-success-bg: rgba(47, 172, 120, 0.12);
@@ -302,6 +304,7 @@ html.skin-theme-clientpref-night {
   --ak-border-accent: var(--ak-cyan-500);
   --ak-focus:         var(--ak-cyan-500);
   --ak-selection:     rgba(24, 209, 255, 0.28);
+  --ak-mark-bg:       rgba(24, 209, 255, 0.20);
 
   --ak-info:      var(--ak-cyan-300); --ak-info-bg:    rgba(24, 209, 255, 0.10);
   --ak-success:   #4fd18f;            --ak-success-bg: rgba(47, 172, 120, 0.14);
@@ -353,7 +356,7 @@ html.skin-theme-clientpref-night {
     --ak-link: var(--ak-cyan-300); --ak-link-hover: var(--ak-cyan-200); --ak-link-visited: #3f8ea4;
     --ak-link-new: #ff6b6b; --ak-link-external: var(--ak-cyan-300);
     --ak-border: #2f3133; --ak-border-subtle: #262729; --ak-border-strong: #4a4c4f;
-    --ak-border-accent: var(--ak-cyan-500); --ak-focus: var(--ak-cyan-500); --ak-selection: rgba(24,209,255,.28);
+    --ak-border-accent: var(--ak-cyan-500); --ak-focus: var(--ak-cyan-500); --ak-selection: rgba(24,209,255,.28); --ak-mark-bg: rgba(24,209,255,.20);
     --ak-info: var(--ak-cyan-300); --ak-info-bg: rgba(24,209,255,.10); --ak-success: #4fd18f; --ak-success-bg: rgba(47,172,120,.14);
     --ak-warning: #ffb340; --ak-warning-bg: rgba(244,152,0,.14); --ak-danger: #ff5c5c; --ak-danger-bg: rgba(216,60,60,.14);
     --ak-rt-vup: var(--ak-blue-500); --ak-rt-vdown: var(--ak-red-400); --ak-rt-rem: var(--ak-orange-500); --ak-rt-kw: var(--ak-blue-400);
