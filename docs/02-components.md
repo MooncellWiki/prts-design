@@ -126,7 +126,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 职业 / 分支 | `.ak-prof --sm --lg --xl --box --outline`；`.ak-subprof`；`.ak-prof-label`；`[data-prof]` 8 色 | `arts/profession_large_hub` `ui_sub_profession_icon_hub` | ✅ |
 | 精英化 | `.ak-elite --lg`；`.ak-phase-tabs`（E0/E1/E2 选择器） | `arts/elite_hub` | ✅🧩 |
 | 潜能 / 专精 | `.ak-potential` `.ak-spec` `--bare` | `arts/potential_hub` `arts/specialized_hub` | ✅ |
-| 等级 / 信赖 | `.ak-level --badge` `.ak-trust` | | ✅ |
+| 等级 / 信赖 | `.ak-level --badge` `.ak-trust` | 「LV 90」横排（LV 小标坐数字基线），`--badge` 24px 高与阶段页签 / 开关 / `.ak-trust` 同一条线；是主题灰块（`surface-3` + `fg`）不反白：反白留给「选中 / 可点」（阶段页签激活态、`btn--contrast`），读数块挨着它不能长得一样 | ✅ |
 | 干员卡 | `.ak-op-card --sm --lg --rail` `__portrait __rarity __prof __elite __name __sub`；`.ak-op-grid`；`.ak-op-row` | 游戏干员列表卡：头像 + 左上星 + 左下职业 + 右下精英 + 稀有度色顶线 | ✅ |
 | 道具 | `.ak-item --sm --lg --round .is-disabled` `__count.is-short`；`.ak-item-list` `.ak-item-inline` | 稀有度色边框 + 黑底数量角标（方框；切角变体已移除） | ✅ |
 | 材料表 | `.ak-materials` `__label` | 阶段/等级 → 材料行 | ✅ |
@@ -148,7 +148,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 关卡 | `.ak-stage --hard --ex --story` `__code __name __meta`；`.ak-stage-code --hard`；`.ak-sanity` | 关卡号用展示字 | ✅ |
 | 敌人 | `.ak-enemy --boss --elite` `__img __code __name __level` | | ✅ |
 | 势力 | `.ak-camp --lg --box` | `spritepack/ui_camp_logo` | ✅ |
-| 活动 / 倒计时 | `.ak-event.is-live` `__banner __type __title __time`；`.ak-countdown` | | ✅🧩 |
+| 活动 / 倒计时 | `.ak-event.is-live` `__banner __type __title __time`；`.ak-countdown` | 倒计时三枚灰块（同 `.ak-level--badge`）：白块会像一排按钮、也压过标题 | ✅🧩 |
 | Breaking news | `.ak-news __label __text` | 游戏主界面横幅 | ✅ |
 | Hero | `.ak-hero __eyebrow __title __bar __desc __side` | 官网风黑底 + 青斜块 + 网点 | ✅ |
 
