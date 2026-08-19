@@ -140,7 +140,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 富文本 | `.ak-rt-*` / `.ba-*` | 见 01 §2.4 | ✅ |
 | 属性面板 | `.ak-attrs --compact` `.ak-attr --accent __label __value` | Bender 数值 + overline 标签（EN + 中文） | ✅ |
 | 键值表 | `.ak-kv --boxed` | 信息栏：`dt` / `dd` 垂直居中（`align-content`），`--boxed` 的表头居中同现网 `th`；数字走正文字体（表格硬规则，`.ak-code-id` `.ak-trust` 落进 `dd` 由 B99 兜底） | ✅ |
-| 攻击范围 | `.ak-range --sm --lg` `style="--cols:N"` `i.on/.self/.off` | | ✅ |
+| 攻击范围 | `.ak-range --sm --lg` `style="--cols:N"` `i.self / i.on / i.off` | 同现网 prts.wiki `Widget:Range/*`：**自身格实心蓝、可攻击格灰色空心框、不在范围内的格不画**；默认格 22px + 间隙 4px（= 现网 26px 格距），只铺范围的外接矩形（`1-1` 就是 `--cols:2` 两格，不要补空格撑成 3×3）。`--sm` 给技能卡侧槽 / 信息行；颜色钩子 `--ak-range-self` / `--ak-range-cell` | ✅ |
 | 模组 | `.ak-module __img __type __name __stage __mission`（`--_bar` 改左侧色条色） | SWO-X 等型号用展示字；卡片左侧一道粗色条即分割，`__mission` 不再另画竖线 | ✅ |
 | 语音 | `.ak-voice __play.is-playing __title __lang __text __wave` | | ✅🧩 |
 | 档案 | `.ak-dossier.is-locked[data-unlock]` `__title __unlock`；`.ak-redacted` | 未解锁：模糊 + 斜纹 + 条件 | ✅ |

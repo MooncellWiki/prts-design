@@ -357,13 +357,15 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-kv--boxed { border: 1px solid var(--ak-border); }
 .ak-kv--boxed > dt { padding-left: 12px; text-align: center; background: var(--ak-bg-surface-2); }   /* 框住的那版：表头居中（同现网 th）；不带框的档案版标签列保持左对齐 */
 
-/* B9. 攻击范围格 */
-.ak-range { --_cell: 14px; display: inline-grid; gap: 2px; grid-template-columns: repeat(var(--cols, 5), var(--_cell)); }
-.ak-range > i { width: var(--_cell); height: var(--_cell); border: 1px solid var(--ak-border-strong); background: transparent; }
-.ak-range > i.on { background: var(--ak-blue-500); border-color: var(--ak-blue-500); }
-.ak-range > i.self { background: var(--ak-fg); border-color: var(--ak-fg); }
-.ak-range > i.off { border-color: transparent; }
-.ak-range--lg { --_cell: 20px; } .ak-range--sm { --_cell: 10px; }
+/* B9. 攻击范围格 —— 同现网 prts.wiki Widget:Range/* 的画法：自身格 = 实心蓝方块，攻击格 = 灰色 2px 空心框，不在范围内的格不画；
+ *  格 22px + 间隙 4px（= 现网 26px 格距），只画范围的外接矩形（1-1 就是 1×2，不要补空格撑成 3×3）。
+ *  i.self 自身 · i.on 可攻击 · i.off（或不写 class）空格。颜色两个钩子：--ak-range-self（自身）/ --ak-range-cell（攻击格描边） */
+.ak-range { --_cell: 22px; --_gap: 4px; --_bw: 2px; display: inline-grid; gap: var(--_gap); grid-template-columns: repeat(var(--cols, 5), var(--_cell)); vertical-align: top; }
+.ak-range > i { display: block; width: var(--_cell); height: var(--_cell); box-sizing: border-box; background: transparent; border: 0; }
+.ak-range > i.on { border: var(--_bw) solid var(--ak-range-cell, var(--ak-fg-subtle)); }
+.ak-range > i.self { background: var(--ak-range-self, var(--ak-blue-500)); }
+.ak-range--lg { --_cell: 28px; --_gap: 5px; }
+.ak-range--sm { --_cell: 14px; --_gap: 2px; --_bw: 1.5px; }   /* 技能卡侧槽 / 表格里用 */
 
 /* B10. 模组卡 */
 .ak-module { --_bar: var(--ak-fg); display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 14px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w-lg); border-image: linear-gradient(to right, var(--_bar) 8px, var(--ak-border) 8px) 1 1 1 8; }   /* 左侧粗色条（--_bar 可改：原型 ORIGINAL 用 --ak-fg-muted）与 1px 框直角拼接 */
