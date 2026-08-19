@@ -378,6 +378,8 @@
   --ak-border-accent: var(--ak-blue-500);
   --ak-focus:         var(--ak-blue-500);
   --ak-selection:     rgba(0, 152, 220, 0.25);
+  --ak-mark-bg:       rgba(0, 152, 220, 0.14);   /* <mark> 文字高亮：同 :target 引用 / 表格 is-hl / 面板当前项一套「淡青底」语言，比 --ak-accent-subtle 深一档、比 ::selection 浅一档（选中时仍看得出变化）；
+                                    不用黄——黄留给稀有度 / 警示条纹，且半透明黄叠在暗色面上会发闷成橄榄色；不用红——红链 / danger 已占满红的语义，红底高亮会像报错，红链落在里面也看不清 */
 
   --ak-info:      #0072a8; --ak-info-bg:    rgba(0, 152, 220, 0.10);
   --ak-success:   #1f8f5f; --ak-success-bg: rgba(47, 172, 120, 0.12);
@@ -458,6 +460,7 @@ html.skin-theme-clientpref-night {
   --ak-border-accent: var(--ak-cyan-500);
   --ak-focus:         var(--ak-cyan-500);
   --ak-selection:     rgba(24, 209, 255, 0.28);
+  --ak-mark-bg:       rgba(24, 209, 255, 0.20);
 
   --ak-info:      var(--ak-cyan-300); --ak-info-bg:    rgba(24, 209, 255, 0.10);
   --ak-success:   #4fd18f;            --ak-success-bg: rgba(47, 172, 120, 0.14);
@@ -509,7 +512,7 @@ html.skin-theme-clientpref-night {
     --ak-link: var(--ak-cyan-300); --ak-link-hover: var(--ak-cyan-200); --ak-link-visited: #3f8ea4;
     --ak-link-new: #ff6b6b; --ak-link-external: var(--ak-cyan-300);
     --ak-border: #2f3133; --ak-border-subtle: #262729; --ak-border-strong: #4a4c4f;
-    --ak-border-accent: var(--ak-cyan-500); --ak-focus: var(--ak-cyan-500); --ak-selection: rgba(24,209,255,.28);
+    --ak-border-accent: var(--ak-cyan-500); --ak-focus: var(--ak-cyan-500); --ak-selection: rgba(24,209,255,.28); --ak-mark-bg: rgba(24,209,255,.20);
     --ak-info: var(--ak-cyan-300); --ak-info-bg: rgba(24,209,255,.10); --ak-success: #4fd18f; --ak-success-bg: rgba(47,172,120,.14);
     --ak-warning: #ffb340; --ak-warning-bg: rgba(244,152,0,.14); --ak-danger: #ff5c5c; --ak-danger-bg: rgba(216,60,60,.14);
     --ak-rt-vup: var(--ak-blue-500); --ak-rt-vdown: var(--ak-red-400); --ak-rt-rem: var(--ak-orange-500); --ak-rt-kw: var(--ak-blue-400);
@@ -780,7 +783,7 @@ a.external { color: var(--ak-link-external); }
 hr { border: 0; height: 1px; background: var(--ak-border); margin: var(--ak-space-8) 0; }
 .mw-parser-output hr.ak-hr-accent { height: 2px; background: linear-gradient(90deg, var(--ak-accent) 0 96px, var(--ak-border) 96px); }
 abbr[title] { text-decoration: underline dotted; text-underline-offset: 2px; cursor: help; }
-mark { background: rgba(255,216,0,.35); color: inherit; padding: 0 .15em; }
+mark { background: var(--ak-mark-bg); color: inherit; padding: 0 .15em; }   /* 淡青底（tokens.css --ak-mark-bg 有取舍说明）：与 :target 引用 / tr.is-hl / 面板当前项同一套高亮语言，不是荧光笔黄 */
 kbd { font-family: var(--ak-font-mono); font-size: .85em; padding: .1em .4em; border: 1px solid var(--ak-border-strong); border-bottom-width: 2px; background: var(--ak-bg-surface-2); }
 sup, sub { line-height: 0; }
 
@@ -826,7 +829,7 @@ pre, .mw-code, .mw-highlight pre {
 .wikitable.ak-borderless, .wikitable.ak-borderless > * > tr > th, .wikitable.ak-borderless > * > tr > td { border-left: 0; border-right: 0; }
 .wikitable.ak-borderless { border-left: 0; border-right: 0; }
 .wikitable th.ak-th-accent { box-shadow: inset 0 3px 0 var(--ak-accent); }   /* 表头顶部色条画在格子内（collapse 表格里 border-image 无效，而 3px 的 border-top 会和 1px 的竖线斜接） */
-/* 数字列：正文字体（Noto Sans SC 数字默认等宽，天然对齐；Bender 数字是比例宽度、子集无 tnum，小字号又细，不进表格）。.ak-num 是显式的 HUD 数字（粗体 Bender），表格里只在面板级数值上用 */
+/* 数字列：正文字体（Noto Sans SC 数字默认等宽，天然对齐；Bender 数字是比例宽度、子集无 tnum，小字号又细）。硬规则：表格数据数字一律不用 Bender——.ak-num 等 HUD 数字类掉进 td / th / 键值表 dd 由 arknights.css B99 兜底回正文字体 */
 .wikitable td.num, .wikitable .num { font-variant-numeric: tabular-nums; text-align: right; }
 .wikitable .ak-num { text-align: right; }
 /* sortable (jquery.tablesorter) */
@@ -852,7 +855,6 @@ figure[typeof~="mw:File/Thumb"], figure[typeof~="mw:File/Frame"], .thumb {
 }
 figure[typeof~="mw:File/Thumb"] > a > img, .thumbimage { display: block; max-width: 100%; height: auto; background: var(--ak-bg-inset); }
 figure[typeof~="mw:File/Thumb"] > figcaption, .thumbcaption { padding: var(--ak-space-2) var(--ak-space-2) var(--ak-space-1); border-top: 1px solid var(--ak-border-subtle); line-height: 1.5; }
-figure[typeof~="mw:File/Thumb"] > figcaption::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--ak-accent); margin-right: .5em; vertical-align: .05em; }
 .mw-halign-right, .tright, figure.mw-halign-right { float: right; clear: right; margin: .25em 0 var(--ak-space-4) var(--ak-space-5); }
 .mw-halign-left, .tleft, figure.mw-halign-left { float: left; clear: left; margin: .25em var(--ak-space-5) var(--ak-space-4) 0; }
 .mw-halign-center, .center { text-align: center; }
@@ -951,12 +953,11 @@ sup.reference a { padding: 0 .1em; }
 .catlinks .mw-normal-catlinks > a:hover { color: var(--ak-accent); text-decoration: none; }
 .catlinks .mw-hidden-catlinks { color: var(--ak-fg-muted); }
 .catlinks .mw-hidden-catlinks .ak-catlinks__label { color: var(--ak-fg-subtle); }
-/* 链接：与正文链接同色，默认无下划线，悬停才出（与全局 a 的行为一致：1px / offset 3px） */
+/* 链接：就用全局 a / a:hover / a:visited，这里不重写颜色——MW 核心 interface-category.less 只给 .catlinks / li
+ * 画框和竖线，不碰链接色，没什么要压的；重写一遍 `.catlinks li a { color }`（0,1,2）反而会盖掉 a:visited（0,1,1），分类链接永远不褪色 */
 .catlinks ul { display: contents; margin: 0; padding: 0; list-style: none; }
 .catlinks li, .catlinks li:first-child { display: inline; margin: 0; padding: 0; border: 0; line-height: inherit; }
 .catlinks li::before { display: none !important; }
-.catlinks li a { color: var(--ak-link); text-decoration: none; }
-.catlinks li a:hover { color: var(--ak-link-hover); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .catlinks li a.mw-redirect { font-style: italic; }
 .catlinks .mw-hidden-catlinks li a { color: var(--ak-fg-secondary); }
 .catlinks .mw-hidden-catlinks li a:hover { color: var(--ak-link-hover); }
@@ -1279,11 +1280,13 @@ table.diff td { padding: .3em .5em; }
 /* 选中角标：绝对定位在左上角（与 .ak-tab / .ak-page-tabs / .ak-card 的选中角标一致），不占据行内宽度 */
 .ak-chip.is-active::before, .ak-chip[aria-pressed="true"]::before { content: ""; position: absolute; top: 0; left: 0; border-style: solid; border-width: 5px 5px 0 0; border-color: currentColor transparent transparent; opacity: .7; pointer-events: none; }
 
-/* Count badge (通知红点/数字) */
+/* Count badge（通知计数 / 未读点）—— 默认黄（次强调「提示」），不走红：红只留给危险与 NEW/BREAKING，
+   未读数不是高危信息。Echo 的 alerts 类（回退 / 权限变更）才用 --danger；NEW 角标是 .ak-tag--new，不是徽标 */
 .ak-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px;
-  font: 700 11px/1 var(--ak-font-label); background: var(--ak-red-600); color: #fff; border-radius: var(--ak-radius-pill); }
+  font: 700 11px/1 var(--ak-font-label); background: var(--ak-accent-2); color: var(--ak-accent-2-fg); border-radius: var(--ak-radius-pill); }
 .ak-badge--dot { min-width: 8px; width: 8px; height: 8px; padding: 0; }
 .ak-badge--accent { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-badge--danger { background: var(--ak-red-600); color: #fff; }
 
 /* ═══ Card / Panel ═══ */
 .ak-card {
@@ -1300,7 +1303,7 @@ table.diff td { padding: .3em .5em; }
 .ak-card--accent-left { border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--ak-accent) 4px, var(--_bd, var(--ak-border)) 4px) 1 1 1 4; }
 .ak-card__header { display: flex; align-items: center; gap: var(--ak-space-3); padding: var(--ak-space-3) var(--ak-space-4); border-bottom: 1px solid var(--ak-border); }
 .ak-card__title { font-weight: 700; font-size: var(--ak-fs-body); margin: 0; flex: 1; line-height: 1.3; }
-.ak-card__eyebrow { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-accent); margin-bottom: 4px; display: block; }
+.ak-card__eyebrow { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin-bottom: 4px; display: block; }   /* 灰不青：不可点的装饰小标签，青色会读成链接 / 按钮，亮色下 #0098DC 压白底也只有 3.2:1；与 .ak-overline / .ak-stat__label / .ak-attr__label 同色 */
 .ak-card__body { padding: var(--ak-space-4); flex: 1; }
 .ak-card__body > :last-child { margin-bottom: 0; }
 .ak-card__footer { padding: var(--ak-space-3) var(--ak-space-4); border-top: 1px solid var(--ak-border); display: flex; align-items: center; gap: var(--ak-space-3); background: var(--ak-bg-surface-2); }
@@ -1331,7 +1334,7 @@ table.diff td { padding: .3em .5em; }
 .ak-heading__en { font-family: var(--ak-font-display); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-weight: 700; color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); }
 .ak-heading__aside { margin-left: auto; font-size: var(--ak-fs-sm); }
 .ak-heading--stack { flex-direction: column; align-items: flex-start; gap: 2px; }
-.ak-heading--stack .ak-heading__en { font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); color: var(--ak-accent); }
+.ak-heading--stack .ak-heading__en { font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }   /* 同 .ak-card__eyebrow：装饰小标签不上青 */
 .ak-heading--lg .ak-heading__title { font-size: var(--ak-fs-display); }
 .ak-heading--underline { border-left: 0; padding-left: 0; padding-bottom: var(--ak-space-2); border-bottom: 1px solid var(--ak-border); position: relative; }
 .ak-heading--underline::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 120px; height: 3px; background: var(--ak-accent); }
@@ -1497,8 +1500,8 @@ table.diff td { padding: .3em .5em; }
 .ak-breadcrumb [aria-current] { color: var(--ak-fg); font-weight: 600; }
 .ak-pagination { display: inline-flex; gap: 2px; align-items: center; font-variant-numeric: tabular-nums; }
 .ak-pagination__item, .ak-pagination a { min-width: 32px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--ak-border); color: var(--ak-fg-secondary); text-decoration: none; font-weight: 600; font-size: var(--ak-fs-sm); }
-.ak-pagination a:hover { border-color: var(--ak-accent); color: var(--ak-accent); text-decoration: none; }
-.ak-pagination .is-active { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); }
+.ak-pagination a:not(.is-active):hover { border-color: var(--ak-accent); color: var(--ak-accent); text-decoration: none; }   /* 当前页不响应 hover；a.is-active:hover 仍要写，压住 base.css 全局 a:visited:hover (0,2,1) */
+.ak-pagination .is-active, .ak-pagination a.is-active:hover { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); cursor: default; }
 .ak-pagination .is-disabled { opacity: .4; pointer-events: none; }
 .ak-pagination__ellipsis { padding: 0 6px; color: var(--ak-fg-subtle); }
 
@@ -1689,7 +1692,7 @@ table.diff td { padding: .3em .5em; }
 .ak-display--xl { font-size: var(--ak-fs-display-xl); }
 .ak-overline { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }
 .ak-label { font-family: var(--ak-font-label); }
-.ak-num { font-family: var(--ak-font-label); font-variant-numeric: tabular-nums; font-weight: 700; }
+.ak-num { font-family: var(--ak-font-label); font-variant-numeric: tabular-nums; font-weight: 700; }   /* 面板级 HUD 数字；不进表格——进了 td / th / 键值表 dd 会被文末 B99 兜底回正文字体 */
 .ak-code-id { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .1em; color: var(--ak-fg-muted); text-transform: uppercase; }   /* LM04 / R001 类编号 */
 .ak-watermark { position: absolute; right: 8px; bottom: -6px; font: 800 4rem/1 var(--ak-font-display); letter-spacing: -.02em; color: var(--ak-fg); opacity: .05; pointer-events: none; user-select: none; text-transform: uppercase; white-space: nowrap; }
 
@@ -1760,11 +1763,14 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-potential, .ak-spec { display: inline-grid; place-items: center; background: #1d1f20; padding: 2px; vertical-align: middle; }
 .ak-potential > img, .ak-spec > img { height: 20px; width: auto; display: block; }
 .ak-potential--bare, .ak-spec--bare { background: none; padding: 0; }
-.ak-level { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; font-family: var(--ak-font-label); }
+/* 等级读数「LV 90」：横排、LV 小标坐在数字基线上；数字 18px + 3px 内距 = 24px 高，与阶段页签 / 开关 / .ak-trust 同一条线
+ *  （此前竖排 LV 叠数字 42px 高，在控制行里比左右所有东西都高出一截）。tabular-nums：E0/E1/E2 切换 50 → 80 → 90 宽度不跳 */
+.ak-level { display: inline-flex; align-items: baseline; gap: 5px; line-height: 1; font-family: var(--ak-font-label); }
 .ak-level__lv { font-size: 10px; font-weight: 600; letter-spacing: .1em; color: var(--ak-fg-muted); }
-.ak-level__n { font-size: 24px; font-weight: 800; }
-.ak-level--badge { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); padding: 4px 8px; }
-.ak-level--badge .ak-level__lv { color: inherit; opacity: .6; }
+.ak-level__n { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+/* 等级块 / 倒计时块是「读数」，用主题灰（surface-3 + fg，同 .ak-sp-dur 灰芯片），不反白——反白在本系统里是「选中 / 可点」（激活的阶段页签、btn--contrast = 游戏 btn_on）：
+ *  LV 块紧挨 E2 页签再反白就像又一个选中项；倒计时三枚白块像一排按钮。大面积反白也会压过标题，读数不该比标题响 */
+.ak-level--badge { background: var(--ak-bg-surface-3); color: var(--ak-fg); padding: 3px 8px; }   /* __lv 沿用基础的 --ak-fg-muted */
 /* 精英化阶段选择器（E0 / E1 / E2） */
 .ak-phase-tabs { display: inline-flex; border: 1px solid var(--ak-border-strong); }
 .ak-phase-tabs > button { all: unset; cursor: pointer; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }
@@ -1878,11 +1884,11 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-skill-table { width: 100%; border-collapse: collapse; font-size: var(--ak-fs-sm); line-height: 1.6; }
 .ak-skill-table th, .ak-skill-table td { padding: 6px 10px; border-top: 1px solid var(--ak-border-subtle); vertical-align: middle; text-align: center; }
 .ak-skill-table thead th { background: var(--ak-bg-surface-2); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); white-space: nowrap; }
-.ak-skill-table thead th .ak-sp-cost, .ak-skill-table thead th .ak-sp-init, .ak-skill-table thead th .ak-sp-dur { font-family: var(--ak-font-body); font-weight: 700; }   /* 列头直接用同一套芯片做图例 */
+.ak-skill-table thead th .ak-sp-cost, .ak-skill-table thead th .ak-sp-init, .ak-skill-table thead th .ak-sp-dur { font-weight: 700; }   /* 列头直接用同一套芯片做图例（字体由 B99 兜底回正文）*/
 .ak-skill-table tbody tr:first-child > * { border-top: 0; }
-.ak-skill-table .lv { width: 56px; font: 800 var(--ak-fs-sm)/1 var(--ak-font-label); white-space: nowrap; }
+.ak-skill-table .lv { width: 56px; font: 800 var(--ak-fs-sm)/1 var(--ak-font-body); white-space: nowrap; }
 .ak-skill-table .desc { text-align: left; }
-.ak-skill-table .num { width: 52px; font-family: var(--ak-font-label); font-weight: 700; font-variant-numeric: tabular-nums; }
+.ak-skill-table .num { width: 52px; font-weight: 700; font-variant-numeric: tabular-nums; }   /* 正文字体（表格数字硬规则，见 B99）*/
 .ak-skill-table .num:empty::before { content: "—"; color: var(--ak-fg-subtle); font-weight: 400; }
 .ak-skill-table tr.is-mastery .lv { color: var(--ak-rt-vup); }
 .ak-skill-table tr.is-mastery .lv img { height: 14px; width: auto; vertical-align: -3px; margin-right: 3px; filter: var(--ak-glyph-filter); }
@@ -1908,17 +1914,17 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-var { font-weight: 700; color: var(--ak-rt-vup); border-bottom: 1px dotted currentColor; white-space: nowrap; }
 .ak-skill-matrix { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: var(--ak-fs-sm); }
 .ak-skill-matrix th, .ak-skill-matrix td { padding: 5px 4px; text-align: center; border-top: 1px solid var(--ak-border-subtle); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.ak-skill-matrix thead th { background: var(--ak-bg-surface-2); font: 800 var(--ak-fs-xs)/1.3 var(--ak-font-label); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); }
+.ak-skill-matrix thead th { background: var(--ak-bg-surface-2); font: 800 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); }
 .ak-skill-matrix thead th img { height: 13px; width: auto; vertical-align: -2px; margin-right: 2px; filter: var(--ak-glyph-filter); }
 .ak-skill-matrix thead th.is-mastery { color: var(--ak-rt-vup); }
 .ak-skill-matrix tbody th { text-align: left; font-weight: 600; color: var(--ak-fg-secondary); padding-left: 12px; white-space: normal; }
 .ak-skill-matrix col.label { width: 120px; }
-.ak-skill-matrix td { font-family: var(--ak-font-label); font-weight: 700; color: var(--ak-fg-subtle); }
+.ak-skill-matrix td { font-weight: 700; color: var(--ak-fg-subtle); }   /* 正文字体（表格数字硬规则，见 B99）*/
 .ak-skill-matrix td.is-up { color: var(--ak-fg); }                  /* 较上一级有变化（第 1 级也算） */
 .ak-skill-matrix .m-start { border-left: 1px solid var(--ak-border-strong); }   /* 7 与专精 Ⅰ 之间一道分隔 */
 .ak-skill-matrix .is-hl { background: var(--ak-accent-subtle); }
 .ak-skill-matrix thead th.is-hl { color: var(--ak-accent); }
-.ak-skill-matrix tbody th .ak-sp-init, .ak-skill-matrix tbody th .ak-sp-cost, .ak-skill-matrix tbody th .ak-sp-dur { font-family: var(--ak-font-body); font-weight: 700; }
+.ak-skill-matrix tbody th .ak-sp-init, .ak-skill-matrix tbody th .ak-sp-cost, .ak-skill-matrix tbody th .ak-sp-dur { font-weight: 700; }   /* 字体由 B99 兜底回正文 */
 @media (max-width: 639px) { .ak-skill-matrix col.label { width: 72px; } .ak-skill-matrix tbody th { padding-left: 8px; font-size: var(--ak-fs-xs); } .ak-skill-matrix th, .ak-skill-matrix td { padding: 5px 2px; font-size: var(--ak-fs-xs); } }
 
 /* B6c. 天赋条件表——prts.wiki 现网的「条件 × 描述」对比（精英阶段 / 模组等级），潜能加成用表头右侧的开关切换描述
@@ -1930,7 +1936,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-talent-table .name { width: 112px; font-weight: 800; }
 .ak-talent-table td.name { border-right: 1px solid var(--ak-border-subtle); vertical-align: top; padding-top: 8px; }
 .ak-talent-table .cond { width: 168px; white-space: nowrap; color: var(--ak-fg-secondary); }
-.ak-talent-table .cond .ak-elite { vertical-align: middle; font-size: var(--ak-fs-sm); font-family: var(--ak-font-body); }
+.ak-talent-table .cond .ak-elite { vertical-align: middle; font-size: var(--ak-fs-sm); }   /* 字体由 B99 兜底回正文 */
 .ak-talent-table__toggle { float: right; margin-left: 12px; font-weight: 400; text-transform: none; letter-spacing: 0; }
 .ak-talent-table__toggle > input { width: 16px; height: 16px; }
 .ak-talent-table__pot { display: none; }
@@ -1973,20 +1979,23 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-attr--accent { border-top: 2px solid var(--ak-accent); }
 .ak-attrs--compact .ak-attr { flex-direction: row; justify-content: space-between; align-items: baseline; padding: 6px 12px; }
 .ak-attrs--compact .ak-attr__value { font-size: var(--ak-fs-body); }
-/* 键值表（信息栏） */
+/* 键值表（信息栏）—— dt / dd 都要显式 margin: 0：正文的 .mw-parser-output dt { margin-top } / dd { margin } 会漏进来（同优先级，靠顺序压）；
+ *  两列都 align-content: center（block 容器上的 align-content，不动 inline 流），行高由高的一侧（图标 / 标签）决定时另一侧垂直居中，同现网 infobox 的 th / td middle */
 .ak-kv { display: grid; grid-template-columns: max-content 1fr; gap: 0; font-size: var(--ak-fs-sm); border-top: 1px solid var(--ak-border); }
-.ak-kv > dt { padding: 6px 12px 6px 0; color: var(--ak-fg-muted); font-weight: 600; border-bottom: 1px solid var(--ak-border-subtle); }
-.ak-kv > dd { padding: 6px 0 6px 12px; margin: 0; border-bottom: 1px solid var(--ak-border-subtle); border-left: 1px solid var(--ak-border-subtle); }
+.ak-kv > dt { padding: 6px 12px 6px 0; margin: 0; align-content: center; color: var(--ak-fg-muted); font-weight: 600; border-bottom: 1px solid var(--ak-border-subtle); }
+.ak-kv > dd { padding: 6px 0 6px 12px; margin: 0; align-content: center; border-bottom: 1px solid var(--ak-border-subtle); border-left: 1px solid var(--ak-border-subtle); }
 .ak-kv--boxed { border: 1px solid var(--ak-border); }
-.ak-kv--boxed > dt { padding-left: 12px; background: var(--ak-bg-surface-2); }
+.ak-kv--boxed > dt { padding-left: 12px; text-align: center; background: var(--ak-bg-surface-2); }   /* 框住的那版：表头居中（同现网 th）；不带框的档案版标签列保持左对齐 */
 
-/* B9. 攻击范围格 */
-.ak-range { --_cell: 14px; display: inline-grid; gap: 2px; grid-template-columns: repeat(var(--cols, 5), var(--_cell)); }
-.ak-range > i { width: var(--_cell); height: var(--_cell); border: 1px solid var(--ak-border-strong); background: transparent; }
-.ak-range > i.on { background: var(--ak-blue-500); border-color: var(--ak-blue-500); }
-.ak-range > i.self { background: var(--ak-fg); border-color: var(--ak-fg); }
-.ak-range > i.off { border-color: transparent; }
-.ak-range--lg { --_cell: 20px; } .ak-range--sm { --_cell: 10px; }
+/* B9. 攻击范围格 —— 同现网 prts.wiki Widget:Range/* 的画法：自身格 = 实心蓝方块，攻击格 = 灰色 2px 空心框，不在范围内的格不画；
+ *  格 22px + 间隙 4px（= 现网 26px 格距），只画范围的外接矩形（1-1 就是 1×2，不要补空格撑成 3×3）。
+ *  i.self 自身 · i.on 可攻击 · i.off（或不写 class）空格。颜色两个钩子：--ak-range-self（自身）/ --ak-range-cell（攻击格描边） */
+.ak-range { --_cell: 22px; --_gap: 4px; --_bw: 2px; display: inline-grid; gap: var(--_gap); grid-template-columns: repeat(var(--cols, 5), var(--_cell)); vertical-align: top; }
+.ak-range > i { display: block; width: var(--_cell); height: var(--_cell); box-sizing: border-box; background: transparent; border: 0; }
+.ak-range > i.on { border: var(--_bw) solid var(--ak-range-cell, var(--ak-fg-subtle)); }
+.ak-range > i.self { background: var(--ak-range-self, var(--ak-blue-500)); }
+.ak-range--lg { --_cell: 28px; --_gap: 5px; }
+.ak-range--sm { --_cell: 14px; --_gap: 2px; --_bw: 1.5px; }   /* 技能卡侧槽 / 表格里用 */
 
 /* B10. 模组卡 */
 .ak-module { --_bar: var(--ak-fg); display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 14px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w-lg); border-image: linear-gradient(to right, var(--_bar) 8px, var(--ak-border) 8px) 1 1 1 8; }   /* 左侧粗色条（--_bar 可改：原型 ORIGINAL 用 --ak-fg-muted）与 1px 框直角拼接 */
@@ -2070,9 +2079,9 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 
 /* B16. 活动 / 倒计时 */
 .ak-countdown { display: inline-flex; gap: 6px; font-family: var(--ak-font-label); }
-.ak-countdown > span { display: inline-flex; flex-direction: column; align-items: center; min-width: 40px; padding: 4px 6px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-countdown > span { display: inline-flex; flex-direction: column; align-items: center; min-width: 40px; padding: 4px 6px; background: var(--ak-bg-surface-3); color: var(--ak-fg); }   /* 灰块读数，不反白（理由见 .ak-level--badge） */
 .ak-countdown > span > b { font-size: var(--ak-fs-h3); line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
-.ak-countdown > span > small { font-size: 9px; font-weight: 600; letter-spacing: .12em; opacity: .6; text-transform: uppercase; }
+.ak-countdown > span > small { font-size: 9px; font-weight: 600; letter-spacing: .12em; color: var(--ak-fg-muted); text-transform: uppercase; }
 .ak-event { position: relative; display: grid; grid-template-columns: 1fr; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; }
 .ak-event__banner { aspect-ratio: 21/9; background: #1d1f20; object-fit: cover; width: 100%; }
 .ak-event__body { padding: 12px 14px; }
@@ -2097,6 +2106,13 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-hero__desc { max-width: 60ch; color: rgba(255,255,255,.7); font-size: var(--ak-fs-sm); }
 .ak-hero__side { position: absolute; right: 0; top: 0; bottom: 0; width: 22%; background: var(--ak-cyan-500); opacity: .9; }   /* 右侧竖直青色色块（官网 hero 的色面；不做斜边） */
 .ak-hero__side::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,0,0,.35) 1.2px, transparent 1.4px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(90deg, #000, transparent 70%); mask-image: linear-gradient(90deg, #000, transparent 70%); }
+
+/* B99. 硬规则：表格数据里的数字一律不用 Bender 系（--ak-font-label）——Bender 数字比例宽度、子集无 tnum、小字号发虚，成列就对不齐。
+ *  表格组件（.ak-skill-table / .ak-skill-matrix / .ak-talent-table / .wikitable / .ak-kv）自身已按正文字体写；这里兜底：
+ *  带数字的 HUD 类掉进 td / th / 键值表 dd 时回正文字体，字重 / 字号 / 字距 / 颜色 / 底色照旧（优先级 0,2,1，压过单类选择器）。
+ *  面板级 HUD 数值（.ak-attrs / .ak-stat / 技能卡芯片 / 素材列表的数量角标）不在表格里，不受影响 */
+:is(td, th, .ak-kv > dd) :is(.ak-num, .ak-code-id, .ak-trust, .ak-item__count, .ak-elite, .ak-level, .ak-sanity, .ak-sp-cost, .ak-sp-init, .ak-sp-dur, .ak-countdown, .ak-stage__meta, .ak-event__time, .ak-timeline__date),
+:is(td, th, .ak-kv > dd):is(.ak-num, .ak-code-id) { font-family: var(--ak-font-body); }
 
 </style>
 <style>
@@ -2323,7 +2339,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-page-header { margin-bottom: var(--ak-space-5); }
 .ak-page-header__top { display: flex; align-items: center; gap: var(--ak-space-3); min-height: 24px; margin-bottom: 4px; }
 .ak-page-header__top .mw-indicators { margin-left: auto; float: none; }
-.ak-page-header__ns { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-accent); }
+.ak-page-header__ns { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }   /* 同 .ak-card__eyebrow：命名空间是不可点的装饰小标签，不上青 */
 .ak-page-header__title, .skin-akds .mw-body h1#firstHeading, .skin-akds #firstHeading {
   font-family: var(--ak-font-body); font-size: var(--ak-fs-h1); font-weight: 800; line-height: 1.2; margin: 0 0 var(--ak-space-3);
   padding: 0 0 0 var(--ak-space-4); border: 0; border-left: var(--ak-bar-w-lg) solid var(--ak-accent); letter-spacing: .01em; overflow-wrap: anywhere; }
@@ -2946,7 +2962,7 @@ html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-
       <li><b>半调网点场</b>从右缘向左渐隐，只铺到工具区背后（游戏顶栏 <code>img_back</code> / 官网左缘网点）；<code>--ak-chrome-texture</code> 调强弱或关掉</li>
       <li><b>标语</b>（ARKNIGHTS WIKI）与<b>悬停</b>用活动主色——官网导航当前项那一点青</li>
       <li><b>搜索触发器</b>：左端深色图标框（游戏 HUD <code>announce_title_on</code> 的图标位）+ 矩形浅条；打开时边框与图标框都变主色（斜切试过，Tab 焦点描边会被裁断，作罢）</li>
-      <li><b>外观开关</b>选中项 = 主色实底（游戏 <code>selected_back</code> / <code>toggle_on</code>），亮暗主题下页眉配色完全一致、不反色；通知红标 <code>#C82A36</code>；头像方形细框；页眉内链接不分已访问色</li>
+      <li><b>外观开关</b>选中项 = 主色实底（游戏 <code>selected_back</code> / <code>toggle_on</code>），亮暗主题下页眉配色完全一致、不反色；通知徽标黄底（次强调，未读数不是高危信息；红只留给危险与 NEW）；头像方形细框；页眉内链接不分已访问色</li>
     </ul></div></div>
   <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">活动主题 · 只改变量，不碰选择器</span>
     <p class="ak-fs-sm">prts.wiki 大活期间会换头图 / 顶栏底图 / 站标 / 侧栏配色（现网 <code>ext.gadget.seventhStyle</code> 改的就是这些）。新皮肤把这些位置抽成 <code>tokens.css §2d</code> 的一组变量，Gadget / <code>MediaWiki:Common.css</code> 在 <code>:root</code> 上覆盖即可。下面这个按钮就是一份示例（<code>preview/demo-theme.css</code>）：罗德岛主界面昼 / 夜背景做头图（跟随 档案 / 终端 主题，画从页面顶端铺起、页眉玻璃调到 <code>.8</code> 让它多透一点）、警示黄做活动主色、换站标、画布点阵。曾把同一幅画右段裁一条、左缘渐隐塞进页眉当「顶栏底图」——白色图标压在天空上读不清，横向渐入也像贴上去的，去掉了；<code>--ak-chrome-image</code> 只留给深色角饰。</p>
