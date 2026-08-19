@@ -272,12 +272,11 @@ sup.reference a { padding: 0 .1em; }
 .catlinks .mw-normal-catlinks > a:hover { color: var(--ak-accent); text-decoration: none; }
 .catlinks .mw-hidden-catlinks { color: var(--ak-fg-muted); }
 .catlinks .mw-hidden-catlinks .ak-catlinks__label { color: var(--ak-fg-subtle); }
-/* 链接：与正文链接同色，默认无下划线，悬停才出（与全局 a 的行为一致：1px / offset 3px） */
+/* 链接：就用全局 a / a:hover / a:visited，这里不重写颜色——MW 核心 interface-category.less 只给 .catlinks / li
+ * 画框和竖线，不碰链接色，没什么要压的；重写一遍 `.catlinks li a { color }`（0,1,2）反而会盖掉 a:visited（0,1,1），分类链接永远不褪色 */
 .catlinks ul { display: contents; margin: 0; padding: 0; list-style: none; }
 .catlinks li, .catlinks li:first-child { display: inline; margin: 0; padding: 0; border: 0; line-height: inherit; }
 .catlinks li::before { display: none !important; }
-.catlinks li a { color: var(--ak-link); text-decoration: none; }
-.catlinks li a:hover { color: var(--ak-link-hover); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .catlinks li a.mw-redirect { font-style: italic; }
 .catlinks .mw-hidden-catlinks li a { color: var(--ak-fg-secondary); }
 .catlinks .mw-hidden-catlinks li a:hover { color: var(--ak-link-hover); }
