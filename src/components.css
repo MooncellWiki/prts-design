@@ -342,16 +342,14 @@
 .ak-input-group > .ak-input:not(:first-child) { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px; }
 .ak-input-group > .ak-input:not(:last-child) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .ak-input-group__addon { display: inline-flex; align-items: center; padding: 0 10px; background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border-strong); color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); }
-.ak-select { appearance: none; padding-right: 30px; background-image: linear-gradient(45deg, transparent 50%, var(--ak-fg-muted) 50%), linear-gradient(135deg, var(--ak-fg-muted) 50%, transparent 50%); background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+.ak-select { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--ak-select-arrow); background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }   /* 与裸 <select> 同一枚 ▾（tokens.css --ak-select-arrow） */
+/* 勾选 / 单选：外观统一由 base.css 的裸控件规则给（18px 直角勾选框 / 圆形单选 / 主色实底），.ak-check 只负责「控件 + 文字」的排布 */
 .ak-check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--ak-fs-sm); }
-.ak-check > input { appearance: none; width: 18px; height: 18px; border: 2px solid var(--ak-border-strong); background: var(--ak-bg-surface); display: grid; place-items: center; margin: 0; cursor: pointer; transition: all var(--ak-dur-fast); }
-.ak-check > input:checked { background: var(--ak-accent); border-color: var(--ak-accent); }
-.ak-check > input:checked::before { content: ""; width: 10px; height: 6px; border-left: 2px solid var(--ak-accent-fg); border-bottom: 2px solid var(--ak-accent-fg); transform: translateY(-1px) rotate(-45deg); }
-.ak-check > input[type="radio"] { transform: rotate(45deg); }
-.ak-check > input[type="radio"]:checked::before { width: 8px; height: 8px; border: 0; background: var(--ak-accent-fg); transform: none; }
+.ak-check > input { flex: none; }
+.ak-check--sm > input { width: 16px; height: 16px; }
 .ak-switch { --_w: 40px; --_h: 22px; position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--ak-fs-sm); }
-.ak-switch > input { appearance: none; width: var(--_w); height: var(--_h); background: var(--ak-gray-500); border: 0; margin: 0; position: relative; cursor: pointer; transition: background var(--ak-dur-fast); }
-.ak-switch > input::before { content: ""; position: absolute; top: 3px; left: 3px; width: calc(var(--_h) - 6px); height: calc(var(--_h) - 6px); background: #fff; transition: transform var(--ak-dur-fast) var(--ak-ease); }
+.ak-switch > input { appearance: none; -webkit-appearance: none; width: var(--_w); height: var(--_h); background: var(--ak-gray-500); border: 0; border-radius: 0; margin: 0; position: relative; display: inline-block; cursor: pointer; transition: background var(--ak-dur-fast); }
+.ak-switch > input::before { content: ""; position: absolute; top: 3px; left: 3px; width: calc(var(--_h) - 6px); height: calc(var(--_h) - 6px); border: 0; border-radius: 0; background: #fff; transition: transform var(--ak-dur-fast) var(--ak-ease); }
 .ak-switch > input:checked { background: var(--ak-blue-600); }   /* 游戏内 toggle_on #0075A9 */
 .ak-switch > input:checked::before { transform: translateX(calc(var(--_w) - var(--_h))); background: #fff; }
 .ak-slider { appearance: none; width: 100%; height: 4px; background: var(--ak-bg-surface-3); outline: 0; }

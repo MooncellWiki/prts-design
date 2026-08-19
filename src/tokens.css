@@ -170,6 +170,9 @@
   /* Icon sizes */
   --ak-icon-xs: 14px; --ak-icon-sm: 18px; --ak-icon-md: 24px; --ak-icon-lg: 32px; --ak-icon-xl: 48px;
 
+  /* 下拉箭头 ▾：裸 <select> 与 .ak-select 同一枚（两条 45° 渐变拼成实心三角，颜色随主题的 --ak-fg-muted） */
+  --ak-select-arrow: linear-gradient(45deg, transparent 50%, var(--ak-fg-muted) 50%), linear-gradient(135deg, var(--ak-fg-muted) 50%, transparent 50%);
+
   /* Signature decorations */
   --ak-stripe-size: 8px;
   --ak-halftone-size: 6px;

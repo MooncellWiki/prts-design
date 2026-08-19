@@ -253,13 +253,14 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 | 默认 | 底 `--ak-bg-surface`、字 `--ak-fg`、边 `--ak-border-strong` |
 | 占位符 | `--ak-fg-subtle`（Firefox 的默认 opacity 归 1）；只做提示，不承载必填信息 |
 | 悬停 | **无**——输入框不做悬停态，按钮才有 |
-| 焦点 | 边 `--ak-accent` + `--ak-shadow-accent`（3px 淡青环，同 `.ak-input`）；用 `:focus` 而非 `:focus-visible`——鼠标点进文本框也该亮。勾选 / 单选 / 滑杆不走这条，保留全局 `:focus-visible` 2px 描边（§6） |
+| 焦点 | 边 `--ak-accent` + `--ak-shadow-accent`（3px 淡青环，同 `.ak-input`）；用 `:focus` 而非 `:focus-visible`——鼠标点进文本框也该亮。勾选 / 单选只在 `:focus-visible`（键盘）时亮同一套青边 + 淡青环；滑杆保留全局 `:focus-visible` 2px 描边（§6） |
 | 只读 `[readonly]` | 底 `--ak-bg-inset`（下沉），边框不变，仍可选中复制。计算器「只显示不编辑」的结果格用它，**不要用 disabled 表示「只是显示」** |
 | 禁用 `:disabled` | 底 `--ak-bg-surface-3`、字 `--ak-fg-disabled`（Safari 需同时写 `-webkit-text-fill-color`）、边 `--ak-border`、`cursor: not-allowed` |
 | 校验失败 | 边 `--ak-danger`，聚焦时环换 `--ak-danger-bg`。触发条件是 `:user-invalid`（用户改过之后才判）或 `aria-invalid="true"`；**不用 `:invalid`**——它一进页面就把 required 空框全标红。设计系统组件另有 `.is-invalid / .is-valid` + `.ak-help--error` 文案 |
-| 勾选 / 单选 / 滑杆 | 保留原生控件，只上 `accent-color: var(--ak-accent)`（浏览器自动挑对比色的勾 / 圆点），16px，`vertical-align: middle` 与行内文字中线对齐。要「方舟风」自绘——直角勾选框、菱形单选、方形开关——用 `.ak-check` / `.ak-switch` / `.ak-slider` |
+| 勾选 / 单选 | **自绘，裸控件与 `.ak-check` 同一张脸**（`appearance: none`，规则在 base.css 裸控件段；`.ak-check` 只管「控件 + 文字」排布）：18px、2px `--ak-border-strong` 边；勾选框直角，选中 = 主色实底 + 对比色勾（`:indeterminate` = 一横）；**单选是圆**（圆是单选的通用语义，也是整套系统里唯一的圆；不做菱形、不做圆角方），选中 = 主色实底 + 圆点。勾 / 点按百分比画，改 `width/height` 整体缩放（表头里的开关 16px）。禁用 = surface-3 / 选中灰。`accent-color` 仍写着兜底：不认 `appearance: none` 的老 WebView 退回主色原生控件。`vertical-align: middle` 与行内文字中线对齐 |
+| 滑杆 `type=range` | 保留原生，只上 `accent-color`；要方形滑块用 `.ak-slider` |
 | 数字 `type=number` | `tabular-nums`（改值不跳动）；保留原生 ▲▼ 步进器（Chrome 悬停 / 聚焦时才现身，Firefox 常显）；要一直可见的 − / + 用 `.ak-number` |
-| 下拉 `select` | 保留原生箭头（`appearance: auto`，各浏览器都能画进深色主题）；`.ak-select` 才自绘箭头。`select[multiple]` 上下 4px 内边距 |
+| 下拉 `select` | 自绘箭头：裸 `<select>` 与 `.ak-select` 同一枚 ▾（`--ak-select-arrow`，两条 45° 渐变拼成、颜色随 `--ak-fg-muted`；与下拉按钮的 ▾ 成套），`appearance: none` + 右内边距 30px（表格里 26px）；原生箭头各浏览器长得不一样、与自绘的不成套。`select[multiple]` 不画箭头、上下 4px 内边距 |
 | 表格里 | 30px；文本类输入的**对齐跟随单元格**（`text-align: inherit`）：`text-align:center` 的计算器里，输入的数字和下一行的结果一样居中；`td.num` 右对齐列里的输入也右对齐；`select` 不跟。裸 `<button>` 在表格里同样收到 30 |
 | 日期 / 时间 / 电话等 | 一律按文本框处理（选择器用排除法：不写 `type` 的 `<input>`、未知 type 都算文本框），不留浏览器 2px inset 默认外观 |
 

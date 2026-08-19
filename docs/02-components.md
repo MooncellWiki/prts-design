@@ -43,7 +43,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | navbox / infobox 基线 | `.navbox` `.infobox` | 与卡片同语言（模板可覆盖） | ✅ |
 | TabberNeue | `.tabber__*` + `.ak-tabber-boxed .ak-tabber-block` | 下划线 + 选中角标；块状变体（选中项黑白反转；原斜切变体已去掉平行四边形） | ✅ |
 | Cargo / DPL 表 | `.cargoTable` `table.mw-datatable` | 与 wikitable 一致 | ✅ |
-| 裸表单控件（Widget / Gadget / 模板产物） | `input`（排除法覆盖所有文本类 type，含不写 type 的）`select` `textarea` `button` `input[type=button/submit/reset]`；全部 `:where()` 零特指度 | 规范 §4：36px 定高（border-box + 0 上下内边距 + min-height，不随容器行高漂）、2px 角、`--ak-border-strong`、`:focus` 青边 + 淡青环、`[readonly]` 下沉底、`:disabled` surface-3、`:user-invalid` / `aria-invalid` 红边、勾选 / 单选 / 滑杆原生 + `accent-color`、`type=number` `tabular-nums` 保留原生步进；**`.mw-body-content` 表格单元格里收到 30px、字号跟表格、文本类输入 `text-align: inherit`**（属性计算器的数字与结果同样居中）；宽度不接管，只 `max-width:100%`；iPhone ≤639 提到 16px 防聚焦缩放 | ✅ |
+| 裸表单控件（Widget / Gadget / 模板产物） | `input`（排除法覆盖所有文本类 type，含不写 type 的）`select` `textarea` `button` `input[type=button/submit/reset]`；全部 `:where()` 零特指度 | 规范 §4：36px 定高（border-box + 0 上下内边距 + min-height，不随容器行高漂）、2px 角、`--ak-border-strong`、`:focus` 青边 + 淡青环、`[readonly]` 下沉底、`:disabled` surface-3、`:user-invalid` / `aria-invalid` 红边、勾选 / 单选自绘（18px 直角勾选框 / **圆形**单选 / 主色实底，与 `.ak-check` 同一张脸；`accent-color` 兜底）、`select` 自绘 ▾（与 `.ak-select` 同一枚 `--ak-select-arrow`）、滑杆原生 + `accent-color`、`type=number` `tabular-nums` 保留原生步进；**`.mw-body-content` 表格单元格里收到 30px、字号跟表格、文本类输入 `text-align: inherit`**（属性计算器的数字与结果同样居中）；宽度不接管，只 `max-width:100%`；iPhone ≤639 提到 16px 防聚焦缩放 | ✅ |
 | OOUI / Codex / mw-ui | `.mw-ui-button` `.cdx-button` `.oo-ui-*` `.cdx-text-input__input` | 颜色靠桥接令牌 + 少量覆盖（中性 `.cdx-button:enabled` 拉回 surface 底）；尺寸不改 | ✅ |
 | Diff / 历史 / 最近更改 / 搜索 | `table.diff` `#pagehistory` `.mw-changeslist` `.mw-search-results` | 语义色 | ✅ |
 | 通知 | `.mw-notification` | 左青条卡 | ✅ |
@@ -102,7 +102,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | Pagination | `.ak-pagination` | | ✅ |
 | Timeline | `.ak-timeline` | `.is-done .is-active` | ✅ |
 | Stepper | `.ak-stepper .ak-step` | | ✅ |
-| Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg`；与裸控件同一套尺寸 / 颜色 / 状态（规范 §4），多出：`--sm` 30 / `--lg` 44 变体、`.ak-select` 自绘箭头、`.ak-check` 直角勾选 + 菱形单选、`.ak-switch` 方形开关（游戏 `toggle_on`）、`.ak-number` 常显 − / +、`.ak-input-group` 前后缀拼接、`.ak-field` 标签 + 帮助 + 错误文案 | ✅ |
+| Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg`；与裸控件同一套尺寸 / 颜色 / 状态（规范 §4），多出：`--sm` 30 / `--lg` 44 变体、`.ak-switch` 方形开关（游戏 `toggle_on`）；勾选 / 单选 / 下拉箭头的长相与裸控件**是同一套规则**（base.css：18px 直角勾选框、圆形单选、▾ 箭头），`.ak-check` 只管排布（`--sm` 16px）、`.ak-number` 常显 − / +、`.ak-input-group` 前后缀拼接、`.ak-field` 标签 + 帮助 + 错误文案 | ✅ |
 | Kbd | `.ak-kbd`（`.ak-search__kbd` 为其绝对定位变体） | 键帽：直角 1px 边、底边略重、mono 10px；用于快捷键提示 / 触发器右侧 / 面板页脚 | ✅ |
 | Table | `.ak-table` | `--striped --compact`；`th[aria-sort]` | ✅ |
 | Accordion | `.ak-details` (`<details>`) | | ✅ |
