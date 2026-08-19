@@ -162,8 +162,8 @@ html.skin-theme-clientpref-night  终端模式（暗）
 
 **Bender 的使用边界（HUD 层，不进正文尺寸的连续数字）**：Bender 是游戏 HUD 字——粗体、大字号、独立出现时才成立；14px 常规字重时笔画细、斜杠 0 读作「Ø」、和思源混排灰度不齐，而且**它的数字是比例宽度**（`1` 360 / `0` 604 单位）、子集不带 `tnum`，`font-variant-numeric: tabular-nums` 对它无效，数字列对不齐。因此：
 
-- ✅ 用 Bender：属性面板 `.ak-attr__value`、`.ak-stat__value`、`.ak-level`、倒计时、SP 芯片、关卡码、稀有度 chip、tag、overline / eyebrow 小标签、`ol::marker`——都是**粗体（700）或 ≥ h3 的独立数值 / 编号 / 大写标签**。显式的 HUD 数字类是 `.ak-num`（粗体 Bender）
-- ❌ 不用 Bender：表格数字列（`.wikitable td.num` / `.ak-table .num`）、目录编号、引用角标、diff 行号、最近更改 ±、分页、时间戳、Stat 的 delta、技能数值行——统一正文字体 + `tabular-nums`（Noto Sans SC 的数字默认等宽 521 单位，列天然对齐）。表格里想要 HUD 数字只在面板级、大字号时显式加 `.ak-num`
+- ✅ 用 Bender：属性面板 `.ak-attr__value`、`.ak-stat__value`、`.ak-level`、倒计时、SP 芯片、关卡码、稀有度 chip、tag、overline / eyebrow 小标签、`ol::marker`——都是**粗体（700）或 ≥ h3 的独立数值 / 编号 / 大写标签**。显式的 HUD 数字类是 `.ak-num`（粗体 Bender，只用于面板级、不进表格）
+- ❌ 不用 Bender：表格数字列（`.wikitable td.num` / `.ak-table .num`）、目录编号、引用角标、diff 行号、最近更改 ±、分页、时间戳、Stat 的 delta、技能数值行——统一正文字体 + `tabular-nums`（Noto Sans SC 的数字默认等宽 521 单位，列天然对齐）。**表格数据数字一律不用 Bender，没有例外**：技能全等级表 / 参数矩阵 / 天赋条件表 / 键值表的数字列都是正文字体；`.ak-num` `.ak-code-id` `.ak-trust` `.ak-item__count` `.ak-elite` 等带数字的 HUD 类若落进 `td` / `th` / `.ak-kv > dd`，`arknights.css` 末尾 B99 会兜底回正文字体（字重 / 字距 / 颜色照旧）
 
 **官网发布的 Novecento / Bender 是 ASCII 子集**（各 101 字形：A–Z a–z 0–9 及 ASCII 标点），`·` `»` `—` `–` `…` `×` `°` 等非 ASCII 字符不在其中，浏览器会按链逐字回退——展示字落到 Oswald、标签落到 Chakra Petch，两者风格相近，视觉上是间隔号 / 破折号级别的差异；若日后拿到全字符集文件，替换 `src/fonts/` 里同名 woff2 即可。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
 

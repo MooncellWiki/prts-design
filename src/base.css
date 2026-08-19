@@ -148,7 +148,7 @@ pre, .mw-code, .mw-highlight pre {
 .wikitable.ak-borderless, .wikitable.ak-borderless > * > tr > th, .wikitable.ak-borderless > * > tr > td { border-left: 0; border-right: 0; }
 .wikitable.ak-borderless { border-left: 0; border-right: 0; }
 .wikitable th.ak-th-accent { box-shadow: inset 0 3px 0 var(--ak-accent); }   /* 表头顶部色条画在格子内（collapse 表格里 border-image 无效，而 3px 的 border-top 会和 1px 的竖线斜接） */
-/* 数字列：正文字体（Noto Sans SC 数字默认等宽，天然对齐；Bender 数字是比例宽度、子集无 tnum，小字号又细，不进表格）。.ak-num 是显式的 HUD 数字（粗体 Bender），表格里只在面板级数值上用 */
+/* 数字列：正文字体（Noto Sans SC 数字默认等宽，天然对齐；Bender 数字是比例宽度、子集无 tnum，小字号又细）。硬规则：表格数据数字一律不用 Bender——.ak-num 等 HUD 数字类掉进 td / th / 键值表 dd 由 arknights.css B99 兜底回正文字体 */
 .wikitable td.num, .wikitable .num { font-variant-numeric: tabular-nums; text-align: right; }
 .wikitable .ak-num { text-align: right; }
 /* sortable (jquery.tablesorter) */

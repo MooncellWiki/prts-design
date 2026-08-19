@@ -65,7 +65,7 @@
 .ak-display--xl { font-size: var(--ak-fs-display-xl); }
 .ak-overline { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }
 .ak-label { font-family: var(--ak-font-label); }
-.ak-num { font-family: var(--ak-font-label); font-variant-numeric: tabular-nums; font-weight: 700; }
+.ak-num { font-family: var(--ak-font-label); font-variant-numeric: tabular-nums; font-weight: 700; }   /* 面板级 HUD 数字；不进表格——进了 td / th / 键值表 dd 会被文末 B99 兜底回正文字体 */
 .ak-code-id { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .1em; color: var(--ak-fg-muted); text-transform: uppercase; }   /* LM04 / R001 类编号 */
 .ak-watermark { position: absolute; right: 8px; bottom: -6px; font: 800 4rem/1 var(--ak-font-display); letter-spacing: -.02em; color: var(--ak-fg); opacity: .05; pointer-events: none; user-select: none; text-transform: uppercase; white-space: nowrap; }
 
@@ -254,11 +254,11 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-skill-table { width: 100%; border-collapse: collapse; font-size: var(--ak-fs-sm); line-height: 1.6; }
 .ak-skill-table th, .ak-skill-table td { padding: 6px 10px; border-top: 1px solid var(--ak-border-subtle); vertical-align: middle; text-align: center; }
 .ak-skill-table thead th { background: var(--ak-bg-surface-2); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); white-space: nowrap; }
-.ak-skill-table thead th .ak-sp-cost, .ak-skill-table thead th .ak-sp-init, .ak-skill-table thead th .ak-sp-dur { font-family: var(--ak-font-body); font-weight: 700; }   /* 列头直接用同一套芯片做图例 */
+.ak-skill-table thead th .ak-sp-cost, .ak-skill-table thead th .ak-sp-init, .ak-skill-table thead th .ak-sp-dur { font-weight: 700; }   /* 列头直接用同一套芯片做图例（字体由 B99 兜底回正文）*/
 .ak-skill-table tbody tr:first-child > * { border-top: 0; }
-.ak-skill-table .lv { width: 56px; font: 800 var(--ak-fs-sm)/1 var(--ak-font-label); white-space: nowrap; }
+.ak-skill-table .lv { width: 56px; font: 800 var(--ak-fs-sm)/1 var(--ak-font-body); white-space: nowrap; }
 .ak-skill-table .desc { text-align: left; }
-.ak-skill-table .num { width: 52px; font-family: var(--ak-font-label); font-weight: 700; font-variant-numeric: tabular-nums; }
+.ak-skill-table .num { width: 52px; font-weight: 700; font-variant-numeric: tabular-nums; }   /* 正文字体（表格数字硬规则，见 B99）*/
 .ak-skill-table .num:empty::before { content: "—"; color: var(--ak-fg-subtle); font-weight: 400; }
 .ak-skill-table tr.is-mastery .lv { color: var(--ak-rt-vup); }
 .ak-skill-table tr.is-mastery .lv img { height: 14px; width: auto; vertical-align: -3px; margin-right: 3px; filter: var(--ak-glyph-filter); }
@@ -284,17 +284,17 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-var { font-weight: 700; color: var(--ak-rt-vup); border-bottom: 1px dotted currentColor; white-space: nowrap; }
 .ak-skill-matrix { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: var(--ak-fs-sm); }
 .ak-skill-matrix th, .ak-skill-matrix td { padding: 5px 4px; text-align: center; border-top: 1px solid var(--ak-border-subtle); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.ak-skill-matrix thead th { background: var(--ak-bg-surface-2); font: 800 var(--ak-fs-xs)/1.3 var(--ak-font-label); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); }
+.ak-skill-matrix thead th { background: var(--ak-bg-surface-2); font: 800 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); }
 .ak-skill-matrix thead th img { height: 13px; width: auto; vertical-align: -2px; margin-right: 2px; filter: var(--ak-glyph-filter); }
 .ak-skill-matrix thead th.is-mastery { color: var(--ak-rt-vup); }
 .ak-skill-matrix tbody th { text-align: left; font-weight: 600; color: var(--ak-fg-secondary); padding-left: 12px; white-space: normal; }
 .ak-skill-matrix col.label { width: 120px; }
-.ak-skill-matrix td { font-family: var(--ak-font-label); font-weight: 700; color: var(--ak-fg-subtle); }
+.ak-skill-matrix td { font-weight: 700; color: var(--ak-fg-subtle); }   /* 正文字体（表格数字硬规则，见 B99）*/
 .ak-skill-matrix td.is-up { color: var(--ak-fg); }                  /* 较上一级有变化（第 1 级也算） */
 .ak-skill-matrix .m-start { border-left: 1px solid var(--ak-border-strong); }   /* 7 与专精 Ⅰ 之间一道分隔 */
 .ak-skill-matrix .is-hl { background: var(--ak-accent-subtle); }
 .ak-skill-matrix thead th.is-hl { color: var(--ak-accent); }
-.ak-skill-matrix tbody th .ak-sp-init, .ak-skill-matrix tbody th .ak-sp-cost, .ak-skill-matrix tbody th .ak-sp-dur { font-family: var(--ak-font-body); font-weight: 700; }
+.ak-skill-matrix tbody th .ak-sp-init, .ak-skill-matrix tbody th .ak-sp-cost, .ak-skill-matrix tbody th .ak-sp-dur { font-weight: 700; }   /* 字体由 B99 兜底回正文 */
 @media (max-width: 639px) { .ak-skill-matrix col.label { width: 72px; } .ak-skill-matrix tbody th { padding-left: 8px; font-size: var(--ak-fs-xs); } .ak-skill-matrix th, .ak-skill-matrix td { padding: 5px 2px; font-size: var(--ak-fs-xs); } }
 
 /* B6c. 天赋条件表——prts.wiki 现网的「条件 × 描述」对比（精英阶段 / 模组等级），潜能加成用表头右侧的开关切换描述
@@ -306,7 +306,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-talent-table .name { width: 112px; font-weight: 800; }
 .ak-talent-table td.name { border-right: 1px solid var(--ak-border-subtle); vertical-align: top; padding-top: 8px; }
 .ak-talent-table .cond { width: 168px; white-space: nowrap; color: var(--ak-fg-secondary); }
-.ak-talent-table .cond .ak-elite { vertical-align: middle; font-size: var(--ak-fs-sm); font-family: var(--ak-font-body); }
+.ak-talent-table .cond .ak-elite { vertical-align: middle; font-size: var(--ak-fs-sm); }   /* 字体由 B99 兜底回正文 */
 .ak-talent-table__toggle { float: right; margin-left: 12px; font-weight: 400; text-transform: none; letter-spacing: 0; }
 .ak-talent-table__toggle > input { width: 16px; height: 16px; }
 .ak-talent-table__pot { display: none; }
@@ -473,3 +473,10 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-hero__desc { max-width: 60ch; color: rgba(255,255,255,.7); font-size: var(--ak-fs-sm); }
 .ak-hero__side { position: absolute; right: 0; top: 0; bottom: 0; width: 22%; background: var(--ak-cyan-500); opacity: .9; }   /* 右侧竖直青色色块（官网 hero 的色面；不做斜边） */
 .ak-hero__side::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,0,0,.35) 1.2px, transparent 1.4px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(90deg, #000, transparent 70%); mask-image: linear-gradient(90deg, #000, transparent 70%); }
+
+/* B99. 硬规则：表格数据里的数字一律不用 Bender 系（--ak-font-label）——Bender 数字比例宽度、子集无 tnum、小字号发虚，成列就对不齐。
+ *  表格组件（.ak-skill-table / .ak-skill-matrix / .ak-talent-table / .wikitable / .ak-kv）自身已按正文字体写；这里兜底：
+ *  带数字的 HUD 类掉进 td / th / 键值表 dd 时回正文字体，字重 / 字号 / 字距 / 颜色 / 底色照旧（优先级 0,2,1，压过单类选择器）。
+ *  面板级 HUD 数值（.ak-attrs / .ak-stat / 技能卡芯片 / 素材列表的数量角标）不在表格里，不受影响 */
+:is(td, th, .ak-kv > dd) :is(.ak-num, .ak-code-id, .ak-trust, .ak-item__count, .ak-elite, .ak-level, .ak-sanity, .ak-sp-cost, .ak-sp-init, .ak-sp-dur, .ak-countdown, .ak-stage__meta, .ak-event__time, .ak-timeline__date),
+:is(td, th, .ak-kv > dd):is(.ak-num, .ak-code-id) { font-family: var(--ak-font-body); }
