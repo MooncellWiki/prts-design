@@ -24,7 +24,7 @@
 
 ### 1.1 六条原则
 
-1. **Monochrome first** — 大面积黑/白/灰承载信息；青只用于选中、链接、主动作、强调条、文字高亮（`<mark>` / `:target` / 表格当前行都是同一块淡青底）；黄为次强调（稀有度/提示），不做荧光笔；红只表示危险与"NEW/BREAKING"。
+1. **Monochrome first** — 大面积黑/白/灰承载信息；青只用于选中、链接、主动作、强调条、文字高亮（`<mark>` / `:target` / 表格当前行都是同一块淡青底）；黄为次强调（稀有度/提示/通知徽标），不做荧光笔；红只表示危险与"NEW/BREAKING"（未读计数不算）。
 2. **Square, not rounded** — `border-radius: 0`，也不做切角 / 斜切 / 斜带；层级与状态用色条、黑白反转、角标三角表达。输入框允许 2px。色条 + 细框的盒子（pre / 消息 / 面板头 / 模组卡 / 弹层顶条 …）用 `border-image` 把色条与 1px 框直角拼接——不同宽度的 border 会被浏览器在角上斜接（miter）出一道小斜边，那也是斜边（`tokens.css` §Shape 有写法）。
 3. **Latin as ornament** — 大写拉丁展示字（Novecento/Bender/Oswald）只做标题旁英文、编号、数值、水印；中文永远用思源黑体，行高 1.7。
 4. **Two canonical themes** — 游戏本身是双色世界（主界面/作战为黑，档案/商店为白灰）。两套主题等价，用 MW 1.43 `skin-theme-clientpref-*` 切换。

@@ -81,11 +81,13 @@
 /* 选中角标：绝对定位在左上角（与 .ak-tab / .ak-page-tabs / .ak-card 的选中角标一致），不占据行内宽度 */
 .ak-chip.is-active::before, .ak-chip[aria-pressed="true"]::before { content: ""; position: absolute; top: 0; left: 0; border-style: solid; border-width: 5px 5px 0 0; border-color: currentColor transparent transparent; opacity: .7; pointer-events: none; }
 
-/* Count badge (通知红点/数字) */
+/* Count badge（通知计数 / 未读点）—— 默认黄（次强调「提示」），不走红：红只留给危险与 NEW/BREAKING，
+   未读数不是高危信息。Echo 的 alerts 类（回退 / 权限变更）才用 --danger；NEW 角标是 .ak-tag--new，不是徽标 */
 .ak-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px;
-  font: 700 11px/1 var(--ak-font-label); background: var(--ak-red-600); color: #fff; border-radius: var(--ak-radius-pill); }
+  font: 700 11px/1 var(--ak-font-label); background: var(--ak-accent-2); color: var(--ak-accent-2-fg); border-radius: var(--ak-radius-pill); }
 .ak-badge--dot { min-width: 8px; width: 8px; height: 8px; padding: 0; }
 .ak-badge--accent { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-badge--danger { background: var(--ak-red-600); color: #fff; }
 
 /* ═══ Card / Panel ═══ */
 .ak-card {

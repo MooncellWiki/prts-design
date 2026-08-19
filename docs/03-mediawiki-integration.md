@@ -222,7 +222,7 @@ $wgFooterIcons = [
 |---|---|
 | TabberNeue | base.css 覆盖 `.tabber__*`；提供 `.ak-tabber-boxed / .ak-tabber-block` 变体（`<tabber class="…">` 或包裹 div） |
 | Cargo / SMW / DPL3 | 表格继承 wikitable 规则；结果格式 `template` 时输出 AKDS 组件结构 |
-| Echo | 徽标用 `.ak-badge`；弹窗走 Codex 桥接 |
+| Echo | 徽标用 `.ak-badge`（notices 默认黄；alerts 加 `--danger` 红）；弹窗走 Codex 桥接 |
 | WikiEditor / CodeMirror | 编辑器底色用 `--ak-bg-inset`，已在 base.css 基线覆盖 |
 | MobileFrontend + Minerva | 两条路：(a) 皮肤 `responsive:true` 后可直接作为移动端皮肤（≤639 规则已写）；(b) 保留 Minerva 时，把 `skins.akds.tokens` 通过 `skinStyles` 注入 Minerva，仅换色。推荐 (a) 分阶段替换 |
 | UniversalLanguageSelector | 触发器放 `.ak-header__tools` |
