@@ -221,7 +221,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-page-header { margin-bottom: var(--ak-space-5); }
 .ak-page-header__top { display: flex; align-items: center; gap: var(--ak-space-3); min-height: 24px; margin-bottom: 4px; }
 .ak-page-header__top .mw-indicators { margin-left: auto; float: none; }
-.ak-page-header__ns { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-accent); }
+.ak-page-header__ns { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }   /* 同 .ak-card__eyebrow：命名空间是不可点的装饰小标签，不上青 */
 .ak-page-header__title, .skin-akds .mw-body h1#firstHeading, .skin-akds #firstHeading {
   font-family: var(--ak-font-body); font-size: var(--ak-fs-h1); font-weight: 800; line-height: 1.2; margin: 0 0 var(--ak-space-3);
   padding: 0 0 0 var(--ak-space-4); border: 0; border-left: var(--ak-bar-w-lg) solid var(--ak-accent); letter-spacing: .01em; overflow-wrap: anywhere; }

@@ -104,7 +104,7 @@
 .ak-card--accent-left { border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--ak-accent) 4px, var(--_bd, var(--ak-border)) 4px) 1 1 1 4; }
 .ak-card__header { display: flex; align-items: center; gap: var(--ak-space-3); padding: var(--ak-space-3) var(--ak-space-4); border-bottom: 1px solid var(--ak-border); }
 .ak-card__title { font-weight: 700; font-size: var(--ak-fs-body); margin: 0; flex: 1; line-height: 1.3; }
-.ak-card__eyebrow { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-accent); margin-bottom: 4px; display: block; }
+.ak-card__eyebrow { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin-bottom: 4px; display: block; }   /* 灰不青：不可点的装饰小标签，青色会读成链接 / 按钮，亮色下 #0098DC 压白底也只有 3.2:1；与 .ak-overline / .ak-stat__label / .ak-attr__label 同色 */
 .ak-card__body { padding: var(--ak-space-4); flex: 1; }
 .ak-card__body > :last-child { margin-bottom: 0; }
 .ak-card__footer { padding: var(--ak-space-3) var(--ak-space-4); border-top: 1px solid var(--ak-border); display: flex; align-items: center; gap: var(--ak-space-3); background: var(--ak-bg-surface-2); }
@@ -135,7 +135,7 @@
 .ak-heading__en { font-family: var(--ak-font-display); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-weight: 700; color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); }
 .ak-heading__aside { margin-left: auto; font-size: var(--ak-fs-sm); }
 .ak-heading--stack { flex-direction: column; align-items: flex-start; gap: 2px; }
-.ak-heading--stack .ak-heading__en { font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); color: var(--ak-accent); }
+.ak-heading--stack .ak-heading__en { font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }   /* 同 .ak-card__eyebrow：装饰小标签不上青 */
 .ak-heading--lg .ak-heading__title { font-size: var(--ak-fs-display); }
 .ak-heading--underline { border-left: 0; padding-left: 0; padding-bottom: var(--ak-space-2); border-bottom: 1px solid var(--ak-border); position: relative; }
 .ak-heading--underline::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 120px; height: 3px; background: var(--ak-accent); }
