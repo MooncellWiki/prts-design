@@ -139,7 +139,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 天赋（卡） | `.ak-talent __name __req __desc` | 列表 / 侧栏摘要 | ✅ |
 | 富文本 | `.ak-rt-*` / `.ba-*` | 见 01 §2.4 | ✅ |
 | 属性面板 | `.ak-attrs --compact` `.ak-attr --accent __label __value` | Bender 数值 + overline 标签（EN + 中文） | ✅ |
-| 键值表 | `.ak-kv --boxed` | 信息栏 | ✅ |
+| 键值表 | `.ak-kv --boxed` | 信息栏：`dt` / `dd` 垂直居中（`align-content`），`--boxed` 的表头居中同现网 `th`；数字走正文字体（表格硬规则，`.ak-code-id` `.ak-trust` 落进 `dd` 由 B99 兜底） | ✅ |
 | 攻击范围 | `.ak-range --sm --lg` `style="--cols:N"` `i.on/.self/.off` | | ✅ |
 | 模组 | `.ak-module __img __type __name __stage __mission`（`--_bar` 改左侧色条色） | SWO-X 等型号用展示字；卡片左侧一道粗色条即分割，`__mission` 不再另画竖线 | ✅ |
 | 语音 | `.ak-voice __play.is-playing __title __lang __text __wave` | | ✅🧩 |

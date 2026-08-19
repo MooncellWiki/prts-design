@@ -349,12 +349,13 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-attr--accent { border-top: 2px solid var(--ak-accent); }
 .ak-attrs--compact .ak-attr { flex-direction: row; justify-content: space-between; align-items: baseline; padding: 6px 12px; }
 .ak-attrs--compact .ak-attr__value { font-size: var(--ak-fs-body); }
-/* 键值表（信息栏） */
+/* 键值表（信息栏）—— dt / dd 都要显式 margin: 0：正文的 .mw-parser-output dt { margin-top } / dd { margin } 会漏进来（同优先级，靠顺序压）；
+ *  两列都 align-content: center（block 容器上的 align-content，不动 inline 流），行高由高的一侧（图标 / 标签）决定时另一侧垂直居中，同现网 infobox 的 th / td middle */
 .ak-kv { display: grid; grid-template-columns: max-content 1fr; gap: 0; font-size: var(--ak-fs-sm); border-top: 1px solid var(--ak-border); }
-.ak-kv > dt { padding: 6px 12px 6px 0; color: var(--ak-fg-muted); font-weight: 600; border-bottom: 1px solid var(--ak-border-subtle); }
-.ak-kv > dd { padding: 6px 0 6px 12px; margin: 0; border-bottom: 1px solid var(--ak-border-subtle); border-left: 1px solid var(--ak-border-subtle); }
+.ak-kv > dt { padding: 6px 12px 6px 0; margin: 0; align-content: center; color: var(--ak-fg-muted); font-weight: 600; border-bottom: 1px solid var(--ak-border-subtle); }
+.ak-kv > dd { padding: 6px 0 6px 12px; margin: 0; align-content: center; border-bottom: 1px solid var(--ak-border-subtle); border-left: 1px solid var(--ak-border-subtle); }
 .ak-kv--boxed { border: 1px solid var(--ak-border); }
-.ak-kv--boxed > dt { padding-left: 12px; background: var(--ak-bg-surface-2); }
+.ak-kv--boxed > dt { padding-left: 12px; text-align: center; background: var(--ak-bg-surface-2); }   /* 框住的那版：表头居中（同现网 th）；不带框的档案版标签列保持左对齐 */
 
 /* B9. 攻击范围格 */
 .ak-range { --_cell: 14px; display: inline-grid; gap: 2px; grid-template-columns: repeat(var(--cols, 5), var(--_cell)); }
