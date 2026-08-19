@@ -301,8 +301,8 @@
 .ak-breadcrumb [aria-current] { color: var(--ak-fg); font-weight: 600; }
 .ak-pagination { display: inline-flex; gap: 2px; align-items: center; font-variant-numeric: tabular-nums; }
 .ak-pagination__item, .ak-pagination a { min-width: 32px; height: 32px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--ak-border); color: var(--ak-fg-secondary); text-decoration: none; font-weight: 600; font-size: var(--ak-fs-sm); }
-.ak-pagination a:hover { border-color: var(--ak-accent); color: var(--ak-accent); text-decoration: none; }
-.ak-pagination .is-active { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); }
+.ak-pagination a:not(.is-active):hover { border-color: var(--ak-accent); color: var(--ak-accent); text-decoration: none; }   /* 当前页不响应 hover；a.is-active:hover 仍要写，压住 base.css 全局 a:visited:hover (0,2,1) */
+.ak-pagination .is-active, .ak-pagination a.is-active:hover { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); cursor: default; }
 .ak-pagination .is-disabled { opacity: .4; pointer-events: none; }
 .ak-pagination__ellipsis { padding: 0 6px; color: var(--ak-fg-subtle); }
 
