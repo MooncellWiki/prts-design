@@ -130,10 +130,13 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 干员卡 | `.ak-op-card --sm --lg --rail` `__portrait __rarity __prof __elite __name __sub`；`.ak-op-grid`；`.ak-op-row` | 游戏干员列表卡：头像 + 左上星 + 左下职业 + 右下精英 + 稀有度色顶线 | ✅ |
 | 道具 | `.ak-item --sm --lg --round .is-disabled` `__count.is-short`；`.ak-item-list` `.ak-item-inline` | 稀有度色边框 + 黑底数量角标（方框；切角变体已移除） | ✅ |
 | 材料表 | `.ak-materials` `__label` | 阶段/等级 → 材料行 | ✅ |
-| 技能 | `.ak-skill.is-selected` `__icon --auto --attack --hit --passive .is-locked` `__head __name __meta __desc __stats` | SP 类型 = 图标描边 + 底条色；选中 = 蓝框 + 角标（游戏 `selected_back`） | ✅ |
-| SP 标签 | `.ak-sp --attack --hit --passive` `.ak-sp-trigger --auto` `.ak-sp-cost` `.ak-sp-init` | 游戏 `skill_sp_cost_bkg` 荧光绿 | ✅ |
-| 技能等级选择 | `.ak-skill-levels`（1-7 + M1-3） | | ✅🧩 |
-| 天赋 | `.ak-talent __name __req __desc` | | ✅ |
+| 技能（卡） | `.ak-skill.is-selected --wide` `__icon --auto --attack --hit --passive .is-locked` `__head __name __meta __desc __stats __aside __open` | SP 类型 = 图标描边 + 底条色；选中 = 蓝框 + 角标（游戏 `selected_back`）。右栏撑满图标高度、名称行贴图标顶边、SP 芯片行贴图标底边；`--wide` 多一栏 `__aside`（范围 / 开放条件） | ✅ |
+| 技能（全等级表） | `.ak-skill-sheet` > `.ak-skill.ak-skill--wide`（表头）+ `table.ak-skill-table`（`thead` 等级 / 描述 / 初始 / 消耗 / 持续；`tr.is-mastery` `tr.is-hl`；`td.lv .desc .num`）+ `__note` | **干员页正文用这个**：同现网 prts.wiki，一张表列完 1–7 级 + 专精 Ⅰ–Ⅲ，初始 / 消耗 / 持续按列对齐直接上下对比，不做「选一个等级看一份」；列头直接用 SP 芯片当图例 | ✅ |
+| 技能（参数矩阵） | `.ak-skill-sheet` > `.ak-skill--wide` + `.ak-skill-sheet__tpl`（描述 + `.ak-var[data-var]` 区间）+ `table.ak-skill-matrix`（`thead th` 等级，`th.m-start` = 专精 Ⅰ；`tbody tr[data-var] > th` 参数名 + `td.is-up`）| 全等级表的**另一种对比法**（二选一）：等级横着放、参数竖着放，描述只写一遍，较上一级有变化的格子才亮、没变的淡掉——一眼看出哪一级涨了什么；悬停 / 点某一列整列高亮、描述里的变量位换成该级数值（preview.js 示例，无 JS 就是静态矩阵）。长描述、参数多于 3–4 个时用全等级表，短描述 / 手机优先时用矩阵 | ✅🧩 |
+| SP 标签 | `.ak-sp --attack --hit --passive` `.ak-sp-trigger --auto` `.ak-sp-cost` `.ak-sp-init` `.ak-sp-dur` | 游戏 `skill_sp_cost_bkg` 荧光绿；三枚芯片同高同内距，图形是单色 SVG mask（不用 emoji） | ✅ |
+| 技能等级选择 | `.ak-skill-levels`（1-7 + M1-3） | 只给需要「当前等级」的场合（配 `tr.is-hl`）；干员页正文不用 | ✅🧩 |
+| 天赋（条件表） | `table.ak-talent-table` `thead(th.name th.cond th.desc > label.ak-check.ak-talent-table__toggle > input[data-toggle-class=is-pot][data-toggle-target=table])` `tbody tr(td.name[rowspan] td.cond td.desc(.ak-talent-table__base + .ak-talent-table__pot))` | **干员页正文用这个**：同现网 prts.wiki，一张表列完各精英阶段 / 模组等级的条件，潜能加成用表头右侧开关切换（预览里 3 行 JS：勾选 → 表加 `.is-pot`；皮肤里归 Gadget） | ✅🧩 |
+| 天赋（卡） | `.ak-talent __name __req __desc` | 列表 / 侧栏摘要 | ✅ |
 | 富文本 | `.ak-rt-*` / `.ba-*` | 见 01 §2.4 | ✅ |
 | 属性面板 | `.ak-attrs --compact` `.ak-attr --accent __label __value` | Bender 数值 + overline 标签（EN + 中文） | ✅ |
 | 键值表 | `.ak-kv --boxed` | 信息栏 | ✅ |
@@ -155,7 +158,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 | 页面 | 结构 | 样例 |
 |---|---|---|
-| 干员页 | 顶部：立绘 + 身份栏（稀有度/职业/分支/标签/kv）+ 阶段选择 + 属性 + 范围 → 天赋 → 潜能 → 技能（等级选择 + 卡片 + 材料 Tabber）→ 模组 → 精英化 → 后勤 → 档案（Tabber + 锁）→ 语音 → 相关 → navbox | `preview/operator.html` |
+| 干员页 | 顶部：立绘 + 身份栏（稀有度/职业/分支/标签/kv）+ 阶段选择 + 属性 + 范围 → 天赋（条件表 + 潜能开关）→ 潜能 → 技能（每个技能一张全等级表 + 材料 Tabber；同现网 prts.wiki 的全等级 / 全条件对比，不做等级切换器）→ 模组 → 精英化 → 后勤 → 档案（Tabber + 锁）→ 语音 → 相关 → navbox | `preview/operator.html` |
 | 设计系统 / 长文 | 卡片内容区 + 右侧粘性 TOC（<1400 收为标题下折叠条）+ 左侧栏 | `preview/index.html` |
 | 首页 | Hero + Breaking news + 今日信息面板 + 亮点干员 op-grid + 活动 event 卡 + 近期新增 | 📝 |
 | 列表 / 筛选页（干员一览） | Chip 筛选栏 + `.ak-op-grid` / `.wikitable.ak-sticky-head` | 📝 |

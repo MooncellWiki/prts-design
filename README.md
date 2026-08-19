@@ -25,7 +25,7 @@ src/
   tokens.css        令牌 + 双主题 + 页眉/头图/画布主题接口（§2d）+ Codex/MW 令牌桥接（必须最先加载）
   base.css          .mw-parser-output / wikitable / toc / tabber / 表单 / diff …
   components.css    通用组件 .ak-btn .ak-tag .ak-card .ak-panel .ak-tabs .ak-message …
-  arknights.css     方舟装饰（色条/斜纹/网点/角标）+ 游戏数据组件（稀有度/职业/技能/道具/干员卡/模组/档案…）
+  arknights.css     方舟装饰（色条/斜纹/网点/角标）+ 游戏数据组件（稀有度/职业/技能（卡 + 全等级表）/天赋条件表/道具/干员卡/模组/档案…）
   skin.css          皮肤骨架：黑色页眉/头图带 .ak-keyart/侧栏（含多层树 + 悬停飞出）/页面头/TOC/搜索面板/页脚/响应式
   sidebar-tree.js   侧栏多层导航增强（树形展开/记忆/当前页路径/桌面飞出；皮肤与预览共用）
   search-palette.js 悬浮搜索面板核心（触发器替换 / 分组结果 / 命令模式 / 键盘 / 最近访问；数据源由调用方注入，皮肤与预览共用）

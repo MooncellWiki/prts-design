@@ -211,6 +211,22 @@
     $$(`[data-show-${sel}]`, scope).forEach(el => { el.hidden = el.getAttribute(`data-show-${sel}`) !== key; });
   });
 
+  /* data-toggle-class: 复选框勾选 → 给最近的 data-toggle-target（默认 table）加/去一个类（天赋表的「潜能加成」开关） */
+  document.addEventListener('change', e => {
+    const t = e.target.closest('[data-toggle-class]'); if (!t) return;
+    const host = t.closest(t.dataset.toggleTarget || 'table'); if (host) host.classList.toggle(t.dataset.toggleClass, t.checked);
+  });
+
+  /* 技能参数矩阵 .ak-skill-matrix：悬停 / 点某一列 → 整列高亮，描述里的 .ak-var[data-var] 换成该级数值；离开还原区间（无 JS 时就是一张静态矩阵） */
+  $$('.ak-skill-matrix').forEach(tb => {
+    const sheet = tb.closest('.ak-skill-sheet') || tb.parentElement; const vars = $$('.ak-var[data-var]', sheet); vars.forEach(v => { v.dataset.range = v.textContent; });
+    const cols = $$('thead th', tb); let pinned = -1;
+    const paint = i => { cols.forEach((th, k) => th.classList.toggle('is-hl', k === i)); $$('tbody tr', tb).forEach(tr => { [...tr.children].forEach((c, k) => c.classList.toggle('is-hl', k === i)); const v = tr.dataset.var; if (v) vars.filter(x => x.dataset.var === v).forEach(x => { x.textContent = i > 0 && tr.children[i] ? tr.children[i].textContent : x.dataset.range; }); }); };
+    tb.addEventListener('mouseover', e => { const c = e.target.closest('th, td'); if (!c || !tb.contains(c)) return; const i = [...c.parentElement.children].indexOf(c); if (i > 0) paint(i); });
+    tb.addEventListener('mouseleave', () => paint(pinned));
+    tb.addEventListener('click', e => { const c = e.target.closest('th, td'); if (!c) return; const i = [...c.parentElement.children].indexOf(c); pinned = (i > 0 && pinned !== i) ? i : -1; paint(pinned); });
+  });
+
   /* ── Dialog / Toast / Dropdown ─────────────────────────────── */
   document.addEventListener('click', e => {
     const o = e.target.closest('[data-dialog-open]'); if (o) { const d = $(o.dataset.dialogOpen); if (d && d.showModal) d.showModal(); }
