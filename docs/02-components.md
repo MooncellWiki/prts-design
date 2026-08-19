@@ -41,7 +41,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 分类 | `.catlinks` `.mw-normal-catlinks` `.mw-hidden-catlinks`（JS 加 `.ak-catlinks__label`） | 参考 fz.wiki：不再做芯片盒——树状线稿图标（CSS mask）+ overline 小标签「分类」+ 常显 1px 下划线的普通链接；`colon-separator` 的「：」由容器 `font-size:0` 吞掉（无 JS 亦可），`tidyCatlinks()` 再把「隐藏分类」文字包成标签；`a.mw-redirect` 斜体 | ✅ |
 | 指示器 / 副标题 | `.mw-indicators` `#contentSub` | | ✅ |
 | navbox / infobox 基线 | `.navbox` `.infobox` | 与卡片同语言（模板可覆盖） | ✅ |
-| TabberNeue | `.tabber__*` + `.ak-tabber-boxed .ak-tabber-skew` | 下划线 + 选中角标；斜切变体 | ✅ |
+| TabberNeue | `.tabber__*` + `.ak-tabber-boxed .ak-tabber-block` | 下划线 + 选中角标；块状变体（选中项黑白反转；原斜切变体已去掉平行四边形） | ✅ |
 | Cargo / DPL 表 | `.cargoTable` `table.mw-datatable` | 与 wikitable 一致 | ✅ |
 | 裸表单控件（Widget / Gadget / 模板产物） | `input`（排除法覆盖所有文本类 type，含不写 type 的）`select` `textarea` `button` `input[type=button/submit/reset]`；全部 `:where()` 零特指度 | 规范 §4：36px 定高（border-box + 0 上下内边距 + min-height，不随容器行高漂）、2px 角、`--ak-border-strong`、`:focus` 青边 + 淡青环、`[readonly]` 下沉底、`:disabled` surface-3、`:user-invalid` / `aria-invalid` 红边、勾选 / 单选 / 滑杆原生 + `accent-color`、`type=number` `tabular-nums` 保留原生步进；**`.mw-body-content` 表格单元格里收到 30px、字号跟表格、文本类输入 `text-align: inherit`**（属性计算器的数字与结果同样居中）；宽度不接管，只 `max-width:100%`；iPhone ≤639 提到 16px 防聚焦缩放 | ✅ |
 | OOUI / Codex / mw-ui | `.mw-ui-button` `.cdx-button` `.oo-ui-*` `.cdx-text-input__input` | 颜色靠桥接令牌 + 少量覆盖（中性 `.cdx-button:enabled` 拉回 surface 底）；尺寸不改 | ✅ |
@@ -57,7 +57,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 |---|---|---|---|
 | 页眉 | `.ak-header` `__logo __wordmark __search __tools` `__screen __tool __tool-label __burger __burger-icon` + `.ak-nav-cb` | 56px 粘性；**两套主题下都是黑色「终端」顶栏**（官网导航栏 / 游戏主界面顶栏 / 档案页顶部黑边），配色只读 `--ak-chrome-*`（`.ak-header` 内把 `--ak-fg / --ak-bg-* / --ak-border* / --ak-accent` 重映射过去，子组件自动跟随；旧的 `--dark` 变体已并入默认）。构件：`rgba(8,9,10,.9)` 底 + 毛玻璃 + 1px 亮线——这是一块压在头图顶端之上的**均匀**黑玻璃（头图从 y=0 铺起，见下一行），可读性由玻璃 alpha 保证，横向 / 纵向都不做渐变；`::before` 右侧半调网点场（`--ak-chrome-texture`）；`--ak-chrome-image` 顶栏角饰层（画在玻璃之上，只放深色低对比素材）；`__wordmark small` 标语用活动主色；工具悬停变活动主色；搜索触发器 = 32px 深色图标框 + 矩形浅条（打开时边框与图标框都变主色）；外观开关选中项 = 主色实底（亮暗一致，不反色）；`.ak-header a:visited { color: inherit }`（黑底上不走紫色已访问色）。**主行是与 `.ak-layout` 对齐的三列网格** `var(--ak-sidebar-w) minmax(0,1fr) auto`：品牌盖着侧栏列（无右侧分隔线）、搜索从正文列左缘起（≤560px，与面包屑 / 标题左缘同线）、工具靠右盖着目录列——页眉是三列各自的「列头」；1680 容器与布局同为 `border-box`，超宽时左右缘对齐。**页眉不放站点级主导航**：那 8 项与侧栏「菜单 › 通用」1:1 重复、没有哪个宽度只靠它、两处 active 打架，导航只由侧栏承担（MW 的 `data-portlets-first` 只在侧栏渲染）。**<1120**：主行回到 flex，只留 品牌 / 搜索 / ≡，工具（外观 / 通知 / 用户）在 `.ak-header__screen`（桌面 `display:contents`，窄屏 = ≡ 拉下、贴主行右下沿的 320px 黑色卡片，`position:absolute` 于 `.ak-header__inner`；纯 CSS 开合 `.ak-nav-cb` + `label.ak-header__burger`，不锁页面滚动；JS 补 Esc / 选中锚点 / 点卡片外 / 回到桌面宽度收起）。DOM 只一份，Echo / `#p-personal` id 不重复 | ✅ |
 | 头图 / 主题接口 | `.ak-keyart` `__inner` + `tokens.css §2d` 的 `--ak-theme-accent --ak-chrome-* --ak-keyart-* --ak-canvas-* --ak-logo-image` | `.ak-layout` 之上的通栏画（mustache 恒输出，`--ak-keyart-h: 0` 时不占位）：盒子上探一个页眉高（<1400 连二级栏）、`padding-top` 把内容压回页眉之下，于是画从页面顶端铺起、页眉玻璃压在它上面，黑框 + 画是一整块而不是两段裁切；`--ak-keyart-h` 是页眉之下可见的高度，`-position` / `-size` 相对整块算；底部按 `-fade` 渐隐进画布（`min(-fade, -h)` 兜住 0 高时不往页眉后画）；`-bg` 默认透明；`body.skin-akds` 背景叠 `--ak-canvas-image`。活动主题（Gadget / Common.css）只覆盖变量，示例 `preview/demo-theme.css`（侧栏 / 展示页「示例活动主题」按钮）。url() 须写绝对地址（Chromium 按使用处解析自定义属性里的相对 url） | ✅ |
-| 搜索（悬浮面板） | 触发器 `button.ak-search-trigger`（有 JS 时替换页眉里的 `form.ak-header__search`；无 JS 保留真表单）· 面板 `.ak-palette-backdrop` + `.ak-palette[role=dialog]` `__head( __back __icon __chip form.__form>#searchInput __clear __close __loading )` `__body>__viewport>__list[role=listbox]>__group>__label+__item[role=option]>__link( __thumb __text( __title __desc ) __meta )[+__actions]` `__empty( __empty-title __empty-desc __shortcuts>__shortcut )` `__foot( __foot-left __hints )` · 状态 `.has-query .has-mode .is-loading .is-closing`；核心 `search-palette.js`（与预览共用），数据源 `skin/resources/search-providers.js` / `preview/search-mock.js` | 参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是居中悬浮的「终端窗口」——直角、顶部 3px 青条、56px 输入行、结果区高度过渡、`--ak-bg-surface-2` 键位页脚；高亮行 = 左 2px 青条 + 淡青底（与侧栏当前项 / 菜单项同一语言）；命令模式用斜切 chip；页眉真表单被**原样搬进面板**（`#searchform #searchInput` 保留 → Gadget / 无 JS 提交不受影响）。开：点触发器 / 手机图标 `.ak-header__search-toggle` / `/`、Ctrl(⌘)K、accesskey F；关：Esc（有字先清空 → 模式中返回 → 关闭）/ 遮罩 / 关闭按钮 / 选中。空态 = 最近访问（localStorage `akds-recent`）+ 提示 + 快捷入口（取侧栏首个门户 `#p-navigation`；预览取 `#MenuSidebar`「通用」组）；有字 = 分组结果 + 末尾固定「全文搜索」行，首项自动高亮、↵ 打开、⇧↵ 全文、⌘/Ctrl↵ 新标签；结果未到就回车 → MW 原生 Go。`/` 列命令，`>` 动作 `#` 分类 `@` 用户 `~` 文件 进入模式（退格空输入 / ← / 返回键退出）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时可见，不会让右侧元数据跳动）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。a11y：`role=dialog aria-modal`、输入框 `role=combobox aria-activedescendant`、`aria-live` 播报条数、Tab 在面板内循环、关闭后焦点回到触发器。≤639：8px 内边距的全宽卡片，右上 Esc 换成「取消」，触屏隐藏键位提示 | ✅🧩 |
+| 搜索（悬浮面板） | 触发器 `button.ak-search-trigger`（有 JS 时替换页眉里的 `form.ak-header__search`；无 JS 保留真表单）· 面板 `.ak-palette-backdrop` + `.ak-palette[role=dialog]` `__head( __back __icon __chip form.__form>#searchInput __clear __close __loading )` `__body>__viewport>__list[role=listbox]>__group>__label+__item[role=option]>__link( __thumb __text( __title __desc ) __meta )[+__actions]` `__empty( __empty-title __empty-desc __shortcuts>__shortcut )` `__foot( __foot-left __hints )` · 状态 `.has-query .has-mode .is-loading .is-closing`；核心 `search-palette.js`（与预览共用），数据源 `skin/resources/search-providers.js` / `preview/search-mock.js` | 参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是居中悬浮的「终端窗口」——直角、顶部 3px 青条、56px 输入行、结果区高度过渡、`--ak-bg-surface-2` 键位页脚；高亮行 = 左 2px 青条 + 淡青底（与侧栏当前项 / 菜单项同一语言）；命令模式用主色实底的矩形 chip；页眉真表单被**原样搬进面板**（`#searchform #searchInput` 保留 → Gadget / 无 JS 提交不受影响）。开：点触发器 / 手机图标 `.ak-header__search-toggle` / `/`、Ctrl(⌘)K、accesskey F；关：Esc（有字先清空 → 模式中返回 → 关闭）/ 遮罩 / 关闭按钮 / 选中。空态 = 最近访问（localStorage `akds-recent`）+ 提示 + 快捷入口（取侧栏首个门户 `#p-navigation`；预览取 `#MenuSidebar`「通用」组）；有字 = 分组结果 + 末尾固定「全文搜索」行，首项自动高亮、↵ 打开、⇧↵ 全文、⌘/Ctrl↵ 新标签；结果未到就回车 → MW 原生 Go。`/` 列命令，`>` 动作 `#` 分类 `@` 用户 `~` 文件 进入模式（退格空输入 / ← / 返回键退出）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时可见，不会让右侧元数据跳动）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。a11y：`role=dialog aria-modal`、输入框 `role=combobox aria-activedescendant`、`aria-live` 播报条数、Tab 在面板内循环、关闭后焦点回到触发器。≤639：8px 内边距的全宽卡片，右上 Esc 换成「取消」，触屏隐藏键位提示 | ✅🧩 |
 | 主题切换 | `.ak-theme-toggle` (os/day/night)，外面包一层 `.ak-header__tool` + `.ak-header__tool-label`（「外观」，只在窄屏面板显示） | 写入 `mw.user.clientPrefs`；<1120 变成面板里的「外观」行，三个按钮加大到 40×32 | ✅🧩 |
 | 通知 / 用户菜单 | `.ak-badge` `.ak-header__bell` `.ak-header__user` + `#p-personal` | Echo 徽标；<1120 变成面板里的「通知」行（徽标靠右）与用户行（`#p-personal` 的 `.ak-menu` 就地展开，不再浮出） | ✅ |
 | 侧栏 | `.ak-sidebar` `__panel(#mw-panel)` `.ak-portlet` `--grid --collapsible` + `#p-navigation` `#p-tb` | 粘性；<1120 抽屉（由二级吸顶栏「菜单」打开；收起时 `visibility:hidden`，不进 Tab 序、阴影也不会从屏幕左缘漏进来）；网格快捷入口；门户折叠状态记忆 | ✅🧩 |
@@ -79,13 +79,13 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 | 组件 | 类 | 变体 | 状态 |
 |---|---|---|---|
-| Button | `.ak-btn` | `--primary --contrast --outline --ghost --danger --link`；`--xs --sm --lg --xl --icon --block --skew --pill`；`.is-loading`（文字隐去，居中一枚 14px 圆弧转圈）`disabled`；`.ak-btn-group` | ✅ |
-| Tag / Badge | `.ak-tag` | `--sm --lg --outline --accent --accent-soft --yellow --info --success --warning --danger --danger-solid --new --inverse --skew --label`；`__dot __remove`；`.ak-badge --dot --accent` | ✅ |
+| Button | `.ak-btn` | `--primary --contrast --outline --ghost --danger --link`；`--xs --sm --lg --xl --icon --block --pill`；`.is-loading`（文字隐去，居中一枚 14px 圆弧转圈）`disabled`；`.ak-btn-group` | ✅ |
+| Tag / Badge | `.ak-tag` | `--sm --lg --outline --accent --accent-soft --yellow --info --success --warning --danger --danger-solid --new --inverse --label`；`__dot __remove`；`.ak-badge --dot --accent` | ✅ |
 | Chip（筛选） | `.ak-chip.is-active` | 选中角标 | ✅🧩 |
 | Card | `.ak-card` | `--hover --selected --flat --inset --accent-top --accent-left --horizontal`；`__header __eyebrow __title __body __footer __media`；`.ak-card-grid` | ✅ |
 | Panel | `.ak-panel` | `__head --inverse __title __body`；`--collapsible` | ✅🧩 |
 | Section heading | `.ak-heading` | `--stack --lg --underline`；`__title __en __aside` | ✅ |
-| Tabs | `.ak-tabs` `.ak-tab` `.ak-tabpanel` | `--pill --skew --vertical` | ✅🧩 |
+| Tabs | `.ak-tabs` `.ak-tab` `.ak-tabpanel` | `--pill --block --vertical` | ✅🧩 |
 | Message | `.ak-message` | `--success --warning --danger --neutral --accent --banner --stripes` | ✅ |
 | Tooltip | `[data-ak-tip]` `.ak-tooltip` `.ak-term` | CSS-only + JS 增强 | ✅ |
 | Popover | `.ak-popover` | | ✅🧩 |
@@ -128,7 +128,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 潜能 / 专精 | `.ak-potential` `.ak-spec` `--bare` | `arts/potential_hub` `arts/specialized_hub` | ✅ |
 | 等级 / 信赖 | `.ak-level --badge` `.ak-trust` | | ✅ |
 | 干员卡 | `.ak-op-card --sm --lg --rail` `__portrait __rarity __prof __elite __name __sub`；`.ak-op-grid`；`.ak-op-row` | 游戏干员列表卡：头像 + 左上星 + 左下职业 + 右下精英 + 稀有度色顶线 | ✅ |
-| 道具 | `.ak-item --sm --lg --round --cut .is-disabled` `__count.is-short`；`.ak-item-list` `.ak-item-inline` | 稀有度色边框 + 黑底数量角标 | ✅ |
+| 道具 | `.ak-item --sm --lg --round .is-disabled` `__count.is-short`；`.ak-item-list` `.ak-item-inline` | 稀有度色边框 + 黑底数量角标（方框；切角变体已移除） | ✅ |
 | 材料表 | `.ak-materials` `__label` | 阶段/等级 → 材料行 | ✅ |
 | 技能 | `.ak-skill.is-selected` `__icon --auto --attack --hit --passive .is-locked` `__head __name __meta __desc __stats` | SP 类型 = 图标描边 + 底条色；选中 = 蓝框 + 角标（游戏 `selected_back`） | ✅ |
 | SP 标签 | `.ak-sp --attack --hit --passive` `.ak-sp-trigger --auto` `.ak-sp-cost` `.ak-sp-init` | 游戏 `skill_sp_cost_bkg` 荧光绿 | ✅ |
@@ -138,7 +138,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 属性面板 | `.ak-attrs --compact` `.ak-attr --accent __label __value` | Bender 数值 + overline 标签（EN + 中文） | ✅ |
 | 键值表 | `.ak-kv --boxed` | 信息栏 | ✅ |
 | 攻击范围 | `.ak-range --sm --lg` `style="--cols:N"` `i.on/.self/.off` | | ✅ |
-| 模组 | `.ak-module __img __type __name __stage __mission` | SWO-X 等型号用展示字 | ✅ |
+| 模组 | `.ak-module __img __type __name __stage __mission`（`--_bar` 改左侧色条色） | SWO-X 等型号用展示字；卡片左侧一道粗色条即分割，`__mission` 不再另画竖线 | ✅ |
 | 语音 | `.ak-voice __play.is-playing __title __lang __text __wave` | | ✅🧩 |
 | 档案 | `.ak-dossier.is-locked[data-unlock]` `__title __unlock`；`.ak-redacted` | 未解锁：模糊 + 斜纹 + 条件 | ✅ |
 | 剧情对话 | `.ak-dialogue` `dt/dd .narrator` | | ✅ |

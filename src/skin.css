@@ -201,7 +201,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 @keyframes ak-tree-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ak-tree__branch.is-open > ul { animation: none; } .ak-tree__toggle::before, .ak-portlet--collapsible > .ak-portlet__title::after { transition: none; } }
 /* 桌面悬停飞出（peek）：由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切 */
-.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left: 2px solid var(--ak-accent); box-shadow: var(--ak-shadow-lg); padding: 4px 0 6px; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
+.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: 2px; border-image: linear-gradient(to right, var(--ak-accent) 2px, var(--ak-border) 2px) 1 1 1 2; box-shadow: var(--ak-shadow-lg); padding: 4px 0 6px; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
 @keyframes ak-flyout-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
 .ak-flyout__title { padding: 6px 14px 4px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-subtle); }
 .ak-flyout ul { list-style: none; margin: 0; padding: 0; }
@@ -331,7 +331,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
  *  高亮：↑↓ 循环，回车打开；⇧回车全文搜索；结果未到时回车走 MW 原生 Go（精确跳转，无则全文）。 */
 .ak-palette-backdrop { position: fixed; inset: 0; z-index: var(--ak-z-modal); background: var(--ak-bg-overlay); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); animation: ak-fade-in var(--ak-dur-normal) var(--ak-ease-out); }
 .ak-palette { --_top: clamp(48px, 10vh, 120px); --_head-h: 56px; --_foot-h: 40px; position: fixed; z-index: calc(var(--ak-z-modal) + 1); top: var(--_top); left: 0; right: 0; margin-inline: auto; width: min(720px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--_top) * 2);
-  display: flex; flex-direction: column; background: var(--ak-bg-surface); color: var(--ak-fg); border: 1px solid var(--ak-border); border-top: 3px solid var(--ak-accent); box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); line-height: 1.4; animation: ak-palette-in var(--ak-dur-normal) var(--ak-ease-out); }
+  display: flex; flex-direction: column; background: var(--ak-bg-surface); color: var(--ak-fg); border: 1px solid var(--ak-border); border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1; box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); line-height: 1.4; animation: ak-palette-in var(--ak-dur-normal) var(--ak-ease-out); }
 .ak-palette[hidden], .ak-palette-backdrop[hidden] { display: none !important; }
 .ak-palette.is-closing { animation: ak-palette-out var(--ak-dur-fast) var(--ak-ease-in) forwards; pointer-events: none; }
 .ak-palette-backdrop.is-closing { animation: ak-fade-out var(--ak-dur-fast) var(--ak-ease-in) forwards; }
@@ -346,7 +346,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-palette__back svg { width: 18px; height: 18px; }
 .ak-palette.has-mode .ak-palette__back { display: grid; }
 .ak-palette.has-mode .ak-palette__icon { margin-left: 4px; }
-.ak-palette__chip { display: none; flex: none; align-items: center; height: 24px; margin-right: 6px; padding: 0 14px 0 12px; background: var(--ak-accent); color: var(--ak-accent-fg); font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .08em; text-transform: uppercase; clip-path: polygon(0 0, 100% 0, calc(100% - 7px) 100%, 0 100%); }   /* 斜切标签（游戏 announce_title_on） */
+.ak-palette__chip { display: none; flex: none; align-items: center; height: 24px; margin-right: 6px; padding: 0 10px; background: var(--ak-accent); color: var(--ak-accent-fg); font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .08em; text-transform: uppercase; }   /* 模式标签：主色实底矩形块 */
 .ak-palette.has-mode .ak-palette__chip { display: inline-flex; }
 .ak-palette__form { flex: 1; min-width: 0; display: flex; align-items: center; margin: 0; }
 .ak-palette__form input[type="search"], .ak-palette__form input[type="text"] { flex: 1; min-width: 0; height: var(--_head-h); margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; font: inherit; font-size: var(--ak-fs-body); line-height: var(--_head-h); outline: 0; box-shadow: none; appearance: none; -webkit-appearance: none; }
@@ -454,7 +454,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
   /* 目录浮层：顶边跟着吸顶栏下沿走，右对齐于二级栏 */
   .ak-toc { --_top: calc(var(--ak-header-h) + var(--ak-local-nav-h)); position: fixed; top: var(--_top); right: var(--ak-gutter); left: auto; bottom: auto; z-index: var(--ak-z-dropdown);
     display: none; flex-direction: column; width: min(360px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--_top) - var(--ak-space-4));
-    background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top: 3px solid var(--ak-accent); box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); }
+    background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1; box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); }
   :root.ak-condensed .ak-toc { --_top: var(--ak-local-nav-h); }
   body:has(.ak-toc-cb:checked) .ak-toc { display: flex; }
   .ak-toc__top { display: flex; align-items: center; gap: 8px; flex: none; padding: var(--ak-space-3) var(--ak-space-4); color: var(--ak-accent); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--ak-border); }
@@ -491,7 +491,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
   .ak-header__burger { display: inline-flex; }
   .ak-header__screen { position: absolute; top: 100%; right: var(--ak-gutter); z-index: var(--ak-z-dropdown);
     display: none; flex-direction: column; width: min(320px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100dvh - var(--ak-header-h) - var(--ak-space-4)); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box;
-    background: var(--ak-bg-surface); color: var(--ak-fg); border: 1px solid var(--ak-border); border-top: 3px solid var(--ak-accent); box-shadow: var(--ak-shadow-lg); }
+    background: var(--ak-bg-surface); color: var(--ak-fg); border: 1px solid var(--ak-border); border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1; box-shadow: var(--ak-shadow-lg); }
   .ak-nav-cb:checked ~ .ak-header__screen { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
   /* 工具 → 「外观 / 通知 / 用户」三行（对应 Vite 面板下半的 Appearance 组） */
   .ak-header__tools { flex-direction: column; align-items: stretch; gap: 0; margin: 0; padding: var(--ak-space-1) 0; }

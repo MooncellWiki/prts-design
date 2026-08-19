@@ -5,7 +5,7 @@
 
 ## 0. 一句话
 
-**黑白为体、青为用；直角、斜切、斜纹、网点；拉丁大写字作装饰层，中文思源做正文；终端 / 档案双主题。**
+**黑白为体、青为用；直角、斜纹、网点；拉丁大写字作装饰层，中文思源做正文；终端 / 档案双主题。**
 
 ---
 
@@ -15,7 +15,7 @@
 |---|---|
 | 世界观 | 泰拉 · PRTS 终端 / 罗德岛档案 |
 | 母色 | 黑白灰 + 青 `#18D1FF`（官网）/ 蓝 `#0098DC`（游戏内）+ 黄 `#FFD800` |
-| 形状 | 直角 0、切角 8px、平行四边形斜切、角标三角、斜纹、半调网点 |
+| 形状 | 直角 0；角标三角、斜纹、半调网点。**没有切角 / 斜切 / 斜带**——整套系统里不出现 45° 的斜边 |
 | 字体 | Novecento Sans Wide / Bender / Oswald + 思源黑体 |
 | 光效 | **无辉光**；用明度反转（黑/白）与色条表达强调 |
 | 主题 | **双正典**：终端（暗）/ 档案（亮），跟随系统 |
@@ -25,7 +25,7 @@
 ### 1.1 六条原则
 
 1. **Monochrome first** — 大面积黑/白/灰承载信息；青只用于选中、链接、主动作、强调条；黄为次强调（稀有度/提示）；红只表示危险与"NEW/BREAKING"。
-2. **Cut, not rounded** — `border-radius: 0`；层级与状态用切角（chamfer）、斜切（skew）、角标三角、色条表达。输入框允许 2px。
+2. **Square, not rounded** — `border-radius: 0`，也不做切角 / 斜切 / 斜带；层级与状态用色条、黑白反转、角标三角表达。输入框允许 2px。色条 + 细框的盒子（pre / 消息 / 面板头 / 模组卡 / 弹层顶条 …）用 `border-image` 把色条与 1px 框直角拼接——不同宽度的 border 会被浏览器在角上斜接（miter）出一道小斜边，那也是斜边（`tokens.css` §Shape 有写法）。
 3. **Latin as ornament** — 大写拉丁展示字（Novecento/Bender/Oswald）只做标题旁英文、编号、数值、水印；中文永远用思源黑体，行高 1.7。
 4. **Two canonical themes** — 游戏本身是双色世界（主界面/作战为黑，档案/商店为白灰）。两套主题等价，用 MW 1.43 `skin-theme-clientpref-*` 切换。
 5. **Wiki-native** — 先把 wikitext 产物（标题、表格、TOC、引用、图库、TabberNeue、Cargo）做好，再谈组件；组件是纯 CSS 类，可写进模板/TemplateStyles。
@@ -33,8 +33,8 @@
 
 ### 1.2 DO / DON'T
 
-DO：标题左侧粗色条 + 短横条；切角/斜切/角标表示选中；数值编号用 Bender/Oswald；白色线稿图标亮色下 `filter: invert(1)`；斜纹表示危险/施工/禁用；黑白反转做主动作。
-DON'T：圆角卡片、阴影堆叠、玻璃拟态；菱形项目符号、辉光文字；金黄 `#FFD429` 做主色；大写英文替代中文标题；正文用 Orbitron/等宽；非官方稀有度色。
+DO：标题左侧粗色条 + 短横条；色条/黑白反转/角标表示选中；数值编号用 Bender/Oswald；白色线稿图标亮色下 `filter: invert(1)`；斜纹表示危险/施工/禁用；黑白反转做主动作。
+DON'T：圆角卡片、阴影堆叠、玻璃拟态；切角、平行四边形、斜带、border 斜接出来的小斜边；菱形项目符号、辉光文字；金黄 `#FFD429` 做主色；大写英文替代中文标题；正文用 Orbitron/等宽；非官方稀有度色。
 
 ---
 
@@ -170,7 +170,7 @@ html.skin-theme-clientpref-night  终端模式（暗）
 ### 2.9 间距 / 形状 / 动效 / 层级 / 断点
 
 - 间距 4px 基准：`--ak-space-1..24`（4 8 12 16 20 24 32 40 48 64 80 96）
-- 形状：`--ak-radius 0`、`--ak-radius-sm 2px`、`--ak-cut 8px`（切角）、`--ak-skew -14deg`、`--ak-bar-w 4px / -lg 8px`
+- 形状：`--ak-radius 0`、`--ak-radius-sm 2px`、`--ak-bar-w 4px / -lg 8px`；没有切角 / 斜切令牌（已移除）。色条 + 细框：`border: 1px solid var(--ak-border); border-left-width: 4px; border-image: linear-gradient(to right, <色条色> 4px, var(--ak-border) 4px) 1 1 1 4`（slice 与各边 border-width 一致；顶部色条同理）
 - 动效：`--ak-dur-fast 150ms / normal 250ms / slow 400ms`；`--ak-ease cubic-bezier(.2,.8,.2,1)`；`prefers-reduced-motion` 全局关闭
 - 加载指示：`.ak-spinner` 是**菱形涟漪**——游戏内 loading：中央常驻一枚空心菱形（= 中坚术师分支图标那枚），另一枚环从它身上冒出来、边扩边淡到没，下一枚再来（1.2s 一枚；游戏里环出生时还带随机剪切，这个尺寸下施展不开、没做）；按钮的 `.is-loading` 只有 36px 高、涟漪放不开，退回 14px 圆弧转圈
 - z-index：dropdown 100 · sticky 200 · header 1000 · overlay 1500 · modal 2000 · toast 3000 · tooltip 4000
@@ -179,7 +179,7 @@ html.skin-theme-clientpref-night  终端模式（暗）
 - 布局：`--ak-header-h 56` · `--ak-local-nav-h 48` · `--ak-sidebar-w 248` · `--ak-toc-w 240` · `--ak-content-max 1240`（≥1680 侧栏 / 目录 268，写在 `:root`）
 - **页眉 = 三列的列头**：主行网格 `var(--ak-sidebar-w) minmax(0,1fr) auto` 与 `.ak-layout` 同列同 gutter——品牌盖着侧栏、搜索从正文列左缘起（≤560px，与标题左缘同线）、工具盖着目录列；1680 容器一律 `border-box`。**页眉不放站点级主导航**（与侧栏「通用」组重复），导航只由侧栏承担；<1120 外观 / 通知 / 用户收进 ≡ 拉下的 320px 卡片
 - **页眉是黑色「终端」顶栏，两套主题下都不变**：官网导航栏（#000 底 · 青色当前项 · 白线稿图标）、游戏主界面顶栏（深底 · 半调网点 · 青色选中块）、干员档案页顶部那道黑边——「黑框白纸 / 黑框黑纸」是方舟本体的框架语言。配色不读明暗主题，只读 §2.10 的 `--ak-chrome-*`（`skin.css` 在 `.ak-header` 内把语义令牌重映射过去，页眉里的按钮 / 搜索 / 头像 / 菜单自动跟随）。构件：`rgba(8,9,10,.9)` 底 + 毛玻璃 + 1px 亮线；右侧半调网点场向左渐隐；标语与悬停用活动主色；**页眉与头图是一整块**——头图从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃（活动主题只调 `--ak-chrome-bg` 的 alpha 决定画透多少），可读性由玻璃保证、不赌画面；不做「顶栏一张照片从左缘渐入」的底图（压不住白色图标、又像贴上去的），`--ak-chrome-image` 只放画在玻璃之上的深色角饰；搜索触发器 = 左端深色图标框（游戏 HUD `announce_title_on` 的图标位）+ 矩形浅条，打开时图标框反成主色实底（曾试过右端斜切，Tab 焦点描边会被 clip-path 裁断，作罢）；外观开关选中项用主色实底（游戏 `selected_back` / `toggle_on`），亮暗主题下不反色；页眉内链接不分已访问色
-- **搜索（参考 Citizen Command Palette / starcitizen.tools）**：页眉里那条「输入框」其实是触发器（无 JS 时是真表单），点击或按 `/`、`⌘K` 打开居中悬浮的搜索面板：直角、顶部 3px 青条、56px 输入行、`--ak-bg-overlay` 遮罩 + 2px 模糊；空态给最近访问 + 快捷入口，有字给分组结果（干员带头像 / 职业 / 稀有度）+ 末尾固定「全文搜索」行；`/` 列命令、`>` `#` `@` `~` 进入模式（斜切 chip）。高亮行沿用「左 2px 青条 + 淡青底」；键位提示用 `.ak-kbd`。**不做**页眉内下拉建议（Vector 式）：内容页面宽、页眉是玻璃底，下拉在毛玻璃上叠层次会脏；居中面板一层遮罩把注意力收拢，也天然适配手机（8px 内边距全宽卡片）
+- **搜索（参考 Citizen Command Palette / starcitizen.tools）**：页眉里那条「输入框」其实是触发器（无 JS 时是真表单），点击或按 `/`、`⌘K` 打开居中悬浮的搜索面板：直角、顶部 3px 青条、56px 输入行、`--ak-bg-overlay` 遮罩 + 2px 模糊；空态给最近访问 + 快捷入口，有字给分组结果（干员带头像 / 职业 / 稀有度）+ 末尾固定「全文搜索」行；`/` 列命令、`>` `#` `@` `~` 进入模式（主色实底的矩形 chip）。高亮行沿用「左 2px 青条 + 淡青底」；键位提示用 `.ak-kbd`。**不做**页眉内下拉建议（Vector 式）：内容页面宽、页眉是玻璃底，下拉在毛玻璃上叠层次会脏；居中面板一层遮罩把注意力收拢，也天然适配手机（8px 内边距全宽卡片）
 
 ### 2.10 页眉 / 头图 / 画布的主题接口（活动主题只改这些）
 
@@ -209,12 +209,10 @@ prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现�
 
 | 类 | 说明 | 出处 |
 |---|---|---|
-| `.ak-chamfer` `--tr --br --all --sm --lg` / `.ak-chamfer-frame` | 45° 切角，双层实现带边框 | 游戏面板 |
-| `.ak-skew` `--l --r --arrow` / `.ak-skew-text` | 平行四边形标签/箭头 | 游戏 `announce_title_on` |
 | `.ak-stripes` `--strong --warning --danger --hazard` / `.ak-stripe-bar` / `.ak-stripe-edge` | 45° 斜纹 | 游戏 `btn_done`、`image_btn_ap_confirm` |
 | `.ak-halftone` `--l --full` / `.ak-blue-band` | 半调网点渐隐 | 游戏 `bkg_openserver` |
 | `.ak-bg-grid` `.ak-bg-dots` `.ak-bg-diag` `.ak-scanlines` | 网格/点阵背景 | PRTS 终端 |
-| `.ak-corner` `--tr --yellow --red --lg` / `.ak-corner-tag` | 角标三角 / 斜带文字 | 官网右上三角、游戏 `selected_decor` |
+| `.ak-corner` `--tr --yellow --red --lg` | 角标三角（带文字的角标用矩形 `.ak-tag` 叠在角上；45° 斜带已移除） | 官网右上三角、游戏 `selected_decor` |
 | `.ak-brackets` | 细线边角（仅用于图片） | |
 | `.ak-en` `.ak-display` `.ak-overline` `.ak-num` `.ak-code-id` `.ak-watermark` `.ak-bilingual` | 拉丁装饰字 | 官网 |
 | `.ak-glyph` `.ak-glyph-box` | 白色线稿图标反相 | |

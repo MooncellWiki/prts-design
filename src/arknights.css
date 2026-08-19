@@ -1,7 +1,7 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
  *  AKDS · arknights.css — 方舟特色（Signature）组件与装饰
  *  这些是让界面"像明日方舟"而不是通用后台的部分：
- *    装饰语言：左侧色条 / 短横条 / 切角 / 斜切 / 斜纹 / 半调网点 / 角标三角 / 黑白反转 / 大写拉丁字 / 白色线稿图标
+ *    装饰语言：左侧色条 / 短横条 / 斜纹 / 半调网点 / 角标三角 / 黑白反转 / 大写拉丁字 / 白色线稿图标（没有切角、斜切、斜带——整套系统里不出现 45° 斜边）
  *    数据组件：稀有度 / 职业 / 精英化 / 潜能 / 专精 / 干员卡 / 道具 / 技能 / 攻击范围 / 材料 / 富文本 / 模组 / 语音 / 档案 / 关卡
  *  依赖：tokens.css（图标资源路径由 --ak-asset-base 指定，默认相对 preview/assets）
  * ═══════════════════════════════════════════════════════════════════════════ */
@@ -9,26 +9,7 @@
 
 /* ═══ A. 装饰语言 (Decoration primitives) ═══ */
 
-/* A1. 切角（chamfer）· 游戏内面板/标签常见的 45° 切角 */
-.ak-chamfer      { clip-path: polygon(0 0, calc(100% - var(--ak-cut)) 0, 100% var(--ak-cut), 100% 100%, var(--ak-cut) 100%, 0 calc(100% - var(--ak-cut))); }
-.ak-chamfer--sm  { --ak-cut: var(--ak-cut-sm); }
-.ak-chamfer--lg  { --ak-cut: var(--ak-cut-lg); }
-.ak-chamfer--tr  { clip-path: polygon(0 0, calc(100% - var(--ak-cut)) 0, 100% var(--ak-cut), 100% 100%, 0 100%); }
-.ak-chamfer--br  { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--ak-cut)), calc(100% - var(--ak-cut)) 100%, 0 100%); }
-.ak-chamfer--all { clip-path: polygon(var(--ak-cut) 0, calc(100% - var(--ak-cut)) 0, 100% var(--ak-cut), 100% calc(100% - var(--ak-cut)), calc(100% - var(--ak-cut)) 100%, var(--ak-cut) 100%, 0 calc(100% - var(--ak-cut)), 0 var(--ak-cut)); }
-/* 带边框的切角需要双层：外层 .ak-chamfer-frame 用背景色模拟边框 */
-.ak-chamfer-frame { --_bd: var(--ak-border-strong); --_pad: 1px; background: var(--_bd); padding: var(--_pad); display: inline-block; }
-.ak-chamfer-frame > * { background: var(--ak-bg-surface); }
-.ak-chamfer-frame, .ak-chamfer-frame > * { clip-path: polygon(0 0, calc(100% - var(--ak-cut)) 0, 100% var(--ak-cut), 100% 100%, var(--ak-cut) 100%, 0 calc(100% - var(--ak-cut))); }
-.ak-chamfer-frame--accent { --_bd: var(--ak-accent); }
-
-/* A2. 斜切（parallelogram）· 游戏内标签页/公告标题 */
-.ak-skew { display: inline-block; white-space: nowrap; clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); padding-inline: 18px; }
-.ak-skew--l { clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%); }
-.ak-skew--r { clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
-.ak-skew--arrow { clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%); padding-right: 22px; }
-.ak-skew-text { display: inline-block; transform: skewX(var(--ak-skew)); }
-.ak-skew-text > * { display: inline-block; transform: skewX(calc(-1 * var(--ak-skew))); }
+/* A1–A2（切角 .ak-chamfer / 斜切 .ak-skew）已移除：系统只用直角，层级与状态靠色条、黑白反转、角标三角表达。 */
 
 /* A3. 斜纹（hazard stripes）· 危险 / 施工 / 禁用 / 分隔 */
 .ak-stripes { background-image: repeating-linear-gradient(-45deg, var(--ak-stripe-color) 0 var(--ak-stripe-size), transparent var(--ak-stripe-size) calc(var(--ak-stripe-size) * 2)); }
@@ -70,11 +51,7 @@
 .ak-corner--tr.ak-corner--red::before { border-color: transparent var(--ak-red-600) transparent transparent; }
 .ak-corner--lg::before { border-width: 18px 18px 0 0; }
 .ak-corner--tr.ak-corner--lg::before { border-width: 0 18px 18px 0; }
-/* 带文字的角标 */
-.ak-corner-tag { position: absolute; top: 0; right: 0; width: 56px; height: 56px; overflow: hidden; pointer-events: none; }
-.ak-corner-tag > span { position: absolute; top: 10px; right: -22px; width: 90px; transform: rotate(45deg); background: var(--ak-accent); color: var(--ak-accent-fg); text-align: center; font: 700 10px/18px var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; }
-.ak-corner-tag--red > span { background: var(--ak-red-600); color: #fff; }
-.ak-corner-tag--yellow > span { background: var(--ak-yellow-500); color: #1d1f20; }
+/* 带文字的角标用 .ak-tag（矩形）叠在角上即可；原 45° 斜带 .ak-corner-tag 已移除 */
 
 /* A7. 边角括号（HUD bracket）— 只用细线角标记于图片/大图 */
 .ak-brackets { position: relative; }
@@ -193,13 +170,14 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-op-card__sub { display: block; font: 600 10px/1 var(--ak-font-label); color: var(--ak-fg-muted); margin-top: 3px; letter-spacing: .06em; text-transform: uppercase; }
 .ak-op-card--sm { --_w: 88px; } .ak-op-card--sm .ak-op-card__name { font-size: var(--ak-fs-xs); padding: 4px 6px; }
 .ak-op-card--lg { --_w: 180px; }
-.ak-op-card--rail { border-left: 3px solid var(--ak-r); }
+.ak-op-card--rail { border-left-width: 3px; border-image: linear-gradient(to right, var(--ak-r) 3px, var(--ak-border) 3px) 1 1 1 3; }   /* 稀有度色条与 1px 框直角拼接 */
+.ak-op-card--rail:hover { border-image-source: linear-gradient(to right, var(--ak-r) 3px, var(--ak-accent) 3px); }
 .ak-op-card--rail .ak-op-card__name { border-top: 0; }
 .ak-op-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: var(--ak-space-3); }
 .ak-op-grid > .ak-op-card { --_w: auto; width: auto; }
 /* 干员横向条目（列表/表格内） */
 .ak-op-row { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
-.ak-op-row .ak-avatar { --_s: 36px; border-left: 3px solid var(--ak-r, var(--ak-border)); }
+.ak-op-row .ak-avatar { --_s: 36px; border-left-width: 3px; border-image: linear-gradient(to right, var(--ak-r, var(--ak-border)) 3px, var(--ak-border) 3px) 1 1 1 3; }
 .ak-op-row__name { font-weight: 700; line-height: 1.2; }
 .ak-op-row__meta { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); display: flex; gap: 6px; align-items: center; }
 
@@ -211,7 +189,6 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-item--sm { --_s: 40px; } .ak-item--sm .ak-item__count { height: 15px; font-size: 10px; min-width: 16px; }
 .ak-item--lg { --_s: 76px; }
 .ak-item--round { border-radius: 50%; }
-.ak-item--cut { clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
 .ak-item.is-disabled > img { filter: grayscale(1) brightness(.6); }
 .ak-item-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .ak-item-inline { display: inline-flex; align-items: center; gap: 4px; }
@@ -308,7 +285,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-range--lg { --_cell: 20px; } .ak-range--sm { --_cell: 10px; }
 
 /* B10. 模组卡 */
-.ak-module { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 14px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left: var(--ak-bar-w-lg) solid var(--ak-fg); }
+.ak-module { --_bar: var(--ak-fg); display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 14px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w-lg); border-image: linear-gradient(to right, var(--_bar) 8px, var(--ak-border) 8px) 1 1 1 8; }   /* 左侧粗色条（--_bar 可改：原型 ORIGINAL 用 --ak-fg-muted）与 1px 框直角拼接 */
 .ak-module__img { width: 96px; height: 96px; background: #1d1f20; display: grid; place-items: center; overflow: hidden; }
 .ak-module__img img { max-width: 90%; max-height: 90%; }
 .ak-module__type { font: 800 var(--ak-fs-h3)/1 var(--ak-font-display); letter-spacing: -.01em; }
@@ -317,7 +294,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-module__stage { display: inline-flex; gap: 2px; }
 .ak-module__stage > i { width: 22px; height: 6px; background: var(--ak-bg-surface-3); }
 .ak-module__stage > i.on { background: var(--ak-accent); }
-.ak-module__mission { font-size: var(--ak-fs-xs); color: var(--ak-fg-secondary); padding-left: 10px; border-left: 2px solid var(--ak-border-strong); }
+.ak-module__mission { font-size: var(--ak-fs-xs); color: var(--ak-fg-secondary); }   /* 不再加左侧竖线：卡片本身已有粗色条，再画一道是重复分割 */
 
 /* B11. 语音条目 */
 .ak-voice { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: start; }
@@ -350,16 +327,17 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-dialogue > dt.narrator, .ak-dialogue > dd.narrator { color: var(--ak-fg-muted); font-style: italic; }
 
 /* B13. 关卡卡 / 关卡编号 */
-.ak-stage { display: grid; grid-template-columns: max-content 1fr; gap: 12px; align-items: center; padding: 10px 14px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); text-decoration: none; color: inherit; position: relative; }
-.ak-stage:hover { border-color: var(--ak-accent); text-decoration: none; color: inherit; }
+.ak-stage { --_bd: var(--ak-border); display: grid; grid-template-columns: max-content 1fr; gap: 12px; align-items: center; padding: 10px 14px; background: var(--ak-bg-surface); border: 1px solid var(--_bd); text-decoration: none; color: inherit; position: relative; }
+.ak-stage:hover { --_bd: var(--ak-accent); text-decoration: none; color: inherit; }
 .ak-stage__code { font: 800 var(--ak-fs-h3)/1 var(--ak-font-display); letter-spacing: -.02em; min-width: 72px; }
 .ak-stage__code small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .12em; color: var(--ak-fg-muted); margin-top: 3px; }
 .ak-stage__name { font-weight: 700; }
 .ak-stage__meta { display: flex; gap: 10px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); margin-top: 4px; }
 .ak-stage__meta b { color: var(--ak-fg); }
-.ak-stage--hard { border-left: 4px solid var(--ak-red-600); }
-.ak-stage--ex { border-left: 4px solid var(--ak-red-700); }
-.ak-stage--story { border-left: 4px solid var(--ak-fg-muted); }
+.ak-stage--hard, .ak-stage--ex, .ak-stage--story { border-left-width: 4px; border-image: linear-gradient(to right, var(--_bar) 4px, var(--_bd) 4px) 1 1 1 4; }   /* 关卡类型色条与框直角拼接 */
+.ak-stage--hard { --_bar: var(--ak-red-600); }
+.ak-stage--ex { --_bar: var(--ak-red-700); }
+.ak-stage--story { --_bar: var(--ak-fg-muted); }
 .ak-stage-code { display: inline-block; font: 800 1em/1 var(--ak-font-display); letter-spacing: -.02em; padding: 2px 6px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
 .ak-stage-code--hard { background: var(--ak-red-700); color: #fff; }
 /* 理智 / 消耗 */
@@ -376,14 +354,15 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 
 /* B15. 敌人卡 */
 .ak-enemy { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 10px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+.ak-enemy--boss, .ak-enemy--elite { border-left-width: 4px; border-image: linear-gradient(to right, var(--_bar) 4px, var(--ak-border) 4px) 1 1 1 4; }
 .ak-enemy__img { width: 64px; height: 64px; background: #1d1f20; border-radius: 50%; overflow: hidden; }
 .ak-enemy__code { font: 700 10px/1 var(--ak-font-label); letter-spacing: .12em; color: var(--ak-fg-muted); }
 .ak-enemy__name { font-weight: 800; }
 .ak-enemy__level { display: inline-flex; gap: 2px; }
 .ak-enemy__level > i { width: 12px; height: 12px; background: var(--ak-bg-surface-3); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 .ak-enemy__level > i.on { background: var(--ak-red-500); }
-.ak-enemy--boss { border-left: 4px solid var(--ak-red-700); }
-.ak-enemy--elite { border-left: 4px solid var(--ak-orange-500); }
+.ak-enemy--boss { --_bar: var(--ak-red-700); }
+.ak-enemy--elite { --_bar: var(--ak-orange-500); }
 
 /* B16. 活动 / 倒计时 */
 .ak-countdown { display: inline-flex; gap: 6px; font-family: var(--ak-font-label); }
@@ -400,7 +379,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 
 /* B17. Breaking-news 横幅（游戏内主界面）*/
 .ak-news { display: flex; align-items: stretch; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-sm); overflow: hidden; }
-.ak-news__label { background: var(--ak-red-700); color: #fff; padding: 6px 12px; font: 800 var(--ak-fs-xs)/1.4 var(--ak-font-display); letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%); padding-right: 18px; }
+.ak-news__label { background: var(--ak-red-700); color: #fff; padding: 6px 14px; font: 800 var(--ak-fs-xs)/1.4 var(--ak-font-display); letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; }   /* 矩形红块（不斜切） */
 .ak-news__text { padding: 6px 14px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ak-news__text a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 
@@ -412,5 +391,5 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-hero__bar { width: 220px; height: 8px; background: var(--ak-cyan-500); margin: 16px 0; }
 .ak-hero__title::after { display: none; }
 .ak-hero__desc { max-width: 60ch; color: rgba(255,255,255,.7); font-size: var(--ak-fs-sm); }
-.ak-hero__side { position: absolute; right: 0; top: 0; bottom: 0; width: 26%; background: var(--ak-cyan-500); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%); opacity: .9; }
+.ak-hero__side { position: absolute; right: 0; top: 0; bottom: 0; width: 22%; background: var(--ak-cyan-500); opacity: .9; }   /* 右侧竖直青色色块（官网 hero 的色面；不做斜边） */
 .ak-hero__side::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,0,0,.35) 1.2px, transparent 1.4px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(90deg, #000, transparent 70%); mask-image: linear-gradient(90deg, #000, transparent 70%); }

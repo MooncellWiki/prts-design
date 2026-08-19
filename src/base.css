@@ -116,7 +116,8 @@ sup, sub { line-height: 0; }
 code, .mw-code, pre, tt { font-family: var(--ak-font-mono); font-size: .9em; }
 :not(pre) > code { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: .1em .35em; color: var(--ak-fg); }
 pre, .mw-code, .mw-highlight pre {
-  background: var(--ak-bg-inset); border: 1px solid var(--ak-border); border-left: 3px solid var(--ak-accent);
+  background: var(--ak-bg-inset); border: 1px solid var(--ak-border); border-left-width: 3px;
+  border-image: linear-gradient(to right, var(--ak-accent) 3px, var(--ak-border) 3px) 1 1 1 3;   /* 色条与细框直角拼接，不让 border 斜接出斜边（tokens.css §Shape） */
   padding: var(--ak-space-3) var(--ak-space-4); overflow-x: auto; line-height: 1.55; color: var(--ak-fg);
   margin: 0 0 var(--ak-space-4);
 }
@@ -143,7 +144,7 @@ pre, .mw-code, .mw-highlight pre {
 .wikitable.ak-dense { font-size: var(--ak-fs-xs); }
 .wikitable.ak-borderless, .wikitable.ak-borderless > * > tr > th, .wikitable.ak-borderless > * > tr > td { border-left: 0; border-right: 0; }
 .wikitable.ak-borderless { border-left: 0; border-right: 0; }
-.wikitable th.ak-th-accent { border-top: 3px solid var(--ak-accent); }
+.wikitable th.ak-th-accent { box-shadow: inset 0 3px 0 var(--ak-accent); }   /* 表头顶部色条画在格子内（collapse 表格里 border-image 无效，而 3px 的 border-top 会和 1px 的竖线斜接） */
 /* 数字列：正文字体（Noto Sans SC 数字默认等宽，天然对齐；Bender 数字是比例宽度、子集无 tnum，小字号又细，不进表格）。.ak-num 是显式的 HUD 数字（粗体 Bender），表格里只在面板级数值上用 */
 .wikitable td.num, .wikitable .num { font-variant-numeric: tabular-nums; text-align: right; }
 .wikitable .ak-num { text-align: right; }
@@ -192,8 +193,9 @@ ul.gallery.mw-gallery-packed li.gallerybox, ul.gallery.mw-gallery-packed-hover l
 
 /* ─── TOC (inline, legacy) ─────────────────────────────────────────────── */
 .toc, .mw-parser-output .toc, #toc {
-  display: inline-block; background: var(--ak-bg-surface); border: 1px solid var(--ak-border);
-  border-top: 3px solid var(--ak-accent); padding: var(--ak-space-3) var(--ak-space-4); margin: 0 0 var(--ak-space-4);
+  display: inline-block; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top-width: 3px;
+  border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1;
+  padding: var(--ak-space-3) var(--ak-space-4); margin: 0 0 var(--ak-space-4);
   font-size: var(--ak-fs-sm); min-width: 240px;
 }
 .toc .toctitle { display: flex; align-items: center; gap: var(--ak-space-3); }
@@ -229,20 +231,20 @@ sup.reference a { padding: 0 .1em; }
 
 /* ─── Hatnotes / message boxes / notices ───────────────────────────────── */
 .hatnote, .dablink, .rellink { font-style: normal; color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); padding: .3em 0 .3em 1em; border-left: 2px solid var(--ak-border-strong); margin: 0 0 var(--ak-space-3); }
-.mw-message-box, .cdx-message {
-  border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); background: var(--ak-bg-surface);
+.mw-message-box, .cdx-message { --_c: var(--ak-border-strong);
+  border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_c) 4px, var(--ak-border) 4px) 1 1 1 4; background: var(--ak-bg-surface);
   color: var(--ak-fg); padding: var(--ak-space-3) var(--ak-space-4); margin: 0 0 var(--ak-space-4); font-size: var(--ak-fs-sm);
 }
-.mw-message-box-notice, .cdx-message--notice { border-left-color: var(--ak-info); background: var(--ak-info-bg); }
-.mw-message-box-warning, .cdx-message--warning { border-left-color: var(--ak-warning); background: var(--ak-warning-bg); }
-.mw-message-box-error, .cdx-message--error { border-left-color: var(--ak-danger); background: var(--ak-danger-bg); }
-.mw-message-box-success, .cdx-message--success { border-left-color: var(--ak-success); background: var(--ak-success-bg); }
-.mw-parser-output .messagebox, .mw-parser-output .ambox { border: 1px solid var(--ak-border); border-left: var(--ak-bar-w) solid var(--ak-fg-muted); background: var(--ak-bg-surface-2); margin: 0 0 var(--ak-space-3); font-size: var(--ak-fs-sm); }
+.mw-message-box-notice, .cdx-message--notice { --_c: var(--ak-info); background: var(--ak-info-bg); }
+.mw-message-box-warning, .cdx-message--warning { --_c: var(--ak-warning); background: var(--ak-warning-bg); }
+.mw-message-box-error, .cdx-message--error { --_c: var(--ak-danger); background: var(--ak-danger-bg); }
+.mw-message-box-success, .cdx-message--success { --_c: var(--ak-success); background: var(--ak-success-bg); }
+.mw-parser-output .messagebox, .mw-parser-output .ambox { --_c: var(--ak-fg-muted); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_c) 4px, var(--ak-border) 4px) 1 1 1 4; background: var(--ak-bg-surface-2); margin: 0 0 var(--ak-space-3); font-size: var(--ak-fs-sm); }
 .ambox td, .messagebox td { padding: .5em .8em; }
-.ambox-notice { border-left-color: var(--ak-info); }
-.ambox-content { border-left-color: var(--ak-warning); }
-.ambox-delete, .ambox-serious { border-left-color: var(--ak-danger); }
-.ambox-style { border-left-color: var(--ak-yellow-600); }
+.ambox-notice { --_c: var(--ak-info); }
+.ambox-content { --_c: var(--ak-warning); }
+.ambox-delete, .ambox-serious { --_c: var(--ak-danger); }
+.ambox-style { --_c: var(--ak-yellow-600); }
 
 /* ─── Category links（页面底部分类栏）─────────────────────────────────────
  *  MW 输出：div.catlinks > div.mw-normal-catlinks( a[分类] + "：" 文本节点 + ul > li > a ) [+ div.mw-hidden-catlinks( "隐藏分类：" 文本 + ul )]
@@ -334,11 +336,11 @@ sup.reference a { padding: 0 .1em; }
 /* 皮肤内变体：卡片式 */
 .tabber.ak-tabber-boxed .tabber__header { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); border-bottom: 0; }
 .tabber.ak-tabber-boxed .tabber__section { border: 1px solid var(--ak-border); padding: var(--ak-space-4); background: var(--ak-bg-surface); }
-/* 游戏内“斜切标签页”变体 */
-.tabber.ak-tabber-skew .tabber__header { border-bottom: 2px solid var(--ak-fg); }
-.tabber.ak-tabber-skew .tabber__tab { background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); border: 0; margin: 0 -6px 0 0; padding: 6px 22px 6px 20px; clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
-.tabber.ak-tabber-skew .tabber__tab[aria-selected="true"] { background: var(--ak-fg); color: var(--ak-bg-canvas); border: 0; }
-.tabber.ak-tabber-skew .tabber__tab[aria-selected="true"]::before { display: none; }
+/* 游戏内黑白反转的块状标签页变体（原「斜切标签页」，去掉了平行四边形——系统里不再有斜边） */
+.tabber.ak-tabber-block .tabber__header { border-bottom: 2px solid var(--ak-fg); }
+.tabber.ak-tabber-block .tabber__tab { background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); border: 0; margin: 0 2px 0 0; padding: 6px 16px; }
+.tabber.ak-tabber-block .tabber__tab[aria-selected="true"] { background: var(--ak-fg); color: var(--ak-bg-canvas); border: 0; }
+.tabber.ak-tabber-block .tabber__tab[aria-selected="true"]::before { display: none; }
 
 /* ─── Forms · 裸控件（Widget / Gadget / 模板直接吐出、身上没有任何 class 的 <input> <select> <textarea>）
    规范见 docs/01-design-system.md §4。这里只管「裸」控件：.ak-input 等设计系统组件在 components.css；
@@ -471,9 +473,9 @@ table.diff td { padding: .3em .5em; }
 .mw-search-profile-tabs { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
 .mw-search-profile-tabs .search-types ul li.current a { color: var(--ak-accent); border-bottom: 2px solid var(--ak-accent); }
 .mw-notification-area { z-index: var(--ak-z-toast); }
-.mw-notification { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left: var(--ak-bar-w) solid var(--ak-accent); box-shadow: var(--ak-shadow-lg); color: var(--ak-fg); border-radius: 0; }
-.mw-notification-type-error { border-left-color: var(--ak-danger); }
-.mw-notification-type-warn { border-left-color: var(--ak-warning); }
+.mw-notification { --_c: var(--ak-accent); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_c) 4px, var(--ak-border) 4px) 1 1 1 4; box-shadow: var(--ak-shadow-lg); color: var(--ak-fg); border-radius: 0; }
+.mw-notification-type-error { --_c: var(--ak-danger); }
+.mw-notification-type-warn { --_c: var(--ak-warning); }
 .mw-notification-type-success { border-left-color: var(--ak-success); }
 .usermessage { background: var(--ak-warning-bg); border: 1px solid var(--ak-warning); padding: var(--ak-space-3); }
 .mw-special-Specialpages .mw-specialpagegroup { border-bottom: 1px solid var(--ak-border); }

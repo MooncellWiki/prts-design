@@ -126,14 +126,15 @@
   --ak-space-5: 20px; --ak-space-6: 24px;  --ak-space-8: 32px; --ak-space-10: 40px;
   --ak-space-12: 48px; --ak-space-16: 64px; --ak-space-20: 80px; --ak-space-24: 96px;
 
-  /* Shape · 方舟 = 直角；仅极小圆角用于输入框 */
+  /* Shape · 方舟 = 直角；仅极小圆角用于输入框。不做切角 / 斜切 / 斜带——整套系统里没有 45° 的斜边。
+   *  色条 + 细框（pre / 消息 / 面板头 / 模组卡 …）：粗的 border-left 与 1px 的 border-top/bottom 在角上会被浏览器
+   *  斜接（miter）出一道小斜边，看着像「斜切装饰」；所以这类盒子的框用 border-image 画成直角拼接：
+   *    border: 1px solid var(--ak-border); border-left-width: 4px;
+   *    border-image: linear-gradient(to right, <色条色> 4px, var(--ak-border) 4px) 1 1 1 4;   ← slice 与各边 border-width 一致
+   *  （顶部色条同理：linear-gradient(<色条色> 3px, var(--ak-border) 3px) 3 1 1 1）。只有一条边有色条、其它边无框的盒子不受影响。 */
   --ak-radius: 0px;
   --ak-radius-sm: 2px;
   --ak-radius-pill: 999px;
-  --ak-cut: 8px;               /* 切角尺寸 (.ak-chamfer) */
-  --ak-cut-sm: 5px;
-  --ak-cut-lg: 14px;
-  --ak-skew: -14deg;           /* 平行四边形斜切 (.ak-skew) */
   --ak-bar-w: 4px;             /* 标题左侧色条宽度 */
   --ak-bar-w-lg: 8px;
 

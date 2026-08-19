@@ -218,7 +218,7 @@ $wgFooterIcons = [
 
 | 扩展 | 处理 |
 |---|---|
-| TabberNeue | base.css 覆盖 `.tabber__*`；提供 `.ak-tabber-boxed / .ak-tabber-skew` 变体（`<tabber class="…">` 或包裹 div） |
+| TabberNeue | base.css 覆盖 `.tabber__*`；提供 `.ak-tabber-boxed / .ak-tabber-block` 变体（`<tabber class="…">` 或包裹 div） |
 | Cargo / SMW / DPL3 | 表格继承 wikitable 规则；结果格式 `template` 时输出 AKDS 组件结构 |
 | Echo | 徽标用 `.ak-badge`；弹窗走 Codex 桥接 |
 | WikiEditor / CodeMirror | 编辑器底色用 `--ak-bg-inset`，已在 base.css 基线覆盖 |
