@@ -122,10 +122,12 @@ Lua/模板把 `<@ba.vup>…</>` 转为 `<span class="ak-rt-vup">…</span>` 即�
 | `--ak-fg / -secondary / -muted / -subtle` | `#1D1F20` `#454647` `#626262` `#8D8D8D` | `#F0F0F0` `#C9C9C9` `#8D8D8D` `#6F7071` |
 | `--ak-accent` / `-fg` | `#0098DC` / `#FFF` | `#18D1FF` / `#000` |
 | `--ak-accent-2` | `#FFD800` | `#FFD800` |
-| `--ak-link / -visited / -new` | `#0072A8` `#6A4AA8` `#C82A36` | `#5DDCFF` `#C3A6FF` `#FF6B6B` |
+| `--ak-link / -visited / -new` | `#0072A8` `#2C6B88`⁺ `#C82A36` | `#5DDCFF` `#3F8EA4`⁺ `#FF6B6B` |
 | `--ak-border / -strong` | `#D9DBDC` `#B1B1B1` | `#2F3133` `#4A4C4F` |
 | `--ak-info / success / warning / danger` | `#0072A8` `#1F8F5F` `#B86F00` `#C8102E` | `#5DDCFF` `#4FD18F` `#FFB340` `#FF5C5C` |
 | `--ak-glyph-filter` | `invert(1)` | `none` |
+
+⁺ 已访问链接不换色相（不用紫）：就是链接色「褪一层」——亮色 = 链接色 55% + `--ak-fg-muted` 45%（变灰变钝，白底 5.9:1），暗色 = 青 62% + 画布 38%（= 视觉上 62% 透明的青，黑底 5:1）；悬停回到完整的 `--ak-link-hover`（`a:visited:hover`）。**写死算好的实色**，不用 `color-mix`（链接色是常量，正文链接不该依赖 2023 年才普及的特性；活动主题要改链接色就连 `--ak-link-visited` 一起给）。**不能**直接写半透明：浏览器为防历史嗅探会丢掉 `:visited` 颜色的 alpha 只保留 RGB，结果与未访问一模一样，所以「透明度」必须混成实色。
 
 对比度：正文 ≥ 7:1，次要文字 ≥ 4.5:1，链接 ≥ 4.5:1（亮色下用 `#0072A8` 而非 `#0098DC`），大号 UI 文字/按钮 ≥ 3:1。
 

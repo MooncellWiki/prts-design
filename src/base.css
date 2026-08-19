@@ -65,7 +65,10 @@ small, .ak-text-sm { font-size: var(--ak-fs-sm); }
 /* Links */
 a { color: var(--ak-link); text-decoration: none; transition: color var(--ak-dur-fast) var(--ak-ease); }
 a:hover { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+/* 已访问：同一个链接色褪一层（tokens.css --ak-link-visited，亮色往灰褪 / 暗色往画布褪），不换色相——整套只有青、不出现紫；
+ * 悬停时回到完整的 --ak-link-hover（等于「透明度收回来、再深一点」）。注意 :visited 里写 alpha 无效（浏览器为防历史嗅探只取 RGB），褪色必须是实色。 */
 a:visited { color: var(--ak-link-visited); }
+a:visited:hover { color: var(--ak-link-hover); }
 a.new, a.new:visited { color: var(--ak-link-new); }
 a.mw-selflink { color: inherit; font-weight: 700; }
 a.external { color: var(--ak-link-external); }

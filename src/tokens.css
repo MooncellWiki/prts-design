@@ -207,7 +207,9 @@
 
   --ak-link:          #0072a8;
   --ak-link-hover:    #005a82;
-  --ak-link-visited:  #6a4aa8;
+  --ak-link-visited:  #2c6b88;   /* 已访问 = 链接色「褪一层」而不是换成紫：= #0072a8 × 55% + --ak-fg-muted #626262 × 45%（变灰变钝，白底 5.9:1）。
+                                    写死算好的实色，不用 color-mix——链接色是常量，没必要让正文链接吃一个 2023 年的特性；重算：round(l*k + m*(1-k))。
+                                    :visited 里的 alpha 会被浏览器丢掉（防历史嗅探），所以必须是实色；悬停回 --ak-link-hover */
   --ak-link-new:      #c82a36;   /* 红链 */
   --ak-link-external: #0072a8;
 
@@ -287,7 +289,7 @@ html.skin-theme-clientpref-night {
 
   --ak-link:          var(--ak-cyan-300);
   --ak-link-hover:    var(--ak-cyan-200);
-  --ak-link-visited:  #c3a6ff;
+  --ak-link-visited:  #3f8ea4;   /* 已访问 = 青 #5ddcff × 62% + 画布 #0f0f10 × 38%（视觉上就是「62% 透明的链接色」，写成实色）；黑底 5:1、surface 4.6:1 */
   --ak-link-new:      #ff6b6b;
   --ak-link-external: var(--ak-cyan-300);
 
@@ -345,7 +347,7 @@ html.skin-theme-clientpref-night {
     --ak-accent: var(--ak-cyan-500); --ak-accent-hover: var(--ak-cyan-200); --ak-accent-fg: #000;
     --ak-accent-subtle: rgba(24,209,255,.10); --ak-accent-muted: rgba(24,209,255,.30);
     --ak-accent-2: var(--ak-yellow-500); --ak-accent-2-fg: #000;
-    --ak-link: var(--ak-cyan-300); --ak-link-hover: var(--ak-cyan-200); --ak-link-visited: #c3a6ff;
+    --ak-link: var(--ak-cyan-300); --ak-link-hover: var(--ak-cyan-200); --ak-link-visited: #3f8ea4;
     --ak-link-new: #ff6b6b; --ak-link-external: var(--ak-cyan-300);
     --ak-border: #2f3133; --ak-border-subtle: #262729; --ak-border-strong: #4a4c4f;
     --ak-border-accent: var(--ak-cyan-500); --ak-focus: var(--ak-cyan-500); --ak-selection: rgba(24,209,255,.28);
