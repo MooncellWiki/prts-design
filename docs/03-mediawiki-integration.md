@@ -53,7 +53,9 @@ skins/AKDS/
 
 **窄屏（<1400）参考 VitePress 的 LocalNav**：页眉长出第二行 `.ak-local-nav` 吸顶栏，左「菜单」拉出侧栏抽屉、右「本页目录」拉下同一个 `aside.ak-toc`（它此时 `position:fixed`，顶边贴着吸顶栏下沿）。向下滚动时 `skin.js` 给 `<html>` 加 `.ak-condensed`，页眉整体 `translateY(-56px)`，品牌 / 搜索 / 工具那一行滑出视口，只留 48px 的二级栏贴顶；向上滚或回到顶部再展开。
 
-- 开合本身是纯 CSS（`.ak-toc-cb` + `label.ak-local-nav__toc`，两者非兄弟节点故用 `body:has(...)` 桥接），**无 JS 也能开合**；JS 只补「点击浮层外 / Esc / 跳转后关闭」和页眉收起。不支持 `:has()` 时 `@supports` 兜底为正文流内的静态卡片。
+- 开合本身是纯 CSS（`.ak-toc-cb` + `label.ak-local-nav__toc`），**无 JS 也能开合**。两者非兄弟节点：`skin.js` 把 checkbox 状态镜像到 `html.ak-toc-open`（浮层显示的主路径，国产手机浏览器 / 旧 WebView 没有 `:has()` 也是真浮层），无 JS 时由 `body:has(...)` 桥接；既无 JS（`html.client-nojs`）又不支持 `:has()` 才 `@supports` 兜底为正文流内的静态卡片。JS 另补「锁页面滚动 / 点击浮层外 / Esc / 跳转后 / 回到 ≥1400 关闭」和页眉收起。
+- 浮层宽高锁死（VitePress LocalNavOutlineDropdown 同）：360px 定宽（≤639 拉满），限高用 `100dvh` 算到视口底——`100vh` 在手机上是地址栏收起后的「最大视口」，浮层底会被地址栏 / 工具栏盖住又不出内滚。
+- **滚动锁** `html.ak-scroll-lock`（抽屉与目录浮层共用，JS 按持有者计数；`window.akdsScrollLock(owner, on)`）：`overflow:hidden` 不改滚动位置；有实体滚动条时同时写 `scrollbar-gutter:stable` 占位免得页面左右抖；不认 `scrollbar-gutter` 的老桌面浏览器退回拦 wheel / touchmove / 翻页键；iOS 另拦 touchmove（`overflow:hidden` 拦不住触摸滚动）。参考 VitePress `useBodyScrollLock`。
 - 点 `label` 浏览器会再向 checkbox 派发一次 click，写「点击外部关闭」时必须放行 `.ak-toc-cb`，否则一点就关。
 - **不要**改成角落 FAB + 侧边抽屉：按钮与面板方位割裂、<1120 时与左侧侧栏抽屉语义打架，还要跟 `.ak-fab`（回到顶部）抢屏幕角落。
 

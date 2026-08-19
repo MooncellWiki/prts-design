@@ -38,17 +38,59 @@
 	tidyCatlinks();
 	if ( window.mw && mw.hook ) { mw.hook( 'wikipage.categories' ).add( ( $c ) => tidyCatlinks( $c && $c[ 0 ] ? $c[ 0 ] : document ) ); }   /* 预览 / VE 保存后重渲染 */
 
-	/* Sidebar drawer */
-	document.addEventListener( 'click', ( e ) => {
-		const sb = $( '.ak-sidebar' );
-		if ( e.target.closest( '.ak-local-nav__menu' ) ) { sb.classList.toggle( 'is-open' ); overlay( sb.classList.contains( 'is-open' ) ); }
-		if ( e.target.closest( '.ak-sidebar__close, .ak-overlay--sidebar' ) ) { sb.classList.remove( 'is-open' ); overlay( false ); }
-	} );
-	function overlay( on ) {
+	/* 页面滚动锁（侧栏抽屉 / 目录浮层开着时页面不动；参考 VitePress useBodyScrollLock，与 preview.js 相同）：
+	 * 首选 html.ak-scroll-lock（overflow:hidden，不改滚动位置）；有实体滚动条占宽时再写 scrollbar-gutter:stable 占住那条位置，页面不会左右抖；
+	 * 不认 scrollbar-gutter 又有实体滚动条的老桌面浏览器退回拦事件（wheel / touchmove / 翻页键），浮层里真正可滚的元素放行；
+	 * iOS 上 overflow:hidden 拦不住触摸滚动，额外拦 touchmove。抽屉与浮层共用一把锁，按持有者计数。 */
+	const scrollLock = ( () => {
+		const html = document.documentElement, owners = new Set(), opts = { capture: true, passive: false };
+		const isIOS = /iP(?:ad|hone|od)/.test( navigator.userAgent ) || ( navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1 );
+		const KEYS = new Set( [ ' ', 'PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight' ] );
+		const scrollable = ( t ) => {
+			for ( let el = t instanceof Element ? t : null; el && el !== document.body; el = el.parentElement ) {
+				const cs = getComputedStyle( el );
+				if ( ( /auto|scroll/.test( cs.overflowY ) && el.scrollHeight > el.clientHeight ) || ( /auto|scroll/.test( cs.overflowX ) && el.scrollWidth > el.clientWidth ) ) { return true; }
+			}
+			return false;
+		};
+		const block = ( e ) => { if ( e.touches && e.touches.length > 1 ) { return; } if ( !scrollable( e.target ) ) { e.preventDefault(); } };
+		const blockKeys = ( e ) => { if ( e.metaKey || e.ctrlKey || e.altKey || !KEYS.has( e.key ) ) { return; } const t = e.target; if ( t instanceof HTMLElement && ( t.isContentEditable || t.matches( 'input, textarea, select' ) ) ) { return; } block( e ); };
+		let mode = '', gutter = null;
+		function lock() {
+			const hasBar = window.innerWidth > html.clientWidth;   // 实体滚动条占宽（覆盖式滚动条 / 手机为 0）
+			if ( hasBar && !( window.CSS && CSS.supports( 'scrollbar-gutter', 'stable' ) ) ) { mode = 'events'; document.addEventListener( 'wheel', block, opts ); document.addEventListener( 'touchmove', block, opts ); document.addEventListener( 'keydown', blockKeys, opts ); return; }
+			mode = 'overflow';
+			if ( hasBar && !getComputedStyle( html ).scrollbarGutter.includes( 'stable' ) ) { gutter = html.style.scrollbarGutter; html.style.scrollbarGutter = 'stable'; }
+			html.classList.add( 'ak-scroll-lock' );
+			if ( isIOS ) { document.addEventListener( 'touchmove', block, opts ); }
+		}
+		function unlock() {
+			if ( mode === 'events' ) { document.removeEventListener( 'wheel', block, opts ); document.removeEventListener( 'touchmove', block, opts ); document.removeEventListener( 'keydown', blockKeys, opts ); }
+			else { if ( isIOS ) { document.removeEventListener( 'touchmove', block, opts ); } html.classList.remove( 'ak-scroll-lock' ); if ( gutter !== null ) { html.style.scrollbarGutter = gutter; gutter = null; } }
+			mode = '';
+		}
+		return ( owner, on ) => { const had = owners.size > 0; if ( on ) { owners.add( owner ); } else { owners.delete( owner ); } if ( !had && owners.size ) { lock(); } else if ( had && !owners.size ) { unlock(); } };
+	} )();
+	window.akdsScrollLock = scrollLock;
+
+	/* Sidebar drawer：开 = .is-open + 遮罩 + 滚动锁；关 = ✕ / 遮罩 / Esc（焦点回「菜单」）/ 回到 ≥1120（侧栏回左列，抽屉态、遮罩、锁都得撤） */
+	const sidebar = $( '.ak-sidebar' ), menuBtn = $( '.ak-local-nav__menu' );
+	function setSidebar( open ) {
+		if ( !sidebar ) { return; }
+		sidebar.classList.toggle( 'is-open', open );
+		if ( menuBtn ) { menuBtn.setAttribute( 'aria-expanded', open ? 'true' : 'false' ); }
 		let o = $( '.ak-overlay--sidebar' );
-		if ( on && !o ) { o = document.createElement( 'div' ); o.className = 'ak-overlay ak-overlay--sidebar'; document.body.appendChild( o ); }
-		if ( !on && o ) { o.remove(); }
+		if ( open && !o ) { o = document.createElement( 'div' ); o.className = 'ak-overlay ak-overlay--sidebar'; document.body.appendChild( o ); }
+		if ( !open && o ) { o.remove(); }
+		scrollLock( 'sidebar', open );
 	}
+	document.addEventListener( 'click', ( e ) => {
+		if ( !sidebar ) { return; }
+		if ( e.target.closest( '.ak-local-nav__menu' ) ) { setSidebar( !sidebar.classList.contains( 'is-open' ) ); }
+		else if ( e.target.closest( '.ak-sidebar__close, .ak-overlay--sidebar' ) ) { setSidebar( false ); }
+	} );
+	document.addEventListener( 'keydown', ( e ) => { if ( e.key === 'Escape' && sidebar && sidebar.classList.contains( 'is-open' ) ) { setSidebar( false ); if ( menuBtn ) { menuBtn.focus(); } } } );
+	window.matchMedia( '(max-width: 1119px)' ).addEventListener( 'change', ( e ) => { if ( !e.matches ) { setSidebar( false ); } } );
 
 	/* TOC scrollspy + progress（data-toc 已由服务端渲染；无则从 h2/h3 生成） */
 	const toc = $( '.ak-toc ul[data-auto-toc]' );
@@ -102,16 +144,23 @@
 		if ( prog ) { window.addEventListener( 'scroll', () => { const d = document.documentElement; prog.style.setProperty( '--_p', ( d.scrollTop / ( d.scrollHeight - d.clientHeight ) * 100 ) + '%' ); }, { passive: true } ); }
 	}
 
-	/* 目录浮层收尾（开合本身是纯 CSS 的 .ak-toc-cb）：跳转后 / 点击浮层外 / Esc 收起 */
+	/* 目录浮层收尾（开合本身是纯 CSS 的 .ak-toc-cb）：
+	 *  · 把 checkbox 状态镜像到 html.ak-toc-open —— 浮层显示的主路径（skin.css 不再只靠 body:has() 桥接，没有 :has() 的旧内核也是真浮层）；
+	 *  · 开着时锁页面滚动（VitePress 的 outline dropdown 同样锁）；跳转后 / 点浮层外 / Esc / 回到 ≥1400（目录回右侧导轨，锁必须撤）收起 */
 	const tocCb = $( '.ak-toc-cb' );
 	if ( tocCb ) {
+		const tocMq = window.matchMedia( '(max-width: 1400px)' );
+		const syncToc = () => { const on = tocCb.checked && tocMq.matches; document.documentElement.classList.toggle( 'ak-toc-open', on ); scrollLock( 'toc', on ); };
+		const closeToc = () => { if ( tocCb.checked ) { tocCb.checked = false; syncToc(); } };
+		tocCb.addEventListener( 'change', syncToc ); syncToc();   // 点 label / 键盘空格切换走 change；程序收起（closeToc）自己同步
+		tocMq.addEventListener( 'change', ( e ) => { if ( !e.matches ) { closeToc(); } } );
 		document.addEventListener( 'click', ( e ) => {
 			if ( !tocCb.checked ) { return; }
-			if ( e.target.closest( '.ak-toc a' ) ) { tocCb.checked = false; return; }
+			if ( e.target.closest( '.ak-toc a' ) ) { closeToc(); return; }
 			// 放行 .ak-toc-cb：点 label 会再向 checkbox 派发一次 click，那次不算「外部」
-			if ( !e.target.closest( '.ak-toc, .ak-local-nav__toc, .ak-toc-cb' ) ) { tocCb.checked = false; }
+			if ( !e.target.closest( '.ak-toc, .ak-local-nav__toc, .ak-toc-cb' ) ) { closeToc(); }
 		} );
-		document.addEventListener( 'keydown', ( e ) => { if ( e.key === 'Escape' ) { tocCb.checked = false; } } );
+		document.addEventListener( 'keydown', ( e ) => { if ( e.key === 'Escape' ) { closeToc(); } } );
 	}
 
 	/* 工具卡片（<1120 页眉 ≡ 拉下的 外观 / 通知 / 用户菜单 卡片；开合本身是纯 CSS 的 .ak-nav-cb）：Esc / 选中锚点 / 点卡片外 / 回到桌面宽度时收起 */
