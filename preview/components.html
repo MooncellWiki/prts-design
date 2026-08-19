@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!-- 生成物：由 scripts/build-preview.py 从 preview/_src/skeleton.html + _src/pages/components.html 生成，改源文件再重跑 -->
+<html lang="zh-CN" class="client-nojs skin-theme-clientpref-night" data-default-theme="dark">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；skin.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AKDS · 通用组件</title>
+<link rel="stylesheet" href="../src/fonts.css">   <!-- 自托管 web 字体（Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono，OFL；scripts/fetch-fonts.py 生成） -->
+<link rel="stylesheet" href="../src/tokens.css">
+<link rel="stylesheet" href="../src/base.css">
+<link rel="stylesheet" href="../src/components.css">
+<link rel="stylesheet" href="../src/arknights.css">
+<link rel="stylesheet" href="../src/skin.css">
+<link rel="stylesheet" href="../src/utilities.css">
+<link rel="stylesheet" href="demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖 tokens.css §2d 的接口变量 -->
+<style>
+/* preview-only helpers */
+.demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
+.demo--col { flex-direction: column; align-items: stretch; }
+.demo--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.demo-box { border: 1px dashed var(--ak-border-strong); padding: 16px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 12px 0 20px; }
+.ak-swatch { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); cursor: pointer; font-size: 11px; }
+.ak-swatch__chip { height: 52px; border-bottom: 1px solid var(--ak-border); }
+.ak-swatch__name { padding: 6px 8px 0; font-weight: 700; font-family: var(--ak-font-mono); font-size: 10.5px; overflow-wrap: anywhere; }
+.ak-swatch__value { padding: 0 8px 6px; color: var(--ak-fg-muted); font-family: var(--ak-font-mono); font-size: 10px; }
+.ak-swatch__note { padding: 0 8px 6px; color: var(--ak-fg-muted); }
+.type-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--ak-border-subtle); }
+.type-row .meta { font: 600 11px/1.5 var(--ak-font-mono); color: var(--ak-fg-muted); }
+.type-row > * { min-width: 0; }
+@media (max-width: 639px) { .type-row { grid-template-columns: 1fr; gap: 4px; } }   /* 200px 元数据列 + 56px 展示字在手机上放不下一行 */
+.spec-table td:first-child, .spec-table tr:has(td) > th:first-child { font-family: var(--ak-font-mono); font-size: 12px; white-space: nowrap; text-align: left; font-weight: 600; }
+.dark-only-demo { background: #0f0f10; padding: 16px; color: #f0f0f0; }
+</style>
+
+</head>
+<body class="skin-akds">
+<a class="ak-skip" href="#content">跳到内容</a>
+
+<!-- ═══ SVG sprite ═══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 17V11a6 6 0 1 1 12 0v6l2 2H4l2-2zm4 4h4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9c0-4 3.6-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0-6v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M4.9 19.1 7 17m10-10 2.1-2.1"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 4h18v12H3zm5 16h8m-4-4v4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 20h4l11-11-4-4L4 16v4zM13 7l4 4"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5m4-1v5l3 2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zm16 0h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></symbol>
+  <symbol id="i-talk" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 8v5m0-9v1"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3l10 18H2zm0 7v5m0 3v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 15l7-7 7 7"/></symbol>
+  <symbol id="i-empty" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10"/></symbol>
+</svg>
+
+<!-- ═══ HEADER ═══ -->
+<header class="ak-header">
+  <div class="ak-header__inner">
+    <a class="ak-header__logo" href="#">
+      <img src="assets/camp/rhodes.png" alt="">
+      <span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span>
+    </a>
+    <form class="ak-header__search ak-search" role="search" onsubmit="return false">
+      <svg class="ak-search__icon"><use href="#i-search"/></svg>
+      <input class="ak-input" type="search" placeholder="搜索 PRTS…" aria-label="搜索">
+      <span class="ak-search__kbd">/</span>
+    </form>
+    <button class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="搜索"><svg><use href="#i-search"/></svg></button>
+    <!-- 页眉不放站点级主导航（与侧栏「通用」组重复，导航只由侧栏承担）。<1120：工具（外观 / 通知 / 用户）收进 ≡ 拉下的右对齐卡片；开合纯 CSS：checkbox 在前，卡片与汉堡在后 -->
+    <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
+    <div class="ak-header__screen" id="ak-nav-screen">
+      <div class="ak-header__tools">
+        <div class="ak-header__tool">
+          <span class="ak-header__tool-label" id="ak-theme-label">外观</span>
+          <div class="ak-theme-toggle" role="group" aria-labelledby="ak-theme-label">
+            <button data-theme="os" title="跟随系统"><svg><use href="#i-monitor"/></svg></button>
+            <button data-theme="light" title="档案模式（亮）"><svg><use href="#i-sun"/></svg></button>
+            <button data-theme="dark" title="终端模式（暗）"><svg><use href="#i-moon"/></svg></button>
+          </div>
+        </div>
+        <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
+        <a class="ak-btn ak-btn--ghost ak-header__user" href="#"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></a>
+      </div>
+    </div>
+    <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
+  </div>
+
+  <!-- ═══ LOCAL NAV ═══ 二级吸顶栏：<1400 出现；页眉主行下滑收起后它仍贴顶 -->
+  <div class="ak-local-nav">
+    <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
+    <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
+    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle">本页目录<span class="ak-local-nav__chevron" aria-hidden="true"></span></label>
+  </div>
+</header>
+
+<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、preview/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（skin.css 负外边距，DOM 顺序不变） -->
+<div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
+
+<div class="ak-layout">
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="ak-sidebar" id="ak-sidebar" aria-label="导航">
+    <div class="ak-sidebar__panel" id="mw-panel">
+    <div class="ak-portlet ak-portlet--collapsible" id="p-akds">
+      <h3 class="ak-portlet__title">AKDS 预览 · DEMO</h3>
+      <ul>
+        <li><a href="index.html">基础 · 理念 / 色彩 / 字体 / 装饰</a></li>
+        <li><a href="chrome.html">皮肤骨架 · 页眉与主题接口</a></li>
+        <li><a href="mediawiki.html">MediaWiki 内容样式</a></li>
+        <li class="is-active"><a href="components.html">通用组件</a></li>
+        <li><a href="arknights.html">方舟组件</a></li>
+        <li><a href="operator.html">干员页样例（陈）</a></li>
+        <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
+      </ul>
+    </div>
+    <!-- ↓ 与 prts.wiki 现网 #MenuSidebar 的原始输出结构一致：段落 = 分组标题；* 列表；'''粗体''' = 有子级的分组项；** 子项。
+         多层展开 / 记忆 / 桌面悬停飞出由 src/sidebar-tree.js 增强（li > ul 任意深度）；li.is-open 为作者默认展开，用户操作后以 localStorage 记忆为准。 -->
+    <div id="MenuSidebar">
+      <ul>
+        <li><a href="#">首页</a></li>
+        <li><a class="copyUrl">复制短链接</a></li>
+        <li><a href="#">支持我们</a></li>
+        <li><a href="#">赞助者一览</a></li>
+        <li><a href="#">反馈与建议</a></li>
+      </ul>
+      <p>热门页面</p>
+      <ul>
+        <li><b>当前活动</b>
+          <ul><li><a href="#">奇象巡展</a></li><li><a href="#">SideStory「直到大地变成一颗酸橙」</a></li><li><a href="#">集成战略「沉沦者的黑流树海」</a></li><li><a href="#">生息演算「重启锚点」</a></li></ul>
+        </li>
+        <li><b>新增干员 <span class="ak-tag ak-tag--sm ak-tag--new">NEW</span></b>
+          <ul><li><a href="#">予愿安洁莉娜</a></li><li><a href="#">珊比</a></li><li><a href="#">嘉辛塔</a></li><li><a href="#">时隙</a></li></ul>
+        </li>
+        <li><a href="#">干员一览</a></li>
+      </ul>
+      <p>菜单</p>
+      <ul>
+        <li class="is-open"><b>通用</b>
+          <ul><li><a href="#">干员一览</a></li><li><a href="#">敌人一览</a></li><li><a href="#">道具一览</a></li><li><a href="#">后勤技能</a></li><li><a href="#">关卡一览</a></li><li><a href="#">剧情记录</a></li><li><a href="#">家具一览</a></li><li><a href="#">时装回廊</a></li><li><a href="#">采购中心</a></li><li><a href="#">卡池一览</a></li><li><a href="#">活动一览</a></li><li><a href="#">公招计算</a></li></ul>
+        </li>
+        <li><b>档案</b>
+          <ul><li><a href="#">画师一览</a></li><li><a href="#">配音一览</a></li><li><a href="#">分支一览</a></li><li><a href="#">干员密录</a></li><li><a href="#">干员模组</a></li><li><a href="#">干员编号</a></li><li><a href="#">角色真名</a></li><li><a href="#">干员预告</a></li><li><a href="#">干员专精</a></li><li><a href="#">干员剧情一览</a></li><li><a href="#">档案信息一览</a></li></ul>
+        </li>
+        <li><b>玩法</b>
+          <ul><li><a href="#">危机合约</a></li><li><a href="#">集成战略</a><ul><li><a href="#">傀影与猩红孤钻</a></li><li><a href="#">水月与深蓝之树</a></li><li><a href="#">探索者的银凇止境</a></li><li><a href="#">萨卡兹的无终奇语</a></li><li><a href="#">岁的界园志异</a></li><li><a href="#">沉沦者的黑流树海</a></li></ul></li><li><a href="#">保全派驻</a></li><li><a href="#">引航者试炼</a></li><li><a href="#">生息演算</a></li><li><a href="#">促融共竞</a></li><li><a href="#">矢量突破</a></li><li><a href="#">卫戍协议</a></li><li><a href="#">争锋频道</a></li><li><a href="#">试验玩法一览</a></li></ul>
+        </li>
+        <li><b>系统</b>
+          <ul><li><a href="#">基建</a></li><li><a href="#">任务列表</a></li><li><a href="#">邮件记录</a></li><li><a href="#">首页场景</a></li><li><a href="#">界面主题</a></li><li><a href="#">头像一览</a></li><li><a href="#">名片一览</a></li><li><a href="#">光荣之路</a></li><li><a href="#">情报处理室</a></li></ul>
+        </li>
+        <li><b>扩展</b>
+          <ul><li><a href="#">基础数据</a></li><li><a href="#">作战机制</a></li><li><a href="#">新人入门</a></li><li><a href="#">贴士一览</a></li><li><a href="#">词汇一览</a></li><li><a href="#">制作组通讯</a></li><li><a href="#">剧情角色一览</a></li><li><a href="#">游戏内容前瞻</a></li><li><a href="#">剧情资源概览</a></li><li><a href="#">各类信息汇总</a></li></ul>
+        </li>
+        <li><b>趣味</b>
+          <ul><li><a href="#">泰拉大典</a></li><li><a href="#">音乐鉴赏</a></li><li><a href="#">寻访模拟</a></li><li><a href="#">衍生作品</a></li></ul>
+        </li>
+        <li><a href="#">随机页面</a></li>
+      </ul>
+      <p>探索</p>
+      <ul class="mooncell-link"><li><a class="external text" href="https://fgo.wiki" target="_blank" rel="noopener">Mooncell主站</a></li></ul>
+      <ul>
+        <li><b>官方网站</b>
+          <ul><li><a href="#">明日方舟简中服官网</a></li><li><a href="#">塞壬唱片</a></li><li><a href="#">泰拉记事社</a></li><li><a href="#">明日方舟日服官网</a></li><li><a href="#">明日方舟美服官网</a></li><li><a href="#">明日方舟台服官网</a></li><li><a href="#">明日方舟韩服官网</a></li></ul>
+        </li>
+        <li><b>友情链接</b>
+          <ul><li><a href="#">少前百科GFwiki</a></li><li><a href="#">企鹅物流数据统计</a></li></ul>
+        </li>
+      </ul>
+      <p>管理与编辑</p>
+      <ul><li><a href="#">最近更改</a></li><li><a href="#">编辑指南</a></li><li><a href="#">常用代码</a></li><li><a href="#">模板一览</a></li><li><a href="#">贡献分数</a></li><li><a href="#">收支一览</a></li><li><a href="#">特殊贡献</a></li></ul>
+      <p>Languages</p>
+      <ul><li><a id="switcher-ja">日本語</a></li><li><a id="switcher-en">English</a></li><li><a id="switcher-zh-cn">中文</a></li></ul>
+      <p id="vmsTB">工具</p>
+      <ul id="MSToolbox"><li><a href="#">链入页面</a></li><li><a href="#">相关更改</a></li><li><a href="#">上传文件</a></li><li><a href="#">特殊页面</a></li><li><a href="#">页面信息</a></li></ul>
+    </div>
+    </div>
+    <div class="ak-sidebar__foot">MediaWiki 1.43 · Skin: AKDS 0.1<br>Theme tokens: <code>--ak-*</code><br>侧栏：悬停分组可预览，点击/键盘展开并记忆</div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="ak-main" id="content">
+    <div class="ak-main__inner">
+      <header class="ak-page-header">
+        <div class="ak-page-header__top">
+          <ul class="ak-breadcrumb ak-m-0"><li><a href="#">首页</a></li><li><a href="#">PRTS:皮肤</a></li><li><a href="#">设计系统</a></li><li aria-current="page">通用组件</li></ul>
+          <div class="mw-indicators"><span class="ak-tag ak-tag--accent-soft ak-tag--label">v0.1 draft</span></div>
+        </div>
+        <h1 id="firstHeading" class="ak-page-header__title">通用组件<span class="ak-en">Core components</span></h1>
+        <div class="ak-page-header__bar">
+          <ul class="ak-page-tabs" id="p-views">
+            <li class="selected"><a href="#"><svg class="ak-icon"><use href="#i-book"/></svg>阅读</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-edit"/></svg>编辑</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-history"/></svg>历史</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-talk"/></svg>讨论</a></li>
+          </ul>
+          <ul class="ak-page-tabs ak-page-tabs--actions"><li><a href="#"><svg class="ak-icon"><use href="#i-more"/></svg>更多</a></li></ul>
+        </div>
+      </header>
+
+      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨，<1400 就地变折叠条 -->
+      <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+        <a class="ak-toc__top" href="#"><svg class="ak-icon"><use href="#i-up"/></svg>回到顶部</a>
+        <div class="ak-toc__inner">
+          <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
+          <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
+          <ul class="ak-toc__list" data-auto-toc></ul>
+        </div>
+      </aside>
+
+      <div class="ak-body" id="bodyContent">
+      <div class="mw-body-content mw-parser-output">
+
+<!-- ═══════════ 6. COMPONENTS ═══════════ -->
+<h2 id="s-components" class="section-anchor">通用组件 <span class="ak-en ak-fs-sm ak-fg-muted">Core components</span></h2>
+<h3>按钮 · Button</h3>
+<div class="demo"><button class="ak-btn ak-btn--primary">主要动作</button><button class="ak-btn ak-btn--contrast">开始行动</button><button class="ak-btn">默认</button><button class="ak-btn ak-btn--outline">描边</button><button class="ak-btn ak-btn--ghost">幽灵</button><button class="ak-btn ak-btn--danger ak-stripes">危险</button><button class="ak-btn ak-btn--link">链接按钮</button><button class="ak-btn" disabled>禁用</button><button class="ak-btn ak-btn--primary is-loading">加载</button></div>
+<div class="demo"><button class="ak-btn ak-btn--xs">XS</button><button class="ak-btn ak-btn--sm">SM</button><button class="ak-btn">MD</button><button class="ak-btn ak-btn--lg">LG</button><button class="ak-btn ak-btn--xl ak-btn--primary">XL 主动作</button><button class="ak-btn ak-btn--icon" aria-label="搜索"><svg width="18" height="18"><use href="#i-search"/></svg></button><div class="ak-btn-group"><button class="ak-btn ak-btn--sm is-active" data-value="e0">E0</button><button class="ak-btn ak-btn--sm" data-value="e1">E1</button><button class="ak-btn ak-btn--sm" data-value="e2">E2</button></div></div>
+<h3>标签 · Tag / Chip / Badge</h3>
+<div class="demo"><span class="ak-tag">默认</span><span class="ak-tag ak-tag--outline">描边</span><span class="ak-tag ak-tag--accent">强调</span><span class="ak-tag ak-tag--accent-soft">浅强调</span><span class="ak-tag ak-tag--yellow">黄</span><span class="ak-tag ak-tag--info">信息</span><span class="ak-tag ak-tag--success">成功</span><span class="ak-tag ak-tag--warning">警告</span><span class="ak-tag ak-tag--danger">危险</span><span class="ak-tag ak-tag--inverse">反转</span><span class="ak-tag ak-tag--new">NEW</span><span class="ak-tag ak-tag--label ak-tag--outline">Label</span><span class="ak-tag ak-tag--outline">可移除<button class="ak-tag__remove" aria-label="移除">✕</button></span><span class="ak-badge">12</span><span class="ak-badge ak-badge--accent">NEW</span><span class="ak-badge ak-badge--dot"></span></div>
+<div class="demo"><span class="ak-overline">筛选 Chips</span><span class="ak-chip is-active">近卫</span><span class="ak-chip">狙击</span><span class="ak-chip">术师</span><span class="ak-chip is-active">六星</span><span class="ak-chip">五星</span><span class="ak-chip">可公招</span></div>
+<h3>卡片与面板 · Card / Panel</h3>
+<div class="ak-flex-col ak-gap-4 ak-mb-4">
+  <div class="ak-card ak-card--hover"><img class="ak-card__media" src="assets/ui/default_breaking_news.png" alt=""><div class="ak-card__body"><span class="ak-card__eyebrow">Side Story</span><div class="ak-card__title">怒号光明</div><p class="ak-fs-sm ak-fg-2 ak-mb-0">卡片：1px 边框、直角、悬停时青色描边与上移 2px。</p></div><div class="ak-card__footer"><span class="ak-fs-xs ak-fg-muted">2026-08-01</span><a class="ak-btn ak-btn--sm ak-btn--outline" style="margin-left:auto" href="#">查看</a></div></div>
+  <div class="ak-card ak-card--selected"><div class="ak-card__header"><div class="ak-card__title">已选中卡片</div><span class="ak-tag ak-tag--accent-soft">selected</span></div><div class="ak-card__body ak-fs-sm">选中态 = 青色 1px 内描边 + 左上角三角角标（源自游戏内技能选中框）。</div></div>
+  <div class="ak-card ak-card--accent-left"><div class="ak-card__body"><div class="ak-card__title">左色条卡片</div><p class="ak-fs-sm ak-fg-2 ak-mb-0">用于公告、提示、天赋条目。</p></div></div>
+</div>
+  <div class="ak-panel"><div class="ak-panel__head"><h4 class="ak-panel__title" style="margin:0;border:0;padding:0">今日信息<span class="ak-en">Today</span></h4><span class="ak-tag ak-tag--sm ak-tag--accent-soft">周五</span></div><div class="ak-panel__body ak-fs-sm">面板：标题栏左侧色条 + 表面 2 底色。可折叠变体见下方。</div></div>
+  <div class="ak-panel ak-panel--collapsible"><div class="ak-panel__head ak-panel__head--inverse"><h4 class="ak-panel__title" style="margin:0;border:0;padding:0">公告<span class="ak-en">Notice</span></h4></div><div class="ak-panel__body ak-fs-sm">反转标题栏（黑底）变体，点击标题折叠。</div></div>
+<h3>标签页 · Tabs（皮肤内 JS 版）</h3>
+<div class="ak-tabs" data-tabs="t1" role="tablist"><a class="ak-tab is-active" data-tab="a" href="#">干员</a><a class="ak-tab" data-tab="b" href="#">技能</a><a class="ak-tab" data-tab="c" href="#">模组</a><a class="ak-tab" data-tab="d" href="#">档案</a></div>
+<div class="ak-tabpanel" data-tabs="t1" data-tab="a">下划线标签页（默认）。</div><div class="ak-tabpanel" data-tabs="t1" data-tab="b" hidden>技能面板。</div><div class="ak-tabpanel" data-tabs="t1" data-tab="c" hidden>模组面板。</div><div class="ak-tabpanel" data-tabs="t1" data-tab="d" hidden>档案面板。</div>
+<div class="demo ak-mt-4"><div class="ak-tabs ak-tabs--pill" data-tabs="t2"><a class="ak-tab is-active" data-tab="a" href="#">全部</a><a class="ak-tab" data-tab="b" href="#">主线</a><a class="ak-tab" data-tab="c" href="#">活动</a></div><div class="ak-tabs ak-tabs--block" data-tabs="t3"><a class="ak-tab is-active" data-tab="a" href="#">精英零</a><a class="ak-tab" data-tab="b" href="#">精英一</a><a class="ak-tab" data-tab="c" href="#">精英二</a></div></div>
+<h3>消息 · Message / Toast / Dialog / Tooltip / Dropdown</h3>
+<div class="ak-message"><svg class="ak-message__icon"><use href="#i-info"/></svg><div class="ak-message__body"><div class="ak-message__title">信息</div>数据来自游戏版本 2.7.61。</div><button class="ak-message__close" aria-label="关闭">✕</button></div>
+<div class="ak-message ak-message--success"><svg class="ak-message__icon"><use href="#i-check"/></svg><div class="ak-message__body">已同步 Cargo 表。</div></div>
+<div class="ak-message ak-message--warning"><svg class="ak-message__icon"><use href="#i-warn"/></svg><div class="ak-message__body">本页含未实装内容。</div></div>
+<div class="ak-message ak-message--danger ak-message--stripes"><svg class="ak-message__icon"><use href="#i-warn"/></svg><div class="ak-message__body"><div class="ak-message__title">危险区域</div>删除操作不可撤销。</div></div>
+<div class="demo"><button class="ak-btn" data-toast="页面已加入监视列表" data-toast-type="success" data-toast-title="完成">Toast 成功</button><button class="ak-btn" data-toast="保存失败：会话过期" data-toast-type="danger">Toast 失败</button><button class="ak-btn ak-btn--primary" data-dialog-open="#demo-dialog">打开对话框</button><span class="ak-btn ak-btn--outline" data-ak-tip="这是一个 CSS-only tooltip">Tooltip（悬停）</span>
+<div class="ak-dropdown"><details><summary class="ak-btn">下拉菜单 ▾</summary><ul class="ak-menu"><li class="ak-menu__label">页面操作</li><li><a href="#">移动</a></li><li><a href="#">保护</a></li><li class="ak-menu__sep"></li><li><a href="#" class="ak-menu__item--danger">删除</a></li></ul></details></div></div>
+<dialog class="ak-dialog" id="demo-dialog"><div class="ak-dialog__head"><h4 class="ak-dialog__title" style="margin:0;border:0;padding:0">确认精英化</h4><button class="ak-btn ak-btn--icon ak-btn--ghost ak-btn--sm" data-dialog-close aria-label="关闭"><svg width="16" height="16"><use href="#i-x"/></svg></button></div><div class="ak-dialog__body ak-fs-sm">将「陈」精英化至 <b>精英二</b>，消耗以下材料：<div class="ak-item-list ak-mt-2"><span class="ak-item" data-rarity="5"><img src="assets/item/3223.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item" data-rarity="5"><img src="assets/item/30115.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item" data-rarity="4"><img src="assets/item/30074.png" alt=""><span class="ak-item__count">6</span></span><span class="ak-item" data-rarity="4"><img src="assets/item/4001.png" alt=""><span class="ak-item__count">180K</span></span></div></div><div class="ak-dialog__foot"><button class="ak-btn" data-dialog-close>取消</button><button class="ak-btn ak-btn--contrast" data-dialog-close>确认</button></div></dialog>
+<h3>进度 / 统计 / 骨架 / 空状态</h3>
+<div class="ak-flex-col ak-gap-4 ak-mb-4">
+  <div><div class="ak-progress-label"><span>信赖 TRUST</span><span>200 / 200</span></div><div class="ak-progress ak-mb-3" style="--_v:100%"></div><div class="ak-progress ak-progress--yellow ak-mb-3" style="--_v:62%"></div><div class="ak-progress ak-progress--stripes ak-progress--lg ak-mb-3" style="--_v:40%"></div><div class="ak-progress ak-progress--indeterminate ak-mb-3"></div><div class="ak-progress ak-progress--segmented"><i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i></i><i></i></div><div class="ak-flex ak-gap-3 ak-mt-3 ak-items-center"><div class="ak-ring" style="--_v:75"><span>75%</span></div><div class="ak-ring" style="--_v:30;--_c:var(--ak-yellow-500)"><span>30%</span></div><span class="ak-spinner"></span><span class="ak-loader"><i></i><i></i><i></i></span></div></div>
+  <div><div class="ak-stat-row ak-mb-3"><div class="ak-stat"><span class="ak-stat__label">Operators</span><span class="ak-stat__value">356</span><span class="ak-stat__delta ak-stat__delta--up">+4 本月</span></div><div class="ak-stat"><span class="ak-stat__label">Stages</span><span class="ak-stat__value">1,204</span></div><div class="ak-stat"><span class="ak-stat__label">Edits / 24h</span><span class="ak-stat__value">2.3<small>k</small></span><span class="ak-stat__delta ak-stat__delta--down">-12%</span></div></div><div class="ak-flex-col ak-gap-3"><div><span class="ak-skeleton ak-skeleton--rect ak-mb-2"></span><span class="ak-skeleton ak-skeleton--text"></span><span class="ak-skeleton ak-skeleton--text"></span><span class="ak-skeleton ak-skeleton--text"></span></div><div class="ak-empty"><svg class="ak-empty__icon"><use href="#i-empty"/></svg><div class="ak-empty__title">暂无数据</div><div class="ak-fs-xs">尝试更换筛选条件</div></div></div></div>
+</div>
+<h3>头像 / 面包屑 / 分页 / 时间线 / 步骤</h3>
+<div class="demo"><span class="ak-avatar ak-avatar--xs"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_003_kalts_2.png" alt=""></span><span class="ak-avatar"><img src="assets/avatar/char_010_chen_2.png" alt=""><span class="ak-avatar__status"></span></span><span class="ak-avatar ak-avatar--lg"><img src="assets/avatar/char_172_svrash_2.png" alt=""></span><span class="ak-avatar ak-avatar--xl ak-avatar--round"><img src="assets/avatar/char_103_angel_2.png" alt=""></span><span class="ak-avatar">DR</span><div class="ak-avatar-group"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_102_texas_2.png" alt=""></span><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_112_siege_2.png" alt=""></span><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_148_nearl_2.png" alt=""></span><span class="ak-avatar ak-avatar--sm">+9</span></div></div>
+<div class="demo"><ul class="ak-breadcrumb ak-m-0"><li><a href="#">干员</a></li><li><a href="#">近卫</a></li><li><a href="#">剑豪</a></li><li aria-current="page">陈</li></ul><nav class="ak-pagination"><a href="#" class="is-disabled">‹</a><a href="#" class="is-active">1</a><a href="#">2</a><a href="#">3</a><span class="ak-pagination__ellipsis">…</span><a href="#">24</a><a href="#">›</a></nav></div>
+<div class="ak-flex-col ak-gap-4">
+  <ul class="ak-timeline"><li class="is-done"><span class="ak-timeline__date">2019.04.30</span><div class="ak-timeline__title">公开测试开启</div><div class="ak-timeline__desc">明日方舟正式上线。</div></li><li class="is-active"><span class="ak-timeline__date">2026.08.01</span><div class="ak-timeline__title">2.7.61 版本</div><div class="ak-timeline__desc">当前数据版本。</div></li><li><span class="ak-timeline__date">TBA</span><div class="ak-timeline__title">下一版本</div></li></ul>
+  <div><div class="ak-stepper ak-mb-4"><div class="ak-step is-done">精英零</div><div class="ak-step is-done">精英一</div><div class="ak-step is-active">精英二</div><div class="ak-step">满级</div></div><div class="ak-divider ak-divider--text" role="separator">OR</div><hr class="ak-divider ak-divider--accent"><hr class="ak-divider ak-divider--stripes"></div>
+</div>
+<h3 id="s-forms">表单 · Forms</h3>
+<p class="ak-fs-sm ak-fg-2">设计系统的表单组件（<code>.ak-input .ak-select .ak-check .ak-switch …</code>）与 Widget / Gadget 直接吐出的裸控件是<b>同一套规则</b>（规范 §4）：36px 定高、2px 角、同一枚 ▾ 箭头、同一张勾选框 / 圆形单选。上半是组件写法，下半是什么 class 都没有的裸控件落进 wikitable 的样子。</p>
+<div>
+  <div><div class="ak-field"><label class="ak-label">干员名称 <span class="req">*</span></label><input class="ak-input" placeholder="例如：陈"><div class="ak-help">支持中文名 / 代号 / 拼音</div></div><div class="ak-field"><label class="ak-label">职业</label><select class="ak-select"><option>近卫</option><option>先锋</option><option>狙击</option></select></div><div class="ak-field"><label class="ak-label">搜索</label><div class="ak-input-group"><span class="ak-input-group__addon">wiki/</span><input class="ak-input" value="陈"><button class="ak-btn ak-btn--primary">GO</button></div></div><div class="ak-field is-invalid"><label class="ak-label">出错的字段</label><input class="ak-input" value="???"><div class="ak-help ak-help--error">格式不正确</div></div></div>
+  <div><div class="ak-field"><label class="ak-label">备注</label><textarea class="ak-textarea" placeholder="…"></textarea></div><div class="ak-flex ak-gap-4 ak-wrap ak-mb-3"><label class="ak-check"><input type="checkbox" checked>可公招</label><label class="ak-check"><input type="checkbox">限定</label><label class="ak-check"><input type="radio" name="r" checked>精英二</label><label class="ak-check"><input type="radio" name="r">精英一</label></div><div class="ak-flex ak-gap-4 ak-wrap ak-mb-3"><label class="ak-switch"><input type="checkbox" checked>显示潜能加成</label><label class="ak-switch"><input type="checkbox">信赖满</label></div><div class="ak-flex ak-gap-3 ak-items-center ak-mb-3"><span class="ak-overline ak-nowrap">等级</span><input class="ak-slider" type="range" min="1" max="90" value="90"><span class="ak-num">90</span></div><div class="ak-number"><button>−</button><input value="12"><button>+</button></div></div>
+</div>
+<h4 class="ak-mt-4">落进 wikitable 的裸控件 · Widget / Gadget 产物</h4>
+<p class="ak-fs-sm ak-fg-2">干员页「属性计算器」（<code>Widget:PropertyCalc</code>）就是一张 wikitable 里放四个什么 class 都没有的 <code>&lt;input type="number"&gt;</code>，wiki 上这类计算器 / 筛选栏很多。皮肤对裸控件的规则见规范 §4：36px 定高（border-box，不随容器行高漂）；<b>落进表格单元格自动收到 30px、字号跟表格、文本对齐跟随单元格</b>——下面居中的表里输入的数字和结果一样居中，<code>td.num</code> 里的输入右对齐；宽度不接管（这张表自己写了 <code>width:100%</code>），一格里「输入 + 按钮」照常并排。只读 = 下沉底，禁用 = surface-3，改坏了（<code>:user-invalid</code>）= 红边。</p>
+<div class="ak-flex-col ak-gap-4 ak-mb-4">
+<table class="wikitable ak-mb-0" style="width:100%;text-align:center">
+<tr><th colspan="4">属性计算器</th></tr>
+<tr><th><label for="demo-elite">精英等级</label></th><th><label for="demo-level">等级</label></th><th><label for="demo-trust">信赖</label></th><th><label for="demo-potential">潜能</label></th></tr>
+<tr><td><input id="demo-elite" type="number" value="2" min="0" max="2" style="width:100%"></td><td><input id="demo-level" type="number" value="90" min="1" max="90" style="width:100%"></td><td><input id="demo-trust" type="number" value="100" min="0" max="100" style="width:100%"></td><td><input id="demo-potential" type="number" value="1" min="1" max="6" style="width:100%"></td></tr>
+<tr><th>生命上限</th><th>攻击</th><th>防御</th><th>法术抗性</th></tr>
+<tr><td>2880</td><td>660</td><td>402</td><td>0</td></tr>
+</table>
+<table class="wikitable ak-mb-0" style="width:100%">
+<tr><th style="width:22%">筛选</th><td><input type="text" placeholder="干员名 / 代号" size="12"> <button type="button">搜索</button></td></tr>
+<tr><th>职业</th><td><select><option>全部</option><option>近卫</option><option>先锋</option></select> <label><input type="checkbox" checked> 限定</label> <label><input type="radio" name="demo-r" checked> 精二</label> <label><input type="radio" name="demo-r"> 满级</label></td></tr>
+<tr><th>数值列</th><td class="num"><input type="number" value="2880" min="0" style="width:8em"> <input type="number" value="660" readonly style="width:6em"></td></tr>
+<tr><th>状态</th><td><input type="text" value="disabled" disabled size="9"> <input type="text" value="???" aria-invalid="true" size="6"> <input type="date"></td></tr>
+</table>
+</div>
+<h3>手风琴 / 数据表</h3>
+<details class="ak-details" open><summary>什么是 AKDS？</summary><div class="ak-details__body ak-fs-sm">明日方舟网页设计系统，为 prts.wiki 皮肤设计。</div></details>
+<details class="ak-details"><summary>为什么不用 Codex 默认外观？</summary><div class="ak-details__body ak-fs-sm">Codex 令牌被桥接到 <code>--ak-*</code>，核心 / 扩展 UI 自动跟随；但视觉语言完全按明日方舟本体重建，而不是套一层配色。</div></details>
+<table class="ak-table ak-table--striped ak-mt-4"><thead><tr><th aria-sort="descending">阶段</th><th>等级上限</th><th class="num">生命</th><th class="num">攻击</th><th class="num">防御</th></tr></thead><tbody><tr><td>精英零</td><td>50</td><td class="num">1684</td><td class="num">361</td><td class="num">221</td></tr><tr class="is-selected"><td>精英一</td><td>80</td><td class="num">2188</td><td class="num">469</td><td class="num">288</td></tr><tr><td>精英二</td><td>90</td><td class="num">2880</td><td class="num">610</td><td class="num">352</td></tr></tbody></table>
+
+
+      </div><!-- /.mw-body-content -->
+      <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2026年8月19日 (三) 22:30。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
+      </div><!-- /.ak-body -->
+      <div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="#" title="特殊:页面分类">分类</a>：​<ul><li><a href="#">PRTS 皮肤</a></li><li><a href="#">设计系统</a></li></ul></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="ak-footer">
+  <div class="ak-footer__inner">
+    <div class="ak-footer__brand"><span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span><p>玩家自建的明日方舟中文维基。本站与上海鹰角网络科技有限公司无隶属关系。游戏内素材版权归鹰角网络所有。</p></div>
+    <div class="ak-footer__col"><h4>浏览</h4><ul><li><a href="#">干员</a></li><li><a href="#">敌人</a></li><li><a href="#">关卡</a></li><li><a href="#">道具</a></li></ul></div>
+    <div class="ak-footer__col"><h4>参与</h4><ul><li><a href="#">编辑指南</a></li><li><a href="#">模板文档</a></li><li><a href="#">最近更改</a></li><li><a href="#">社区门户</a></li></ul></div>
+    <div class="ak-footer__col"><h4>关于</h4><ul><li><a href="#">关于 PRTS</a></li><li><a href="#">免责声明</a></li><li><a href="#">隐私政策</a></li><li><a href="#">API</a></li></ul></div>
+  </div>
+  <!-- 底栏：左文字 + 右侧 $wgFooterIcons 徽章（结构与 prts.wiki 现网 #footer-icons 完全一致，含 MW 加的 cdx-button 假按钮类与站点配置里的内联 margin） -->
+  <div class="ak-footer__bottom">
+    <div class="ak-footer__bottom-text"><span>© 2019–2026 PRTS.wiki · 文本 CC BY-NC-SA 4.0</span><span class="ak-en">Skin AKDS · MediaWiki 1.43</span></div>
+    <ul class="ak-footer__icons noprint" id="footer-icons">
+      <!-- 顺序 = $wgFooterIcons 的键序：站点徽章（原图）在前，通用徽章用白描版（badge/mono/），许可放最后 -->
+      <li id="footer-sponsorsico"><a href="https://project.mooncell.wiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mooncell.png" alt="a Mooncell project" height="31" width="88" loading="lazy"></a><a href="https://www.horain.net/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/horain.png" alt="horain" style="margin-left: 5px" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-poweredbyico"><a href="https://www.mediawiki.org/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/mediawiki.svg" alt="Powered by MediaWiki" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-poweredbysmwico"><a href="https://www.semantic-mediawiki.org/wiki/Semantic_MediaWiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/smw.svg" alt="Powered by Semantic MediaWiki" class="smw-footer" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-copyrightico"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/cc-by-nc-sa.svg" alt="知识共享署名-非商业性使用-相同方式共享" width="88" height="31" loading="lazy"></a></li>
+    </ul>
+  </div>
+  <span class="ak-watermark">PRTS</span>
+</footer>
+<button class="ak-fab" aria-label="回到顶部"><svg width="18" height="18"><use href="#i-up"/></svg></button>
+<script src="../src/sidebar-tree.js"></script>
+<script src="../src/search-palette.js"></script>
+<script src="preview.js"></script>
+<script src="search-mock.js"></script>
+</body>
+</html>

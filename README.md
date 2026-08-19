@@ -6,11 +6,16 @@
 
 GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 自动部署，站点内容 = `preview/` 提到根目录 + `src/` + `dist/`）：
 
-- 设计系统展示（运行在皮肤骨架内）：https://mooncellwiki.github.io/prts-design/
+- 设计系统展示（运行在皮肤骨架内，按领域分页，侧栏「AKDS 预览 · DEMO」切换）：
+  [基础 · 理念 / 色彩 / 字体 / 装饰](https://mooncellwiki.github.io/prts-design/) ·
+  [皮肤骨架 · 页眉与主题接口](https://mooncellwiki.github.io/prts-design/chrome.html) ·
+  [MediaWiki 内容样式](https://mooncellwiki.github.io/prts-design/mediawiki.html) ·
+  [通用组件](https://mooncellwiki.github.io/prts-design/components.html) ·
+  [方舟组件](https://mooncellwiki.github.io/prts-design/arknights.html)
 - 干员页整页样例（陈）：https://mooncellwiki.github.io/prts-design/operator.html
-- 单文件版（图片内联，可另存离线）：https://mooncellwiki.github.io/prts-design/dist/index.html · https://mooncellwiki.github.io/prts-design/dist/operator.html
+- 单文件版（图片内联，可另存离线）：`dist/` 下同名文件，如 https://mooncellwiki.github.io/prts-design/dist/index.html · https://mooncellwiki.github.io/prts-design/dist/operator.html
 
-本地：直接打开 `preview/index.html` / `preview/operator.html`（右上角切换 终端(暗) / 档案(亮) / 跟随系统；页眉在两套主题下都是黑色「终端」顶栏——官网导航栏 / 游戏主界面顶栏 / 档案页顶部黑边的框架语言，配色只读 `--ak-chrome-*`；侧栏「示例活动主题」按钮（或 `?demo=1`）演示大活换皮：头图 / 站标 / 活动主色 / 画布底纹 / 页眉玻璃透度全部只是覆盖 `tokens.css §2d` 的接口变量，见 `preview/demo-theme.css`——头图从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃，可读性由玻璃保证、不赌画面；页眉不放站点级主导航——那 8 项与侧栏「通用」组重复，导航只由侧栏承担；桌面页眉是与正文三列对齐的 品牌 · 搜索 · 工具，窗口 <1120 时外观切换 / 通知 / 用户收进右上角 ≡ 拉下的卡片）。预览侧栏使用 prts.wiki 现网 `#MenuSidebar` 的真实结构（分组 → 分组项 → 子项，可多层），悬停可预览、点击展开并记忆。搜索是参考 Citizen（starcitizen.tools）的悬浮面板：点页眉搜索框或按 `/`、`⌘K` 打开，试试 `陈`、`yh`（拼音首字母）、`>`（动作）、`/`（命令列表）。
+本地：直接打开 `preview/index.html`（或同目录其它页）（右上角切换 终端(暗) / 档案(亮) / 跟随系统；页眉在两套主题下都是黑色「终端」顶栏——官网导航栏 / 游戏主界面顶栏 / 档案页顶部黑边的框架语言，配色只读 `--ak-chrome-*`；侧栏「示例活动主题」按钮（或 `?demo=1`）演示大活换皮：头图 / 站标 / 活动主色 / 画布底纹 / 页眉玻璃透度全部只是覆盖 `tokens.css §2d` 的接口变量，见 `preview/demo-theme.css`——头图从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃，可读性由玻璃保证、不赌画面；页眉不放站点级主导航——那 8 项与侧栏「通用」组重复，导航只由侧栏承担；桌面页眉是与正文三列对齐的 品牌 · 搜索 · 工具，窗口 <1120 时外观切换 / 通知 / 用户收进右上角 ≡ 拉下的卡片）。预览侧栏使用 prts.wiki 现网 `#MenuSidebar` 的真实结构（分组 → 分组项 → 子项，可多层），悬停可预览、点击展开并记忆。搜索是参考 Citizen（starcitizen.tools）的悬浮面板：点页眉搜索框或按 `/`、`⌘K` 打开，试试 `陈`、`yh`（拼音首字母）、`>`（动作）、`/`（命令列表）。
 
 ## 目录
 
@@ -33,9 +38,9 @@ src/
   index.css         本地汇总入口
 skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源：REST 标题搜索 / 动作 / 分类 / 用户 / 文件）（CSS、fonts/、sidebar-tree.js、search-palette.js 为 src 的符号链接）· i18n
 tokens/tokens.json  机器可读令牌（scripts/export-tokens.py 生成）
-preview/            展示页 + 干员页样例 + preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；keyart/ 为罗德岛主界面昼夜背景做的头图 + 罗德岛三角章站标；badge/ 为 prts.wiki 现网页脚徽章，badge/mono/ 为 MW / SMW / CC 三枚通用徽章的白描版）
+preview/            预览站：index（基础）/ chrome / mediawiki / components / arknights / operator 六页，都是 scripts/build-preview.py 从 _src/ 生成的（_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；keyart/ 为罗德岛主界面昼夜背景做的头图 + 罗德岛三角章站标；badge/ 为 prts.wiki 现网页脚徽章，badge/mono/ 为 MW / SMW / CC 三枚通用徽章的白描版）
 dist/               单文件打包（图片 + 拉丁字体内联，思源黑体指回 ../src/fonts/；scripts/build-dist.py 生成）
-scripts/            fetch-fonts.py（拉字体、生成 src/fonts.css）· export-tokens.py · build-dist.py · build-site.sh（组装 GitHub Pages 站点）
+scripts/            fetch-fonts.py（拉字体、生成 src/fonts.css）· export-tokens.py · build-preview.py（_src → preview/*.html）· build-dist.py · build-site.sh（组装 GitHub Pages 站点）
 ```
 
 ## 三句话看懂这套系统
@@ -63,7 +68,8 @@ scripts/            fetch-fonts.py（拉字体、生成 src/fonts.css）· expor
 ```bash
 python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → src/fonts/ + src/fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/export-tokens.py                       # tokens.css → tokens/tokens.json
-python3 scripts/build-dist.py                          # preview → dist（需要 Pillow）
+python3 scripts/build-preview.py                       # preview/_src/{skeleton.html, pages/*.html} → preview/*.html（改了骨架或任一页都要跑）
+python3 scripts/build-dist.py                          # preview/*.html → dist（需要 Pillow）
 bash scripts/build-site.sh _site                       # 组装 Pages 站点（CI 用同一脚本；本地 `python3 -m http.server -d _site` 可自查）
 ```
 

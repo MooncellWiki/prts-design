@@ -41,7 +41,7 @@ def css_inline(path):
     # fonts.css 的 url("fonts/…")：小的内联、大的指回 src/
     css = re.sub(r'url\("(fonts/[^"]+)"\)', lambda m: 'url("%s")' % font_uri(path, m.group(1)), css)
     return css
-for name in ['index.html', 'operator.html']:
+for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全部打包（_src/ 是页面源，不在此列）
     html = (prev / name).read_text(encoding='utf-8')
     # css links
     def repl_css(m):

@@ -112,7 +112,7 @@
   const tocList = $('.ak-toc ul[data-auto-toc]');
   const content = $('.mw-body-content');
   if (tocList && content) {
-    const heads = $$('h2, h3', content).filter(h => h.id || h.textContent.trim());
+    const heads = $$('h2, h3', content).filter(h => (h.id || h.textContent.trim()) && !h.closest('.toc'));   // 跳过 MW 原生目录示例里的 <h2>目录</h2>，否则它会当成一级项把后面的 h3 全收进去
     let cur2 = null;
     heads.forEach(h => {
       if (!h.id) h.id = h.textContent.trim().replace(/\s+/g, '_').replace(/[^\w一-龥_-]/g, '');

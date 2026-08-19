@@ -159,7 +159,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 页面 | 结构 | 样例 |
 |---|---|---|
 | 干员页 | 顶部：立绘 + 身份栏（稀有度/职业/分支/标签/kv）+ 阶段选择 + 属性 + 范围 → 天赋（条件表 + 潜能开关）→ 潜能 → 技能（每个技能一张全等级表 + 材料 Tabber；同现网 prts.wiki 的全等级 / 全条件对比，不做等级切换器）→ 模组 → 精英化 → 后勤 → 档案（Tabber + 锁）→ 语音 → 相关 → navbox | `preview/operator.html` |
-| 设计系统 / 长文 | 卡片内容区 + 右侧粘性 TOC（<1400 收为标题下折叠条）+ 左侧栏 | `preview/index.html` |
+| 设计系统 / 长文 | 卡片内容区 + 右侧粘性 TOC（<1400 收为标题下折叠条）+ 左侧栏；展示按领域分页（基础 / 皮肤骨架 / MediaWiki 内容 / 通用组件 / 方舟组件），骨架只写一份由 `scripts/build-preview.py` 生成 | `preview/index.html` 等（源在 `preview/_src/`） |
 | 首页 | Hero + Breaking news + 今日信息面板 + 亮点干员 op-grid + 活动 event 卡 + 近期新增 | 📝 |
 | 列表 / 筛选页（干员一览） | Chip 筛选栏 + `.ak-op-grid` / `.wikitable.ak-sticky-head` | 📝 |
 | 关卡页 | `.ak-stage` 头 + 地图 + 敌人 `.ak-enemy` 列表 + 掉落 `.ak-item-list` | 📝 |

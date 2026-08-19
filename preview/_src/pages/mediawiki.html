@@ -1,0 +1,103 @@
+<!--page
+order: 3
+nav: MediaWiki 内容样式
+title: AKDS · MediaWiki 内容样式
+crumb: 首页 > PRTS:皮肤 > 设计系统 > MediaWiki 内容样式
+h1: MediaWiki 内容样式
+h1en: .mw-parser-output
+indicators: <span class="ak-tag ak-tag--accent-soft ak-tag--label">v0.1 draft</span>
+lastmod: 2026年8月19日 (三) 22:30
+cats: PRTS 皮肤, 设计系统
+-->
+<!--head
+<style>
+/* 已访问链接的备选色（链接与行内 · visited 探索）：按两套主题各算好的实色 */
+.visited-alt-1 { color: #366982; } .visited-alt-2 { color: #edc973; } .visited-alt-3 { color: #5e8e7f; }
+:root[data-theme="dark"] .visited-alt-1, html.skin-theme-clientpref-night .visited-alt-1 { color: #77b1c0; }
+:root[data-theme="dark"] .visited-alt-2, html.skin-theme-clientpref-night .visited-alt-2 { color: #ad8933; }
+:root[data-theme="dark"] .visited-alt-3, html.skin-theme-clientpref-night .visited-alt-3 { color: #95ceb3; }
+</style>
+-->
+<h2 id="s-mw" class="section-anchor">MediaWiki 内容样式 <span class="ak-en ak-fs-sm ak-fg-muted">.mw-parser-output</span></h2>
+<p>皮肤最重要的工作是把编辑者写出的 wikitext 渲染得好看：标题、链接、列表、表格、图片、目录、引用、消息框、折叠、TabberNeue。以下均为 MW 原生 DOM。</p>
+<h3>链接与行内</h3>
+<p><a href="./%E5%B9%B2%E5%91%98%E4%B8%80%E8%A7%88">普通内链</a> · <a href="#">已访问链接（href="#" 即本页，浏览器视为已访问）</a> · <a href="./%E4%B8%8D%E5%AD%98%E5%9C%A8" class="new">红链（不存在页面）</a> · <a class="external" href="https://ak.hypergryph.com/">外部链接</a> · <a href="#" class="mw-selflink">自身链接</a> · <abbr title="Rhodes Island">缩写</abbr> · <mark>高亮</mark> · <kbd>Ctrl</kbd>+<kbd>K</kbd> · <code>{{模板}}</code> · 上标<sup class="reference"><a href="#">[1]</a></sup></p>
+<div class="ak-message ak-message--neutral ak-fs-sm" id="visited-demo"><div class="ak-message__body">
+  <b>已访问 · visited</b>：不换色相（不用紫），就是同一个链接色「褪一层」——亮色 <code>#2C6B88</code>（= 链接色 55% + <code>--ak-fg-muted</code> 45%，白底 5.9:1），暗色 <code>#3F8EA4</code>（= 青 62% + 画布 38%，黑底 5:1）；写死算好的实色，不依赖 <code>color-mix</code>。悬停回到完整的 <code>--ak-link-hover</code>。
+  <span class="ak-fg-muted">注意 <code>:visited</code> 里写 rgba / 半透明无效——浏览器为防历史嗅探只取 RGB 丢掉 alpha，所以「透明度」必须混成实色。</span>
+  <div class="ak-flex ak-gap-3 ak-wrap ak-items-center ak-mt-2" style="font-weight:600">
+    <span style="color:var(--ak-link)">链接</span>
+    <span style="color:var(--ak-link-visited)">已访问（当前：褪色青）</span>
+    <span style="color:var(--ak-link-hover)">悬停</span>
+    <span class="ak-fg-subtle">｜备选（试过，未采用）</span>
+    <span class="visited-alt-1">更淡一档</span>
+    <span class="visited-alt-2">浅黄</span>
+    <span class="visited-alt-3">青偏黄</span>
+    <span style="color:#c3a6ff">原紫</span>
+  </div>
+</div></div>
+<h3>列表</h3>
+<ul><li>先锋 · 部署费用低，回复部署费用<ul><li>冲锋手 / 尖兵 / 执旗手</li></ul></li><li>近卫 · 近战输出</li><li>重装 · 阻挡与承伤</li></ul>
+<ol><li>选择干员</li><li>确认精英化阶段</li><li>查看材料</li></ol>
+<dl><dt>信赖</dt><dd>提升至 100% 后属性加成达到上限。</dd><dt>潜能</dt><dd>通过重复获得干员提升。</dd></dl>
+<h3>引用与代码</h3>
+<blockquote><p>「博士，现在起由我担任你的护卫。」</p><p class="ak-fs-xs ak-fg-muted">—— 陈 · 任命助理</p></blockquote>
+<pre>{{干员信息
+|名称=陈 |稀有度=6 |职业=近卫 |分支=剑豪
+}}</pre>
+<h3>表格 · wikitable</h3>
+<div class="ak-table-scroll"><table class="wikitable jquery-tablesorter ak-striped" style="width:100%">
+<tr><th class="headerSort">干员</th><th class="headerSort headerSortDown">稀有度</th><th>职业</th><th class="headerSort">生命</th><th class="headerSort">攻击</th><th class="headerSort">防御</th><th>阵营</th></tr>
+<tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_010_chen_2.png" alt=""></span><span><span class="ak-op-row__name">陈</span><span class="ak-op-row__meta">剑豪 · LM04</span></span></a></td><td><span class="ak-rarity ak-rarity--r6"><i></i><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/warrior.png" alt=""></span>近卫</span></td><td class="num">2880</td><td class="num">610</td><td class="num">352</td><td>龙门近卫局</td></tr>
+<tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_172_svrash_2.png" alt=""></span><span><span class="ak-op-row__name">银灰</span><span class="ak-op-row__meta">领主 · KJ01</span></span></a></td><td><span class="ak-rarity ak-rarity--r6"><i></i><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/warrior.png" alt=""></span>近卫</span></td><td class="num">2880</td><td class="num">660</td><td class="num">352</td><td>喀兰贸易</td></tr>
+<tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="5"><img src="assets/avatar/char_102_texas_2.png" alt=""></span><span><span class="ak-op-row__name">德克萨斯</span><span class="ak-op-row__meta">尖兵 · PL03</span></span></a></td><td><span class="ak-rarity ak-rarity--r5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/pioneer.png" alt=""></span>先锋</span></td><td class="num">2050</td><td class="num">545</td><td class="num">371</td><td>企鹅物流</td></tr>
+<tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="4"><img src="assets/avatar/char_151_myrtle_2.png" alt=""></span><span><span class="ak-op-row__name">桃金娘</span><span class="ak-op-row__meta">执旗手 · PL33</span></span></a></td><td><span class="ak-rarity ak-rarity--r4"><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/pioneer.png" alt=""></span>先锋</span></td><td class="num">1583</td><td class="num">386</td><td class="num">223</td><td>—</td></tr>
+</table></div>
+<p class="ak-fs-sm ak-fg-2">PRTS 大量表格把 <code>th</code> 竖着当行头用（属性表 / 信息表）。加粗的 2px 底线只压在「整行都是 th、且下一行是数据行」的真正表头行下面（<code>:has()</code>，老浏览器退化为一律 1px）；行头列每格只有普通 1px 线，与右侧 td 对齐，不再一格一道。</p>
+<div class="ak-flex-col ak-gap-4 ak-mb-4">
+<table class="wikitable ak-mb-0" style="width:100%">
+<tr><th style="width:28%">再部署时间</th><td>70s</td><th style="width:28%">初始部署费用</th><td>16→18</td></tr>
+<tr><th>阻挡数</th><td>2</td><th>攻击间隔</th><td>1.5s</td></tr>
+<tr><th>所属势力</th><td colspan="3"><a href="#">罗德岛</a></td></tr>
+<tr><th>隐藏势力</th><td colspan="3"><a href="#">叙拉古</a></td></tr>
+</table>
+<table class="wikitable ak-mb-0" style="width:100%">
+<tr><th></th><th>精英0 1级</th><th>精英0 满级</th><th>精英1 满级</th><th>精英2 满级</th></tr>
+<tr><th>生命上限</th><td class="num">1001</td><td class="num">1431</td><td class="num">1884</td><td class="num">2385</td></tr>
+<tr><th>攻击</th><td class="num">333</td><td class="num">477</td><td class="num">628</td><td class="num">796</td></tr>
+<tr><th>防御</th><td class="num">217</td><td class="num">311</td><td class="num">410</td><td class="num">520</td></tr>
+<tr><th>法术抗性</th><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+</table>
+</div>
+<p class="ak-fs-sm ak-fg-muted">落进 wikitable 里的裸 <code>&lt;input&gt;</code> / <code>&lt;select&gt;</code>（属性计算器、筛选栏）见 <a class="ak-chevrons" href="components.html#s-forms">通用组件 › 表单</a>，与设计系统的表单组件放在一起对照。</p>
+<h3>缩略图与图库</h3>
+<figure typeof="mw:File/Thumb" class="mw-halign-right" style="width:160px"><a href="#"><img src="assets/avatar/char_003_kalts_2.png" width="150" alt=""></a><figcaption>凯尔希 · 干员头像（示例图注）</figcaption></figure>
+<p>浮动缩略图为白/深底 + 1px 边框 + 青色小方块图注前缀。图库使用弹性布局，卡片间距 12px，不再使用 MW 默认的固定宽度。</p>
+<ul class="gallery mw-gallery-traditional">
+  <li class="gallerybox"><div><div class="thumb"><div><img src="assets/skill/chen_1.png" width="72" alt=""></div></div><div class="gallerytext"><p>鞘击</p></div></div></li>
+  <li class="gallerybox"><div><div class="thumb"><div><img src="assets/skill/chen_2.png" width="72" alt=""></div></div><div class="gallerytext"><p>赤霄·拔刀</p></div></div></li>
+  <li class="gallerybox"><div><div class="thumb"><div><img src="assets/skill/chen_3.png" width="72" alt=""></div></div><div class="gallerytext"><p>赤霄·绝影</p></div></div></li>
+</ul>
+<h3>目录、折叠、引用</h3>
+<div class="toc" id="toc"><div class="toctitle"><h2>目录</h2><span class="toctogglespan">[<a class="toctogglelabel">隐藏</a>]</span></div><ul><li><a href="#"><span class="tocnumber">1</span> 干员信息</a><ul><li><a href="#"><span class="tocnumber">1.1</span> 属性</a></li><li><a href="#"><span class="tocnumber">1.2</span> 天赋</a></li></ul></li><li><a href="#"><span class="tocnumber">2</span> 技能</a></li><li><a href="#"><span class="tocnumber">3</span> 模组</a></li></ul></div>
+<div class="mw-collapsible mw-collapsed ak-collapse-box"><span class="mw-collapsible-toggle mw-collapsible-toggle-default"><a href="#" role="button">展开</a></span><div class="mw-collapsible-content">这里是折叠内容。使用 <code>.ak-collapse-box</code> 变体让 mw-collapsible 变为盒式面板。</div></div>
+<div class="mw-references-wrap"><ol class="references"><li id="cite_note-1"><span class="mw-cite-backlink"><a href="#">↑</a></span> <span class="reference-text">《明日方舟》官方网站，鹰角网络。</span></li></ol></div>
+<h3>消息框 · mw-message-box / ambox</h3>
+<div class="mw-message-box mw-message-box-notice">本页面内容基于游戏版本 2.7.61 数据。</div>
+<div class="mw-message-box mw-message-box-warning">本条目包含剧情剧透，请谨慎阅读。</div>
+<div class="mw-message-box mw-message-box-error">数据校验失败：技能表缺少 skchr_chen_3 等级 10。</div>
+<div class="mw-message-box mw-message-box-success">已保存到你的干员计划。</div>
+<div class="hatnote">本文介绍干员「陈」。关于假日威龙陈，请见「陈（假日威龙）」。</div>
+<h3>TabberNeue 标签页</h3>
+<div class="tabber">
+  <header class="tabber__header"><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" href="#tb-a" aria-selected="true">档案</a><a class="tabber__tab" role="tab" href="#tb-b">语音</a><a class="tabber__tab" role="tab" href="#tb-c">时装</a></nav></header>
+  <section class="tabber__section"><article class="tabber__panel" id="tb-a" role="tabpanel"><b>默认样式</b>：细底线 + 3px 青色下划线 + 左上选中角标（游戏内选中态）。</article><article class="tabber__panel" id="tb-b" role="tabpanel">语音面板内容。</article><article class="tabber__panel" id="tb-c" role="tabpanel">时装面板内容。</article></section>
+</div>
+<div class="tabber ak-tabber-block">
+  <header class="tabber__header"><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" href="#tb2-a" aria-selected="true">精英零</a><a class="tabber__tab" role="tab" href="#tb2-b">精英一</a><a class="tabber__tab" role="tab" href="#tb2-c">精英二</a></nav></header>
+  <section class="tabber__section"><article class="tabber__panel" id="tb2-a" role="tabpanel"><b>.ak-tabber-block</b>：游戏内块状标签页，选中项黑白反转（矩形，不斜切）。</article><article class="tabber__panel" id="tb2-b" role="tabpanel">精英一内容。</article><article class="tabber__panel" id="tb2-c" role="tabpanel">精英二内容。</article></section>
+</div>
+<h3>分类 · Catlinks</h3>
+<p class="ak-fs-sm ak-fg-muted">MW 原生 <code>#catlinks</code> 结构不变：树状图标 + overline 标签 + 下划线链接（参考 fz.wiki）；<code>colon-separator</code> 的「：」由 CSS 吞掉。第二行为「隐藏分类」（仅编辑者开启偏好或分类页可见，此处强制显示）。</p>
+<div class="catlinks"><div class="mw-normal-catlinks"><a href="#">分类</a>：​<ul><li><a href="#">干员</a></li><li><a href="#">六星干员</a></li><li><a href="#">近卫</a></li><li><a href="#">剑豪</a></li><li><a href="#">龙门近卫局</a></li><li><a href="#" class="mw-redirect">龙门</a></li></ul></div><div class="mw-hidden-catlinks mw-hidden-cats-user-shown">隐藏分类：​<ul><li><a href="#">对原文有修正的页面</a></li></ul></div></div>
+

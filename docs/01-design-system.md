@@ -230,7 +230,7 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 | 来源 | 例子 | 谁负责 |
 |---|---|---|
 | **裸控件**——Widget / Gadget / 模板直接吐出的 `<input>` `<select>` `<textarea>` `<button>`，身上没有任何 class | 干员页「属性计算器」（`Widget:PropertyCalc`：wikitable 里四个 `<input type="number">`）、公招 / 材料 / 掉落计算器、各种筛选栏、edittools 字符按钮 | **皮肤兜底**（`src/base.css` Forms 段，本节的规则）；模板什么样式都不用写 |
-| **设计系统组件** `.ak-input .ak-select .ak-textarea .ak-check .ak-switch .ak-slider .ak-number .ak-field .ak-input-group …` | 模板 / TemplateStyles 里显式使用（预览页「表单 · Forms」） | `components.css`：与裸控件同一套尺寸 / 颜色 / 状态，多了尺寸变体、自绘勾选 / 开关、校验态与文案 |
+| **设计系统组件** `.ak-input .ak-select .ak-textarea .ak-check .ak-switch .ak-slider .ak-number .ak-field .ak-input-group …` | 模板 / TemplateStyles 里显式使用（预览 components.html「表单 · Forms」，裸控件落进 wikitable 的样子也在那一节） | `components.css`：与裸控件同一套尺寸 / 颜色 / 状态，多了尺寸变体、自绘勾选 / 开关、校验态与文案 |
 | **核心 UI**——Codex `.cdx-*` / OOUI `.oo-ui-*` / `.mw-ui-*`（编辑页、参数设置、特殊页面、Echo） | 颜色经 `tokens.css` 令牌桥接自动跟随，**尺寸不改**（它们自己的 32px 档，成组出现、内部自洽） | 皮肤只桥接 |
 
 裸控件的正确写法就是**什么都别写**：`<input type="number">` 落进 wikitable 就该是对的。皮肤的规则全部包在 `:where()` 里（特指度 0），所以 `.ak-input`、Codex / OOUI、模板自己的 class 都稳稳压在它上面，不必和 `input[type=…]` 较劲。
@@ -304,6 +304,6 @@ src/search-palette.js 悬浮搜索面板核心（皮肤与预览共用；数据�
 src/sidebar-tree.js  侧栏多层导航
 src/utilities.css    工具类
 src/index.css        本地预览汇总入口
-preview/index.html   设计系统展示（运行在皮肤骨架内）
-preview/operator.html 干员页整页样例（陈 · gamedata 2.7.61）
+preview/_src/        预览站源：skeleton.html（皮肤骨架，只写一份）+ pages/{index,chrome,mediawiki,components,arknights,operator}.html（各页 front matter + 正文）
+preview/*.html       生成物（scripts/build-preview.py）：index 基础（理念 / 色彩 / 字体 / 装饰）· chrome 皮肤骨架 · mediawiki 内容样式 · components 通用组件 · arknights 方舟组件 · operator 干员页整页样例（陈 · gamedata 2.7.61）
 ```

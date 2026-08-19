@@ -1,0 +1,51 @@
+<!--page
+order: 2
+nav: 皮肤骨架 · 页眉与主题接口
+title: AKDS · 皮肤骨架 · 页眉与主题接口
+crumb: 首页 > PRTS:皮肤 > 设计系统 > 皮肤骨架
+h1: 皮肤骨架 · 页眉与主题接口
+h1en: Chrome & theme hooks
+indicators: <span class="ak-tag ak-tag--accent-soft ak-tag--label">v0.1 draft</span>
+lastmod: 2026年8月19日 (三) 22:30
+cats: PRTS 皮肤, 设计系统
+-->
+<!-- ═══════════ 5. MEDIAWIKI CONTENT ═══════════ -->
+<h2 id="s-chrome" class="section-anchor">皮肤骨架 · 页眉与主题接口 <span class="ak-en ak-fs-sm ak-fg-muted">Chrome &amp; theme hooks</span></h2>
+<p>页眉在两套主题下都是<b>黑色「终端」顶栏</b>：官网导航栏（黑底 · 青色当前项 · 白线稿图标）、游戏主界面顶栏（深底 · 半调网点 · 青色选中块）、干员档案页顶部那道黑边——「黑框白纸 / 黑框黑纸」是方舟本体的框架语言。它的配色<b>不读明暗主题</b>，只读 <code>--ak-chrome-*</code>；<code>skin.css</code> 在 <code>.ak-header</code> 内把语义令牌重映射过去，页眉里的按钮 / 搜索 / 头像 / 菜单自动是页眉配色。</p>
+<div class="ak-flex-col ak-gap-4 ak-mb-4">
+  <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">默认页眉 · 由这些构件组成</span>
+    <ul class="ak-fs-sm ak-mb-0">
+      <li><b>黑玻璃</b> <code>rgba(8,9,10,.9)</code> + 毛玻璃，1px 亮线收边——均匀一层，横向 / 纵向都不做渐变；头图从页面顶端铺起、页眉压在它上面，可读性由玻璃保证、不赌画面；正文滚过来也一样透出</li>
+      <li><b>半调网点场</b>从右缘向左渐隐，只铺到工具区背后（游戏顶栏 <code>img_back</code> / 官网左缘网点）；<code>--ak-chrome-texture</code> 调强弱或关掉</li>
+      <li><b>标语</b>（ARKNIGHTS WIKI）与<b>悬停</b>用活动主色——官网导航当前项那一点青</li>
+      <li><b>搜索触发器</b>：左端深色图标框（游戏 HUD <code>announce_title_on</code> 的图标位）+ 矩形浅条；打开时边框与图标框都变主色（斜切试过，Tab 焦点描边会被裁断，作罢）</li>
+      <li><b>外观开关</b>选中项 = 主色实底（游戏 <code>selected_back</code> / <code>toggle_on</code>），亮暗主题下页眉配色完全一致、不反色；通知红标 <code>#C82A36</code>；头像方形细框；页眉内链接不分已访问色</li>
+    </ul></div></div>
+  <div class="ak-card ak-card--accent-top"><div class="ak-card__body"><span class="ak-card__eyebrow">活动主题 · 只改变量，不碰选择器</span>
+    <p class="ak-fs-sm">prts.wiki 大活期间会换头图 / 顶栏底图 / 站标 / 侧栏配色（现网 <code>ext.gadget.seventhStyle</code> 改的就是这些）。新皮肤把这些位置抽成 <code>tokens.css §2d</code> 的一组变量，Gadget / <code>MediaWiki:Common.css</code> 在 <code>:root</code> 上覆盖即可。下面这个按钮就是一份示例（<code>preview/demo-theme.css</code>）：罗德岛主界面昼 / 夜背景做头图（跟随 档案 / 终端 主题，画从页面顶端铺起、页眉玻璃调到 <code>.8</code> 让它多透一点）、警示黄做活动主色、换站标、画布点阵。曾把同一幅画右段裁一条、左缘渐隐塞进页眉当「顶栏底图」——白色图标压在天空上读不清，横向渐入也像贴上去的，去掉了；<code>--ak-chrome-image</code> 只留给深色角饰。</p>
+    <button type="button" class="ak-btn ak-btn--primary ak-demo-theme-toggle" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></button>
+  </div></div>
+</div>
+<table class="wikitable ak-compact spec-table" style="width:100%">
+<tr><th style="width:26%">接口变量</th><th style="width:22%">默认</th><th>作用</th></tr>
+<tr><th>--ak-theme-accent / -fg</th><td>#18D1FF / #000</td><td>活动主色：页眉标语与悬停、搜索图标框、开关选中项、侧栏 / 目录分组条、页脚斜纹、窄屏工具卡片顶条（正文链接 / 选中仍是 <code>--ak-accent</code>，想一起换就连它也覆盖）</td></tr>
+<tr><th>--ak-chrome-bg / -bg-solid</th><td>rgba(8,9,10,.9) / #0E0F10</td><td>页眉玻璃（半透明 + 毛玻璃，头图 / 滚过来的正文在下面均匀透出；想让头图多透一点调 alpha 到 .78–.85，别低于 .72——白色画面之下 #F2F2F2 仍 ≥7:1）/ 不透明处（窄屏工具卡片）</td></tr>
+<tr><th>--ak-chrome-fg / -fg-2 / -fg-muted</th><td>#F2F2F2 …</td><td>页眉前景三级</td></tr>
+<tr><th>--ak-chrome-line / -line-strong · -hover · -field</th><td>rgba(255,255,255,.14 / .32 / .08 / .07)</td><td>底线与分隔线 · 悬停底 · 搜索触发器底</td></tr>
+<tr><th>--ak-chrome-image / -position / -size / -repeat</th><td>none / right top / auto 100% / no-repeat</td><td><b>顶栏角饰 / 底纹</b>：<code>url(left.png), url(right.png)</code>（现网 PRTSheadleft 的活动徽章 / Garanheadright 的波纹那种）。画在玻璃之上、不被压暗——只放深色低对比素材，照片请走 <code>--ak-keyart-image</code></td></tr>
+<tr><th>--ak-chrome-texture</th><td>.55</td><td>右侧半调网点强度 0–1，有角饰时可设 0</td></tr>
+<tr><th>--ak-keyart-image / -h / -position / -size / -bg / -fade</th><td>none / 0 / center 30% / cover / transparent / 96px</td><td><b>头图</b> <code>.ak-keyart</code>：从页面顶端铺起、页眉压在它上面的通栏画；<code>-h</code> 是页眉之下可见的高度（0 = 不占位）；<code>-position</code> / <code>-size</code> 相对整块（页眉 + <code>-h</code>）算；底部按 <code>-fade</code> 渐隐进画布；≤639 限高 40vw</td></tr>
+<tr><th>--ak-canvas-image / -position / -size / -repeat / -attachment</th><td>none …</td><td><b>画布底纹</b>：叠在 body 的 <code>--ak-bg-canvas</code> 之上（现网 body 的 bkg 位置）；侧栏 / 目录没有底色，宜低对比</td></tr>
+<tr><th>--ak-logo-image</th><td>（未设）</td><td><b>站标</b>：设了就用 <code>content</code> 替换 <code>.ak-header__logo img</code>（Chromium / WebKit；Firefox 请改 <code>$wgLogos</code>）</td></tr>
+</table>
+<div class="ak-message ak-message--warning ak-mb-4"><svg class="ak-message__icon"><use href="#i-warn"/></svg><div class="ak-message__body">接口变量里的 <code>url()</code> 请写<b>绝对地址</b>（<code>//media.prts.wiki/…</code>）：Chromium 把自定义属性里的相对 <code>url()</code> 按「使用处」（<code>skin.css</code>）解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录。</div></div>
+<pre class="ak-mb-4"><code>/* MediaWiki:Gadget-eventStyle.css —— 一次活动主题就这么多 */
+:root {
+  --ak-theme-accent: #72a330;
+  --ak-keyart-image: url(//media.prts.wiki/…/kv.jpg);  --ak-keyart-h: 220px;   /* 头图从页面顶端铺起，页眉玻璃压在上面 */
+  --ak-chrome-bg:    rgba(8, 9, 10, .8);                                     /* 可选：玻璃调淡让头图多透一点（默认 .9） */
+  --ak-logo-image:   url(//media.prts.wiki/…/logo.png);
+  --ak-canvas-image: url(//media.prts.wiki/…/bkg.png);  --ak-canvas-size: 100% auto;  --ak-canvas-repeat: no-repeat;
+}
+html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/kv-night.jpg); }   /* 终端模式换夜景（可选） */</code></pre>
+

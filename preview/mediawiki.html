@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<!-- 生成物：由 scripts/build-preview.py 从 preview/_src/skeleton.html + _src/pages/mediawiki.html 生成，改源文件再重跑 -->
+<html lang="zh-CN" class="client-nojs skin-theme-clientpref-night" data-default-theme="dark">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；skin.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AKDS · MediaWiki 内容样式</title>
+<link rel="stylesheet" href="../src/fonts.css">   <!-- 自托管 web 字体（Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono，OFL；scripts/fetch-fonts.py 生成） -->
+<link rel="stylesheet" href="../src/tokens.css">
+<link rel="stylesheet" href="../src/base.css">
+<link rel="stylesheet" href="../src/components.css">
+<link rel="stylesheet" href="../src/arknights.css">
+<link rel="stylesheet" href="../src/skin.css">
+<link rel="stylesheet" href="../src/utilities.css">
+<link rel="stylesheet" href="demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖 tokens.css §2d 的接口变量 -->
+<style>
+/* preview-only helpers */
+.demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
+.demo--col { flex-direction: column; align-items: stretch; }
+.demo--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.demo-box { border: 1px dashed var(--ak-border-strong); padding: 16px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 12px 0 20px; }
+.ak-swatch { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); cursor: pointer; font-size: 11px; }
+.ak-swatch__chip { height: 52px; border-bottom: 1px solid var(--ak-border); }
+.ak-swatch__name { padding: 6px 8px 0; font-weight: 700; font-family: var(--ak-font-mono); font-size: 10.5px; overflow-wrap: anywhere; }
+.ak-swatch__value { padding: 0 8px 6px; color: var(--ak-fg-muted); font-family: var(--ak-font-mono); font-size: 10px; }
+.ak-swatch__note { padding: 0 8px 6px; color: var(--ak-fg-muted); }
+.type-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--ak-border-subtle); }
+.type-row .meta { font: 600 11px/1.5 var(--ak-font-mono); color: var(--ak-fg-muted); }
+.type-row > * { min-width: 0; }
+@media (max-width: 639px) { .type-row { grid-template-columns: 1fr; gap: 4px; } }   /* 200px 元数据列 + 56px 展示字在手机上放不下一行 */
+.spec-table td:first-child, .spec-table tr:has(td) > th:first-child { font-family: var(--ak-font-mono); font-size: 12px; white-space: nowrap; text-align: left; font-weight: 600; }
+.dark-only-demo { background: #0f0f10; padding: 16px; color: #f0f0f0; }
+</style>
+<style>
+/* 已访问链接的备选色（链接与行内 · visited 探索）：按两套主题各算好的实色 */
+.visited-alt-1 { color: #366982; } .visited-alt-2 { color: #edc973; } .visited-alt-3 { color: #5e8e7f; }
+:root[data-theme="dark"] .visited-alt-1, html.skin-theme-clientpref-night .visited-alt-1 { color: #77b1c0; }
+:root[data-theme="dark"] .visited-alt-2, html.skin-theme-clientpref-night .visited-alt-2 { color: #ad8933; }
+:root[data-theme="dark"] .visited-alt-3, html.skin-theme-clientpref-night .visited-alt-3 { color: #95ceb3; }
+</style>
+</head>
+<body class="skin-akds">
+<a class="ak-skip" href="#content">跳到内容</a>
+
+<!-- ═══ SVG sprite ═══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 17V11a6 6 0 1 1 12 0v6l2 2H4l2-2zm4 4h4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9c0-4 3.6-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0-6v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M4.9 19.1 7 17m10-10 2.1-2.1"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 4h18v12H3zm5 16h8m-4-4v4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 20h4l11-11-4-4L4 16v4zM13 7l4 4"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5m4-1v5l3 2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zm16 0h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></symbol>
+  <symbol id="i-talk" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 8v5m0-9v1"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3l10 18H2zm0 7v5m0 3v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 15l7-7 7 7"/></symbol>
+  <symbol id="i-empty" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10"/></symbol>
+</svg>
+
+<!-- ═══ HEADER ═══ -->
+<header class="ak-header">
+  <div class="ak-header__inner">
+    <a class="ak-header__logo" href="#">
+      <img src="assets/camp/rhodes.png" alt="">
+      <span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span>
+    </a>
+    <form class="ak-header__search ak-search" role="search" onsubmit="return false">
+      <svg class="ak-search__icon"><use href="#i-search"/></svg>
+      <input class="ak-input" type="search" placeholder="搜索 PRTS…" aria-label="搜索">
+      <span class="ak-search__kbd">/</span>
+    </form>
+    <button class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="搜索"><svg><use href="#i-search"/></svg></button>
+    <!-- 页眉不放站点级主导航（与侧栏「通用」组重复，导航只由侧栏承担）。<1120：工具（外观 / 通知 / 用户）收进 ≡ 拉下的右对齐卡片；开合纯 CSS：checkbox 在前，卡片与汉堡在后 -->
+    <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
+    <div class="ak-header__screen" id="ak-nav-screen">
+      <div class="ak-header__tools">
+        <div class="ak-header__tool">
+          <span class="ak-header__tool-label" id="ak-theme-label">外观</span>
+          <div class="ak-theme-toggle" role="group" aria-labelledby="ak-theme-label">
+            <button data-theme="os" title="跟随系统"><svg><use href="#i-monitor"/></svg></button>
+            <button data-theme="light" title="档案模式（亮）"><svg><use href="#i-sun"/></svg></button>
+            <button data-theme="dark" title="终端模式（暗）"><svg><use href="#i-moon"/></svg></button>
+          </div>
+        </div>
+        <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
+        <a class="ak-btn ak-btn--ghost ak-header__user" href="#"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></a>
+      </div>
+    </div>
+    <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
+  </div>
+
+  <!-- ═══ LOCAL NAV ═══ 二级吸顶栏：<1400 出现；页眉主行下滑收起后它仍贴顶 -->
+  <div class="ak-local-nav">
+    <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
+    <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
+    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle">本页目录<span class="ak-local-nav__chevron" aria-hidden="true"></span></label>
+  </div>
+</header>
+
+<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、preview/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（skin.css 负外边距，DOM 顺序不变） -->
+<div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
+
+<div class="ak-layout">
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="ak-sidebar" id="ak-sidebar" aria-label="导航">
+    <div class="ak-sidebar__panel" id="mw-panel">
+    <div class="ak-portlet ak-portlet--collapsible" id="p-akds">
+      <h3 class="ak-portlet__title">AKDS 预览 · DEMO</h3>
+      <ul>
+        <li><a href="index.html">基础 · 理念 / 色彩 / 字体 / 装饰</a></li>
+        <li><a href="chrome.html">皮肤骨架 · 页眉与主题接口</a></li>
+        <li class="is-active"><a href="mediawiki.html">MediaWiki 内容样式</a></li>
+        <li><a href="components.html">通用组件</a></li>
+        <li><a href="arknights.html">方舟组件</a></li>
+        <li><a href="operator.html">干员页样例（陈）</a></li>
+        <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
+      </ul>
+    </div>
+    <!-- ↓ 与 prts.wiki 现网 #MenuSidebar 的原始输出结构一致：段落 = 分组标题；* 列表；'''粗体''' = 有子级的分组项；** 子项。
+         多层展开 / 记忆 / 桌面悬停飞出由 src/sidebar-tree.js 增强（li > ul 任意深度）；li.is-open 为作者默认展开，用户操作后以 localStorage 记忆为准。 -->
+    <div id="MenuSidebar">
+      <ul>
+        <li><a href="#">首页</a></li>
+        <li><a class="copyUrl">复制短链接</a></li>
+        <li><a href="#">支持我们</a></li>
+        <li><a href="#">赞助者一览</a></li>
+        <li><a href="#">反馈与建议</a></li>
+      </ul>
+      <p>热门页面</p>
+      <ul>
+        <li><b>当前活动</b>
+          <ul><li><a href="#">奇象巡展</a></li><li><a href="#">SideStory「直到大地变成一颗酸橙」</a></li><li><a href="#">集成战略「沉沦者的黑流树海」</a></li><li><a href="#">生息演算「重启锚点」</a></li></ul>
+        </li>
+        <li><b>新增干员 <span class="ak-tag ak-tag--sm ak-tag--new">NEW</span></b>
+          <ul><li><a href="#">予愿安洁莉娜</a></li><li><a href="#">珊比</a></li><li><a href="#">嘉辛塔</a></li><li><a href="#">时隙</a></li></ul>
+        </li>
+        <li><a href="#">干员一览</a></li>
+      </ul>
+      <p>菜单</p>
+      <ul>
+        <li class="is-open"><b>通用</b>
+          <ul><li><a href="#">干员一览</a></li><li><a href="#">敌人一览</a></li><li><a href="#">道具一览</a></li><li><a href="#">后勤技能</a></li><li><a href="#">关卡一览</a></li><li><a href="#">剧情记录</a></li><li><a href="#">家具一览</a></li><li><a href="#">时装回廊</a></li><li><a href="#">采购中心</a></li><li><a href="#">卡池一览</a></li><li><a href="#">活动一览</a></li><li><a href="#">公招计算</a></li></ul>
+        </li>
+        <li><b>档案</b>
+          <ul><li><a href="#">画师一览</a></li><li><a href="#">配音一览</a></li><li><a href="#">分支一览</a></li><li><a href="#">干员密录</a></li><li><a href="#">干员模组</a></li><li><a href="#">干员编号</a></li><li><a href="#">角色真名</a></li><li><a href="#">干员预告</a></li><li><a href="#">干员专精</a></li><li><a href="#">干员剧情一览</a></li><li><a href="#">档案信息一览</a></li></ul>
+        </li>
+        <li><b>玩法</b>
+          <ul><li><a href="#">危机合约</a></li><li><a href="#">集成战略</a><ul><li><a href="#">傀影与猩红孤钻</a></li><li><a href="#">水月与深蓝之树</a></li><li><a href="#">探索者的银凇止境</a></li><li><a href="#">萨卡兹的无终奇语</a></li><li><a href="#">岁的界园志异</a></li><li><a href="#">沉沦者的黑流树海</a></li></ul></li><li><a href="#">保全派驻</a></li><li><a href="#">引航者试炼</a></li><li><a href="#">生息演算</a></li><li><a href="#">促融共竞</a></li><li><a href="#">矢量突破</a></li><li><a href="#">卫戍协议</a></li><li><a href="#">争锋频道</a></li><li><a href="#">试验玩法一览</a></li></ul>
+        </li>
+        <li><b>系统</b>
+          <ul><li><a href="#">基建</a></li><li><a href="#">任务列表</a></li><li><a href="#">邮件记录</a></li><li><a href="#">首页场景</a></li><li><a href="#">界面主题</a></li><li><a href="#">头像一览</a></li><li><a href="#">名片一览</a></li><li><a href="#">光荣之路</a></li><li><a href="#">情报处理室</a></li></ul>
+        </li>
+        <li><b>扩展</b>
+          <ul><li><a href="#">基础数据</a></li><li><a href="#">作战机制</a></li><li><a href="#">新人入门</a></li><li><a href="#">贴士一览</a></li><li><a href="#">词汇一览</a></li><li><a href="#">制作组通讯</a></li><li><a href="#">剧情角色一览</a></li><li><a href="#">游戏内容前瞻</a></li><li><a href="#">剧情资源概览</a></li><li><a href="#">各类信息汇总</a></li></ul>
+        </li>
+        <li><b>趣味</b>
+          <ul><li><a href="#">泰拉大典</a></li><li><a href="#">音乐鉴赏</a></li><li><a href="#">寻访模拟</a></li><li><a href="#">衍生作品</a></li></ul>
+        </li>
+        <li><a href="#">随机页面</a></li>
+      </ul>
+      <p>探索</p>
+      <ul class="mooncell-link"><li><a class="external text" href="https://fgo.wiki" target="_blank" rel="noopener">Mooncell主站</a></li></ul>
+      <ul>
+        <li><b>官方网站</b>
+          <ul><li><a href="#">明日方舟简中服官网</a></li><li><a href="#">塞壬唱片</a></li><li><a href="#">泰拉记事社</a></li><li><a href="#">明日方舟日服官网</a></li><li><a href="#">明日方舟美服官网</a></li><li><a href="#">明日方舟台服官网</a></li><li><a href="#">明日方舟韩服官网</a></li></ul>
+        </li>
+        <li><b>友情链接</b>
+          <ul><li><a href="#">少前百科GFwiki</a></li><li><a href="#">企鹅物流数据统计</a></li></ul>
+        </li>
+      </ul>
+      <p>管理与编辑</p>
+      <ul><li><a href="#">最近更改</a></li><li><a href="#">编辑指南</a></li><li><a href="#">常用代码</a></li><li><a href="#">模板一览</a></li><li><a href="#">贡献分数</a></li><li><a href="#">收支一览</a></li><li><a href="#">特殊贡献</a></li></ul>
+      <p>Languages</p>
+      <ul><li><a id="switcher-ja">日本語</a></li><li><a id="switcher-en">English</a></li><li><a id="switcher-zh-cn">中文</a></li></ul>
+      <p id="vmsTB">工具</p>
+      <ul id="MSToolbox"><li><a href="#">链入页面</a></li><li><a href="#">相关更改</a></li><li><a href="#">上传文件</a></li><li><a href="#">特殊页面</a></li><li><a href="#">页面信息</a></li></ul>
+    </div>
+    </div>
+    <div class="ak-sidebar__foot">MediaWiki 1.43 · Skin: AKDS 0.1<br>Theme tokens: <code>--ak-*</code><br>侧栏：悬停分组可预览，点击/键盘展开并记忆</div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="ak-main" id="content">
+    <div class="ak-main__inner">
+      <header class="ak-page-header">
+        <div class="ak-page-header__top">
+          <ul class="ak-breadcrumb ak-m-0"><li><a href="#">首页</a></li><li><a href="#">PRTS:皮肤</a></li><li><a href="#">设计系统</a></li><li aria-current="page">MediaWiki 内容样式</li></ul>
+          <div class="mw-indicators"><span class="ak-tag ak-tag--accent-soft ak-tag--label">v0.1 draft</span></div>
+        </div>
+        <h1 id="firstHeading" class="ak-page-header__title">MediaWiki 内容样式<span class="ak-en">.mw-parser-output</span></h1>
+        <div class="ak-page-header__bar">
+          <ul class="ak-page-tabs" id="p-views">
+            <li class="selected"><a href="#"><svg class="ak-icon"><use href="#i-book"/></svg>阅读</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-edit"/></svg>编辑</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-history"/></svg>历史</a></li>
+            <li><a href="#"><svg class="ak-icon"><use href="#i-talk"/></svg>讨论</a></li>
+          </ul>
+          <ul class="ak-page-tabs ak-page-tabs--actions"><li><a href="#"><svg class="ak-icon"><use href="#i-more"/></svg>更多</a></li></ul>
+        </div>
+      </header>
+
+      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨，<1400 就地变折叠条 -->
+      <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+        <a class="ak-toc__top" href="#"><svg class="ak-icon"><use href="#i-up"/></svg>回到顶部</a>
+        <div class="ak-toc__inner">
+          <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
+          <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
+          <ul class="ak-toc__list" data-auto-toc></ul>
+        </div>
+      </aside>
+
+      <div class="ak-body" id="bodyContent">
+      <div class="mw-body-content mw-parser-output">
+
+<h2 id="s-mw" class="section-anchor">MediaWiki 内容样式 <span class="ak-en ak-fs-sm ak-fg-muted">.mw-parser-output</span></h2>
+<p>皮肤最重要的工作是把编辑者写出的 wikitext 渲染得好看：标题、链接、列表、表格、图片、目录、引用、消息框、折叠、TabberNeue。以下均为 MW 原生 DOM。</p>
+<h3>链接与行内</h3>
+<p><a href="./%E5%B9%B2%E5%91%98%E4%B8%80%E8%A7%88">普通内链</a> · <a href="#">已访问链接（href="#" 即本页，浏览器视为已访问）</a> · <a href="./%E4%B8%8D%E5%AD%98%E5%9C%A8" class="new">红链（不存在页面）</a> · <a class="external" href="https://ak.hypergryph.com/">外部链接</a> · <a href="#" class="mw-selflink">自身链接</a> · <abbr title="Rhodes Island">缩写</abbr> · <mark>高亮</mark> · <kbd>Ctrl</kbd>+<kbd>K</kbd> · <code>{{模板}}</code> · 上标<sup class="reference"><a href="#">[1]</a></sup></p>
+<div class="ak-message ak-message--neutral ak-fs-sm" id="visited-demo"><div class="ak-message__body">
+  <b>已访问 · visited</b>：不换色相（不用紫），就是同一个链接色「褪一层」——亮色 <code>#2C6B88</code>（= 链接色 55% + <code>--ak-fg-muted</code> 45%，白底 5.9:1），暗色 <code>#3F8EA4</code>（= 青 62% + 画布 38%，黑底 5:1）；写死算好的实色，不依赖 <code>color-mix</code>。悬停回到完整的 <code>--ak-link-hover</code>。
+  <span class="ak-fg-muted">注意 <code>:visited</code> 里写 rgba / 半透明无效——浏览器为防历史嗅探只取 RGB 丢掉 alpha，所以「透明度」必须混成实色。</span>
+  <div class="ak-flex ak-gap-3 ak-wrap ak-items-center ak-mt-2" style="font-weight:600">
+    <span style="color:var(--ak-link)">链接</span>
+    <span style="color:var(--ak-link-visited)">已访问（当前：褪色青）</span>
+    <span style="color:var(--ak-link-hover)">悬停</span>
+    <span class="ak-fg-subtle">｜备选（试过，未采用）</span>
+    <span class="visited-alt-1">更淡一档</span>
+    <span class="visited-alt-2">浅黄</span>
+    <span class="visited-alt-3">青偏黄</span>
+    <span style="color:#c3a6ff">原紫</span>
+  </div>
+</div></div>
+<h3>列表</h3>
+<ul><li>先锋 · 部署费用低，回复部署费用<ul><li>冲锋手 / 尖兵 / 执旗手</li></ul></li><li>近卫 · 近战输出</li><li>重装 · 阻挡与承伤</li></ul>
+<ol><li>选择干员</li><li>确认精英化阶段</li><li>查看材料</li></ol>
+<dl><dt>信赖</dt><dd>提升至 100% 后属性加成达到上限。</dd><dt>潜能</dt><dd>通过重复获得干员提升。</dd></dl>
+<h3>引用与代码</h3>
+<blockquote><p>「博士，现在起由我担任你的护卫。」</p><p class="ak-fs-xs ak-fg-muted">—— 陈 · 任命助理</p></blockquote>
+<pre>{{干员信息
+|名称=陈 |稀有度=6 |职业=近卫 |分支=剑豪
+}}</pre>
+<h3>表格 · wikitable</h3>
+<div class="ak-table-scroll"><table class="wikitable jquery-tablesorter ak-striped" style="width:100%">
+<tr><th class="headerSort">干员</th><th class="headerSort headerSortDown">稀有度</th><th>职业</th><th class="headerSort">生命</th><th class="headerSort">攻击</th><th class="headerSort">防御</th><th>阵营</th></tr>
+<tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_010_chen_2.png" alt=""></span><span><span class="ak-op-row__name">陈</span><span class="ak-op-row__meta">剑豪 · LM04</span></span></a></td><td><span class="ak-rarity ak-rarity--r6"><i></i><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/warrior.png" alt=""></span>近卫</span></td><td class="num">2880</td><td class="num">610</td><td class="num">352</td><td>龙门近卫局</td></tr>
+<tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_172_svrash_2.png" alt=""></span><span><span class="ak-op-row__name">银灰</span><span class="ak-op-row__meta">领主 · KJ01</span></span></a></td><td><span class="ak-rarity ak-rarity--r6"><i></i><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/warrior.png" alt=""></span>近卫</span></td><td class="num">2880</td><td class="num">660</td><td class="num">352</td><td>喀兰贸易</td></tr>
+<tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="5"><img src="assets/avatar/char_102_texas_2.png" alt=""></span><span><span class="ak-op-row__name">德克萨斯</span><span class="ak-op-row__meta">尖兵 · PL03</span></span></a></td><td><span class="ak-rarity ak-rarity--r5"><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/pioneer.png" alt=""></span>先锋</span></td><td class="num">2050</td><td class="num">545</td><td class="num">371</td><td>企鹅物流</td></tr>
+<tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="4"><img src="assets/avatar/char_151_myrtle_2.png" alt=""></span><span><span class="ak-op-row__name">桃金娘</span><span class="ak-op-row__meta">执旗手 · PL33</span></span></a></td><td><span class="ak-rarity ak-rarity--r4"><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/pioneer.png" alt=""></span>先锋</span></td><td class="num">1583</td><td class="num">386</td><td class="num">223</td><td>—</td></tr>
+</table></div>
+<p class="ak-fs-sm ak-fg-2">PRTS 大量表格把 <code>th</code> 竖着当行头用（属性表 / 信息表）。加粗的 2px 底线只压在「整行都是 th、且下一行是数据行」的真正表头行下面（<code>:has()</code>，老浏览器退化为一律 1px）；行头列每格只有普通 1px 线，与右侧 td 对齐，不再一格一道。</p>
+<div class="ak-flex-col ak-gap-4 ak-mb-4">
+<table class="wikitable ak-mb-0" style="width:100%">
+<tr><th style="width:28%">再部署时间</th><td>70s</td><th style="width:28%">初始部署费用</th><td>16→18</td></tr>
+<tr><th>阻挡数</th><td>2</td><th>攻击间隔</th><td>1.5s</td></tr>
+<tr><th>所属势力</th><td colspan="3"><a href="#">罗德岛</a></td></tr>
+<tr><th>隐藏势力</th><td colspan="3"><a href="#">叙拉古</a></td></tr>
+</table>
+<table class="wikitable ak-mb-0" style="width:100%">
+<tr><th></th><th>精英0 1级</th><th>精英0 满级</th><th>精英1 满级</th><th>精英2 满级</th></tr>
+<tr><th>生命上限</th><td class="num">1001</td><td class="num">1431</td><td class="num">1884</td><td class="num">2385</td></tr>
+<tr><th>攻击</th><td class="num">333</td><td class="num">477</td><td class="num">628</td><td class="num">796</td></tr>
+<tr><th>防御</th><td class="num">217</td><td class="num">311</td><td class="num">410</td><td class="num">520</td></tr>
+<tr><th>法术抗性</th><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+</table>
+</div>
+<p class="ak-fs-sm ak-fg-muted">落进 wikitable 里的裸 <code>&lt;input&gt;</code> / <code>&lt;select&gt;</code>（属性计算器、筛选栏）见 <a class="ak-chevrons" href="components.html#s-forms">通用组件 › 表单</a>，与设计系统的表单组件放在一起对照。</p>
+<h3>缩略图与图库</h3>
+<figure typeof="mw:File/Thumb" class="mw-halign-right" style="width:160px"><a href="#"><img src="assets/avatar/char_003_kalts_2.png" width="150" alt=""></a><figcaption>凯尔希 · 干员头像（示例图注）</figcaption></figure>
+<p>浮动缩略图为白/深底 + 1px 边框 + 青色小方块图注前缀。图库使用弹性布局，卡片间距 12px，不再使用 MW 默认的固定宽度。</p>
+<ul class="gallery mw-gallery-traditional">
+  <li class="gallerybox"><div><div class="thumb"><div><img src="assets/skill/chen_1.png" width="72" alt=""></div></div><div class="gallerytext"><p>鞘击</p></div></div></li>
+  <li class="gallerybox"><div><div class="thumb"><div><img src="assets/skill/chen_2.png" width="72" alt=""></div></div><div class="gallerytext"><p>赤霄·拔刀</p></div></div></li>
+  <li class="gallerybox"><div><div class="thumb"><div><img src="assets/skill/chen_3.png" width="72" alt=""></div></div><div class="gallerytext"><p>赤霄·绝影</p></div></div></li>
+</ul>
+<h3>目录、折叠、引用</h3>
+<div class="toc" id="toc"><div class="toctitle"><h2>目录</h2><span class="toctogglespan">[<a class="toctogglelabel">隐藏</a>]</span></div><ul><li><a href="#"><span class="tocnumber">1</span> 干员信息</a><ul><li><a href="#"><span class="tocnumber">1.1</span> 属性</a></li><li><a href="#"><span class="tocnumber">1.2</span> 天赋</a></li></ul></li><li><a href="#"><span class="tocnumber">2</span> 技能</a></li><li><a href="#"><span class="tocnumber">3</span> 模组</a></li></ul></div>
+<div class="mw-collapsible mw-collapsed ak-collapse-box"><span class="mw-collapsible-toggle mw-collapsible-toggle-default"><a href="#" role="button">展开</a></span><div class="mw-collapsible-content">这里是折叠内容。使用 <code>.ak-collapse-box</code> 变体让 mw-collapsible 变为盒式面板。</div></div>
+<div class="mw-references-wrap"><ol class="references"><li id="cite_note-1"><span class="mw-cite-backlink"><a href="#">↑</a></span> <span class="reference-text">《明日方舟》官方网站，鹰角网络。</span></li></ol></div>
+<h3>消息框 · mw-message-box / ambox</h3>
+<div class="mw-message-box mw-message-box-notice">本页面内容基于游戏版本 2.7.61 数据。</div>
+<div class="mw-message-box mw-message-box-warning">本条目包含剧情剧透，请谨慎阅读。</div>
+<div class="mw-message-box mw-message-box-error">数据校验失败：技能表缺少 skchr_chen_3 等级 10。</div>
+<div class="mw-message-box mw-message-box-success">已保存到你的干员计划。</div>
+<div class="hatnote">本文介绍干员「陈」。关于假日威龙陈，请见「陈（假日威龙）」。</div>
+<h3>TabberNeue 标签页</h3>
+<div class="tabber">
+  <header class="tabber__header"><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" href="#tb-a" aria-selected="true">档案</a><a class="tabber__tab" role="tab" href="#tb-b">语音</a><a class="tabber__tab" role="tab" href="#tb-c">时装</a></nav></header>
+  <section class="tabber__section"><article class="tabber__panel" id="tb-a" role="tabpanel"><b>默认样式</b>：细底线 + 3px 青色下划线 + 左上选中角标（游戏内选中态）。</article><article class="tabber__panel" id="tb-b" role="tabpanel">语音面板内容。</article><article class="tabber__panel" id="tb-c" role="tabpanel">时装面板内容。</article></section>
+</div>
+<div class="tabber ak-tabber-block">
+  <header class="tabber__header"><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" href="#tb2-a" aria-selected="true">精英零</a><a class="tabber__tab" role="tab" href="#tb2-b">精英一</a><a class="tabber__tab" role="tab" href="#tb2-c">精英二</a></nav></header>
+  <section class="tabber__section"><article class="tabber__panel" id="tb2-a" role="tabpanel"><b>.ak-tabber-block</b>：游戏内块状标签页，选中项黑白反转（矩形，不斜切）。</article><article class="tabber__panel" id="tb2-b" role="tabpanel">精英一内容。</article><article class="tabber__panel" id="tb2-c" role="tabpanel">精英二内容。</article></section>
+</div>
+<h3>分类 · Catlinks</h3>
+<p class="ak-fs-sm ak-fg-muted">MW 原生 <code>#catlinks</code> 结构不变：树状图标 + overline 标签 + 下划线链接（参考 fz.wiki）；<code>colon-separator</code> 的「：」由 CSS 吞掉。第二行为「隐藏分类」（仅编辑者开启偏好或分类页可见，此处强制显示）。</p>
+<div class="catlinks"><div class="mw-normal-catlinks"><a href="#">分类</a>：​<ul><li><a href="#">干员</a></li><li><a href="#">六星干员</a></li><li><a href="#">近卫</a></li><li><a href="#">剑豪</a></li><li><a href="#">龙门近卫局</a></li><li><a href="#" class="mw-redirect">龙门</a></li></ul></div><div class="mw-hidden-catlinks mw-hidden-cats-user-shown">隐藏分类：​<ul><li><a href="#">对原文有修正的页面</a></li></ul></div></div>
+
+
+      </div><!-- /.mw-body-content -->
+      <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2026年8月19日 (三) 22:30。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
+      </div><!-- /.ak-body -->
+      <div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="#" title="特殊:页面分类">分类</a>：​<ul><li><a href="#">PRTS 皮肤</a></li><li><a href="#">设计系统</a></li></ul></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="ak-footer">
+  <div class="ak-footer__inner">
+    <div class="ak-footer__brand"><span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span><p>玩家自建的明日方舟中文维基。本站与上海鹰角网络科技有限公司无隶属关系。游戏内素材版权归鹰角网络所有。</p></div>
+    <div class="ak-footer__col"><h4>浏览</h4><ul><li><a href="#">干员</a></li><li><a href="#">敌人</a></li><li><a href="#">关卡</a></li><li><a href="#">道具</a></li></ul></div>
+    <div class="ak-footer__col"><h4>参与</h4><ul><li><a href="#">编辑指南</a></li><li><a href="#">模板文档</a></li><li><a href="#">最近更改</a></li><li><a href="#">社区门户</a></li></ul></div>
+    <div class="ak-footer__col"><h4>关于</h4><ul><li><a href="#">关于 PRTS</a></li><li><a href="#">免责声明</a></li><li><a href="#">隐私政策</a></li><li><a href="#">API</a></li></ul></div>
+  </div>
+  <!-- 底栏：左文字 + 右侧 $wgFooterIcons 徽章（结构与 prts.wiki 现网 #footer-icons 完全一致，含 MW 加的 cdx-button 假按钮类与站点配置里的内联 margin） -->
+  <div class="ak-footer__bottom">
+    <div class="ak-footer__bottom-text"><span>© 2019–2026 PRTS.wiki · 文本 CC BY-NC-SA 4.0</span><span class="ak-en">Skin AKDS · MediaWiki 1.43</span></div>
+    <ul class="ak-footer__icons noprint" id="footer-icons">
+      <!-- 顺序 = $wgFooterIcons 的键序：站点徽章（原图）在前，通用徽章用白描版（badge/mono/），许可放最后 -->
+      <li id="footer-sponsorsico"><a href="https://project.mooncell.wiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mooncell.png" alt="a Mooncell project" height="31" width="88" loading="lazy"></a><a href="https://www.horain.net/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/horain.png" alt="horain" style="margin-left: 5px" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-poweredbyico"><a href="https://www.mediawiki.org/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/mediawiki.svg" alt="Powered by MediaWiki" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-poweredbysmwico"><a href="https://www.semantic-mediawiki.org/wiki/Semantic_MediaWiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/smw.svg" alt="Powered by Semantic MediaWiki" class="smw-footer" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-copyrightico"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/cc-by-nc-sa.svg" alt="知识共享署名-非商业性使用-相同方式共享" width="88" height="31" loading="lazy"></a></li>
+    </ul>
+  </div>
+  <span class="ak-watermark">PRTS</span>
+</footer>
+<button class="ak-fab" aria-label="回到顶部"><svg width="18" height="18"><use href="#i-up"/></svg></button>
+<script src="../src/sidebar-tree.js"></script>
+<script src="../src/search-palette.js"></script>
+<script src="preview.js"></script>
+<script src="search-mock.js"></script>
+</body>
+</html>

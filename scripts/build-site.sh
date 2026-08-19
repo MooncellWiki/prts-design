@@ -11,8 +11,9 @@ out="${1:-_site}"
 rm -rf "$out"
 mkdir -p "$out"
 
-# preview/* → 站点根（index.html / operator.html / preview.js / search-mock.js / assets/）
+# preview/* → 站点根（index.html … operator.html / preview.js / search-mock.js / assets/）；_src/ 是页面源（scripts/build-preview.py 的输入），不上站
 cp -R "$root/preview/." "$out/"
+rm -rf "$out/_src"
 # 源码目录（CSS/JS 由 HTML 直接引用）
 cp -R "$root/src" "$out/src"
 # 单文件打包版，用于分享/离线
