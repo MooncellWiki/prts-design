@@ -1282,8 +1282,12 @@ table.diff td { padding: .3em .5em; }
 
 /* Count badge（通知计数 / 未读点）—— 默认黄（次强调「提示」），不走红：红只留给危险与 NEW/BREAKING，
    未读数不是高危信息。Echo 的 alerts 类（回退 / 权限变更）才用 --danger；NEW 角标是 .ak-tag--new，不是徽标 */
-.ak-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px;
-  font: 700 11px/1 var(--ak-font-label); background: var(--ak-accent-2); color: var(--ak-accent-2-fg); border-radius: var(--ak-radius-pill); }
+/* 数字是正文字体 + tabular-nums，不用 Bender：Bender Bold 在 11px 下笔画比思源黑体细、字形也窄（数字墨迹约 4×8px 对 6×9px），黑字落在 18px 黄圆里读不清；
+   Naive UI / Ant Design / Nuxt UI 的计数徽标也都是继承正文字体 + 等宽数字，只靠尺寸和底色区分。
+   border-box：min-width = height，单个数字就是正圆，两位数以上才拉成胶囊（之前 content-box 让 18px + 左右 5px 内距永远是 28×18 的长条，数字浮在中间像没对齐）。
+   padding-bottom 1px：思源黑体 hhea 上伸 1160 / 下伸 288 不对称，line-height:1 时数字重心比盒子中线低约 0.7px，用 1px 底内距抬回来（Bender 是 920/180，没这个问题） */
+.ak-badge { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 18px; height: 18px; padding: 0 5px 1px;
+  font: 700 12px/1 var(--ak-font-body); font-variant-numeric: tabular-nums; background: var(--ak-accent-2); color: var(--ak-accent-2-fg); border-radius: var(--ak-radius-pill); }
 .ak-badge--dot { min-width: 8px; width: 8px; height: 8px; padding: 0; }
 .ak-badge--accent { background: var(--ak-accent); color: var(--ak-accent-fg); }
 .ak-badge--danger { background: var(--ak-red-600); color: #fff; }
@@ -2217,8 +2221,9 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-header a:visited { color: inherit; }
 .ak-header .ak-btn:visited { color: var(--_fg); }
 
-/* Notification badge on header icon */
-.ak-header__tools .ak-badge { position: absolute; top: 4px; right: 4px; }
+/* Notification badge on header icon：36px 按钮里 20px 图标占 8–28，徽标（18px 圆）贴到 2px 处，圆心落在图标右上角附近——只压住铃铛的右上角，
+   不像之前 top/right 4px + 28px 长条那样盖掉整个图标（Naive UI 的 translate(50%,-50%) 也是把圆心放在内容右上角） */
+.ak-header__tools .ak-badge { position: absolute; top: 2px; right: 2px; }
 .ak-header__tools .ak-btn--icon { position: relative; }
 
 /* ═══ Local nav（二级吸顶栏）═══
@@ -2384,6 +2389,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-toc__title { display: block; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-theme-accent); }
 .ak-toc__top { display: none; }   /* 浮层首项「回到顶部」：仅 <1400 出现，届时 .ak-fab 隐藏（手机上浮动按钮太挡视野） */
 .ak-toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--ak-border); }
+.ak-toc ul ul { border-left: 0; }   /* 竖线只画在最外层：子 ul 没有内边距、左缘紧贴父 ul 的边框，再各画 1px 就会在二级条目旁叠成 2px（粗细忽大忽小），二级项的高亮条也跟着右偏 1px；层级靠 a 的 padding-left（22 / 34）表达 */
 .ak-toc li::before { display: none !important; }
 .ak-toc li a { display: block; padding: 4px 10px; color: var(--ak-fg-muted); text-decoration: none; border-left: 2px solid transparent; margin-left: -1px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ak-toc li a:hover { color: var(--ak-fg); }

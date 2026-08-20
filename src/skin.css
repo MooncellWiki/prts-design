@@ -99,8 +99,9 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-header a:visited { color: inherit; }
 .ak-header .ak-btn:visited { color: var(--_fg); }
 
-/* Notification badge on header icon */
-.ak-header__tools .ak-badge { position: absolute; top: 4px; right: 4px; }
+/* Notification badge on header icon：36px 按钮里 20px 图标占 8–28，徽标（18px 圆）贴到 2px 处，圆心落在图标右上角附近——只压住铃铛的右上角，
+   不像之前 top/right 4px + 28px 长条那样盖掉整个图标（Naive UI 的 translate(50%,-50%) 也是把圆心放在内容右上角） */
+.ak-header__tools .ak-badge { position: absolute; top: 2px; right: 2px; }
 .ak-header__tools .ak-btn--icon { position: relative; }
 
 /* ═══ Local nav（二级吸顶栏）═══

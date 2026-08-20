@@ -83,8 +83,12 @@
 
 /* Count badge（通知计数 / 未读点）—— 默认黄（次强调「提示」），不走红：红只留给危险与 NEW/BREAKING，
    未读数不是高危信息。Echo 的 alerts 类（回退 / 权限变更）才用 --danger；NEW 角标是 .ak-tag--new，不是徽标 */
-.ak-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px;
-  font: 700 11px/1 var(--ak-font-label); background: var(--ak-accent-2); color: var(--ak-accent-2-fg); border-radius: var(--ak-radius-pill); }
+/* 数字是正文字体 + tabular-nums，不用 Bender：Bender Bold 在 11px 下笔画比思源黑体细、字形也窄（数字墨迹约 4×8px 对 6×9px），黑字落在 18px 黄圆里读不清；
+   Naive UI / Ant Design / Nuxt UI 的计数徽标也都是继承正文字体 + 等宽数字，只靠尺寸和底色区分。
+   border-box：min-width = height，单个数字就是正圆，两位数以上才拉成胶囊（之前 content-box 让 18px + 左右 5px 内距永远是 28×18 的长条，数字浮在中间像没对齐）。
+   padding-bottom 1px：思源黑体 hhea 上伸 1160 / 下伸 288 不对称，line-height:1 时数字重心比盒子中线低约 0.7px，用 1px 底内距抬回来（Bender 是 920/180，没这个问题） */
+.ak-badge { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 18px; height: 18px; padding: 0 5px 1px;
+  font: 700 12px/1 var(--ak-font-body); font-variant-numeric: tabular-nums; background: var(--ak-accent-2); color: var(--ak-accent-2-fg); border-radius: var(--ak-radius-pill); }
 .ak-badge--dot { min-width: 8px; width: 8px; height: 8px; padding: 0; }
 .ak-badge--accent { background: var(--ak-accent); color: var(--ak-accent-fg); }
 .ak-badge--danger { background: var(--ak-red-600); color: #fff; }

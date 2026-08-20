@@ -80,7 +80,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 组件 | 类 | 变体 | 状态 |
 |---|---|---|---|
 | Button | `.ak-btn` | `--primary --contrast --outline --ghost --danger --link`；`--xs --sm --lg --xl --icon --block --pill`；`.is-loading`（文字隐去，居中一枚 14px 圆弧转圈）`disabled`；`.ak-btn-group` | ✅ |
-| Tag / Badge | `.ak-tag` | `--sm --lg --outline --accent --accent-soft --yellow --info --success --warning --danger --danger-solid --new --inverse --label`；`__dot __remove`；`.ak-badge --dot --accent --danger`（默认黄 = 未读计数 / 点；`--danger` 红只给 Echo alerts 类；NEW 角标走 `.ak-tag--new`） | ✅ |
+| Tag / Badge | `.ak-tag` | `--sm --lg --outline --accent --accent-soft --yellow --info --success --warning --danger --danger-solid --new --inverse --label`；`__dot __remove`；`.ak-badge --dot --accent --danger`（默认黄 = 未读计数 / 点；`--danger` 红只给 Echo alerts 类；NEW 角标走 `.ak-tag--new`）。计数徽标 18px `border-box`：单个数字是正圆、两位以上才成胶囊；数字是正文字体 700 12px + `tabular-nums`（不用 Bender，同 Naive UI / Ant Design 的做法），`padding-bottom: 1px` 补思源黑体上下伸不对称带来的 0.7px 下沉 | ✅ |
 | Chip（筛选） | `.ak-chip.is-active` | 选中角标 | ✅🧩 |
 | Card | `.ak-card` | `--hover --selected --flat --inset --accent-top --accent-left --horizontal`；`__header __eyebrow __title __body __footer __media`；`.ak-card-grid` | ✅ |
 | Panel | `.ak-panel` | `__head --inverse __title __body`；`--collapsible` | ✅🧩 |
