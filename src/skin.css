@@ -266,6 +266,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-toc__title { display: block; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-theme-accent); }
 .ak-toc__top { display: none; }   /* 浮层首项「回到顶部」：仅 <1400 出现，届时 .ak-fab 隐藏（手机上浮动按钮太挡视野） */
 .ak-toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--ak-border); }
+.ak-toc ul ul { border-left: 0; }   /* 竖线只画在最外层：子 ul 没有内边距、左缘紧贴父 ul 的边框，再各画 1px 就会在二级条目旁叠成 2px（粗细忽大忽小），二级项的高亮条也跟着右偏 1px；层级靠 a 的 padding-left（22 / 34）表达 */
 .ak-toc li::before { display: none !important; }
 .ak-toc li a { display: block; padding: 4px 10px; color: var(--ak-fg-muted); text-decoration: none; border-left: 2px solid transparent; margin-left: -1px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ak-toc li a:hover { color: var(--ak-fg); }
