@@ -5,16 +5,22 @@
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ─── Typography ────────────────────────────────────────────────────────── */
+/* prose / not-prose（同 Tailwind Typography）：
+ *  wikitext 解析产物（.mw-parser-output）天然是「正文」，下面这些排版规则——标题色条、段距、列表方块符、dl / blockquote、链接色（含 :visited 褪色）、外链图标——
+ *  默认作用于整篇；每条都带 :not(:where(.ak-not-prose, .ak-not-prose *))（特指度 0，不改原规则的权重），
+ *  模板 / 组件把 `ak-not-prose` 标在输出的最外层，子树内就完全不受正文排版影响：链接退回 color: inherit、无下划线，颜色 / 悬停由组件自己定
+ *  （否则 a.ak-op-card / a.ak-stage 这类「整块是链接」的组件写 color（0,1,0）永远打不过全局 a:visited（0,1,1），页眉 / 搜索面板 / 分页都曾各自补丁）。
+ *  标在最外层，不要只标在 <a> 上；需要「看起来像正文链接」的地方，组件自己引用 --ak-link / --ak-link-hover。 */
 .mw-body-content { font-size: var(--ak-fs-body); line-height: var(--ak-lh-body); color: var(--ak-fg); }
-.mw-parser-output p { margin: 0 0 var(--ak-space-4); }
-.mw-parser-output p:last-child { margin-bottom: 0; }
+.mw-parser-output p:not(:where(.ak-not-prose, .ak-not-prose *)) { margin: 0 0 var(--ak-space-4); }
+.mw-parser-output p:last-child:not(:where(.ak-not-prose, .ak-not-prose *)) { margin-bottom: 0; }
 strong, b { font-weight: 700; }
 small, .ak-text-sm { font-size: var(--ak-fs-sm); }
 .ak-text-xs { font-size: var(--ak-fs-xs); }
 .ak-muted { color: var(--ak-fg-muted); }
 
 /* Headings — 方舟式：左侧色条 + 细底线；h1 页面标题由 skin.css 处理 */
-:where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6) {
+:where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6):not(:where(.ak-not-prose, .ak-not-prose *)) {
   font-family: var(--ak-font-body);
   font-weight: 700;
   line-height: var(--ak-lh-tight);
@@ -23,21 +29,21 @@ small, .ak-text-sm { font-size: var(--ak-fs-sm); }
   scroll-margin-top: calc(var(--ak-header-h) + 16px);
   border: 0;
 }
-:where(.mw-body-content) h2 {
+:where(.mw-body-content) h2:not(:where(.ak-not-prose, .ak-not-prose *)) {
   font-size: var(--ak-fs-h2);
   padding: 0 0 var(--ak-space-2) var(--ak-space-3);
   border-left: var(--ak-bar-w) solid var(--ak-accent);
   border-bottom: 1px solid var(--ak-border);
   position: relative;
 }
-:where(.mw-body-content) h2::after {  /* 官网标题下的短横条 */
+:where(.mw-body-content) h2:not(:where(.ak-not-prose, .ak-not-prose *))::after {  /* 官网标题下的短横条 */
   content: ""; position: absolute; left: calc(-1 * var(--ak-bar-w)); bottom: -1px; height: 2px; width: 96px;
   background: var(--ak-accent);
 }
-:where(.mw-body-content) h3 { font-size: var(--ak-fs-h3); padding-left: var(--ak-space-3); border-left: 3px solid var(--ak-border-strong); }
-:where(.mw-body-content) h4 { font-size: var(--ak-fs-h4); }
-:where(.mw-body-content) h5 { font-size: var(--ak-fs-body); color: var(--ak-fg-secondary); }
-:where(.mw-body-content) h6 { font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); }
+:where(.mw-body-content) h3:not(:where(.ak-not-prose, .ak-not-prose *)) { font-size: var(--ak-fs-h3); padding-left: var(--ak-space-3); border-left: 3px solid var(--ak-border-strong); }
+:where(.mw-body-content) h4:not(:where(.ak-not-prose, .ak-not-prose *)) { font-size: var(--ak-fs-h4); }
+:where(.mw-body-content) h5:not(:where(.ak-not-prose, .ak-not-prose *)) { font-size: var(--ak-fs-body); color: var(--ak-fg-secondary); }
+:where(.mw-body-content) h6:not(:where(.ak-not-prose, .ak-not-prose *)) { font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); }
 .mw-heading { display: flex; align-items: baseline; gap: var(--ak-space-2); flex-wrap: wrap; }
 .mw-heading > h2, .mw-heading > h3, .mw-heading > h4 { flex: 1 1 auto; margin: 0; }
 .mw-heading { margin: 1.6em 0 0.6em; }
@@ -63,40 +69,44 @@ small, .ak-text-sm { font-size: var(--ak-fs-sm); }
 @media (hover: none) { .mw-heading:not(:hover) .mw-editsection { opacity: 1; } }
 
 /* Links */
-a { color: var(--ak-link); text-decoration: none; transition: color var(--ak-dur-fast) var(--ak-ease); }
-a:hover { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link); text-decoration: none; transition: color var(--ak-dur-fast) var(--ak-ease); }
+a:hover:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 /* 已访问：同一个链接色褪一层（tokens.css --ak-link-visited，亮色往灰褪 / 暗色往画布褪），不换色相——整套只有青、不出现紫；
  * 悬停时回到完整的 --ak-link-hover（等于「透明度收回来、再深一点」）。注意 :visited 里写 alpha 无效（浏览器为防历史嗅探只取 RGB），褪色必须是实色。 */
-a:visited { color: var(--ak-link-visited); }
-a:visited:hover { color: var(--ak-link-hover); }
-a.new, a.new:visited { color: var(--ak-link-new); }
-a.mw-selflink { color: inherit; font-weight: 700; }
-a.external { color: var(--ak-link-external); }
-.mw-parser-output a.external { background: none; padding-right: 0; }
-.mw-parser-output a.external::after {
+a:visited:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-visited); }
+a:visited:hover:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-hover); }
+a.new:not(:where(.ak-not-prose, .ak-not-prose *)), a.new:visited:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-new); }
+a.mw-selflink:not(:where(.ak-not-prose, .ak-not-prose *)) { color: inherit; font-weight: 700; }
+/* not-prose 基线：链接继承颜色、不画下划线（同 Tailwind preflight 的 a { color: inherit }）；组件类（0,1,0）即可覆盖。
+ * 只写 `a`（0,0,1），不要再列 a:hover / a:visited——`:where(.ak-not-prose) a:visited` 是 (0,1,1)，反过来压住组件类：首页「中坚甄选」格 .mp-ops__cta 的白字一旦已访问就变成 inherit 的黑。
+ * 皮肤不加载 mediawiki.skinning，全局 a:visited 只有上面那条（带 :not(not-prose)），这里没有要压的 */
+:where(.ak-not-prose) a { color: inherit; text-decoration: none; }
+a.external:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-external); }
+.mw-parser-output a.external:not(:where(.ak-not-prose, .ak-not-prose *)) { background: none; padding-right: 0; }
+.mw-parser-output a.external:not(:where(.ak-not-prose, .ak-not-prose *))::after {
   content: ""; display: inline-block; width: .8em; height: .8em; margin-left: .2em; vertical-align: -0.05em;
   background: currentColor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 1h5v5L9 4 5 8 4 7l4-4zM1 3h3v1H2v6h6V8h1v3H1z'/%3E%3C/svg%3E") center/contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 1h5v5L9 4 5 8 4 7l4-4zM1 3h3v1H2v6h6V8h1v3H1z'/%3E%3C/svg%3E") center/contain no-repeat;
 }
-.mw-parser-output a.external.text::after, .mw-parser-output a.external.autonumber::after { display: inline-block; }
+.mw-parser-output a.external.text:not(:where(.ak-not-prose, .ak-not-prose *))::after, .mw-parser-output a.external.autonumber:not(:where(.ak-not-prose, .ak-not-prose *))::after { display: inline-block; }
 .plainlinks a.external::after { display: none !important; }
 
 /* Lists */
-.mw-parser-output ul { list-style: none; margin: 0 0 var(--ak-space-4) 0; padding-left: 1.4em; }
-.mw-parser-output ul > li { position: relative; margin: .25em 0; }
-.mw-parser-output ul > li::before {   /* 方形项目符号 → 方舟的直角语言 */
+.mw-parser-output ul:not(:where(.ak-not-prose, .ak-not-prose *)) { list-style: none; margin: 0 0 var(--ak-space-4) 0; padding-left: 1.4em; }
+.mw-parser-output ul > li:not(:where(.ak-not-prose, .ak-not-prose *)) { position: relative; margin: .25em 0; }
+.mw-parser-output ul > li:not(:where(.ak-not-prose, .ak-not-prose *))::before {   /* 方形项目符号 → 方舟的直角语言 */
   content: ""; position: absolute; left: -1.05em; top: .72em; width: 5px; height: 5px;
   background: var(--ak-accent); transform: rotate(45deg);
 }
-.mw-parser-output ul ul > li::before { background: var(--ak-fg-subtle); }
-.mw-parser-output ol { margin: 0 0 var(--ak-space-4); padding-left: 1.8em; }
-.mw-parser-output ol > li { margin: .25em 0; padding-left: .2em; }
-.mw-parser-output ol > li::marker { font-family: var(--ak-font-label); font-weight: 700; color: var(--ak-accent); }
-.mw-parser-output dl { margin: 0 0 var(--ak-space-4); }
-.mw-parser-output dt { font-weight: 700; margin-top: var(--ak-space-2); }
-.mw-parser-output dd { margin: .2em 0 .5em 1.6em; }
-.mw-parser-output li > ul, .mw-parser-output li > ol { margin-bottom: 0; }
+.mw-parser-output ul ul > li:not(:where(.ak-not-prose, .ak-not-prose *))::before { background: var(--ak-fg-subtle); }
+.mw-parser-output ol:not(:where(.ak-not-prose, .ak-not-prose *)) { margin: 0 0 var(--ak-space-4); padding-left: 1.8em; }
+.mw-parser-output ol > li:not(:where(.ak-not-prose, .ak-not-prose *)) { margin: .25em 0; padding-left: .2em; }
+.mw-parser-output ol > li:not(:where(.ak-not-prose, .ak-not-prose *))::marker { font-family: var(--ak-font-label); font-weight: 700; color: var(--ak-accent); }
+.mw-parser-output dl:not(:where(.ak-not-prose, .ak-not-prose *)) { margin: 0 0 var(--ak-space-4); }
+.mw-parser-output dt:not(:where(.ak-not-prose, .ak-not-prose *)) { font-weight: 700; margin-top: var(--ak-space-2); }
+.mw-parser-output dd:not(:where(.ak-not-prose, .ak-not-prose *)) { margin: .2em 0 .5em 1.6em; }
+.mw-parser-output li > ul:not(:where(.ak-not-prose, .ak-not-prose *)), .mw-parser-output li > ol:not(:where(.ak-not-prose, .ak-not-prose *)) { margin-bottom: 0; }
 
 /* Emphasis / misc inline */
 hr { border: 0; height: 1px; background: var(--ak-border); margin: var(--ak-space-8) 0; }
@@ -107,13 +117,13 @@ kbd { font-family: var(--ak-font-mono); font-size: .85em; padding: .1em .4em; bo
 sup, sub { line-height: 0; }
 
 /* Blockquote / poem */
-.mw-parser-output blockquote {
+.mw-parser-output blockquote:not(:where(.ak-not-prose, .ak-not-prose *)) {
   margin: var(--ak-space-4) 0; padding: var(--ak-space-3) var(--ak-space-5);
   border-left: var(--ak-bar-w) solid var(--ak-accent);
   background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary);
 }
-.mw-parser-output blockquote p:last-child { margin-bottom: 0; }
-.mw-parser-output .poem { padding-left: var(--ak-space-4); border-left: 1px solid var(--ak-border); }
+.mw-parser-output blockquote p:last-child:not(:where(.ak-not-prose, .ak-not-prose *)) { margin-bottom: 0; }
+.mw-parser-output .poem:not(:where(.ak-not-prose, .ak-not-prose *)) { padding-left: var(--ak-space-4); border-left: 1px solid var(--ak-border); }
 
 /* Code */
 code, .mw-code, pre, tt { font-family: var(--ak-font-mono); font-size: .9em; }

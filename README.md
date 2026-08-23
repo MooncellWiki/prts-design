@@ -28,7 +28,7 @@ src/
   fonts.css         自托管 web 字体的 @font-face（scripts/fetch-fonts.py 生成；最先加载）
   fonts/            woff2 + 各族 LICENSE / NOTICE：官网同源 Novecento Sans Wide 500–800 · Bender 400/700（ASCII 子集，来源见 NOTICE.md）；OFL 的 Noto Sans SC 可变字重（101 片）· Oswald VF · Chakra Petch 400–700 · JetBrains Mono VF（合计 ≈4.9MB）
   tokens.css        令牌 + 双主题 + 页眉/头图/画布主题接口（§2d）+ Codex/MW 令牌桥接（必须最先加载）
-  base.css          .mw-parser-output / wikitable / toc / tabber / 表单 / diff …
+  base.css          .mw-parser-output / wikitable / toc / tabber / 表单 / diff …（正文排版规则带 prose / not-prose 作用域：组件最外层标 .ak-not-prose 即不受影响，规范 §1.3）
   components.css    通用组件 .ak-btn .ak-tag .ak-card .ak-panel .ak-tabs .ak-message …
   arknights.css     方舟装饰（色条/斜纹/网点/角标）+ 游戏数据组件（稀有度/职业/技能（卡 + 全等级表）/天赋条件表/道具/干员卡/模组/档案…）
   skin.css          皮肤骨架：黑色页眉/头图带 .ak-keyart/侧栏（含多层树 + 悬停飞出）/页面头/TOC/搜索面板/页脚/响应式

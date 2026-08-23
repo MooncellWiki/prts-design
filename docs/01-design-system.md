@@ -36,6 +36,12 @@
 DO：标题左侧粗色条 + 短横条；色条/黑白反转/角标表示选中；数值编号用 Bender/Oswald；白色线稿图标亮色下 `filter: invert(1)`；斜纹表示危险/施工/禁用；黑白反转做主动作。
 DON'T：圆角卡片、阴影堆叠、玻璃拟态；切角、平行四边形、斜带、border 斜接出来的小斜边；菱形项目符号、辉光文字；金黄 `#FFD429` 做主色；大写英文替代中文标题；正文用 Orbitron/等宽；非官方稀有度色；**青色给不可点的装饰文字**——青 = 链接 / 选中 / 焦点 / 主动作，卡片 eyebrow、标题英文副标、页眉命名空间这类 overline 小标签用 `--ak-fg-muted`（同 `.ak-overline` / `.ak-stat__label` / `.ak-attr__label`；亮色下 `#0098DC` 压白底只有 3.2:1，11px 小字也过不了 AA）。例外：活动卡 `.ak-event__type` 带「进行中」状态、Hero 黑底海报上的 eyebrow 留青。
 
+### 1.3 prose / not-prose（正文排版的作用域）
+
+同 Tailwind Typography 的 `prose` / `not-prose`：**wikitext 解析产物（`.mw-parser-output`）天然是「正文」**，`base.css` 的正文排版规则——标题色条与短横条、段距、列表方块符 / `ol::marker`、dl / blockquote / poem、链接色（含 `:visited` 褪色、`a.new`、外链图标）——默认作用于整篇；每条都带 `:not(:where(.ak-not-prose, .ak-not-prose *))`（特指度 0，不改原规则的权重）。模板 / 组件把 **`ak-not-prose` 标在输出的最外层**，子树内就完全不受正文排版影响：链接退回 `color: inherit`、无下划线，颜色 / 悬停由组件自己定。
+
+为什么需要它：`a.ak-op-card` / `a.ak-stage` / 首页入口格这类「整块是链接」的组件写 `color`（0,1,0）永远打不过全局 `a:visited`（0,1,1）——预览里所有 `href="#"` 都算已访问，卡片名字会整体变成褪色的链接色；页眉 / 搜索面板 / 分页过去各自补过 `a:visited { color: inherit }`。规则：**标在最外层、不要只标在 `<a>` 上**；不-prose 区域里需要「看起来像正文链接」的地方，组件自己引用 `--ak-link` / `--ak-link-hover`（首页 `.mp-link` 就是这么做的）。不做「not-prose 里再开一层 prose」（Tailwind 也不支持），那是内容结构该拆开的信号。
+
 ---
 
 ## 2. 令牌（Design Tokens）

@@ -22,6 +22,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 对象 | 选择器 | 设计 | 状态 |
 |---|---|---|---|
 | 正文 | `.mw-body-content` | 16px/1.7 思源；段距 16 | ✅ |
+| prose / not-prose | `.mw-parser-output`（prose 根）· `.ak-not-prose`（标在组件 / 模板输出最外层） | 正文排版规则（标题色条、段距、列表符、dl / blockquote、链接色含 `:visited`、外链图标）全部带 `:not(:where(.ak-not-prose, .ak-not-prose *))`，子树内不生效，链接 `color: inherit`；见规范 §1.3。整块是链接的组件（op-card / stage / 首页入口格）必须靠它才不被 `a:visited` 染色。not-prose 这条基线**只写 `:where(.ak-not-prose) a`（0,0,1）**，不要再列 `a:hover` / `a:visited`——那是 (0,1,1)，反过来压住组件类 (0,1,0)：首页「中坚甄选」格已访问后白字变黑就是这么来的 | ✅ |
 | 标题 h2 | `:where(.mw-body-content) h2` | 左 4px 青条 + 底线 + 96px 短横条（官网） | ✅ |
 | 标题 h3-h6 | 同上 | h3 灰色左条；h6 overline 风格 | ✅ |
 | 编辑节链接 | `.mw-editsection` | 悬停显现，青色 hover | ✅ |
