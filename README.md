@@ -12,6 +12,7 @@ GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 自动部署�
   [MediaWiki 内容样式](https://mooncellwiki.github.io/prts-design/mediawiki.html) ·
   [通用组件](https://mooncellwiki.github.io/prts-design/components.html) ·
   [方舟组件](https://mooncellwiki.github.io/prts-design/arknights.html)
+- 首页设计稿（信息结构取自 prts.wiki 现网首页；Swiper 自动轮播、进度条长在候选列表当前行底边；皮肤零特殊处理——去标题 / 去目录 / 去白纸与各区块样式都在页面自己的 `<style>` 里，对应生产环境的 `MediaWiki:Common.css` + TemplateStyles；整页标 `ak-not-prose`，正文排版规则不进组件，见规范 §1.3）：https://mooncellwiki.github.io/prts-design/home.html
 - 干员页整页样例（陈）：https://mooncellwiki.github.io/prts-design/operator.html
 - 单文件版（图片内联，可另存离线）：`dist/` 下同名文件，如 https://mooncellwiki.github.io/prts-design/dist/index.html · https://mooncellwiki.github.io/prts-design/dist/operator.html
 
@@ -38,7 +39,7 @@ src/
   index.css         本地汇总入口
 skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源：REST 标题搜索 / 动作 / 分类 / 用户 / 文件）（CSS、fonts/、sidebar-tree.js、search-palette.js 为 src 的符号链接）· i18n
 tokens/tokens.json  机器可读令牌（scripts/export-tokens.py 生成）
-preview/            预览站：index（基础）/ chrome / mediawiki / components / arknights / operator 六页，都是 scripts/build-preview.py 从 _src/ 生成的（_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像；keyart/ 为罗德岛主界面昼夜背景做的头图 + 罗德岛三角章站标；badge/ 为 prts.wiki 现网页脚徽章，badge/mono/ 为 MW / SMW / CC 三枚通用徽章的白描版）
+preview/            预览站（vendor/swiper/ 为首页轮播用的 Swiper 11，MIT，见其 NOTICE.md）：home（首页设计稿）/ index（基础）/ chrome / mediawiki / components / arknights / operator 七页，都是 scripts/build-preview.py 从 _src/ 生成的（_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像——profession/ 下大号 hub 图标之外另有 icon_*.png：游戏头像 / 半身像角上那套 26px 小职业图标（= prts.wiki 现网 图标_职业_*.png），干员卡 `.ak-op-card__prof` 该用它；keyart/ 为罗德岛主界面昼夜背景做的头图 + 罗德岛三角章站标；mainpage/ 为首页设计稿的素材——现网轮播横幅（media.prts.wiki，压到 960 宽）、12 个入口图标（现网 Mpbuttons 雪碧图切开）、亮点干员头像、家具图、module/ 游戏模组类型小图标（现网 模组类型_*_小图.png，已剥掉原图的低透明度光晕并裁到字形）；badge/ 为 prts.wiki 现网页脚徽章，badge/mono/ 为 MW / SMW / CC 三枚通用徽章的白描版）
 dist/               单文件打包（图片 + 拉丁字体内联，思源黑体指回 ../src/fonts/；scripts/build-dist.py 生成）
 scripts/            fetch-fonts.py（拉字体、生成 src/fonts.css）· export-tokens.py · build-preview.py（_src → preview/*.html）· build-dist.py · build-site.sh（组装 GitHub Pages 站点）
 ```
