@@ -39,12 +39,17 @@
    首页 · Main page — 信息结构取自 prts.wiki 现网首页（2026-08-23 抓取）：
    轮播（7 张：活动 4 + 寻访 3）+ 进行中的网页活动列表 → 12 个入口 → 今日信息（资源收集 9 关 + 时钟 / 倒计时 / 补充说明）→ 亮点干员（生日 / 新增 / 凭证兑换 / 时装 / 模组）→ 近期新增（关卡 / 家具）→ 网站信息。
    这里的一切都是「页面自己的东西」：结构 = MediaWiki:首页 的 wikitext（模板输出下面这些 .mp-* 结构），样式 = 本 <style>（生产环境放 Template:首页/styles.css，TemplateStyles）；
-   皮肤不为首页做任何特殊处理。唯一够不到正文的几条——去标题 / 去目录 / 去白纸——写在开头「0. 页面级」段，生产环境搬进 MediaWiki:Common.css 并加 body.page-首页 前缀。
+   页面不碰皮肤。够不到正文的那几条——去标题 / 去目录 / 去白纸——是皮肤该在首页收敛的行为，Skin:Arknights 已经内置（.ak-layout--mainpage），站点不用往 MediaWiki:Common.css 里粘任何东西；
+   开头「0. 页面级」段只是这份静态预览的补丁（骨架没有「当前是首页」这个状态），别照抄——见该段说明。
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── 0. 页面级（MediaWiki:Common.css · body.page-首页 …）──
- *  同 Citizen 首页：标题 / 面包屑 / 指示器不显示（h1 留给读屏器——它仍是大纲的根，不 display:none），动作簇（讨论 / 历史 / 编辑 / 更多）保留、靠右成一行；
- *  无目录（导轨让给主列，二级栏也不出「本页目录」）；正文不包白纸——首页区块各自带容器、直接铺在画布上，外层再套一张纸就是纸上贴纸。 */
+/* ── 0. 页面级：预览骨架的补丁，不是页面的样式，也不是要粘进 MediaWiki:Common.css 的东西 ──
+ *  首页上皮肤要「少做」的几件事——同 Citizen 首页：标题 / 面包屑 / 指示器不显示（h1 留给读屏器——它仍是大纲的根，不 display:none），
+ *  动作簇（讨论 / 历史 / 编辑 / 更多）保留、靠右成一行；无目录（导轨让给主列，二级栏也不出「本页目录」）；
+ *  正文不包白纸——首页区块各自带容器、直接铺在画布上，外层再套一张纸就是纸上贴纸。
+ *  这些都归皮肤：Skin:Arknights 在 .ak-layout--mainpage 下已经做完（resources/skins.arknights.styles/common/mainpage.less），站点侧零配置。
+ *  预览的骨架是静态的、没有首页状态，所以在这里复现一份；选择器按预览骨架写，别照抄进 Common.css——真皮肤的 DOM 不一样：
+ *  宽度在 .ak-main 自己身上（没有 .ak-main__inner），标题是核心的 #firstHeading 包在 .ak-page-heading 里（没有 .ak-page-header__title）。 */
 .ak-page-header__top, .ak-toc, .ak-local-nav__toc { display: none; }
 .ak-page-header__title { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .ak-page-header { margin-bottom: var(--ak-space-3); }

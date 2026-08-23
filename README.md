@@ -12,7 +12,7 @@ GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 自动部署�
   [MediaWiki 内容样式](https://mooncellwiki.github.io/prts-design/mediawiki.html) ·
   [通用组件](https://mooncellwiki.github.io/prts-design/components.html) ·
   [方舟组件](https://mooncellwiki.github.io/prts-design/arknights.html)
-- 首页设计稿（信息结构取自 prts.wiki 现网首页；Swiper 自动轮播、进度条长在候选列表当前行底边；皮肤零特殊处理——去标题 / 去目录 / 去白纸与各区块样式都在页面自己的 `<style>` 里，对应生产环境的 `MediaWiki:Common.css` + TemplateStyles；整页标 `ak-not-prose`，正文排版规则不进组件，见规范 §1.3）：https://mooncellwiki.github.io/prts-design/home.html
+- 首页设计稿（信息结构取自 prts.wiki 现网首页；Swiper 自动轮播、进度条长在候选列表当前行底边；页面只管自己——各区块样式在页面的 `<style>` 里，对应生产环境的 TemplateStyles，整页标 `ak-not-prose`，正文排版规则不进组件，见规范 §1.3；去标题 / 去目录 / 去白纸归皮肤，Skin:Arknights 已内置，站点不用写 `MediaWiki:Common.css`，见 03 §3.4）：https://mooncellwiki.github.io/prts-design/home.html
 - 干员页整页样例（陈）：https://mooncellwiki.github.io/prts-design/operator.html
 - 单文件版（图片内联，可另存离线）：`dist/` 下同名文件，如 https://mooncellwiki.github.io/prts-design/dist/index.html · https://mooncellwiki.github.io/prts-design/dist/operator.html
 

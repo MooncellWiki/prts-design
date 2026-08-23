@@ -173,6 +173,25 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 
 **待办**：`/ns:` 命名空间模式（REST 标题搜索本身支持 `模板:xx` 前缀，所以优先级低）；Related（RelatedArticles）；`Cargo` 查询模式；把面板拆成独立 RL 模块做 intent prefetch。
 
+### 3.4 首页（皮肤 ↔ 页面的分工）
+
+设计稿 `preview/home.html`。首页要的东西分两半，**站点侧不需要往 `MediaWiki:Common.css` 里粘任何皮肤类名**：
+
+**皮肤这半**（Skin:Arknights `resources/skins.arknights.styles/common/mainpage.less`，`action=view` 的首页拿到 `.ak-layout--mainpage` / `.ak-body--mainpage`）——都是「在首页少做点什么」，动的全是皮肤自己的 DOM，TemplateStyles 够不到（它给所有选择器加 `.mw-parser-output` 前缀，只能管到正文里面）：
+
+| 少做什么 | 怎么做 |
+|---|---|
+| 标题不显示 | `.ak-layout--mainpage .ak-page-heading` 只留给读屏器（sr-only）——h1 仍是大纲的根，不是 `display: none`（核心的 `MediaWiki:Mainpage-title` 置空是另一条路：那样 h1 本身就是空的） |
+| 动作簇保留、靠右 | `.ak-page-header__row { justify-content: flex-end; margin-bottom: 0 }`——标题出流后它是行里唯一的项，默认会滑到左边 |
+| 正文不包白纸 | `.ak-body--mainpage`：无底色、无边框、无内边距 |
+| 不让出目录导轨 | `.ak-layout--mainpage .ak-main` 保留 `--ak-content-max + --ak-toc-w + --ak-gutter` 的总宽（其它无目录页收窄到阅读列），右缘与有目录的页面对齐 |
+| 不出目录 | 首页恒 `toc-enabled = false`：右侧粘性目录与二级栏「本页目录」都不渲染；1120–1400 档二级栏因此整条收起，头图跟着少探一行 |
+| 命名空间小标 / 指示器 | `.ak-page-header__top:empty` 自动收起；编者真放了 `<indicator>` 会照常显示（要不要藏是站点的决定） |
+
+**页面这半**：结构 = `MediaWiki:首页` / `Template:首页` 输出的 `.mp-*`，**最外层标 `ak-not-prose`**（见 `01 §1.3`）；区块样式 = `Template:首页/styles.css`（TemplateStyles）；Hero 轮播（Swiper）与时钟 / 周常倒计时 / 资源开放状态由 Gadget 按页加载——皮肤不依赖它们，`.ak-countdown` `.ak-panel` `.ak-op-card` 等组件样式已在设计系统层。
+
+预览页里的「0. 页面级」那段 CSS 是**静态骨架的补丁**（预览没有「当前是首页」这个状态），选择器按预览骨架写（`.ak-main__inner` / `.ak-page-header__title`），与真皮肤的 DOM 不一致，不要照抄。
+
 ## 3.5 活动主题（Gadget / MediaWiki:Common.css）——头图 · 顶栏角饰 · 站标 · 主色
 
 现网大活换皮的做法（`ext.gadget.seventhStyle`）是改 `body` 背景大图、`#mw-head` 左右底图、`.mw-wiki-logo`、`#MenuSidebar > p` 渐变。新皮肤把这几个位置抽成 `tokens.css §2d` 的接口变量，活动 Gadget 只写变量、不碰选择器（完整列表见 `01-design-system.md §2.10`，可运行示例见 `preview/demo-theme.css`）：
