@@ -15,7 +15,7 @@ def img_uri(rel):
     if p.suffix == '.svg':   # 页脚徽章等矢量图：原样内联
         uri = 'data:image/svg+xml;base64,' + base64.b64encode(p.read_bytes()).decode()
         cache[rel] = uri; return uri
-    if rel.startswith('assets/keyart/'):   # 示例活动主题的头图 / 站标：整幅内联，不缩到 256（jpg 保持 jpg）
+    if rel.startswith('assets/keyart/') or p.suffix in ('.jpg', '.jpeg'):   # 示例活动主题的头图 / 站标、首页横幅（assets/mainpage/banner-*.jpg，已压到 960 宽）：整幅内联，不缩到 256（jpg 保持 jpg）
         mime = 'image/jpeg' if p.suffix in ('.jpg', '.jpeg') else 'image/png'
         uri = 'data:%s;base64,' % mime + base64.b64encode(p.read_bytes()).decode()
         cache[rel] = uri; return uri
@@ -58,16 +58,17 @@ for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全�
             amap = {r: img_uri('assets/' + r) for r in sorted(rels) if (prev / 'assets' / r).exists()}
             js = 'window.AKDS_ASSET_MAP = %s;\n%s' % (json.dumps(amap), js)
         return '<script>\n%s\n</script>' % js
-    html = re.sub(r'<script src="((?:\.\./src/|)[\w.-]+\.js)"></script>', repl_js, html)
+    html = re.sub(r'<script src="((?:\.\./src/|vendor/[\w./-]+/|)[\w.-]+\.js)"></script>', repl_js, html)   # vendor/：首页的 Swiper（preview/vendor/swiper/）也内联
     # images
-    html = re.sub(r'(src|href)="(assets/[^"]+\.(?:png|svg))"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)
+    html = re.sub(r'(src|href|data-img)="(assets/[^"]+\.(?:png|jpg|jpeg|svg))"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)   # data-img：首页 Hero 候选列表里给脚本换图用的横幅
+    html = re.sub(r'url\((assets/[^)"]+\.(?:png|jpg|jpeg|svg))\)', lambda m: 'url(%s)' % img_uri(m.group(1)), html)   # 行内 style 里的 url()：首页入口图标（mask-image 走自定义属性 --i）
     # cross links between the two pages → keep relative (both in dist)
     # theme default note: artifacts render in viewer theme; keep script default
     # artifact skeleton strips <html>/<body> tags → restore body class + set a product-like title
     html = html.replace('<body class="skin-akds">', '<body class="skin-akds"><script>document.body.classList.add("skin-akds");</script>')
-    html = html.replace('<title>AKDS · 明日方舟网页设计系统</title>', '<title>明日方舟网页设计系统 AKDS</title>').replace('<title>陈 - PRTS · 干员页样例</title>', '<title>干员页样例 · 陈</title>')
+    html = html.replace('<title>AKDS · 明日方舟网页设计系统</title>', '<title>明日方舟网页设计系统 AKDS</title>').replace('<title>陈 - PRTS · 干员页样例</title>', '<title>干员页样例 · 陈</title>').replace('<title>首页 - PRTS · 首页设计稿</title>', '<title>首页设计稿 · PRTS</title>')
     # cross-links between the two published artifacts
-    html = html.replace('href="operator.html"', 'href="https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2"').replace('href="index.html', 'href="https://claude.ai/code/artifact/f04aa56e-c8bb-4491-ae2c-7711f330d396')
+    html = html.replace('href="home.html"', 'href="https://claude.ai/code/artifact/4c4b164a-8459-43e4-8e81-a3df7d566618"').replace('href="operator.html"', 'href="https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2"').replace('href="index.html', 'href="https://claude.ai/code/artifact/f04aa56e-c8bb-4491-ae2c-7711f330d396')
     (dist / name).write_text(html, encoding='utf-8')
     print(name, '->', round((dist / name).stat().st_size / 1e6, 2), 'MB', 'images', len(cache), 'fonts inline/linked', font_stats['inline'], font_stats['linked'])
     font_stats['inline'] = font_stats['linked'] = 0
