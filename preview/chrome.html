@@ -187,11 +187,11 @@
         </li>
       </ul>
       <p>管理与编辑</p>
-      <ul><li><a href="#">最近更改</a></li><li><a href="#">编辑指南</a></li><li><a href="#">常用代码</a></li><li><a href="#">模板一览</a></li><li><a href="#">贡献分数</a></li><li><a href="#">收支一览</a></li><li><a href="#">特殊贡献</a></li></ul>
-      <p>Languages</p>
-      <ul><li><a id="switcher-ja">日本語</a></li><li><a id="switcher-en">English</a></li><li><a id="switcher-zh-cn">中文</a></li></ul>
-      <p id="vmsTB">工具</p>
-      <ul id="MSToolbox"><li><a href="#">链入页面</a></li><li><a href="#">相关更改</a></li><li><a href="#">上传文件</a></li><li><a href="#">特殊页面</a></li><li><a href="#">页面信息</a></li></ul>
+      <!-- 「特殊页面 / 上传文件」是工具箱里仅有的两条站点级链接：同 Citizen（moveUploadToSiteTools + addSiteTools）进侧栏站点导航而不是「更多」。
+           皮肤实现：从 TOOLBOX 拆出，在 #MenuSidebar 之后渲染成无标题门户 nav#p-site-tools（紧贴上一组，视觉上就是「管理与编辑」的延续；upload 仍由 MW 按权限决定是否输出）。 -->
+      <ul><li><a href="#">最近更改</a></li><li><a href="#">编辑指南</a></li><li><a href="#">常用代码</a></li><li><a href="#">模板一览</a></li><li><a href="#">贡献分数</a></li><li><a href="#">收支一览</a></li><li><a href="#">特殊贡献</a></li><li id="t-specialpages"><a href="#">特殊页面</a></li><li id="t-upload"><a href="#">上传文件</a></li></ul>
+      <!-- 现网 MenuSidebar 末尾的「Languages」组（三个 onclick 切语言的内联脚本链接）与「工具#vmsTB / #MSToolbox」组在新皮肤下都退役：
+           语言切换统一在页眉用户菜单「界面设置」（ULS，#p-user-interface-preferences）；工具箱整组搬进标题行动作簇的「更多」（#p-tb）。侧栏只剩站点导航。 -->
     </div>
     </div>
     <div class="ak-sidebar__foot">MediaWiki 1.43 · Skin: AKDS 0.1<br>Theme tokens: <code>--ak-*</code><br>侧栏：悬停分组可预览，点击/键盘展开并记忆</div>
