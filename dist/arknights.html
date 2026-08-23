@@ -1734,6 +1734,7 @@ table.diff td { padding: .3em .5em; }
 .ak-bilingual--row { flex-direction: row; align-items: baseline; gap: .5em; }
 
 /* A12. 双箭头 >> (transferarrow) */
+.ak-chevrons { white-space: nowrap; }   /* 动作链接整体不断行：CJK 任意字间都能断，「前往 »」折行时会被拆成「前 / 往 »」，箭头也可能单独掉到下一行 */
 .ak-chevrons::after { content: "»"; font-family: var(--ak-font-label); margin-left: .35em; transition: transform var(--ak-dur-fast); display: inline-block; }
 a.ak-chevrons:hover::after { transform: translateX(3px); }
 
@@ -2113,7 +2114,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 /* B17. Breaking-news 横幅（游戏内主界面）*/
 .ak-news { display: flex; align-items: stretch; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-sm); overflow: hidden; }
 .ak-news__label { background: var(--ak-red-700); color: #fff; padding: 6px 14px; font: 800 var(--ak-fs-xs)/1.4 var(--ak-font-display); letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; }   /* 矩形红块（不斜切） */
-.ak-news__text { padding: 6px 14px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ak-news__text { padding: 6px 14px; align-self: center; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }   /* 正文是普通行内流（不是 flex：否则文字节点 / <a> / <b> 各自成 item，手机上 white-space: normal 时会被拆成一列列换行）；min-width: 0 让它能缩到比内容窄，省略号才生效 */
 .ak-news__text a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 
 /* B18. 大标题横幅（页面 Hero，官网风：黑底 + 大拉丁字 + 青色横条） */
