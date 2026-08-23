@@ -214,6 +214,9 @@
 /* 分组菜单：.ak-menu（此时是 div）里若干 nav.ak-menu__group > .ak-menu__label + ul——MW 门户（#p-cactions / #p-tb …）原样塞进卡片时用；组之间一条分隔线 */
 .ak-menu__group > ul { margin: 0; padding: 0; list-style: none; }
 .ak-menu__group + .ak-menu__group { border-top: 1px solid var(--ak-border); margin-top: 4px; padding-top: 4px; }
+/* 卡片抬头（用户菜单的用户名）：粗体一行 + 底线；图标上青 */
+.ak-menu__head { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; font-weight: 700; font-size: var(--ak-fs-sm); border-bottom: 1px solid var(--ak-border); margin-bottom: 4px; }
+.ak-menu__head .ak-icon { width: 20px; height: 20px; flex: none; color: var(--ak-accent); }
 .ak-dropdown:not(.is-open) > .ak-menu { display: none; }
 .ak-dropdown > details > summary { list-style: none; cursor: pointer; }
 .ak-dropdown > details > summary::-webkit-details-marker { display: none; }

@@ -94,6 +94,12 @@ body.skin-akds { margin: 0; min-height: 100vh; display: flex; flex-direction: co
 .ak-header__user { display: inline-flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; }
 .ak-header__user:hover { --_fg: var(--ak-theme-accent); }   /* 走 .ak-btn 的 --_fg（下面 :visited 也读它），悬停变活动主色 */
 .ak-header__user .ak-avatar { --_s: 28px; border-color: var(--ak-chrome-line-strong); }
+/* 用户菜单卡片（#p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu.ak-header__user-card——用户名抬头 + 「界面设置」（ULS 语言）+ 「个人工具」两组门户。
+ * 颜色不用另写：.ak-header 内 --ak-bg-surface / --ak-border / --ak-fg 已重映射到 --ak-chrome-*，卡片自动是页眉配色 */
+.ak-header__user-menu > details[open] > .ak-header__user { --_fg: var(--ak-theme-accent); background: var(--ak-bg-hover); }
+.ak-header__user-card { min-width: 240px; top: calc(100% + 6px); padding: 0 0 6px; }
+.ak-header__user-card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
+.ak-header__user-card a:hover .ak-icon { color: var(--ak-fg); }
 .ak-header__notifications a:hover { color: var(--ak-theme-accent); }
 /* 页眉里的链接不分已访问：base.css 的 a:visited（紫）在黑底上发暗，用户名 / #p-personal / Echo 一律用自己的颜色 */
 .ak-header a:visited { color: inherit; }
