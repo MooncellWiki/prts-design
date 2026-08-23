@@ -820,9 +820,14 @@ pre, .mw-code, .mw-highlight pre {
 
 /* ─── Tables ────────────────────────────────────────────────────────────── */
 .mw-parser-output table { border-collapse: collapse; border-spacing: 0; }
+/* border-collapse 要写在 .wikitable 自己身上，不能只靠上面那条：MediaWiki 有一批核心 PHP 生成的
+ * .wikitable 不在 .mw-parser-output 里（Special:Version 的软件 / 接入点 / 扩展 / 库表最典型），
+ * 那里 border-collapse 退回 separate + border-spacing 2px，每个单元格四边的 1px 变成一个个独立
+ * 的小框、彼此还留 2px 缝，再叠上表格自身的外框——就是「一堆线框套外框」的样子。 */
 .wikitable {
   margin: var(--ak-space-4) 0; background: var(--ak-bg-surface); color: var(--ak-fg);
   border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); line-height: 1.5;
+  border-collapse: collapse; border-spacing: 0;
 }
 .wikitable > * > tr > th, .wikitable > * > tr > td { border: 1px solid var(--ak-border); padding: .45em .7em; vertical-align: middle; }
 .wikitable > * > tr > th { background: var(--ak-bg-surface-2); font-weight: 700; text-align: center; color: var(--ak-fg); }
@@ -853,7 +858,7 @@ pre, .mw-code, .mw-highlight pre {
 /* sticky header */
 .wikitable.ak-sticky-head > * > tr:first-child > th { position: sticky; top: var(--ak-header-h); z-index: 1; }
 /* Cargo / mw-datatable */
-.cargoTable, table.mw-datatable { border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); }
+.cargoTable, table.mw-datatable { border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); border-collapse: collapse; border-spacing: 0; }   /* 同上：mw-datatable 几乎只出现在特殊页面，即 .mw-parser-output 之外 */
 .cargoTable th, table.mw-datatable th { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: .4em .6em; }
 .cargoTable td, table.mw-datatable td { border: 1px solid var(--ak-border); padding: .4em .6em; }
 table.mw-datatable tr:hover td { background: var(--ak-bg-hover); }
