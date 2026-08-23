@@ -224,23 +224,52 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-page-header__top .mw-indicators { margin-left: auto; float: none; }
 .ak-page-header__ns { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }   /* 同 .ak-card__eyebrow：命名空间是不可点的装饰小标签，不上青 */
 .ak-page-header__title, .skin-akds .mw-body h1#firstHeading, .skin-akds #firstHeading {
-  font-family: var(--ak-font-body); font-size: var(--ak-fs-h1); font-weight: 800; line-height: 1.2; margin: 0 0 var(--ak-space-3);
+  font-family: var(--ak-font-body); font-size: var(--ak-fs-h1); font-weight: 800; line-height: 1.2; margin: 0;
   padding: 0 0 0 var(--ak-space-4); border: 0; border-left: var(--ak-bar-w-lg) solid var(--ak-accent); letter-spacing: .01em; overflow-wrap: anywhere; }
 .ak-page-header__title .ak-en, #firstHeading .ak-en { display: block; font-size: .5em; color: var(--ak-fg-muted); margin-top: 2px; letter-spacing: var(--ak-tracking-caps); }
 .ak-page-header__title .mw-page-title-namespace { color: var(--ak-fg-muted); font-weight: 600; }
 .ak-page-header__title .mw-page-title-separator { color: var(--ak-fg-subtle); }
-.ak-page-header__bar { display: flex; align-items: flex-end; gap: var(--ak-space-2); border-bottom: 1px solid var(--ak-border); flex-wrap: wrap; }
-.ak-page-header__bar #contentSub { margin: 0 0 6px; }
-/* Page tabs (#p-views / #p-namespaces) */
-.ak-page-tabs { display: flex; gap: 2px; margin: 0; padding: 0; list-style: none; }
+/* ── 标题行：h1 + 页面动作簇（Citizen 式）──
+ * 标题 flex:1，簇靠右、底线与标题青条底对齐；标题很长时整簇换到标题下方。不再有整条下划线页签——簇里没有「当前」要标。
+ * DOM 仍按 MW 菜单顺序（associated-pages → views → variants → 更多），显示顺序由 order 定：讨论 → 查看历史 → 编辑 / 查看源代码 → ★ → 变体 → 更多。 */
+.ak-page-header__row { display: flex; align-items: flex-end; gap: var(--ak-space-3) var(--ak-space-4); flex-wrap: wrap; margin-bottom: var(--ak-space-3); }
+.ak-page-header__row > .ak-page-header__title, .ak-page-header__row > #firstHeading { flex: 1 1 auto; min-width: 0; }
+.ak-page-tools { display: flex; align-items: center; gap: 4px; flex: none; max-width: 100%; margin-bottom: 2px; }
+.ak-page-tabs { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.ak-page-tabs li { margin: 0; }
 .ak-page-tabs li::before { display: none !important; }
-.ak-page-tabs li a { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; font-weight: 600; font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; position: relative; }
-.ak-page-tabs li a:hover { color: var(--ak-fg); background: var(--ak-bg-hover); text-decoration: none; }
-.ak-page-tabs li.selected a, .ak-page-tabs li a.is-active { color: var(--ak-accent); border-bottom-color: var(--ak-accent); }
-.ak-page-tabs li.selected a::before { content: ""; position: absolute; left: 0; top: 0; border-style: solid; border-width: 6px 6px 0 0; border-color: var(--ak-accent) transparent transparent; }
+/* 当前态（选中的命名空间页签「页面」、「阅读」）只留给读屏器——sr-only 而不是 display:none，accesskey 还在。
+ * 它们只在不是当前态时才是一个动作：讨论页上出现「页面」、历史 / diff 页上出现「阅读」（diff 页 body 仍是 action-view，皮肤要用 :has(.diff) 把 #ca-view 放回来）。 */
+.ak-page-tabs li.selected { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* 32px 幽灵按钮：1px 透明框（实底 / 细框变体只换颜色，不改尺寸） */
+.ak-page-tabs li a, .ak-page-tools__btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border: 1px solid transparent; box-sizing: border-box; font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1; color: var(--ak-fg-secondary); text-decoration: none; white-space: nowrap; cursor: pointer; transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-page-tabs li a:hover, .ak-page-tools__btn:hover { color: var(--ak-fg); background: var(--ak-bg-hover); text-decoration: none; }
+.ak-page-tabs li a:focus-visible, .ak-page-tools__btn:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ak-page-tabs .ak-icon, .ak-page-tools__btn .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
+.ak-page-tabs li a:hover .ak-icon, .ak-page-tools__btn:hover .ak-icon { color: var(--ak-fg); }
 .ak-page-tabs li.new a { color: var(--ak-link-new); }
-.ak-page-tabs--actions { margin-left: auto; }
-.ak-page-tabs .ak-icon { width: 16px; height: 16px; }
+/* 主动作：「编辑」是簇里唯一的实底（#ca-edit / #ca-ve-edit）；不可编辑时这一格是细框「查看源代码」——不上色，它不是一个「鼓励你做」的动作 */
+#ca-edit > a, #ca-ve-edit > a { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); }
+#ca-edit > a .ak-icon, #ca-ve-edit > a .ak-icon { color: inherit; }
+#ca-edit > a:hover, #ca-ve-edit > a:hover { background: var(--ak-accent-hover); border-color: var(--ak-accent-hover); color: var(--ak-accent-fg); }
+#ca-edit > a:hover .ak-icon, #ca-ve-edit > a:hover .ak-icon { color: inherit; }
+#ca-viewsource > a { border-color: var(--ak-border); color: var(--ak-fg); }
+/* ★ 监视 / 取消监视：纯图标，已监视黄（--ak-accent-2） */
+#ca-watch > a, #ca-unwatch > a { padding: 0 6px; }
+#ca-watch > a > span:not(.ak-icon), #ca-unwatch > a > span:not(.ak-icon) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+#ca-watch .ak-icon, #ca-unwatch .ak-icon { width: 20px; height: 20px; }
+#ca-unwatch .ak-icon { color: var(--ak-accent-2); }
+/* 簇内顺序 */
+#p-associated-pages { order: 1; } #p-views { order: 2; } .ak-page-tools__variants { order: 3; } .ak-page-tools__more { order: 4; }
+#ca-history { order: 1; } #ca-viewsource, #ca-edit, #ca-ve-edit { order: 2; } #ca-watch, #ca-unwatch { order: 3; }
+/* 「更多」：⋯ + 文字；卡片 = .ak-menu 里两组门户（操作 #p-cactions · 工具 #p-tb），右对齐贴按钮。工具箱里的 specialpages / upload 不进这里——同 Citizen 进侧栏站点导航 */
+.ak-page-tools__btn { padding: 0 10px 0 8px; }
+.ak-page-tools__more > details[open] > .ak-page-tools__btn { background: var(--ak-bg-hover); color: var(--ak-fg); }
+.ak-page-tools__card { min-width: 240px; top: calc(100% + 6px); padding: 6px 0; }
+.ak-page-tools__card .ak-menu__label { padding-top: 8px; }
+.ak-page-tools__card a { padding: 7px 14px; }
+.ak-page-tools__card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
+.ak-page-tools__card a:hover .ak-icon { color: var(--ak-fg); }
 /* Content sub / redirected from */
 .ak-page-header__sub { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin: 6px 0 0; }
 
@@ -537,7 +566,11 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
   .ak-local-nav { padding: 0 calc(var(--ak-gutter) - 8px); }
   .ak-local-nav__btn { padding: 0 8px; }
   .ak-toc { left: var(--ak-gutter); width: auto; }   /* 手机上目录浮层拉满可用宽度（左右各留一个 gutter，VitePress 的 left/right:16px） */
-  .ak-page-tabs li a { padding: 0 8px; font-size: var(--ak-fs-xs); }
+  /* 动作簇只留图标：文字进 sr-only（title / accesskey 不变），「更多」只剩 ⋯；标题很长时整簇换到标题下方、靠左 */
+  .ak-page-header__row { align-items: flex-start; }
+  .ak-page-tabs li a > span:not(.ak-icon), .ak-page-tools__btn > span:not(.ak-icon) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ak-page-tabs li a, .ak-page-tools__btn { padding: 0 7px; }
+  .ak-page-tools__card { max-width: calc(100vw - 2 * var(--ak-gutter)); }
   .ak-footer__inner { grid-template-columns: 1fr 1fr; gap: var(--ak-space-6); }
   .ak-footer__brand { grid-column: 1 / -1; }
   .ak-footer__bottom { flex-direction: column; align-items: flex-start; }
@@ -553,7 +586,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
  * 占住滚动条位置，页面不会左右抖一下；浮层自己 overflow-y:auto 照常内滚。iOS 上 overflow:hidden 拦不住触摸滚动，由 JS 额外拦 touchmove。 */
 :root.ak-scroll-lock { overflow: hidden; }
 @media print {
-  .ak-header, .ak-keyart, .ak-sidebar, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tabs, .ak-fab { display: none !important; }
+  .ak-header, .ak-keyart, .ak-sidebar, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tools, .ak-fab { display: none !important; }
   .ak-layout { display: block; padding: 0; }
   .ak-main { padding-right: 0; }
   .ak-body { border: 0; padding: 0; }

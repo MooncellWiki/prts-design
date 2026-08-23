@@ -211,6 +211,9 @@
 .ak-menu__item--danger { color: var(--ak-danger); }
 .ak-menu__sep { height: 1px; background: var(--ak-border); margin: 4px 0; }
 .ak-menu__label { padding: 6px 14px 2px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-subtle); }
+/* 分组菜单：.ak-menu（此时是 div）里若干 nav.ak-menu__group > .ak-menu__label + ul——MW 门户（#p-cactions / #p-tb …）原样塞进卡片时用；组之间一条分隔线 */
+.ak-menu__group > ul { margin: 0; padding: 0; list-style: none; }
+.ak-menu__group + .ak-menu__group { border-top: 1px solid var(--ak-border); margin-top: 4px; padding-top: 4px; }
 .ak-dropdown:not(.is-open) > .ak-menu { display: none; }
 .ak-dropdown > details > summary { list-style: none; cursor: pointer; }
 .ak-dropdown > details > summary::-webkit-details-marker { display: none; }

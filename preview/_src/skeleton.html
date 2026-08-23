@@ -56,6 +56,21 @@
   <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zm16 0h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></symbol>
   <symbol id="i-talk" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h16v11H9l-5 4z"/></symbol>
   <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></symbol>
+  <!-- 页面动作簇 / 「更多」菜单用（皮肤里对应 OOUI 图标：star / link / articleRedirect / recentChanges / printer / upload / specialPages / reload / quotes / table / wikiText / move / lock / trash） -->
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 3.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.8l6.1-.7z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.5 1.5M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.5-1.5"/></symbol>
+  <symbol id="i-linkin" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12h12m-4-4 4 4-4 4M18 4h3v16h-3"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 8V3h10v5M5 8h14a2 2 0 0 1 2 2v6h-4v-3H7v3H3v-6a2 2 0 0 1 2-2zm2 8v5h10v-5"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 16V4m-5 5 5-5 5 5M4 20h16"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 16h3l2-4V7H5v5h3zm9 0h3l2-4V7h-6v5h3z"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h18v14H3zm0 5h18M3 14h18M9 5v14"/></symbol>
+  <symbol id="i-source" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M8 4H5v16h3M16 4h3v16h-3M10 8l-2 4 2 4m4-8 2 4-2 4"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 2v20M2 12h20M9 5l3-3 3 3M9 19l3 3 3-3M5 9 2 12l3 3m14-6 3 3-3 3"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 11V8a5 5 0 0 1 10 0v3M4 11h16v10H4z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v6m4-6v6"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 8v5m0-9v1"/></symbol>
   <symbol id="i-warn" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3l10 18H2zm0 7v5m0 3v1"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
@@ -189,15 +204,56 @@
           {{crumb}}
           <div class="mw-indicators">{{indicators}}</div>
         </div>
-        <h1 id="firstHeading" class="ak-page-header__title">{{h1}}<span class="ak-en">{{h1en}}</span></h1>
-        <div class="ak-page-header__bar">
-          <ul class="ak-page-tabs" id="p-views">
-            <li class="selected"><a href="#"><svg class="ak-icon"><use href="#i-book"/></svg>阅读</a></li>
-            <li><a href="#"><svg class="ak-icon"><use href="#i-edit"/></svg>编辑</a></li>
-            <li><a href="#"><svg class="ak-icon"><use href="#i-history"/></svg>历史</a></li>
-            <li><a href="#"><svg class="ak-icon"><use href="#i-talk"/></svg>讨论</a></li>
-          </ul>
-          <ul class="ak-page-tabs ak-page-tabs--actions">{{actions}}<li><a href="#"><svg class="ak-icon"><use href="#i-more"/></svg>更多</a></li></ul>
+        <!-- ═══ 标题行 ═══ h1 + 页面动作簇同一行（Citizen 式），不再有整条下划线页签。
+             簇 = MW 的菜单按原顺序输出：associated-pages（页面 / 讨论）· views（阅读 / 历史 / 编辑 / ★）· [variants] · 更多（actions + TOOLBOX）；
+             显示顺序由 CSS order 定：讨论 → 历史 → 编辑 → ★ → 更多。
+             li.selected（当前命名空间页签「页面」、「阅读」）只留给读屏器：它们只在不是当前态时才是一个动作——讨论页上显示「页面」当返回、历史 / diff 页上显示「阅读」当返回。
+             「编辑」是簇里唯一的主色实底（#ca-edit / #ca-ve-edit）；不可编辑时这一格是细框「查看源代码」（#ca-viewsource）。
+             「更多」= .ak-menu 卡片里两组门户：操作 #p-cactions · 工具 #p-tb（整个工具箱从侧栏搬来，id 不变，addPortletLink('p-tb') 照常）。
+             工具箱里的「特殊页面 / 上传文件」不进这里——它们是站点级的，同 Citizen 放进侧栏站点导航（见侧栏「管理与编辑」末尾）。
+             桌面带「更多」二字；<640 只留 ⋯，整簇只留图标（文字进 sr-only，title / accesskey 不变）。 -->
+        <div class="ak-page-header__row">
+          <h1 id="firstHeading" class="ak-page-header__title">{{h1}}<span class="ak-en">{{h1en}}</span></h1>
+          <div class="ak-page-tools" id="ak-page-tools">
+            <ul class="ak-page-tabs" id="p-associated-pages">
+              <li class="selected" id="ca-nstab-main"><a href="#" title="查看内容页面"><svg class="ak-icon"><use href="#i-book"/></svg><span>页面</span></a></li>
+              <li id="ca-talk"><a href="#" title="有关内容页面的讨论"><svg class="ak-icon"><use href="#i-talk"/></svg><span>讨论</span></a></li>
+            </ul>
+            <ul class="ak-page-tabs" id="p-views">
+              <li class="selected" id="ca-view"><a href="#"><svg class="ak-icon"><use href="#i-book"/></svg><span>阅读</span></a></li>
+              <li id="ca-history"><a href="#" title="该页面过去的修订"><svg class="ak-icon"><use href="#i-history"/></svg><span>查看历史</span></a></li>
+              <li id="ca-edit"><a href="#" title="编辑本页面"><svg class="ak-icon"><use href="#i-edit"/></svg><span>编辑</span></a></li>
+              {{actions}}
+            </ul>
+            <div class="ak-dropdown ak-page-tools__more">
+              <details>
+                <summary class="ak-page-tools__btn" title="更多"><svg class="ak-icon"><use href="#i-more"/></svg><span>更多</span></summary>
+                <div class="ak-menu ak-menu--right ak-page-tools__card">
+                  <nav class="ak-menu__group" id="p-cactions" aria-label="操作">
+                    <div class="ak-menu__label">操作</div>
+                    <ul>
+                      <li id="ca-move"><a href="#"><svg class="ak-icon"><use href="#i-move"/></svg><span>移动</span></a></li>
+                      <li id="ca-protect"><a href="#"><svg class="ak-icon"><use href="#i-lock"/></svg><span>保护</span></a></li>
+                      <li id="ca-delete"><a href="#"><svg class="ak-icon"><use href="#i-trash"/></svg><span>删除</span></a></li>
+                      <li id="ca-purge"><a href="#"><svg class="ak-icon"><use href="#i-refresh"/></svg><span>刷新</span></a></li>
+                    </ul>
+                  </nav>
+                  <nav class="ak-menu__group" id="p-tb" aria-label="工具">
+                    <div class="ak-menu__label">工具</div>
+                    <ul>
+                      <li id="t-whatlinkshere"><a href="#"><svg class="ak-icon"><use href="#i-linkin"/></svg><span>链入页面</span></a></li>
+                      <li id="t-recentchangeslinked"><a href="#"><svg class="ak-icon"><use href="#i-list"/></svg><span>相关更改</span></a></li>
+                      <li id="t-permalink"><a href="#"><svg class="ak-icon"><use href="#i-link"/></svg><span>固定链接</span></a></li>
+                      <li id="t-info"><a href="#"><svg class="ak-icon"><use href="#i-info"/></svg><span>页面信息</span></a></li>
+                      <li id="t-cargopagevalueslink"><a href="#"><svg class="ak-icon"><use href="#i-table"/></svg><span>Cargo 数据</span></a></li>
+                      <li id="t-cite"><a href="#"><svg class="ak-icon"><use href="#i-quote"/></svg><span>引用此页</span></a></li>
+                      <li id="t-print"><a href="#"><svg class="ak-icon"><use href="#i-print"/></svg><span>打印版本</span></a></li>
+                    </ul>
+                  </nav>
+                </div>
+              </details>
+            </div>
+          </div>
         </div>
       </header>
 

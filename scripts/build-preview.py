@@ -11,7 +11,7 @@
     crumb: 首页 > PRTS:皮肤 > 设计系统 > 通用组件    面包屑（最后一项 = 当前页）
     h1: 通用组件 / h1en: Core components              页面标题 + 英文副题
     indicators: <span …>          （可选）页头右上角指示器 HTML
-    actions: <li>…</li>           （可选）页面标签右侧额外动作
+    actions: <li>…</li>           （可选）动作簇 #p-views 里追加的项（如 li#ca-watch ★ 监视）
     lastmod: 2026年8月19日 (三) 22:30
     cats: PRTS 皮肤, 设计系统       底部分类（逗号分隔）；hiddencats: …（可选）隐藏分类
     -->
