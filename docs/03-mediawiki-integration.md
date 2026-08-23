@@ -80,7 +80,9 @@ skins/AKDS/
    button.ak-header__search-toggle（≤639 图标）
    input.ak-nav-cb#ak-nav-toggle                ← <1120 工具卡片开关（纯 CSS）；必须排在下面两个之前
    .ak-header__screen#ak-nav-screen             ← 桌面 display:contents；<1120 = ≡ 拉下、贴主行右下沿的卡片（页眉不放主导航：MediaWiki:Sidebar 首个 portlet 只在侧栏渲染成 .ak-portlet--grid）
-      .ak-header__tools [.ak-header__tool > .ak-header__tool-label + .ak-theme-toggle][{{data-portlets.data-notifications}}][{{data-portlets.data-user-menu}} = .ak-dropdown#p-personal]
+      .ak-header__tools [.ak-header__tool > .ak-header__tool-label + .ak-theme-toggle][{{data-portlets.data-notifications}}]
+         .ak-dropdown.ak-header__user-menu > details > summary.ak-header__user + .ak-menu.ak-header__user-card( .ak-menu__head{{username}} nav.ak-menu__group#p-user-interface-preferences{{data-user-interface-preferences}}「界面设置」 nav.ak-menu__group#p-personal{{data-user-menu}}「个人工具」 )
+            ← 语言切换（ULS）在「界面设置」组里，侧栏不再渲染 Languages
    label.ak-header__burger[for=ak-nav-toggle]   ← 三条线 → ×，仅 <1120 显示；主行不放侧栏抽屉的入口（那个在二级栏）
    .ak-local-nav   ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）
 div.ak-keyart > .ak-keyart__inner   ← 头图带：恒输出，--ak-keyart-h 为 0 时不占位；活动主题设 --ak-keyart-image / -h 即出现（§3.5）；画从页面顶端铺起、页眉玻璃压在它上面（CSS 负外边距，DOM 顺序不变）
@@ -89,8 +91,16 @@ div.ak-keyart > .ak-keyart__inner   ← 头图带：恒输出，--ak-keyart-h �
 <div class="ak-layout">
    aside.ak-sidebar {{#data-portlets-sidebar}} .ak-portlet(.ak-portlet--grid for first) …
    main.ak-main#content        ← position:relative + 右内边距预留目录导轨（.ak-layout 只有侧栏/主列两列）
-      header.ak-page-header  [breadcrumb from {{html-subtitle}}] {{html-indicators}} h1#firstHeading {{{html-title}}}
-         .ak-page-header__bar  ul.ak-page-tabs{{data-portlets.data-views}} ul.ak-page-tabs--actions{{data-portlets.data-actions}}
+      header.ak-page-header  .ak-page-header__top( [breadcrumb from {{html-subtitle}}] {{html-indicators}} )
+         .ak-page-header__row  h1#firstHeading {{{html-title}}} + .ak-page-tools   ← 标题行：h1 + 页面动作簇（Citizen 式，见 02 §L2「页面动作簇」）
+            ul.ak-page-tabs#p-associated-pages{{data-portlets.data-associated-pages}}  ul.ak-page-tabs#p-views{{data-portlets.data-views}}（watch / unwatch 从 actions 搬进 views）  [.ak-page-tools__variants{{data-variants}}]
+            .ak-page-tools__more > details > summary.ak-page-tools__btn「⋯ 更多」+ .ak-menu.ak-page-tools__card(
+               nav.ak-menu__group#p-cactions{{data-actions}}  nav.ak-menu__group#p-tb{{data-toolbox}} )
+               ← 工具箱不再进侧栏：像 Citizen `SkinCitizen::extractPageToolsFromSidebar()` 那样从 data-portlets-sidebar.array-portlets-rest 里按 id `p-tb` 拆出交给 PageTools。
+                 其中 specialpages / upload 两项是站点级的，不进「更多」——同 Citizen（SkinHooks::moveUploadToSiteTools() + addSiteTools()）进侧栏站点导航：
+                 在 SidebarBeforeOutput 里从 $sidebar['TOOLBOX'] 取出（upload 由 MW 按权限决定是否存在，取不到就不渲染），MenuSidebar 模式渲染成 #MenuSidebar 之后的无标题门户 nav#p-site-tools
+                 （紧贴上一组，视觉上是「管理与编辑」的延续），MediaWiki:Sidebar 模式追加到首个门户。
+                 `$wgArknightsShowPageTools` 只控制 views / actions 的可见性，「更多」里的工具箱不受它影响（同 Citizen has-overflow 独立于 is-visible）
       aside.ak-toc#ak-toc      ← 目录：DOM 上属于页面、紧跟标题（≥1400 抬进右侧导轨，<1400 变成二级栏拉下的浮层）
          a.ak-toc__top「回到顶部」（仅 <1400）
          .ak-toc__inner  .ak-toc__title#ak-toc-label + .ak-toc__progress > i + ul.ak-toc__list[data-toc] ← 由 data-toc 或 skin.js 生成
@@ -101,7 +111,7 @@ div.ak-keyart > .ak-keyart__inner   ← 头图带：恒输出，--ak-keyart-h �
    .ak-footer__inner   .ak-footer__brand | .ak-footer__col > h4{{msg-akds-footer-about}} + ul#footer-places {{#data-footer.data-places}}{{#array-items}}
    .ak-footer__bottom  .ak-footer__bottom-text | ul.ak-footer__icons#footer-icons {{#data-footer.data-icons}}{{#array-items}} li#footer-copyrightico / -poweredbyico / …
 ```
-Portlet 渲染用 `Skin::getPortletsTemplateData()` 输出的 `html-items`（只含 `<li>`，mustache 负责包 `<ul>`），外层类由 mustache 加；`li.selected` 与 CSS `.ak-page-tabs li.selected` 对应（MW 原生类名）。
+Portlet 渲染用 `Skin::getPortletsTemplateData()` 输出的 `html-items`（只含 `<li>`，mustache 负责包 `<ul>`），外层类由 mustache 加；`li.selected`（MW 原生类名）在动作簇里只留给读屏器（sr-only，不是 `display:none`——accesskey 仍可用）：当前命名空间页签「页面」与「阅读」只在不是当前态时才是动作（讨论页上的「页面」、历史页上的「阅读」）；diff / oldid 页 body 仍是 `action-view`，要像 Citizen 那样用 `.action-view:has(.diff, .mw-revision) #ca-view` 把「阅读」放回来。views / associated-pages 核心不给 `icon` 键，图标要皮肤自己映射（talk → speechBubbles、history → history、edit / ve-edit → edit、viewsource → wikiText 或 editLock、view → eye；讨论页上的命名空间页签换 arrowPrevious 表示返回）。
 
 **注意 `data-footer.*` 与门户不同**：核心 `SkinComponentFooter::formatFooterDataForCurrentSpec()` 会剥掉 `html-items` / `label` / `class`，只留下 `id`、`className`、`array-items[{id, html}]`（见 [Manual:SkinMustache.php#DataFooter](https://www.mediawiki.org/wiki/Manual:SkinMustache.php)），所以页脚三处必须像 Vector `Footer__row.mustache` 一样写成 `{{#array-items}}<li id="{{id}}">{{{html}}}</li>{{/array-items}}`，用 `{{{html-items}}}` 会渲染成空。
 
@@ -113,6 +123,8 @@ Portlet 渲染用 `Skin::getPortletsTemplateData()` 输出的 `html-items`（只
 div#MenuSidebar
   ul > li > a                       ← 无标题的首组（首页 / 复制短链接 / 支持我们 …）
   p  分组标题（热门页面 / 菜单 / 探索 / 管理与编辑 / Languages / 工具#vmsTB）
+     ← 末尾两组在新皮肤下退役：Languages（三个 onclick 内联脚本链接）→ 语言切换统一在页眉用户菜单「界面设置」（ULS，#p-user-interface-preferences）；
+       工具#vmsTB / #MSToolbox → 工具箱整组在标题行动作簇的「更多」里（#p-tb）。建议从 MenuSidebar wikitext 里删掉这两组
   ul > li > b 分组项 + ul > li > a  ← '''粗体''' 表示有子级；子级 CSS 悬停飞出（left:100%）
   …任意深度（现网 CSS 对 li ul 递归飞出）
 ```
@@ -121,7 +133,7 @@ AKDS 的适配方式（无需改动现网 wikitext / 站点脚本即可工作）
 
 | 层 | 处理 |
 |---|---|
-| mustache | `.ak-sidebar > .ak-sidebar__panel#mw-panel` 保留 `#mw-panel` id 与 `#p-tb > ul`，现网内联脚本可原样运行 |
+| mustache | `.ak-sidebar > .ak-sidebar__panel#mw-panel` 保留 `#mw-panel` id；`#p-tb > ul` 仍在文档里但**不在侧栏**（在页面动作簇的「更多」卡片里，见 §3 结构图），现网内联脚本按 `#p-tb ul` 找照样找得到；wikitext 里的「工具#vmsTB」组 / `#MSToolbox` 可以从 MenuSidebar 删掉 |
 | skin.css | `.ak-sidebar p` 与 `.ak-portlet__title` 同一套分组标题样式；`.ak-sidebar li > b` 与 `li > a` 同一套行样式；`li > ul` 缩进 + 导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页 |
 | sidebar-tree.js | 对 `.ak-sidebar` 内所有 `li > ul` 幂等增强（MutationObserver 兼容晚注入）：`li.ak-tree__branch` + `button.ak-tree__toggle[aria-expanded][aria-controls][aria-labelledby]`；点击非链接标签整行可切换；`localStorage['akds-sidebar-tree']` 记忆（键 = 分组标题/标签路径，门户为 `portlet:<id>`）；含 `a.selflink / li.is-active / href==location` 的分支自动展开并加 `.is-current-path`；← → 键盘展开/收起；桌面 hover+fine ≥1120px 悬停折叠分支 → 右侧 `.ak-flyout` 预览（`position:fixed`，不受侧栏 `overflow` 裁切；点击即行内展开并记忆） |
 

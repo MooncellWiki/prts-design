@@ -300,7 +300,7 @@ src/tokens.css       令牌 + 主题 + Codex 桥接（必须最先加载）
 src/base.css         MW 内容样式（.mw-parser-output、wikitable、toc、tabber、表单、diff…）
 src/components.css   通用组件（.ak-btn/.ak-tag/.ak-card/.ak-panel/.ak-tabs/.ak-message/…）
 src/arknights.css    方舟装饰 + 游戏数据组件（.ak-rarity/.ak-op-card/.ak-skill/…）
-src/skin.css         皮肤骨架（页眉/侧栏/页面标签/TOC/页脚/搜索面板/响应式）
+src/skin.css         皮肤骨架（页眉/侧栏/页面动作簇/TOC/页脚/搜索面板/响应式）
 src/search-palette.js 悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
 src/sidebar-tree.js  侧栏多层导航
 src/utilities.css    工具类
