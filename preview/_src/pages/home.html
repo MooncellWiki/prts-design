@@ -13,7 +13,7 @@ cats: 首页
 <style>
 /* ═══════════════════════════════════════════════════════════════════════════
    首页 · Main page — 信息结构取自 prts.wiki 现网首页（2026-08-23 抓取）：
-   轮播（7 张：活动 4 + 寻访 3）→ 12 个入口 → 今日信息（资源收集 9 关 + 时钟 / 倒计时 / 网页活动）→ 亮点干员（生日 / 新增 / 凭证兑换 / 时装 / 模组）→ 近期新增（关卡 / 家具）→ 网站信息。
+   轮播（7 张：活动 4 + 寻访 3）+ 进行中的网页活动列表 → 12 个入口 → 今日信息（资源收集 9 关 + 时钟 / 倒计时 / 补充说明）→ 亮点干员（生日 / 新增 / 凭证兑换 / 时装 / 模组）→ 近期新增（关卡 / 家具）→ 网站信息。
    这里的一切都是「页面自己的东西」：结构 = MediaWiki:首页 的 wikitext（模板输出下面这些 .mp-* 结构），样式 = 本 <style>（生产环境放 Template:首页/styles.css，TemplateStyles）；
    皮肤不为首页做任何特殊处理。唯一够不到正文的几条——去标题 / 去目录 / 去白纸——写在开头「0. 页面级」段，生产环境搬进 MediaWiki:Common.css 并加 body.page-首页 前缀。
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -98,9 +98,27 @@ cats: 首页
 .mp-hero__btn .on-play, .mp-hero__btn[aria-pressed="true"] .on-pause { display: none; }
 .mp-hero__btn[aria-pressed="true"] .on-play { display: block; }
 .mp-hero.is-stopped .mp-hero__list > li.is-active::after { opacity: .45; }   /* 手动暂停：进度条压暗，表示「停在这里」 */
-/* 横幅下的通告条（游戏主界面 breaking-news 横幅）：与 Hero 同一块黑，只隔一条线 */
-.mp-hero + .ak-news { border: 1px solid var(--ak-border); border-top: 0; }
-.mp-hero + .ak-news .ak-news__label { white-space: nowrap; }
+/* 进行中的网页活动（现网「尚有正在进行中的网页活动！」折叠块）：Hero 黑块的第三行、跨两列，继承 Hero 的令牌重映射。
+ *  不用 .ak-news——那是游戏主界面的单条滚动横幅，天然只装一条；网页活动经常同时有两三个（周年庆更多），多条要么轮播要么换行。
+ *  这里是**列表**：一条一行、整行是链接（名称 / 起止 / 倒计时 / ›），红标签跨所有行；1 条时高度与单行横幅一样，N 条就 N 行，不折叠（现网折叠是段落式噪音的结果，不是信息需要藏）。
+ *  行内只放字段、不放句子（「网页活动」「进行中」标签已说、「将于…结束」是套话），所以手机上一行也放得下——去掉的是冗余词，不是换行。
+ *  倒计时与幻灯片同一枚 .ak-countdown[data-until]（脚本已在算），同一页同一种时限只用一种表达；绝对起止 <640 隐藏。无活动时模板不输出整块。 */
+.mp-hero__events { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); border-top: 1px solid #2f3133; }
+.mp-events__label { display: flex; align-items: center; justify-content: center; margin: 0; padding: 6px 14px; border: 0; background: var(--ak-red-700); color: #fff; font: 800 var(--ak-fs-xs)/1.4 var(--ak-font-display); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }   /* 同 .ak-news__label 的矩形红块；h2 只为结构，去掉正文标题样式 */
+.mp-events { display: flex; flex-direction: column; min-width: 0; }
+.mp-events > li + li { border-top: 1px solid #2f3133; }
+.mp-events__item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 16px; align-items: center; box-sizing: border-box; min-height: 36px; padding: 3px 10px 3px 14px; color: var(--ak-fg); text-decoration: none; }
+.mp-events__item:hover { background: var(--ak-bg-hover); color: #fff; text-decoration: none; }
+.mp-events__item:hover .mp-events__name { text-decoration: underline; text-underline-offset: 3px; }
+.mp-events__item:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }   /* 贴边的行：内缩，同候选列表项 */
+.mp-events__name { font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mp-events__time { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: rgba(255,255,255,.6); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mp-events .ak-countdown { gap: 4px; }
+.mp-events .ak-countdown > span { min-width: 34px; padding: 2px 4px; }   /* 比幻灯片里的小一号：行高 36px 档 */
+.mp-events .ak-countdown > span > b { font-size: var(--ak-fs-sm); }
+.mp-events .ak-countdown > span > small { font-size: 8px; line-height: 1.2; }
+.mp-events__item > .ak-icon { width: 16px; height: 16px; color: rgba(255,255,255,.5); transition: transform var(--ak-dur-fast); }
+.mp-events__item:hover > .ak-icon { transform: translateX(3px); color: #fff; }   /* 同 .ak-chevrons 的悬停右移 */
 
 /* ── 3. 入口网格：12 个（现网 mpbutton）——主题色面 + 白线稿图标（亮色反相），悬停黑白反转（游戏 btn_on / off）── */
 .mp-nav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: var(--ak-space-6); }
@@ -261,8 +279,11 @@ cats: 首页
   .mp-nav__zh { font-size: var(--ak-fs-xs); }
   .mp-nav__en { display: none; }
   .mp-hero__caption { grid-template-columns: 1fr; }
-  .mp-hero + .ak-news .ak-news__text { white-space: normal; line-height: 1.5; padding: 6px 10px; }   /* 手机上通告正文折两行，别把「前往」裁掉 */
-  .mp-hero + .ak-news .ak-news__label { padding: 6px 10px; }
+  .mp-hero__events { grid-template-columns: 1fr; }   /* 红标签变顶条，每条活动仍是一行：名称 + 倒计时 + › */
+  .mp-events__label { justify-content: flex-start; padding: 4px 10px; }
+  .mp-events > li:first-child { border-top: 1px solid #2f3133; }
+  .mp-events__item { gap: 10px; padding: 6px 8px 6px 10px; min-height: 40px; }
+  .mp-events__time { display: none; }
   .mp-hero__cta { justify-content: flex-start; }
   .mp-section { margin-top: var(--ak-space-8); }
   .mp-site { grid-template-columns: 1fr; }
@@ -378,9 +399,17 @@ cats: 首页
       <button type="button" class="mp-hero__btn" id="mp-hero-pause" aria-pressed="false" aria-label="暂停自动轮播"><svg class="ak-icon on-pause"><use href="#i-pause"/></svg><svg class="ak-icon on-play"><use href="#i-play"/></svg></button>
     </div>
   </div>
+  <!-- 进行中的网页活动（现网「尚有正在进行中的网页活动！」折叠块）：一条一行、整行是链接（去 wiki 活动页，官网入口在活动页里）。
+       生产环境：一条活动一次 {{网页活动|name=|start=|end=|page=}} 输出一个 <li>，截止写进 data-until，外层由 Template:首页 固定输出；没有活动时整块不输出，不显示「暂无」 -->
+  <div class="mp-hero__events">
+    <h2 class="mp-events__label"><span class="ak-sr-only">进行中的网页活动</span><span aria-hidden="true">Web Event</span></h2>
+    <ul class="mp-events">
+      <li><a class="mp-events__item" href="#"><span class="mp-events__name">信使的工作</span><span class="mp-events__time">08.12 10:00 — 08.25 03:59</span><span class="ak-countdown" data-until="2026-08-25T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></li>
+      <li><a class="mp-events__item" href="#"><span class="mp-events__name">罗德岛录像带</span><span class="mp-events__time">08.20 10:00 — 08.30 03:59</span><span class="ak-countdown" data-until="2026-08-30T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></li>
+      <li><a class="mp-events__item" href="#"><span class="mp-events__name">博士的周年答卷</span><span class="mp-events__time">08.08 16:00 — 09.07 03:59</span><span class="ak-countdown" data-until="2026-09-07T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></li>
+    </ul>
+  </div>
 </section>
-<!-- 通告条：现网「尚有正在进行中的网页活动！」折叠块 → 游戏主界面 breaking-news 横幅 -->
-<div class="ak-news" role="status"><span class="ak-news__label">Web Event</span><span class="ak-news__text">网页活动『<a href="#">信使的工作</a>』进行中 · 将于 <b>8月25日 03:59</b> 结束（剩 1 天 14 小时）&nbsp;<a class="ak-chevrons" href="#">前往</a></span></div>
 
 <!-- ═══ 2. 入口网格（现网 12 个 mpbutton，图标同一套）═══ -->
 <nav class="mp-nav" aria-label="主要入口">
@@ -433,11 +462,10 @@ cats: 首页
         <div class="ak-fs-xs ak-fg-muted ak-mt-2">含特勤任务 · 剿灭合成玉上限同时重置</div>
       </div>
     </div>
-    <!-- 补充说明：小编维护的临时信息（网页活动 / 维护 / 活动提醒 …），通栏、一条一行；现网这些塞在时钟那块的折叠条里 -->
+    <!-- 补充说明：小编维护的临时信息（维护 / 活动提醒 …），通栏、一条一行；现网这些塞在时钟那块的折叠条里。网页活动不在这里——它在 Hero 下的列表，同一条信息只出现一次 -->
     <div class="mp-today__notes">
       <span class="ak-overline mp-label">补充说明</span>
       <ul class="mp-notes">
-        <li><svg class="ak-icon"><use href="#i-globe"/></svg><span>网页活动『<a href="#">信使的工作</a>』进行中，活动页面可领取奖励。</span><span class="mp-notes__meta">将于 <b>8月25日 03:59</b> 结束</span></li>
         <li><svg class="ak-icon"><use href="#i-info"/></svg><span>本周<a href="#">干员轮换卡池 191</a>：鸿雪 / 逻各斯 / 撷英调香师 / 晓歌 / 铎铃 概率提升。</span><span class="mp-notes__meta"><b>8月27日 03:59</b> 结束</span></li>
       </ul>
     </div>
@@ -610,7 +638,6 @@ cats: 首页
   <symbol id="i-bilibili" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3l2.5 2.5M17 3l-2.5 2.5M6 6h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3zm3 5v3m6-3v3"/></symbol>
   <symbol id="i-wechat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 4C6.1 4 3 6.5 3 9.6c0 1.7.9 3.2 2.4 4.2L4.8 16l2.5-1.3c.5.1 1 .2 1.5.2M15 9.5c3.3 0 6 2.1 6 4.7 0 1.4-.8 2.7-2 3.6l.5 2-2.2-1.2c-.7.2-1.5.3-2.3.3-3.3 0-6-2.1-6-4.7s2.7-4.7 6-4.7z"/><path fill="currentColor" d="M8 8.5a1 1 0 1 0 0 .01M11.5 8.5a1 1 0 1 0 0 .01M13.5 13.5a1 1 0 1 0 0 .01M17 13.5a1 1 0 1 0 0 .01"/></symbol>
   <symbol id="i-alipay" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm1 6h8M12 6v3m-3 4c2 3.5 5.5 5 9 5.5M15 13c-1 2.6-3.6 4.4-7 5"/></symbol>
-  <symbol id="i-globe" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 0c-3 3-3 15 0 18m0-18c3 3 3 15 0 18M3 12h18M5 7.5h14M5 16.5h14"/></symbol>
   <symbol id="i-bolt" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
 </svg>
 
