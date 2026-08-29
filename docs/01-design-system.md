@@ -307,11 +307,12 @@ src/base.css         MW 内容样式（.mw-parser-output、wikitable、toc、tab
 src/components.css   通用组件（.ak-btn/.ak-tag/.ak-card/.ak-panel/.ak-tabs/.ak-message/…）
 src/arknights.css    方舟装饰 + 游戏数据组件（.ak-rarity/.ak-op-card/.ak-skill/…）
 src/skin.css         皮肤骨架（页眉/侧栏/页面动作簇/TOC/页脚/搜索面板/响应式）
-src/charinfo.css     干员页「干员信息」舞台 = 现网 Widget:CharinfoV2 的皮肤版样式表（同一套 DOM / 类名，只换皮；Widget 自己链，不进皮肤模块，见 03 §3.6）
+src/charinfo.css     干员页舞台的皮肤化样式表草案（对现网 Widget:CharinfoV2 同一套 DOM 换皮；预览页目前不接入——舞台先原样跑现网 CSS / JS，见 03 §3.6）
 src/search-palette.js 悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
 src/sidebar-tree.js  侧栏多层导航
 src/utilities.css    工具类
 src/index.css        本地预览汇总入口
+preview/vendor/      第三方原样：swiper/（首页轮播）· charinfo/（现网 Widget:CharinfoV2 的 CSS / JS / 字体 / HUD 图标快照，scripts/fetch-charinfo.py 钉版本抓取，见其 NOTICE.md）· jquery/（3.7.1，同 MW 1.43，charinfo 脚本要）
 preview/_src/        预览站源：skeleton.html（皮肤骨架，只写一份）+ pages/{home,index,chrome,mediawiki,components,arknights,operator}.html（各页 front matter + 正文）
 preview/*.html       生成物（scripts/build-preview.py）：home 首页设计稿（信息结构取自现网首页；区块样式在页面自己的 <style> = TemplateStyles，「0. 页面级」那段是静态骨架的补丁——皮肤在首页的收敛行为已由 Skin:Arknights 内置，见 03 §3.4）· index 基础（理念 / 色彩 / 字体 / 装饰）· chrome 皮肤骨架 · mediawiki 内容样式 · components 通用组件 · arknights 方舟组件 · operator 干员页整页样例（陈；现网「陈」页面 19 节一节不少，顶部直接复用现网 {{CharinfoV2}} 组件，见 03 §3.6）
 ```

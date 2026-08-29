@@ -231,12 +231,12 @@ $wgFooterIcons = [
 
 ## 3.6 干员页（现网模板 → 组件；`{{CharinfoV2}}` 直接复用）
 
-设计稿 `preview/operator.html`（陈）。现网「陈」页面的 wikitext 是 19 节模板调用——`{{异格干员}}` `{{CharinfoV2}}` `{{干员获得方式}}` `{{属性}}` `{{干员攻击范围}}` `{{天赋列表3}}` `{{潜能提升}}` `{{技能}}` `{{后勤技能}}` `{{精英化材料}}` `{{技能升级材料}}` `{{模组}}` `{{相关道具}}` `{{人员档案}}` `{{:陈/语音记录}}` `{{干员密录}}` `{{悖论模拟}}` `{{干员异格任务}}` `{{spineId}}` `{{干员导航}}`。新皮肤下**干员页的 wikitext 一字不改，章节一节不少**：改的是各模板输出的 HTML（换成设计系统组件）与 Widget 的样式表。
+设计稿 `preview/operator.html`（陈）。现网「陈」页面的 wikitext 是 19 节模板调用——`{{异格干员}}` `{{CharinfoV2}}` `{{干员获得方式}}` `{{属性}}` `{{干员攻击范围}}` `{{天赋列表3}}` `{{潜能提升}}` `{{技能}}` `{{后勤技能}}` `{{精英化材料}}` `{{技能升级材料}}` `{{模组}}` `{{相关道具}}` `{{人员档案}}` `{{:陈/语音记录}}` `{{干员密录}}` `{{悖论模拟}}` `{{干员异格任务}}` `{{spineId}}` `{{干员导航}}`。新皮肤下**干员页的 wikitext 一字不改，章节一节不少**：改的是各模板输出的 HTML（换成设计系统组件）；`{{CharinfoV2}}` 这块连样式表都先不动——原样跑现网 Widget，皮肤只补接缝。
 
 | 现网（wikitext → 输出） | 新结构 | 说明 |
 |---|---|---|
 | `{{异格干员}}` → `.alter-operator-list` wikitable | `.op-alter`：黑标「异格一览」+ 原型 / 异格 `.ak-op-card--sm`（当前页 `.is-current`）+ `<details>` 说明 | 现网的 popup 说明改成就地展开 |
-| `{{CharinfoV2}}` → `{{#widget:charinfoV2}}` | **不动**：`.charinfo-container > #charinfo-wrapper` 的 DOM、`charinfo_*.js`、模板参数全部照旧；只把 Widget 里两条 `<link charinfo_*.min.css>` 换成 `src/charinfo.css` | 见下「CharinfoV2 怎么复用」 |
+| `{{CharinfoV2}}` → `{{#widget:charinfoV2}}` | **原样**：DOM、`charinfo_*.min.css` ×2（600px 切桌面 / 手机）、`charinfo_*.min.js` + `charId*.js` + `charVoice*.js`、模板参数生成的内联数据全部照旧——预览页 = 现网「陈」页面渲染出来的这一段，静态文件快照 `preview/vendor/charinfo/`；皮肤只补几条接缝规则 | 见下「CharinfoV2 怎么接」 |
 | （新增）身份栏 | `.op-ident > dl.ak-kv--boxed`：代号（中 / 英 / 日）· 情报编号 · 序号 · 稀有度 / 职业 / 分支 / 位置 · 标签 · 所属（国家 / 组织 / 团队）· 画师 · 全语种配音 · 时装 | 舞台 HUD 之外的 `{{CharinfoV2}}` 参数（情报编号 / 日文名 / 序号 / 各语种 CV / 时装系列）现网并不显示，这里补齐；手机上 HUD 收起后它是主要信息 |
 | `{{干员获得方式}}` → wikitable + cbox 提示 | `dl.ak-kv--boxed` + `.ak-tag--yellow` + 一行 `.ak-chevrons` 链接 | |
 | `{{属性}}` → `Widget:CharEquipSelector` 模组下拉 + 附加属性表 + 四档属性表 + `Widget:PropertyCalc` 计算器 | `.op-calc`（`.ak-phase-tabs` + 裸 `<input>` `<select>`：等级 / 信赖 / 潜能 / 模组 + `.ak-attrs` HUD 读数）+ `wikitable.ak-compact`（精英0 1级 / 精英0 满级 / 精英1 满级 / 精英2 满级 / 信赖加成上限）+ `dl.ak-kv--boxed`（再部署 / 费用 / 阻挡 / 攻击间隔 / 所属势力 / 隐藏势力） | 计算器与模组选择合成一块：选了潜能，「潜能提升」节里对应格点亮 |
@@ -255,17 +255,17 @@ $wgFooterIcons = [
 | `{{spineId}}`（SpineViewer） | `.op-spine`：黑色 16:9 网格舞台 + `.ak-btn--primary` 载入 | |
 | `{{干员导航}}` | `.navbox`（L1 基线） | |
 
-**CharinfoV2 怎么复用**（`src/charinfo.css` 文件头也有一份）：
+**CharinfoV2 怎么接**（预览页 `operator.html` 就是这么接的，生产环境同理）：
 
-- Widget 里 `<link rel="stylesheet" href="//static.prts.wiki/charinfo/charinfo_20250518.min.css" media="(min-width:600px)">` + `charinfom_*.min.css` 两行换成一份 `charinfo.css`。不再按 600px 切两份：舞台仍是 1024×576 的固定坐标系（立绘 x / y / 缩放由模板参数给、JS 定位），整块按容器宽度 `transform: scale(var(--charinfo-scale))`；≤639 藏掉画师 / CV / 职业芯片 / BGM 面板，阶段页签与名字牌放大回来，其余信息由正文流的 `.op-ident` 承担。
-- JS 三处小改（预览页脚本就是按这套写的最小实现，可对照）：① resize 处一句 `container.style.setProperty('--charinfo-scale', container.clientWidth / 1024)`，替代原来算 wrapper top / left / transform 的那段；② 选中态改加类——`.stage-btn.is-active` `.skins-btn.is-active` `.skinswitch.is-active` `.backswitch.is-active`（原来靠 `.stage-btn-blue` 换一张蓝图标 + 内联 color）；③ 面板 / 抽屉开合改加类——`.charpainter.is-open` `.charcv.is-open` `.skinswitcher-bg.is-open` `.backswitcher-bg.is-open` `.charvoice-wrapper.is-show` `.charinfo-wrapper.is-watch`（原来内联 height / right / opacity）。
-- 不再需要 `charname` 自定义字体（`Charname_min_*.TTF`）：名字牌 = 思源黑体 900 + 左缘 6px 青条，英文名 Novecento，星级用游戏原图。
-- `char_info` / `charimg_params` / `charskin_params` / `back_list` 的数据结构不变；时装主色（`时装N颜色`）现在染的是 `.back-skincolor`（multiply 叠在场景上）与抽屉条目左缘的 6px 色条；HUD 面板一律黑玻璃（同页眉），无圆角 / 光晕 / 描边字 / 斜体英文。
-- 两套主题下舞台都是黑的（它是游戏画面，不是纸面），只有外框 1px 读 `--ak-border`。
+- **Widget 原样**：`{{#widget:charinfoV2}}` 输出的 DOM、模板参数生成的内联数据（`char_info` / `charimg_params` / `charskin_params` / `back_list`…）、`charinfo_*.min.css`（桌面 / 手机两份，600px 切）、`charinfo_*.min.js` + `charId*.js` + `charVoice*.js`、crypto-js、`charname` 字体全部照旧。预览页把这些静态文件钉版本抓成快照 `preview/vendor/charinfo/`（`scripts/fetch-charinfo.py`；NOTICE.md 记着来源与仅有的改动——CSS 里几处 `url()` 改相对路径、charVoice 只留陈），立绘 / 场景图 / 职业 · 星级 · 分支图标 / BGM / 语音仍由脚本运行时从 media / static / torappu.prts.wiki 拉。
+- **依赖**：脚本用 `RLQ.push(['jquery', fn])` 等 jQuery——MW 里 ResourceLoader 照常处理；预览页自带 jQuery 3.7.1（= MW 1.43）和两行 RLQ 替身。
+- **接缝规则**（预览页 `<style>` 的「舞台接缝」段；生产放 Widget 自己的 `<style>` 或皮肤的 site 样式）：① 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着），正文列比它窄时整块 `zoom: var(--op-stage-zoom)`（页面脚本按列宽算）。用 zoom 不用 transform：Widget 的「全屏查看」是把 wrapper 设成 `position: fixed` 铺满视口，transform 会改它的包含块、zoom 不会，再加 `:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1 }` 全屏时不缩；② 全屏层与手机「查看立绘」层的 z-index 抬到 `--ak-z-modal` 之上（Widget 内联的 999 只够压 Vector——它顺手压下去的 `#mw-panel` `#mw-head` 皮肤里没有）；③ **皮肤 `base.css` 的 `img { max-width: 100%; height: auto }` 不进舞台**——HUD 图标靠 `height="30px"` 这类属性定尺寸，`height: auto` 会把它们放回原图的 32px。这条皮肤落地时要正面处理：站上其它 Widget / 模板同样大量依赖 `height=` 属性，要么皮肤把这条改成不碰带 `height` 属性的图，要么各 Widget 自己补 CSS；④ `line-height: 1.6`（Vector 正文行高；Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点）。
+- **已知的接缝之外**：Widget 的手机版由脚本按父级宽度 <600 在加载时一次性决定（自己 transform 缩放，不响应 resize），皮肤不插手；看图模式的滚轮缩放 / 拖拽用 `getBoundingClientRect` 对 `offsetWidth`，zoom 之下拖动手感会差一个系数（全屏时 zoom 归 1，不受影响）。
+- **换皮（暂不接入）**：`src/charinfo.css` 是对同一套 DOM 的皮肤化草案——黑玻璃 HUD（同页眉）、直角、选中 = 青条 + 青字、名字牌 = 思源 900 + 6px 青条（不再要 `charname` 字体）、时装 / 场景抽屉从右缘滑入、整块按容器宽度 `transform: scale(var(--charinfo-scale))`、≤639 藏 HUD 只留页签与名字牌。真要接入得连 JS 一起改三处：resize 只设 `--charinfo-scale`；选中态从换蓝图标 + 内联 color 改成加类 `.is-active`；面板 / 抽屉开合从内联 height / right / opacity 改成加类 `.is-open .is-show .is-watch`。先把现网的动效 / 文本排布 / 试听语音 / BGM 原样看全，再定换皮范围。
 
 **皮肤这半**：无——干员页不需要皮肤层的特殊处理，标题 / 目录 / 动作簇照常（目录自动收 19 个 h2 + 技能 / 模组的 h3）。
 
-**页面这半**：`.op-*` 的几条排布规则归各模板的 TemplateStyles（`Template:异格干员/styles.css`、`Template:属性/styles.css`、`Template:人员档案/styles.css`、语音记录 / SpineViewer 各自的），预览页把它们合在页面的一个 `<style>` 里；属性计算器 / 语音语种切换 / 舞台交互的脚本，生产环境分别是 `Widget:PropertyCalc`、VoiceTable、charinfo JS——预览页脚本只是演示这些交互在新结构上怎么接。
+**页面这半**：`.op-*` 的几条排布规则归各模板的 TemplateStyles（`Template:异格干员/styles.css`、`Template:属性/styles.css`、`Template:人员档案/styles.css`、语音记录 / SpineViewer 各自的），预览页把它们合在页面的一个 `<style>` 里；属性计算器 / 语音语种切换与播放的脚本，生产环境分别是 `Widget:PropertyCalc`、VoiceTable——预览页脚本只是演示这些交互在新结构上怎么接（语音记录的播放钮走的是与现网同一套 torappu.prts.wiki 音频地址）；舞台的交互就是现网 charinfo JS 本身，预览页只算一个 zoom 系数。
 
 ## 4. 明暗主题（clientPrefs）
 

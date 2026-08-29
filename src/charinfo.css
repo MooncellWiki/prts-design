@@ -1,5 +1,6 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS · charinfo.css — 干员页「干员信息」舞台 = prts.wiki 现网 Widget:CharinfoV2 的皮肤版样式表
+ *  AKDS · charinfo.css — 干员页「干员信息」舞台 = prts.wiki 现网 Widget:CharinfoV2 的皮肤版样式表（换皮草案）
+ *  ⚠ 预览页目前不接入这份：舞台先原样跑现网的 CSS / JS（preview/vendor/charinfo/，接法见 docs/03 §3.6「CharinfoV2 怎么接」），把动效 / 文本排布 / 试听语音 / BGM 看全后再定换皮范围。
  *
  *  现网：{{CharinfoV2}} → {{#widget:charinfoV2}} 输出 .charinfo-container > #charinfo-wrapper（1024×576 的绝对定位舞台）
  *        + static.prts.wiki/charinfo/charinfo_*.min.js（定位立绘、切换精英 / 时装 / 场景、试听语音、BGM、画师 / CV 折叠）。
