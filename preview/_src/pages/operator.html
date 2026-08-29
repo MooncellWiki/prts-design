@@ -12,10 +12,20 @@ cats: 干员, 近卫干员, 近战位干员, 属于龙门近卫局的干员, 属
 hiddencats: 对原文有修正的页面
 -->
 <!--head
-<link rel="stylesheet" href="../src/charinfo.css">   <!-- 「干员信息」舞台 = 现网 Widget:CharinfoV2 的皮肤版样式表（同一套 DOM / 类名，替换 static.prts.wiki/charinfo/charinfo_*.min.css） -->
+<meta name="referrer" content="no-referrer">   <!-- static.prts.wiki 有防盗链：Referer 不是 prts.wiki 就 403（空 Referer 放行）；舞台脚本运行时从那里拉职业 / 星级 / 分支图标与 BGM，本页不带 Referer 即可（media / torappu.prts.wiki 不查） -->
+<script src="vendor/jquery/jquery-3.7.1.min.js"></script>   <!-- 「干员信息」舞台原样跑现网 Widget:CharinfoV2 的脚本，它要 jQuery（生产环境由 MediaWiki ResourceLoader 提供，1.43 = 3.7.1）-->
+<script>window.RLQ = { push: function (item) { (Array.isArray(item) ? item[1] : item)(); } };</script>   <!-- MW 资源加载队列 RLQ 的两行替身：Widget 脚本用 RLQ.push(['jquery', fn]) 等 jQuery 就绪，这里 jQuery 已同步加载，直接执行 -->
 <style>
 /* ═══ 干员页 —— 页面自己的东西（生产环境 = 各模板的 TemplateStyles：Template:异格干员/styles.css、Template:属性/styles.css、Template:人员档案/styles.css …）
-   舞台的样式在 ../src/charinfo.css，游戏数据组件（技能表 / 天赋表 / 模组卡 / 档案 / 语音 / 密录…）在 src/arknights.css；这里只剩几个页面级的排布 ═══ */
+   舞台 = 现网 Widget:CharinfoV2 原样（CSS / JS 在 vendor/charinfo/），游戏数据组件（技能表 / 天赋表 / 模组卡 / 档案 / 语音 / 密录…）在 src/arknights.css；这里只剩几个页面级的排布 + 舞台与皮肤的接缝 ═══ */
+/* 舞台接缝——不改 Widget 的 CSS / JS，只处理它与皮肤骨架的几处接口（生产环境放 Widget 自己的 <style> 或皮肤的 site 样式里） */
+.charinfo-container { zoom: var(--op-stage-zoom, 1); margin: 0 0 var(--ak-space-4); line-height: 1.6; }   /* 1.6 = Vector 正文行高：Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点 */   /* 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着）；正文列比它窄时整块 zoom——zoom 不像 transform 那样改变 position:fixed 的包含块，Widget 的「全屏查看」（把 wrapper 设成 fixed 铺满视口）照常；系数由页脚脚本按正文列宽算 */
+.charinfo-container:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1; }   /* 全屏查看时不缩 */
+.charinfo-container > .charinfo-wrapper[style*="fixed"] { z-index: calc(var(--ak-z-modal) + 1) !important; }   /* 全屏层要压过皮肤页眉：Widget 内联的 999 只够压 Vector（它顺手把 #mw-panel / #mw-head 压下去，皮肤里没这两个 id） */
+body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查看立绘」全屏层同理 */
+.charinfo-container img, .charimg-m img { max-width: none; }   /* 皮肤 base.css 的 img { max-width: 100%; height: auto } 不进舞台：HUD 图标靠 height="30px" 这类属性定尺寸，height:auto 会把它们放回原图的 32px */
+.charinfo-container img[height="30px"] { height: 30px; } .charinfo-container img[height="22px"] { height: 22px; } .charinfo-container img[height="16px"] { height: 16px; }
+.charinfo-container img[height="100%"], .charimg-m img[height="100%"] { height: 100%; }
 /* 异格一览（{{异格干员}}）：左黑标 + 原型 / 异格头像卡 + 右侧说明 */
 .op-alter { display: flex; align-items: stretch; flex-wrap: wrap; gap: 10px 16px; margin: 0 0 var(--ak-space-4); background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
 .op-alter__label { display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 8px 16px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-weight: 800; font-size: var(--ak-fs-sm); white-space: nowrap; }
@@ -72,7 +82,7 @@ hiddencats: 对原文有修正的页面
 .template-fix-mark { background: var(--ak-warning-bg); border-bottom: 1px dashed var(--ak-warning); cursor: help; }
 </style>
 -->
-<div class="ak-message ak-message--neutral ak-fs-xs"><div class="ak-message__body">这是<b>干员页整页样例</b>（信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节，数据取自现网 wikitext / gamedata 2.7.61）。顶部「干员信息」直接复用现网 <code>{{CharinfoV2}}</code> 组件（同一套 DOM，只换了样式表 <code>src/charinfo.css</code>）；其余章节 = 现网各模板 → 设计系统组件的映射，见 03 §3.6。</div></div>
+<div class="ak-message ak-message--neutral ak-fs-xs"><div class="ak-message__body">这是<b>干员页整页样例</b>（信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节，数据取自现网 wikitext / gamedata 2.7.61）。顶部「干员信息」= 现网 <code>{{CharinfoV2}}</code> Widget <b>原样</b>（DOM / CSS / JS 一字不改，静态文件快照在 <code>vendor/charinfo/</code>；立绘 / 场景 / BGM / 语音运行时从现网拉，试听语音 · BGM · 时装 / 场景抽屉 · 看图 / 全屏都是现网的行为）——先把现网的动效与排布原样看全，再决定换皮范围；其余章节 = 现网各模板 → 设计系统组件的映射，见 03 §3.6。</div></div>
 <div class="op-alter ak-not-prose">
   <div class="op-alter__label">异格一览<span class="ak-en">Alter</span></div>
   <div class="op-alter__list">
@@ -82,85 +92,221 @@ hiddencats: 对原文有修正的页面
   <details class="op-alter__help"><summary>异格干员说明 »</summary><ul><li>异格干员和其原型干员除<b>信赖值</b>外的各项数据均不互通，基建心情值亦不互通。</li><li>在战斗编队（包括编入支援单位）、基建入驻时可同时编入异格干员和其原型干员。并会各自产生信赖值，叠加至共享信赖值上（支援单位除外）。</li></ul></details>
 </div>
 <div class="mw-heading mw-heading2"><h2 id="info">干员信息 <span class="ak-en ak-fs-sm ak-fg-muted">Operator</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
-<div class="charinfo-container ak-not-prose" id="charinfo" data-charinfo>
-<div id="charinfo-wrapper" class="charinfo-wrapper">
-  <div class="back-wrapper"><div class="back-skincolor"></div><div class="back is-active" data-back="默认"><img src="assets/charinfo/bg_default.jpg" alt=""></div><div class="back" data-back="时装默认"><img src="assets/charinfo/bg_skin.jpg" alt=""></div></div>
-  <div class="char-logo img-in"><div class="charlogo-def"><div class="charlogo-def-img" style="background-image:url(assets/charinfo/logo_lgd.png)"></div></div><div class="charlogo-skin"></div></div>
-  <div class="mobile-controler">
-    <div class="charimg-wrapper" id="charimg-wrapper" style="left:18px;top:-3px;transform:scale(2)">
-      <div id="charimg" class="img-in">
-        <img id="img-elite0" class="img-in" src="assets/charinfo/art_chen_1.png" alt="陈 精英零立绘" data-pos="18,-3,2">
-        <img id="img-elite2" class="img-out" src="assets/charinfo/art_chen_2.png" alt="陈 精英二立绘" data-pos="19,-268,2">
-        <img id="img-skin1" class="img-out" src="assets/charinfo/art_chen_skin1.png" alt="陈 时装「岁红霞」" data-pos="-14,-126,2">
-        <img id="img-skin2" class="img-out" src="assets/charinfo/art_chen_skin2.png" alt="陈 时装「初晴」" data-pos="-133,-226,2.5">
-      </div>
-      <div id="charimg-dyn" class="img-out"><div class="dyn-bg"></div><div class="canvas-wrapper"></div><div class="dyn-fg"></div></div>
-    </div>
-  </div>
-  <div id="charimg-mask" class="charimg-mask"></div>
-  <div class="back-btn"><div class="back-btn-img"><img src="assets/charinfo/ui_back.png" width="25" alt="返回"></div></div>
-  <div class="control-btns">
-    <div class="fullscreen-btn" role="button" tabindex="0"><div class="control-btn-flex"><img src="assets/charinfo/ui_fullscreen.png" alt=""></div><div class="control-btn-text">全屏查看</div></div>
-    <div class="watchimg-btn" role="button" tabindex="0"><div class="control-btn-flex"><img src="assets/charinfo/ui_watch.png" alt=""></div><div class="control-btn-text">看图模式</div></div>
-    <div class="watchimg-btn-m" role="button"><div class="control-btn-flex"><img src="assets/charinfo/ui_watch.png" alt=""></div><div class="control-btn-text">查看立绘</div></div>
-    <div class="download-btn" role="button" tabindex="0"><div class="control-btn-flex"><img src="assets/charinfo/ui_download.png" alt=""></div><div class="control-btn-text">下载立绘</div></div>
-    <div class="voice-btn" role="button" tabindex="0"><div class="control-btn-flex"><img src="assets/charinfo/ui_voice.png" alt=""></div><div class="control-btn-text">试听语音</div></div>
-    <div class="img-switch-btn" role="button"><div class="control-btn-flex"><img src="assets/charinfo/ui_switch.png" alt=""></div><div class="control-btn-text">立绘切换</div></div>
-    <div class="dyn-btn" role="button"><div class="control-btn-flex"><img src="assets/charinfo/ui_dynOn.png" alt=""></div><div class="control-btn-text">动态立绘</div></div>
-  </div>
-  <div class="charvoice-wrapper"><div class="charvoice-title">Voice · 任命助理</div><div class="charvoice-content">博士，现在起由我担任你的护卫。</div></div>
-  <div class="hiddenchar-btn"><div class="hiddenchar-btn-img"><img src="assets/charinfo/ui_eyeOn.png" width="24" alt=""></div><div class="hiddenchar-btn-text">隐藏角色</div></div>
-  <div class="music-btn" role="button" tabindex="0" title="播放 / 暂停 BGM"><div class="music-btn-inner"><img src="assets/charinfo/ui_musicOff.png" alt=""></div><div id="music-info" class="music-info">BGM · 生命流</div></div>
-  <div class="top-btns">
-    <div class="stage-btn-wrapper">
-      <div class="stage-btn is-active" data-stage="elite0" role="button" tabindex="0"><div class="stage-btn-img"><img src="assets/elite/elite_0.png" alt=""></div><div class="stage-btn-blue"></div><div class="stage-btn-en">Elite 0</div><div class="stage-btn-text">精英零</div></div>
-      <div class="stage-btn" data-stage="elite2" role="button" tabindex="0"><div class="stage-btn-img"><img src="assets/elite/elite_2.png" alt=""></div><div class="stage-btn-blue"></div><div class="stage-btn-en">Elite 2</div><div class="stage-btn-text">精英二</div></div>
-    </div>
-    <div class="skins-btn" role="button" tabindex="0"><div class="skins-btn-img"><img src="assets/charinfo/ui_skin.png" alt=""></div><div class="skins-btn-blue"></div><div class="skins-btn-en">Outfit · 2</div><div class="skins-btn-text">时装</div></div>
-    <div class="backswitcher-btn" role="button" tabindex="0"><div class="backswitcher-img"><img src="assets/charinfo/ui_back_switch.png" alt=""></div><div class="backswitcher-text">更换场景</div></div>
-  </div>
-  <div class="skinswitcher-bg" data-title="Outfit · 时装">
-    <div class="skinswitcher-wrapper">
-      <div class="skinswitch" data-stage="elite0" data-skin="default"><div class="skincolor" style="--_c:#8d8d8d"></div><div class="skinhead"><img src="assets/charinfo/head_chen_1.png" alt=""></div><div class="skinname">默认服装<span class="skinseries">Default · 唯@W</span></div><div class="skincheck"></div></div>
-      <div class="skinswitch" data-stage="skin1" data-color="#7d0000"><div class="skincolor" style="--_c:#7d0000"></div><div class="skinhead"><img src="assets/charinfo/head_chen_skin1.png" alt=""></div><div class="skinname">岁红霞<span class="skinseries">0011制造 / II · 唯@W</span></div><div class="skincheck"></div></div>
-      <div class="skinswitch" data-stage="skin2" data-color="#2c3aa5"><div class="skincolor" style="--_c:#2c3aa5"></div><div class="skinhead"><img src="assets/charinfo/head_chen_skin2.png" alt=""></div><div class="skinname">初晴<span class="skinseries">忒斯特收藏 / XI · 伍秋秋秋秋</span></div><div class="skincheck"></div></div>
-    </div>
-  </div>
-  <div class="backswitcher-bg" data-title="Scene · 场景">
-    <div class="backswitcher-wrapper">
-      <div class="backswitch is-active" data-back="默认"><img src="assets/charinfo/bg_default.jpg" alt=""><span class="backswitch-name">默认<small>BGM 生命流</small></span></div>
-      <div class="backswitch" data-back="时装默认"><img src="assets/charinfo/bg_skin.jpg" alt=""><span class="backswitch-name">时装默认<small>BGM 生命流</small></span></div>
-      <div class="backswitch" data-back="视野" data-bgm="生命流"><img src="assets/keyart/rhodes_day.jpg" alt="" onerror="this.remove()"><span class="backswitch-name">视野<small>BGM 生命流</small></span></div>
-      <div class="backswitch" data-back="夜幕" data-bgm="如我所见"><img src="assets/keyart/rhodes_night.jpg" alt="" onerror="this.remove()"><span class="backswitch-name">夜幕<small>BGM 如我所见</small></span></div>
-    </div>
-  </div>
-  <div class="bottom-btns">
-    <div class="charclass-img"><img src="assets/profession/warrior.png" alt="近卫"></div>
-    <div class="branch-wrapper"><div class="branch-flex"><div class="branch-img" style="background-image:url(assets/subprofession/sword.png)"></div><div class="branch-text"><a href="#">剑豪</a></div></div></div>
-    <div class="char-pos"><div class="char-pos-text"><a href="#">近战位</a></div></div>
-    <div class="char-tag-wrapper"><div class="char-tag-flex"><div class="char-tag"><a href="#">爆发</a></div><div class="char-tag"><a href="#">输出</a></div></div></div>
-  </div>
-  <div class="charname-wrapper"><div class="charname">陈</div><div class="charname-en">Ch'en</div><div class="charstar"><img src="assets/rarity/rarity_yellow_5.png" alt="六星"></div></div>
-  <div class="paintercv-wrapper">
-    <div class="charpainter">
-      <div class="charpainter-title" role="button" tabindex="0"><div class="charpainter-img"><img src="assets/charinfo/ui_painter.png" alt="画师"></div><div class="charpainter-text-flex"><span class="charpainter-text"><a href="#">唯@W</a></span></div><div class="charpainter-collapse"><img src="assets/charinfo/ui_plus.png" alt=""></div></div>
-      <div class="painter-wrapper"><div class="painter"><span class="painter-left">绘制</span><span class="painter-name"><a href="#">唯@W</a></span></div><div class="designer"><span class="designer-left">原案</span><span class="designer-name">—</span></div></div>
-      <div class="introduce-wrapper"><div class="introduce-title" data-intro-title>默认服装</div><div class="introduce-content" data-intro>干员平时最常穿着的服装。<br>虽然不一定比制服更实用，但是一定是干员最舒适的搭配之一。</div></div>
-    </div>
-    <div class="charcv">
-      <div class="charcv-title" role="button" tabindex="0"><div class="charcv-img"><img src="assets/charinfo/ui_cv.png" alt="配音"></div><div class="charcv-text-flex"><span class="charcv-text"><a href="#">石上静香</a></span></div><div class="charcv-collapse"><img src="assets/charinfo/ui_plus.png" alt=""></div></div>
-      <div class="charcv-content">
-        <div class="charcv-select"><div class="charcv-check"></div><div class="charcv-check-content"><span class="charcv-lang">日文</span><span class="charcv-name">石上静香</span></div></div>
-        <div class="charcv-select"><div class="charcv-uncheck"></div><div class="charcv-uncheck-content"><span class="charcv-lang">中文-普通话</span><span class="charcv-name">虫虫</span></div></div>
-        <div class="charcv-select"><div class="charcv-uncheck"></div><div class="charcv-uncheck-content"><span class="charcv-lang">中文-方言</span><span class="charcv-name">包少爷</span></div></div>
-        <div class="charcv-select"><div class="charcv-uncheck"></div><div class="charcv-uncheck-content"><span class="charcv-lang">英文</span><span class="charcv-name">Amy Lennox</span></div></div>
-        <div class="charcv-select"><div class="charcv-uncheck"></div><div class="charcv-uncheck-content"><span class="charcv-lang">韩文</span><span class="charcv-name">郑侑廷</span></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="dynControler"><div class="chardyn-title"><div class="charcv-img"><img src="assets/charinfo/ui_dynOn.png" alt=""></div><div class="charcv-text-flex"><span class="chardyn-text">动作切换</span></div><div class="chardyn-collapse"><img src="assets/charinfo/ui_plus.png" alt=""></div></div><div class="chardyn-content"></div></div>
-</div></div>
-<div class="charimg-m"><div class="charimg-m-close" role="button" aria-label="关闭"></div><div class="img-m"><div class="img-m-nodyn"><img alt="" hidden></div><div class="img-m-dyn"></div></div></div>
+<!-- ═══ 干员信息 = prts.wiki 现网 Widget:CharinfoV2 原样。从这里到 charinfo_*.min.js 那行为止，是现网「陈」页面渲染出来的 HTML（Widget 的 DOM + {{CharinfoV2}} 模板参数生成的内联数据 + 三份脚本），
+     CSS / JS 一字未改，只把 static.prts.wiki 上的 CSS / JS / 字体 / HUD 图标换成本地快照 vendor/charinfo/（scripts/fetch-charinfo.py 抓取，见其 NOTICE.md）；
+     立绘 / 场景图 / 职业 · 星级 · 分支图标 / BGM / 语音仍由脚本运行时从 media / static / torappu.prts.wiki 拉。接进皮肤骨架的几条接缝规则在本页 <style> 的「舞台」段，缩放系数由页脚脚本算 ═══ -->
+<link rel="stylesheet" href="vendor/charinfo/charinfo_20250518.min.css" media="screen and (min-width: 600px)" />
+<link rel="stylesheet" href="vendor/charinfo/charinfom_20250518.min.css" media="screen and (max-width: 600px)" />
+<style>
+@font-face {
+    font-family: 'charname';
+    src: url('vendor/charinfo/Charname_min_20260604.TTF');
+    font-weight: normal;
+    font-style: normal;
+}
+</style>
+    <div class="charinfo-container">
+    <div id="charinfo-wrapper" class="charinfo-wrapper">
+        <div class="back-wrapper"><div class="back-skincolor"></div></div>
+        <div class="char-logo"><div class="charlogo-def"></div><div class="charlogo-skin"></div></div>
+        <div class="mobile-controler">
+                <div class="charimg-wrapper" id="charimg-wrapper">
+                    <div id="charimg" class="img-in"></div>
+                    <div id="charimg-dyn" class="img-out"><div class="dyn-bg"></div><div class="canvas-wrapper"><canvas id="dyn-canvas" width="2048" height="2048" style="transform:scale(0.25);transform-origin:left top;background-color:rgba(0,0,0,0);"></canvas></div><div class="dyn-fg"></div></div>
+                </div>
+            </div>
+        <div id="charimg-mask" class="charimg-mask"></div>
+        <div class="back-btn" style="display:none;opacity:0">
+            <div class="back-btn-img"><img src="vendor/charinfo/img/ui/back.png" width="25px" /></div>
+        </div>
+        <div class="control-btns">
+            <div class="fullscreen-btn">
+                <div class="control-btn-flex"><img src="vendor/charinfo/img/ui/fullscreen.png" width="30px" /></div>
+                <div class="control-btn-text">全屏查看</div>
+            </div>
+            <div class="watchimg-btn"><div class="control-btn-flex"><img src="vendor/charinfo/img/ui/watch.png" width="30px" /></div>
+            <div class="control-btn-text">看图模式</div></div>
+            <div class="watchimg-btn-m"><div class="control-btn-flex"><img src="vendor/charinfo/img/ui/watch.png" width="30px" /></div>
+            <div class="control-btn-text">查看立绘</div></div>
+            <div class="download-btn"><div class="control-btn-flex"><img src="vendor/charinfo/img/ui/download.png" height="30px" /></div>
+            <div class="control-btn-text">下载立绘</div></div>
+            <div class="voice-btn"><div class="control-btn-flex"><img src="vendor/charinfo/img/ui/voice.png" height="30px" /></div>
+            <div class="control-btn-text">试听语音</div></div>
+            <div class="img-switch-btn"><div class="control-btn-flex"><img src="vendor/charinfo/img/ui/switch.png" width="30px" /></div>
+            <div class="control-btn-text">立绘切换</div></div>
+            <div class="dyn-btn"><div class="control-btn-flex"><img src="vendor/charinfo/img/ui/dynOn.png" width="30px" /></div>
+            <div class="control-btn-text">动态立绘</div></div>
+        </div>
+        <div class="charvoice-wrapper">
+            <div class="charvoice-title">VOICE</div>
+            <div class="charvoice-content"></div>
+        </div>
+        <div class="hiddenchar-btn"><div class="hiddenchar-btn-img"><img src="vendor/charinfo/img/ui/eyeOn.png" width="24px" /></div><div class="hiddenchar-btn-text">隐藏角色</div></div>
+        <div class="music-btn">
+            <div class="music-btn-inner"><img src="vendor/charinfo/img/ui/musicOff.png" width="100%" /></div>
+            <div id="music-info" class="music-info"></div>
+        </div>
+        <div class="top-btns">
+            <div class="stage-btn-wrapper"></div>
+            <div class="skins-btn" elite="" style="display:none"><div class="skins-btn-img"><img src="vendor/charinfo/img/ui/skin.png" /></div><div class="skins-btn-blue" style="opacity: 0;"><img src="vendor/charinfo/img/ui/skin_blue.png" /></div><div class="skins-btn-en">OUTFIT</div><div class="skins-btn-text">时装</div></div>
+            <div class="backswitcher-btn"><div class="backswitcher-img"><img src="vendor/charinfo/img/ui/back_switch.png" width="24px" /></div><div class="backswitcher-text">更换场景</div></div>
+            
+        </div>
+        <div class="skinswitcher-bg">
+            <div class="skinswitcher-wrapper"></div>
+        </div>
+        <div class="backswitcher-bg">
+            <div class="backswitcher-wrapper"></div>
+        </div>
+        <div class="bottom-btns">
+            <div class="charclass-img"><img src="" /></div>
+            <div class="branch-wrapper">
+                <div class="branch-flex">
+                    <div class="branch-img"></div>
+                    <div class="branch-text"></div>
+                </div>
+            </div>
+            <div class="char-pos"><div class="char-pos-text"></div></div>
+            <div class="char-tag-wrapper">
+                <div class="char-tag-flex"></div>
+            </div>
+        </div>
+        <div class="charname-wrapper">
+            <div class="charname"></div>
+            <div class="charname-en"></div>
+            <div class="charstar"><img src="" height="100%" /></div>
+        </div>
+        <div class="paintercv-wrapper">
+            <div class="charpainter">
+                <div class="charpainter-title">
+                    <div class="charpainter-img"><img src="vendor/charinfo/img/ui/painter.png" height="22px" /></div>
+                    <div class="charpainter-text-flex"><span class="charpainter-text"></span></div><div class="charpainter-collapse"><img src="vendor/charinfo/img/ui/plus.png" height="16px" /></div>
+                </div>
+                <div class="painter-wrapper">
+                    <div class="painter">
+                        <span class="painter-left">绘制</span><span class="painter-name"></span>
+                    </div>
+                    <div class="designer">
+                        <span class="designer-left">原案</span><span class="designer-name"></span>
+                    </div>
+                </div>
+                <div class="introduce-wrapper">
+                    <div class="introduce-title"></div>
+                    <div class="introduce-content"></div>
+                </div>
+            </div>
+            <div class="charcv">
+                <div class="charcv-title"><div class="charcv-img"><img src="vendor/charinfo/img/ui/cv.png" height="22px" /></div><div class="charcv-text-flex"><span class="charcv-text"></span></div><div class="charcv-collapse"><img src="vendor/charinfo/img/ui/plus.png" height="16px" /></div></div>
+                <div class="charcv-content"></div>
+            </div>
+        </div>
+        <div class="dynControler">
+                <div class="chardyn-title"><div class="charcv-img"><img src="vendor/charinfo/img/ui/dynOn.png" height="22px" /></div><div class="charcv-text-flex"><span class="chardyn-text">动作切换</span></div><div class="chardyn-collapse"><img src="vendor/charinfo/img/ui/plus.png" height="16px" /></div></div>
+                <div class="chardyn-content"></div>
+            </div>
+    </div></div><div class="charimg-m"><div class="charimg-m-close"></div><div class="img-m"><div class="img-m-nodyn"><img src="" width="100%" /></div><div class="img-m-dyn"></div></div></div>
+    <script src="vendor/charinfo/crypto-js/core.min.js"></script>
+    <script src="vendor/charinfo/crypto-js/md5.min.js"></script>
+    <script>
+    (window.RLQ = window.RLQ || []).push(["jquery", function () {}]);
+        const getPath = (filename) => {
+            let md5 = CryptoJS.MD5(filename.replaceAll(" ","_")).toString();
+            let result = md5.slice(0, 1) + '/' +  md5.slice(0, 2) + '/' + encodeURIComponent(filename.replaceAll(" ","_"))
+            return result
+        }
+        //角色json
+        var doc_name = "博士"
+        var char_info={
+            "name":"陈",
+            "nameEn":"Ch\'en",
+            "nameCustom":"",
+            "star":5,
+            "group":"龙门近卫局",
+            "class":"近卫",
+            "branch":"剑豪",
+            "pos":"近战位",
+            "tag":"爆发 输出",
+            "painter":"唯@W",
+            "designer":"",
+            "initcvtype":"",
+            "cv":{
+                "日文":{"name":"石上静香","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "中文-普通话":{"name":"虫虫","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "中文-方言":{"name":"包少爷","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "英文":{"name":"Amy Lennox","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "韩文":{"name":"郑侑廷","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "意大利语":{"name":"","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "俄文":{"name":"","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "德文":{"name":"","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "法语":{"name":"","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+                "联动":{"name":"","skin1":"","skin2":"","skin3":"","skin4":"","skin5":"","skin6":"","skin7":"","skin8":"","skin9":"","skin10":""},
+            },
+            "initback":"",
+        }
+        //语音范围限制
+        //var voice_keys=["干员报到","任命助理","闲置","问候","交谈1","交谈2","交谈3","信赖提升后交谈1","信赖提升后交谈2","信赖提升后交谈3"]
+        var voice_keys=["cn_011","cn_001","cn_010","cn_042","cn_002","cn_003","cn_004","cn_007","cn_008","cn_009","cn_034","cn_036","cn_037"]
+        if(char_info.star>=3){
+            voice_keys.push("cn_005","cn_006")
+        }else if(char_info.star==2){
+            voice_keys.push("cn_005")
+        }
+        //立绘json
+        var charimg_params={
+            "elite0":{"painter":"","voice_id":"","url":"","scale":2,"x":18,"y":-3,"introduce_name":"默认服装","introduce":"干员平时最常穿着的服装。<br/>虽然不一定比制服更实用，但是一定是干员最舒适的搭配之一。"},
+            "elite1":{"painter":"","voice_id":"","url":"","scale":1,"x":250,"y":45,"introduce_name":"默认服装","introduce":"精英1介绍"},
+            "elite2":{"painter":"","voice_id":"","url":"","scale":2,"x":19,"y":-268,"introduce_name":"默认服装","introduce":"晋升后，经过调整的服装。<br/>根据干员的经验，对服装细节进行改进，针对一些作战环境进行了特化处理。在满足战斗需求的同时，最大程度还原各位干员熟悉的舒适穿着体验。"}
+        }
+        //时装json
+        var charskin_params={
+            "skin1":{"name":"岁红霞","voice_id":"","painter":"","series":"0011制造/II","color":"#7d0000","introduce":"0011™新款/岁红霞。龙门手工匠制，量体裁衣，舒适美观，凸显身形。在顾客的强烈要求下进行了改良，使其比普通款拥有更好的运动性。","url":"","scale":2,"x":-14,"y":-126,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin2":{"name":"初晴","voice_id":"","painter":"伍秋秋秋秋","series":"忒斯特收藏/XI","color":"#2c3aa5","introduce":"忒斯特收藏系列/初晴。曲终人散，霜后初晴。陈晖洁身着自己在近卫局的第一套制服，绕城一周，重新审视这座熟悉但又陌生的城市。","url":"","scale":2.5,"x":-133,"y":-226,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin3":{"name":"","voice_id":"","painter":"","series":"","color":"","introduce":"","url":"","scale":1,"x":250,"y":45,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin4":{"name":"","voice_id":"","painter":"","series":"","color":"","introduce":"","url":"","scale":1,"x":250,"y":45,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin5":{"name":"","voice_id":"","painter":"","series":"","color":"","introduce":"","url":"","scale":1,"x":250,"y":45,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin6":{"name":"","voice_id":"","painter":"","series":"","color":"","introduce":"","url":"","scale":1,"x":250,"y":45,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin7":{"name":"","voice_id":"","painter":"","series":"","color":"","introduce":"","url":"","scale":1,"x":250,"y":45,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin8":{"name":"","voice_id":"","painter":"","series":"","color":"","introduce":"","url":"","scale":1,"x":250,"y":45,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin9":{"name":"","voice_id":"","painter":"","series":"","color":"","introduce":"","url":"","scale":1,"x":250,"y":45,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+            "skin10":{"name":"","voice_id":"","painter":"","series":"","color":"","introduce":"","url":"","scale":1,"x":250,"y":45,"head_url":"","logo_url":"","brand_url":"","sub_url":"","sub_skin":"","sub_scale":1,"sub_x":250,"sub_y":45},
+        }
+//背景json
+var back_list = {
+    "默认": { "url": "https://media.prts.wiki/5/59/Bg_default.png", "pre_url": "https://media.prts.wiki/9/9b/Pre_bg_default.png", "bgmname": "生命流", "bgm": "https://static.prts.wiki/music/music/beta1_180603/m_sys_void_combine.mp3", "loop_point": 34 },
+    "时装默认": { "url": "https://media.prts.wiki/9/97/Bg_skin.png", "pre_url": "https://media.prts.wiki/0/0a/Pre_bg_skin.png", "bgmname": "生命流", "bgm": "https://static.prts.wiki/music/music/beta1_180603/m_sys_void_combine.mp3", "loop_point": 34 },
+    "视野": { "url": "https://media.prts.wiki/2/20/Bg_rhodes_day.png", "pre_url": "https://media.prts.wiki/9/95/Pre_bg_rhodes_day.png", "bgmname": "生命流", "bgm": "https://static.prts.wiki/music/music/beta1_180603/m_sys_void_combine.mp3", "loop_point": 34 },
+    "夜幕": { "url": "https://media.prts.wiki/0/09/Bg_rhodes_night.png", "pre_url": "https://media.prts.wiki/0/0e/Pre_bg_rhodes_night.png", "bgmname": "如我所见", "bgm": "https://static.prts.wiki/music/music/beta2_180603/m_sys_tech_combine.mp3", "loop_point": 37.00937 },
+    "阴云": { "url": "https://media.prts.wiki/6/69/Bg_main_victoria.png", "pre_url": "https://media.prts.wiki/8/80/Pre_bg_main_victoria.png", "bgmname": "Ghost Hunter", "bgm": "https://static.prts.wiki/music/music/avg/m_avg_ghosthunter_combine.mp3", "loop_point": 36.119 },
+    "假日": { "url": "https://media.prts.wiki/9/9c/Bg_siesta.png", "pre_url": "https://media.prts.wiki/3/39/Pre_bg_siesta.png", "bgmname": "Ready?", "bgm": "https://static.prts.wiki/music/music/obt/m_sys_ddd_combine.mp3", "loop_point": 52 },
+    "商业": { "url": "https://media.prts.wiki/4/42/Bg_kazimierz.png", "pre_url": "https://media.prts.wiki/4/40/Pre_bg_kazimierz.png", "bgmname": "City", "bgm": "https://static.prts.wiki/music/music/beta3_181101/m_dia_street_combine.mp3", "loop_point": 18.54549 },
+    "严冬": { "url": "https://media.prts.wiki/e/e9/Bg_ursus.png", "pre_url": "https://media.prts.wiki/9/9f/Pre_bg_ursus.png", "bgmname": "Loneliness", "bgm": "https://static.prts.wiki/music/music/static/m_avg/m_avg_loneliness_combine.mp3", "loop_point": 51.42859 },
+    "山岳": { "url": "https://media.prts.wiki/b/b5/Bg_yan.png", "pre_url": "https://media.prts.wiki/5/53/Pre_bg_yan.png", "bgmname": "敬属春山", "bgm": "https://static.prts.wiki/music/music/act15side/m_sys_bitw_loop.mp3", "loop_point": 0 },
+    "秘海": { "url": "https://media.prts.wiki/1/1d/Bg_iberia.png", "pre_url": "https://media.prts.wiki/a/ac/Pre_bg_iberia.png", "bgmname": "暗潮", "bgm": "https://static.prts.wiki/music/music/act18d3d0/m_sys_act18d3d0_combine.mp3", "loop_point": 34.19 },
+    "庆典": { "url": "https://media.prts.wiki/6/65/Bg_anniversary.png", "pre_url": "https://media.prts.wiki/c/c7/Pre_bg_anniversary.png", "bgmname": "大柏墟", "bgm": "https://static.prts.wiki/music/music/beta2_180603/m_dia_nightoflongmen_combine.mp3", "loop_point": 1.5 },
+    "残垣": { "url": "https://media.prts.wiki/8/8e/Bg_rogue_1.png", "pre_url": "https://media.prts.wiki/7/7e/Pre_bg_rogue_1.png", "bgmname": "征兆", "bgm": "https://static.prts.wiki/music/music/rogue_1/m_avg_rglk1secretevent_loop.mp3", "loop_point": 0 },
+    "彼端": { "url": "https://media.prts.wiki/e/ef/Bg_rouge_2.png", "pre_url": "https://media.prts.wiki/e/ea/Pre_bg_rogue_2.png", "bgmname": "海愿", "bgm": "https://static.prts.wiki/music/music/rogue_2/m_sys_rglk2dlc_loop.mp3", "loop_point": 0 },
+    "澄空": { "url": "https://media.prts.wiki/9/99/Bg_laterano.png", "pre_url": "https://media.prts.wiki/4/42/Pre_bg_laterano.png", "bgmname": "圣城日常", "bgm": "https://static.prts.wiki/music/music/act16side/m_sys_act16side_combine.mp3", "loop_point": 8.777 },
+    "林野": { "url": "https://media.prts.wiki/7/75/Bg_rhine.png", "pre_url": "https://media.prts.wiki/7/7b/Pre_bg_rhine.png", "bgmname": "旅程", "bgm": "https://static.prts.wiki/music/music/act19side/m_sys_act19side_combine.mp3", "loop_point": 12.852 },
+    "足迹": { "url": "https://media.prts.wiki/2/29/%E5%9C%BA%E6%99%AF_%E8%B6%B3%E8%BF%B9.png", "pre_url": "https://media.prts.wiki/2/2b/Bg_kalts.png", "bgmname": "走过漫漫时空", "bgm": "https://static.prts.wiki/music/music/act18d0d0/m_sys_act18d0d0_combine.mp3", "loop_point": 36.153 },
+    "始发": { "url": "https://media.prts.wiki/a/a4/%E5%9C%BA%E6%99%AF_%E5%A7%8B%E5%8F%91.png", "pre_url": "https://media.prts.wiki/a/aa/Bg_rogue_3.png", "bgmname": "主宰", "bgm": "https://static.prts.wiki/music/music/rogue_3/m_bat_rglk3DLC_combine.mp3", "loop_point": 18.233 },
+    "显扬": { "url": "https://media.prts.wiki/4/44/%E5%9C%BA%E6%99%AF_%E6%98%BE%E6%89%AC.png", "pre_url": "https://media.prts.wiki/d/d8/Bg_rainbowsix_1.png", "bgmname": "Translucent", "bgm": "https://static.prts.wiki/music/music/act32side/m_act32side_sys_loop.mp3", "loop_point": 0 },
+    "花圃": { "url": "https://media.prts.wiki/e/ea/Bg_rhodes_flower.png", "pre_url": "https://media.prts.wiki/2/29/Pre_bg_rhodes_flower.png", "bgmname": "微茫", "bgm": "https://static.prts.wiki/music/music/act16mini/m_sys_act16mini_combine.mp3", "loop_point": 20.610 },
+    "甜度": { "url": "https://media.prts.wiki/4/48/Bg_sanrio.png", "pre_url": "https://media.prts.wiki/4/44/Bg_sanrio_pre.png", "bgmname": "Our Life", "bgm": "https://static.prts.wiki/music/music/act27side/m_avg_siestacity.mp3", "loop_point": 0 },
+    "旷漠": { "url": "https://media.prts.wiki/9/9b/Bg_sandboxv2.png", "pre_url": "https://media.prts.wiki/6/6e/Bg_sandboxv2_pre.png", "bgmname": "细沙", "bgm": "https://static.prts.wiki/music/music/act1sandbox/m_sys_act1sandbox_map_loop.mp3", "loop_point": 0 },
+    "地城": { "url": "https://media.prts.wiki/9/9c/Bg_dungeon.png", "pre_url": "https://media.prts.wiki/9/97/Bg_dungeon_pre.png", "bgmname": "雀跃的炉火", "bgm": "https://static.prts.wiki/music/music/act36side/m_sys_act36side_loop.mp3", "loop_point": 0 },
+    "青穰": { "url": "https://media.prts.wiki/c/c7/Bg_sui.png", "pre_url": "https://media.prts.wiki/4/45/Bg_sui_pre.png", "bgmname": "赴大荒", "bgm": "https://static.prts.wiki/music/music/act31side/m_act31side_sys_combine.mp3", "loop_point": 2.909 },
+    "意塑": { "url": "https://media.prts.wiki/9/9d/Bg_rogue_4.png", "pre_url": "https://media.prts.wiki/0/0c/Bg_rogue_4_pre.png", "bgmname": "Resolutely Burns the Fire of Lives", "bgm": "https://static.prts.wiki/music/music/act17mini/m_sys_act17mini_loop.mp3", "loop_point": 0 },
+    "泉湾": { "url": "https://media.prts.wiki/7/74/Bg_volcano_day.png", "pre_url": "https://media.prts.wiki/4/47/Bg_volcano_day_pre.png", "bgmname": "Misty Memory (Day Version)", "bgm": "https://static.prts.wiki/music/music/act27side/m_sys_act27side_day_loop.mp3", "loop_point": 0, "night": { "url": "https://media.prts.wiki/6/62/Bg_volcano_night.png", "pre_url": "https://media.prts.wiki/3/3f/Bg_volcano_night_pre.png", "bgmname": "Misty Memory (Night Version)", "bgm": "https://static.prts.wiki/music/music/act27side/m_sys_act27side_night_combine.mp3", "loop_point": 22.957 } },
+    "密约": { "url": "https://media.prts.wiki/6/60/Bg_recalrune.png", "pre_url": "https://media.prts.wiki/4/48/Bg_recalrune_pre.png", "bgmname": "Operation Blade", "bgm": "https://torappu.prts.wiki/assets/audio/music/recalrune/m_sys_recalrune_reward1_loop.mp3", "loop_point": 0 },
+    "聚光": { "url": "https://media.prts.wiki/9/93/Bg_avemujica.png", "pre_url": "https://media.prts.wiki/e/ed/Bg_avemujica_pre.png", "bgmname": "Georgette Me, Georgette You", "bgm": "https://torappu.prts.wiki/assets/audio/music/avemujica/m_sys3_avemujica_loop.mp3", "loop_point": 0 },
+};
+        var dyn_list="";
+        var now_dyn = ""
+        var devmode = 0
+    </script>
+    <script src="vendor/charinfo/charVoice20260604.js"></script>
+    <script src="vendor/charinfo/charId20260604.js"></script>
+    <script src="vendor/charinfo/charinfo_20260322_2.min.js"></script>
 <div class="op-ident ak-not-prose">
 <dl class="ak-kv ak-kv--boxed ak-m-0">
   <dt>代号</dt><dd><b>陈</b> <span class="ak-code-id">Ch'en</span> <span class="ak-fg-muted">· チェン</span></dd>
@@ -464,46 +610,27 @@ hiddencats: 对原文有修正的页面
 (function () {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  /* ── 舞台：按容器宽度缩放 1024×576 的坐标系（现网 JS 的 resize 处也就这一句） ── */
-  const box = $('#charinfo'), wrap = $('#charinfo-wrapper');
-  if (box && wrap) {
-    const fit = () => box.style.setProperty('--charinfo-scale', (box.clientWidth / 1024).toFixed(4));
-    fit(); (window.ResizeObserver ? new ResizeObserver(fit).observe(box) : window.addEventListener('resize', fit));
-    const artOf = k => $('#img-' + k, wrap);
-    const intro = { elite0: ['默认服装', '干员平时最常穿着的服装。<br>虽然不一定比制服更实用，但是一定是干员最舒适的搭配之一。', '唯@W'],
-                    elite2: ['精英二服装', '晋升后，经过调整的服装。<br>根据干员的经验，对服装细节进行改进，针对一些作战环境进行了特化处理。在满足战斗需求的同时，最大程度还原各位干员熟悉的舒适穿着体验。', '唯@W'],
-                    skin1: ['岁红霞 · 0011制造/II', '0011™新款/岁红霞。龙门手工匠制，量体裁衣，舒适美观，凸显身形。在顾客的强烈要求下进行了改良，使其比普通款拥有更好的运动性。', '唯@W'],
-                    skin2: ['初晴 · 忒斯特收藏/XI', '忒斯特收藏系列/初晴。曲终人散，霜后初晴。陈晖洁身着自己在近卫局的第一套制服，绕城一周，重新审视这座熟悉但又陌生的城市。', '伍秋秋秋秋'] };
-    function show(k, color) {
-      $$('#charimg > img', wrap).forEach(i => { const on = i.id === 'img-' + k; i.classList.toggle('img-in', on); i.classList.toggle('img-out', !on); });
-      const p = (artOf(k).dataset.pos || '0,0,1').split(','); const cw = $('#charimg-wrapper', wrap); cw.style.left = p[0] + 'px'; cw.style.top = p[1] + 'px'; cw.style.transform = 'scale(' + p[2] + ')';
-      $$('.stage-btn', wrap).forEach(b => b.classList.toggle('is-active', b.dataset.stage === k));
-      $('.skins-btn', wrap).classList.toggle('is-active', /^skin/.test(k));
-      $$('.skinswitch', wrap).forEach(s => s.classList.toggle('is-active', s.dataset.stage === k || (k === 'elite0' && s.dataset.skin === 'default')));
-      const t = intro[k]; if (t) { $('[data-intro-title]', wrap).textContent = t[0]; $('[data-intro]', wrap).innerHTML = t[1]; $('.charpainter-text a', wrap).textContent = t[2]; $('.painter-name a', wrap).textContent = t[2]; }
-      const sc = $('.back-skincolor', wrap); if (color) { sc.style.backgroundColor = color; sc.classList.add('is-active'); back('时装默认'); } else { sc.classList.remove('is-active'); back('默认'); }
-      const m = $('.img-m-nodyn img'); m.src = artOf(k).src; m.hidden = false;   // 手机查看器用的同一张图：不在 HTML 里重复写 src（单文件打包会把立绘内联两遍）
-    }
-    function back(name) { $$('.back', wrap).forEach(b => b.classList.toggle('is-active', b.dataset.back === name)); $$('.backswitch', wrap).forEach(b => b.classList.toggle('is-active', b.dataset.back === name)); const bs = $('.backswitch[data-back="' + name + '"]', wrap); if (bs) $('#music-info', wrap).textContent = 'BGM · ' + (bs.dataset.bgm || '生命流'); }
-    wrap.addEventListener('click', e => {
-      const t = e.target;
-      const st = t.closest('.stage-btn'); if (st) { show(st.dataset.stage); return; }
-      if (t.closest('.skins-btn')) { $('.skinswitcher-bg', wrap).classList.toggle('is-open'); $('.backswitcher-bg', wrap).classList.remove('is-open'); return; }
-      if (t.closest('.backswitcher-btn')) { $('.backswitcher-bg', wrap).classList.toggle('is-open'); $('.skinswitcher-bg', wrap).classList.remove('is-open'); return; }
-      const sk = t.closest('.skinswitch'); if (sk) { show(sk.dataset.stage, sk.dataset.color || ''); $('.skinswitcher-bg', wrap).classList.remove('is-open'); return; }
-      const bk = t.closest('.backswitch'); if (bk) { back(bk.dataset.back); $('.backswitcher-bg', wrap).classList.remove('is-open'); return; }
-      const pt = t.closest('.charpainter-title, .charcv-title, .chardyn-title'); if (pt && !t.closest('a')) { const panel = pt.parentElement, open = !panel.classList.contains('is-open'); $$('.charpainter, .charcv, .dynControler', wrap).forEach(x => x.classList.remove('is-open')); panel.classList.toggle('is-open', open); return; }
-      const cv = t.closest('.charcv-select'); if (cv) { $$('.charcv-select', wrap).forEach(s => { const on = s === cv; s.children[0].className = on ? 'charcv-check' : 'charcv-uncheck'; s.children[1].className = on ? 'charcv-check-content' : 'charcv-uncheck-content'; }); $('.charcv-text a', wrap).textContent = $('.charcv-name', cv).textContent; return; }
-      if (t.closest('.music-btn')) { $('.music-btn', wrap).classList.toggle('is-active'); return; }
-      if (t.closest('.voice-btn')) { const lines = $$('#voice-list .ak-voice'); const pick = lines[Math.floor(Math.random() * lines.length)]; const vb = $('.charvoice-wrapper', wrap); $('.charvoice-title', vb).textContent = 'Voice · ' + pick.querySelector('.ak-voice__title').firstChild.textContent.trim(); $('.charvoice-content', vb).textContent = pick.querySelector('.ak-voice__text').textContent; vb.classList.add('is-show'); clearTimeout(vb._t); vb._t = setTimeout(() => vb.classList.remove('is-show'), 4500); return; }
-      if (t.closest('.watchimg-btn')) { wrap.classList.toggle('is-watch'); return; }
-      if (t.closest('.fullscreen-btn')) { (document.fullscreenElement ? document.exitFullscreen() : box.requestFullscreen && box.requestFullscreen()); return; }
-      if (t.closest('.download-btn')) { window.open($('#charimg > img.img-in', wrap).src, '_blank'); return; }
-      if (!t.closest('.skinswitcher-bg, .backswitcher-bg')) { $$('.skinswitcher-bg, .backswitcher-bg', wrap).forEach(d => d.classList.remove('is-open')); }
+  /* ── 舞台（现网 Widget:CharinfoV2 原样，交互全在它自己的 charinfo_*.min.js 里）：这里只按正文列宽算 --op-stage-zoom；Widget 按父级宽度 <600 切手机版时自己 transform 缩放并给容器写内联 width，那时不插手 ── */
+  const stage = $('.charinfo-container');
+  if (stage) {
+    const fit = () => stage.style.setProperty('--op-stage-zoom', stage.style.width ? 1 : Math.min(1, stage.parentElement.clientWidth / 1024).toFixed(4));
+    fit(); new ResizeObserver(fit).observe(stage.parentElement);
+  }
+  /* ── 语音记录：播放钮 → 现网同源音频（torappu.prts.wiki/assets/audio/<语种目录>/<charId>/<编号>.mp3，与舞台「试听语音」/ 现网 VoiceTable 同一套地址；语种跟上面的 chip 走） ── */
+  const vlist = $('#voice-list');
+  if (vlist) {
+    const dir = { cn: 'voice_cn/char_010_chen', yue: 'voice_custom/char_010_chen_cn_topolect', jp: 'voice/char_010_chen', en: 'voice_en/char_010_chen', kr: 'voice_kr/char_010_chen' };
+    const audio = new Audio(); let cur = null;
+    const stop = () => { audio.pause(); if (cur) cur.classList.remove('is-playing'); cur = null; };
+    audio.addEventListener('ended', stop); audio.addEventListener('error', stop);
+    vlist.addEventListener('click', e => {
+      const b = e.target.closest('.ak-voice__play'); if (!b) return;
+      e.stopPropagation();   // preview.js 里有个给组件页演示用的 document 级 .is-playing 开关，这里已经真播了，别让它再翻一次
+      if (b === cur) { stop(); return; } stop();
+      const on = $('.op-voice-langs [data-voice-lang].is-active'), lang = on ? on.dataset.voiceLang : 'cn';
+      audio.src = 'https://torappu.prts.wiki/assets/audio/' + dir[lang] + '/' + $('.ak-code-id', b.parentElement).textContent.trim().toLowerCase() + '.mp3';
+      cur = b; b.classList.add('is-playing'); audio.play().catch(stop);
     });
-    wrap.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=button]')) { e.preventDefault(); e.target.click(); } });
-    $('.charimg-m-close').addEventListener('click', () => $('.charimg-m').classList.remove('is-show'));
-    document.addEventListener('fullscreenchange', () => box.classList.toggle('is-fullscreen', document.fullscreenElement === box));
   }
   /* ── 属性计算器（= Widget:PropertyCalc + CharEquipSelector）：等级内线性插值 + 信赖 + 潜能 + 模组 ── */
   const calc = $('#calc');
