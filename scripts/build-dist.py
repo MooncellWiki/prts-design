@@ -43,14 +43,17 @@ def css_inline(path):
     css = re.sub(r'url\("(?:\.\./preview/)?assets/([^"]+)"\)', lambda m: 'url("%s")' % img_uri('assets/' + m.group(1)), css)
     # fonts.css 的 url("fonts/…")：小的内联、大的指回 src/
     css = re.sub(r'url\("(fonts/[^"]+)"\)', lambda m: 'url("%s")' % font_uri(path, m.group(1)), css)
+    # vendor/ 下第三方 css 里相对自身的 url(img/…)（现网 charinfo 样式表引的 HUD 图标）
+    if path.is_relative_to(prev / 'vendor'):
+        css = re.sub(r'url\((img/[^)"\']+)\)', lambda m: 'url(%s)' % img_uri(str((path.parent / m.group(1)).relative_to(prev))), css)
     return css
 for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全部打包（_src/ 是页面源，不在此列）
     html = (prev / name).read_text(encoding='utf-8')
-    # css links
+    # css links（干员页里现网 Widget:CharinfoV2 的两条 <link> 带 media=…（桌面 / 手机各一份），保留到 <style media> 上）
     def repl_css(m):
         href = m.group(1); p = (prev / href).resolve()
-        return '<style>\n%s\n</style>' % css_inline(p)
-    html = re.sub(r'<link rel="stylesheet" href="([^"]+)">', repl_css, html)
+        return '<style%s>\n%s\n</style>' % (m.group(2) or '', css_inline(p))
+    html = re.sub(r'<link rel="stylesheet" href="([^"]+)"( media="[^"]*")?\s*/?>', repl_css, html)   # 现网 Widget 那两条是 XHTML 写法 " />"
     # js（preview.js、共用的 src/sidebar-tree.js / src/search-palette.js、search-mock.js 都内联）
     def repl_js(m):
         js = (prev / m.group(1)).resolve().read_text(encoding='utf-8')
@@ -61,9 +64,10 @@ for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全�
             amap = {r: img_uri('assets/' + r) for r in sorted(rels) if (prev / 'assets' / r).exists()}
             js = 'window.AKDS_ASSET_MAP = %s;\n%s' % (json.dumps(amap), js)
         return '<script>\n%s\n</script>' % js
-    html = re.sub(r'<script src="((?:\.\./src/|vendor/[\w./-]+/|)[\w.-]+\.js)"></script>', repl_js, html)   # vendor/：首页的 Swiper（preview/vendor/swiper/）也内联
+    html = re.sub(r'<script src="((?:\.\./src/|vendor/[\w./-]+/|)[\w.-]+\.js)"></script>', repl_js, html)   # vendor/：首页的 Swiper（preview/vendor/swiper/）、干员页的 jQuery + 现网 charinfo 脚本（preview/vendor/jquery/ charinfo/）也内联
+    html = re.sub(r"url\('(vendor/[^']+\.(?:TTF|ttf))'\)", lambda m: "url('data:font/ttf;base64,%s')" % base64.b64encode((prev / m.group(1)).read_bytes()).decode(), html)   # 干员页舞台 Widget 自带的 @font-face 'charname'（vendor/charinfo/Charname_min_*.TTF，200KB）
     # images
-    html = re.sub(r'(src|href|data-img)="(assets/[^"]+\.(?:png|jpg|jpeg|svg))"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)   # data-img：首页 Hero 候选列表里给脚本换图用的横幅
+    html = re.sub(r'(src|href|data-img)="((?:assets|vendor)/[^"]+\.(?:png|jpg|jpeg|svg))"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)   # data-img：首页 Hero 候选列表里给脚本换图用的横幅；vendor/：干员页舞台的 HUD 图标
     html = re.sub(r'url\((assets/[^)"]+\.(?:png|jpg|jpeg|svg))\)', lambda m: 'url(%s)' % img_uri(m.group(1)), html)   # 行内 style 里的 url()：首页入口图标（mask-image 走自定义属性 --i）
     # cross links between the two pages → keep relative (both in dist)
     # theme default note: artifacts render in viewer theme; keep script default
