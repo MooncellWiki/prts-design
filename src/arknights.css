@@ -371,17 +371,53 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-range--lg { --_cell: 28px; --_gap: 5px; }
 .ak-range--sm { --_cell: 14px; --_gap: 2px; --_bw: 1.5px; }   /* 技能卡侧槽 / 表格里用 */
 
-/* B10. 模组卡 */
-.ak-module { --_bar: var(--ak-fg); display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 14px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w-lg); border-image: linear-gradient(to right, var(--_bar) 8px, var(--ak-border) 8px) 1 1 1 8; }   /* 左侧粗色条（--_bar 可改：原型 ORIGINAL 用 --ak-fg-muted）与 1px 框直角拼接 */
+/* B10. 模组卡 —— 同现网 {{模组}}（Template:模组 输出的 .equiptemplate）一张卡装完：型号 + 名称 + 基础信息（故事，默认只露 3 行）+ 三阶段属性 / 特性追加 · 天赋更新 + 解锁任务 + 解锁需求与材料
+ *  结构：.ak-module[data-color=red] > .ak-module__img + .ak-module__main( .ak-module__head( .ak-module__type + h3.ak-module__name + [.ak-module__hint] ) + .ak-module__story + label.ak-module__more( input[type=checkbox][data-toggle-class=is-open][data-toggle-target=.ak-module__main] + .off + .on ) )
+ *                                   + .ak-module__body( table.ak-module__stages + .ak-module__tasks + table.ak-module__unlock )
+ *  --_bar = 型号色：模板参数 类型颜色 red / blue / green / yellow / purple → data-color（同游戏模组类型底色）；ORIGINAL 原型证章不写 = 灰。左侧粗色条与 1px 框直角拼接（tokens §Shape）。
+ *  「全文阅读」是 checkbox 开关（preview.js 的 data-toggle-class 约定），无 JS 时故事只露 3 行——正文仍在 DOM 里可搜索 */
+.ak-module { --_bar: var(--ak-fg-muted); display: grid; grid-template-columns: 96px 1fr; gap: 12px 16px; padding: 14px; margin: 0 0 var(--ak-space-4); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w-lg); border-image: linear-gradient(to right, var(--_bar) 8px, var(--ak-border) 8px) 1 1 1 8; }
+.ak-module[data-color="red"] { --_bar: var(--ak-red-600); } .ak-module[data-color="blue"] { --_bar: var(--ak-blue-500); } .ak-module[data-color="green"] { --_bar: var(--ak-green-500); } .ak-module[data-color="yellow"] { --_bar: var(--ak-yellow-600); } .ak-module[data-color="purple"] { --_bar: var(--ak-purple-500); }
 .ak-module__img { width: 96px; height: 96px; background: #1d1f20; display: grid; place-items: center; overflow: hidden; }
-.ak-module__img img { max-width: 90%; max-height: 90%; }
-.ak-module__type { font: 800 var(--ak-fs-h3)/1 var(--ak-font-display); letter-spacing: -.01em; }
-.ak-module__type small { font-family: var(--ak-font-label); font-size: .55em; color: var(--ak-fg-muted); margin-left: 6px; letter-spacing: .1em; }
-.ak-module__name { font-weight: 700; margin: 4px 0 6px; }
-.ak-module__stage { display: inline-flex; gap: 2px; }
+.ak-module__img img { max-width: 92%; max-height: 92%; }
+.ak-module__main { min-width: 0; }
+.ak-module__head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 8px; }
+.ak-module__type { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; background: var(--_bar); color: #fff; font: 800 var(--ak-fs-sm)/1 var(--ak-font-display); letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; }
+.ak-module__type img { height: 16px; width: auto; }
+.ak-module__type small { font-family: var(--ak-font-label); font-size: .72em; font-weight: 600; letter-spacing: .1em; opacity: .85; }
+.ak-module__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }
+.ak-module__hint { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-muted); cursor: help; border: 1px solid var(--ak-border-strong); padding: 3px 6px; }
+.ak-module__story { font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); line-height: 1.7; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.ak-module__main.is-open .ak-module__story { display: block; -webkit-line-clamp: unset; }
+.ak-module__story p { margin: 0 0 .6em; } .ak-module__story p:last-child { margin: 0; }
+.ak-module__more { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-link); cursor: pointer; }
+.ak-module__more > input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ak-module__more > input:checked ~ .off, .ak-module__more > input:not(:checked) ~ .on { display: none; }
+.ak-module__more:hover { text-decoration: underline; }
+.ak-module__body { grid-column: 1 / -1; display: grid; gap: 12px; }
+.ak-module__stages, .ak-module__unlock { width: 100%; border-collapse: collapse; font-size: var(--ak-fs-sm); line-height: 1.6; border: 1px solid var(--ak-border); }
+.ak-module__stages th, .ak-module__stages td, .ak-module__unlock th, .ak-module__unlock td { padding: 8px 10px; border-top: 1px solid var(--ak-border-subtle); vertical-align: middle; text-align: left; }
+.ak-module__stages thead th, .ak-module__unlock thead th { background: var(--ak-bg-surface-2); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); white-space: nowrap; }
+.ak-module__stages tbody tr:first-child > *, .ak-module__unlock tbody tr:first-child > * { border-top: 0; }
+.ak-module__stages .lv, .ak-module__unlock .lv { width: 96px; white-space: nowrap; }
+.ak-module__stages .stats { width: 150px; }
+.ak-module__lv { display: inline-flex; align-items: center; gap: 8px; font: 800 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .1em; }
+.ak-module__lv > i { display: inline-flex; gap: 2px; }
+.ak-module__lv > i > b { width: 12px; height: 6px; background: var(--ak-bg-surface-3); }
+.ak-module__lv > i > b.on { background: var(--_bar); }
+.ak-module__stats { display: flex; flex-wrap: wrap; gap: 2px 12px; font-variant-numeric: tabular-nums; }
+.ak-module__stats > span { white-space: nowrap; }   /* 「攻击 +50」是一个整体，换行只在项与项之间 */
+.ak-module__kicker { display: inline-block; margin-right: 6px; padding: 3px 6px; vertical-align: 1px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font: 700 10px/1 var(--ak-font-label); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+.ak-module__tasks { padding: 8px 12px; background: var(--ak-bg-surface-2); font-size: var(--ak-fs-sm); }
+.ak-module__tasks > ul { margin: 4px 0 0; padding-left: 18px; }
+.ak-module__tasks li { margin: 2px 0; }
+.ak-module__req { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ak-module__req .ak-trust, .ak-module__req .ak-elite { font-size: var(--ak-fs-xs); }
+.ak-module__stage { display: inline-flex; gap: 2px; }   /* 兼容旧结构（三段进度条） */
 .ak-module__stage > i { width: 22px; height: 6px; background: var(--ak-bg-surface-3); }
 .ak-module__stage > i.on { background: var(--ak-accent); }
-.ak-module__mission { font-size: var(--ak-fs-xs); color: var(--ak-fg-secondary); }   /* 不再加左侧竖线：卡片本身已有粗色条，再画一道是重复分割 */
+.ak-module__mission { font-size: var(--ak-fs-xs); color: var(--ak-fg-secondary); }
+@media (max-width: 639px) { .ak-module { grid-template-columns: 64px 1fr; padding: 10px; } .ak-module__img { width: 64px; height: 64px; } .ak-module__stages .stats { width: auto; } .ak-module__stages .lv, .ak-module__unlock .lv { width: auto; } }
 
 /* B11. 语音条目 */
 .ak-voice { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: start; }

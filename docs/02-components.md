@@ -142,7 +142,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 属性面板 | `.ak-attrs --compact` `.ak-attr --accent __label __value` | Bender 数值 + overline 标签（EN + 中文） | ✅ |
 | 键值表 | `.ak-kv --boxed` | 信息栏：`dt` / `dd` 垂直居中（`align-content`），`--boxed` 的表头居中同现网 `th`；数字走正文字体（表格硬规则，`.ak-code-id` `.ak-trust` 落进 `dd` 由 B99 兜底） | ✅ |
 | 攻击范围 | `.ak-range --sm --lg` `style="--cols:N"` `i.self / i.on / i.off` | 同现网 prts.wiki `Widget:Range/*`：**自身格实心蓝、可攻击格灰色空心框、不在范围内的格不画**；默认格 22px + 间隙 4px（= 现网 26px 格距），只铺范围的外接矩形（`1-1` 就是 `--cols:2` 两格，不要补空格撑成 3×3）。`--sm` 给技能卡侧槽 / 信息行；颜色钩子 `--ak-range-self` / `--ak-range-cell` | ✅ |
-| 模组 | `.ak-module __img __type __name __stage __mission`（`--_bar` 改左侧色条色） | SWO-X 等型号用展示字；卡片左侧一道粗色条即分割，`__mission` 不再另画竖线 | ✅ |
+| 模组 | `.ak-module[data-color=red\|blue\|green\|yellow\|purple] > __img + __main( __head( __type(类型图标 + SWO-X) + h4.__name + __hint[data-ak-tip] ) + __story + label.__more(checkbox 开关 .is-open) ) + __body( table.__stages(td.lv > .ak-module__lv 三段条 · td.stats > .ak-module__stats · 特性 / 天赋列 用 .ak-module__kicker) + ul.__tasks + table.__unlock(.ak-module__req: .ak-trust / .ak-elite / 任务 tag + .ak-item-list) )`；旧的 `__stage __mission` 仍保留 | 同现网 {{模组}}（`.equiptemplate`）一张卡装完：型号 + 名称 + 说明 tooltip + 基础信息（故事默认 3 行，「全文阅读」是 checkbox，无 JS 也可搜索）+ 三阶段属性 / 特性追加 · 天赋更新 + 解锁任务 + 解锁需求与材料；`类型颜色` → `data-color`（游戏模组类型底色），原型证章不写 = 灰；左侧粗色条与 1px 框直角拼接 | ✅ |
 | 语音 | `.ak-voice __play.is-playing __title __lang __text __wave` | | ✅🧩 |
 | 档案 | `.ak-dossier.is-locked[data-unlock]` `__title __unlock`；`.ak-redacted` | 未解锁：模糊 + 斜纹 + 条件 | ✅ |
 | 剧情对话 | `.ak-dialogue` `dt/dd .narrator` | | ✅ |
