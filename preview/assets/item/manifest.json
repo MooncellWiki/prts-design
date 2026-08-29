@@ -368,5 +368,25 @@
   "name": "酮凝集",
   "iconId": "MTL_SL_KETONE2",
   "rarity": "TIER_2"
+ },
+ "3241": {
+  "name": "狙击芯片",
+  "iconId": "MTL_ASC_SNP1",
+  "rarity": "TIER_3"
+ },
+ "3242": {
+  "name": "狙击芯片组",
+  "iconId": "MTL_ASC_SNP2",
+  "rarity": "TIER_4"
+ },
+ "mod_update_token_1": {
+  "name": "数据增补条",
+  "iconId": "mod_update_token_1",
+  "rarity": "TIER_4"
+ },
+ "mod_update_token_2": {
+  "name": "数据增补仪",
+  "iconId": "mod_update_token_2",
+  "rarity": "TIER_5"
  }
 }

@@ -313,5 +313,5 @@ src/sidebar-tree.js  侧栏多层导航
 src/utilities.css    工具类
 src/index.css        本地预览汇总入口
 preview/_src/        预览站源：skeleton.html（皮肤骨架，只写一份）+ pages/{home,index,chrome,mediawiki,components,arknights,operator}.html（各页 front matter + 正文）
-preview/*.html       生成物（scripts/build-preview.py）：home 首页设计稿（信息结构取自现网首页；区块样式在页面自己的 <style> = TemplateStyles，「0. 页面级」那段是静态骨架的补丁——皮肤在首页的收敛行为已由 Skin:Arknights 内置，见 03 §3.4）· index 基础（理念 / 色彩 / 字体 / 装饰）· chrome 皮肤骨架 · mediawiki 内容样式 · components 通用组件 · arknights 方舟组件 · operator 干员页整页样例（陈 · gamedata 2.7.61）
+preview/*.html       生成物（scripts/build-preview.py）：home 首页设计稿（信息结构取自现网首页；区块样式在页面自己的 <style> = TemplateStyles，「0. 页面级」那段是静态骨架的补丁——皮肤在首页的收敛行为已由 Skin:Arknights 内置，见 03 §3.4）· index 基础（理念 / 色彩 / 字体 / 装饰）· chrome 皮肤骨架 · mediawiki 内容样式 · components 通用组件 · arknights 方舟组件 · operator 干员页整页样例（陈；现网「陈」页面 19 节一节不少，顶部直接复用现网 {{CharinfoV2}} 组件，见 03 §3.6）
 ```

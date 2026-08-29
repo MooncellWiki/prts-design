@@ -229,6 +229,44 @@ $wgFooterIcons = [
 ```
 若某枚通用徽章仍是原彩色，给 `#footer-icons` 加 `.ak-footer__icons--plate` 恢复浅色底板。
 
+## 3.6 干员页（现网模板 → 组件；`{{CharinfoV2}}` 直接复用）
+
+设计稿 `preview/operator.html`（陈）。现网「陈」页面的 wikitext 是 19 节模板调用——`{{异格干员}}` `{{CharinfoV2}}` `{{干员获得方式}}` `{{属性}}` `{{干员攻击范围}}` `{{天赋列表3}}` `{{潜能提升}}` `{{技能}}` `{{后勤技能}}` `{{精英化材料}}` `{{技能升级材料}}` `{{模组}}` `{{相关道具}}` `{{人员档案}}` `{{:陈/语音记录}}` `{{干员密录}}` `{{悖论模拟}}` `{{干员异格任务}}` `{{spineId}}` `{{干员导航}}`。新皮肤下**干员页的 wikitext 一字不改，章节一节不少**：改的是各模板输出的 HTML（换成设计系统组件）与 Widget 的样式表。
+
+| 现网（wikitext → 输出） | 新结构 | 说明 |
+|---|---|---|
+| `{{异格干员}}` → `.alter-operator-list` wikitable | `.op-alter`：黑标「异格一览」+ 原型 / 异格 `.ak-op-card--sm`（当前页 `.is-current`）+ `<details>` 说明 | 现网的 popup 说明改成就地展开 |
+| `{{CharinfoV2}}` → `{{#widget:charinfoV2}}` | **不动**：`.charinfo-container > #charinfo-wrapper` 的 DOM、`charinfo_*.js`、模板参数全部照旧；只把 Widget 里两条 `<link charinfo_*.min.css>` 换成 `src/charinfo.css` | 见下「CharinfoV2 怎么复用」 |
+| （新增）身份栏 | `.op-ident > dl.ak-kv--boxed`：代号（中 / 英 / 日）· 情报编号 · 序号 · 稀有度 / 职业 / 分支 / 位置 · 标签 · 所属（国家 / 组织 / 团队）· 画师 · 全语种配音 · 时装 | 舞台 HUD 之外的 `{{CharinfoV2}}` 参数（情报编号 / 日文名 / 序号 / 各语种 CV / 时装系列）现网并不显示，这里补齐；手机上 HUD 收起后它是主要信息 |
+| `{{干员获得方式}}` → wikitable + cbox 提示 | `dl.ak-kv--boxed` + `.ak-tag--yellow` + 一行 `.ak-chevrons` 链接 | |
+| `{{属性}}` → `Widget:CharEquipSelector` 模组下拉 + 附加属性表 + 四档属性表 + `Widget:PropertyCalc` 计算器 | `.op-calc`（`.ak-phase-tabs` + 裸 `<input>` `<select>`：等级 / 信赖 / 潜能 / 模组 + `.ak-attrs` HUD 读数）+ `wikitable.ak-compact`（精英0 1级 / 精英0 满级 / 精英1 满级 / 精英2 满级 / 信赖加成上限）+ `dl.ak-kv--boxed`（再部署 / 费用 / 阻挡 / 攻击间隔 / 所属势力 / 隐藏势力） | 计算器与模组选择合成一块：选了潜能，「潜能提升」节里对应格点亮 |
+| `{{干员攻击范围}}` → 三格 wikitable | `.op-ranges > .ak-range` ×3（精英零 / 一 / 二） | |
+| `{{天赋列表3}}` → wikitable + `Widget:Passages switch` | `table.ak-talent-table`：潜能开关 `.is-pot`（描述换成潜能版）+ **算法开关 `.is-calc`**（描述里每个加成项前露出 `.ak-calc--add/--mul/--fadd/--fmul` 四枚标记 + `tfoot` 图例行） | 同现网「潜能 / 算法」两个复选框 |
+| `{{潜能提升}}` → 五格 wikitable | `.ak-pot-list > .ak-pot`（图标 + 小标 + 效果；`.is-on` 由属性面板点亮） | |
+| `{{技能}}` ×3 → 表头 + 全等级 wikitable + 备注 | `.ak-skill-sheet`：表头（图标 / 名称 + 日 / 英名 / SP 芯片（tooltip 解释回复与触发方式）/ 开放阶段 / 范围 `.ak-range--sm`）+ `.ak-skill-table`（1–7 + 专精 Ⅰ–Ⅲ；列头芯片带 tooltip：初始 / 消耗 / 持续的定义）+ `__note`；术语与异常效果 = `.ak-rt-term.ak-tip--wide` | 现网的 `{{术语}}` / `{{异常效果}}` 弹窗 → 宽版 tooltip |
+| `{{后勤技能}}` → wikitable（条件 / 图标 / 技能 / 房间 / 描述） | `wikitable.ak-compact` + `.ak-elite`；图标位 `.ak-glyph-box` | 现网技能图标由 Cargo 查出，预览用线稿占位 |
+| `{{精英化材料}}` `{{技能升级材料}}` → wikitable | `.ak-materials`（1→2 … 6→7，`__divider` 写「达到精英阶段 1 后解锁」）+ 专精 `wikitable`（三技能 × 专精 Ⅰ–Ⅲ，同现网一张表对比） | 材料 `.ak-item--sm[data-rarity]` + tooltip 名称 |
+| `{{模组}}` ×N → `.equiptemplate` | `.ak-module[data-color]`：型号块（类型图标 + SWO-X）+ 名称 + 说明 tooltip + 基础信息（故事，默认 3 行，「全文阅读」checkbox 展开）+ 三阶段表（属性 / 特性追加 · 天赋更新）+ 解锁任务 + 解锁需求与材料（信赖 / 等级 / 任务 + `.ak-item-list`）；原型证章 = 同一张卡不带 `data-color` | `类型颜色` → `data-color`；`{{修正}}` → `.template-fix-mark` + `<references group=注>` |
+| `{{相关道具}}` → wikitable | `wikitable.ak-compact` + `.ak-item` | |
+| `{{人员档案}}` → 折叠 wikitable（9 段）+ 未获得时档案 | `.op-files`：左 `.ak-tabs--vertical`（9 项 + 英文小标；<768 横排）+ 右 `.ak-tabpanel > .ak-dossier`（基础档案 `.ak-kv`、综合体检 `.ak-attrs--compact`、其余段落；`__unlock` 写解锁条件）；未获得时档案 → `.ak-archive`（解锁条件 `.ak-stage-code`） | 游戏档案页的「左列表右正文」；全部 9 段都在 DOM 里 |
+| `{{:xx/语音记录}}`（`#voice-table-root` VoiceTable + `#voice-data-root` 多语种数据） | `.op-voice-langs`（语种 `.ak-chip`：普通话 / 方言 / 日 / 英 / 韩，带 CV 名）+ `.ak-voice-list > .ak-voice`（标题 / 语种徽标 / `__cond` 解锁条件 / 文件名 `.ak-code-id` / 文本 `data-cn data-jp data-en data-kr data-yue`） | 38 条全部列出；切语种只换文本 |
+| `{{干员密录}}` `{{悖论模拟}}` → 折叠 wikitable | `.ak-archive`：头（kicker + 标题 + 解锁条件 `.ak-elite` / `.ak-trust`）+ 体（文案）+ 脚（阅读密录 / 关卡 `.ak-stage` / 首通奖励 `.ak-item`） | |
+| `{{干员异格任务}}` → cbox + wikitable | `.ak-message--warning`（已删除、仅存档）+ `wikitable.ak-compact` + `.ak-item-list` + `.ak-chevrons` | |
+| `{{spineId}}`（SpineViewer） | `.op-spine`：黑色 16:9 网格舞台 + `.ak-btn--primary` 载入 | |
+| `{{干员导航}}` | `.navbox`（L1 基线） | |
+
+**CharinfoV2 怎么复用**（`src/charinfo.css` 文件头也有一份）：
+
+- Widget 里 `<link rel="stylesheet" href="//static.prts.wiki/charinfo/charinfo_20250518.min.css" media="(min-width:600px)">` + `charinfom_*.min.css` 两行换成一份 `charinfo.css`。不再按 600px 切两份：舞台仍是 1024×576 的固定坐标系（立绘 x / y / 缩放由模板参数给、JS 定位），整块按容器宽度 `transform: scale(var(--charinfo-scale))`；≤639 藏掉画师 / CV / 职业芯片 / BGM 面板，阶段页签与名字牌放大回来，其余信息由正文流的 `.op-ident` 承担。
+- JS 三处小改（预览页脚本就是按这套写的最小实现，可对照）：① resize 处一句 `container.style.setProperty('--charinfo-scale', container.clientWidth / 1024)`，替代原来算 wrapper top / left / transform 的那段；② 选中态改加类——`.stage-btn.is-active` `.skins-btn.is-active` `.skinswitch.is-active` `.backswitch.is-active`（原来靠 `.stage-btn-blue` 换一张蓝图标 + 内联 color）；③ 面板 / 抽屉开合改加类——`.charpainter.is-open` `.charcv.is-open` `.skinswitcher-bg.is-open` `.backswitcher-bg.is-open` `.charvoice-wrapper.is-show` `.charinfo-wrapper.is-watch`（原来内联 height / right / opacity）。
+- 不再需要 `charname` 自定义字体（`Charname_min_*.TTF`）：名字牌 = 思源黑体 900 + 左缘 6px 青条，英文名 Novecento，星级用游戏原图。
+- `char_info` / `charimg_params` / `charskin_params` / `back_list` 的数据结构不变；时装主色（`时装N颜色`）现在染的是 `.back-skincolor`（multiply 叠在场景上）与抽屉条目左缘的 6px 色条；HUD 面板一律黑玻璃（同页眉），无圆角 / 光晕 / 描边字 / 斜体英文。
+- 两套主题下舞台都是黑的（它是游戏画面，不是纸面），只有外框 1px 读 `--ak-border`。
+
+**皮肤这半**：无——干员页不需要皮肤层的特殊处理，标题 / 目录 / 动作簇照常（目录自动收 19 个 h2 + 技能 / 模组的 h3）。
+
+**页面这半**：`.op-*` 的几条排布规则归各模板的 TemplateStyles（`Template:异格干员/styles.css`、`Template:属性/styles.css`、`Template:人员档案/styles.css`、语音记录 / SpineViewer 各自的），预览页把它们合在页面的一个 `<style>` 里；属性计算器 / 语音语种切换 / 舞台交互的脚本，生产环境分别是 `Widget:PropertyCalc`、VoiceTable、charinfo JS——预览页脚本只是演示这些交互在新结构上怎么接。
+
 ## 4. 明暗主题（clientPrefs）
 
 - HTML 类：`skin-theme-clientpref-os | -day | -night`（与 Vector 2022 一致；MW 核心 `mediawiki.page.ready` 在 `<html>` 上读写 cookie/localStorage `mwclientpreferences`）。
