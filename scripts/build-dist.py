@@ -20,7 +20,10 @@ def img_uri(rel):
         uri = 'data:%s;base64,' % mime + base64.b64encode(p.read_bytes()).decode()
         cache[rel] = uri; return uri
     im = Image.open(p).convert('RGBA')
-    if max(im.size) > MAX: im.thumbnail((MAX, MAX), Image.LANCZOS)
+    # 按显示尺寸定上限：小图标（道具 ≤ 56px / 潜能 · 精英 · 专精 · 稀有度 · 分支 ≤ 28px）128 够 2x，同一枚道具在干员页里会重复内联十几次，256 会把包撑到 15MB；
+    # 干员页舞台素材（立绘 / 势力 logo，透明 png）256 在 1024×576 的舞台上会糊，压到 720；场景图是 jpg，走上面那条原样内联
+    cap = 720 if rel.startswith('assets/charinfo/') else 128 if rel.startswith(('assets/item/', 'assets/potential/', 'assets/elite/', 'assets/specialized/', 'assets/rarity/', 'assets/subprofession/')) else MAX
+    if max(im.size) > cap: im.thumbnail((cap, cap), Image.LANCZOS)
     buf = io.BytesIO(); im.save(buf, 'PNG', optimize=True)
     uri = 'data:image/png;base64,' + base64.b64encode(buf.getvalue()).decode()
     cache[rel] = uri; return uri
