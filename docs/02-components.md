@@ -88,7 +88,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | Section heading | `.ak-heading` | `--stack --lg --underline`；`__title __en __aside` | ✅ |
 | Tabs | `.ak-tabs` `.ak-tab` `.ak-tabpanel` | `--pill --block --vertical` | ✅🧩 |
 | Message | `.ak-message` | `--success --warning --danger --neutral --accent --banner --stripes` | ✅ |
-| Tooltip | `[data-ak-tip]` `.ak-tooltip` `.ak-term` | CSS-only + JS 增强 | ✅ |
+| Tooltip | `[data-ak-tip]` `.ak-tooltip` `.ak-term`；`.ak-tip--wide`（允许折行、最宽 280，给术语 / 异常效果那种一两句话的解释） | CSS-only + JS 增强。**闲置时气泡收成 0 宽**（`max-width: 0; overflow: hidden`，不只是 `opacity: 0`）：透明气泡仍占布局，靠近右缘的长提示会把文档撑出横向滚动，手机上整页跟着缩小——干员页 130 枚 tooltip 就是这么发现的；悬停 / 聚焦再放开 | ✅ |
 | Popover | `.ak-popover` | | ✅🧩 |
 | Dropdown / Menu | `.ak-dropdown` `.ak-menu` | `details/summary` 原生 | ✅ |
 | Dialog | `.ak-dialog` `<dialog>` | `--sm --lg --full`；`__head __body __foot` | ✅🧩 |

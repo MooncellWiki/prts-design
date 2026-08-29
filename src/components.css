@@ -187,10 +187,14 @@
 
 /* ═══ Tooltip / Popover (CSS-only via data-tip; JS 版由 gadget 增强) ═══ */
 [data-ak-tip] { position: relative; }
+/* 闲置时把气泡收成 0 宽（max-width: 0 + overflow: hidden）而不只是 opacity: 0：透明的气泡仍占布局，靠近右缘的一条长提示会把文档撑出横向滚动——
+ * 手机上只要有任何元素横向溢出，Chrome 就把布局视口撑宽、整页缩小，fixed 元素被推到可见区外（见 02 §命名与约定）。悬停 / 聚焦时再放开宽度，淡入照旧 */
 [data-ak-tip]::after { content: attr(data-ak-tip); position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translate(-50%, 4px);
-  background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-xs); line-height: 1.4; padding: 5px 8px; white-space: nowrap;
+  background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-xs); line-height: 1.4; padding: 0; white-space: nowrap; max-width: 0; overflow: hidden;
   opacity: 0; pointer-events: none; transition: opacity var(--ak-dur-fast), transform var(--ak-dur-fast); z-index: var(--ak-z-tooltip); }
-[data-ak-tip]:hover::after, [data-ak-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+[data-ak-tip]:hover::after, [data-ak-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); max-width: none; padding: 5px 8px; }
+[data-ak-tip].ak-tip--wide::after { white-space: normal; width: max-content; text-align: left; line-height: 1.55; }   /* 术语 / 异常效果那种一两句话的解释：允许折行、最宽 280 */
+[data-ak-tip].ak-tip--wide:hover::after, [data-ak-tip].ak-tip--wide:focus-visible::after { max-width: 280px; }
 .ak-tooltip { position: absolute; z-index: var(--ak-z-tooltip); background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); padding: 6px 10px; font-size: var(--ak-fs-xs); max-width: 280px; box-shadow: var(--ak-shadow-md); }
 .ak-popover { position: absolute; z-index: var(--ak-z-dropdown); min-width: 220px; max-width: 360px; background: var(--ak-bg-surface); color: var(--ak-fg);
   border: 1px solid var(--ak-border); border-top-width: 2px; border-image: linear-gradient(var(--ak-accent) 2px, var(--ak-border) 2px) 2 1 1 1; box-shadow: var(--ak-shadow-lg); padding: var(--ak-space-3) var(--ak-space-4); font-size: var(--ak-fs-sm); }
