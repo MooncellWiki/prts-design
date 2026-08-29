@@ -307,6 +307,7 @@ src/base.css         MW 内容样式（.mw-parser-output、wikitable、toc、tab
 src/components.css   通用组件（.ak-btn/.ak-tag/.ak-card/.ak-panel/.ak-tabs/.ak-message/…）
 src/arknights.css    方舟装饰 + 游戏数据组件（.ak-rarity/.ak-op-card/.ak-skill/…）
 src/skin.css         皮肤骨架（页眉/侧栏/页面动作簇/TOC/页脚/搜索面板/响应式）
+src/charinfo.css     干员页「干员信息」舞台 = 现网 Widget:CharinfoV2 的皮肤版样式表（同一套 DOM / 类名，只换皮；Widget 自己链，不进皮肤模块，见 03 §3.6）
 src/search-palette.js 悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
 src/sidebar-tree.js  侧栏多层导航
 src/utilities.css    工具类

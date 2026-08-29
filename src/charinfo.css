@@ -1,0 +1,208 @@
+/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS · charinfo.css — 干员页「干员信息」舞台 = prts.wiki 现网 Widget:CharinfoV2 的皮肤版样式表
+ *
+ *  现网：{{CharinfoV2}} → {{#widget:charinfoV2}} 输出 .charinfo-container > #charinfo-wrapper（1024×576 的绝对定位舞台）
+ *        + static.prts.wiki/charinfo/charinfo_*.min.js（定位立绘、切换精英 / 时装 / 场景、试听语音、BGM、画师 / CV 折叠）。
+ *  这份文件按**同一套 DOM 与类名**重写外观，用来替换 static.prts.wiki/charinfo/charinfo_*.min.css（桌面）+ charinfom_*.min.css（手机）；
+ *  模板 {{CharinfoV2}} 的参数、Widget 的 DOM、JS 都不动——干员页的这一块直接复用现网组件，只换皮：
+ *    · 舞台仍是 1024×576 的固定坐标系（立绘 x / y / 缩放由模板参数给、JS 定位），整块按容器宽度 transform: scale() 缩放：
+ *      容器 .charinfo-container 恒 16:9，JS 只需设 --charinfo-scale = 容器宽 / 1024（预览页脚本 / 现网 JS 的 resize 处各一行）
+ *    · HUD 面板一律「黑玻璃」——同页眉：rgba(8,9,10,.72) + 毛玻璃 + 1px 亮线，直角，无圆角 / 光晕 / 描边字 / 斜体英文；
+ *      选中 = 左侧青条 + 青字（游戏 selected_back），拉丁小标用 Bender，中文用思源
+ *    · 两套主题下舞台都是黑的（它是游戏画面，不是纸面），只有外框 1px 读 --ak-border
+ *    · 状态类：.is-active（阶段 / 时装页签、当前时装）· .is-open（画师 / CV 面板、时装 / 场景抽屉、场景按钮）· .is-show（语音气泡）
+ *      · .is-watch（看图模式：藏起所有 HUD）——现网 JS 用内联 style 切 opacity / height / right，皮肤版建议改成加类（见 docs/03 §3.6）
+ *  依赖：tokens.css（字体 / 青色 / 缓动令牌）
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ═══ 0. 容器与缩放 ═══ */
+.charinfo-container { --charinfo-scale: 1; --_glass: rgba(8, 9, 10, .72); --_line: rgba(255, 255, 255, .18); --_fg: #f2f2f2; --_fg-2: rgba(255, 255, 255, .62);
+  position: relative; box-sizing: border-box; width: 100%; aspect-ratio: 16 / 9; margin: 0 0 var(--ak-space-4); overflow: hidden; background: #0f0f10; border: 1px solid var(--ak-border); }
+.charinfo-wrapper { position: absolute; left: 0; top: 0; width: 1024px; height: 576px; overflow: hidden; transform-origin: 0 0; transform: scale(var(--charinfo-scale));
+  background: #0f0f10; color: var(--_fg); font: 400 14px/1.4 var(--ak-font-body); user-select: none; -webkit-font-smoothing: antialiased; }
+.charinfo-wrapper *, .charinfo-wrapper *::before, .charinfo-wrapper *::after { box-sizing: border-box; }
+.charinfo-wrapper img { -webkit-user-drag: none; }
+.charinfo-wrapper a { color: inherit; text-decoration: none; }
+.charinfo-wrapper a:hover { color: var(--ak-cyan-500); }
+.charinfo-wrapper [hidden] { display: none !important; }
+
+/* ═══ 1. 场景 / 势力水印 / 立绘 ═══ */
+.charinfo-wrapper .back-wrapper { position: absolute; inset: 0; z-index: 0; background: #0f0f10; }
+.charinfo-wrapper .back { position: absolute; inset: 0; opacity: 0; transition: opacity var(--ak-dur-slow) var(--ak-ease); }
+.charinfo-wrapper .back.is-active { opacity: 1; }
+.charinfo-wrapper .back > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.charinfo-wrapper .back-skincolor { position: absolute; inset: 0; z-index: 1; opacity: 0; mix-blend-mode: multiply; transition: opacity var(--ak-dur-slow); }   /* 时装主色（模板参数 时装N颜色）染场景，JS 设 background-color + 开关 .is-active */
+.charinfo-wrapper .back-skincolor.is-active { opacity: .55; }
+.charinfo-wrapper .char-logo { position: absolute; left: 24px; top: 88px; width: 256px; height: 256px; z-index: 1; opacity: .2; pointer-events: none; }
+.charinfo-wrapper .charlogo-def, .charinfo-wrapper .charlogo-skin { position: absolute; inset: 0; }
+.charinfo-wrapper .charlogo-def-img, .charinfo-wrapper .charlogo-img { width: 100%; height: 100%; background: center / contain no-repeat; }
+.charinfo-wrapper .mobile-controler { position: absolute; inset: 0; z-index: 2; }
+.charinfo-wrapper .charimg-wrapper { position: absolute; width: 512px; height: 512px; transform-origin: 0 0; }   /* left / top / scale = 模板的 坐标x / 坐标y / 缩放，JS 写内联 */
+.charinfo-wrapper #charimg, .charinfo-wrapper #charimg-dyn { position: absolute; inset: 0; width: 512px; height: 512px; }
+.charinfo-wrapper #charimg > img { position: absolute; left: 0; top: 0; width: 512px; height: 512px; object-fit: contain; transition: opacity var(--ak-dur-normal) var(--ak-ease); }
+.charinfo-wrapper .img-out { opacity: 0; pointer-events: none; }
+.charinfo-wrapper .img-in { opacity: 1; }
+.charinfo-wrapper .dyn-bg, .charinfo-wrapper .dyn-fg { position: absolute; inset: 0; background-size: 100% 100%; }
+.charinfo-wrapper #charimg-dyn canvas { position: absolute; left: 0; top: 0; }
+.charinfo-wrapper .charimg-mask { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, .5) 100%); }   /* 底部压暗一层，HUD 面板不赌画面 */
+
+/* ═══ 2. 黑玻璃面板的公共长相 ═══ */
+.charinfo-wrapper .stage-btn, .charinfo-wrapper .skins-btn, .charinfo-wrapper .pro-btn, .charinfo-wrapper .backswitcher-btn,
+.charinfo-wrapper .control-btns > div, .charinfo-wrapper .music-btn, .charinfo-wrapper .hiddenchar-btn,
+.charinfo-wrapper .charclass-img, .charinfo-wrapper .branch-wrapper, .charinfo-wrapper .char-pos, .charinfo-wrapper .char-tag-wrapper,
+.charinfo-wrapper .charname-wrapper, .charinfo-wrapper .charpainter, .charinfo-wrapper .charcv, .charinfo-wrapper .dynControler, .charinfo-wrapper .charvoice-wrapper {
+  background: var(--_glass); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border: 1px solid var(--_line); }
+
+/* ═══ 3. 左上：精英阶段 / 时装 / 场景 ═══ */
+.charinfo-wrapper .top-btns { position: absolute; left: 16px; top: 16px; z-index: 5; display: flex; align-items: flex-start; gap: 8px; }
+.charinfo-wrapper .stage-btn-wrapper { display: flex; gap: 8px; }
+.charinfo-wrapper .stage-btn, .charinfo-wrapper .skins-btn, .charinfo-wrapper .pro-btn { position: relative; display: grid; grid-template-columns: 24px auto; grid-template-rows: auto auto; column-gap: 8px; row-gap: 1px; align-items: center; height: 42px; padding: 0 14px 0 10px; cursor: pointer; transition: background var(--ak-dur-fast), border-color var(--ak-dur-fast); }
+.charinfo-wrapper .stage-btn:hover, .charinfo-wrapper .skins-btn:hover, .charinfo-wrapper .pro-btn:hover { background: rgba(255, 255, 255, .12); }
+.charinfo-wrapper .stage-btn-img, .charinfo-wrapper .skins-btn-img { grid-row: 1 / span 2; width: 24px; height: 24px; display: grid; place-items: center; }
+.charinfo-wrapper .stage-btn-img img, .charinfo-wrapper .skins-btn-img img { width: 24px; height: 24px; object-fit: contain; }
+.charinfo-wrapper .stage-btn-blue, .charinfo-wrapper .skins-btn-blue { display: none; }   /* 旧样式靠换一张蓝色图标表示选中；皮肤版用色条 + 青字 */
+.charinfo-wrapper .stage-btn-en, .charinfo-wrapper .skins-btn-en { grid-column: 2; font: 700 9px/1 var(--ak-font-label); letter-spacing: .14em; text-transform: uppercase; color: var(--_fg-2); white-space: nowrap; }
+.charinfo-wrapper .stage-btn-text, .charinfo-wrapper .skins-btn-text { grid-column: 2; font: 700 14px/1.2 var(--ak-font-body); white-space: nowrap; }
+.charinfo-wrapper .stage-btn.is-active, .charinfo-wrapper .skins-btn.is-active { border-color: var(--ak-cyan-500); box-shadow: inset 3px 0 0 var(--ak-cyan-500); }
+.charinfo-wrapper .stage-btn.is-active .stage-btn-text, .charinfo-wrapper .skins-btn.is-active .skins-btn-text { color: var(--ak-cyan-500); }
+/* 更换场景：36px 图标框，悬停 / 打开时向右展开出文字（同现网） */
+.charinfo-wrapper .backswitcher-btn { position: relative; width: 42px; height: 42px; overflow: hidden; cursor: pointer; transition: width var(--ak-dur-normal) var(--ak-ease), background var(--ak-dur-fast); }
+.charinfo-wrapper .backswitcher-btn:hover, .charinfo-wrapper .backswitcher-btn.is-open { width: 124px; background: rgba(255, 255, 255, .12); }
+.charinfo-wrapper .backswitcher-img { position: absolute; left: 0; top: 0; width: 40px; height: 40px; display: grid; place-items: center; }
+.charinfo-wrapper .backswitcher-img img { width: 22px; height: 22px; object-fit: contain; }
+.charinfo-wrapper .backswitcher-text { position: absolute; left: 40px; top: 0; height: 40px; line-height: 40px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+
+/* ═══ 4. 右下：全屏 / 看图 / 下载 / 试听 / 立绘切换 / 动态立绘（竖排 36px 图标框，悬停向左展开） ═══ */
+.charinfo-wrapper .control-btns { position: absolute; right: 16px; bottom: 16px; z-index: 5; display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 6px; }
+.charinfo-wrapper .control-btns > div { position: relative; width: 36px; height: 36px; overflow: hidden; cursor: pointer; transition: width var(--ak-dur-normal) var(--ak-ease), background var(--ak-dur-fast); }
+.charinfo-wrapper .control-btns > div:hover { width: 124px; background: rgba(255, 255, 255, .12); }
+.charinfo-wrapper .control-btn-flex { position: absolute; left: 0; top: 0; width: 34px; height: 34px; display: grid; place-items: center; }
+.charinfo-wrapper .control-btn-flex img { width: 20px; height: 20px; object-fit: contain; }
+.charinfo-wrapper .control-btn-text { position: absolute; left: 36px; top: 0; height: 34px; line-height: 34px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.charinfo-wrapper .watchimg-btn-m, .charinfo-wrapper .img-switch-btn, .charinfo-wrapper .dyn-btn { display: none; }   /* 手机专用 / 多张立绘 / 有动态立绘时 JS 再放出来（加 .is-show） */
+.charinfo-wrapper .control-btns > div.is-show { display: block; }
+.charinfo-wrapper .back-btn, .charinfo-wrapper .hiddenchar-btn { display: none; }
+.charinfo-wrapper .back-btn.is-show { display: block; position: absolute; left: 16px; top: 16px; z-index: 6; }
+.charinfo-wrapper .hiddenchar-btn.is-show { display: block; position: absolute; left: 16px; top: 16px; z-index: 6; width: 36px; height: 36px; overflow: hidden; cursor: pointer; transition: width var(--ak-dur-normal) var(--ak-ease); }
+.charinfo-wrapper .hiddenchar-btn:hover { width: 124px; }
+.charinfo-wrapper .hiddenchar-btn-img { position: absolute; left: 0; top: 0; width: 34px; height: 34px; display: grid; place-items: center; }
+.charinfo-wrapper .hiddenchar-btn-text { position: absolute; left: 36px; top: 0; height: 34px; line-height: 34px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+
+/* ═══ 5. 底部居中：BGM ═══ */
+.charinfo-wrapper .music-btn { position: absolute; left: 50%; bottom: 16px; z-index: 5; transform: translateX(-50%); height: 32px; display: flex; align-items: center; cursor: pointer; padding-right: 12px; }
+.charinfo-wrapper .music-btn-inner { width: 30px; height: 30px; display: grid; place-items: center; flex: none; }
+.charinfo-wrapper .music-btn-inner img { width: 16px; height: 16px; object-fit: contain; }
+.charinfo-wrapper .music-btn-inner.music-loop img, .charinfo-wrapper .music-btn.is-active .music-btn-inner img { animation: ak-spin 4s linear infinite; }   /* 播放中：图标像唱片一样转 */
+.charinfo-wrapper .music-info { font: 700 11px/30px var(--ak-font-label); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; color: var(--_fg-2); }
+.charinfo-wrapper .music-btn.is-active .music-info { color: var(--ak-cyan-500); }
+
+/* ═══ 6. 左下：职业 / 分支 / 位置 / 标签 ═══ */
+.charinfo-wrapper .bottom-btns { position: absolute; left: 16px; bottom: 16px; z-index: 5; display: grid; grid-template-columns: 62px max-content max-content; grid-template-rows: 28px 28px; gap: 6px 8px; align-items: stretch; }
+.charinfo-wrapper .charclass-img { grid-row: 1 / span 2; width: 62px; height: 62px; display: grid; place-items: center; background: rgba(8, 9, 10, .85); }
+.charinfo-wrapper .charclass-img img { width: 44px; height: 44px; object-fit: contain; }
+.charinfo-wrapper .branch-wrapper { grid-column: 2; grid-row: 1; }
+.charinfo-wrapper .char-pos { grid-column: 3; grid-row: 1; }
+.charinfo-wrapper .char-tag-wrapper { grid-column: 2 / span 2; grid-row: 2; }
+.charinfo-wrapper .branch-wrapper, .charinfo-wrapper .char-pos, .charinfo-wrapper .char-tag-wrapper { display: inline-flex; align-items: center; padding: 0 10px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.charinfo-wrapper .branch-flex { display: flex; align-items: center; gap: 6px; }
+.charinfo-wrapper .branch-img { width: 18px; height: 18px; background: center / contain no-repeat; opacity: .9; }
+.charinfo-wrapper .char-pos-text a { font-weight: 700; }
+.charinfo-wrapper .char-tag-flex { display: flex; }
+.charinfo-wrapper .char-tag a { display: inline-block; padding: 0 8px; }
+.charinfo-wrapper .char-tag + .char-tag { border-left: 1px solid var(--_line); }
+.charinfo-wrapper .char-tag:first-child a { padding-left: 0; }
+.charinfo-wrapper .char-tag:last-child a { padding-right: 0; }
+
+/* ═══ 7. 左侧：名字牌（星级 · 英文名 · 中文名，左缘 6px 青条——标题色条的语言） ═══ */
+.charinfo-wrapper .charname-wrapper { position: absolute; left: 16px; bottom: 96px; z-index: 5; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; max-width: 460px; padding: 8px 16px 8px 14px; border-left: 6px solid var(--ak-cyan-500); }
+.charinfo-wrapper .charstar { order: 1; height: 14px; display: flex; }
+.charinfo-wrapper .charstar img { height: 14px; width: auto; }
+.charinfo-wrapper .charname-en { order: 2; font: 700 15px/1.1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--_fg-2); }
+.charinfo-wrapper .charname { order: 3; font: 900 40px/1.15 var(--ak-font-body); letter-spacing: .02em; color: #fff; }
+
+/* ═══ 8. 左侧：画师 / CV 折叠面板（阶段页签之下、名字牌之上；从上往下长，一次只展开一块——两块都展开会压到名字牌） ═══ */
+.charinfo-wrapper .paintercv-wrapper { position: absolute; left: 16px; top: 72px; z-index: 5; width: 264px; display: flex; flex-direction: column; gap: 6px; }
+.charinfo-wrapper .charpainter, .charinfo-wrapper .charcv, .charinfo-wrapper .dynControler { overflow: hidden; }
+.charinfo-wrapper .charpainter-title, .charinfo-wrapper .charcv-title, .charinfo-wrapper .chardyn-title { position: relative; height: 32px; display: flex; align-items: center; padding: 0 32px; cursor: pointer; }
+.charinfo-wrapper .charpainter-title:hover, .charinfo-wrapper .charcv-title:hover, .charinfo-wrapper .chardyn-title:hover { background: rgba(255, 255, 255, .08); }
+.charinfo-wrapper .charpainter-img, .charinfo-wrapper .charcv-img { position: absolute; left: 0; top: 0; width: 32px; height: 32px; display: grid; place-items: center; }
+.charinfo-wrapper .charpainter-img img, .charinfo-wrapper .charcv-img img { height: 16px; width: auto; }
+.charinfo-wrapper .charpainter-text-flex, .charinfo-wrapper .charcv-text-flex { flex: 1; text-align: center; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.charinfo-wrapper .charpainter-collapse, .charinfo-wrapper .charcv-collapse, .charinfo-wrapper .chardyn-collapse { position: absolute; right: 0; top: 0; width: 32px; height: 32px; display: grid; place-items: center; opacity: .6; }
+.charinfo-wrapper .charpainter-collapse img, .charinfo-wrapper .charcv-collapse img, .charinfo-wrapper .chardyn-collapse img { height: 12px; width: auto; transition: transform var(--ak-dur-fast); }
+.charinfo-wrapper .is-open > .charpainter-title .charpainter-collapse img, .charinfo-wrapper .is-open > .charcv-title .charcv-collapse img, .charinfo-wrapper .is-open > .chardyn-title .chardyn-collapse img { transform: rotate(45deg); }   /* ＋ → ×，不换图 */
+.charinfo-wrapper .painter-wrapper, .charinfo-wrapper .introduce-wrapper, .charinfo-wrapper .charcv-content, .charinfo-wrapper .chardyn-content { display: none; border-top: 1px solid var(--_line); }
+.charinfo-wrapper .is-open > .painter-wrapper, .charinfo-wrapper .is-open > .introduce-wrapper, .charinfo-wrapper .is-open > .charcv-content, .charinfo-wrapper .is-open > .chardyn-content { display: block; }
+.charinfo-wrapper .painter-wrapper { padding: 4px 10px; }
+.charinfo-wrapper .painter, .charinfo-wrapper .designer { display: flex; justify-content: space-between; align-items: center; height: 28px; font-size: 13px; }
+.charinfo-wrapper .painter { border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.charinfo-wrapper .painter-left, .charinfo-wrapper .designer-left { font: 700 10px/1 var(--ak-font-label); letter-spacing: .14em; text-transform: uppercase; color: var(--_fg-2); }
+.charinfo-wrapper .painter-name, .charinfo-wrapper .designer-name { font-weight: 700; }
+.charinfo-wrapper .introduce-wrapper { padding: 8px 10px 10px; }
+.charinfo-wrapper .introduce-title { display: inline-block; font: 700 10px/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; background: #fff; color: #1d1f20; padding: 4px 6px; margin-bottom: 6px; }   /* 反白小标签（游戏 btn_on） */
+.charinfo-wrapper .introduce-content { font-size: 12px; line-height: 1.65; color: rgba(255, 255, 255, .85); }
+.charinfo-wrapper .charcv-content, .charinfo-wrapper .chardyn-content { padding: 6px 10px 8px; }
+.charinfo-wrapper .charcv-select, .charinfo-wrapper .chardyn-select { display: flex; align-items: center; gap: 8px; height: 26px; margin-bottom: 4px; cursor: pointer; font-size: 12px; }
+.charinfo-wrapper .charcv-check, .charinfo-wrapper .charcv-uncheck, .charinfo-wrapper .chardyn-check, .charinfo-wrapper .chardyn-uncheck { flex: none; width: 14px; height: 14px; border: 1px solid rgba(255, 255, 255, .5); }
+.charinfo-wrapper .charcv-check, .charinfo-wrapper .chardyn-check { background: var(--ak-cyan-500); border-color: var(--ak-cyan-500); }
+.charinfo-wrapper .charcv-check-content, .charinfo-wrapper .charcv-uncheck-content, .charinfo-wrapper .chardyn-check-content, .charinfo-wrapper .chardyn-uncheck-content { flex: 1; display: flex; justify-content: space-between; align-items: center; height: 24px; padding: 0 8px; }
+.charinfo-wrapper .charcv-check-content, .charinfo-wrapper .chardyn-check-content { background: rgba(24, 209, 255, .16); box-shadow: inset 2px 0 0 var(--ak-cyan-500); }
+.charinfo-wrapper .charcv-select:hover .charcv-uncheck-content { background: rgba(255, 255, 255, .08); }
+.charinfo-wrapper .charcv-lang { font: 600 10px/1 var(--ak-font-label); letter-spacing: .08em; color: var(--_fg-2); }
+.charinfo-wrapper .charcv-name { font-weight: 700; }
+.charinfo-wrapper .dynControler { position: absolute; left: 16px; top: 72px; width: 264px; z-index: 5; display: none; }
+.charinfo-wrapper .dynControler.is-show { display: block; }
+
+/* ═══ 9. 语音气泡（试听语音 / 悬停立绘时出现） ═══ */
+.charinfo-wrapper .charvoice-wrapper { position: absolute; left: 50%; bottom: 60px; z-index: 5; width: 440px; transform: translateX(-50%); border-left: 4px solid var(--ak-cyan-500); opacity: 0; pointer-events: none; transition: opacity var(--ak-dur-normal) var(--ak-ease); }
+.charinfo-wrapper .charvoice-wrapper.is-show { opacity: 1; pointer-events: auto; }
+.charinfo-wrapper .charvoice-title { padding: 8px 12px 0; font: 700 10px/1 var(--ak-font-label); letter-spacing: .16em; text-transform: uppercase; color: var(--ak-cyan-500); }
+.charinfo-wrapper .charvoice-content { padding: 4px 12px 10px; font-size: 13px; line-height: 1.65; }
+
+/* ═══ 10. 右侧抽屉：时装 / 场景（从右缘滑入） ═══ */
+.charinfo-wrapper .skinswitcher-bg, .charinfo-wrapper .backswitcher-bg { position: absolute; top: 0; right: 0; bottom: 0; z-index: 6; width: 320px; transform: translateX(100%); transition: transform var(--ak-dur-normal) var(--ak-ease);
+  background: linear-gradient(-90deg, rgba(8, 9, 10, .94), rgba(8, 9, 10, .72)); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-left: 1px solid var(--_line); }
+.charinfo-wrapper .skinswitcher-bg.is-open, .charinfo-wrapper .backswitcher-bg.is-open { transform: none; }
+.charinfo-wrapper .skinswitcher-bg::before, .charinfo-wrapper .backswitcher-bg::before { content: attr(data-title); position: absolute; left: 16px; top: 22px; font: 700 11px/1 var(--ak-font-label); letter-spacing: .16em; text-transform: uppercase; color: var(--_fg-2); }
+.charinfo-wrapper .skinswitcher-wrapper, .charinfo-wrapper .backswitcher-wrapper { position: absolute; inset: 52px 16px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .3) transparent; }
+.charinfo-wrapper .skinswitch { --_c: #888; position: relative; display: grid; grid-template-columns: 6px 48px 1fr auto; align-items: center; column-gap: 10px; height: 56px; padding-right: 12px; background: rgba(255, 255, 255, .06); border: 1px solid var(--_line); cursor: pointer; transition: border-color var(--ak-dur-fast), background var(--ak-dur-fast); }
+.charinfo-wrapper .skinswitch:hover { background: rgba(255, 255, 255, .12); }
+.charinfo-wrapper .skinswitch.is-active { border-color: var(--ak-cyan-500); }
+.charinfo-wrapper .skincolor { height: 100%; background: var(--_c); }   /* 时装主色（模板参数 时装N颜色） */
+.charinfo-wrapper .skinhead { width: 48px; height: 48px; background: #1d1f20 center / cover no-repeat; }
+.charinfo-wrapper .skinhead img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.charinfo-wrapper .skinname { font-size: 13px; font-weight: 700; line-height: 1.2; }
+.charinfo-wrapper .skinseries { display: block; margin-top: 2px; font: 600 10px/1 var(--ak-font-label); letter-spacing: .08em; text-transform: uppercase; color: var(--_fg-2); }
+.charinfo-wrapper .skincheck { width: 14px; height: 14px; border: 1px solid rgba(255, 255, 255, .5); }
+.charinfo-wrapper .skinswitch.is-active .skincheck { background: var(--ak-cyan-500); border-color: var(--ak-cyan-500); }
+.charinfo-wrapper .backswitch { position: relative; height: 84px; flex: none; background: #1d1f20 center / cover no-repeat; border: 1px solid var(--_line); cursor: pointer; overflow: hidden; }
+.charinfo-wrapper .backswitch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.charinfo-wrapper .backswitch:hover, .charinfo-wrapper .backswitch.is-active { border-color: var(--ak-cyan-500); }
+.charinfo-wrapper .backswitch-name { position: absolute; left: 0; bottom: 0; padding: 3px 8px; background: rgba(8, 9, 10, .8); font-size: 12px; font-weight: 700; }
+.charinfo-wrapper .backswitch-name small { margin-left: 6px; font: 600 10px/1 var(--ak-font-label); letter-spacing: .08em; color: var(--_fg-2); }
+
+/* ═══ 11. 看图模式：藏起所有 HUD，只留画 ═══ */
+.charinfo-wrapper.is-watch .top-btns, .charinfo-wrapper.is-watch .bottom-btns, .charinfo-wrapper.is-watch .charname-wrapper, .charinfo-wrapper.is-watch .paintercv-wrapper,
+.charinfo-wrapper.is-watch .music-btn, .charinfo-wrapper.is-watch .charvoice-wrapper, .charinfo-wrapper.is-watch .charimg-mask, .charinfo-wrapper.is-watch .char-logo { display: none; }
+.charinfo-wrapper.is-watch .control-btns > div:not(.watchimg-btn) { display: none; }
+
+/* ═══ 12. 手机版立绘查看器（现网 .charimg-m，看图模式在手机上的替身）：全屏黑底 ═══ */
+.charimg-m { display: none; position: fixed; inset: 0; z-index: var(--ak-z-modal); background: #0f0f10; }
+.charimg-m.is-show { display: block; }
+.charimg-m .img-m { position: absolute; inset: 0; display: grid; place-items: center; overflow: auto; }
+.charimg-m .img-m img { max-width: 100%; max-height: 100%; }
+.charimg-m .charimg-m-close { position: absolute; right: 12px; top: 12px; z-index: 1; width: 36px; height: 36px; background: var(--_glass, rgba(8, 9, 10, .72)); border: 1px solid rgba(255, 255, 255, .18); cursor: pointer; }
+.charimg-m .charimg-m-close::before, .charimg-m .charimg-m-close::after { content: ""; position: absolute; left: 50%; top: 50%; width: 18px; height: 2px; background: #fff; transform: translate(-50%, -50%) rotate(45deg); }
+.charimg-m .charimg-m-close::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+/* ═══ 13. 窄屏：舞台整体按容器缩小（--charinfo-scale），HUD 面板在 0.3–0.5 倍下读不清——只留阶段页签与名字牌并放大回来，
+ *         其余信息由舞台下方正文流里的身份栏（干员页的 .op-ident）承担；画师 / CV / BGM 等交互在手机上进「看图模式」的替身 .charimg-m ═══ */
+@media (max-width: 639px) {
+  .charinfo-wrapper .paintercv-wrapper, .charinfo-wrapper .bottom-btns, .charinfo-wrapper .music-btn, .charinfo-wrapper .charvoice-wrapper, .charinfo-wrapper .char-logo { display: none; }
+  .charinfo-wrapper .top-btns { transform: scale(2); transform-origin: 0 0; }
+  .charinfo-wrapper .control-btns { transform: scale(2); transform-origin: 100% 100%; }
+  .charinfo-wrapper .charname-wrapper { bottom: 16px; transform: scale(2); transform-origin: 0 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .charinfo-wrapper .music-btn-inner.music-loop img, .charinfo-wrapper .music-btn.is-active .music-btn-inner img { animation: none; }
+}

@@ -128,6 +128,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 精英化 | `.ak-elite --lg`；`.ak-phase-tabs`（E0/E1/E2 选择器） | `arts/elite_hub` | ✅🧩 |
 | 潜能 / 专精 | `.ak-potential` `.ak-spec` `--bare` | `arts/potential_hub` `arts/specialized_hub` | ✅ |
 | 潜能提升一览 | `.ak-pot-list > .ak-pot(.is-on) > .ak-potential + (.ak-pot__label + 效果)` | 干员页「潜能提升」节，同现网 {{潜能提升}} 的五格表：潜能 2–6 各一格；属性面板选了潜能后脚本给已生效的格加 `.is-on`（顶部青条） | ✅🧩 |
+| 干员信息舞台（charinfo） | 现网 Widget:CharinfoV2 的类名原样：`.charinfo-container > #charinfo-wrapper > .back-wrapper / .char-logo / .charimg-wrapper / .top-btns(.stage-btn .skins-btn .backswitcher-btn) / .control-btns / .music-btn / .bottom-btns / .charname-wrapper / .paintercv-wrapper(.charpainter .charcv) / .charvoice-wrapper / .skinswitcher-bg / .backswitcher-bg`；状态 `.is-active .is-open .is-show .is-watch`；缩放 `--charinfo-scale` | **`src/charinfo.css`**（不进皮肤模块，由 Widget 自己链）：现网干员页顶部那块 1024×576 立绘舞台直接复用——DOM / JS / 模板参数不动，只换样式表：黑玻璃 HUD（同页眉）、直角、选中 = 青条 + 青字、名字牌 = 思源 900 + 6px 青条、时装 / 场景抽屉从右缘滑入；整块按容器宽度 `transform: scale()`，≤639 藏 HUD 只留页签与名字牌。JS 三处小改见 03 §3.6 | ✅🧩 |
 | 等级 / 信赖 | `.ak-level --badge` `.ak-trust` | 「LV 90」横排（LV 小标坐数字基线），`--badge` 24px 高与阶段页签 / 开关 / `.ak-trust` 同一条线；是主题灰块（`surface-3` + `fg`）不反白：反白留给「选中 / 可点」（阶段页签激活态、`btn--contrast`），读数块挨着它不能长得一样 | ✅ |
 | 干员卡 | `.ak-op-card --sm --lg --rail` `__portrait __rarity __prof __elite __name __sub`；`.ak-op-grid`；`.ak-op-row` | 游戏干员列表卡：头像 + 左上星 + 左下职业 + 右下精英 + 稀有度色顶线 | ✅ |
 | 道具 | `.ak-item --sm --lg --round .is-disabled` `__count.is-short`；`.ak-item-list` `.ak-item-inline` | 稀有度色边框 + 黑底数量角标（方框；切角变体已移除） | ✅ |
