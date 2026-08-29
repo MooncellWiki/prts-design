@@ -127,6 +127,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 职业 / 分支 | `.ak-prof --sm --lg --xl --box --outline`；`.ak-subprof`；`.ak-prof-label`；`[data-prof]` 8 色 | `arts/profession_large_hub` `ui_sub_profession_icon_hub` | ✅ |
 | 精英化 | `.ak-elite --lg`；`.ak-phase-tabs`（E0/E1/E2 选择器） | `arts/elite_hub` | ✅🧩 |
 | 潜能 / 专精 | `.ak-potential` `.ak-spec` `--bare` | `arts/potential_hub` `arts/specialized_hub` | ✅ |
+| 潜能提升一览 | `.ak-pot-list > .ak-pot(.is-on) > .ak-potential + (.ak-pot__label + 效果)` | 干员页「潜能提升」节，同现网 {{潜能提升}} 的五格表：潜能 2–6 各一格；属性面板选了潜能后脚本给已生效的格加 `.is-on`（顶部青条） | ✅🧩 |
 | 等级 / 信赖 | `.ak-level --badge` `.ak-trust` | 「LV 90」横排（LV 小标坐数字基线），`--badge` 24px 高与阶段页签 / 开关 / `.ak-trust` 同一条线；是主题灰块（`surface-3` + `fg`）不反白：反白留给「选中 / 可点」（阶段页签激活态、`btn--contrast`），读数块挨着它不能长得一样 | ✅ |
 | 干员卡 | `.ak-op-card --sm --lg --rail` `__portrait __rarity __prof __elite __name __sub`；`.ak-op-grid`；`.ak-op-row` | 游戏干员列表卡：头像 + 左上星 + 左下职业 + 右下精英 + 稀有度色顶线 | ✅ |
 | 道具 | `.ak-item --sm --lg --round .is-disabled` `__count.is-short`；`.ak-item-list` `.ak-item-inline` | 稀有度色边框 + 黑底数量角标（方框；切角变体已移除） | ✅ |
@@ -136,15 +137,16 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 技能（参数矩阵） | `.ak-skill-sheet` > `.ak-skill--wide` + `.ak-skill-sheet__tpl`（描述 + `.ak-var[data-var]` 区间）+ `table.ak-skill-matrix`（`thead th` 等级，`th.m-start` = 专精 Ⅰ；`tbody tr[data-var] > th` 参数名 + `td.is-up`）| 全等级表的**另一种对比法**（二选一）：等级横着放、参数竖着放，描述只写一遍，较上一级有变化的格子才亮、没变的淡掉——一眼看出哪一级涨了什么；悬停 / 点某一列整列高亮、描述里的变量位换成该级数值（preview.js 示例，无 JS 就是静态矩阵）。长描述、参数多于 3–4 个时用全等级表，短描述 / 手机优先时用矩阵 | ✅🧩 |
 | SP 标签 | `.ak-sp --attack --hit --passive` `.ak-sp-trigger --auto` `.ak-sp-cost` `.ak-sp-init` `.ak-sp-dur` | 游戏 `skill_sp_cost_bkg` 荧光绿；三枚芯片同高同内距，图形是单色 SVG mask（不用 emoji） | ✅ |
 | 技能等级选择 | `.ak-skill-levels`（1-7 + M1-3） | 只给需要「当前等级」的场合（配 `tr.is-hl`）；干员页正文不用 | ✅🧩 |
-| 天赋（条件表） | `table.ak-talent-table` `thead(th.name th.cond th.desc > label.ak-check.ak-talent-table__toggle > input[data-toggle-class=is-pot][data-toggle-target=table])` `tbody tr(td.name[rowspan] td.cond td.desc(.ak-talent-table__base + .ak-talent-table__pot))` | **干员页正文用这个**：同现网 prts.wiki，一张表列完各精英阶段 / 模组等级的条件，潜能加成用表头右侧开关切换（预览里 3 行 JS：勾选 → 表加 `.is-pot`；皮肤里归 Gadget） | ✅🧩 |
+| 天赋（条件表） | `table.ak-talent-table` `thead(th.name th.cond th.desc > label.ak-check.ak-talent-table__toggle > input[data-toggle-class=is-pot / is-calc][data-toggle-target=table])` `tbody tr(td.name[rowspan] td.cond td.desc(.ak-talent-table__base + .ak-talent-table__pot))` `tfoot > tr.ak-talent-table__legend`；描述里的算法标记 `i.ak-calc--add / --mul / --fadd / --fmul` | **干员页正文用这个**：同现网 prts.wiki，一张表列完各精英阶段 / 模组等级的条件；表头两枚开关——**潜能**（描述换成潜能版 `.is-pot`）与**算法**（`.is-calc`：每个加成项前露出四枚标记之一——绿 + 直接加算 / 蓝 + 直接乘算 / 橙 + 最终加算 / 橙 × 最终乘算，同现网的四枚小图标，`tfoot` 图例行同时出现）。预览里 3 行 JS：勾选 → 表加类；皮肤里归 Gadget | ✅🧩 |
 | 天赋（卡） | `.ak-talent __name __req __desc` | 列表 / 侧栏摘要 | ✅ |
 | 富文本 | `.ak-rt-*` / `.ba-*` | 见 01 §2.4 | ✅ |
 | 属性面板 | `.ak-attrs --compact` `.ak-attr --accent __label __value` | Bender 数值 + overline 标签（EN + 中文） | ✅ |
 | 键值表 | `.ak-kv --boxed` | 信息栏：`dt` / `dd` 垂直居中（`align-content`），`--boxed` 的表头居中同现网 `th`；数字走正文字体（表格硬规则，`.ak-code-id` `.ak-trust` 落进 `dd` 由 B99 兜底） | ✅ |
 | 攻击范围 | `.ak-range --sm --lg` `style="--cols:N"` `i.self / i.on / i.off` | 同现网 prts.wiki `Widget:Range/*`：**自身格实心蓝、可攻击格灰色空心框、不在范围内的格不画**；默认格 22px + 间隙 4px（= 现网 26px 格距），只铺范围的外接矩形（`1-1` 就是 `--cols:2` 两格，不要补空格撑成 3×3）。`--sm` 给技能卡侧槽 / 信息行；颜色钩子 `--ak-range-self` / `--ak-range-cell` | ✅ |
 | 模组 | `.ak-module[data-color=red\|blue\|green\|yellow\|purple] > __img + __main( __head( __type(类型图标 + SWO-X) + h4.__name + __hint[data-ak-tip] ) + __story + label.__more(checkbox 开关 .is-open) ) + __body( table.__stages(td.lv > .ak-module__lv 三段条 · td.stats > .ak-module__stats · 特性 / 天赋列 用 .ak-module__kicker) + ul.__tasks + table.__unlock(.ak-module__req: .ak-trust / .ak-elite / 任务 tag + .ak-item-list) )`；旧的 `__stage __mission` 仍保留 | 同现网 {{模组}}（`.equiptemplate`）一张卡装完：型号 + 名称 + 说明 tooltip + 基础信息（故事默认 3 行，「全文阅读」是 checkbox，无 JS 也可搜索）+ 三阶段属性 / 特性追加 · 天赋更新 + 解锁任务 + 解锁需求与材料；`类型颜色` → `data-color`（游戏模组类型底色），原型证章不写 = 灰；左侧粗色条与 1px 框直角拼接 | ✅ |
-| 语音 | `.ak-voice __play.is-playing __title __lang __text __wave` | | ✅🧩 |
+| 语音 | `.ak-voice-list > .ak-voice( __play.is-playing __title( __lang __cond .ak-code-id ) __text[data-cn data-jp data-en data-kr data-yue] __wave )` | `__cond` = 游戏内解锁条件（提升至精英阶段1以查看 …）；文本各语种挂在 data-*，语种 chip 只换文本（干员页脚本演示） | ✅🧩 |
 | 档案 | `.ak-dossier.is-locked[data-unlock]` `__title __unlock`；`.ak-redacted` | 未解锁：模糊 + 斜纹 + 条件 | ✅ |
+| 档案类卡片 | `.ak-archive > __head( __kicker + h4.__title + __req(.ak-overline + .ak-elite / .ak-trust / .ak-stage-code) ) + __body + __foot( .ak-stage / .ak-item / a.__play > .ak-voice__play )` | 干员密录 / 悖论模拟 / 未获得时档案——现网那几张「————xx」折叠 wikitable 的替身：头 = 面板头（左青条）+ 解锁条件，脚 = 阅读 / 关卡 / 首通奖励 | ✅ |
 | 剧情对话 | `.ak-dialogue` `dt/dd .narrator` | | ✅ |
 | 关卡 | `.ak-stage --hard --ex --story` `__code __name __meta`；`.ak-stage-code --hard`；`.ak-sanity` | 关卡号用展示字 | ✅ |
 | 敌人 | `.ak-enemy --boss --elite` `__img __code __name __level` | | ✅ |

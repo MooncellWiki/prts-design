@@ -157,6 +157,12 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 /* 信赖 */
 .ak-trust { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ak-font-label); font-weight: 700; }
 .ak-trust::before { content: ""; width: 12px; height: 12px; background: var(--ak-red-500); clip-path: polygon(50% 100%, 0 38%, 15% 10%, 50% 30%, 85% 10%, 100% 38%); }
+/* 潜能提升一览（干员页「潜能提升」节，同现网 {{潜能提升}} 的五格表）：潜能 2–6 各一格 = 图标 + 小标 + 效果；.is-on 标出当前潜能已生效的项（属性面板选了潜能后由脚本点亮） */
+.ak-pot-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--ak-border); border: 1px solid var(--ak-border); }
+.ak-pot { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: center; padding: 8px 12px; background: var(--ak-bg-surface); font-size: var(--ak-fs-sm); line-height: 1.4; }
+.ak-pot__label { display: block; margin-bottom: 2px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }
+.ak-pot.is-on { box-shadow: inset 0 3px 0 var(--ak-accent); }
+.ak-pot.is-on .ak-pot__label { color: var(--ak-accent); }
 
 /* B4. 干员卡（游戏内干员列表卡） */
 .ak-op-card { --_w: 128px; width: var(--_w); position: relative; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; text-decoration: none; color: var(--ak-fg); display: block; transition: transform var(--ak-dur-normal) var(--ak-ease), border-color var(--ak-dur-normal), box-shadow var(--ak-dur-normal); }
@@ -202,6 +208,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-materials { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; align-items: center; }
 .ak-materials__label { font: 700 var(--ak-fs-xs)/1.2 var(--ak-font-label); text-transform: uppercase; letter-spacing: .06em; color: var(--ak-fg-muted); display: flex; align-items: center; gap: 6px; }
 .ak-materials__label img { height: 16px; filter: var(--ak-glyph-filter); }
+.ak-materials__divider { grid-column: 1 / -1; padding: 6px 0 2px; border-top: 1px dashed var(--ak-border-strong); font: 600 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); }   /* 「达到精英阶段1后解锁」这类分段说明，横跨两列 */
 
 /* B6. 技能（图标 + SP 类型 + 触发类型）
  *  结构：.ak-skill > .ak-skill__icon + <div>( .ak-skill__head( __name + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats( .ak-sp-cost .ak-sp-init ) ) [+ .ak-skill__aside] + .ak-skill__desc
@@ -316,7 +323,19 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-talent-table__pot { display: none; }
 .ak-talent-table.is-pot .ak-talent-table__base { display: none; }
 .ak-talent-table.is-pot .ak-talent-table__pot { display: inline; }
-@media (max-width: 639px) { .ak-talent-table .name { width: 72px; } .ak-talent-table .cond { width: auto; white-space: normal; } }
+/* 算法标记（现网「算法」开关）：勾上后描述里每个加成项前标出它进公式的方式——同现网的四枚小图标：绿 + 直接加算 · 蓝 + 直接乘算（直接乘算之间为加法计算）· 橙 + 最终加算 · 橙 × 最终乘算
+ *  结构：td.desc 里 <i class="ak-calc ak-calc--mul" title="直接乘算"></i> 紧贴数值；表头再挂一枚 label.ak-talent-table__toggle > input[data-toggle-class=is-calc]；tfoot > tr.ak-talent-table__legend 是图例行，只在 .is-calc 时显示 */
+.ak-calc { display: none; width: 14px; height: 14px; margin: 0 2px 0 1px; vertical-align: -2px; font: 800 11px/14px var(--ak-font-label); text-align: center; color: #fff; }
+.ak-calc--add { background: var(--ak-green-500); } .ak-calc--add::before { content: "+"; }
+.ak-calc--mul { background: var(--ak-blue-500); } .ak-calc--mul::before { content: "+"; }
+.ak-calc--fadd { background: var(--ak-orange-500); color: #1d1f20; } .ak-calc--fadd::before { content: "+"; }
+.ak-calc--fmul { background: var(--ak-orange-500); color: #1d1f20; } .ak-calc--fmul::before { content: "×"; }
+.ak-talent-table.is-calc .ak-calc, .ak-talent-table__legend .ak-calc { display: inline-block; }
+.ak-talent-table__legend { display: none; }
+.ak-talent-table.is-calc .ak-talent-table__legend { display: table-row; }
+.ak-talent-table__legend > td { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); background: var(--ak-bg-surface-2); }
+.ak-talent-table__legend > td > span { display: inline-flex; align-items: center; margin-right: 14px; white-space: nowrap; }
+@media (max-width: 639px) { .ak-talent-table .name { width: 72px; } .ak-talent-table .cond { width: auto; white-space: normal; } .ak-talent-table__toggle { float: none; display: inline-flex; margin: 4px 12px 0 0; } }
 
 /* 天赋（卡片式摘要：用于列表/侧栏；干员页正文用上面的条件表） */
 .ak-talent { padding: 10px 12px; border-left: var(--ak-bar-w) solid var(--ak-accent); background: var(--ak-bg-surface-2); margin-bottom: 8px; }
@@ -431,6 +450,10 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-voice__wave { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
 .ak-voice__wave > i { width: 2px; background: var(--ak-accent); height: 40%; }
 .is-playing ~ * .ak-voice__wave > i { animation: ak-bars 1s ease-in-out infinite; }
+.ak-voice__cond { font: 600 10px/1 var(--ak-font-label); letter-spacing: .06em; padding: 3px 5px; background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); white-space: nowrap; }   /* 解锁条件（提升至精英阶段1以查看 / 提升信赖至40%以查看） */
+.ak-voice-list { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: 0 0 var(--ak-space-4); }
+.ak-voice-list > .ak-voice:last-child { border-bottom: 0; }
+.ak-voice-list > .ak-voice:hover { background: var(--ak-bg-hover); }
 
 /* B12. 档案 / 剧情文本块（含未解锁遮罩） */
 .ak-dossier { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: 16px 20px; position: relative; font-size: var(--ak-fs-sm); line-height: 1.85; }
@@ -443,6 +466,25 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-dossier.is-locked::after { content: "🔒 " attr(data-unlock); position: absolute; inset: 44px 0 0; display: grid; place-items: center; background: repeating-linear-gradient(-45deg, transparent 0 8px, var(--ak-stripe-color) 8px 16px); font: 700 var(--ak-fs-sm)/1 var(--ak-font-body); color: var(--ak-fg-secondary); }
 .ak-redacted { background: var(--ak-fg); color: transparent; user-select: none; }
 .ak-redacted:hover { color: var(--ak-bg-canvas); }
+/* B12b. 档案类卡片（干员密录 / 悖论模拟 / 未获得时的情报资料 …）——现网「————干员密录」「————悖论模拟」那几张折叠 wikitable 的替身，与 .ak-dossier 同一张脸但多了解锁条件与页脚：
+ *  .ak-archive > .ak-archive__head( .ak-archive__kicker + .ak-archive__title + .ak-archive__req ) + .ak-archive__body + [.ak-archive__foot（关卡 / 奖励 / 播放 …）] */
+.ak-archive { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0 0 var(--ak-space-3); }
+.ak-archive__head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; min-height: 40px; padding: 6px 14px 6px 12px; background: var(--ak-bg-surface-2); border: 0 solid var(--ak-border); border-width: 0 0 1px var(--ak-bar-w); border-image: linear-gradient(to right, var(--ak-accent) 4px, var(--ak-border) 4px) 0 0 1 4; }
+.ak-archive__kicker { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); white-space: nowrap; }
+.ak-archive__title { font-weight: 800; font-size: var(--ak-fs-body); margin: 0; color: inherit; border: 0; padding: 0; }
+.ak-archive__title::after { display: none; }
+.ak-archive__req { margin-left: auto; display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-secondary); }
+.ak-archive__req > .ak-overline { margin-right: 2px; }
+.ak-archive__body { padding: 14px 16px; font-size: var(--ak-fs-sm); line-height: 1.85; }
+.ak-archive__body p { margin: 0 0 .8em; white-space: pre-line; }
+.ak-archive__body p:last-child { margin: 0; }
+.ak-archive__foot { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 20px; padding: 10px 16px; border-top: 1px solid var(--ak-border-subtle); background: var(--ak-bg-surface-2); font-size: var(--ak-fs-xs); }
+.ak-archive__foot > .ak-overline { margin-right: -10px; }
+.ak-archive__play { all: unset; display: inline-flex; align-items: center; gap: 10px; padding-right: 12px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); white-space: nowrap; }
+.ak-archive__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-archive__play:hover > .ak-voice__play { background: transparent; color: inherit; }
+.ak-archive__play:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.ak-archive__play > .ak-voice__play { pointer-events: none; }
 /* 剧情对话 */
 .ak-dialogue { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: var(--ak-fs-sm); }
 .ak-dialogue > dt { font-weight: 800; color: var(--ak-accent); text-align: right; }
