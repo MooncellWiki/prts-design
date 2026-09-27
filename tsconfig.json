@@ -1,0 +1,21 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["vite/client", "node"],
+    "strict": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@akds/vue": ["./vue/src/index.ts"]
+    }
+  },
+  "include": ["vue/**/*.ts", "vue/**/*.vue", ".storybook/**/*.ts", "site/.vitepress/**/*.ts", "site/.vitepress/**/*.vue", "tokens/**/*.ts", "scripts/**/*.ts"]
+}

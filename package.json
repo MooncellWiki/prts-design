@@ -1,0 +1,40 @@
+{
+  "name": "akds",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AKDS · 明日方舟网页设计系统（prts.wiki 皮肤）——令牌 / CSS / Vue 三层实现 + 文档站 + Storybook",
+  "type": "module",
+  "packageManager": "pnpm@12.4.2",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "tokens": "node tokens/build.ts",
+    "storybook": "storybook dev -p 6006",
+    "build:storybook": "storybook build -o _build/storybook",
+    "dev:docs": "vitepress dev site",
+    "build:docs": "vitepress build site",
+    "build:site": "bash scripts/build-site.sh _site",
+    "typecheck": "vue-tsc --noEmit",
+    "check:css-order": "node scripts/css-order.ts",
+    "verify:styles": "node scripts/verify/styles.ts"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/vue3-vite": "^10.6.0",
+    "@types/node": "^26.6.3",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "@vue/tsconfig": "^0.9.1",
+    "json5": "^2.2.3",
+    "puppeteer-core": "^25.12.0",
+    "storybook": "^10.6.0",
+    "style-dictionary": "^5.5.5",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.1",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.43",
+    "vue-component-meta": "^3.3.11",
+    "vue-tsc": "^3.3.11"
+  }
+}

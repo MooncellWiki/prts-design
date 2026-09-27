@@ -1,3 +1,10 @@
 .venv-build/
 __pycache__/
 .DS_Store
+node_modules/
+_build/
+_site/
+_verify/
+site/.vitepress/cache/
+site/.vitepress/dist/
+*.tsbuildinfo
