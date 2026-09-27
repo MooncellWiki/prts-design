@@ -378,6 +378,12 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-kv > dd > :last-child { margin-bottom: 0; }   /* 格子里最后一个块（ul / p / dl）不带正文的下外边距：base.css 的 .mw-parser-output ul:not(:where(…)) 是 (0,1,1)，页面上挂个 .ak-m-0 (0,1,0) 压不过它，「分支信息」格底下就多出 16px */
 .ak-kv--boxed { border: 1px solid var(--ak-border); }
 .ak-kv--boxed > dt { padding-left: 12px; text-align: center; background: var(--ak-bg-surface-2); }   /* 框住的那版：表头居中（同现网 th）；不带框的档案版标签列保持左对齐 */
+/* 内联版：两三对短值一行放下（所属势力 / 隐藏势力、获得方式 / 上线时间），不画格子——这种量级的内容竖着摆一行一格是空占地方。
+ *  写法 dl > div > dt + dd（HTML 允许 div 分组），对内 flex 对齐、对外 flex 换行；标签靠 muted 色和值分开，不加冒号。dt / dd 的 margin 同样要显式归零压掉正文规则 */
+.ak-kv--inline { display: flex; flex-wrap: wrap; gap: 4px 24px; border: 0; }
+.ak-kv--inline > div { display: flex; gap: 8px; align-items: center; }
+.ak-kv--inline dt { margin: 0; color: var(--ak-fg-muted); font-weight: 600; }
+.ak-kv--inline dd { margin: 0; }
 
 /* B9. 攻击范围格 —— 同现网 prts.wiki Widget:Range/* 的画法：自身格 = 实心蓝方块，攻击格 = 灰色 2px 空心框，不在范围内的格不画；
  *  格 22px + 间隙 4px（= 现网 26px 格距），只画范围的外接矩形（1-1 就是 1×2，不要补空格撑成 3×3）。
