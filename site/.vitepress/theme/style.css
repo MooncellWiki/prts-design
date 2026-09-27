@@ -53,7 +53,13 @@ html.dark {
   --vp-c-brand-1: var(--ak-theme-accent);
   --vp-c-brand-2: var(--ak-theme-accent);
   --vp-c-default-soft: var(--ak-chrome-hover);
+  /* 开关变量在 :root 上已按正文令牌解析好了，得在顶栏里重声明一次 */
+  --vp-input-switch-bg-color: var(--ak-chrome-field);
+  --vp-input-border-color: var(--ak-chrome-line-strong);
 }
+/* 外观开关的钮：默认是 --vp-c-neutral-inverse（亮色下白钮 + 顶栏浅色图标 = 看不见）；同 .ak-theme-toggle，强调色实底，明暗一致 */
+.VPNav .VPSwitch .check { background-color: var(--ak-theme-accent); box-shadow: none; }
+.VPNav .VPSwitch .check .icon [class^="vpi-"] { color: var(--ak-theme-accent-fg); }
 .VPNavBar,
 .VPNavBar.has-sidebar .content-body,
 .VPNavBar:not(.home.top) .content-body { background: var(--ak-chrome-bg-solid) !important; }
