@@ -5,11 +5,11 @@
 ## 分层总览
 
 ```
-L0  Tokens          令牌 / 主题 / Codex 桥接                         tokens.css
-L1  MW Content      wikitext 产物样式（编辑者不需知道设计系统存在）  base.css
-L2  Skin Chrome     皮肤骨架：黑色页眉/头图带/侧栏/页面头/TOC/页脚/移动端  skin.css
-L3  Core            通用组件（纯 CSS，可写入模板/TemplateStyles）     components.css
-L4  Arknights       方舟装饰 + 游戏数据组件                          arknights.css
+L0  Tokens          令牌 / 主题 / Codex 桥接                         tokens.css（生成物，源 tokens/src/）
+L1  MW Content      wikitext 产物样式（编辑者不需知道设计系统存在）  base/
+L2  Skin Chrome     皮肤骨架：黑色页眉/头图带/侧栏/页面头/TOC/页脚/移动端  chrome/
+L3  Core            通用组件（纯 CSS，可写入模板/TemplateStyles）     components/
+L4  Arknights       方舟装饰 + 游戏数据组件                          decor/ + arknights/
 L5  Patterns        页面模式：干员页/关卡页/首页/列表页              docs + preview
 ```
 
@@ -17,7 +17,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 ---
 
-## L1 · MediaWiki 内容（base.css）
+## L1 · MediaWiki 内容（base/）
 
 | 对象 | 选择器 | 设计 | 状态 |
 |---|---|---|---|
@@ -52,12 +52,12 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 ---
 
-## L2 · 皮肤骨架（skin.css）
+## L2 · 皮肤骨架（chrome/）
 
 | 组件 | 类 / MW 数据 | 说明 | 状态 |
 |---|---|---|---|
 | 页眉 | `.ak-header` `__logo __wordmark __search __tools` `__screen __tool __tool-label __burger __burger-icon` + `.ak-nav-cb` | 56px 粘性；**两套主题下都是黑色「终端」顶栏**（官网导航栏 / 游戏主界面顶栏 / 档案页顶部黑边），配色只读 `--ak-chrome-*`（`.ak-header` 内把 `--ak-fg / --ak-bg-* / --ak-border* / --ak-accent` 重映射过去，子组件自动跟随；旧的 `--dark` 变体已并入默认）。构件：`rgba(8,9,10,.9)` 底 + 毛玻璃 + 1px 亮线——这是一块压在头图顶端之上的**均匀**黑玻璃（头图从 y=0 铺起，见下一行），可读性由玻璃 alpha 保证，横向 / 纵向都不做渐变；`::before` 右侧半调网点场（`--ak-chrome-texture`）；`--ak-chrome-image` 顶栏角饰层（画在玻璃之上，只放深色低对比素材）；`__wordmark small` 标语用活动主色；工具悬停变活动主色；搜索触发器 = 32px 深色图标框 + 矩形浅条（打开时边框与图标框都变主色）；外观开关选中项 = 主色实底（亮暗一致，不反色）；`.ak-header a:visited { color: inherit }`（黑底上不走紫色已访问色）。**主行是与 `.ak-layout` 对齐的三列网格** `var(--ak-sidebar-w) minmax(0,1fr) auto`：品牌盖着侧栏列（无右侧分隔线）、搜索从正文列左缘起（≤560px，与面包屑 / 标题左缘同线）、工具靠右盖着目录列——页眉是三列各自的「列头」；1680 容器与布局同为 `border-box`，超宽时左右缘对齐。**页眉不放站点级主导航**：那 8 项与侧栏「菜单 › 通用」1:1 重复、没有哪个宽度只靠它、两处 active 打架，导航只由侧栏承担（MW 的 `data-portlets-first` 只在侧栏渲染）。**<1120**：主行回到 flex，只留 品牌 / 搜索 / ≡，工具（外观 / 通知 / 用户）在 `.ak-header__screen`（桌面 `display:contents`，窄屏 = ≡ 拉下、贴主行右下沿的 320px 黑色卡片，`position:absolute` 于 `.ak-header__inner`；纯 CSS 开合 `.ak-nav-cb` + `label.ak-header__burger`，不锁页面滚动；JS 补 Esc / 选中锚点 / 点卡片外 / 回到桌面宽度收起）。DOM 只一份，Echo / `#p-personal` id 不重复 | ✅ |
-| 头图 / 主题接口 | `.ak-keyart` `__inner` + `tokens.css §2d` 的 `--ak-theme-accent --ak-chrome-* --ak-keyart-* --ak-canvas-* --ak-logo-image` | `.ak-layout` 之上的通栏画（mustache 恒输出，`--ak-keyart-h: 0` 时不占位）：盒子上探一个页眉高（<1400 连二级栏）、`padding-top` 把内容压回页眉之下，于是画从页面顶端铺起、页眉玻璃压在它上面，黑框 + 画是一整块而不是两段裁切；`--ak-keyart-h` 是页眉之下可见的高度，`-position` / `-size` 相对整块算；底部按 `-fade` 渐隐进画布（`min(-fade, -h)` 兜住 0 高时不往页眉后画）；`-bg` 默认透明；`body.skin-akds` 背景叠 `--ak-canvas-image`。活动主题（Gadget / Common.css）只覆盖变量，示例 `preview/demo-theme.css`（侧栏 / 展示页「示例活动主题」按钮）。url() 须写绝对地址（Chromium 按使用处解析自定义属性里的相对 url） | ✅ |
+| 头图 / 主题接口 | `.ak-keyart` `__inner` + `tokens.css §2d` 的 `--ak-theme-accent --ak-chrome-* --ak-keyart-* --ak-canvas-* --ak-logo-image` | `.ak-layout` 之上的通栏画（mustache 恒输出，`--ak-keyart-h: 0` 时不占位）：盒子上探一个页眉高（<1400 连二级栏）、`padding-top` 把内容压回页眉之下，于是画从页面顶端铺起、页眉玻璃压在它上面，黑框 + 画是一整块而不是两段裁切；`--ak-keyart-h` 是页眉之下可见的高度，`-position` / `-size` 相对整块算；底部按 `-fade` 渐隐进画布（`min(-fade, -h)` 兜住 0 高时不往页眉后画）；`-bg` 默认透明；`body.skin-akds` 背景叠 `--ak-canvas-image`。活动主题（Gadget / Common.css）只覆盖变量，示例 `src/chrome/demo-theme.css`（侧栏 / 展示页「示例活动主题」按钮）。url() 须写绝对地址（Chromium 按使用处解析自定义属性里的相对 url） | ✅ |
 | 搜索（悬浮面板） | 触发器 `button.ak-search-trigger`（有 JS 时替换页眉里的 `form.ak-header__search`；无 JS 保留真表单）· 面板 `.ak-palette-backdrop` + `.ak-palette[role=dialog]` `__head( __back __icon __chip form.__form>#searchInput __clear __close __loading )` `__body>__viewport>__list[role=listbox]>__group>__label+__item[role=option]>__link( __thumb __text( __title __desc ) __meta )[+__actions]` `__empty( __empty-title __empty-desc __shortcuts>__shortcut )` `__foot( __foot-left __hints )` · 状态 `.has-query .has-mode .is-loading .is-closing`；核心 `search-palette.js`（与预览共用），数据源 `skin/resources/search-providers.js` / `preview/search-mock.js` | 参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是居中悬浮的「终端窗口」——直角、顶部 3px 青条、56px 输入行、结果区高度过渡、`--ak-bg-surface-2` 键位页脚；高亮行 = 左 2px 青条 + 淡青底（与侧栏当前项 / 菜单项同一语言）；命令模式用主色实底的矩形 chip；页眉真表单被**原样搬进面板**（`#searchform #searchInput` 保留 → Gadget / 无 JS 提交不受影响）。开：点触发器 / 手机图标 `.ak-header__search-toggle` / `/`、Ctrl(⌘)K、accesskey F；关：Esc（有字先清空 → 模式中返回 → 关闭）/ 遮罩 / 关闭按钮 / 选中。空态 = 最近访问（localStorage `akds-recent`）+ 提示 + 快捷入口（取侧栏首个门户 `#p-navigation`；预览取 `#MenuSidebar`「通用」组）；有字 = 分组结果 + 末尾固定「全文搜索」行，首项自动高亮、↵ 打开、⇧↵ 全文、⌘/Ctrl↵ 新标签；结果未到就回车 → MW 原生 Go。`/` 列命令，`>` 动作 `#` 分类 `@` 用户 `~` 文件 进入模式（退格空输入 / ← / 返回键退出）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时可见，不会让右侧元数据跳动）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。a11y：`role=dialog aria-modal`、输入框 `role=combobox aria-activedescendant`、`aria-live` 播报条数、Tab 在面板内循环、关闭后焦点回到触发器。≤639：8px 内边距的全宽卡片，右上 Esc 换成「取消」，触屏隐藏键位提示 | ✅🧩 |
 | 主题切换 | `.ak-theme-toggle` (os/day/night)，外面包一层 `.ak-header__tool` + `.ak-header__tool-label`（「外观」，只在窄屏面板显示） | 写入 `mw.user.clientPrefs`；<1120 变成面板里的「外观」行，三个按钮加大到 40×32 | ✅🧩 |
 | 通知 / 用户菜单 | `.ak-badge` `.ak-header__bell` `.ak-header__user-menu` > `details` > `summary.ak-header__user` + `.ak-menu.ak-header__user-card`（`.ak-menu__head` + `nav.ak-menu__group#p-user-interface-preferences` + `nav.ak-menu__group#p-personal`） | Echo 徽标；用户按钮拉下卡片：用户名抬头 → **「界面设置」（ULS 的语言切换就在这里，侧栏不再有 Languages 组）** → 「个人工具」（用户页 / 讨论 / 参数设置 / 监视列表 / 贡献 / 退出）；颜色由 `.ak-header` 的令牌重映射自动得到页眉配色；<1120 变成面板里的「通知」行（徽标靠右）与用户行（卡片就地展开，不再浮出） | ✅ |
@@ -76,7 +76,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 ---
 
-## L3 · 通用组件（components.css）
+## L3 · 通用组件（components/）
 
 | 组件 | 类 | 变体 | 状态 |
 |---|---|---|---|
@@ -104,7 +104,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | Pagination | `.ak-pagination` | | ✅ |
 | Timeline | `.ak-timeline` | `.is-done .is-active` | ✅ |
 | Stepper | `.ak-stepper .ak-step` | | ✅ |
-| Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg`；与裸控件同一套尺寸 / 颜色 / 状态（规范 §4），多出：`--sm` 30 / `--lg` 44 变体、`.ak-switch` 方形开关（游戏 `toggle_on`）；勾选 / 单选 / 下拉箭头的长相与裸控件**是同一套规则**（base.css：18px 直角勾选框、圆形单选、▾ 箭头），`.ak-check` 只管排布（`--sm` 16px）、`.ak-number` 常显 − / +、`.ak-input-group` 前后缀拼接、`.ak-field` 标签 + 帮助 + 错误文案 | ✅ |
+| Form | `.ak-field .ak-label .ak-help .ak-input .ak-select .ak-textarea .ak-input-group .ak-check .ak-switch .ak-slider .ak-number .ak-search` | `.is-invalid .is-valid --sm --lg`；与裸控件同一套尺寸 / 颜色 / 状态（规范 §4），多出：`--sm` 30 / `--lg` 44 变体、`.ak-switch` 方形开关（游戏 `toggle_on`）；勾选 / 单选 / 下拉箭头的长相与裸控件**是同一套规则**（base/forms.css：18px 直角勾选框、圆形单选、▾ 箭头），`.ak-check` 只管排布（`--sm` 16px）、`.ak-number` 常显 − / +、`.ak-input-group` 前后缀拼接、`.ak-field` 标签 + 帮助 + 错误文案 | ✅ |
 | Kbd | `.ak-kbd`（`.ak-search__kbd` 为其绝对定位变体） | 键帽：直角 1px 边、底边略重、mono 10px；用于快捷键提示 / 触发器右侧 / 面板页脚 | ✅ |
 | Table | `.ak-table` | `--striped --compact`；`th[aria-sort]` | ✅ |
 | Accordion | `.ak-details` (`<details>`) | | ✅ |
@@ -115,11 +115,11 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 ---
 
-## L4 · 方舟组件（arknights.css）
+## L4 · 方舟组件（decor/ + arknights/）
 
-### A. 装饰语言 → 见 01 §3
+### A. 装饰语言（decor/）→ 见 01 §3
 
-### B. 游戏数据组件
+### B. 游戏数据组件（arknights/）
 
 | 组件 | 类 | 数据来源 / 说明 | 状态 |
 |---|---|---|---|
@@ -164,7 +164,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | 页面 | 结构 | 样例 |
 |---|---|---|
 | 干员页 | 信息结构 1:1 取自 prts.wiki 现网「陈」页面（19 节一节不少，页面 wikitext 不改）：异格一览 `.op-alter` → **干员信息 = 现网 {{CharinfoV2}} Widget 原样（CSS / JS 不改，`vendor/charinfo/` 快照；换皮草案 `src/charinfo.css` 暂不接入）** （舞台之下不设身份栏 / 题注：HUD 已展示的字段不复读，情报编号 / 序号 / ID / 日文名也不值得外显）→ 特性 `.ak-kv--boxed` → 获得方式 `.ak-kv--inline` → 属性（`.op-calc` 属性计算器 + 模组选择 + `.ak-attrs` / 四档 wikitable 八行：四维 + 部署费用 / 阻挡 / 攻击间隔 / 再部署——这四项游戏数据里就是按精英阶段存的，和四维同一个轴，不另起键值表；势力两项 `.ak-kv--inline` 一行做表脚）→ 攻击范围 ×3 → 天赋（条件表 + 潜能 · 算法开关）→ 潜能提升 `.ak-pot-list` → 技能 ×3（全等级表 + 日 / 英名 + tooltip + 范围 + 备注）→ 后勤技能 → 精英化材料 → 技能升级材料（+ 专精三技能表）→ 模组 ×3 `.ak-module`（原型证章 + X + Y，故事 / 三阶段 / 任务 / 解锁材料）→ 相关道具 → 干员档案（竖排页签 9 段 + 未获得时档案 `.ak-archive`）→ 语音记录（语种 chip + 38 条 `.ak-voice`）→ 干员密录 → 悖论模拟 → 干员异格任务（已删除存档）→ 干员模型 `.op-spine` → 引用 + navbox。现网模板 → 组件的逐节映射与 CharinfoV2 的复用办法见 03 §3.6 | ✅ `preview/operator.html` |
-| 设计系统 / 长文 | 卡片内容区 + 右侧粘性 TOC（<1400 收为标题下折叠条）+ 左侧栏；展示按领域分页（基础 / 皮肤骨架 / MediaWiki 内容 / 通用组件 / 方舟组件），骨架只写一份由 `scripts/build-preview.py` 生成 | `preview/index.html` 等（源在 `preview/_src/`） |
+| 设计系统 / 长文 | 卡片内容区 + 右侧粘性 TOC（<1400 收为标题下折叠条）+ 左侧栏；按领域分区（基础 / MediaWiki 内容样式 / 皮肤骨架 / 通用组件 / 方舟组件）| 文档站 `site/`（VitePress；原预览站的 5 张展示页已退役） |
 | 首页 | 信息结构 1:1 取自 prts.wiki 现网首页（轮播 7 张 / 12 个入口 / 今日信息 / 亮点干员 / 近期新增 / 网站信息），只换视觉：**Hero**（黑色终端块 = Swiper 自动轮播 + 候选列表：列表就是 7 张的页签，当前行 = 左青条 + 淡青底，**自动播放进度条长在当前行底边**（2px 青线从左到右填满，满了切下一张——「在哪 / 下一张 / 还有多久」一处读完；手机上列表变横向缩略条，进度仍在当前项底边）；列表下一条工具栏 ‹ 01 / 07 › + 暂停，悬停图或列表时暂停，`prefers-reduced-motion` 下不自动播；每张 slide 自带说明栏；**横幅整幅 `contain` 显示不裁**（现网横幅两种比例：活动 ≈3.1:1、寻访 ≈1.8:1，cover 会裁掉寻访图的标题 / 干员），比例对不上的留白由**同一张图放大模糊压暗铺底**（`.mp-hero__bg`：同文件再嵌一次，`cover` + `blur` + `brightness(.55)`，主图在上层；不用 `style="--bg:url()"`，MW 清洗器不放行 `url()`）；无 JS 只露第一张、列表每项仍是链接；Swiper 11 以 `preview/vendor/swiper/` 本地引入，生产环境由 Gadget 按页加载；配色同页眉的做法——**语义令牌在 `.mp-hero` 上重映射一次，但只重映射中性色**（走 `--ak-chrome-*`），里面的 `.ak-btn` / `.ak-tag` / `.ak-countdown` 自动跟随、不逐个改组件私有变量；**`--ak-accent` / `--ak-accent-fg` 不碰**：实底（主按钮、「进行中」标签）跟正文令牌——亮色蓝底白字 / 暗色青底黑字，与正文里的 `.ak-btn--primary` / `.ak-tag--accent` 是同一块，hero 是黑块但不是页眉、不另开一套实底色（曾试过 `blue-500` + 黑字：蓝 + 黑 6.5:1 比蓝 + 白 3.2:1 好看，但系统里没有「蓝底黑字」这个组合，退回）；线 / 字 / 焦点用官网青 `cyan-500` 写死（eyebrow、当前行、进度条、焦点环，同页眉当前项）；CTA 用默认 36px 档（它是 slide 的主动作，30 档只给表格），焦点环走 `.ak-btn` 默认外扩 2px（内缩的青环压在亮色的蓝实底上只有 1.8:1，内缩只给贴边的列表项 / 工具栏按钮）；说明栏右侧半调网点，不放角标三角；**进行中的网页活动**是黑块的第三行、跨两列（`.mp-hero__events`）：**列表而不是横幅**——现网「尚有正在进行中的网页活动！」折叠块原来做成 `.ak-news` 一句话横幅，但网页活动常常同时两三个（周年庆更多），单行横幅只装得下一条，多条要么轮播要么换行；改成一条一行、整行是链接（名称 / 起止 / `.ak-countdown[data-until]` 倒计时 / ›），红标签跨所有行，1 条时高度与单行横幅一样，不折叠；行内只放字段不放句子（「网页活动」「进行中」标签已说、「将于…结束」是套话），所以手机上一行也放得下——<640 红标签变顶条、绝对起止隐藏；倒计时与幻灯片同一枚组件、同一段脚本；生产环境一条活动一次 `{{网页活动}}` 输出一个 `<li>`，没有活动时整块不输出。同一条信息只出现一次：今日信息的补充说明里不再重复网页活动）→ **入口网格** `.mp-nav`（12 格：现网同一套白线稿图标，`mix-blend-mode: difference` 与格底做差——底深得白、底白得黑，亮暗 / 悬停反转一律正确；中文 + Bender 英文，悬停黑白反转）→ **今日信息**（**整块是一张 `.ak-panel`**，不拆成资源 / 时间 / 说明三个面板——同一时刻的信息没必要各立一个框；卡内分块用同一枚 `.ak-overline` 小标题（`.mp-label`），左「物资筹备 / 芯片搜索」、右时钟 + 周常倒计时（竖线隔开）、底部补充说明通栏（横线隔开）；<1400 改上下三段，时间段横过来。资源收集：9 关每关一格——图标 / 名称 / 七格开放日条（**开放日只画在格子上，不写「二三五日」文字、不写 LS / CA 关卡码；组标题下也不列关卡名**——都是把格子 / 卡片已有的信息再写一遍），今日开放 = 顶部青条、关闭 = 斜纹 + 灰度；开放日条里**今天开放 = 这一排唯一的实底**，其余开放日只铺淡青底（`--ak-accent-muted`，同 `<mark>` / 表格当前行）——曾试过开放日全实底、今天只描 1.5px 黑框，蓝块上一眼分不出来；今天未开放的卡**不在格子上再标**（斜纹 + 灰度 + 无顶条已经说了，再加黑块是重复强调），而是**排到本组末尾**（JS 挪 DOM，Tab 顺序跟着视觉）；两种特殊状态照游戏资源收集页的美术来（`zone_group_holder` 的 `img_week_*` / `head_bar`，逻辑见 `WeeklyGroupZoneItem` / `StageDataUtil.WeeklyZoneOpenInfo`）：**常时开放**（作战记录 = `weekly_7`，`daysOfWeek` 七天全有）七格条换成一条整宽的「常时开放」字条——游戏把「周 x、x 开放」换成「常时开放」，七格全亮读出来是「日程排满」不是「没有日程」；**特别开放**（`forceOpenTable` 一段时间 9 关全开，通常周年庆 / 大版本）= 游戏的整套「黄 S」：次强调黄 `--ak-accent-2` 把这一块的青换掉——资源区顶上一条通知条（黄实底 + 左缘 `.ak-stripe-edge` 斜纹 + 黑圆 S + 截止时间，对应游戏区卡上的 `head_bar`）、今天在区间内的卡顶条变黄、开放日条里落在区间内的天变黄（今天仍是唯一实底）；**逐日算不整周涂**：区间由模板参数 `data-force-open="起/止"` 给出（同游戏 `startTime` / `endTime`，通常周二 04:00 起 7 天、跨周），脚本按游戏周逐日判断，正常开放且在区间内的天也变黄（游戏 OPEN → FORCE_OPEN 同样是黄 S，「为什么开」只有一个答案），过期自动消失；格子的淡黄亮色是半透明黄压白面、暗色底更淡而把黄交给文字（半透明黄压深面会闷成橄榄）；新人 / 回归的 7 天全开是玩家各自的状态，wiki 不表现。预览页标题右侧有一枚「演示：特别开放周」开关（假装前天起 7 天全开），生产模板不输出；不放「今日开放 n / 9」计数、标题旁不放「资源收集一览」（现网没这页）；时间：Bender 大时钟 + 周常刷新 `.ak-countdown`——只放固定且短的内容，**不带「今日资源收集」文字摘要**（把左边九张卡再念一遍；读屏器靠卡片自带的 sr-only 开 / 关文字）；**小编的补充说明通栏**在卡底（维护 / 卡池提醒 …，一条一行、右侧可带时限；网页活动不在这里，它在 Hero 下的列表），不塞进 312px 的时钟列，说明再多也不挤、不拉高上面两块）→ **亮点干员**（五组 `.ak-op-card--sm`，角上用游戏头像同款小职业图标 `assets/profession/icon_*.png`：各组流式排一行、放不下折行（同现网）：生日 / 新增 / 凭证兑换（黄「兑」角标 + 青色「中坚甄选」CTA 格）/ 时装 / 模组（头像右上 26px 深底框放游戏模组类型小图标 `assets/mainpage/module/`，不用文字芯片））→ **近期新增**（关卡：按活动 / 章节分组的紧凑 `.ak-stage`，不按 EX / 剧情 / 难度上色条——关卡码已经说明类型，色条是重复信息；家具：主题 + 单件卡；不放氛围值 / 关卡计数这类数字点缀）→ **网站信息**（三张 `.ak-card`；「关注 & 支持」是三枚第三方品牌按钮 B站充电 / 微信打赏 / 支付宝打赏——品牌识别用系统自己的句式：左侧 4px 品牌色条 + 品牌色描边 logo + 正文色文字，悬停整块反转成品牌色实底；品牌色只出现在它自己的按钮上、不进令牌，文字对比度不赌品牌色（白字压 B 站粉只有 2.7:1））。**页面与皮肤各管一半**：结构 = `MediaWiki:首页` 输出的 `.mp-*`（整页标 `ak-not-prose`，见 L1），样式 = TemplateStyles（页面自己的 `<style>`）；去标题 / 去目录 / 去白纸这几条皮肤层的「少做什么」**由皮肤内置**（Skin:Arknights 的 `.ak-layout--mainpage`，同 Citizen 首页：标题 sr-only、动作簇保留靠右），站点不用写 `MediaWiki:Common.css`，分工见 03 §3.4；预览页里那段「0. 页面级」只是静态骨架的补丁，选择器按预览骨架写、与真皮肤的 DOM 不一致，别照抄。时钟 / 周常倒计时 / 资源开放状态由脚本按 UTC+8 实时算（生产环境归 Gadget） | ✅ `preview/home.html` |
 | 列表 / 筛选页（干员一览） | Chip 筛选栏 + `.ak-op-grid` / `.wikitable.ak-sticky-head` | 📝 |
 | 关卡页 | `.ak-stage` 头 + 地图 + 敌人 `.ak-enemy` 列表 + 掉落 `.ak-item-list` | 📝 |
@@ -177,4 +177,4 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 - 数据属性驱动主题色：`data-rarity`、`data-prof`、`data-theme`。
 - 组件不依赖 JS 也应可读（渐进增强）；JS 只做：主题、抽屉、TOC scrollspy、页眉收起、标签页、阶段/等级切换、Toast、Dialog、搜索面板。目录开合是纯 CSS，JS 只补「镜像到 `html.ak-toc-open` / 锁页面滚动 / 点击浮层外 / Esc / 跳转后关闭」这类收尾；搜索面板是纯 JS 组件，但**页眉里先渲染的是真表单**，JS 到了才换成触发器并把表单搬进面板——无 JS 照常提交到 Special:Search。
 - 所有尺寸用 rem/px 令牌，不写魔法数；颜色只引用令牌。
-- **`width:100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外——`.ak-input / .ak-select / .ak-textarea / .ak-stat / .ak-blue-band` 已处理，裸 `input / select / textarea / button` 由 base.css 统一设了 border-box，新组件照做。
+- **`width:100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外——`.ak-input / .ak-select / .ak-textarea / .ak-stat / .ak-blue-band` 已处理，裸 `input / select / textarea / button` 由 base/forms.css 统一设了 border-box，新组件照做。

@@ -14,27 +14,30 @@ skins/AKDS/
 ├── resources/
 │   ├── fonts.css                ← = src/fonts.css（@font-face，scripts/fetch-fonts.py 生成）
 │   ├── fonts/                   ← = src/fonts/（官网同源 Novecento Sans Wide · Bender；OFL 的 Noto Sans SC 101 片 · Oswald · Chakra Petch · JetBrains Mono；≈4.9MB）
-│   ├── tokens.css               ← = src/tokens.css
-│   ├── base.css                 ← = src/base.css
-│   ├── components.css           ← = src/components.css
-│   ├── arknights.css            ← = src/arknights.css
-│   ├── skin.css                 ← = src/skin.css
+│   ├── tokens.css               ← = src/tokens.css（生成物：tokens/src/**/*.json5 → pnpm tokens）
+│   ├── base/                    ← = src/base/（MW 内容样式；root.css 随 tokens 模块先载）
+│   ├── components/              ← = src/components/（通用组件，一个组件一个文件）
+│   ├── decor/ · arknights/      ← = src/decor/ · src/arknights/（方舟装饰 · 游戏数据组件）
+│   ├── chrome/                  ← = src/chrome/（皮肤骨架；demo-theme.css 仅预览，不进 skin.json）
+│   ├── img/                     ← = src/img/（.ak-item--bare 的道具底框，arknights/item.css 按 ../img/ 引）
 │   ├── utilities.css            ← = src/utilities.css
 │   ├── skin.js                  ← 主题切换 / 抽屉 / TOC scrollspy / 标签页 / toast
 │   └── images/                  ← 职业/精英/稀有度等白色线稿（或走 File: 命名空间）
 └── i18n/{en,zh-hans}.json
 ```
-`skin/` 目录已提供 `skin.json` 与 `skin.mustache` 骨架，`resources/` 用符号链接或构建脚本从 `src/` 同步。
+`skin/` 目录已提供 `skin.json` 与 `skin.mustache` 骨架，`resources/` 里除 `skin.js` / `search-providers.js` 外都是指向 `src/` 的符号链接（目录整层链接：`base/` `components/` `decor/` `arknights/` `chrome/` `fonts/` `img/`）。
 
 ## 2. ResourceLoader 模块划分
 
 | 模块 | 内容 | 加载 |
 |---|---|---|
 | `skins.akds.fonts` | fonts.css（121 条 `@font-face`：Novecento Sans Wide + Bender（官网同源）+ Noto Sans SC 101 片 + Oswald + Chakra Petch + JetBrains Mono，`font-display: swap`）| **所有页面**，`styles` 首位。独立成模块是为了能整体关掉（用户偏好 / Gadget / 低带宽），关掉后 `tokens.css` 的字体链自然退到装机 / 系统字。RL 只重写 `url()` 路径不内联（没写 `@embed`），浏览器按 `unicode-range` 只取用到的片；MW 上要过一遍 CSSMin 后确认 `unicode-range` 未被改动 |
-| `skins.akds.tokens` | tokens.css | **所有页面**，`<head>` 顶部（`skin.json` `SkinStyles`/`styles`） |
-| `skins.akds.styles` | base.css + skin.css + components.css + arknights.css + utilities.css | 所有页面 |
+| `skins.akds.tokens` | tokens.css + base/root.css（html / body 全局基底） | **所有页面**，`<head>` 顶部（`skin.json` `SkinStyles`/`styles`） |
+| `skins.akds.styles` | base/ → components/ → decor/ → arknights/ → chrome/ → utilities.css，**逐文件列出**（RL 不处理 `@import`），顺序 = 各层 `index.css`，由 `node scripts/css-order.ts --write` 同步（不带 `--write` 只检查） | 所有页面 |
 | `skins.akds.js` | skin.js（`mw.user.clientPrefs`、抽屉、TOC、标签页、data-bind）+ sidebar-tree.js + search-palette.js（悬浮搜索面板核心）+ search-providers.js（MW 数据源）；依赖 `mediawiki.api` | 所有页面（defer）。面板核心 ≈ 35KB 未压缩（含注释；gzip ≈ 11KB），可拆成独立模块在触发器 hover/focus 时 `mw.loader.using` 预取（Citizen 做法） |
 | `skins.akds.mobile` | 移动端追加（若同时供 Minerva 使用则改为 `skinStyles` 注入） | 按 target |
+
+**层序**：`chrome/` 排在通用组件与方舟组件之后——页眉里的 `.ak-btn` / `.ak-menu` / `.ak-fab` 等靠同特指度后到覆盖。拆分前 MW 按 base → skin → components → arknights → utilities 加载、预览按 base → components → arknights → skin → utilities，两边不一致；现统一为预览那套（视觉上验过的顺序），`skin.json`、`src/index.css`、预览 / Storybook 同序。
 
 `skin.json` 关键项：
 ```json
@@ -106,7 +109,7 @@ div.ak-keyart > .ak-keyart__inner   ← 头图带：恒输出，--ak-keyart-h �
          .ak-toc__inner  .ak-toc__title#ak-toc-label + .ak-toc__progress > i + ul.ak-toc__list[data-toc] ← 由 data-toc 或 skin.js 生成
       div.ak-body#bodyContent  {{{html-site-notice}}} {{{html-user-message}}} .mw-body-content{{{html-body-content}}}
          ul.ak-body-foot#footer-info {{#data-footer.data-info}}{{#array-items}} li#footer-info-lastmod / -copyright
-      {{{html-categories}}}   ← div#catlinks（样式见 base.css「Category links」；skin.js tidyCatlinks() 去冒号）
+      {{{html-categories}}}   ← div#catlinks（样式见 base/catlinks.css；skin.js tidyCatlinks() 去冒号）
 <footer class="ak-footer">
    .ak-footer__inner   .ak-footer__brand | .ak-footer__col > h4{{msg-akds-footer-about}} + ul#footer-places {{#data-footer.data-places}}{{#array-items}}
    .ak-footer__bottom  .ak-footer__bottom-text | ul.ak-footer__icons#footer-icons {{#data-footer.data-icons}}{{#array-items}} li#footer-copyrightico / -poweredbyico / …
@@ -134,7 +137,7 @@ AKDS 的适配方式（无需改动现网 wikitext / 站点脚本即可工作）
 | 层 | 处理 |
 |---|---|
 | mustache | `.ak-sidebar > .ak-sidebar__panel#mw-panel` 保留 `#mw-panel` id；`#p-tb > ul` 仍在文档里但**不在侧栏**（在页面动作簇的「更多」卡片里，见 §3 结构图），现网内联脚本按 `#p-tb ul` 找照样找得到；wikitext 里的「工具#vmsTB」组 / `#MSToolbox` 可以从 MenuSidebar 删掉 |
-| skin.css | `.ak-sidebar p` 与 `.ak-portlet__title` 同一套分组标题样式；`.ak-sidebar li > b` 与 `li > a` 同一套行样式；`li > ul` 缩进 + 导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页 |
+| chrome/sidebar.css · sidebar-tree.css | `.ak-sidebar p` 与 `.ak-portlet__title` 同一套分组标题样式；`.ak-sidebar li > b` 与 `li > a` 同一套行样式；`li > ul` 缩进 + 导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页 |
 | sidebar-tree.js | 对 `.ak-sidebar` 内所有 `li > ul` 幂等增强（MutationObserver 兼容晚注入）：`li.ak-tree__branch` + `button.ak-tree__toggle[aria-expanded][aria-controls][aria-labelledby]`；点击非链接标签整行可切换；`localStorage['akds-sidebar-tree']` 记忆（键 = 分组标题/标签路径，门户为 `portlet:<id>`）；含 `a.selflink / li.is-active / href==location` 的分支自动展开并加 `.is-current-path`；← → 键盘展开/收起；桌面 hover+fine ≥1120px 悬停折叠分支 → 右侧 `.ak-flyout` 预览（`position:fixed`，不受侧栏 `overflow` 裁切；点击即行内展开并记忆） |
 
 - 关闭悬停飞出：`<aside class="ak-sidebar" data-flyout="off">` 或 `<html data-akds-flyout="off">`（移动端 / 触屏自动不启用）。
@@ -194,7 +197,7 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 
 ## 3.5 活动主题（Gadget / MediaWiki:Common.css）——头图 · 顶栏角饰 · 站标 · 主色
 
-现网大活换皮的做法（`ext.gadget.seventhStyle`）是改 `body` 背景大图、`#mw-head` 左右底图、`.mw-wiki-logo`、`#MenuSidebar > p` 渐变。新皮肤把这几个位置抽成 `tokens.css §2d` 的接口变量，活动 Gadget 只写变量、不碰选择器（完整列表见 `01-design-system.md §2.10`，可运行示例见 `preview/demo-theme.css`）：
+现网大活换皮的做法（`ext.gadget.seventhStyle`）是改 `body` 背景大图、`#mw-head` 左右底图、`.mw-wiki-logo`、`#MenuSidebar > p` 渐变。新皮肤把这几个位置抽成 `tokens.css §2d` 的接口变量，活动 Gadget 只写变量、不碰选择器（完整列表见 `01-design-system.md §2.10`，可运行示例见 `src/chrome/demo-theme.css`）：
 
 ```css
 /* MediaWiki:Gadget-eventStyle.css（或直接写进 MediaWiki:Common.css）*/
@@ -211,7 +214,7 @@ html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/
 
 - **页眉本身在两套主题下都是黑的**（`--ak-chrome-*` 不随明暗变），所以角饰 / 站标只需准备一套；头图与画布图若要分昼夜，按 `html.skin-theme-clientpref-day|night` 分写。
 - **页眉是压在头图上的一块均匀黑玻璃**：可读性由 `--ak-chrome-bg` 的 alpha 保证，与头图是什么无关——所以头图不必自己压暗顶部、也不要再裁一条「顶栏底图」从左缘渐入（现网 Garanheadright 的做法在新皮肤里既压不住白色图标又像贴上去的）。`--ak-keyart-position` / `-size` 相对「页眉 + 可见段」整块取景（桌面 56 + `-h`，<1400 再加 48 二级栏）。
-- **`url()` 必须是绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`skin.css` 所在的 `load.php`）解析，Firefox / WebKit 按声明处解析，相对地址两边会指向不同目录。
+- **`url()` 必须是绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`chrome/` 各文件所在的 `load.php`）解析，Firefox / WebKit 按声明处解析，相对地址两边会指向不同目录。
 - 想连正文的链接 / 选中色一起换，再覆盖 `--ak-accent`（亮 / 暗两套各写一次）；只换 `--ak-theme-accent` 时正文不动，只有「框」在换——这是有意的：活动皮不该把内容页读起来的对比度也一起赌上。
 - 头图上要放活动标题 / 倒计时，可用 Gadget 往 `.ak-keyart__inner` 里塞内容（它与页眉三列同宽）；`.ak-keyart` 带 `aria-hidden`，放可读内容时记得去掉。
 - 卸载 Gadget 即恢复默认；无需 purge 页面缓存（都是变量）。
@@ -259,7 +262,7 @@ $wgFooterIcons = [
 
 - **Widget 原样**：`{{#widget:charinfoV2}}` 输出的 DOM、模板参数生成的内联数据（`char_info` / `charimg_params` / `charskin_params` / `back_list`…）、`charinfo_*.min.css`（桌面 / 手机两份，600px 切）、`charinfo_*.min.js` + `charId*.js` + `charVoice*.js`、crypto-js、`charname` 字体全部照旧。预览页把这些静态文件钉版本抓成快照 `preview/vendor/charinfo/`（`scripts/fetch-charinfo.py`；NOTICE.md 记着来源与仅有的改动——CSS 里几处 `url()` 改相对路径、charVoice 只留陈），立绘 / 场景图 / 职业 · 星级 · 分支图标 / BGM / 语音仍由脚本运行时从 media / static / torappu.prts.wiki 拉。
 - **依赖**：脚本用 `RLQ.push(['jquery', fn])` 等 jQuery——MW 里 ResourceLoader 照常处理；预览页自带 jQuery 3.7.1（= MW 1.43）和两行 RLQ 替身。
-- **接缝规则**（预览页 `<style>` 的「舞台接缝」段；生产放 Widget 自己的 `<style>` 或皮肤的 site 样式）：① 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着），正文列比它窄时整块 `zoom: var(--op-stage-zoom)`（页面脚本按列宽算）。用 zoom 不用 transform：Widget 的「全屏查看」是把 wrapper 设成 `position: fixed` 铺满视口，transform 会改它的包含块、zoom 不会，再加 `:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1 }` 全屏时不缩；② 全屏层与手机「查看立绘」层的 z-index 抬到 `--ak-z-modal` 之上（Widget 内联的 999 只够压 Vector——它顺手压下去的 `#mw-panel` `#mw-head` 皮肤里没有）；③ **皮肤 `base.css` 的 `img { max-width: 100%; height: auto }` 不进舞台**——HUD 图标靠 `height="30px"` 这类属性定尺寸，`height: auto` 会把它们放回原图的 32px。这条皮肤落地时要正面处理：站上其它 Widget / 模板同样大量依赖 `height=` 属性，要么皮肤把这条改成不碰带 `height` 属性的图，要么各 Widget 自己补 CSS；④ `line-height: 1.6`（Vector 正文行高；Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点）。
+- **接缝规则**（预览页 `<style>` 的「舞台接缝」段；生产放 Widget 自己的 `<style>` 或皮肤的 site 样式）：① 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着），正文列比它窄时整块 `zoom: var(--op-stage-zoom)`（页面脚本按列宽算）。用 zoom 不用 transform：Widget 的「全屏查看」是把 wrapper 设成 `position: fixed` 铺满视口，transform 会改它的包含块、zoom 不会，再加 `:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1 }` 全屏时不缩；② 全屏层与手机「查看立绘」层的 z-index 抬到 `--ak-z-modal` 之上（Widget 内联的 999 只够压 Vector——它顺手压下去的 `#mw-panel` `#mw-head` 皮肤里没有）；③ **皮肤 `base/media.css` 的 `img { max-width: 100%; height: auto }` 不进舞台**——HUD 图标靠 `height="30px"` 这类属性定尺寸，`height: auto` 会把它们放回原图的 32px。这条皮肤落地时要正面处理：站上其它 Widget / 模板同样大量依赖 `height=` 属性，要么皮肤把这条改成不碰带 `height` 属性的图，要么各 Widget 自己补 CSS；④ `line-height: 1.6`（Vector 正文行高；Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点）。
 - **已知的接缝之外**：Widget 的手机版由脚本按父级宽度 <600 在加载时一次性决定（自己 transform 缩放，不响应 resize），皮肤不插手；看图模式的滚轮缩放 / 拖拽用 `getBoundingClientRect` 对 `offsetWidth`，zoom 之下拖动手感会差一个系数（全屏时 zoom 归 1，不受影响）。
 - **换皮（暂不接入）**：`src/charinfo.css` 是对同一套 DOM 的皮肤化草案——黑玻璃 HUD（同页眉）、直角、选中 = 青条 + 青字、名字牌 = 思源 900 + 6px 青条（不再要 `charname` 字体）、时装 / 场景抽屉从右缘滑入、整块按容器宽度 `transform: scale(var(--charinfo-scale))`、≤639 藏 HUD 只留页签与名字牌。真要接入得连 JS 一起改三处：resize 只设 `--charinfo-scale`；选中态从换蓝图标 + 内联 color 改成加类 `.is-active`；面板 / 抽屉开合从内联 height / right / opacity 改成加类 `.is-open .is-show .is-watch`。先把现网的动效 / 文本排布 / 试听语音 / BGM 原样看全，再定换皮范围。
 
@@ -272,7 +275,7 @@ $wgFooterIcons = [
 - HTML 类：`skin-theme-clientpref-os | -day | -night`（与 Vector 2022 一致；MW 核心 `mediawiki.page.ready` 在 `<html>` 上读写 cookie/localStorage `mwclientpreferences`）。
 - 切换：`mw.user.clientPrefs.set('skin-theme', 'night')`；tokens.css 已按这三个类定义。
 - 未登录用户也可用（clientPrefs 走 localStorage）。
-- **Codex 桥接**：tokens.css 第 3 段把 `--background-color-base`、`--color-progressive`、`--border-color-base` 等 Codex 令牌映射到 AKDS 语义令牌，因此 `mw-message-box`、Codex 表单、Echo 弹窗、搜索建议等核心 UI 自动跟随。OOUI 少量硬编码色在 base.css 里覆盖。
+- **Codex 桥接**：tokens.css 第 3 段把 `--background-color-base`、`--color-progressive`、`--border-color-base` 等 Codex 令牌映射到 AKDS 语义令牌，因此 `mw-message-box`、Codex 表单、Echo 弹窗、搜索建议等核心 UI 自动跟随。OOUI 少量硬编码色在 `base/`（forms.css 等）里覆盖。
 - 图片：白色线稿类图标统一走 `filter: var(--ak-glyph-filter)`（亮色反相）。模板里放游戏图标时给 `<img>` 加 `.ak-glyph`。
 
 ## 5. 模板 / TemplateStyles / Lua 如何使用组件
@@ -290,19 +293,19 @@ $wgFooterIcons = [
 
 | 扩展 | 处理 |
 |---|---|
-| TabberNeue | base.css 覆盖 `.tabber__*`；提供 `.ak-tabber-boxed / .ak-tabber-block` 变体（`<tabber class="…">` 或包裹 div） |
+| TabberNeue | base/tabber.css 覆盖 `.tabber__*`；提供 `.ak-tabber-boxed / .ak-tabber-block` 变体（`<tabber class="…">` 或包裹 div） |
 | Cargo / SMW / DPL3 | 表格继承 wikitable 规则；结果格式 `template` 时输出 AKDS 组件结构 |
 | Echo | 徽标用 `.ak-badge`（notices 默认黄；alerts 加 `--danger` 红）；弹窗走 Codex 桥接 |
-| WikiEditor / CodeMirror | 编辑器底色用 `--ak-bg-inset`，已在 base.css 基线覆盖 |
+| WikiEditor / CodeMirror | 编辑器底色用 `--ak-bg-inset`，已在 base/forms.css 基线覆盖 |
 | MobileFrontend + Minerva | 两条路：(a) 皮肤 `responsive:true` 后可直接作为移动端皮肤（≤639 规则已写）；(b) 保留 Minerva 时，把 `skins.akds.tokens` 通过 `skinStyles` 注入 Minerva，仅换色。推荐 (a) 分阶段替换 |
 | UniversalLanguageSelector | 触发器放 `.ak-header__tools` |
 | Gadgets | 现有小工具若依赖 Vector 类名（`#mw-panel`、`.vector-*`），需迁移；`skin.mustache` 保留 MW 标准 id（`#p-personal #p-views #p-cactions #p-navigation #p-tb #searchform #firstHeading #bodyContent #catlinks`） |
-| Widgets / Gadgets 吐出的裸表单控件（`Widget:PropertyCalc` 的属性计算器、各计算器 / 筛选栏的 `<input>` `<select>` `<button>`） | 皮肤 base.css 兜底（规范 `01 §4`）：36px 定高、表格单元格里 30px 且对齐跟随单元格、主题化颜色与状态；Widget 里那些针对旧皮肤的样式补丁（`.skin-minerva #calc input { border… }`、`width: calc(100% - .8em)`）可以删掉——只保留 `width:100%` 这类布局意图 |
+| Widgets / Gadgets 吐出的裸表单控件（`Widget:PropertyCalc` 的属性计算器、各计算器 / 筛选栏的 `<input>` `<select>` `<button>`） | 皮肤 base/forms.css 兜底（规范 `01 §4`）：36px 定高、表格单元格里 30px 且对齐跟随单元格、主题化颜色与状态；Widget 里那些针对旧皮肤的样式补丁（`.skin-minerva #calc input { border… }`、`width: calc(100% - .8em)`）可以删掉——只保留 `width:100%` 这类布局意图 |
 | 搜索（core `mediawiki.searchSuggest`） | 与面板冲突，需 `SkinAKDS::getDefaultModules()` 清空 `search` 组（见 §3.3） |
 
 ## 7. 迁移路线
 
-1. **Phase 0 · 令牌落地**：以 Gadget 形式加载 `tokens.css + arknights.css`，在 Vector 2022 上先让模板可用 `.ak-*` 组件（`data-rarity`、`.ak-rt-*`、`.ak-item`…），并逐步替换现有模板中的硬编码颜色。
+1. **Phase 0 · 令牌落地**：以 Gadget 形式加载 `tokens.css` + `decor/` + `arknights/`，在 Vector 2022 上先让模板可用 `.ak-*` 组件（`data-rarity`、`.ak-rt-*`、`.ak-item`…），并逐步替换现有模板中的硬编码颜色。
 2. **Phase 1 · 皮肤上线（可选皮肤）**：`skins/AKDS` 安装，`$wgDefaultSkin` 不变，用户可在 Special:Preferences 选择；收集 Gadget 兼容问题。
 3. **Phase 2 · 干员/关卡/道具等核心模板改造**：按 `preview/operator.html` 结构调整 Template/Module，Cargo 查询输出组件结构。
 4. **Phase 3 · 设为默认**：`$wgDefaultSkin = 'akds'`；移动端评估是否替代 Minerva。
@@ -310,7 +313,7 @@ $wgFooterIcons = [
 
 ## 8. 性能与工程
 
-- CSS 合计 ~90KB 未压缩（tokens 15 / base 25 / components 30 / arknights 30 / skin 12 / utilities 6），gzip 后 < 20KB。可按需拆 `arknights.css` 为独立模块，仅内容页加载。
+- CSS 合计 ~90KB 未压缩（tokens 15 / base 25 / components 30 / decor + arknights 30 / chrome 12 / utilities 6），gzip 后 < 20KB。可按需把 `decor/` + `arknights/` 拆为独立模块，仅内容页加载。
 - 无 JS 依赖的组件为主；skin.js < 6KB，sidebar-tree.js ≈ 7KB，search-palette.js ≈ 35KB 未压缩（gzip ≈ 11KB）+ search-providers.js ≈ 9KB（前者与 preview 共用）。
 - 字体：`skins.akds.fonts` ≈ 4.9MB 落盘但按需下载——Noto Sans SC 沿用 Google 的 101 片 `unicode-range` 切分，一页典型下 5–15 片（每片 2–77KB）；Novecento（4 × 11KB）+ Bender（2 × 12KB）+ 拉丁 OFL 三族（≈ 240KB）按用到的字重一次性。预览显示的即上线效果。
 - 图片：白色线稿 PNG 已在 100–200px；建议转 SVG/WebP。

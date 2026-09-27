@@ -38,7 +38,7 @@ DON'T：圆角卡片、阴影堆叠、玻璃拟态；切角、平行四边形、
 
 ### 1.3 prose / not-prose（正文排版的作用域）
 
-同 Tailwind Typography 的 `prose` / `not-prose`：**wikitext 解析产物（`.mw-parser-output`）天然是「正文」**，`base.css` 的正文排版规则——标题色条与短横条、段距、列表方块符 / `ol::marker`、dl / blockquote / poem、链接色（含 `:visited` 褪色、`a.new`、外链图标）——默认作用于整篇；每条都带 `:not(:where(.ak-not-prose, .ak-not-prose *))`（特指度 0，不改原规则的权重）。模板 / 组件把 **`ak-not-prose` 标在输出的最外层**，子树内就完全不受正文排版影响：链接退回 `color: inherit`、无下划线，颜色 / 悬停由组件自己定。
+同 Tailwind Typography 的 `prose` / `not-prose`：**wikitext 解析产物（`.mw-parser-output`）天然是「正文」**，`base/typography.css` 的正文排版规则——标题色条与短横条、段距、列表方块符 / `ol::marker`、dl / blockquote / poem、链接色（含 `:visited` 褪色、`a.new`、外链图标）——默认作用于整篇；每条都带 `:not(:where(.ak-not-prose, .ak-not-prose *))`（特指度 0，不改原规则的权重）。模板 / 组件把 **`ak-not-prose` 标在输出的最外层**，子树内就完全不受正文排版影响：链接退回 `color: inherit`、无下划线，颜色 / 悬停由组件自己定。
 
 为什么需要它：`a.ak-op-card` / `a.ak-stage` / 首页入口格这类「整块是链接」的组件写 `color`（0,1,0）永远打不过全局 `a:visited`（0,1,1）——预览里所有 `href="#"` 都算已访问，卡片名字会整体变成褪色的链接色；页眉 / 搜索面板 / 分页过去各自补过 `a:visited { color: inherit }`。规则：**标在最外层、不要只标在 `<a>` 上**；不-prose 区域里需要「看起来像正文链接」的地方，组件自己引用 `--ak-link` / `--ak-link-hover`（首页 `.mp-link` 就是这么做的）。不做「not-prose 里再开一层 prose」（Tailwind 也不支持），那是内容结构该拆开的信号。
 
@@ -46,7 +46,7 @@ DON'T：圆角卡片、阴影堆叠、玻璃拟态；切角、平行四边形、
 
 ## 2. 令牌（Design Tokens）
 
-文件：`src/tokens.css`（CSS 自定义属性）· `tokens/tokens.json`（机器可读）。命名 `--ak-{group}-{name}`。三层：
+源：`tokens/src/**/*.json5`（W3C DTCG 格式）；`pnpm tokens`（`tokens/build.ts`，Style Dictionary）生成 `src/tokens.css`（CSS 自定义属性）与 `tokens/tokens.json`（机器可读）——两者都是生成物，改令牌改 json5。命名 `--ak-{group}-{name}`。三层：
 
 ```
 Primitive  --ak-gray-800 / --ak-cyan-500 / --ak-rarity-6 …   ← 有出处的原始色
@@ -169,7 +169,7 @@ html.skin-theme-clientpref-night  终端模式（暗）
 **Bender 的使用边界（HUD 层，不进正文尺寸的连续数字）**：Bender 是游戏 HUD 字——粗体、大字号、独立出现时才成立；14px 常规字重时笔画细、斜杠 0 读作「Ø」、和思源混排灰度不齐，而且**它的数字是比例宽度**（`1` 360 / `0` 604 单位）、子集不带 `tnum`，`font-variant-numeric: tabular-nums` 对它无效，数字列对不齐。因此：
 
 - ✅ 用 Bender：属性面板 `.ak-attr__value`、`.ak-stat__value`、`.ak-level`、倒计时、SP 芯片、关卡码、稀有度 chip、tag、overline / eyebrow 小标签、`ol::marker`——都是**粗体（700）或 ≥ h3 的独立数值 / 编号 / 大写标签**。显式的 HUD 数字类是 `.ak-num`（粗体 Bender，只用于面板级、不进表格）
-- ❌ 不用 Bender：表格数字列（`.wikitable td.num` / `.ak-table .num`）、目录编号、引用角标、diff 行号、最近更改 ±、分页、时间戳、Stat 的 delta、技能数值行、通知计数徽标（`.ak-badge`：Bender Bold 在 11px 下笔画细字形窄，18px 圆里读不清）——统一正文字体 + `tabular-nums`（Noto Sans SC 的数字默认等宽 521 单位，列天然对齐）。**表格数据数字一律不用 Bender，没有例外**：技能全等级表 / 参数矩阵 / 天赋条件表 / 键值表的数字列都是正文字体；`.ak-num` `.ak-code-id` `.ak-trust` `.ak-item__count` `.ak-elite` 等带数字的 HUD 类若落进 `td` / `th` / `.ak-kv > dd`，`arknights.css` 末尾 B99 会兜底回正文字体（字重 / 字距 / 颜色照旧）
+- ❌ 不用 Bender：表格数字列（`.wikitable td.num` / `.ak-table .num`）、目录编号、引用角标、diff 行号、最近更改 ±、分页、时间戳、Stat 的 delta、技能数值行、通知计数徽标（`.ak-badge`：Bender Bold 在 11px 下笔画细字形窄，18px 圆里读不清）——统一正文字体 + `tabular-nums`（Noto Sans SC 的数字默认等宽 521 单位，列天然对齐）。**表格数据数字一律不用 Bender，没有例外**：技能全等级表 / 参数矩阵 / 天赋条件表 / 键值表的数字列都是正文字体；`.ak-num` `.ak-code-id` `.ak-trust` `.ak-item__count` `.ak-elite` 等带数字的 HUD 类若落进 `td` / `th` / `.ak-kv > dd`，`arknights/table-numerals.css`（B99，方舟组件最后一个文件）会兜底回正文字体（字重 / 字距 / 颜色照旧）
 
 **官网发布的 Novecento / Bender 是 ASCII 子集**（各 101 字形：A–Z a–z 0–9 及 ASCII 标点），`·` `»` `—` `–` `…` `×` `°` 等非 ASCII 字符不在其中，浏览器会按链逐字回退——展示字落到 Oswald、标签落到 Chakra Petch，两者风格相近，视觉上是间隔号 / 破折号级别的差异；若日后拿到全字符集文件，替换 `src/fonts/` 里同名 woff2 即可。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
 
@@ -186,12 +186,12 @@ html.skin-theme-clientpref-night  终端模式（暗）
 - **窄屏导航（<1400，参考 VitePress）**：页眉长出第二行 `.ak-local-nav`「二级吸顶栏」——左「菜单」拉出侧栏抽屉（<1120）、右「本页目录」拉下目录浮层；向下滚动时页眉主行（品牌 / 搜索 / 工具）上移收起，只留这条 48px 的二级栏贴顶，向上滚或回到顶部再展开；「回到顶部」放在目录浮层首项，`.ak-fab` 只在 ≥1400 显示；目录浮层宽高锁死（360px / ≤639 拉满，限高 `100dvh` 到视口底、超出内滚），抽屉与浮层开着时锁住页面滚动（`html.ak-scroll-lock`）。**不用角落浮动按钮开目录**（方位与面板割裂、和回到顶部抢屏幕角落）
 - 布局：`--ak-header-h 56` · `--ak-local-nav-h 48` · `--ak-sidebar-w 248` · `--ak-toc-w 240` · `--ak-content-max 1240`（≥1680 侧栏 / 目录 268，写在 `:root`）
 - **页眉 = 三列的列头**：主行网格 `var(--ak-sidebar-w) minmax(0,1fr) auto` 与 `.ak-layout` 同列同 gutter——品牌盖着侧栏、搜索从正文列左缘起（≤560px，与标题左缘同线）、工具盖着目录列；1680 容器一律 `border-box`。**页眉不放站点级主导航**（与侧栏「通用」组重复），导航只由侧栏承担；<1120 外观 / 通知 / 用户收进 ≡ 拉下的 320px 卡片
-- **页眉是黑色「终端」顶栏，两套主题下都不变**：官网导航栏（#000 底 · 青色当前项 · 白线稿图标）、游戏主界面顶栏（深底 · 半调网点 · 青色选中块）、干员档案页顶部那道黑边——「黑框白纸 / 黑框黑纸」是方舟本体的框架语言。配色不读明暗主题，只读 §2.10 的 `--ak-chrome-*`（`skin.css` 在 `.ak-header` 内把语义令牌重映射过去，页眉里的按钮 / 搜索 / 头像 / 菜单自动跟随）。构件：`rgba(8,9,10,.9)` 底 + 毛玻璃 + 1px 亮线；右侧半调网点场向左渐隐；标语与悬停用活动主色；**页眉与头图是一整块**——头图从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃（活动主题只调 `--ak-chrome-bg` 的 alpha 决定画透多少），可读性由玻璃保证、不赌画面；不做「顶栏一张照片从左缘渐入」的底图（压不住白色图标、又像贴上去的），`--ak-chrome-image` 只放画在玻璃之上的深色角饰；搜索触发器 = 左端深色图标框（游戏 HUD `announce_title_on` 的图标位）+ 矩形浅条，打开时图标框反成主色实底（曾试过右端斜切，Tab 焦点描边会被 clip-path 裁断，作罢）；外观开关选中项用主色实底（游戏 `selected_back` / `toggle_on`），亮暗主题下不反色；页眉内链接不分已访问色
+- **页眉是黑色「终端」顶栏，两套主题下都不变**：官网导航栏（#000 底 · 青色当前项 · 白线稿图标）、游戏主界面顶栏（深底 · 半调网点 · 青色选中块）、干员档案页顶部那道黑边——「黑框白纸 / 黑框黑纸」是方舟本体的框架语言。配色不读明暗主题，只读 §2.10 的 `--ak-chrome-*`（`chrome/header.css` 在 `.ak-header` 内把语义令牌重映射过去，页眉里的按钮 / 搜索 / 头像 / 菜单自动跟随）。构件：`rgba(8,9,10,.9)` 底 + 毛玻璃 + 1px 亮线；右侧半调网点场向左渐隐；标语与悬停用活动主色；**页眉与头图是一整块**——头图从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃（活动主题只调 `--ak-chrome-bg` 的 alpha 决定画透多少），可读性由玻璃保证、不赌画面；不做「顶栏一张照片从左缘渐入」的底图（压不住白色图标、又像贴上去的），`--ak-chrome-image` 只放画在玻璃之上的深色角饰；搜索触发器 = 左端深色图标框（游戏 HUD `announce_title_on` 的图标位）+ 矩形浅条，打开时图标框反成主色实底（曾试过右端斜切，Tab 焦点描边会被 clip-path 裁断，作罢）；外观开关选中项用主色实底（游戏 `selected_back` / `toggle_on`），亮暗主题下不反色；页眉内链接不分已访问色
 - **搜索（参考 Citizen Command Palette / starcitizen.tools）**：页眉里那条「输入框」其实是触发器（无 JS 时是真表单），点击或按 `/`、`⌘K` 打开居中悬浮的搜索面板：直角、顶部 3px 青条、56px 输入行、`--ak-bg-overlay` 遮罩 + 2px 模糊；空态给最近访问 + 快捷入口，有字给分组结果（干员带头像 / 职业 / 稀有度）+ 末尾固定「全文搜索」行；`/` 列命令、`>` `#` `@` `~` 进入模式（主色实底的矩形 chip）。高亮行沿用「左 2px 青条 + 淡青底」；键位提示用 `.ak-kbd`。**不做**页眉内下拉建议（Vector 式）：内容页面宽、页眉是玻璃底，下拉在毛玻璃上叠层次会脏；居中面板一层遮罩把注意力收拢，也天然适配手机（8px 内边距全宽卡片）
 
 ### 2.10 页眉 / 头图 / 画布的主题接口（活动主题只改这些）
 
-prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现网 `ext.gadget.seventhStyle` 改的就是这些）。新皮肤把这些位置抽成 `tokens.css §2d` 的一组变量，Gadget / `MediaWiki:Common.css` 在 `:root`（或 `html.skin-theme-clientpref-*` 分昼夜）上覆盖即可，不碰任何选择器；示例见 `preview/demo-theme.css`（罗德岛主界面昼 / 夜背景做头图、警示黄做活动主色、页眉玻璃调到 `.8`）。
+prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现网 `ext.gadget.seventhStyle` 改的就是这些）。新皮肤把这些位置抽成 `tokens.css §2d` 的一组变量，Gadget / `MediaWiki:Common.css` 在 `:root`（或 `html.skin-theme-clientpref-*` 分昼夜）上覆盖即可，不碰任何选择器；示例见 `src/chrome/demo-theme.css`（罗德岛主界面昼 / 夜背景做头图、警示黄做活动主色、页眉玻璃调到 `.8`）。
 
 **页眉与头图的关系**：头图 `.ak-keyart` 从页面顶端铺起（盒子上探一个页眉高、`padding-top` 把内容压回页眉之下；<1400 连二级栏一起探），页眉是压在它上面的一块**均匀**黑玻璃——横向无渐隐、纵向无渐变，可读性由玻璃的 alpha 保证，与底下是什么画无关。照片一律走 `--ak-keyart-image`；`--ak-chrome-image` 画在玻璃之上、不会被压暗，只放深色低对比的角饰 / 底纹。
 
@@ -207,13 +207,13 @@ prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现�
 | `--ak-canvas-image` / `-position` / `-size` / `-repeat` / `-attachment` | `none` … | **画布底纹**：叠在 body 的 `--ak-bg-canvas` 之上（现网 body 的 bkg 位置）；侧栏 / 目录没有底色，宜低对比 |
 | `--ak-logo-image` | 未设 | **站标**：设了就用 `content` 替换 `.ak-header__logo img`（Chromium / WebKit；Firefox 请改 `$wgLogos`） |
 
-⚠ 接口变量里的 `url()` 请写**绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`skin.css`）的路径解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录。
+⚠ 接口变量里的 `url()` 请写**绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`chrome/*.css`）的路径解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录（预览的示例主题因此与使用处同放在 `src/chrome/`，才写得了相对路径）。
 
 ---
 
 ## 3. 装饰语言（Ornament primitives）
 
-全部为可叠加的纯 CSS 类（`src/arknights.css` A 段）：
+全部为可叠加的纯 CSS 类（`src/decor/`，一类一个文件）：
 
 | 类 | 说明 | 出处 |
 |---|---|---|
@@ -235,8 +235,8 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 
 | 来源 | 例子 | 谁负责 |
 |---|---|---|
-| **裸控件**——Widget / Gadget / 模板直接吐出的 `<input>` `<select>` `<textarea>` `<button>`，身上没有任何 class | 干员页「属性计算器」（`Widget:PropertyCalc`：wikitable 里四个 `<input type="number">`）、公招 / 材料 / 掉落计算器、各种筛选栏、edittools 字符按钮 | **皮肤兜底**（`src/base.css` Forms 段，本节的规则）；模板什么样式都不用写 |
-| **设计系统组件** `.ak-input .ak-select .ak-textarea .ak-check .ak-switch .ak-slider .ak-number .ak-field .ak-input-group …` | 模板 / TemplateStyles 里显式使用（预览 components.html「表单 · Forms」，裸控件落进 wikitable 的样子也在那一节） | `components.css`：与裸控件同一套尺寸 / 颜色 / 状态，多了尺寸变体、自绘勾选 / 开关、校验态与文案 |
+| **裸控件**——Widget / Gadget / 模板直接吐出的 `<input>` `<select>` `<textarea>` `<button>`，身上没有任何 class | 干员页「属性计算器」（`Widget:PropertyCalc`：wikitable 里四个 `<input type="number">`）、公招 / 材料 / 掉落计算器、各种筛选栏、edittools 字符按钮 | **皮肤兜底**（`src/base/forms.css`，本节的规则）；模板什么样式都不用写 |
+| **设计系统组件** `.ak-input .ak-select .ak-textarea .ak-check .ak-switch .ak-slider .ak-number .ak-field .ak-input-group …` | 模板 / TemplateStyles 里显式使用（文档站 /components/field 等表单各页；裸控件落进 wikitable 的样子见 /content/forms） | `components/form.css`：与裸控件同一套尺寸 / 颜色 / 状态，多了尺寸变体、自绘勾选 / 开关、校验态与文案 |
 | **核心 UI**——Codex `.cdx-*` / OOUI `.oo-ui-*` / `.mw-ui-*`（编辑页、参数设置、特殊页面、Echo） | 颜色经 `tokens.css` 令牌桥接自动跟随，**尺寸不改**（它们自己的 32px 档，成组出现、内部自洽） | 皮肤只桥接 |
 
 裸控件的正确写法就是**什么都别写**：`<input type="number">` 落进 wikitable 就该是对的。皮肤的规则全部包在 `:where()` 里（特指度 0），所以 `.ak-input`、Codex / OOUI、模板自己的 class 都稳稳压在它上面，不必和 `input[type=…]` 较劲。
@@ -263,7 +263,7 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 | 只读 `[readonly]` | 底 `--ak-bg-inset`（下沉），边框不变，仍可选中复制。计算器「只显示不编辑」的结果格用它，**不要用 disabled 表示「只是显示」** |
 | 禁用 `:disabled` | 底 `--ak-bg-surface-3`、字 `--ak-fg-disabled`（Safari 需同时写 `-webkit-text-fill-color`）、边 `--ak-border`、`cursor: not-allowed` |
 | 校验失败 | 边 `--ak-danger`，聚焦时环换 `--ak-danger-bg`。触发条件是 `:user-invalid`（用户改过之后才判）或 `aria-invalid="true"`；**不用 `:invalid`**——它一进页面就把 required 空框全标红。设计系统组件另有 `.is-invalid / .is-valid` + `.ak-help--error` 文案 |
-| 勾选 / 单选 | **自绘，裸控件与 `.ak-check` 同一张脸**（`appearance: none`，规则在 base.css 裸控件段；`.ak-check` 只管「控件 + 文字」排布）：18px、2px `--ak-border-strong` 边；勾选框直角，选中 = 主色实底 + 对比色勾（`:indeterminate` = 一横）；**单选是圆**（圆是单选的通用语义，也是整套系统里 UI 控件唯一的圆（道具图标 `.ak-item` 的圆框是游戏素材，另算，见 §1.1）；不做菱形、不做圆角方），选中 = 主色实底 + 圆点。勾 / 点按百分比画，改 `width/height` 整体缩放（表头里的开关 16px）。禁用 = surface-3 / 选中灰。`accent-color` 仍写着兜底：不认 `appearance: none` 的老 WebView 退回主色原生控件。`vertical-align: middle` 与行内文字中线对齐 |
+| 勾选 / 单选 | **自绘，裸控件与 `.ak-check` 同一张脸**（`appearance: none`，规则在 base/forms.css；`.ak-check` 只管「控件 + 文字」排布）：18px、2px `--ak-border-strong` 边；勾选框直角，选中 = 主色实底 + 对比色勾（`:indeterminate` = 一横）；**单选是圆**（圆是单选的通用语义，也是整套系统里 UI 控件唯一的圆（道具图标 `.ak-item` 的圆框是游戏素材，另算，见 §1.1）；不做菱形、不做圆角方），选中 = 主色实底 + 圆点。勾 / 点按百分比画，改 `width/height` 整体缩放（表头里的开关 16px）。禁用 = surface-3 / 选中灰。`accent-color` 仍写着兜底：不认 `appearance: none` 的老 WebView 退回主色原生控件。`vertical-align: middle` 与行内文字中线对齐 |
 | 滑杆 `type=range` | 保留原生，只上 `accent-color`；要方形滑块用 `.ak-slider` |
 | 数字 `type=number` | `tabular-nums`（改值不跳动）；保留原生 ▲▼ 步进器（Chrome 悬停 / 聚焦时才现身，Firefox 常显）；要一直可见的 − / + 用 `.ak-number` |
 | 下拉 `select` | 自绘箭头：裸 `<select>` 与 `.ak-select` 同一枚 ▾（`--ak-select-arrow`，两条 45° 渐变拼成、颜色随 `--ak-fg-muted`；与下拉按钮的 ▾ 成套），`appearance: none` + 右内边距 30px（表格里 26px）；原生箭头各浏览器长得不一样、与自绘的不成套。`select[multiple]` 不画箭头、上下 4px 内边距 |
@@ -294,7 +294,7 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 - 颜色不作为唯一信息载体：稀有度同时有星数；SP 类型同时有文字标签；增减益同时有 +/- 与 ▲▼。
 - 青色只给可交互 / 选中的东西：装饰性小标签（eyebrow / overline / 命名空间）用 `--ak-fg-muted`（暗 5.2:1 / 亮 6.1:1），不给静态文字假的可点暗示，也避开 `--ak-accent` 亮色下 3.2:1 的小字对比（§1.2）。
 - 触控目标 ≥ 36px（`.ak-btn` / `.ak-input` / 裸控件默认 36，`--lg` 44）；表格里的紧凑档 30 是唯一例外——宽度远大于高度、外面还包着单元格内边距，且不承担主动作（§4.1）。
-- `prefers-reduced-motion` / `prefers-contrast: more` / `forced-colors` 均有处理（`tokens.css` / `base.css`）。
+- `prefers-reduced-motion` / `prefers-contrast: more` / `forced-colors` 均有处理（`tokens.css` / `base/root.css`）。
 - 折叠/标签页/对话框使用原生 `details` / `dialog` / `aria-selected`。
 
 ---
@@ -302,17 +302,20 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 ## 7. 文件与用法
 
 ```
-src/tokens.css       令牌 + 主题 + Codex 桥接（必须最先加载）
-src/base.css         MW 内容样式（.mw-parser-output、wikitable、toc、tabber、表单、diff…）
-src/components.css   通用组件（.ak-btn/.ak-tag/.ak-card/.ak-panel/.ak-tabs/.ak-message/…）
-src/arknights.css    方舟装饰 + 游戏数据组件（.ak-rarity/.ak-op-card/.ak-skill/…）
-src/skin.css         皮肤骨架（页眉/侧栏/页面动作簇/TOC/页脚/搜索面板/响应式）
+tokens/src/          令牌源（W3C DTCG json5）：base/ 原始色板 · 字体 · 尺寸 · 动效 · 层级 · functional/ 明暗主题 · 页眉接口 · 控件 · bridge/ Codex 桥接
+tokens/build.ts      pnpm tokens：生成 src/tokens.css + tokens/tokens.json（Style Dictionary；两者都不手改）
+src/tokens.css       令牌 + 主题 + Codex 桥接（生成物；必须最先加载）
+src/base/            MW 内容样式，一块一个文件（root = html / body 全局基底、紧跟 tokens；typography / tables / media / tabber / forms 裸控件 / special-pages / print …）
+src/components/      通用组件，一个组件一个文件（button / tag / card / panel / tabs / message / form / table …）；title-reset 在全部组件之后，keyframes 收齐 ak-* 动画
+src/decor/           方舟装饰语言，一类一个文件（A3–A12：stripes / halftone / corner / type / glyph / inverse …）
+src/arknights/       游戏数据组件（B1–B18：rarity / profession / op-card / item / skill / range / module / dossier / stage …）；table-numerals（B99）最后
+src/chrome/          皮肤骨架（header / keyart / sidebar / page-header / toc / footer / search-palette …；responsive 收齐断点、放最后）· demo-theme.css 示例活动主题（仅预览，不进 index.css / skin.json）
 src/charinfo.css     干员页舞台的皮肤化样式表草案（对现网 Widget:CharinfoV2 同一套 DOM 换皮；预览页目前不接入——舞台先原样跑现网 CSS / JS，见 03 §3.6）
 src/search-palette.js 悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
 src/sidebar-tree.js  侧栏多层导航
 src/utilities.css    工具类
-src/index.css        本地预览汇总入口
+src/index.css        汇总入口（预览 / Storybook / 文档站）：fonts → tokens → base → components → decor → arknights → chrome → utilities，各层 index.css 按序 @import；skin.json 的逐文件列表由 node scripts/css-order.ts --write 同步成同序
 preview/vendor/      第三方原样：swiper/（首页轮播）· charinfo/（现网 Widget:CharinfoV2 的 CSS / JS / 字体 / HUD 图标快照，scripts/fetch-charinfo.py 钉版本抓取，见其 NOTICE.md）· jquery/（3.7.1，同 MW 1.43，charinfo 脚本要）
-preview/_src/        预览站源：skeleton.html（皮肤骨架，只写一份）+ pages/{home,index,chrome,mediawiki,components,arknights,operator}.html（各页 front matter + 正文）
-preview/*.html       生成物（scripts/build-preview.py）：home 首页设计稿（信息结构取自现网首页；区块样式在页面自己的 <style> = TemplateStyles，「0. 页面级」那段是静态骨架的补丁——皮肤在首页的收敛行为已由 Skin:Arknights 内置，见 03 §3.4）· index 基础（理念 / 色彩 / 字体 / 装饰）· chrome 皮肤骨架 · mediawiki 内容样式 · components 通用组件 · arknights 方舟组件 · operator 干员页整页样例（陈；现网「陈」页面 19 节一节不少，顶部直接复用现网 {{CharinfoV2}} 组件，见 03 §3.6）
+preview/_src/        预览站源：skeleton.html（皮肤骨架，只写一份）+ pages/{home,operator}.html（各页 front matter + 正文；原来的 5 张展示页 index / chrome / mediawiki / components / arknights 已退役，内容在文档站 site/）
+preview/*.html       生成物（scripts/build-preview.py）：home 首页设计稿（信息结构取自现网首页；区块样式在页面自己的 <style> = TemplateStyles，「0. 页面级」那段是静态骨架的补丁——皮肤在首页的收敛行为已由 Skin:Arknights 内置，见 03 §3.4）· operator 干员页整页样例（陈；现网「陈」页面 19 节一节不少，顶部直接复用现网 {{CharinfoV2}} 组件，见 03 §3.6）
 ```
