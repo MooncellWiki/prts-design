@@ -1,0 +1,6 @@
+/*! AKDS · decor/brackets.css — A7 边角括号 HUD brackets · 依赖：tokens.css */
+/* A7. 边角括号（HUD bracket）— 只用细线角标记于图片/大图 */
+.ak-brackets { position: relative; }
+.ak-brackets::before, .ak-brackets::after { content: ""; position: absolute; width: 14px; height: 14px; border-color: var(--ak-fg-muted); border-style: solid; pointer-events: none; }
+.ak-brackets::before { top: 4px; left: 4px; border-width: 1px 0 0 1px; }
+.ak-brackets::after { bottom: 4px; right: 4px; border-width: 0 1px 1px 0; }

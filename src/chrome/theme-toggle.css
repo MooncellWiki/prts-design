@@ -1,0 +1,7 @@
+/*! AKDS · chrome/theme-toggle.css — Theme toggle 外观切换 · 依赖：tokens.css · components/ */
+/* ═══ Theme toggle (3-state: os / day / night) ═══ */
+.ak-theme-toggle { display: inline-flex; border: 1px solid var(--ak-border-strong); }
+.ak-theme-toggle > button { all: unset; cursor: pointer; width: 30px; height: 28px; display: grid; place-items: center; color: var(--ak-fg-muted); }
+.ak-theme-toggle > button + button { border-left: 1px solid var(--ak-border); }
+.ak-theme-toggle > button.is-active { background: var(--ak-accent); color: var(--ak-accent-fg); }   /* 选中项用强调色实底（游戏 selected_back / toggle_on）：页眉里 --ak-accent 已重映射为 --ak-theme-accent，亮暗主题下都是同一块青，不再黑白反色 */
+.ak-theme-toggle svg { width: 15px; height: 15px; }

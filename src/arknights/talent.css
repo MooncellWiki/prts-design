@@ -1,0 +1,7 @@
+/*! AKDS · arknights/talent.css — B6c 天赋卡 Talent · 依赖：tokens.css · decor/ */
+/* 天赋（卡片式摘要：用于列表/侧栏；干员页正文用 talent-table.css 的条件表） */
+.ak-talent { padding: 10px 12px; border-left: var(--ak-bar-w) solid var(--ak-accent); background: var(--ak-bg-surface-2); margin-bottom: 8px; }
+.ak-talent__name { margin: 0 0 4px; font-weight: 800; display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+.ak-talent__req { font: 600 10px/1 var(--ak-font-label); color: var(--ak-fg-muted); display: inline-flex; gap: 4px; align-items: center; letter-spacing: .06em; }
+.ak-talent__req img { height: 12px; filter: var(--ak-glyph-filter); }
+.ak-talent__desc { font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); }

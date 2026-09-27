@@ -1,0 +1,15 @@
+/*! AKDS · components/panel.css — Panel 面板 · 依赖：tokens.css */
+/* Panel: 带标题栏的容器（游戏内 announce panel 风格） */
+.ak-panel { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0 0 var(--ak-space-4); }
+.ak-panel__head { display: flex; align-items: center; gap: var(--ak-space-3); min-height: 40px; padding: 0 var(--ak-space-4) 0 var(--ak-space-3);
+  background: var(--ak-bg-surface-2); border: 0 solid var(--ak-border); border-width: 0 0 1px var(--ak-bar-w); border-image: linear-gradient(to right, var(--ak-accent) 4px, var(--ak-border) 4px) 0 0 1 4; }
+.ak-panel__head--inverse { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-panel__title { font-weight: 700; font-size: var(--ak-fs-sm); margin: 0; flex: 1; letter-spacing: .02em; }
+.ak-panel__title .ak-en { font-family: var(--ak-font-display); font-weight: 700; text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); color: var(--ak-fg-muted); margin-left: 8px; font-size: var(--ak-fs-xs); }
+.ak-panel__head--inverse .ak-panel__title .ak-en { color: inherit; opacity: .55; }   /* 继承反色前景再压透明度，明暗都对；不按 :root[data-theme="dark"] 分支——跟随系统的暗色没有 data-theme，会漏 */
+.ak-panel__body { padding: var(--ak-space-4); }
+.ak-panel__body > :last-child { margin-bottom: 0; }
+.ak-panel--collapsible > .ak-panel__head { cursor: pointer; }
+.ak-panel--collapsible > .ak-panel__head::after { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform var(--ak-dur-fast); margin-left: auto; opacity: .6; }
+.ak-panel--collapsible.is-collapsed > .ak-panel__head::after { transform: rotate(-45deg); }
+.ak-panel--collapsible.is-collapsed > .ak-panel__body { display: none; }

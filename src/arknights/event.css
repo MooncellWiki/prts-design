@@ -1,0 +1,14 @@
+/*! AKDS · arknights/event.css — B16 活动 / 倒计时 Event · Countdown · 依赖：tokens.css · decor/ */
+/* B16. 活动 / 倒计时 */
+.ak-countdown { display: inline-flex; gap: 6px; font-family: var(--ak-font-label); }
+.ak-countdown > span { display: inline-flex; flex-direction: column; align-items: center; min-width: 40px; padding: 4px 6px; background: var(--ak-bg-surface-3); color: var(--ak-fg); }   /* 灰块读数，不反白（理由见 .ak-level--badge） */
+.ak-countdown > span > b { font-size: var(--ak-fs-h3); line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ak-countdown > span > small { font-size: 9px; font-weight: 600; letter-spacing: .12em; color: var(--ak-fg-muted); text-transform: uppercase; }
+.ak-event { position: relative; display: grid; grid-template-columns: 1fr; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; }
+.ak-event__banner { aspect-ratio: 21/9; background: #1d1f20; object-fit: cover; width: 100%; }
+.ak-event__body { padding: 12px 14px; }
+.ak-event__type { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-accent); }
+.ak-event__title { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 4px 0; }
+.ak-event__time { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }
+.ak-event.is-live .ak-event__type::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--ak-red-500); margin-right: 6px; animation: ak-blink 1.2s step-end infinite; }
+.ak-event.is-ended .ak-event__type { color: var(--ak-fg-muted); }   /* 已结束：类型行退成灰（原来展示页用内联 style 写） */

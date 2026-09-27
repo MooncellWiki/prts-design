@@ -1,0 +1,29 @@
+/*! AKDS · components/dropdown.css — Dropdown / Menu 下拉菜单 · 依赖：tokens.css */
+/* ═══ Dropdown / Menu ═══ */
+.ak-dropdown { position: relative; display: inline-block; }
+.ak-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; z-index: var(--ak-z-dropdown);
+  background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0; margin: 0; list-style: none; }
+.ak-menu--right { left: auto; right: 0; }
+.ak-menu li::before { display: none !important; }
+.ak-menu__item, .ak-menu a { display: flex; align-items: center; gap: var(--ak-space-2); padding: 7px 14px; font-size: var(--ak-fs-sm); color: var(--ak-fg); text-decoration: none; cursor: pointer; white-space: nowrap; border-left: 2px solid transparent; }
+.ak-menu__item:hover, .ak-menu a:hover { background: var(--ak-bg-hover); border-left-color: var(--ak-accent); text-decoration: none; color: var(--ak-fg); }
+.ak-menu__item.is-active { color: var(--ak-accent); border-left-color: var(--ak-accent); }
+.ak-menu__item--danger { color: var(--ak-danger); }
+.ak-menu__sep { height: 1px; background: var(--ak-border); margin: 4px 0; }
+.ak-menu__label { padding: 6px 14px 2px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-subtle); }
+/* 分组菜单：.ak-menu（此时是 div）里若干 nav.ak-menu__group > .ak-menu__label + ul——MW 门户（#p-cactions / #p-tb …）原样塞进卡片时用；组之间一条分隔线 */
+.ak-menu__group > ul { margin: 0; padding: 0; list-style: none; }
+.ak-menu__group + .ak-menu__group { border-top: 1px solid var(--ak-border); margin-top: 4px; padding-top: 4px; }
+/* 卡片抬头（用户菜单的用户名）：粗体一行 + 底线；图标上青 */
+.ak-menu__head { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; font-weight: 700; font-size: var(--ak-fs-sm); border-bottom: 1px solid var(--ak-border); margin-bottom: 4px; }
+.ak-menu__head .ak-icon { width: 20px; height: 20px; flex: none; color: var(--ak-accent); }
+.ak-dropdown:not(.is-open) > .ak-menu { display: none; }
+.ak-dropdown > details > summary { list-style: none; cursor: pointer; }
+.ak-dropdown > details > summary::-webkit-details-marker { display: none; }
+.ak-dropdown > details[open] > .ak-menu { display: block; }
+/* Vue 版 AkDropdown（APG 菜单按钮）：方向键移到的项 = 悬停外观，焦点环收进项内；禁用项灰字、不响应悬停 */
+.ak-menu__item:focus-visible { background: var(--ak-bg-hover); border-left-color: var(--ak-accent); outline-offset: -2px; }
+.ak-menu__item[aria-disabled="true"] { color: var(--ak-fg-disabled); cursor: not-allowed; }
+.ak-menu__item[aria-disabled="true"]:hover { background: none; border-left-color: transparent; color: var(--ak-fg-disabled); }
+/* 危险链接项：.ak-menu a 的 color（0,1,1）压过了 .ak-menu__item--danger（0,1,0），<a class="ak-menu__item--danger"> 一直不红——补一条（悬停同普通项回到前景色） */
+.ak-menu a.ak-menu__item--danger:not(:hover) { color: var(--ak-danger); }

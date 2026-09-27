@@ -1,0 +1,31 @@
+/*! AKDS · base/tabber.css — TabberNeue（ext.tabberNeue） · 依赖：tokens.css */
+/* ─── TabberNeue (ext.tabberNeue) ──────────────────────────────────────── */
+.tabber { margin: var(--ak-space-4) 0; }
+.tabber__header { box-shadow: none; border-bottom: 1px solid var(--ak-border); position: relative; background: transparent; }
+.tabber__header::after { display: none; }
+.tabber__tabs { display: flex; gap: var(--ak-space-1); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.tabber__tabs::-webkit-scrollbar { display: none; }
+.tabber__tab {
+  flex: none; white-space: nowrap;
+  font-family: var(--ak-font-body); font-weight: 600; font-size: var(--ak-fs-sm); color: var(--ak-fg-muted);
+  padding: var(--ak-space-2) var(--ak-space-4); border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px;
+  text-decoration: none; transition: color var(--ak-dur-fast), border-color var(--ak-dur-fast), background var(--ak-dur-fast);
+  position: relative;
+}
+.tabber__tab:hover { color: var(--ak-fg); background: var(--ak-bg-hover); text-decoration: none; }
+.tabber__tab[aria-selected="true"] { color: var(--ak-accent); border-bottom-color: var(--ak-accent); }
+.tabber__tab[aria-selected="true"]::before {   /* 游戏内选中角标 */
+  content: ""; position: absolute; left: 0; top: 0; border-style: solid; border-width: 6px 6px 0 0; border-color: var(--ak-accent) transparent transparent transparent;
+}
+.tabber__indicator { display: none; }
+.tabber__section { padding-top: var(--ak-space-4); }
+.tabber__panel:focus-visible { outline: none; }
+.tabber__header__prev, .tabber__header__next { background: var(--ak-bg-surface); }
+/* 皮肤内变体：卡片式 */
+.tabber.ak-tabber-boxed .tabber__header { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); border-bottom: 0; }
+.tabber.ak-tabber-boxed .tabber__section { border: 1px solid var(--ak-border); padding: var(--ak-space-4); background: var(--ak-bg-surface); }
+/* 游戏内黑白反转的块状标签页变体（原「斜切标签页」，去掉了平行四边形——系统里不再有斜边） */
+.tabber.ak-tabber-block .tabber__header { border-bottom: 2px solid var(--ak-fg); }
+.tabber.ak-tabber-block .tabber__tab { background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); border: 0; margin: 0 2px 0 0; padding: 6px 16px; }
+.tabber.ak-tabber-block .tabber__tab[aria-selected="true"] { background: var(--ak-fg); color: var(--ak-bg-canvas); border: 0; }
+.tabber.ak-tabber-block .tabber__tab[aria-selected="true"]::before { display: none; }

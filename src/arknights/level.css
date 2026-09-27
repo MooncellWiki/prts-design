@@ -1,0 +1,9 @@
+/*! AKDS · arknights/level.css — B3 等级读数 Level · 依赖：tokens.css · decor/ */
+/* 等级读数「LV 90」：横排、LV 小标坐在数字基线上；数字 18px + 3px 内距 = 24px 高，与阶段页签 / 开关 / .ak-trust 同一条线
+ *  （此前竖排 LV 叠数字 42px 高，在控制行里比左右所有东西都高出一截）。tabular-nums：E0/E1/E2 切换 50 → 80 → 90 宽度不跳 */
+.ak-level { display: inline-flex; align-items: baseline; gap: 5px; line-height: 1; font-family: var(--ak-font-label); }
+.ak-level__lv { font-size: 10px; font-weight: 600; letter-spacing: .1em; color: var(--ak-fg-muted); }
+.ak-level__n { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+/* 等级块 / 倒计时块是「读数」，用主题灰（surface-3 + fg，同 .ak-sp-dur 灰芯片），不反白——反白在本系统里是「选中 / 可点」（激活的阶段页签、btn--contrast = 游戏 btn_on）：
+ *  LV 块紧挨 E2 页签再反白就像又一个选中项；倒计时三枚白块像一排按钮。大面积反白也会压过标题，读数不该比标题响 */
+.ak-level--badge { background: var(--ak-bg-surface-3); color: var(--ak-fg); padding: 3px 8px; }   /* __lv 沿用基础的 --ak-fg-muted */

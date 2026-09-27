@@ -1,0 +1,18 @@
+/*! AKDS · components/cbox.css — Cbox 正文提示框（= 现网 {{Cbox2}}） · 依赖：tokens.css */
+/* ═══ Cbox — 正文提示框（= 现网 {{Cbox2}}：左侧图标井 + 右侧正文） ═══
+   与 .ak-message 的分工：.ak-message 是界面 / 系统反馈（横幅、可关闭、与 Toast 同族）；.ak-cbox 是编辑写在正文里的提示——「另见 xx 页面」「本节内容已删除仅作存档」，现网满站都是这个模板。
+   等级对应：lv0 绿（另见 / 提示）→ --tip · lv1 蓝（信息）→ 默认 · lv2 黄 / lv3 橙（注意）→ --warning（现网夜间样式也把 2 / 3 并成一档）· lv4 红 → --danger。
+   图标井 = 等级色 24% 淡底 + 等级色线稿（同 .ak-tag--success 那套「淡底 + 色字」，明暗两套令牌各自成立，不分支）；图标贴顶，井随正文拉高（现网同）；直角、1px 边、不投影 */
+.ak-cbox { --_c: var(--ak-info); --_bg: var(--ak-info-bg);
+  display: flex; align-items: stretch; margin: 0 0 var(--ak-space-4);
+  background: var(--_bg); border: 1px solid var(--ak-border); color: var(--ak-fg); font-size: var(--ak-fs-sm); line-height: 1.6; }
+.ak-cbox--tip { --_c: var(--ak-success); --_bg: var(--ak-success-bg); }
+.ak-cbox--warning { --_c: var(--ak-warning); --_bg: var(--ak-warning-bg); }
+.ak-cbox--danger { --_c: var(--ak-danger); --_bg: var(--ak-danger-bg); }
+.ak-cbox--neutral { --_c: var(--ak-fg-muted); --_bg: var(--ak-bg-surface-2); }
+.ak-cbox--narrow { max-width: 640px; }   /* = 模板 narrow= */
+.ak-cbox__icon { flex: none; width: 40px; display: flex; justify-content: center; padding-top: 10px; background: color-mix(in srgb, var(--_c) 24%, transparent); color: var(--_c); }
+.ak-cbox__icon > svg { width: 20px; height: 20px; }
+.ak-cbox__body { flex: 1; min-width: 0; padding: 9px 12px; }
+.ak-cbox__title { font-weight: 700; color: var(--_c); margin: 0 0 2px; }
+.ak-cbox__body > :last-child { margin-bottom: 0; }

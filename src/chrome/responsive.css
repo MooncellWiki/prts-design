@@ -1,0 +1,120 @@
+/*! AKDS · chrome/responsive.css — Responsive 断点（各块的响应式规则集中在这里，顺序敏感，暂不拆） · 依赖：tokens.css · components/ */
+/* ═══ Responsive ═══ */
+/* < 1400：右侧导轨收起 —— 页眉长出二级吸顶栏，目录改由它拉下的浮层承载 */
+@media (max-width: 1400px) {
+  .ak-local-nav { display: flex; }
+  .ak-keyart { --_over: calc(var(--ak-header-h) + var(--ak-local-nav-h)); }   /* 头图探到两行页眉的背后，两行玻璃底下是同一幅画 */
+  .ak-fab { display: none; }   /* 回到顶部收进目录浮层，不再浮在内容上 */
+  .ak-main { padding-right: 0; }
+  /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
+  :root.ak-condensed .ak-header { transform: translateY(calc(-1 * var(--ak-header-h))); }
+  :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标 */
+
+  /* 目录浮层：顶边跟着吸顶栏下沿走，右对齐于二级栏。宽、高都锁死（参考 VitePress LocalNavOutlineDropdown 的 .items）：
+   *  · 宽 = 360px 定宽（≤639 改为拉满可用宽度，见下），border-box，不随条目长短变；
+   *  · 高 ≤ 吸顶栏下沿到视口底的余量，超出只有 .ak-toc__inner 内滚。用 100dvh：手机地址栏 / 底部工具栏收放时 100vh 是「最大视口」，
+   *    浮层底会被工具栏盖住、又因为「没超高」不出内滚（VitePress 靠 JS 量 innerHeight 写 --vp-vh 解决同一件事），100vh 只给不认 dvh 的老浏览器兜底；
+   *  · 开着时 JS 锁住页面滚动（html.ak-scroll-lock，见「Responsive」块末尾），浮层内滚到头也不会把页面带着走。 */
+  .ak-toc { --_top: calc(var(--ak-header-h) + var(--ak-local-nav-h)); position: fixed; top: var(--_top); right: var(--ak-gutter); left: auto; bottom: auto; z-index: var(--ak-z-dropdown); box-sizing: border-box;
+    display: none; flex-direction: column; width: min(360px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--_top) - var(--ak-space-4)); max-height: calc(100dvh - var(--_top) - var(--ak-space-4));
+    background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1; box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); }
+  :root.ak-condensed .ak-toc { --_top: var(--ak-local-nav-h); }
+  /* 开：JS 把 .ak-toc-cb 的状态镜像到 html.ak-toc-open（主路径，不依赖 :has()——国产手机浏览器 / 旧 WebView 内核没有 :has() 时仍是真正的浮层）；
+   * 无 JS 时由 body:has() 纯 CSS 桥接。两条必须分开写：选择器列表里混进不认识的 :has() 会让整条规则作废 */
+  :root.ak-toc-open .ak-toc { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
+  body:has(.ak-toc-cb:checked) .ak-toc { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
+  .ak-toc__top { display: flex; align-items: center; gap: 8px; flex: none; padding: var(--ak-space-3) var(--ak-space-4); color: var(--ak-accent); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--ak-border); }
+  .ak-toc__top:hover { background: var(--ak-bg-hover); text-decoration: none; }
+  .ak-toc__top .ak-icon { width: 16px; height: 16px; }
+  .ak-toc__inner { position: static; flex: 1 1 auto; min-height: 0; max-height: none; overflow-y: auto; padding: var(--ak-space-3) var(--ak-space-4); }   /* flex 子项默认 min-height:auto 不收缩：必须 min-height:0 才会在浮层限高内出内滚（overscroll-behavior:contain 沿用导轨态的声明） */
+  .ak-toc__title, .ak-toc__progress { display: none; }   /* 标题已经写在按钮上；阅读进度属于导轨，不进浮层 */
+  .ak-toc li a { white-space: normal; }   /* 浮层比导轨宽松，长标题换行而非截断 */
+  /* 既不支持 :has() 又没有 JS（MW 核心给 <html> 的 client-nojs；预览骨架同样标了）：目录退回正文流内的静态卡片，始终展开 */
+  @supports not selector(:has(*)) {
+    .client-nojs .ak-local-nav__toc, .client-nojs .ak-toc__top { display: none; }
+    .client-nojs .ak-fab { display: grid; }
+    .client-nojs .ak-toc { position: static; display: flex; width: auto; max-height: none; box-shadow: none; margin: 0 0 var(--ak-space-5); }
+  }
+}
+@media (max-width: 1400px) and (prefers-reduced-motion: reduce) {   /* 紧跟上面的块：同选择器同特异性，animation:none 必须排在后面才生效 */
+  :root.ak-toc-open .ak-toc { animation: none; }
+  body:has(.ak-toc-cb:checked) .ak-toc { animation: none; }
+}
+/* 1120–1400 且页面无目录（.ak-layout--no-toc）：两个入口都不需要，别留一条空栏 */
+@media (min-width: 1120px) and (max-width: 1400px) {
+  .ak-local-nav:not(:has(.ak-toc-cb)) { display: none; }
+}
+@media (max-width: 1119px) {
+  .ak-local-nav__menu { display: inline-flex; }   /* 侧栏变抽屉后才需要这个入口 */
+  .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
+  /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截）。
+   * 展开时 JS 给 <html> 加 .ak-scroll-lock 锁住页面滚动（VitePress VPSidebar 同）：抽屉自己 overflow-y:auto + overscroll-behavior:contain（沿用导轨态声明），滚到头也不会把页面带着走 */
+  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); padding: var(--ak-space-4); transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
+  .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
+  .ak-sidebar__close { display: block; }
+  .ak-header__inner { display: flex; gap: var(--ak-space-4); }   /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex */
+  .ak-header__logo { margin-right: auto; }   /* 品牌靠左，其余（搜索 / ≡）靠右 */
+  .ak-header__search { flex: 1; width: auto; max-width: none; }
+  .ak-body { padding: var(--ak-space-5) var(--ak-space-5); }
+
+  /* 主行只留 品牌 / 搜索 / ≡：工具（外观 / 通知 / 用户）收进 ≡ 拉下的卡片 —— 贴主行右下沿、320px 宽、盖住二级栏；不锁页面滚动，卡片自己可滚 */
+  .ak-nav-cb { display: block; }
+  .ak-header__burger { display: inline-flex; }
+  .ak-header__screen { position: absolute; top: 100%; right: var(--ak-gutter); z-index: var(--ak-z-dropdown);
+    display: none; flex-direction: column; width: min(320px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100dvh - var(--ak-header-h) - var(--ak-space-4)); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box;
+    background: var(--ak-bg-surface); color: var(--ak-fg); border: 1px solid var(--ak-border); border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1; box-shadow: var(--ak-shadow-lg); }
+  .ak-nav-cb:checked ~ .ak-header__screen { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
+  /* 工具 → 「外观 / 通知 / 用户」三行（对应 Vite 面板下半的 Appearance 组） */
+  .ak-header__tools { flex-direction: column; align-items: stretch; gap: 0; margin: 0; padding: var(--ak-space-1) 0; }
+  .ak-header__tools > * { display: flex; align-items: center; justify-content: space-between; gap: var(--ak-space-3); min-height: 48px; padding: 0 var(--ak-space-4); }
+  .ak-header__tool-label { display: inline; font-size: var(--ak-fs-body); color: var(--ak-fg); }
+  .ak-header__tools .ak-btn--icon, .ak-header__tools .ak-header__user { width: auto; height: auto; justify-content: flex-start; border: 0; border-radius: 0; font-size: var(--ak-fs-body); font-weight: 400; color: var(--ak-fg); background: transparent; }
+  .ak-header__tools .ak-btn--icon:hover, .ak-header__tools .ak-header__user:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
+  .ak-header__tools .ak-badge { position: static; margin-left: auto; }
+  .ak-header__tools .ak-theme-toggle > button { width: 40px; height: 32px; }   /* 触屏加大点按面积 */
+  .ak-header__user .ak-avatar { --_s: 32px; }
+  /* MW 用户菜单（#p-personal = .ak-dropdown > details > summary.ak-header__user + ul.ak-menu）：面板里就地展开，不再浮出 */
+  .ak-header__tools > .ak-dropdown { display: block; min-height: 0; padding: 0; }
+  .ak-header__tools .ak-dropdown > details > summary.ak-header__user { display: flex; align-items: center; min-height: 48px; padding: 0 var(--ak-space-4); }
+  .ak-header__tools .ak-dropdown .ak-menu { position: static; min-width: 0; margin: 0 var(--ak-space-4) var(--ak-space-2); border: 0; border-top: 1px solid var(--ak-border); box-shadow: none; background: transparent; }
+  .ak-header__tools .ak-header__notifications ul { display: flex; flex-wrap: wrap; gap: var(--ak-space-2); margin: 0; padding: 0; list-style: none; }   /* Echo 徽标（#pt-notifications-*）并排 */
+}
+/* 紧跟上面的块：同选择器同特异性，reduced-motion 的 animation:none 必须排在 animation: ak-nav-screen-in 之后才能生效 */
+@media (max-width: 1119px) and (prefers-reduced-motion: reduce) { .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
+@media (max-width: 639px) {
+  :root { --ak-gutter: var(--ak-gutter-sm); --ak-header-h: 52px; }
+  .ak-header__inner { gap: 8px; }
+  .ak-header__logo img { height: 24px; }
+  .ak-header__wordmark { font-size: 17px; }
+  .ak-header__wordmark small { display: none; }
+  .ak-header__search { display: none; }   /* 手机：搜索收成主行里的图标按钮（.ak-header__search-toggle），同样打开悬浮面板 */
+  .ak-page-header__title, .skin-akds #firstHeading { font-size: var(--ak-fs-h2); }
+  .ak-body { padding: var(--ak-space-4) var(--ak-space-3); border-left: 0; border-right: 0; margin: 0 calc(-1 * var(--ak-gutter)); }
+  .ak-local-nav { padding: 0 calc(var(--ak-gutter) - 8px); }
+  .ak-local-nav__btn { padding: 0 8px; }
+  .ak-toc { left: var(--ak-gutter); width: auto; }   /* 手机上目录浮层拉满可用宽度（左右各留一个 gutter，VitePress 的 left/right:16px） */
+  /* 动作簇只留图标：文字进 sr-only（title / accesskey 不变），「更多」只剩 ⋯；标题很长时整簇换到标题下方、靠左 */
+  .ak-page-header__row { align-items: flex-start; }
+  .ak-page-tabs li a > span:not(.ak-icon), .ak-page-tools__btn > span:not(.ak-icon) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ak-page-tabs li a, .ak-page-tools__btn { padding: 0 7px; }
+  .ak-page-tools__card { max-width: calc(100vw - 2 * var(--ak-gutter)); }
+  .ak-footer__inner { grid-template-columns: 1fr 1fr; gap: var(--ak-space-6); }
+  .ak-footer__brand { grid-column: 1 / -1; }
+  .ak-footer__bottom { flex-direction: column; align-items: flex-start; }
+  .ak-footer__icons { margin-left: 0; }
+  .mw-parser-output table.wikitable { display: block; overflow-x: auto; max-width: 100%; }
+  .mw-halign-right, .tright, figure.mw-halign-right, .mw-halign-left, .tleft, figure.mw-halign-left { float: none; margin-left: 0; margin-right: 0; }
+}
+@media (min-width: 1680px) {
+  :root { --ak-sidebar-w: 268px; --ak-toc-w: 268px; }   /* 写在 :root：页眉网格与 .ak-layout 共用这两个宽度 */
+}
+/* 页面滚动锁（侧栏抽屉 / 目录浮层开着时；参考 VitePress useBodyScrollLock）：JS 给 <html> 加 .ak-scroll-lock。
+ * overflow:hidden 不改滚动位置（不像 body position:fixed 那套会跳回顶部）；有实体滚动条（Windows / 「总是显示滚动条」）时 JS 同时写 scrollbar-gutter:stable
+ * 占住滚动条位置，页面不会左右抖一下；浮层自己 overflow-y:auto 照常内滚。iOS 上 overflow:hidden 拦不住触摸滚动，由 JS 额外拦 touchmove。 */
+:root.ak-scroll-lock { overflow: hidden; }
+@media print {
+  .ak-header, .ak-keyart, .ak-sidebar, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tools, .ak-fab { display: none !important; }
+  .ak-layout { display: block; padding: 0; }
+  .ak-main { padding-right: 0; }
+  .ak-body { border: 0; padding: 0; }
+}

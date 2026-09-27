@@ -1,0 +1,26 @@
+/*! AKDS · components/tag.css — Tag 标签 · 依赖：tokens.css */
+/* ═══ Tag / Badge / Chip ═══ */
+.ak-tag {
+  --_bg: var(--ak-bg-surface-3); --_fg: var(--ak-fg-secondary); --_bd: transparent;
+  display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px;
+  font: 600 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--_fg); background: var(--_bg); border: 1px solid var(--_bd);
+  white-space: nowrap; vertical-align: middle; border-radius: var(--ak-radius);
+}
+.ak-tag--sm { height: 18px; padding: 0 5px; font-size: 10px; }
+.ak-tag--lg { height: 28px; padding: 0 12px; font-size: var(--ak-fs-sm); }
+.ak-tag--outline { --_bg: transparent; --_bd: var(--ak-border-strong); }
+.ak-tag--accent { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); }
+.ak-tag--accent-soft { --_bg: var(--ak-accent-subtle); --_fg: var(--ak-accent); --_bd: var(--ak-accent-muted); }
+.ak-tag--yellow { --_bg: var(--ak-yellow-500); --_fg: #1d1f20; }
+.ak-tag--info { --_bg: var(--ak-info-bg); --_fg: var(--ak-info); }
+.ak-tag--success { --_bg: var(--ak-success-bg); --_fg: var(--ak-success); }
+.ak-tag--warning { --_bg: var(--ak-warning-bg); --_fg: var(--ak-warning); }
+.ak-tag--danger { --_bg: var(--ak-danger-bg); --_fg: var(--ak-danger); }
+.ak-tag--danger-solid { --_bg: var(--ak-red-700); --_fg: #fff; }     /* BREAKING NEWS 红 */
+.ak-tag--new { --_bg: var(--ak-red-600); --_fg: #fff; font-family: var(--ak-font-label); letter-spacing: .06em; }
+.ak-tag--inverse { --_bg: var(--ak-bg-inverse); --_fg: var(--ak-fg-inverse); }
+.ak-tag--label { font-family: var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); }
+.ak-tag__dot { width: 6px; height: 6px; background: currentColor; }
+.ak-tag__remove { all: unset; cursor: pointer; margin-left: 2px; line-height: 1; opacity: .7; }
+.ak-tag__remove:hover { opacity: 1; }
+.ak-tags { display: flex; flex-wrap: wrap; gap: 6px; }

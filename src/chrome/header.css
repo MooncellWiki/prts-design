@@ -1,0 +1,96 @@
+/*! AKDS · chrome/header.css — Header 黑色「终端」顶栏 · 依赖：tokens.css · components/ */
+/* ═══ Header（黑色「终端」顶栏）═══
+ *  两行结构：.ak-header__inner（品牌 · 搜索 · 工具，56px）
+ *          + .ak-local-nav（二级吸顶栏，仅 <1400 出现，48px）
+ *  页眉在两套主题下都是黑的：官网导航栏（#000 底 + 青色当前项 + 白线稿图标）、游戏主界面顶栏（深底 + 半调网点 + 青色选中块）、
+ *  干员档案页顶部那道黑边——"黑框白纸 / 黑框黑纸"是方舟本体的框架语言。颜色不读明暗主题，只读 tokens.css §2d 的 --ak-chrome-*，
+ *  并在这里把语义令牌重映射过去（--ak-fg → --ak-chrome-fg …），页眉里的按钮 / 搜索触发器 / 头像 / 徽标 / 菜单 / 开关就自动是页眉配色，
+ *  不必逐个写；活动主题（Gadget / Common.css）覆盖 --ak-chrome-* / --ak-theme-accent / --ak-keyart-* 即可换皮，不碰选择器。
+ *  装饰：右侧半调网点场（::before，--ak-chrome-texture 调强弱 / 关闭）· 底部 1px 亮线 · 标语 / 悬停 / 开关选中项 / 搜索图标框都用活动主色（游戏 selected_back / toggle_on 的那块青），亮暗主题下页眉配色完全一致。
+ *  页眉是一块均匀的黑玻璃（--ak-chrome-bg 半透明 + 毛玻璃），压在头图 .ak-keyart 的顶端之上（头图从 y=0 铺起，见 keyart.css）：可读性由这层玻璃保证，
+ *  与底下是什么画无关；活动主题想让画多透一点，只把 --ak-chrome-bg 的 alpha 调到 .78–.85（≥.72 时白色画面之下仍 ≥7:1）。不做横向渐隐、不做纵向渐变
+ *  —— 那种「右半张照片从左缘渐入」的顶栏底图既压不住白色图标又像贴上去的（试过，作罢）。--ak-chrome-image 只用于画在玻璃之上的深色角饰 / 底纹。
+ *  主行是三列网格，与 .ak-layout 的 侧栏 / 正文 两列对齐：品牌在侧栏列上方，搜索从正文列左缘起（≤560px，与面包屑 / 标题同一条线），
+ *  工具靠右 —— 页眉是三列各自的「列头」，不是游离的一条。页眉里不放站点级主导航：那 8 项与侧栏「通用」组 1:1 重复，导航只由侧栏承担
+ *  （MW 的 data-portlets-first 也只在侧栏渲染一次）。1680 容器与 .ak-layout 同为 border-box，超宽时左右缘才对得齐。
+ *  <1400 向下滚动时整个页眉上移一个 __inner 的高度 —— 主行滑出视口，二级栏贴顶。
+ *  <1120 主行回到 flex，只留 品牌 / 搜索 / ≡；工具（外观 / 通知 / 用户菜单）都在 .ak-header__screen 里 —— 桌面 display:contents
+ *  （子项直接参与主行网格），窄屏变成 ≡ 拉下、贴在主行右下沿的 320px 卡片（不再是全屏面板：里面只有三行）。开合是纯 CSS：
+ *  input.ak-nav-cb + label.ak-header__burger（同目录浮层的 .ak-toc-cb 做法），DOM 顺序固定为
+ *  logo · search · search-toggle · nav-cb · screen[tools] · burger（checkbox 在前才能用 ~ 联动）。
+ *  卡片 position:absolute 于 .ak-header__inner（position:relative），top:100% 即贴主行下沿、盖住二级栏；JS 补 Esc / 点卡片外 / 回到桌面宽度收起。 */
+.ak-header {
+  /* 语义令牌 → 页眉配色（只在页眉子树内生效；搜索面板 / 侧栏飞出挂在 body 下，不受影响） */
+  --ak-fg: var(--ak-chrome-fg); --ak-fg-secondary: var(--ak-chrome-fg-2); --ak-fg-muted: var(--ak-chrome-fg-muted); --ak-fg-subtle: var(--ak-chrome-fg-muted);
+  --ak-bg-surface: var(--ak-chrome-bg-solid); --ak-bg-surface-2: var(--ak-chrome-field); --ak-bg-surface-3: rgba(255,255,255,.12);
+  --ak-bg-hover: var(--ak-chrome-hover); --ak-bg-active: rgba(255,255,255,.14);
+  --ak-border: var(--ak-chrome-line); --ak-border-subtle: var(--ak-chrome-line); --ak-border-strong: var(--ak-chrome-line-strong);
+  --ak-bg-inverse: #fff; --ak-fg-inverse: #000;
+  --ak-accent: var(--ak-theme-accent); --ak-accent-fg: var(--ak-theme-accent-fg); --ak-accent-hover: var(--ak-theme-accent); --ak-focus: var(--ak-theme-accent);
+  --ak-accent-subtle: color-mix(in srgb, var(--ak-theme-accent) 14%, transparent);
+  --ak-glyph-filter: none;   /* 游戏白色线稿站标在黑页眉上不反相 */
+  --ak-shadow-lg: 0 16px 40px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
+  color-scheme: dark;        /* 页眉内的原生控件（无 JS 时的真搜索框）也走深色 */
+  position: sticky; top: 0; z-index: var(--ak-z-header); color: var(--ak-fg);
+  background: var(--ak-chrome-image) var(--ak-chrome-image-position) / var(--ak-chrome-image-size) var(--ak-chrome-image-repeat), var(--ak-chrome-bg);   /* 角饰在玻璃色之上（不被压暗，所以只放深色低对比素材）；玻璃色之下才是头图 / 滚过来的正文 */
+  backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--ak-chrome-line); transition: transform var(--ak-dur-normal) var(--ak-ease); }
+/* 右侧半调网点场：游戏顶栏 img_back / bkg_openserver、官网页面左缘那片网点。从右缘向左渐隐，只铺到工具区背后，不碰品牌 */
+.ak-header::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--ak-chrome-texture);
+  background-image: radial-gradient(rgba(255,255,255,.34) 1px, transparent 1.4px); background-size: 6px 6px; background-position: 0 1px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 52%, #000 100%); mask-image: linear-gradient(90deg, transparent 52%, #000 100%); }
+.ak-header__inner { height: var(--ak-header-h); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; position: relative;
+  display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr) auto; gap: var(--ak-gutter); align-items: center; }   /* 三列 = 侧栏 / 正文 / 工具，列宽与 .ak-layout 相同 */
+.ak-header__screen, .ak-header__tool { display: contents; }   /* 桌面：只是分组，不产生盒子；窄屏见 responsive.css */
+.ak-header__tool-label { display: none; }   /* 「外观」「通知」这类行标签只在窄屏面板里出现（桌面是图标） */
+.ak-nav-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 窄屏 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
+.ak-header__burger { display: none; flex: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; color: var(--ak-fg-secondary); cursor: pointer; }
+.ak-header__burger:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
+.ak-header__burger-icon { position: relative; display: block; width: 18px; height: 14px; }
+.ak-header__burger-icon i { position: absolute; left: 0; width: 18px; height: 2px; background: currentColor; transition: transform var(--ak-dur-fast) var(--ak-ease), opacity var(--ak-dur-fast); }
+.ak-header__burger-icon i:nth-child(1) { top: 0; } .ak-header__burger-icon i:nth-child(2) { top: 6px; } .ak-header__burger-icon i:nth-child(3) { top: 12px; }
+.ak-nav-cb:checked ~ .ak-header__burger { color: var(--ak-fg); }
+.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.ak-nav-cb:focus-visible ~ .ak-header__burger { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ak-header__logo { grid-column: 1; justify-self: start; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; }   /* 品牌盖着侧栏列；不带任何分隔线 / 底线（右侧竖线是「品牌 | 导航」的分界，导航没了它就是悬着的；品牌列底下的主色横线也试过——意味不明，去掉） */
+.ak-header__logo:hover { text-decoration: none; color: inherit; }
+.ak-header__logo img { height: 28px; width: auto; filter: var(--ak-glyph-filter); content: var(--ak-logo-image, normal); }   /* --ak-logo-image 设了就换站标（Chromium / WebKit 支持 content 替换 <img>；Firefox 忽略，请改 $wgLogos） */
+.ak-header__wordmark { font: 800 20px/1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; }
+.ak-header__wordmark small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .18em; color: var(--ak-theme-accent); margin-top: 3px; }   /* 标语用活动主色：官网导航当前项那一点青 */
+.ak-header__search { grid-column: 2; justify-self: start; width: 100%; max-width: 560px; min-width: 0; }   /* 从正文列左缘起，与面包屑 / 标题左缘同线；有 JS 时这是 button.ak-search-trigger（保留此类名，它自带 width:100%，所以上限用 max-width 写） */
+.ak-header__search .ak-input, .ak-header__search input[type="search"] { min-height: 34px; background: var(--ak-bg-surface-2); border-color: var(--ak-chrome-line); color: var(--ak-fg); }   /* 无 JS 回退：真表单 */
+.ak-header__search .ak-input:focus, .ak-header__search input[type="search"]:focus { background: rgba(0,0,0,.35); border-color: var(--ak-accent); box-shadow: none; }
+/* 有 JS 时 search-palette.js 把上面的表单换成这个「长得像输入框的按钮」，点击 / 聚焦回车 → 打开悬浮面板；真表单被搬进面板。
+ * 左端一格深色图标框（游戏 HUD announce_title_on 的图标位）+ 矩形浅条；曾试过右端斜切，Tab 聚焦的描边会被 clip-path 裁断，作罢 */
+.ak-search-trigger { display: inline-flex; align-items: center; gap: 10px; height: 34px; width: 100%; padding: 0 8px 0 0; box-sizing: border-box; border: 1px solid var(--ak-chrome-line); background: var(--ak-bg-surface-2); color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-sm); text-align: left; cursor: text; transition: background var(--ak-dur-fast), border-color var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger:hover { border-color: var(--ak-chrome-line-strong); color: var(--ak-fg-secondary); }
+.ak-search-trigger:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
+.ak-search-trigger[aria-expanded="true"] { border-color: var(--ak-theme-accent); background: rgba(0,0,0,.35); color: var(--ak-fg); }
+.ak-search-trigger__icon { flex: none; align-self: stretch; width: 32px; height: auto; padding: 8px; box-sizing: border-box; background: rgba(0,0,0,.35); color: var(--ak-theme-accent); transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger[aria-expanded="true"] .ak-search-trigger__icon { background: var(--ak-theme-accent); color: var(--ak-theme-accent-fg); }   /* 打开时图标框反成主色实底（游戏 selected 态） */
+.ak-search-trigger__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ak-header .ak-search__kbd, .ak-header .ak-kbd { background: rgba(0,0,0,.4); border-color: var(--ak-chrome-line-strong); box-shadow: inset 0 -1px 0 var(--ak-chrome-line-strong); color: var(--ak-fg-muted); }
+.ak-header__tools { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: 4px; flex: none; }
+.ak-header__tools .ak-btn--icon, .ak-header__search-toggle { border-color: transparent; background: transparent; color: var(--ak-fg-secondary); }
+.ak-header__tools .ak-btn--icon:hover, .ak-header__search-toggle:hover { background: var(--ak-bg-hover); color: var(--ak-theme-accent); }   /* 悬停变活动主色：官网导航项的 hover */
+.ak-header__tools .ak-btn--icon svg, .ak-header__search-toggle svg { width: 20px; height: 20px; }
+.ak-header__user { display: inline-flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; }
+.ak-header__user:hover { --_fg: var(--ak-theme-accent); }   /* 走 .ak-btn 的 --_fg（下面 :visited 也读它），悬停变活动主色 */
+.ak-header__user .ak-avatar { --_s: 28px; border-color: var(--ak-chrome-line-strong); }
+/* 用户菜单卡片（#p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu.ak-header__user-card——用户名抬头 + 「界面设置」（ULS 语言）+ 「个人工具」两组门户。
+ * 颜色不用另写：.ak-header 内 --ak-bg-surface / --ak-border / --ak-fg 已重映射到 --ak-chrome-*，卡片自动是页眉配色 */
+.ak-header__user-menu > details[open] > .ak-header__user { --_fg: var(--ak-theme-accent); background: var(--ak-bg-hover); }
+.ak-header__user-card { min-width: 240px; top: calc(100% + 6px); padding: 0 0 6px; }
+.ak-header__user-card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
+.ak-header__user-card a:hover .ak-icon { color: var(--ak-fg); }
+.ak-header__notifications a:hover { color: var(--ak-theme-accent); }
+/* 页眉里的链接不分已访问：base/typography.css 的 a:visited（紫）在黑底上发暗，用户名 / #p-personal / Echo 一律用自己的颜色 */
+.ak-header a:visited { color: inherit; }
+.ak-header .ak-btn:visited { color: var(--_fg); }
+
+/* Notification badge on header icon：36px 按钮里 20px 图标占 8–28，徽标（18px 圆）贴到 2px 处，圆心落在图标右上角附近——只压住铃铛的右上角，
+   不像之前 top/right 4px + 28px 长条那样盖掉整个图标（Naive UI 的 translate(50%,-50%) 也是把圆心放在内容右上角） */
+.ak-header__tools .ak-badge { position: absolute; top: 2px; right: 2px; }
+.ak-header__tools .ak-btn--icon { position: relative; }

@@ -1,0 +1,21 @@
+/*! AKDS · arknights/stage.css — B13 关卡 / 关卡编号 / 理智 Stage · 依赖：tokens.css · decor/ */
+/* B13. 关卡卡 / 关卡编号 */
+.ak-stage { --_bd: var(--ak-border); display: grid; grid-template-columns: max-content 1fr; gap: 12px; align-items: center; padding: 10px 14px; background: var(--ak-bg-surface); border: 1px solid var(--_bd); text-decoration: none; color: inherit; position: relative; }
+.ak-stage:hover { --_bd: var(--ak-accent); text-decoration: none; color: inherit; }
+.ak-stage__code { font: 800 var(--ak-fs-h3)/1 var(--ak-font-display); letter-spacing: -.02em; min-width: 72px; }
+.ak-stage__code small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .12em; color: var(--ak-fg-muted); margin-top: 3px; }
+.ak-stage__name { font-weight: 700; }
+.ak-stage__meta { display: flex; gap: 10px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); margin-top: 4px; }
+.ak-stage__meta b { color: var(--ak-fg); }
+.ak-stage--hard, .ak-stage--ex, .ak-stage--story { border-left-width: 4px; border-image: linear-gradient(to right, var(--_bar) 4px, var(--_bd) 4px) 1 1 1 4; }   /* 关卡类型色条与框直角拼接 */
+.ak-stage--hard { --_bar: var(--ak-red-600); }
+.ak-stage--ex { --_bar: var(--ak-red-700); }
+.ak-stage--story { --_bar: var(--ak-fg-muted); }
+.ak-stage-code { display: inline-block; font: 800 1em/1 var(--ak-font-display); letter-spacing: -.02em; padding: 2px 6px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-stage-code--hard { background: var(--ak-red-700); color: #fff; }
+/* 理智 / 消耗 */
+.ak-sanity { display: inline-flex; align-items: center; gap: 4px; font: 800 var(--ak-fs-sm)/1 var(--ak-font-label); }
+.ak-sanity::before { content: ""; width: 12px; height: 14px; background: currentColor; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+/* 链接版关卡号（Vue AkStageCode）自己标 ak-not-prose 躲开正文 a:visited / a:hover 的链接色——not-prose 基线只管子孙里的 a，标在链接自身时要在这里去掉 UA 默认下划线，悬停再给回 */
+a.ak-stage-code.ak-not-prose { text-decoration: none; }
+a.ak-stage-code.ak-not-prose:hover { text-decoration: underline; text-underline-offset: 2px; }

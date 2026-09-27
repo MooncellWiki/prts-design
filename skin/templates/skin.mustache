@@ -1,4 +1,4 @@
-{{! AKDS · skin.mustache — 与 src/skin.css 的类名一一对应；保留 MW 标准 id 以兼容 Gadget }}
+{{! AKDS · skin.mustache — 与 src/chrome/ 的类名一一对应；保留 MW 标准 id 以兼容 Gadget }}
 <a class="ak-skip" href="#content">{{msg-akds-skip}}</a>
 
 <header class="ak-header" id="mw-head">
@@ -51,7 +51,7 @@
   </div>
 </header>
 
-{{! 头图带（Key Visual）：默认 --ak-keyart-h: 0 不占位；活动主题（Gadget / MediaWiki:Common.css）设 --ak-keyart-image / --ak-keyart-h 即出现，见 tokens.css §2d。画从页面顶端铺起、页眉玻璃压在它上面（skin.css 用负外边距实现，DOM 顺序不变） }}
+{{! 头图带（Key Visual）：默认 --ak-keyart-h: 0 不占位；活动主题（Gadget / MediaWiki:Common.css）设 --ak-keyart-image / --ak-keyart-h 即出现，见 tokens.css §2d。画从页面顶端铺起、页眉玻璃压在它上面（chrome/keyart.css 用负外边距实现，DOM 顺序不变） }}
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout{{^data-toc}} ak-layout--no-toc{{/data-toc}}">
@@ -117,7 +117,7 @@
     {{! 站点链接（隐私 / 关于 / 免责声明 + SkinAddFooterLinks 钩子加的 ICP、手机版等） }}
     {{#data-footer.data-places}}<div class="ak-footer__col"><h4>{{msg-akds-footer-about}}</h4><ul id="{{id}}"{{#className}} class="{{.}}"{{/className}}>{{#array-items}}<li id="{{id}}">{{{html}}}</li>{{/array-items}}</ul></div>{{/data-footer.data-places}}
   </div>
-  {{! 底栏：左 = 站名 + 皮肤；右 = $wgFooterIcons 徽章（结构同 Vector/Citizen：ul#footer-icons > li#footer-*ico > a > img；见 skin.css .ak-footer__icons） }}
+  {{! 底栏：左 = 站名 + 皮肤；右 = $wgFooterIcons 徽章（结构同 Vector/Citizen：ul#footer-icons > li#footer-*ico > a > img；见 chrome/footer.css .ak-footer__icons） }}
   <div class="ak-footer__bottom">
     <div class="ak-footer__bottom-text"><span>{{msg-sitetitle}}</span><span class="ak-en">Skin AKDS</span></div>
     {{#data-footer.data-icons}}<ul class="ak-footer__icons{{#className}} {{.}}{{/className}}" id="{{id}}">{{#array-items}}<li id="{{id}}">{{{html}}}</li>{{/array-items}}</ul>{{/data-footer.data-icons}}

@@ -1,0 +1,14 @@
+/*! AKDS · components/keyframes.css — Keyframes（ak-* 动画，皮肤 / 方舟组件 / 工具类共用） · 依赖：tokens.css */
+/* ═══ Keyframes ═══ */
+@keyframes ak-spin { to { transform: rotate(360deg); } }
+@keyframes ak-ripple { from { width: calc(.75em + 5px); height: calc(.75em + 5px); } to { width: 1.65em; height: 1.65em; } }   /* 涟漪环外扩：出生时刚好箍在中央菱形外沿 */
+@keyframes ak-ripple-fade { from { opacity: 1; } to { opacity: 0; } }
+@keyframes ak-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@keyframes ak-slide-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes ak-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ak-dialog-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes ak-shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@keyframes ak-indeterminate { 0% { left: -30%; } 100% { left: 100%; } }
+@keyframes ak-bars { 0%, 100% { transform: scaleY(.4); opacity: .5; } 50% { transform: scaleY(1); opacity: 1; } }
+@keyframes ak-blink { 50% { opacity: 0; } }
+@keyframes ak-scan { from { transform: translateY(-100%); } to { transform: translateY(100%); } }

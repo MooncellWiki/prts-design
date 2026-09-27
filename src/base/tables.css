@@ -1,0 +1,45 @@
+/*! AKDS · base/tables.css — Tables · wikitable / 数据表 · 依赖：tokens.css */
+/* ─── Tables ────────────────────────────────────────────────────────────── */
+.mw-parser-output table { border-collapse: collapse; border-spacing: 0; }
+/* border-collapse 要写在 .wikitable 自己身上，不能只靠上面那条：MediaWiki 有一批核心 PHP 生成的
+ * .wikitable 不在 .mw-parser-output 里（Special:Version 的软件 / 接入点 / 扩展 / 库表最典型），
+ * 那里 border-collapse 退回 separate + border-spacing 2px，每个单元格四边的 1px 变成一个个独立
+ * 的小框、彼此还留 2px 缝，再叠上表格自身的外框——就是「一堆线框套外框」的样子。 */
+.wikitable {
+  margin: var(--ak-space-4) 0; background: var(--ak-bg-surface); color: var(--ak-fg);
+  border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); line-height: 1.5;
+  border-collapse: collapse; border-spacing: 0;
+}
+.wikitable > * > tr > th, .wikitable > * > tr > td { border: 1px solid var(--ak-border); padding: .45em .7em; vertical-align: middle; }
+.wikitable > * > tr > th { background: var(--ak-bg-surface-2); font-weight: 700; text-align: center; color: var(--ak-fg); }
+/* 表头行的加粗底线只给「整行都是 th、且下一行是数据行」的那一行（多行表头只压最后一行）——PRTS 大量表格把 th 竖着当行头用（属性表 / 信息表），
+ * 早先给所有 th 一律 2px 底线，行头列每一格下面都多出一道，与右侧 td 的 1px 线对不齐、显得冗余。不支持 :has() 的浏览器退化为一律 1px，只靠底色区分。 */
+.wikitable > thead > tr:last-child:not(:has(td)) > th,
+.wikitable > tbody > tr:not(:has(td)):has(+ tr > td) > th { border-bottom: 2px solid var(--ak-border-strong); }
+.wikitable > thead > tr > th, .wikitable > tbody > tr:first-child > th { position: relative; }
+.wikitable caption { caption-side: top; text-align: left; font-weight: 700; padding: .4em 0; color: var(--ak-fg-secondary); font-size: var(--ak-fs-sm); }
+.wikitable > tbody > tr:hover > td { background: var(--ak-bg-hover); }
+.wikitable.ak-striped > tbody > tr:nth-child(even) > td { background: var(--ak-bg-surface-2); }
+.wikitable.ak-compact > * > tr > th, .wikitable.ak-compact > * > tr > td { padding: .25em .5em; }
+.wikitable.ak-dense { font-size: var(--ak-fs-xs); }
+.wikitable.ak-borderless, .wikitable.ak-borderless > * > tr > th, .wikitable.ak-borderless > * > tr > td { border-left: 0; border-right: 0; }
+.wikitable.ak-borderless { border-left: 0; border-right: 0; }
+.wikitable th.ak-th-accent { box-shadow: inset 0 3px 0 var(--ak-accent); }   /* 表头顶部色条画在格子内（collapse 表格里 border-image 无效，而 3px 的 border-top 会和 1px 的竖线斜接） */
+/* 数字列：正文字体（Noto Sans SC 数字默认等宽，天然对齐；Bender 数字是比例宽度、子集无 tnum，小字号又细）。硬规则：表格数据数字一律不用 Bender——.ak-num 等 HUD 数字类掉进 td / th / 键值表 dd 由 arknights/table-numerals.css（B99）兜底回正文字体 */
+.wikitable td.num, .wikitable .num { font-variant-numeric: tabular-nums; text-align: right; }
+.wikitable .ak-num { text-align: right; }
+/* sortable (jquery.tablesorter) */
+.jquery-tablesorter th.headerSort { cursor: pointer; padding-right: 1.6em; background-image: none; }
+.jquery-tablesorter th.headerSort::after { content: "⇅"; position: absolute; right: .5em; color: var(--ak-fg-subtle); font-size: .85em; }
+.jquery-tablesorter th.headerSortUp::after { content: "↑"; color: var(--ak-accent); }
+.jquery-tablesorter th.headerSortDown::after { content: "↓"; color: var(--ak-accent); }
+/* responsive wrapper: <div class="ak-table-scroll">…</div> */
+.ak-table-scroll { overflow-x: auto; max-width: 100%; margin: var(--ak-space-4) 0; -webkit-overflow-scrolling: touch; }
+.ak-table-scroll > .wikitable { margin: 0; }
+/* sticky header */
+.wikitable.ak-sticky-head > * > tr:first-child > th { position: sticky; top: var(--ak-header-h); z-index: 1; }
+/* Cargo / mw-datatable */
+.cargoTable, table.mw-datatable { border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); border-collapse: collapse; border-spacing: 0; }   /* 同上：mw-datatable 几乎只出现在特殊页面，即 .mw-parser-output 之外 */
+.cargoTable th, table.mw-datatable th { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: .4em .6em; }
+.cargoTable td, table.mw-datatable td { border: 1px solid var(--ak-border); padding: .4em .6em; }
+table.mw-datatable tr:hover td { background: var(--ak-bg-hover); }

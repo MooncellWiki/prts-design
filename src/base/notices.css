@@ -1,0 +1,17 @@
+/*! AKDS · base/notices.css — Hatnotes / message boxes / notices · 依赖：tokens.css */
+/* ─── Hatnotes / message boxes / notices ───────────────────────────────── */
+.hatnote, .dablink, .rellink { font-style: normal; color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); padding: .3em 0 .3em 1em; border-left: 2px solid var(--ak-border-strong); margin: 0 0 var(--ak-space-3); }
+.mw-message-box, .cdx-message { --_c: var(--ak-border-strong);
+  border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_c) 4px, var(--ak-border) 4px) 1 1 1 4; background: var(--ak-bg-surface);
+  color: var(--ak-fg); padding: var(--ak-space-3) var(--ak-space-4); margin: 0 0 var(--ak-space-4); font-size: var(--ak-fs-sm);
+}
+.mw-message-box-notice, .cdx-message--notice { --_c: var(--ak-info); background: var(--ak-info-bg); }
+.mw-message-box-warning, .cdx-message--warning { --_c: var(--ak-warning); background: var(--ak-warning-bg); }
+.mw-message-box-error, .cdx-message--error { --_c: var(--ak-danger); background: var(--ak-danger-bg); }
+.mw-message-box-success, .cdx-message--success { --_c: var(--ak-success); background: var(--ak-success-bg); }
+.mw-parser-output .messagebox, .mw-parser-output .ambox { --_c: var(--ak-fg-muted); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_c) 4px, var(--ak-border) 4px) 1 1 1 4; background: var(--ak-bg-surface-2); margin: 0 0 var(--ak-space-3); font-size: var(--ak-fs-sm); }
+.ambox td, .messagebox td { padding: .5em .8em; }
+.ambox-notice { --_c: var(--ak-info); }
+.ambox-content { --_c: var(--ak-warning); }
+.ambox-delete, .ambox-serious { --_c: var(--ak-danger); }
+.ambox-style { --_c: var(--ak-yellow-600); }

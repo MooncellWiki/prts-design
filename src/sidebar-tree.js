@@ -7,7 +7,7 @@
  *    · PRTS #MenuSidebar 的原始 wikitext 输出（p 分组标题 / ul / li > b|a + ul，任意深度）
  *    · 模板或小工具生成的 ul
  *
- *  增强后的结构（类名由本脚本添加，CSS 见 skin.css「Sidebar tree」段）：
+ *  增强后的结构（类名由本脚本添加，CSS 见 chrome/sidebar-tree.css）：
  *    li.ak-tree__branch[.is-open][.is-current-path]
  *      > (a|b|span).ak-tree__label            ← 原有标签元素（非链接时点击整行也可切换）
  *      > button.ak-tree__toggle[aria-expanded][aria-controls][aria-labelledby]

@@ -1,0 +1,7 @@
+/*! AKDS · decor/patterns.css — A5 网格 / 点阵 / 扫描线背景 · 依赖：tokens.css */
+/* A5. 网格 / 点阵背景（PRTS 终端 / 蓝图） */
+.ak-bg-grid { background-image: linear-gradient(var(--ak-grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--ak-grid-color) 1px, transparent 1px); background-size: var(--ak-grid-size) var(--ak-grid-size); }
+.ak-bg-dots { background-image: radial-gradient(var(--ak-grid-color) 1px, transparent 1.2px); background-size: 12px 12px; }
+.ak-bg-diag { background-image: repeating-linear-gradient(-45deg, transparent 0 6px, var(--ak-grid-color) 6px 7px); }
+.ak-scanlines { position: relative; }
+.ak-scanlines::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.05) 2px 3px); }

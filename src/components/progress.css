@@ -1,0 +1,19 @@
+/*! AKDS · components/progress.css — Progress / Ring 进度 · 依赖：tokens.css */
+/* ═══ Progress / Meter ═══ */
+.ak-progress { --_v: 0%; --_c: var(--ak-accent); position: relative; height: 8px; background: var(--ak-bg-surface-3); overflow: hidden; }
+.ak-progress::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--_v); background: var(--_c); transition: width var(--ak-dur-slow) var(--ak-ease); }
+.ak-progress--sm { height: 4px; } .ak-progress--lg { height: 14px; }
+.ak-progress--yellow { --_c: var(--ak-yellow-500); } .ak-progress--success { --_c: var(--ak-success); } .ak-progress--danger { --_c: var(--ak-danger); }
+.ak-progress--stripes::before { background-image: repeating-linear-gradient(-45deg, transparent 0 6px, rgba(0,0,0,.15) 6px 12px); }
+.ak-progress--indeterminate::before { width: 30%; animation: ak-indeterminate 1.4s ease-in-out infinite; }
+.ak-progress--segmented { display: flex; gap: 2px; background: transparent; }
+.ak-progress--segmented > i { flex: 1; background: var(--ak-bg-surface-3); }
+.ak-progress--segmented > i.is-on { background: var(--_c); }
+.ak-progress-label { display: flex; justify-content: space-between; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); margin-bottom: 4px; }
+/* 环形（信赖/百分比） */
+.ak-ring { --_v: 0; --_c: var(--ak-accent); --_size: 56px; width: var(--_size); height: var(--_size); border-radius: 50%; display: grid; place-items: center; font: 700 calc(var(--_size) * .3)/1 var(--ak-font-label);
+  background: conic-gradient(var(--_c) calc(var(--_v) * 1%), var(--ak-bg-surface-3) 0); }
+.ak-ring::before { content: ""; position: absolute; width: calc(var(--_size) - 10px); height: calc(var(--_size) - 10px); border-radius: 50%; background: var(--ak-bg-surface); }
+.ak-ring { position: relative; } .ak-ring > span { position: relative; }
+/* 环形的颜色修饰（同线形；Vue 版 AkProgress circle 用，手写 HTML 也可以照旧直接给 --_c） */
+.ak-ring--yellow { --_c: var(--ak-yellow-500); } .ak-ring--success { --_c: var(--ak-success); } .ak-ring--danger { --_c: var(--ak-danger); }

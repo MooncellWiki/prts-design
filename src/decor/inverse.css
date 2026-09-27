@@ -1,0 +1,4 @@
+/*! AKDS · decor/inverse.css — A10 反转块 Inverse · 依赖：tokens.css */
+/* A10. 反转块（in-game btn_on 白 / btn_off 黑） */
+.ak-inverse { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-inverse a { color: inherit; }

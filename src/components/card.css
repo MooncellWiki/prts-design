@@ -1,0 +1,27 @@
+/*! AKDS · components/card.css — Card 卡片 · 依赖：tokens.css */
+/* ═══ Card / Panel ═══ */
+.ak-card {
+  background: var(--ak-bg-surface); border: 1px solid var(--ak-border); color: var(--ak-fg);
+  position: relative; display: flex; flex-direction: column;
+  transition: border-color var(--ak-dur-normal) var(--ak-ease), box-shadow var(--ak-dur-normal), transform var(--ak-dur-normal);
+}
+.ak-card--hover:hover { --_bd: var(--ak-accent-muted); border-color: var(--ak-accent-muted); box-shadow: var(--ak-shadow-md); transform: translateY(-2px); }
+.ak-card--selected, .ak-card.is-selected { --_bd: var(--ak-accent); border-color: var(--ak-accent); box-shadow: inset 0 0 0 1px var(--ak-accent); }
+.ak-card--selected::before, .ak-card.is-selected::before { content: ""; position: absolute; left: 0; top: 0; border-style: solid; border-width: 10px 10px 0 0; border-color: var(--ak-accent) transparent transparent transparent; z-index: 1; }
+.ak-card--flat { border: 0; background: var(--ak-bg-surface-2); }
+.ak-card--inset { background: var(--ak-bg-inset); }
+.ak-card--accent-top { border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--_bd, var(--ak-border)) 3px) 3 1 1 1; }     /* 色条与 1px 框直角拼接（tokens.css §Shape） */
+.ak-card--accent-left { border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--ak-accent) 4px, var(--_bd, var(--ak-border)) 4px) 1 1 1 4; }
+.ak-card__header { display: flex; align-items: center; gap: var(--ak-space-3); padding: var(--ak-space-3) var(--ak-space-4); border-bottom: 1px solid var(--ak-border); }
+.ak-card__title { font-weight: 700; font-size: var(--ak-fs-body); margin: 0; flex: 1; line-height: 1.3; }
+.ak-card__eyebrow { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin-bottom: 4px; display: block; }   /* 灰不青：不可点的装饰小标签，青色会读成链接 / 按钮，亮色下 #0098DC 压白底也只有 3.2:1；与 .ak-overline / .ak-stat__label / .ak-attr__label 同色 */
+.ak-card__body { padding: var(--ak-space-4); flex: 1; }
+.ak-card__body > :last-child { margin-bottom: 0; }
+.ak-card__footer { padding: var(--ak-space-3) var(--ak-space-4); border-top: 1px solid var(--ak-border); display: flex; align-items: center; gap: var(--ak-space-3); background: var(--ak-bg-surface-2); }
+.ak-card__media { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--ak-bg-inset); }
+.ak-card--horizontal { flex-direction: row; }
+.ak-card--horizontal .ak-card__media { width: 40%; aspect-ratio: auto; }
+.ak-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: var(--ak-space-4); }
+/* 整卡是链接（<a class="ak-card ak-not-prose">，Vue AkCard 的 href）：not-prose 只把子孙 a 的下划线归零（:where(.ak-not-prose) a），
+   <a> 自己还带着 UA 的下划线，这里去掉；与 .ak-op-card / .ak-stage 同做法 */
+a.ak-card { text-decoration: none; }

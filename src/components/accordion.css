@@ -1,0 +1,10 @@
+/*! AKDS · components/accordion.css — Accordion 手风琴（details） · 依赖：tokens.css */
+/* ═══ Accordion / Details ═══ */
+.ak-details { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: 0 0 var(--ak-space-2); }
+.ak-details > summary { list-style: none; cursor: pointer; padding: var(--ak-space-3) var(--ak-space-4); font-weight: 700; display: flex; align-items: center; gap: var(--ak-space-3); user-select: none; }
+.ak-details > summary::-webkit-details-marker { display: none; }
+.ak-details > summary::before { content: "+"; font-family: var(--ak-font-label); font-weight: 700; font-size: 18px; color: var(--ak-accent); width: 16px; line-height: 1; transition: transform var(--ak-dur-fast); }
+.ak-details[open] > summary::before { content: "−"; }
+.ak-details[open] > summary { border-bottom: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); }
+.ak-details__body { padding: var(--ak-space-3) var(--ak-space-4); }
+.ak-details__body > :last-child { margin-bottom: 0; }

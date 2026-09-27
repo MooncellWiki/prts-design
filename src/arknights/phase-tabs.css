@@ -1,0 +1,8 @@
+/*! AKDS · arknights/phase-tabs.css — B3 精英化阶段选择器 Phase tabs · 依赖：tokens.css · decor/ */
+/* 精英化阶段选择器（E0 / E1 / E2） */
+.ak-phase-tabs { display: inline-flex; border: 1px solid var(--ak-border-strong); }
+.ak-phase-tabs > button { all: unset; cursor: pointer; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }
+.ak-phase-tabs > button + button { border-left: 1px solid var(--ak-border-strong); }
+.ak-phase-tabs > button > img { height: 14px; filter: var(--ak-glyph-filter); opacity: .6; }
+.ak-phase-tabs > button.is-active { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-phase-tabs > button.is-active > img { filter: var(--ak-glyph-filter-inverse); opacity: 1; }   /* 选中项是反色块：亮色下深底白线稿不动、暗色下白底要反相——走令牌。先前按 :root[data-theme="dark"] 分支，跟随系统的暗色没有 data-theme，漏成白图标落在白底上 */

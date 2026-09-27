@@ -1,0 +1,9 @@
+/*! AKDS · components/stepper.css — Stepper 步骤 · 依赖：tokens.css */
+.ak-stepper { display: flex; gap: 0; counter-reset: step; }
+.ak-step { flex: 1; position: relative; text-align: center; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); padding-top: 28px; }
+.ak-step::before { counter-increment: step; content: counter(step); position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 22px; display: grid; place-items: center; font: 700 11px/1 var(--ak-font-label); background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); border: 1px solid var(--ak-border-strong); }
+.ak-step::after { content: ""; position: absolute; top: 11px; left: calc(50% + 12px); right: calc(-50% + 12px); height: 1px; background: var(--ak-border-strong); }
+.ak-step:last-child::after { display: none; }
+.ak-step.is-done::before, .ak-step.is-active::before { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); }
+.ak-step.is-done::after { background: var(--ak-accent); }
+.ak-step.is-active { color: var(--ak-fg); font-weight: 700; }

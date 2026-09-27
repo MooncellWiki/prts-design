@@ -1,0 +1,23 @@
+/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS · base/root.css — 全局基底：html / body 的底色与正文字体、选区、焦点环、滚动条、减弱动效
+ *  紧跟 tokens.css 加载（MW：skins.akds.tokens 模块的第二个文件）。原在 tokens.css 末尾「Global base」段，令牌改为生成后搬到这里。
+ *  依赖：tokens.css
+ * ═══════════════════════════════════════════════════════════════════════════ */
+html { background: var(--ak-bg-canvas); }
+body {
+  background: var(--ak-bg-canvas);
+  color: var(--ak-fg);
+  font-family: var(--ak-font-body);
+  font-size: var(--ak-fs-body);
+  line-height: var(--ak-lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--ak-selection); }
+:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+* { scrollbar-color: var(--ak-scrollbar) transparent; scrollbar-width: thin; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--ak-scrollbar); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

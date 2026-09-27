@@ -1,0 +1,8 @@
+/*! AKDS · base/print.css — Print 打印 · 依赖：tokens.css */
+/* Print */
+@media print {
+  body { background: #fff; color: #000; }
+  .mw-editsection, .noprint, .catlinks, .mw-indicators, .toc { display: none !important; }
+  a { color: inherit; text-decoration: underline; }
+  .wikitable > * > tr > th { background: #eee; }
+}

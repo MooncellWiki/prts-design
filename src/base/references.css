@@ -1,0 +1,9 @@
+/*! AKDS · base/references.css — References / citations 参考文献 · 依赖：tokens.css */
+/* ─── References / citations ───────────────────────────────────────────── */
+sup.reference { font-size: .75em; }
+sup.reference a { padding: 0 .1em; }
+.mw-cite-backlink, .reference-text { font-size: var(--ak-fs-sm); }
+.references, ol.references { font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); column-gap: var(--ak-space-8); }
+.reflist.ak-cols-2 .references { column-count: 2; }
+.references li:target, sup.reference:target { background: var(--ak-accent-subtle); outline: 1px solid var(--ak-accent-muted); }
+.mw-references-wrap { margin: var(--ak-space-4) 0; }

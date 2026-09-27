@@ -1,0 +1,16 @@
+/*! AKDS · arknights/profession.css — B2 职业 / 分支 Profession · 依赖：tokens.css · decor/ */
+/* B2. 职业 / 分支图标 */
+.ak-prof { --_s: 32px; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); flex: none; }
+.ak-prof > img { width: 82%; height: 82%; object-fit: contain; filter: var(--ak-glyph-filter); }
+.ak-prof--box { background: #1d1f20; }
+.ak-prof--box > img { filter: none; }
+.ak-prof--sm { --_s: 22px; } .ak-prof--lg { --_s: 48px; } .ak-prof--xl { --_s: 72px; }
+.ak-prof--outline { border: 1px solid var(--ak-border-strong); }
+.ak-subprof { --_s: 26px; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); flex: none; }
+.ak-subprof > img { width: 90%; height: 90%; object-fit: contain; filter: var(--ak-glyph-filter); }
+.ak-prof-label { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.ak-prof-label .ak-en { color: var(--ak-fg-muted); font-size: .8em; }
+/* 8 职业色（用于图表/筛选高亮，非官方，源自社区常用配色并降饱和） */
+:root { --ak-prof-pioneer: #c9a94b; --ak-prof-warrior: #c96a4b; --ak-prof-tank: #5e8fc9; --ak-prof-sniper: #4bb3c9; --ak-prof-caster: #9b6fc9; --ak-prof-medic: #5fc98c; --ak-prof-support: #c95fa2; --ak-prof-special: #8a8f99; }
+[data-prof="pioneer"] { --ak-p: var(--ak-prof-pioneer); } [data-prof="warrior"] { --ak-p: var(--ak-prof-warrior); } [data-prof="tank"] { --ak-p: var(--ak-prof-tank); } [data-prof="sniper"] { --ak-p: var(--ak-prof-sniper); }
+[data-prof="caster"] { --ak-p: var(--ak-prof-caster); } [data-prof="medic"] { --ak-p: var(--ak-prof-medic); } [data-prof="support"] { --ak-p: var(--ak-prof-support); } [data-prof="special"] { --ak-p: var(--ak-prof-special); }

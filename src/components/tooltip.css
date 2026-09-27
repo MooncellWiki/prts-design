@@ -1,0 +1,31 @@
+/*! AKDS · components/tooltip.css — Tooltip / Popover / Term 提示 · 依赖：tokens.css */
+/* ═══ Tooltip / Popover (CSS-only via data-tip; JS 版由 gadget 增强) ═══ */
+[data-ak-tip] { position: relative; }
+/* 闲置时把气泡收成 0 宽（max-width: 0 + overflow: hidden）而不只是 opacity: 0：透明的气泡仍占布局，靠近右缘的一条长提示会把文档撑出横向滚动——
+ * 手机上只要有任何元素横向溢出，Chrome 就把布局视口撑宽、整页缩小，fixed 元素被推到可见区外（见 02 §命名与约定）。悬停 / 聚焦时再放开宽度，淡入照旧 */
+[data-ak-tip]::after { content: attr(data-ak-tip); position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translate(-50%, 4px);
+  background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-xs); line-height: 1.4; padding: 0; white-space: nowrap; max-width: 0; overflow: hidden;
+  opacity: 0; pointer-events: none; transition: opacity var(--ak-dur-fast), transform var(--ak-dur-fast); z-index: var(--ak-z-tooltip); }
+[data-ak-tip]:hover::after, [data-ak-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); max-width: none; padding: 5px 8px; }
+[data-ak-tip].ak-tip--wide::after { white-space: normal; width: max-content; text-align: left; line-height: 1.55; }   /* 术语 / 异常效果那种一两句话的解释：允许折行、最宽 280 */
+[data-ak-tip].ak-tip--wide:hover::after, [data-ak-tip].ak-tip--wide:focus-visible::after { max-width: 280px; }
+.ak-tooltip { position: absolute; z-index: var(--ak-z-tooltip); background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); padding: 6px 10px; font-size: var(--ak-fs-xs); max-width: 280px; box-shadow: var(--ak-shadow-md); }
+.ak-popover { position: absolute; z-index: var(--ak-z-dropdown); min-width: 220px; max-width: 360px; background: var(--ak-bg-surface); color: var(--ak-fg);
+  border: 1px solid var(--ak-border); border-top-width: 2px; border-image: linear-gradient(var(--ak-accent) 2px, var(--ak-border) 2px) 2 1 1 1; box-shadow: var(--ak-shadow-lg); padding: var(--ak-space-3) var(--ak-space-4); font-size: var(--ak-fs-sm); }
+.ak-popover__title { font-weight: 700; margin: 0 0 4px; }
+/* 术语提示（游戏内 <$ba.stun> 等）：虚线下划线 */
+.ak-term { border-bottom: 1px dashed currentColor; cursor: help; text-decoration: none; }
+.ak-term:hover { background: var(--ak-accent-subtle); }
+/* Vue 版 AkTooltip / AkPopover：外层 .ak-tip-anchor 给定位上下文（同 [data-ak-tip] 的 position: relative），气泡按 placement 贴在触发元素的一边、间距 6px（同 CSS-only 版）；
+ * 不做碰撞翻转（不引定位库）。宽度随内容（上限仍是 .ak-tooltip 280 / .ak-popover 360），不继承触发处的 nowrap / 居中 / 粗体（表头里的术语提示） */
+.ak-tip-anchor { position: relative; display: inline-block; }
+.ak-tip-anchor > :is(.ak-tooltip, .ak-popover) { width: max-content; white-space: normal; text-align: left; font-weight: 400; }
+.ak-tooltip--top, .ak-popover--top { bottom: calc(100% + 6px); left: 50%; translate: -50% 0; }
+.ak-tooltip--bottom, .ak-popover--bottom { top: calc(100% + 6px); left: 50%; translate: -50% 0; }
+.ak-tooltip--left, .ak-popover--left { right: calc(100% + 6px); top: 50%; translate: 0 -50%; }
+.ak-tooltip--right, .ak-popover--right { left: calc(100% + 6px); top: 50%; translate: 0 -50%; }
+/* 贴边对齐（没有自动翻转，靠近视口左 / 右缘的触发元素用）：-start 与触发元素左缘对齐，-end 右缘对齐 */
+.ak-tooltip--top-start, .ak-popover--top-start { bottom: calc(100% + 6px); left: 0; }
+.ak-tooltip--top-end, .ak-popover--top-end { bottom: calc(100% + 6px); right: 0; }
+.ak-tooltip--bottom-start, .ak-popover--bottom-start { top: calc(100% + 6px); left: 0; }
+.ak-tooltip--bottom-end, .ak-popover--bottom-end { top: calc(100% + 6px); right: 0; }

@@ -1,0 +1,8 @@
+/*! AKDS · components/divider.css — Divider 分隔线 · 依赖：tokens.css */
+/* ═══ Divider ═══ */
+.ak-divider { border: 0; height: 1px; background: var(--ak-border); margin: var(--ak-space-6) 0; }
+.ak-divider--accent { background: linear-gradient(90deg, var(--ak-accent) 0 80px, var(--ak-border) 80px); height: 2px; }
+.ak-divider--stripes { height: 6px; background: repeating-linear-gradient(-45deg, var(--ak-stripe-color) 0 var(--ak-stripe-size), transparent var(--ak-stripe-size) calc(var(--ak-stripe-size)*2)); }
+.ak-divider--text { display: flex; align-items: center; gap: var(--ak-space-3); height: auto; background: none; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }
+.ak-divider--text::before, .ak-divider--text::after { content: ""; flex: 1; height: 1px; background: var(--ak-border); }
+.ak-divider--vertical { width: 1px; height: 1em; display: inline-block; margin: 0 var(--ak-space-2); vertical-align: middle; }

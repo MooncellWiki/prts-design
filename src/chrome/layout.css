@@ -1,0 +1,13 @@
+/*! AKDS · chrome/layout.css — Layout 三列布局 · 依赖：tokens.css · components/ */
+/* ═══ Layout ═══
+ *  两列网格：侧栏 + 主列。目录导轨不是第三列，而是由 .ak-main 的右内边距预留出来的
+ *  —— 这样 aside.ak-toc 在 DOM 上可以待在页面标题下方（属于页面而非布局），
+ *  窄屏收起时直接落回正文流，不需要浮层，也不需要第二份 DOM。 */
+.ak-layout { flex: 1; display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr); gap: var(--ak-gutter); max-width: 1680px; width: 100%; margin: 0 auto; padding: var(--ak-space-6) var(--ak-gutter) var(--ak-space-16); box-sizing: border-box; align-items: start; }
+.ak-layout--no-toc .ak-toc { display: none; }
+.ak-layout--no-toc .ak-main { padding-right: 0; }
+.ak-layout--wide { max-width: none; }
+.ak-layout--reading { grid-template-columns: var(--ak-sidebar-w) minmax(0, calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter))); justify-content: center; }
+.ak-main { min-width: 0; position: relative; padding-right: calc(var(--ak-toc-w) + var(--ak-gutter)); }   /* 右侧导轨给 .ak-toc 让位 */
+.ak-main__inner { max-width: var(--ak-content-max); }
+.ak-layout--wide .ak-main__inner { max-width: none; }

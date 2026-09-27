@@ -1,0 +1,21 @@
+/*! AKDS · arknights/voice.css — B11 语音条目 Voice · 依赖：tokens.css · decor/ */
+/* B11. 语音条目 */
+.ak-voice { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: start; }
+.ak-voice__play { all: unset; width: 32px; height: 32px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; }
+.ak-voice__play::before { content: ""; width: 0; height: 0; border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor; margin-left: 2px; }
+.ak-voice__play.is-playing::before { width: 10px; height: 12px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; margin: 0; }
+.ak-voice__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; }
+.ak-voice__lang { font: 600 10px/1 var(--ak-font-label); letter-spacing: .1em; padding: 2px 5px; border: 1px solid var(--ak-border-strong); }
+.ak-voice__text { font-size: var(--ak-fs-sm); line-height: 1.7; }
+.ak-voice__wave { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
+.ak-voice__wave > i { width: 2px; background: var(--ak-accent); height: 40%; }
+.is-playing ~ * .ak-voice__wave > i { animation: ak-bars 1s ease-in-out infinite; }
+.ak-voice__cond { font: 600 10px/1 var(--ak-font-label); letter-spacing: .06em; padding: 3px 5px; background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); white-space: nowrap; }   /* 解锁条件（提升至精英阶段1以查看 / 提升信赖至40%以查看） */
+.ak-voice-list { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: 0 0 var(--ak-space-4); }
+.ak-voice-list > .ak-voice:last-child { border-bottom: 0; }
+.ak-voice-list > .ak-voice:hover { background: var(--ak-bg-hover); }
+.ak-voice__play:disabled { cursor: not-allowed; opacity: .35; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }   /* 没有音频地址：压暗，悬停不反色 */
+/* 语种切换条（= 干员页的 .op-voice-langs，收进组件）：.ak-overline 标签 + 一排 .ak-chip[aria-pressed]（名字 + <small> CV 名）+ 附注；切语种只换台词 / 徽标 / 音频 */
+.ak-voice-langs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 0 0 var(--ak-space-3); }
+.ak-voice-langs .ak-chip small { font: 600 10px/1 var(--ak-font-label); color: inherit; opacity: .7; }

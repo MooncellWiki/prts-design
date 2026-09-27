@@ -1,0 +1,26 @@
+/*! AKDS · base/media.css — Figures / thumbs / galleries 缩略图与图库 · 依赖：tokens.css */
+/* ─── Figures / thumbs / galleries ─────────────────────────────────────── */
+figure[typeof~="mw:File/Thumb"], figure[typeof~="mw:File/Frame"], .thumb {
+  background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: var(--ak-space-1);
+  margin: 0 0 var(--ak-space-4); font-size: var(--ak-fs-xs); color: var(--ak-fg-muted);
+}
+figure[typeof~="mw:File/Thumb"] > a > img, .thumbimage { display: block; max-width: 100%; height: auto; background: var(--ak-bg-inset); }
+figure[typeof~="mw:File/Thumb"] > figcaption, .thumbcaption { padding: var(--ak-space-2) var(--ak-space-2) var(--ak-space-1); border-top: 1px solid var(--ak-border-subtle); line-height: 1.5; }
+.mw-halign-right, .tright, figure.mw-halign-right { float: right; clear: right; margin: .25em 0 var(--ak-space-4) var(--ak-space-5); }
+.mw-halign-left, .tleft, figure.mw-halign-left { float: left; clear: left; margin: .25em var(--ak-space-5) var(--ak-space-4) 0; }
+.mw-halign-center, .center { text-align: center; }
+figure.mw-halign-center { margin-left: auto; margin-right: auto; }
+.magnify { display: none; }
+img { max-width: 100%; height: auto; }
+.mw-parser-output img.ak-pixel { image-rendering: pixelated; }
+/* gallery */
+ul.gallery { display: flex; flex-wrap: wrap; gap: var(--ak-space-3); margin: var(--ak-space-4) 0; padding: 0; }
+ul.gallery > li::before { display: none; }
+li.gallerybox { margin: 0 !important; width: auto !important; }
+li.gallerybox > div { width: auto !important; }
+li.gallerybox div.thumb { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0; padding: var(--ak-space-1); width: auto !important; }
+li.gallerybox div.thumb > div { margin: 0 !important; }
+li.gallerybox .gallerytext { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); padding: var(--ak-space-1) var(--ak-space-2); }
+li.gallerybox .gallerytext p { margin: 0; }
+.gallerycaption { font-weight: 700; margin-bottom: var(--ak-space-2); }
+ul.gallery.mw-gallery-packed li.gallerybox, ul.gallery.mw-gallery-packed-hover li.gallerybox { flex: 0 0 auto; }

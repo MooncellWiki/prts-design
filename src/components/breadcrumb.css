@@ -1,0 +1,7 @@
+/*! AKDS · components/breadcrumb.css — Breadcrumb 面包屑 · 依赖：tokens.css */
+/* ═══ Breadcrumb / Pagination ═══ */
+.ak-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); list-style: none; padding: 0; margin: 0 0 var(--ak-space-3); }
+.ak-breadcrumb li::before { display: none !important; }
+.ak-breadcrumb li + li::before { content: ""; display: inline-block !important; position: static; width: 5px; height: 5px; border-right: 1px solid var(--ak-fg-subtle); border-top: 1px solid var(--ak-fg-subtle); transform: rotate(45deg); margin: 0 6px 1px 2px; background: none; }
+.ak-breadcrumb a { color: var(--ak-fg-muted); } .ak-breadcrumb a:hover { color: var(--ak-accent); }
+.ak-breadcrumb [aria-current] { color: var(--ak-fg); font-weight: 600; }

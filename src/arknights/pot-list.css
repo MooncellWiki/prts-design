@@ -1,0 +1,7 @@
+/*! AKDS · arknights/pot-list.css — B3 潜能提升一览 Potential list · 依赖：tokens.css · decor/ */
+/* 潜能提升一览（干员页「潜能提升」节，同现网 {{潜能提升}} 的五格表）：潜能 2–6 各一格 = 图标 + 小标 + 效果；.is-on 标出当前潜能已生效的项（属性面板选了潜能后由脚本点亮） */
+.ak-pot-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--ak-border); border: 1px solid var(--ak-border); }
+.ak-pot { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: center; padding: 8px 12px; background: var(--ak-bg-surface); font-size: var(--ak-fs-sm); line-height: 1.4; }
+.ak-pot__label { display: block; margin-bottom: 2px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }
+.ak-pot.is-on { box-shadow: inset 0 3px 0 var(--ak-accent); }
+.ak-pot.is-on .ak-pot__label { color: var(--ak-accent); }

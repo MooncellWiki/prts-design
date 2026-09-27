@@ -1,0 +1,11 @@
+/*! AKDS · arknights/attrs.css — B8 属性面板 Attributes · 依赖：tokens.css · decor/ */
+/* B8. 属性表（干员面板） */
+.ak-attrs { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px; background: var(--ak-border); border: 1px solid var(--ak-border); }
+.ak-attr { background: var(--ak-bg-surface); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.ak-attr__label { font: 600 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); display: flex; align-items: center; gap: 4px; }
+.ak-attr__label .cn { font-family: var(--ak-font-body); letter-spacing: 0; text-transform: none; }
+.ak-attr__value { font: 800 var(--ak-fs-h3)/1.1 var(--ak-font-label); font-variant-numeric: tabular-nums; }
+.ak-attr__value small { font-size: .55em; color: var(--ak-fg-muted); font-weight: 600; margin-left: 2px; }
+.ak-attr--accent { border-top: 2px solid var(--ak-accent); }
+.ak-attrs--compact .ak-attr { flex-direction: row; justify-content: space-between; align-items: baseline; padding: 6px 12px; }
+.ak-attrs--compact .ak-attr__value { font-size: var(--ak-fs-body); }

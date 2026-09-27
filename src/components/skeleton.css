@@ -1,0 +1,5 @@
+/*! AKDS · components/skeleton.css — Skeleton 骨架屏 · 依赖：tokens.css */
+/* ═══ Skeleton / Loader / Empty ═══ */
+.ak-skeleton { background: linear-gradient(90deg, var(--ak-bg-surface-2) 25%, var(--ak-bg-surface-3) 50%, var(--ak-bg-surface-2) 75%); background-size: 200% 100%; animation: ak-shimmer 1.4s infinite; display: block; height: 1em; }
+.ak-skeleton--text { height: .9em; margin: .35em 0; } .ak-skeleton--text:last-child { width: 60%; }
+.ak-skeleton--rect { height: 120px; } .ak-skeleton--square { aspect-ratio: 1; height: auto; } .ak-skeleton--circle { border-radius: 50%; aspect-ratio: 1; height: auto; }

@@ -1,0 +1,64 @@
+/*! AKDS · base/catlinks.css — Category links 页面底部分类栏 · 依赖：tokens.css */
+/* ─── Category links（页面底部分类栏）─────────────────────────────────────
+ *  MW 输出：div.catlinks > div.mw-normal-catlinks( a[分类] + "：" 文本节点 + ul > li > a ) [+ div.mw-hidden-catlinks( "隐藏分类：" 文本 + ul )]
+ *  设计（参考 fz.wiki）：不再做芯片盒；一行 = 树状图标 + overline 小标签 + 普通下划线链接。
+ *  「：」来自 colon-separator 消息、是裸文本节点：容器 font-size:0 吞掉它（无 JS 亦生效），子元素再恢复字号；
+ *  skin.js / preview.js 的 tidyCatlinks() 会进一步移除该文本并把「隐藏分类」文字标签包成 span.ak-catlinks__label。 */
+.catlinks { margin: var(--ak-space-3) 0 0; padding: 0 var(--ak-space-1); font-size: var(--ak-fs-sm); line-height: 1.5; clear: both; border: 0; background: transparent; }
+.ak-body--flat + .catlinks { border-top: 1px solid var(--ak-border); padding-top: var(--ak-space-3); }
+.catlinks > div { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-height: 24px; }
+.catlinks > div + div { margin-top: 4px; }
+.catlinks > div::before {   /* 「分类」标签图标：OOUI / Codex 的 tag（cdxIconTag，两边同一份图形），
+                               和皮肤其余 .ak-icon 同源，不必再自带第三方 SVG */
+  content: ""; flex: none; width: 16px; height: 16px; background: currentColor; color: var(--ak-fg-muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23000' d='M9 1.28A1 1 0 0 0 8.35 1H2a1 1 0 0 0-1 1v6.35a1 1 0 0 0 .28.65L11 18.72a1 1 0 0 0 1.37 0l6.38-6.38a1 1 0 0 0-.03-1.34zM5 7a2 2 0 1 1 2-2 2 2 0 0 1-2 2'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23000' d='M9 1.28A1 1 0 0 0 8.35 1H2a1 1 0 0 0-1 1v6.35a1 1 0 0 0 .28.65L11 18.72a1 1 0 0 0 1.37 0l6.38-6.38a1 1 0 0 0-.03-1.34zM5 7a2 2 0 1 1 2-2 2 2 0 0 1-2 2'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+.catlinks .mw-hidden-catlinks::before { color: var(--ak-fg-subtle); }
+.catlinks .mw-normal-catlinks { font-size: 0; }                                        /* 吞掉「：」文本节点 */
+.catlinks .mw-normal-catlinks > a, .catlinks .mw-normal-catlinks > ul { font-size: var(--ak-fs-sm); }
+/* 标签：分类（链到 Special:Categories）/ 隐藏分类（JS 包成 span） */
+.catlinks .mw-normal-catlinks > a, .catlinks .ak-catlinks__label { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); text-decoration: none; margin-right: 2px; }
+.catlinks .mw-normal-catlinks > a:hover { color: var(--ak-accent); text-decoration: none; }
+.catlinks .mw-hidden-catlinks { color: var(--ak-fg-muted); }
+.catlinks .mw-hidden-catlinks .ak-catlinks__label { color: var(--ak-fg-subtle); }
+/* 链接：就用全局 a / a:hover / a:visited，这里不重写颜色——MW 核心 interface-category.less 只给 .catlinks / li
+ * 画框和竖线，不碰链接色，没什么要压的；重写一遍 `.catlinks li a { color }`（0,1,2）反而会盖掉 a:visited（0,1,1），分类链接永远不褪色 */
+.catlinks ul { display: contents; margin: 0; padding: 0; list-style: none; }
+.catlinks li, .catlinks li:first-child { display: inline; margin: 0; padding: 0; border: 0; line-height: inherit; }
+.catlinks li::before { display: none !important; }
+.catlinks li a.mw-redirect { font-style: italic; }
+.catlinks .mw-hidden-catlinks li a { color: var(--ak-fg-secondary); }
+.catlinks .mw-hidden-catlinks li a:hover { color: var(--ak-link-hover); }
+.catlinks > .mw-hidden-cats-hidden, .catlinks.catlinks-allhidden { display: none; }   /* 特异性需高于 .catlinks > div 的 flex */
+.mw-indicators { display: flex; gap: var(--ak-space-2); float: right; font-size: var(--ak-fs-xs); }
+.mw-indicator { display: inline-flex; align-items: center; }
+#siteSub, .printfooter, .mw-jump-link { display: none; }
+#contentSub, #contentSub2 { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin: 0 0 var(--ak-space-3); }
+#contentSub .subpages a { color: var(--ak-fg-muted); }
+.mw-empty-elt { display: none; }
+.noprint {}
+.mw-redirectedfrom { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+.redirectMsg { font-size: var(--ak-fs-body-lg); }
+.redirectText { list-style: none; padding: 0; }
+.mw-parser-output .center, .mw-parser-output .mw-halign-center { text-align: center; }
+.mw-parser-output .floatright, .mw-parser-output .floatleft { margin: .3em 0 .5em 1em; }
+.mw-parser-output .floatleft { margin: .3em 1em .5em 0; }
+.mw-parser-output .clear, .clearfix::after { clear: both; }
+.clearfix::after { content: ""; display: table; }
+.mw-parser-output .nowrap { white-space: nowrap; }
+.mw-parser-output .noresize { max-width: none; }
+.mw-parser-output .plainlist ul, .mw-parser-output .plainlist ol { list-style: none; padding: 0; margin: 0; }
+.mw-parser-output .plainlist li::before { display: none; }
+.mw-parser-output .hlist ul { display: inline; padding: 0; margin: 0; }
+.mw-parser-output .hlist li { display: inline; }
+.mw-parser-output .hlist li::before { display: none; }
+.mw-parser-output .hlist li:not(:last-child)::after { content: " · "; color: var(--ak-fg-subtle); }
+.mw-parser-output .toccolours { border: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); padding: var(--ak-space-2) var(--ak-space-3); }
+.mw-parser-output .infobox { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); font-size: var(--ak-fs-sm); }
+.mw-parser-output .navbox { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); font-size: var(--ak-fs-xs); margin: var(--ak-space-4) 0 0; clear: both; }
+.mw-parser-output .navbox th, .mw-parser-output .navbox-title, .mw-parser-output .navbox-group { background: var(--ak-bg-surface-2); padding: .3em .6em; }
+.mw-parser-output .navbox-title { border-left: var(--ak-bar-w) solid var(--ak-accent); text-align: left; font-weight: 700; }
+.mw-parser-output .navbox-list { padding: .3em .6em; }
+.mw-parser-output .navbox-even { background: var(--ak-bg-surface-2); }

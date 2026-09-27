@@ -1,0 +1,7 @@
+/*! AKDS · arknights/dialogue.css — B12 剧情对话 Dialogue · 依赖：tokens.css · decor/ */
+/* 剧情对话 */
+.ak-dialogue { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: var(--ak-fs-sm); }
+.ak-dialogue > dt { font-weight: 800; color: var(--ak-accent); text-align: right; }
+.ak-dialogue > dd { margin: 0; }
+.ak-dialogue > dt.narrator, .ak-dialogue > dd.narrator { color: var(--ak-fg-muted); font-style: italic; }
+.ak-dialogue > dt { margin: 0; }   /* 同 kv.css：压掉正文 .mw-parser-output dt 的 margin-top（同优先级，靠顺序），否则说话人比台词低 8px */

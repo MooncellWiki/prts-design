@@ -1,0 +1,24 @@
+/*! AKDS · chrome/toc.css — TOC 目录导轨 / 折叠条 · 依赖：tokens.css · components/ */
+/* ═══ TOC ═══
+ *  一份 DOM、两种形态（不做第二份目录，也不用角落浮动按钮）：
+ *   ≥1400  绝对定位进 .ak-main 右侧预留的导轨，.ak-toc__inner 粘性跟随滚动；
+ *   <1400  变成由二级吸顶栏「本页目录」拉下来的浮层，顶边始终贴着吸顶栏下沿。
+ *  开合是纯 CSS：.ak-toc-cb（checkbox，在 .ak-local-nav 里）+ label.ak-local-nav__toc。
+ *  浮层与按钮不是兄弟节点：JS 把 checkbox 状态镜像到 html.ak-toc-open（主路径，不依赖 :has()，老内核的手机浏览器也是真浮层）；
+ *  无 JS 时用 body:has() 桥接；既无 JS 又不支持 :has() 才退回正文流内的静态卡片。
+ *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、收起页眉、点击外部关闭与开着时锁住页面滚动。 */
+.ak-toc { position: absolute; top: 0; right: 0; bottom: 0; width: var(--ak-toc-w); font-size: var(--ak-fs-xs); }
+.ak-toc__inner { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-8)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.ak-toc__title { display: block; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-theme-accent); }
+.ak-toc__top { display: none; }   /* 浮层首项「回到顶部」：仅 <1400 出现，届时 .ak-fab 隐藏（手机上浮动按钮太挡视野） */
+.ak-toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--ak-border); }
+.ak-toc ul ul { border-left: 0; }   /* 竖线只画在最外层：子 ul 没有内边距、左缘紧贴父 ul 的边框，再各画 1px 就会在二级条目旁叠成 2px（粗细忽大忽小），二级项的高亮条也跟着右偏 1px；层级靠 a 的 padding-left（22 / 34）表达 */
+.ak-toc li::before { display: none !important; }
+.ak-toc li a { display: block; padding: 4px 10px; color: var(--ak-fg-muted); text-decoration: none; border-left: 2px solid transparent; margin-left: -1px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ak-toc li a:hover { color: var(--ak-fg); }
+.ak-toc li.is-active > a, .ak-toc li.vector-toc-list-item-active > a { color: var(--ak-accent); border-left-color: var(--ak-accent); font-weight: 700; }
+.ak-toc li li a { padding-left: 22px; }
+.ak-toc li li li a { padding-left: 34px; }
+.ak-toc .tocnumber { display: none; }
+.ak-toc__progress { height: 2px; background: var(--ak-border); margin: 0 0 8px; overflow: hidden; }
+.ak-toc__progress > i { display: block; height: 100%; width: var(--_p, 0%); background: var(--ak-accent); transition: width .1s linear; }

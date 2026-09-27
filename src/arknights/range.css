@@ -1,0 +1,10 @@
+/*! AKDS · arknights/range.css — B9 攻击范围 Range · 依赖：tokens.css · decor/ */
+/* B9. 攻击范围格 —— 同现网 prts.wiki Widget:Range/* 的画法：自身格 = 实心蓝方块，攻击格 = 灰色 2px 空心框，不在范围内的格不画；
+ *  格 22px + 间隙 4px（= 现网 26px 格距），只画范围的外接矩形（1-1 就是 1×2，不要补空格撑成 3×3）。
+ *  i.self 自身 · i.on 可攻击 · i.off（或不写 class）空格。颜色两个钩子：--ak-range-self（自身）/ --ak-range-cell（攻击格描边） */
+.ak-range { --_cell: 22px; --_gap: 4px; --_bw: 2px; display: inline-grid; gap: var(--_gap); grid-template-columns: repeat(var(--cols, 5), var(--_cell)); vertical-align: top; }
+.ak-range > i { display: block; width: var(--_cell); height: var(--_cell); box-sizing: border-box; background: transparent; border: 0; }
+.ak-range > i.on { border: var(--_bw) solid var(--ak-range-cell, var(--ak-fg-subtle)); }
+.ak-range > i.self { background: var(--ak-range-self, var(--ak-blue-500)); }
+.ak-range--lg { --_cell: 28px; --_gap: 5px; }
+.ak-range--sm { --_cell: 14px; --_gap: 2px; --_bw: 1.5px; }   /* 技能卡侧槽 / 表格里用 */

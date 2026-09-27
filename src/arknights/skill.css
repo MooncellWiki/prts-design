@@ -1,0 +1,24 @@
+/*! AKDS · arknights/skill.css — B6 技能卡 Skill · 依赖：tokens.css · decor/ */
+/* B6. 技能（图标 + SP 类型 + 触发类型）
+ *  结构：.ak-skill > .ak-skill__icon + <div>( .ak-skill__head( __name + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats( .ak-sp-cost .ak-sp-init ) ) [+ .ak-skill__aside] + .ak-skill__desc
+ *  右栏撑满图标高度并上下两端对齐：名称行贴图标顶边、SP 芯片行贴图标底边（不再悬在中间） */
+.ak-skill { display: grid; grid-template-columns: 64px 1fr; gap: 12px 14px; padding: 12px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); position: relative; }
+.ak-skill > .ak-skill__icon + :not(.ak-skill__desc) { display: flex; flex-direction: column; justify-content: space-between; gap: 6px; min-height: 68px; min-width: 0; }
+.ak-skill.is-selected { border-color: var(--ak-blue-500); box-shadow: inset 0 0 0 2px var(--ak-blue-500); }
+.ak-skill.is-selected::before { content: ""; position: absolute; left: 0; top: 0; border-style: solid; border-width: 12px 12px 0 0; border-color: var(--ak-blue-500) transparent transparent; }
+.ak-skill__icon { --_sp: var(--ak-sp-auto); position: relative; width: 64px; height: 64px; background: #1d1f20; border: 2px solid var(--_sp); overflow: hidden; }
+.ak-skill__icon > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ak-skill__icon::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: var(--_sp); }
+.ak-skill__icon--auto { --_sp: var(--ak-sp-auto); } .ak-skill__icon--attack { --_sp: var(--ak-sp-attack); } .ak-skill__icon--hit { --_sp: var(--ak-sp-hit); } .ak-skill__icon--passive { --_sp: var(--ak-sp-passive); }
+.ak-skill__icon.is-locked > img { filter: grayscale(1) brightness(.4); }
+.ak-skill__icon.is-locked::before { content: "🔒"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; z-index: 1; }
+.ak-skill__head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ak-skill__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }
+.ak-skill__meta { display: flex; gap: 6px; flex-wrap: wrap; font-size: var(--ak-fs-xs); }
+.ak-skill__desc { grid-column: 1 / -1; font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); line-height: 1.7; }
+.ak-skill__stats { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; font-size: var(--ak-fs-sm); font-variant-numeric: tabular-nums; }   /* 正文字体；SP 芯片自带 Bender；与图标底边对齐由上面的 space-between 负责（不要再给它 ak-mt-*） */
+.ak-skill__stats b { font-weight: 800; }
+.ak-skill__aside { grid-column: 3; grid-row: 1; align-self: center; display: flex; align-items: center; gap: 12px; }   /* 技能卡右侧槽：攻击范围 / 开放条件（需要 .ak-skill--wide 的三栏网格） */
+.ak-skill--wide { grid-template-columns: 64px 1fr auto; }
+.ak-skill__open { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-muted); display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.ak-skill__open img { height: 12px; filter: var(--ak-glyph-filter); }

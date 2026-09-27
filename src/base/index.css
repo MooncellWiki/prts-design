@@ -1,0 +1,19 @@
+/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS · base/ — L1 MediaWiki 内容基础样式（原 base.css）
+ *  作用域：.mw-body-content / .mw-parser-output（wikitext 解析产物）以及 MW 常见 UI 结构
+ *  root.css 是 html / body 全局基底，紧跟 tokens.css（MW 里在 skins.akds.tokens 模块）；其余按下列顺序。
+ *  依赖：tokens.css
+ * ═══════════════════════════════════════════════════════════════════════════ */
+@import url("root.css");
+@import url("typography.css");
+@import url("tables.css");
+@import url("media.css");
+@import url("toc.css");
+@import url("collapsible.css");
+@import url("references.css");
+@import url("notices.css");
+@import url("catlinks.css");
+@import url("tabber.css");
+@import url("forms.css");
+@import url("special-pages.css");
+@import url("print.css");

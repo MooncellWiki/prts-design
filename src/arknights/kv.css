@@ -1,0 +1,15 @@
+/*! AKDS · arknights/kv.css — B8 键值表 Key-value · 依赖：tokens.css · decor/ */
+/* 键值表（信息栏）—— dt / dd 都要显式 margin: 0：正文的 .mw-parser-output dt { margin-top } / dd { margin } 会漏进来（同优先级，靠顺序压）；
+ *  两列都 align-content: center（block 容器上的 align-content，不动 inline 流），行高由高的一侧（图标 / 标签）决定时另一侧垂直居中，同现网 infobox 的 th / td middle */
+.ak-kv { display: grid; grid-template-columns: max-content 1fr; gap: 0; font-size: var(--ak-fs-sm); border-top: 1px solid var(--ak-border); }
+.ak-kv > dt { padding: 6px 12px 6px 0; margin: 0; align-content: center; color: var(--ak-fg-muted); font-weight: 600; border-bottom: 1px solid var(--ak-border-subtle); }
+.ak-kv > dd { padding: 6px 0 6px 12px; margin: 0; align-content: center; border-bottom: 1px solid var(--ak-border-subtle); border-left: 1px solid var(--ak-border-subtle); }
+.ak-kv > dd > :last-child { margin-bottom: 0; }   /* 格子里最后一个块（ul / p / dl）不带正文的下外边距：base/typography.css 的 .mw-parser-output ul:not(:where(…)) 是 (0,1,1)，页面上挂个 .ak-m-0 (0,1,0) 压不过它，「分支信息」格底下就多出 16px */
+.ak-kv--boxed { border: 1px solid var(--ak-border); }
+.ak-kv--boxed > dt { padding-left: 12px; text-align: center; background: var(--ak-bg-surface-2); }   /* 框住的那版：表头居中（同现网 th）；不带框的档案版标签列保持左对齐 */
+/* 内联版：两三对短值一行放下（所属势力 / 隐藏势力、获得方式 / 上线时间），不画格子——这种量级的内容竖着摆一行一格是空占地方。
+ *  写法 dl > div > dt + dd（HTML 允许 div 分组），对内 flex 对齐、对外 flex 换行；标签靠 muted 色和值分开，不加冒号。dt / dd 的 margin 同样要显式归零压掉正文规则 */
+.ak-kv--inline { display: flex; flex-wrap: wrap; gap: 4px 24px; border: 0; }
+.ak-kv--inline > div { display: flex; gap: 8px; align-items: center; }
+.ak-kv--inline dt { margin: 0; color: var(--ak-fg-muted); font-weight: 600; }
+.ak-kv--inline dd { margin: 0; }

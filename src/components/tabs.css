@@ -1,0 +1,29 @@
+/*! AKDS · components/tabs.css — Tabs 标签页 · 依赖：tokens.css */
+/* ═══ Tabs (纯 CSS 结构；TabberNeue 见 base/tabber.css) ═══ */
+.ak-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--ak-border); overflow-x: auto; scrollbar-width: none; }
+.ak-tabs::-webkit-scrollbar { display: none; }
+.ak-tab { flex: none; padding: var(--ak-space-2) var(--ak-space-4); font: 600 var(--ak-fs-sm)/1.4 var(--ak-font-body); color: var(--ak-fg-muted);
+  border-bottom: 3px solid transparent; margin-bottom: -1px; cursor: pointer; background: none; border-top: 0; border-left: 0; border-right: 0; text-decoration: none; position: relative; white-space: nowrap; }
+.ak-tab:hover { color: var(--ak-fg); background: var(--ak-bg-hover); text-decoration: none; }
+.ak-tab.is-active, .ak-tab[aria-selected="true"] { color: var(--ak-accent); border-bottom-color: var(--ak-accent); }
+.ak-tab.is-active::before { content: ""; position: absolute; left: 0; top: 0; border-style: solid; border-width: 6px 6px 0 0; border-color: var(--ak-accent) transparent transparent; }
+.ak-tabs--pill { border: 0; gap: 4px; padding: 3px; background: var(--ak-bg-surface-2); width: max-content; }
+.ak-tabs--pill .ak-tab { border: 0; margin: 0; }
+.ak-tabs--pill .ak-tab.is-active { background: var(--ak-bg-surface); box-shadow: var(--ak-shadow-sm); }
+.ak-tabs--pill .ak-tab.is-active::before { display: none; }
+.ak-tabs--block { border-bottom: 2px solid var(--ak-fg); gap: 2px; }   /* 游戏内块状标签：选中项黑白反转（原 --skew，已去掉平行四边形） */
+.ak-tabs--block .ak-tab { background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); border: 0; margin: 0; padding: 6px 16px; }
+.ak-tabs--block .ak-tab.is-active { background: var(--ak-fg); color: var(--ak-bg-canvas); }
+.ak-tabs--block .ak-tab.is-active::before { display: none; }
+.ak-tabs--vertical { flex-direction: column; border-bottom: 0; border-left: 1px solid var(--ak-border); }
+.ak-tabs--vertical .ak-tab { border-bottom: 0; border-left: 3px solid transparent; margin: 0 0 0 -1px; text-align: left; }
+.ak-tabs--vertical .ak-tab.is-active { border-left-color: var(--ak-accent); }
+.ak-tabs--vertical .ak-tab { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+/* 页签里的第二行小字：解锁条件「信赖 25%」这类（竖排时右对齐） */
+.ak-tab small { margin-left: .5em; font: 600 9px/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-subtle); white-space: nowrap; }
+.ak-tabs--vertical .ak-tab small { margin-left: 0; }
+.ak-tabpanel[hidden] { display: none; }
+.ak-tabpanel { padding-top: var(--ak-space-4); }
+/* 页签组 + 面板的外层（Vue AkTabs 的根）；--left：页签竖排在左、面板在右 */
+.ak-tabset--left { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--ak-space-4); align-items: start; }
+.ak-tabset--left > .ak-tabpanel { padding-top: 0; }

@@ -1,0 +1,18 @@
+/*! AKDS · arknights/rich-text.css — B7 游戏内富文本 Rich text · 数值变化 · 依赖：tokens.css · decor/ */
+/* B7. 游戏内富文本（<@ba.vup> 等 → span 类） */
+.ak-rt-vup, .ba-vup, .ak-buff { color: var(--ak-rt-vup); font-weight: 600; }
+.ak-rt-vdown, .ba-vdown, .ak-debuff { color: var(--ak-rt-vdown); font-weight: 600; }
+.ak-rt-rem, .ba-rem { color: var(--ak-rt-rem); font-weight: 600; }
+.ak-rt-kw, .ba-kw { color: var(--ak-rt-kw); font-weight: 600; }
+.ak-rt-imp, .ba-imp, .tu-imp { color: var(--ak-rt-imp); font-weight: 700; }
+.ak-rt-drop, .ba-drop { color: var(--ak-rt-drop); }
+.ak-rt-enemy, .ba-enemy { color: var(--ak-rt-enemy); font-weight: 600; }
+.ak-rt-gild, .ba-gild { color: var(--ak-rt-gild); }
+.ak-rt-acrem, .ba-acrem { color: var(--ak-rt-acrem); }
+.ak-rt-level, .ba-level { color: var(--ak-rt-level); font-weight: 700; }
+.ak-rt-talpu, .ba-talpu { color: var(--ak-rt-vup); }   /* 潜能加成 (+1%) */
+.ak-rt-term, .ba-term { border-bottom: 1px dashed currentColor; cursor: help; }   /* <$ba.stun> 术语 */
+.ak-rt-pn, .ba-pn { font-style: italic; }
+/* 数值变化对比 */
+.ak-delta-up::after { content: "▲"; font-size: .7em; margin-left: 2px; color: var(--ak-rt-vup); }
+.ak-delta-down::after { content: "▼"; font-size: .7em; margin-left: 2px; color: var(--ak-rt-vdown); }

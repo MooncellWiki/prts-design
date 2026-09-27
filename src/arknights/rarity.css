@@ -1,0 +1,21 @@
+/*! AKDS · arknights/rarity.css — B1 稀有度 Rarity · 色轨 · 依赖：tokens.css · decor/ */
+/* B1. 稀有度 ─ 星级 & 色阶 */
+.ak-rarity { display: inline-flex; align-items: center; gap: 1px; height: 1em; vertical-align: middle; --_c: var(--ak-yellow-500); }
+.ak-rarity > i { width: .9em; height: .9em; background: var(--_c); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.ak-rarity--white { --_c: var(--ak-fg); }
+.ak-rarity--r1 { --_c: var(--ak-rarity-1-text); } .ak-rarity--r2 { --_c: var(--ak-rarity-2-text); } .ak-rarity--r3 { --_c: var(--ak-rarity-3-text); }
+.ak-rarity--r4 { --_c: var(--ak-rarity-4-text); } .ak-rarity--r5 { --_c: var(--ak-rarity-5-text); } .ak-rarity--r6 { --_c: var(--ak-rarity-6-text); }
+.ak-rarity--lg { font-size: 1.4em; } .ak-rarity--sm { font-size: .8em; }
+/* 使用游戏原图 */
+.ak-rarity-img { display: inline-block; height: 14px; width: auto; vertical-align: middle; }
+/* 稀有度色轨（用于表格/卡片的左边缘、文字色、背景色） */
+[data-rarity="1"] { --ak-r: var(--ak-rarity-1); --ak-r-text: var(--ak-rarity-1-text); }
+[data-rarity="2"] { --ak-r: var(--ak-rarity-2); --ak-r-text: var(--ak-rarity-2-text); }
+[data-rarity="3"] { --ak-r: var(--ak-rarity-3); --ak-r-text: var(--ak-rarity-3-text); }
+[data-rarity="4"] { --ak-r: var(--ak-rarity-4); --ak-r-text: var(--ak-rarity-4-text); }
+[data-rarity="5"] { --ak-r: var(--ak-rarity-5); --ak-r-text: var(--ak-rarity-5-text); }
+[data-rarity="6"] { --ak-r: var(--ak-rarity-6); --ak-r-text: var(--ak-rarity-6-text); }
+.ak-r-text { color: var(--ak-r-text); } .ak-r-bg { background: var(--ak-r); color: #1d1f20; } .ak-r-border { border-color: var(--ak-r) !important; }
+.ak-r-bar { border-left: var(--ak-bar-w) solid var(--ak-r); }
+.ak-r-chip { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); background: var(--ak-r); color: #1d1f20; }
+.ak-r-swatch { display: inline-block; width: 1em; height: 1em; background: var(--ak-r); vertical-align: -.15em; margin-right: .3em; }

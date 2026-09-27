@@ -1,0 +1,12 @@
+/*! AKDS · components/stat.css — Stat 统计 · 依赖：tokens.css */
+/* ═══ Stat ═══ */
+.ak-stat { box-sizing: border-box; display: flex; flex-direction: column; gap: 2px; padding: var(--ak-space-3) var(--ak-space-4); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top-width: 2px; border-image: linear-gradient(var(--ak-accent) 2px, var(--ak-border) 2px) 2 1 1 1; min-width: 120px; }
+.ak-stat__label { font: 600 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }
+.ak-stat__value { font: 700 var(--ak-fs-h2)/1.1 var(--ak-font-label); font-variant-numeric: tabular-nums; color: var(--ak-fg); }
+.ak-stat__value small { font-size: .5em; color: var(--ak-fg-muted); margin-left: 2px; }
+.ak-stat__delta { font-size: var(--ak-fs-xs); font-variant-numeric: tabular-nums; }
+.ak-stat__delta--up { color: var(--ak-rt-vup); } .ak-stat__delta--down { color: var(--ak-rt-vdown); }
+.ak-stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--ak-space-3); }
+.ak-stat-row > .ak-stat { min-width: 0; }   /* 轨道最小值由 minmax 管，条目自己别再撑 */
+.ak-stat--inline { flex-direction: row; align-items: baseline; gap: var(--ak-space-2); border: 0; padding: 0; background: none; min-width: 0; }
+.ak-stat--inline .ak-stat__value { font-size: var(--ak-fs-body-lg); }

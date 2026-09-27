@@ -1,0 +1,9 @@
+/*! AKDS · components/timeline.css — Timeline 时间线 · 依赖：tokens.css */
+/* ═══ Timeline / Stepper ═══ */
+.ak-timeline { list-style: none; margin: 0; padding: 0 0 0 20px; border-left: 2px solid var(--ak-border); }
+.ak-timeline > li { position: relative; padding: 0 0 var(--ak-space-5) var(--ak-space-4); }
+.ak-timeline > li::before { content: ""; position: absolute; left: -26px; top: 6px; width: 10px; height: 10px; background: var(--ak-bg-surface); border: 2px solid var(--ak-fg-muted); transform: rotate(45deg); }
+.ak-timeline > li.is-active::before, .ak-timeline > li.is-done::before { background: var(--ak-accent); border-color: var(--ak-accent); }
+.ak-timeline__date { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); letter-spacing: .04em; margin-bottom: 4px; display: block; }
+.ak-timeline__title { font-weight: 700; margin: 0 0 2px; }
+.ak-timeline__desc { color: var(--ak-fg-secondary); font-size: var(--ak-fs-sm); }

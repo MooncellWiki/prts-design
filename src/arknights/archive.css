@@ -1,0 +1,20 @@
+/*! AKDS · arknights/archive.css — B12b 档案类卡片 Archive · 依赖：tokens.css · decor/ */
+/* B12b. 档案类卡片（干员密录 / 悖论模拟 / 未获得时的情报资料 …）——现网「————干员密录」「————悖论模拟」那几张折叠 wikitable 的替身，与 .ak-dossier 同一张脸但多了解锁条件与页脚：
+ *  .ak-archive > .ak-archive__head( .ak-archive__kicker + .ak-archive__title + .ak-archive__req ) + .ak-archive__body + [.ak-archive__foot（关卡 / 奖励 / 播放 …）] */
+.ak-archive { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0 0 var(--ak-space-3); }
+.ak-archive__head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; min-height: 40px; padding: 6px 14px 6px 12px; background: var(--ak-bg-surface-2); border: 0 solid var(--ak-border); border-width: 0 0 1px var(--ak-bar-w); border-image: linear-gradient(to right, var(--ak-accent) 4px, var(--ak-border) 4px) 0 0 1 4; }
+.ak-archive__kicker { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); white-space: nowrap; }
+.ak-archive__title { font-weight: 800; font-size: var(--ak-fs-body); margin: 0; color: inherit; border: 0; padding: 0; }
+.ak-archive__title::after { display: none; }
+.ak-archive__req { margin-left: auto; display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-secondary); }
+.ak-archive__req > .ak-overline { margin-right: 2px; }
+.ak-archive__body { padding: 14px 16px; font-size: var(--ak-fs-sm); line-height: 1.85; }
+.ak-archive__body p { margin: 0 0 .8em; white-space: pre-line; }
+.ak-archive__body p:last-child { margin: 0; }
+.ak-archive__foot { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 20px; padding: 10px 16px; border-top: 1px solid var(--ak-border-subtle); background: var(--ak-bg-surface-2); font-size: var(--ak-fs-xs); }
+.ak-archive__foot > .ak-overline { margin-right: -10px; }
+.ak-archive__play { all: unset; display: inline-flex; align-items: center; gap: 10px; padding-right: 12px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); white-space: nowrap; }
+.ak-archive__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-archive__play:hover > .ak-voice__play { background: transparent; color: inherit; }
+.ak-archive__play:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.ak-archive__play > .ak-voice__play { pointer-events: none; }

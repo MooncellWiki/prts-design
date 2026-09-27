@@ -1,0 +1,33 @@
+/*! AKDS · chrome/sidebar.css — Sidebar 侧栏 · 依赖：tokens.css · components/ */
+/* ═══ Sidebar ═══
+ *  内容来源两种都支持（见 docs/03 §3.1）：
+ *   a) MediaWiki:Sidebar 门户 → .ak-portlet > h3.ak-portlet__title + ul
+ *   b) PRTS #MenuSidebar 原始 wikitext 树 → p（分组标题）+ ul > li > (a|b) [+ ul …任意深度]
+ *  多层展开由 sidebar-tree.js 增强：li.ak-tree__branch(.is-open) > .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list
+ */
+.ak-sidebar { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-6)); overflow-y: auto; overscroll-behavior: contain; font-size: var(--ak-fs-sm); scrollbar-width: thin; padding-right: 4px; }
+.ak-sidebar__panel { display: block; }
+.ak-portlet { margin-bottom: var(--ak-space-5); }
+/* 分组标题：门户 h3 / MW 原生 heading / 原始 p */
+.ak-portlet__title, .ak-sidebar .vector-menu-heading, .ak-sidebar h3, .ak-sidebar p { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 6px; padding: 0 0 6px 10px; border-left: 2px solid var(--ak-theme-accent); display: flex; align-items: center; gap: 6px; }   /* 分组条用活动主色（--ak-theme-accent）：活动主题换色时侧栏跟着换，当前项 / 链接仍是 --ak-accent */
+.ak-sidebar ul + p, .ak-sidebar ul + h3, .ak-sidebar div + p { margin-top: var(--ak-space-5); }
+.ak-sidebar p:empty, .ak-sidebar li.mw-empty-elt, .ak-sidebar li:empty { display: none; }
+.ak-portlet ul, .ak-sidebar ul { list-style: none; margin: 0; padding: 0; }
+.ak-portlet li::before, .ak-sidebar li::before { display: none !important; }
+.ak-sidebar li { position: relative; }
+/* 行：链接 a / 非链接标签 b（PRTS 用粗体 b 表示有子级的分组项） */
+.ak-portlet li a, .ak-sidebar li a, .ak-sidebar li > b, .ak-sidebar li > .ak-tree__label { display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: var(--ak-fg-secondary); font-weight: 400; text-decoration: none; border-left: 2px solid transparent; transition: color var(--ak-dur-fast), background var(--ak-dur-fast), border-color var(--ak-dur-fast); cursor: pointer; }
+.ak-portlet li a:hover, .ak-sidebar li a:hover, .ak-sidebar li > b:hover, .ak-sidebar .ak-tree__branch.is-peek > .ak-tree__label { color: var(--ak-fg); background: var(--ak-bg-hover); border-left-color: var(--ak-border-strong); text-decoration: none; }
+.ak-portlet li.is-active > a, .ak-portlet li.selected > a, .ak-sidebar li.is-active > a, .ak-sidebar li.selected > a, .ak-sidebar li.is-current > a, .ak-sidebar a.selflink, .ak-sidebar a.mw-selflink { color: var(--ak-accent); border-left-color: var(--ak-accent); font-weight: 700; background: var(--ak-accent-subtle); }
+.ak-sidebar a.selflink, .ak-sidebar a.mw-selflink { cursor: default; }
+.ak-sidebar a.external { background: none; padding-right: 10px; }   /* 去掉 MW 外链图标 */
+.ak-portlet li a .ak-icon { width: 16px; height: 16px; opacity: .7; }
+.ak-portlet--grid ul { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.ak-portlet--grid li a { border: 1px solid var(--ak-border); padding: 8px; justify-content: center; text-align: center; font-size: var(--ak-fs-xs); }
+.ak-portlet--grid li a:hover { border-color: var(--ak-accent); }
+/* 可折叠门户（整组） */
+.ak-portlet--collapsible > .ak-portlet__title { cursor: pointer; user-select: none; }
+.ak-portlet--collapsible > .ak-portlet__title::after { content: ""; margin-left: auto; margin-right: 12px; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); transition: transform var(--ak-dur-fast); }
+.ak-portlet--collapsible.is-collapsed > .ak-portlet__title::after { transform: rotate(-45deg); }
+.ak-portlet--collapsible.is-collapsed > ul { display: none; }
+.ak-portlet--collapsible > .ak-portlet__title:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 2px; }

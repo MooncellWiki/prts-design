@@ -1,0 +1,66 @@
+/*! AKDS · components/form.css — Form controls 表单（field / input / select / check / switch / slider / search / kbd / number） · 依赖：tokens.css */
+/* ═══ Form controls (design-system versions) ═══ */
+.ak-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--ak-space-4); }
+.ak-label { font-weight: 600; font-size: var(--ak-fs-sm); }
+.ak-label .req { color: var(--ak-danger); }
+.ak-help { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.ak-help--error { color: var(--ak-danger); }
+.ak-input, .ak-select, .ak-textarea { box-sizing: border-box; font: inherit; font-size: var(--ak-fs-sm); color: var(--ak-fg); background: var(--ak-bg-surface); border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm); padding: 0 10px; min-height: 36px; width: 100%; transition: border-color var(--ak-dur-fast), box-shadow var(--ak-dur-fast); }   /* border-box：MW 没有全局 box-sizing 重置，width:100% + padding 会在窄屏撑破容器 */
+.ak-textarea { padding: 8px 10px; min-height: 90px; line-height: 1.5; resize: vertical; }
+.ak-input:focus, .ak-select:focus, .ak-textarea:focus { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
+/* 状态与裸控件同一套（base/forms.css / 规范 §4）。裸控件那边是零特指度，这里要显式再写一遍，否则 .ak-input 的底色会把它们盖掉 */
+.ak-input[readonly], .ak-textarea[readonly] { background: var(--ak-bg-inset); }
+.ak-input:disabled, .ak-select:disabled, .ak-textarea:disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); -webkit-text-fill-color: var(--ak-fg-disabled); opacity: 1; border-color: var(--ak-border); cursor: not-allowed; }
+.ak-input.is-invalid, .ak-field.is-invalid .ak-input, :is(.ak-input, .ak-select, .ak-textarea):where(:user-invalid, [aria-invalid="true"]) { border-color: var(--ak-danger); }
+.ak-input.is-invalid:focus, .ak-field.is-invalid .ak-input:focus, :is(.ak-input, .ak-select, .ak-textarea):where(:user-invalid, [aria-invalid="true"]):focus { box-shadow: 0 0 0 3px var(--ak-danger-bg); }
+.ak-input.is-valid { border-color: var(--ak-success); }
+.ak-input--sm { min-height: 30px; font-size: var(--ak-fs-xs); } .ak-input--lg { min-height: 44px; font-size: var(--ak-fs-body); }
+.ak-input-group { display: flex; align-items: stretch; }
+.ak-input-group > .ak-input { flex: 1; min-width: 0; }
+.ak-input-group > .ak-input:not(:first-child) { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px; }
+.ak-input-group > .ak-input:not(:last-child) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.ak-input-group__addon { display: inline-flex; align-items: center; padding: 0 10px; background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border-strong); color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); }
+.ak-select { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--ak-select-arrow); background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }   /* 与裸 <select> 同一枚 ▾（tokens.css --ak-select-arrow） */
+/* 勾选 / 单选：外观统一由 base/forms.css 的裸控件规则给（18px 直角勾选框 / 圆形单选 / 主色实底），.ak-check 只负责「控件 + 文字」的排布 */
+.ak-check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--ak-fs-sm); }
+.ak-check > input { flex: none; }
+.ak-check--sm > input { width: 16px; height: 16px; }
+.ak-switch { --_w: 40px; --_h: 22px; position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--ak-fs-sm); }
+.ak-switch > input { appearance: none; -webkit-appearance: none; width: var(--_w); height: var(--_h); background: var(--ak-gray-500); border: 0; border-radius: 0; margin: 0; position: relative; display: inline-block; cursor: pointer; transition: background var(--ak-dur-fast); }
+.ak-switch > input::before { content: ""; position: absolute; top: 3px; left: 3px; width: calc(var(--_h) - 6px); height: calc(var(--_h) - 6px); border: 0; border-radius: 0; background: #fff; transition: transform var(--ak-dur-fast) var(--ak-ease); }
+.ak-switch > input:checked { background: var(--ak-blue-600); }   /* 游戏内 toggle_on #0075A9 */
+.ak-switch > input:checked::before { transform: translateX(calc(var(--_w) - var(--_h))); background: #fff; }
+.ak-slider { appearance: none; width: 100%; height: 4px; background: var(--ak-bg-surface-3); outline: 0; }
+.ak-slider::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--ak-accent); border: 2px solid var(--ak-bg-surface); box-shadow: 0 0 0 1px var(--ak-accent); cursor: pointer; }
+.ak-slider::-moz-range-thumb { width: 16px; height: 16px; background: var(--ak-accent); border: 2px solid var(--ak-bg-surface); cursor: pointer; border-radius: 0; }
+.ak-search { position: relative; }
+.ak-search > .ak-input, .ak-search > input { padding-left: 34px; }
+.ak-search__icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--ak-fg-muted); pointer-events: none; }
+/* 键帽：快捷键提示（面板页脚 / 触发器右侧 / 行内动作）。直角、1px 边、底边略重 */
+.ak-kbd, .ak-search__kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; font: 600 10px/1 var(--ak-font-mono); color: var(--ak-fg-subtle); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: inset 0 -1px 0 var(--ak-border); vertical-align: middle; white-space: nowrap; }
+.ak-search__kbd { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
+.ak-number { display: inline-flex; border: 1px solid var(--ak-border-strong); }
+.ak-number > button { all: unset; width: 32px; text-align: center; cursor: pointer; background: var(--ak-bg-surface-2); font-family: inherit; font-weight: 700; }
+.ak-number > button:hover { background: var(--ak-bg-hover); }
+.ak-number > input { width: 56px; border: 0; border-left: 1px solid var(--ak-border); border-right: 1px solid var(--ak-border); text-align: center; font-family: inherit; font-variant-numeric: tabular-nums; background: var(--ak-bg-surface); color: var(--ak-fg); }
+/* ─── 以下是 Vue 实现（vue/src/components/）用到、原先缺的钩子；模板 / Lua 照样可用 ─── */
+/* 下拉的尺寸档：同 .ak-input--sm / --lg（30 / 44） */
+.ak-select--sm { min-height: 30px; font-size: var(--ak-fs-xs); } .ak-select--lg { min-height: 44px; font-size: var(--ak-fs-body); }
+/* 校验通过：多行输入 / 下拉与 .ak-input.is-valid 同一道绿边 */
+.ak-textarea.is-valid, .ak-select.is-valid { border-color: var(--ak-success); }
+/* 滑杆：上面 .ak-slider 的 outline:0 盖掉了全局 :focus-visible 描边，这里补回（规范 §4.2 / §6）；禁用半透明 */
+.ak-slider:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 4px; }
+.ak-slider:disabled { opacity: .45; cursor: not-allowed; }
+/* 字段是纵向 flex：定宽 / 内容宽的控件别被拉满一行（步进器、开关、单个勾选、单选按钮组 —— .ak-btn-group 是 button.css 的，单独写一条） */
+.ak-field > :is(.ak-number, .ak-switch, .ak-check), .ak-field > .ak-btn-group { align-self: flex-start; }
+/* 一组勾选 / 单选：横排换行（--vertical 竖排）；组本身不画框，组名由 .ak-field 的标签（aria-labelledby）或 aria-label 给 */
+.ak-check-group { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ak-space-2) var(--ak-space-4); }
+.ak-check-group--vertical { flex-direction: column; align-items: flex-start; }
+/* 禁用：文字降到禁用色；开关轨道半透明（.ak-switch > input 的底色压过了裸控件的禁用规则） */
+.ak-check.is-disabled, .ak-switch.is-disabled { color: var(--ak-fg-disabled); cursor: not-allowed; }
+.ak-switch > input:disabled { opacity: .45; cursor: not-allowed; }
+/* 小一号开关 32 × 18（标题栏旁、表头里；= 首页「演示：特别开放周」那枚） */
+.ak-switch--sm { --_w: 32px; --_h: 18px; font-size: var(--ak-fs-xs); }
+/* 步进器：到上下限的按钮、整个禁用（.ak-number > * 的底色 / 字色压过了裸控件的禁用规则） */
+.ak-number > button:disabled { color: var(--ak-fg-disabled); background: var(--ak-bg-surface-2); cursor: not-allowed; }
+.ak-number > input:disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); -webkit-text-fill-color: var(--ak-fg-disabled); cursor: not-allowed; }

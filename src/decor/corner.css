@@ -1,0 +1,12 @@
+/*! AKDS · decor/corner.css — A6 角标三角 Corner · 依赖：tokens.css */
+/* A6. 角标（corner triangle）· 官网右上角三角 / 游戏内选中角标 */
+.ak-corner { position: relative; }
+.ak-corner::before { content: ""; position: absolute; top: 0; left: 0; border-style: solid; border-width: 10px 10px 0 0; border-color: var(--ak-accent) transparent transparent transparent; z-index: 1; }
+.ak-corner--tr::before { left: auto; right: 0; border-width: 0 10px 10px 0; border-color: transparent var(--ak-accent) transparent transparent; }
+.ak-corner--yellow::before { border-color: var(--ak-yellow-500) transparent transparent; }
+.ak-corner--tr.ak-corner--yellow::before { border-color: transparent var(--ak-yellow-500) transparent transparent; }
+.ak-corner--red::before { border-color: var(--ak-red-600) transparent transparent; }
+.ak-corner--tr.ak-corner--red::before { border-color: transparent var(--ak-red-600) transparent transparent; }
+.ak-corner--lg::before { border-width: 18px 18px 0 0; }
+.ak-corner--tr.ak-corner--lg::before { border-width: 0 18px 18px 0; }
+/* 带文字的角标用 .ak-tag（矩形）叠在角上即可；原 45° 斜带 .ak-corner-tag 已移除 */

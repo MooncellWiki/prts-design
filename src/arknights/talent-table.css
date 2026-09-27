@@ -1,0 +1,30 @@
+/*! AKDS · arknights/talent-table.css — B6c 天赋条件表 Talent table · 依赖：tokens.css · decor/ */
+/* B6c. 天赋条件表——prts.wiki 现网的「条件 × 描述」对比（精英阶段 / 模组等级），潜能加成用表头右侧的开关切换描述
+ *  结构：table.ak-talent-table > thead( th.name th.cond th.desc( label.ak-check.ak-talent-table__toggle > input[data-toggle-class=is-pot] ) ) + tbody > tr( td.name[rowspan] td.cond td.desc( .ak-talent-table__base + .ak-talent-table__pot ) ) */
+.ak-talent-table { width: 100%; border-collapse: collapse; font-size: var(--ak-fs-sm); line-height: 1.6; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0 0 var(--ak-space-3); }
+.ak-talent-table th, .ak-talent-table td { padding: 6px 10px; border-top: 1px solid var(--ak-border-subtle); vertical-align: middle; text-align: left; }
+.ak-talent-table thead th { background: var(--ak-bg-surface-2); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); white-space: nowrap; }
+.ak-talent-table tbody tr:first-child > * { border-top: 0; }
+.ak-talent-table .name { width: 112px; font-weight: 800; }
+.ak-talent-table td.name { border-right: 1px solid var(--ak-border-subtle); vertical-align: top; padding-top: 8px; }
+.ak-talent-table .cond { width: 168px; white-space: nowrap; color: var(--ak-fg-secondary); }
+.ak-talent-table .cond .ak-elite { vertical-align: middle; font-size: var(--ak-fs-sm); }   /* 字体由 B99 兜底回正文 */
+.ak-talent-table__toggle { float: right; margin-left: 12px; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.ak-talent-table__toggle > input { width: 16px; height: 16px; }
+.ak-talent-table__toggle .ak-potential > img { height: 14px; }   /* 开关里的潜能图标跟字高（潜能组件默认 20px） */
+.ak-talent-table__pot { display: none; }
+.ak-talent-table.is-pot .ak-talent-table__base { display: none; }
+.ak-talent-table.is-pot .ak-talent-table__pot { display: inline; }
+/* 算法标记（现网「算法」开关）：勾上后描述里每个加成项前标出它进公式的方式——同现网的四枚小图标：绿 + 直接加算 · 蓝 + 直接乘算（直接乘算之间为加法计算）· 橙 + 最终加算 · 橙 × 最终乘算
+ *  结构：td.desc 里 <i class="ak-calc ak-calc--mul" title="直接乘算"></i> 紧贴数值；表头再挂一枚 label.ak-talent-table__toggle > input[data-toggle-class=is-calc]；tfoot > tr.ak-talent-table__legend 是图例行，只在 .is-calc 时显示 */
+.ak-calc { display: none; width: 14px; height: 14px; margin: 0 2px 0 1px; vertical-align: -2px; font: 800 11px/14px var(--ak-font-label); text-align: center; color: #fff; }
+.ak-calc--add { background: var(--ak-green-500); } .ak-calc--add::before { content: "+"; }
+.ak-calc--mul { background: var(--ak-blue-500); } .ak-calc--mul::before { content: "+"; }
+.ak-calc--fadd { background: var(--ak-orange-500); color: #1d1f20; } .ak-calc--fadd::before { content: "+"; }
+.ak-calc--fmul { background: var(--ak-orange-500); color: #1d1f20; } .ak-calc--fmul::before { content: "×"; }
+.ak-talent-table.is-calc .ak-calc, .ak-talent-table__legend .ak-calc { display: inline-block; }
+.ak-talent-table__legend { display: none; }
+.ak-talent-table.is-calc .ak-talent-table__legend { display: table-row; }
+.ak-talent-table__legend > td { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); background: var(--ak-bg-surface-2); }
+.ak-talent-table__legend > td > span { display: inline-flex; align-items: center; margin-right: 14px; white-space: nowrap; }
+@media (max-width: 639px) { .ak-talent-table .name { width: 72px; } .ak-talent-table .cond { width: auto; white-space: normal; } .ak-talent-table__toggle { float: none; display: inline-flex; margin: 4px 12px 0 0; } }

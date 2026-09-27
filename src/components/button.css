@@ -1,0 +1,44 @@
+/*! AKDS · components/button.css — Button 按钮 · Button group · 依赖：tokens.css */
+/* ═══ Button ═══ */
+.ak-btn {
+  --_bg: var(--ak-bg-surface-2); --_fg: var(--ak-fg); --_bd: var(--ak-border-strong);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--ak-space-2);
+  min-height: 36px; padding: 0 var(--ak-space-4); font: 600 var(--ak-fs-sm)/1 var(--ak-font-body);
+  color: var(--_fg); background: var(--_bg); border: 1px solid var(--_bd); border-radius: var(--ak-radius);
+  cursor: pointer; user-select: none; white-space: nowrap; text-decoration: none; position: relative;
+  transition: background var(--ak-dur-fast) var(--ak-ease), color var(--ak-dur-fast), border-color var(--ak-dur-fast), transform var(--ak-dur-fast), box-shadow var(--ak-dur-fast);
+}
+.ak-btn:hover { --_bg: var(--ak-bg-surface-3); --_bd: var(--ak-fg-muted); text-decoration: none; color: var(--_fg); }
+.ak-btn:active { transform: translateY(1px); }
+.ak-btn:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.ak-btn:disabled, .ak-btn.is-disabled, .ak-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; pointer-events: none; }
+.ak-btn--primary { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); }
+.ak-btn--primary:hover { --_bg: var(--ak-accent-hover); --_bd: var(--ak-accent-hover); box-shadow: 0 0 0 3px var(--ak-accent-subtle); }
+.ak-btn--contrast { --_bg: var(--ak-bg-inverse); --_fg: var(--ak-fg-inverse); --_bd: var(--ak-bg-inverse); }   /* 游戏内 btn_on：黑白反转 */
+.ak-btn--contrast:hover { --_bg: var(--ak-fg-secondary); --_bd: var(--ak-fg-secondary); }
+.ak-btn--outline { --_bg: transparent; --_fg: var(--ak-accent); --_bd: var(--ak-accent); }
+.ak-btn--outline:hover { --_bg: var(--ak-accent-subtle); }
+.ak-btn--ghost { --_bg: transparent; --_fg: var(--ak-fg-secondary); --_bd: transparent; }
+.ak-btn--ghost:hover { --_bg: var(--ak-bg-hover); --_fg: var(--ak-fg); }
+.ak-btn--danger { --_bg: var(--ak-red-800); --_fg: #fff; --_bd: var(--ak-red-800); }
+.ak-btn--danger:hover { --_bg: var(--ak-red-700); --_bd: var(--ak-red-700); }
+.ak-btn--danger.ak-stripes { background-image: repeating-linear-gradient(-45deg, transparent 0 var(--ak-stripe-size), rgba(255,255,255,.10) var(--ak-stripe-size) calc(var(--ak-stripe-size) * 2)); }
+.ak-btn--link { --_bg: transparent; --_bd: transparent; --_fg: var(--ak-link); min-height: 0; padding: 0; }
+.ak-btn--link:hover { text-decoration: underline; }
+.ak-btn--xs { min-height: 24px; padding: 0 var(--ak-space-2); font-size: var(--ak-fs-xs); }
+.ak-btn--sm { min-height: 30px; padding: 0 var(--ak-space-3); font-size: var(--ak-fs-xs); }
+.ak-btn--lg { min-height: 44px; padding: 0 var(--ak-space-6); font-size: var(--ak-fs-body); }
+.ak-btn--xl { min-height: 56px; padding: 0 var(--ak-space-8); font-size: var(--ak-fs-body-lg); font-weight: 700; }
+.ak-btn--icon { padding: 0; width: 36px; }
+.ak-btn--icon.ak-btn--sm { width: 30px; } .ak-btn--icon.ak-btn--lg { width: 44px; }
+.ak-btn--icon.ak-btn--xs { width: 24px; } .ak-btn--icon.ak-btn--xl { width: 56px; }
+.ak-btn--block { display: flex; width: 100%; }
+.ak-btn--pill { border-radius: var(--ak-radius-pill); }
+.ak-btn__icon { width: 1.1em; height: 1.1em; flex: none; }
+/* 加载态：文字隐去，居中一枚 14px 圆弧转圈；颜色读按钮自己的 --_fg（文字已 transparent，不能用 currentColor）。
+ * 曾把游戏内的菱形涟漪（见 .ak-spinner）放进来，36px 高里施展不开，按钮退回圆环 */
+.ak-btn.is-loading { color: transparent !important; pointer-events: none; }
+.ak-btn.is-loading::after { content: ""; position: absolute; inset: 0; margin: auto; width: 14px; height: 14px; border: 2px solid var(--_fg); border-right-color: transparent; border-radius: 50%; animation: ak-spin .7s linear infinite; }
+.ak-btn-group { display: inline-flex; }
+.ak-btn-group > .ak-btn:not(:first-child) { margin-left: -1px; }
+.ak-btn-group > .ak-btn.is-active { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); z-index: 1; }

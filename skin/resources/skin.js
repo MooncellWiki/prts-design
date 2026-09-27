@@ -145,7 +145,7 @@
 	}
 
 	/* 目录浮层收尾（开合本身是纯 CSS 的 .ak-toc-cb）：
-	 *  · 把 checkbox 状态镜像到 html.ak-toc-open —— 浮层显示的主路径（skin.css 不再只靠 body:has() 桥接，没有 :has() 的旧内核也是真浮层）；
+	 *  · 把 checkbox 状态镜像到 html.ak-toc-open —— 浮层显示的主路径（chrome/responsive.css 不再只靠 body:has() 桥接，没有 :has() 的旧内核也是真浮层）；
 	 *  · 开着时锁页面滚动（VitePress 的 outline dropdown 同样锁）；跳转后 / 点浮层外 / Esc / 回到 ≥1400（目录回右侧导轨，锁必须撤）收起 */
 	const tocCb = $( '.ak-toc-cb' );
 	if ( tocCb ) {
@@ -195,7 +195,7 @@
 	document.addEventListener( 'click', ( e ) => {
 		const tab = e.target.closest( '.ak-tabs[data-tabs] .ak-tab' );
 		if ( tab ) { e.preventDefault(); const tabs = tab.closest( '.ak-tabs' ); $$( '.ak-tab', tabs ).forEach( ( t ) => { t.classList.toggle( 'is-active', t === tab ); t.setAttribute( 'aria-selected', t === tab ); } ); $$( '.ak-tabpanel[data-tabs="' + tabs.dataset.tabs + '"]' ).forEach( ( p ) => { p.hidden = p.dataset.tab !== tab.dataset.tab; } ); }
-		const ph = e.target.closest( '.ak-panel--collapsible > .ak-panel__head' ); if ( ph ) { ph.parentElement.classList.toggle( 'is-collapsed' ); }
+		const ph = e.target.closest( '.ak-panel--collapsible > .ak-panel__head' ); if ( ph && !ph.closest( '[data-no-toggle]' ) ) { ph.parentElement.classList.toggle( 'is-collapsed' ); }
 		const chip = e.target.closest( '.ak-chip' ); if ( chip && !chip.closest( '[data-no-toggle]' ) ) { chip.classList.toggle( 'is-active' ); chip.setAttribute( 'aria-pressed', chip.classList.contains( 'is-active' ) ); }
 		const grp = e.target.closest( '.ak-btn-group > .ak-btn, .ak-phase-tabs > button, .ak-skill-levels > button' );
 		if ( grp ) { const parent = grp.parentElement; $$( ':scope > *', parent ).forEach( ( b ) => b.classList.toggle( 'is-active', b === grp ) ); parent.dispatchEvent( new CustomEvent( 'akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } } ) ); }
@@ -209,7 +209,7 @@
 		$$( '[data-show-' + sel + ']', scope ).forEach( ( el ) => { el.hidden = el.getAttribute( 'data-show-' + sel ) !== key; } );
 	} );
 
-	/* Toast helper: mw.notify 已由 base.css 主题化；这里提供 AKDS 样式的 toast */
+	/* Toast helper: mw.notify 已由 base/special-pages.css 主题化；这里提供 AKDS 样式的 toast */
 	window.akdsToast = function ( msg, type, title ) {
 		let wrap = $( '.ak-toasts' ); if ( !wrap ) { wrap = document.createElement( 'div' ); wrap.className = 'ak-toasts'; document.body.appendChild( wrap ); }
 		const el = document.createElement( 'div' ); el.className = 'ak-toast' + ( type ? ' ak-toast--' + type : '' ); el.style.position = 'relative'; el.style.overflow = 'hidden';

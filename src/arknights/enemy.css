@@ -1,0 +1,12 @@
+/*! AKDS · arknights/enemy.css — B15 敌人卡 Enemy · 依赖：tokens.css · decor/ */
+/* B15. 敌人卡 */
+.ak-enemy { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 10px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+.ak-enemy--boss, .ak-enemy--elite { border-left-width: 4px; border-image: linear-gradient(to right, var(--_bar) 4px, var(--ak-border) 4px) 1 1 1 4; }
+.ak-enemy__img { width: 64px; height: 64px; background: #1d1f20; border-radius: 50%; overflow: hidden; }
+.ak-enemy__code { font: 700 10px/1 var(--ak-font-label); letter-spacing: .12em; color: var(--ak-fg-muted); }
+.ak-enemy__name { font-weight: 800; }
+.ak-enemy__level { display: inline-flex; gap: 2px; }
+.ak-enemy__level > i { width: 12px; height: 12px; background: var(--ak-bg-surface-3); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+.ak-enemy__level > i.on { background: var(--ak-red-500); }
+.ak-enemy--boss { --_bar: var(--ak-red-700); }
+.ak-enemy--elite { --_bar: var(--ak-orange-500); }

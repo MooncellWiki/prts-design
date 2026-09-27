@@ -1,0 +1,23 @@
+/*! AKDS · components/spinner.css — Spinner / Loader 加载 · 依赖：tokens.css */
+/* Spinner = 菱形涟漪（游戏内 loading）：font-size 定大小（默认 12px → 29px 见方），--_c 换色。
+ * ::before = 中央常驻的空心菱形（.75em、2px 线，即中坚术师分支图标那枚）；::after = 涟漪环，同一枚菱形从中央那枚身上冒出来：
+ *   尺寸走 width/height（不用 scale，线宽恒 2px）从「中央那枚 + 两道线宽 + 1px」（刚好箍在它外沿）→ 1.65em、ease-out；透明度另一条 ease-in 淡到 0；
+ *   1.2s 一枚。游戏里环出生时还带随机剪切，这个尺寸下施展不开、反而脏，没做。减弱动效时环不出、只留中央静止的菱形 */
+.ak-spinner { display: inline-block; position: relative; flex: none; vertical-align: middle; width: 2.4em; height: 2.4em; font-size: 12px; --_ld: var(--_c, var(--ak-accent)); }
+.ak-spinner::before, .ak-spinner::after {
+  content: ""; position: absolute; inset: 0; margin: auto; width: .75em; height: .75em; box-sizing: border-box;
+  border: 2px solid var(--_ld); transform: rotate(45deg);
+}
+.ak-spinner::after { opacity: 0; animation: ak-ripple 1.2s cubic-bezier(.2,.6,.4,1) infinite, ak-ripple-fade 1.2s cubic-bezier(.4,0,.8,.6) infinite; }
+.ak-loader { display: inline-flex; gap: 4px; align-items: center; }
+.ak-loader > i { width: 6px; height: 14px; background: var(--ak-accent); animation: ak-bars 1s ease-in-out infinite; }
+.ak-loader > i:nth-child(2) { animation-delay: .15s; } .ak-loader > i:nth-child(3) { animation-delay: .3s; }
+/* Vue AkSpinner 的外壳（同 Naive NSpin）：.ak-spin = 图形 + 说明文字竖排（role="status"）；
+   .ak-spin-container 包住正在加载的内容：内容压淡、不可点，.ak-spin 叠在它正中。状态走容器上的 aria-busy，不另设 .is-* */
+.ak-spin { display: inline-flex; flex-direction: column; align-items: center; gap: var(--ak-space-2); }
+.ak-spin__desc { font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); }
+.ak-spin-container { position: relative; }
+.ak-spin-container > .ak-spin { position: absolute; inset: 0; z-index: 1; justify-content: center; }
+.ak-spin-container > .ak-spin > .ak-spin__desc { padding: 2px 8px; background: var(--ak-bg-surface); color: var(--ak-fg-secondary); }   /* 叠在压淡的内容上：垫一块表面色，字不和底下的字打架 */
+.ak-spin-container__content { transition: opacity var(--ak-dur-fast); }
+.ak-spin-container[aria-busy="true"] > .ak-spin-container__content { opacity: .35; pointer-events: none; user-select: none; }

@@ -1,0 +1,7 @@
+/*! AKDS · decor/glyph.css — A9 白色线稿图标 Glyph · 依赖：tokens.css */
+/* A9. 白色线稿图标在亮色主题下反相 */
+.ak-glyph { filter: var(--ak-glyph-filter); }
+.ak-glyph--keep { filter: none; }
+.ak-glyph--white { filter: none; }
+.ak-glyph-box { display: inline-grid; place-items: center; background: #1d1f20; }   /* 深底白图标，两主题不变 */
+.ak-glyph-box > .ak-glyph { filter: none; }

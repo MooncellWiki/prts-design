@@ -1,0 +1,18 @@
+/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS · decor/ — L4 方舟装饰语言（原 arknights.css A 段）
+ *  这些是让界面"像明日方舟"而不是通用后台的部分：
+ *    左侧色条 / 短横条 / 斜纹 / 半调网点 / 角标三角 / 黑白反转 / 大写拉丁字 / 白色线稿图标
+ *    （没有切角、斜切、斜带——整套系统里不出现 45° 斜边；A1–A2 切角 .ak-chamfer / 斜切 .ak-skew 已移除，
+ *     层级与状态靠色条、黑白反转、角标三角表达）
+ *  依赖：tokens.css
+ * ═══════════════════════════════════════════════════════════════════════════ */
+@import url("stripes.css");
+@import url("halftone.css");
+@import url("patterns.css");
+@import url("corner.css");
+@import url("brackets.css");
+@import url("type.css");
+@import url("glyph.css");
+@import url("inverse.css");
+@import url("bilingual.css");
+@import url("chevrons.css");

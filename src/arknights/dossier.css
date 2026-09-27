@@ -1,0 +1,13 @@
+/*! AKDS · arknights/dossier.css — B12 档案 / 剧情文本块 Dossier · Redacted · 依赖：tokens.css · decor/ */
+/* B12. 档案 / 剧情文本块（含未解锁遮罩） */
+.ak-dossier { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: 16px 20px; position: relative; font-size: var(--ak-fs-sm); line-height: 1.85; }
+.ak-dossier__title { display: flex; align-items: center; gap: 10px; font-weight: 800; margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--ak-border); }
+.ak-dossier__title .ak-en { color: var(--ak-fg-muted); font-size: .8em; }
+.ak-dossier__unlock { margin-left: auto; font: 600 10px/1 var(--ak-font-label); letter-spacing: .08em; color: var(--ak-fg-muted); text-transform: uppercase; }
+.ak-dossier p { margin: 0 0 .8em; white-space: pre-line; }
+.ak-dossier p:last-child { margin: 0; }
+.ak-dossier.is-locked > *:not(.ak-dossier__title) { filter: blur(4px); user-select: none; pointer-events: none; }
+.ak-dossier.is-locked::after { content: "🔒 " attr(data-unlock); position: absolute; inset: 44px 0 0; display: grid; place-items: center; background: repeating-linear-gradient(-45deg, transparent 0 8px, var(--ak-stripe-color) 8px 16px); font: 700 var(--ak-fs-sm)/1 var(--ak-font-body); color: var(--ak-fg-secondary); }
+.ak-redacted { background: var(--ak-fg); color: transparent; user-select: none; }
+.ak-redacted:hover { color: var(--ak-bg-canvas); }
+.ak-redacted:focus-visible, .ak-redacted.is-revealed { color: var(--ak-bg-canvas); }   /* Vue 版 AkRedacted：键盘聚焦时显出、点按后常显（触屏没有 :hover） */

@@ -1,0 +1,43 @@
+/*! AKDS · base/special-pages.css — Diff / history / recent changes / search / Echo / Minerva · 依赖：tokens.css */
+/* ─── Diff / history / recent changes / search ─────────────────────────── */
+table.diff { font-size: var(--ak-fs-sm); }
+table.diff td { padding: .3em .5em; }
+.diff-context { background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); }
+.diff-addedline { border-left: 3px solid var(--ak-success); }
+.diff-deletedline { border-left: 3px solid var(--ak-danger); }
+.diff-addedline .diffchange { background: var(--ak-success-bg); color: var(--ak-fg); }
+.diff-deletedline .diffchange { background: var(--ak-danger-bg); color: var(--ak-fg); }
+.diff-lineno { color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; }
+.mw-changeslist, #pagehistory { font-size: var(--ak-fs-sm); }
+#pagehistory li, .mw-changeslist li { padding: .3em .5em; border-left: 3px solid transparent; }
+#pagehistory li.selected { background: var(--ak-accent-subtle); border-left-color: var(--ak-accent); }
+.mw-changeslist .mw-plusminus-pos { color: var(--ak-success); font-variant-numeric: tabular-nums; }
+.mw-changeslist .mw-plusminus-neg { color: var(--ak-danger); font-variant-numeric: tabular-nums; }
+.mw-changeslist .mw-plusminus-null { color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; }
+.mw-changeslist-line-inner .comment, .history-user, .mw-usertoollinks { color: var(--ak-fg-secondary); }
+.mw-search-results { list-style: none; padding: 0; }
+.mw-search-result { padding: var(--ak-space-3) 0; border-bottom: 1px solid var(--ak-border-subtle); }
+.mw-search-result-heading { font-weight: 700; font-size: var(--ak-fs-body-lg); }
+.searchmatch { font-weight: 700; color: var(--ak-accent); }
+.searchresult { color: var(--ak-fg-secondary); font-size: var(--ak-fs-sm); }
+.mw-search-result-data { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+.mw-search-profile-tabs { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
+.mw-search-profile-tabs .search-types ul li.current a { color: var(--ak-accent); border-bottom: 2px solid var(--ak-accent); }
+.mw-notification-area { z-index: var(--ak-z-toast); }
+.mw-notification { --_c: var(--ak-accent); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_c) 4px, var(--ak-border) 4px) 1 1 1 4; box-shadow: var(--ak-shadow-lg); color: var(--ak-fg); border-radius: 0; }
+.mw-notification-type-error { --_c: var(--ak-danger); }
+.mw-notification-type-warn { --_c: var(--ak-warning); }
+.mw-notification-type-success { border-left-color: var(--ak-success); }
+.usermessage { background: var(--ak-warning-bg); border: 1px solid var(--ak-warning); padding: var(--ak-space-3); }
+.mw-special-Specialpages .mw-specialpagegroup { border-bottom: 1px solid var(--ak-border); }
+.error, .errorbox { color: var(--ak-danger); }
+.warningbox { color: var(--ak-warning); }
+.successbox { color: var(--ak-success); }
+.mw-body-content .mw-tag-markers, .mw-tag-marker { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); padding: 0 6px; }
+.mw-body-content .mw-tag-marker-mobile-edit { border-color: var(--ak-accent-muted); }
+/* Echo */
+.mw-echo-ui-notificationItemWidget { background: var(--ak-bg-surface); border-color: var(--ak-border); color: var(--ak-fg); }
+.mw-echo-ui-notificationItemWidget-unread { background: var(--ak-accent-subtle); }
+.mw-echo-ui-notificationBadgeButtonPopupWidget-popup .oo-ui-popupWidget-popup { background: var(--ak-bg-surface); }
+/* MobileFrontend/Minerva overrides when AKDS tokens are loaded */
+.minerva-header, .header-container { background: var(--ak-bg-surface); border-color: var(--ak-border); }

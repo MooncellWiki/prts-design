@@ -1,0 +1,8 @@
+/*! AKDS · components/fab.css — FAB 回到顶部 · 依赖：tokens.css */
+/* ═══ Back-to-top / floating action ═══ */
+.ak-fab { position: fixed; right: var(--ak-space-5); bottom: var(--ak-space-5); width: 44px; height: 44px; padding: 0; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); border: 0; cursor: pointer; z-index: var(--ak-z-sticky); box-shadow: var(--ak-shadow-md); opacity: 0; transform: translateY(8px); transition: all var(--ak-dur-normal) var(--ak-ease); }
+.ak-fab.is-visible { opacity: 1; transform: none; }
+.ak-fab:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
+/* 贴最近的定位祖先右下（Vue 版 AkBackTop position="absolute"：页面里某个滚动区域自己的回到顶部）。
+ * 它不是整页那枚，不随 chrome/responsive.css 在 < 1400 收起（那条只为把整页的回到顶部让给目录浮层）；打印照样隐藏 */
+.ak-fab.ak-fab--absolute { position: absolute; display: grid; }

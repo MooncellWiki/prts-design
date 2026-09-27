@@ -1,0 +1,29 @@
+/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS · chrome/ — L2 MediaWiki 皮肤骨架（原 skin.css）
+ *  DOM 约定（见 docs/03-mediawiki-integration.md 中的 skin.mustache 结构）：
+ *    body.skin-akds
+ *      header.ak-header > .ak-header__inner > [menu][logo][nav][search][tools]
+ *      .ak-layout > aside.ak-sidebar + main.ak-main
+ *        main.ak-main > .ak-main__inner > header.ak-page-header + aside.ak-toc + .ak-body + …
+ *        （目录在 DOM 上属于页面、紧跟标题；宽屏时才被抬到主列右侧导轨，见 toc.css）
+ *      footer.ak-footer
+ *  顺序：在通用组件与方舟组件之后（页眉里的 .ak-btn / .ak-menu / .ak-fab 等靠同特指度后到覆盖）；
+ *        responsive.css 最后（各块的断点规则集中在那里，内部顺序敏感）。
+ *  demo-theme.css 不在此列：「示例活动主题」，只给预览用（MW 上等于一份 Gadget）。
+ *  依赖：tokens.css · components/
+ * ═══════════════════════════════════════════════════════════════════════════ */
+@import url("shell.css");
+@import url("header.css");
+@import url("local-nav.css");
+@import url("keyart.css");
+@import url("layout.css");
+@import url("sidebar.css");
+@import url("sidebar-tree.css");
+@import url("page-header.css");
+@import url("body.css");
+@import url("toc.css");
+@import url("footer.css");
+@import url("theme-toggle.css");
+@import url("search-palette.css");
+@import url("special-pages.css");
+@import url("responsive.css");

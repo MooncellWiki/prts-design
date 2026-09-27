@@ -1,0 +1,11 @@
+/*! AKDS · arknights/hero.css — B18 大标题横幅 Hero · 依赖：tokens.css · decor/ */
+/* B18. 大标题横幅（页面 Hero，官网风：黑底 + 大拉丁字 + 青色横条） */
+.ak-hero { position: relative; overflow: hidden; background: #0f0f10; color: #fff; padding: 40px 32px; }
+.ak-hero__eyebrow { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-cyan-500); }
+.ak-hero__title { border: 0; padding: 0; color: #fff; font: 800 clamp(2rem, 6vw, 4rem)/1 var(--ak-font-display); letter-spacing: -.02em; text-transform: uppercase; margin: 8px 0 12px; }
+.ak-hero__title .cn { display: block; font-family: var(--ak-font-body); font-size: .5em; letter-spacing: .1em; font-weight: 700; margin-top: 4px; }
+.ak-hero__bar { width: 220px; height: 8px; background: var(--ak-cyan-500); margin: 16px 0; }
+.ak-hero__title::after { display: none; }
+.ak-hero__desc { max-width: 60ch; color: rgba(255,255,255,.7); font-size: var(--ak-fs-sm); }
+.ak-hero__side { position: absolute; right: 0; top: 0; bottom: 0; width: 22%; background: var(--ak-cyan-500); opacity: .9; }   /* 右侧竖直青色色块（官网 hero 的色面；不做斜边） */
+.ak-hero__side::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,0,0,.35) 1.2px, transparent 1.4px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(90deg, #000, transparent 70%); mask-image: linear-gradient(90deg, #000, transparent 70%); }

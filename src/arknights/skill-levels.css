@@ -1,0 +1,13 @@
+/*! AKDS · arknights/skill-levels.css — B6 技能等级选择器 Skill levels · 依赖：tokens.css · decor/ */
+/* 技能等级选择器 1-7 + M1-M3 */
+.ak-skill-levels { display: inline-flex; border: 1px solid var(--ak-border-strong); }
+.ak-skill-levels > button { all: unset; cursor: pointer; width: 30px; height: 26px; display: grid; place-items: center; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }
+.ak-skill-levels > button + button { border-left: 1px solid var(--ak-border); }
+.ak-skill-levels > button.is-mastery { color: var(--ak-rt-vup); }
+.ak-skill-levels > button.is-active { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
+.ak-skill-levels > button.is-mastery.is-active { background: var(--ak-blue-500); color: #fff; }
+.ak-skill-levels > button.is-mastery > img { height: 14px; filter: var(--ak-glyph-filter); }
+.ak-skill-levels > button.is-mastery.is-active > img { filter: none; }
+/* 键盘焦点：上面的 all: unset 把全局 :focus-visible 焦点环也清掉了，补回来（内缩 2px——按钮一个挨一个，外扩会被邻格盖住）；禁用同按钮 */
+.ak-skill-levels > button:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ak-skill-levels > button:disabled { opacity: .45; cursor: not-allowed; }
