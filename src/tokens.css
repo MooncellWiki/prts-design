@@ -256,6 +256,7 @@
   --ak-shadow-accent: 0 0 0 3px var(--ak-accent-subtle);
 
   --ak-glyph-filter: invert(1);   /* 游戏白色线稿图标在亮色下反相为黑 */
+  --ak-glyph-filter-inverse: none;   /* 同一套白线稿落在反色块（--ak-bg-inverse 底：.ak-phase-tabs 选中项那种）上时用——亮色下反色块是深底，白线稿不动；暗色下反色块是白底，要反相。组件走这个令牌，别按 :root[data-theme] 分支：跟随系统的暗色没有 data-theme，会漏 */
   --ak-stripe-color: rgba(0,0,0,.08);
   --ak-grid-color:   rgba(0,0,0,.06);
   --ak-halftone-color: rgba(0,0,0,.14);
@@ -335,6 +336,7 @@ html.skin-theme-clientpref-night {
   --ak-shadow-accent: 0 0 0 3px var(--ak-accent-subtle);
 
   --ak-glyph-filter: none;
+  --ak-glyph-filter-inverse: invert(1);
   --ak-stripe-color: rgba(255,255,255,.07);
   --ak-grid-color:   rgba(255,255,255,.05);
   --ak-halftone-color: rgba(255,255,255,.16);
@@ -365,7 +367,7 @@ html.skin-theme-clientpref-night {
     --ak-rarity-4-text: var(--ak-rarity-4); --ak-rarity-5-text: var(--ak-rarity-5); --ak-rarity-6-text: var(--ak-rarity-6);
     --ak-shadow-sm: 0 1px 2px rgba(0,0,0,.4); --ak-shadow-md: 0 4px 14px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
     --ak-shadow-lg: 0 16px 40px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.4);
-    --ak-glyph-filter: none; --ak-stripe-color: rgba(255,255,255,.07); --ak-grid-color: rgba(255,255,255,.05);
+    --ak-glyph-filter: none; --ak-glyph-filter-inverse: invert(1); --ak-stripe-color: rgba(255,255,255,.07); --ak-grid-color: rgba(255,255,255,.05);
     --ak-halftone-color: rgba(255,255,255,.16); --ak-scrollbar: #3b3d40;
   }
 }
