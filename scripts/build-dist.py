@@ -39,15 +39,17 @@ def font_uri(css_path, rel):
     return '../src/' + rel     # dist/ 与 src/ 同级（仓库里、Pages 站点里都是）；另存离线时退到 tokens.css 链后段的装机 / 系统字
 def css_inline(path):
     css = path.read_text(encoding='utf-8')
-    # demo-theme.css 里的 url("../preview/assets/…")（见该文件头注释：Chromium 按使用处解析自定义属性里的相对 url）与其余 css 的 url("assets/…") 都内联
-    css = re.sub(r'url\("(?:\.\./preview/)?assets/([^"]+)"\)', lambda m: 'url("%s")' % img_uri('assets/' + m.group(1)), css)
+    # @import url("…")：src/index.css → 各层 index.css → 组件文件，递归原位内联（顺序即级联顺序）
+    css = re.sub(r'@import url\("([^"]+)"\);[^\n]*', lambda m: css_inline((path.parent / m.group(1)).resolve()), css)
+    # src/chrome/demo-theme.css 里的 url("../../preview/assets/…")（见该文件头注释：Chromium 按使用处解析自定义属性里的相对 url）与其余 css 的 url("assets/…") 都内联
+    css = re.sub(r'url\("(?:(?:\.\./)+preview/)?assets/([^"]+)"\)', lambda m: 'url("%s")' % img_uri('assets/' + m.group(1)), css)
     # fonts.css 的 url("fonts/…")：小的内联、大的指回 src/
     css = re.sub(r'url\("(fonts/[^"]+)"\)', lambda m: 'url("%s")' % font_uri(path, m.group(1)), css)
     # vendor/ 下第三方 css 里相对自身的 url(img/…)（现网 charinfo 样式表引的 HUD 图标）
     if path.is_relative_to(prev / 'vendor'):
         css = re.sub(r'url\((img/[^)"\']+)\)', lambda m: 'url(%s)' % img_uri(str((path.parent / m.group(1)).relative_to(prev))), css)
-    else:   # src/*.css 里相对样式表自身的 url("img/…")（src/img/：道具稀有度底框 183px，不缩）
-        css = re.sub(r'url\("(img/[^"]+)"\)', lambda m: 'url("%s")' % img_uri(os.path.relpath(path.parent / m.group(1), prev)), css)
+    else:   # src/**/*.css 里相对样式表自身的 url("../img/…")（src/img/：道具稀有度底框 183px，不缩；arknights/item.css 在子目录里）
+        css = re.sub(r'url\("((?:\.\./)*img/[^"]+)"\)', lambda m: 'url("%s")' % img_uri(os.path.relpath(path.parent / m.group(1), prev)), css)
     return css
 for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全部打包（_src/ 是页面源，不在此列）
     html = (prev / name).read_text(encoding='utf-8')
@@ -75,9 +77,9 @@ for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全�
     # theme default note: artifacts render in viewer theme; keep script default
     # artifact skeleton strips <html>/<body> tags → restore body class + set a product-like title
     html = html.replace('<body class="skin-akds">', '<body class="skin-akds"><script>document.body.classList.add("skin-akds");</script>')
-    html = html.replace('<title>AKDS · 明日方舟网页设计系统</title>', '<title>明日方舟网页设计系统 AKDS</title>').replace('<title>陈 - PRTS · 干员页样例</title>', '<title>干员页样例 · 陈</title>').replace('<title>首页 - PRTS · 首页设计稿</title>', '<title>首页设计稿 · PRTS</title>')
+    html = html.replace('<title>陈 - PRTS · 干员页样例</title>', '<title>干员页样例 · 陈</title>').replace('<title>首页 - PRTS · 首页设计稿</title>', '<title>首页设计稿 · PRTS</title>')
     # cross-links between the two published artifacts
-    html = html.replace('href="home.html"', 'href="https://claude.ai/code/artifact/4c4b164a-8459-43e4-8e81-a3df7d566618"').replace('href="operator.html"', 'href="https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2"').replace('href="index.html', 'href="https://claude.ai/code/artifact/f04aa56e-c8bb-4491-ae2c-7711f330d396')
+    html = html.replace('href="home.html"', 'href="https://claude.ai/code/artifact/4c4b164a-8459-43e4-8e81-a3df7d566618"').replace('href="operator.html"', 'href="https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2"')
     (dist / name).write_text(html, encoding='utf-8')
     print(name, '->', round((dist / name).stat().st_size / 1e6, 2), 'MB', 'images', len(cache), 'fonts inline/linked', font_stats['inline'], font_stats['linked'])
     font_stats['inline'] = font_stats['linked'] = 0

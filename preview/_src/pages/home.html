@@ -36,7 +36,7 @@ cats: 首页
 @media (min-width: 1120px) and (max-width: 1400px) { .ak-local-nav { display: none; } .ak-keyart { --_over: var(--ak-header-h); } }   /* 这一档二级栏只剩「本页目录」，首页没有它就整条收起 */
 
 /* ── 1. 通用 ── */
-/* 首页整体标了 ak-not-prose（base.css：正文排版规则不进来，链接 color: inherit）。下面这几处要「像正文链接」，自己取链接令牌 */
+/* 首页整体标了 ak-not-prose（base/typography.css：正文排版规则不进来，链接 color: inherit）。下面这几处要「像正文链接」，自己取链接令牌 */
 .mp-link, .mp-site__links a, .mp-section .ak-heading__aside a { color: var(--ak-link); }
 .mp-link:hover, .mp-site__links a:hover, .mp-section .ak-heading__aside a:hover { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; }
 .mp-section { margin-top: var(--ak-space-10); }

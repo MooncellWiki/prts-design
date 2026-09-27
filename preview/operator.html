@@ -3,17 +3,11 @@
 <html lang="zh-CN" class="client-nojs skin-theme-clientpref-night" data-default-theme="dark">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；skin.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
+<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；chrome/responsive.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>陈 - PRTS · 干员页样例</title>
-<link rel="stylesheet" href="../src/fonts.css">   <!-- 自托管 web 字体（Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono，OFL；scripts/fetch-fonts.py 生成） -->
-<link rel="stylesheet" href="../src/tokens.css">
-<link rel="stylesheet" href="../src/base.css">
-<link rel="stylesheet" href="../src/components.css">
-<link rel="stylesheet" href="../src/arknights.css">
-<link rel="stylesheet" href="../src/skin.css">
-<link rel="stylesheet" href="../src/utilities.css">
-<link rel="stylesheet" href="demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖 tokens.css §2d 的接口变量 -->
+<link rel="stylesheet" href="../src/index.css">   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
+<link rel="stylesheet" href="../src/chrome/demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖令牌 §2d 的接口变量 -->
 <style>
 /* preview-only helpers */
 .demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
@@ -38,13 +32,13 @@
 <script>window.RLQ = { push: function (item) { (Array.isArray(item) ? item[1] : item)(); } };</script>   <!-- MW 资源加载队列 RLQ 的两行替身：Widget 脚本用 RLQ.push(['jquery', fn]) 等 jQuery 就绪，这里 jQuery 已同步加载，直接执行 -->
 <style>
 /* ═══ 干员页 —— 页面自己的东西（生产环境 = 各模板的 TemplateStyles：Template:异格干员/styles.css、Template:属性/styles.css、Template:人员档案/styles.css …）
-   舞台 = 现网 Widget:CharinfoV2 原样（CSS / JS 在 vendor/charinfo/），游戏数据组件（技能表 / 天赋表 / 模组卡 / 档案 / 语音 / 密录…）在 src/arknights.css；这里只剩几个页面级的排布 + 舞台与皮肤的接缝 ═══ */
+   舞台 = 现网 Widget:CharinfoV2 原样（CSS / JS 在 vendor/charinfo/），游戏数据组件（技能表 / 天赋表 / 模组卡 / 档案 / 语音 / 密录…）在 src/arknights/；这里只剩几个页面级的排布 + 舞台与皮肤的接缝 ═══ */
 /* 舞台接缝——不改 Widget 的 CSS / JS，只处理它与皮肤骨架的几处接口（生产环境放 Widget 自己的 <style> 或皮肤的 site 样式里） */
 .charinfo-container { zoom: var(--op-stage-zoom, 1); margin: 0 0 var(--ak-space-4); line-height: 1.6; }   /* 1.6 = Vector 正文行高：Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点 */   /* 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着）；正文列比它窄时整块 zoom——zoom 不像 transform 那样改变 position:fixed 的包含块，Widget 的「全屏查看」（把 wrapper 设成 fixed 铺满视口）照常；系数由页脚脚本按正文列宽算 */
 .charinfo-container:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1; }   /* 全屏查看时不缩 */
 .charinfo-container > .charinfo-wrapper[style*="fixed"] { z-index: calc(var(--ak-z-modal) + 1) !important; }   /* 全屏层要压过皮肤页眉：Widget 内联的 999 只够压 Vector（它顺手把 #mw-panel / #mw-head 压下去，皮肤里没这两个 id） */
 body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查看立绘」全屏层同理 */
-.charinfo-container img, .charimg-m img { max-width: none; }   /* 皮肤 base.css 的 img { max-width: 100%; height: auto } 不进舞台：HUD 图标靠 height="30px" 这类属性定尺寸，height:auto 会把它们放回原图的 32px */
+.charinfo-container img, .charimg-m img { max-width: none; }   /* 皮肤 base/media.css 的 img { max-width: 100%; height: auto } 不进舞台：HUD 图标靠 height="30px" 这类属性定尺寸，height:auto 会把它们放回原图的 32px */
 .charinfo-container img[height="30px"] { height: 30px; } .charinfo-container img[height="22px"] { height: 22px; } .charinfo-container img[height="16px"] { height: 16px; }
 .charinfo-container img[height="100%"], .charimg-m img[height="100%"] { height: 100%; }
 /* 异格一览（{{异格干员}}）：左黑标 + 原型 / 异格头像卡 + 右侧说明 */
@@ -174,7 +168,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
         <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
         <!-- 用户菜单（MW #p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu 卡片。
              卡片 = 用户名抬头 + 两组门户：「界面设置」#p-user-interface-preferences（ULS 的语言切换就在这里——侧栏不再有 Languages 组）· 「个人工具」#p-personal。
-             <1120 时这张卡在 ≡ 面板里就地展开（skin.css 已写），不再浮出。 -->
+             <1120 时这张卡在 ≡ 面板里就地展开（chrome/responsive.css 已写），不再浮出。 -->
         <div class="ak-dropdown ak-header__user-menu" id="ak-user-menu">
           <details>
             <summary class="ak-btn ak-btn--ghost ak-header__user" title="用户菜单"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></summary>
@@ -211,7 +205,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
   </div>
 </header>
 
-<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、preview/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（skin.css 负外边距，DOM 顺序不变） -->
+<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（chrome/keyart.css 负外边距，DOM 顺序不变） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout">
@@ -222,11 +216,6 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
       <h3 class="ak-portlet__title">AKDS 预览 · DEMO</h3>
       <ul>
         <li><a href="home.html">首页设计稿</a></li>
-        <li><a href="index.html">基础 · 理念 / 色彩 / 字体 / 装饰</a></li>
-        <li><a href="chrome.html">皮肤骨架 · 页眉与主题接口</a></li>
-        <li><a href="mediawiki.html">MediaWiki 内容样式</a></li>
-        <li><a href="components.html">通用组件</a></li>
-        <li><a href="arknights.html">方舟组件</a></li>
         <li class="is-active"><a href="operator.html">干员页样例（陈）</a></li>
         <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
       </ul>

@@ -3,17 +3,11 @@
 <html lang="zh-CN" class="client-nojs skin-theme-clientpref-night" data-default-theme="dark">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；skin.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
+<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；chrome/responsive.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>首页 - PRTS · 首页设计稿</title>
-<link rel="stylesheet" href="../src/fonts.css">   <!-- 自托管 web 字体（Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono，OFL；scripts/fetch-fonts.py 生成） -->
-<link rel="stylesheet" href="../src/tokens.css">
-<link rel="stylesheet" href="../src/base.css">
-<link rel="stylesheet" href="../src/components.css">
-<link rel="stylesheet" href="../src/arknights.css">
-<link rel="stylesheet" href="../src/skin.css">
-<link rel="stylesheet" href="../src/utilities.css">
-<link rel="stylesheet" href="demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖 tokens.css §2d 的接口变量 -->
+<link rel="stylesheet" href="../src/index.css">   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
+<link rel="stylesheet" href="../src/chrome/demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖令牌 §2d 的接口变量 -->
 <style>
 /* preview-only helpers */
 .demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
@@ -60,7 +54,7 @@
 @media (min-width: 1120px) and (max-width: 1400px) { .ak-local-nav { display: none; } .ak-keyart { --_over: var(--ak-header-h); } }   /* 这一档二级栏只剩「本页目录」，首页没有它就整条收起 */
 
 /* ── 1. 通用 ── */
-/* 首页整体标了 ak-not-prose（base.css：正文排版规则不进来，链接 color: inherit）。下面这几处要「像正文链接」，自己取链接令牌 */
+/* 首页整体标了 ak-not-prose（base/typography.css：正文排版规则不进来，链接 color: inherit）。下面这几处要「像正文链接」，自己取链接令牌 */
 .mp-link, .mp-site__links a, .mp-section .ak-heading__aside a { color: var(--ak-link); }
 .mp-link:hover, .mp-site__links a:hover, .mp-section .ak-heading__aside a:hover { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; }
 .mp-section { margin-top: var(--ak-space-10); }
@@ -421,7 +415,7 @@
         <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
         <!-- 用户菜单（MW #p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu 卡片。
              卡片 = 用户名抬头 + 两组门户：「界面设置」#p-user-interface-preferences（ULS 的语言切换就在这里——侧栏不再有 Languages 组）· 「个人工具」#p-personal。
-             <1120 时这张卡在 ≡ 面板里就地展开（skin.css 已写），不再浮出。 -->
+             <1120 时这张卡在 ≡ 面板里就地展开（chrome/responsive.css 已写），不再浮出。 -->
         <div class="ak-dropdown ak-header__user-menu" id="ak-user-menu">
           <details>
             <summary class="ak-btn ak-btn--ghost ak-header__user" title="用户菜单"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></summary>
@@ -458,7 +452,7 @@
   </div>
 </header>
 
-<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、preview/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（skin.css 负外边距，DOM 顺序不变） -->
+<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（chrome/keyart.css 负外边距，DOM 顺序不变） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout">
@@ -469,11 +463,6 @@
       <h3 class="ak-portlet__title">AKDS 预览 · DEMO</h3>
       <ul>
         <li class="is-active"><a href="home.html">首页设计稿</a></li>
-        <li><a href="index.html">基础 · 理念 / 色彩 / 字体 / 装饰</a></li>
-        <li><a href="chrome.html">皮肤骨架 · 页眉与主题接口</a></li>
-        <li><a href="mediawiki.html">MediaWiki 内容样式</a></li>
-        <li><a href="components.html">通用组件</a></li>
-        <li><a href="arknights.html">方舟组件</a></li>
         <li><a href="operator.html">干员页样例（陈）</a></li>
         <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
       </ul>

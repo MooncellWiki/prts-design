@@ -17,13 +17,13 @@ hiddencats: 对原文有修正的页面
 <script>window.RLQ = { push: function (item) { (Array.isArray(item) ? item[1] : item)(); } };</script>   <!-- MW 资源加载队列 RLQ 的两行替身：Widget 脚本用 RLQ.push(['jquery', fn]) 等 jQuery 就绪，这里 jQuery 已同步加载，直接执行 -->
 <style>
 /* ═══ 干员页 —— 页面自己的东西（生产环境 = 各模板的 TemplateStyles：Template:异格干员/styles.css、Template:属性/styles.css、Template:人员档案/styles.css …）
-   舞台 = 现网 Widget:CharinfoV2 原样（CSS / JS 在 vendor/charinfo/），游戏数据组件（技能表 / 天赋表 / 模组卡 / 档案 / 语音 / 密录…）在 src/arknights.css；这里只剩几个页面级的排布 + 舞台与皮肤的接缝 ═══ */
+   舞台 = 现网 Widget:CharinfoV2 原样（CSS / JS 在 vendor/charinfo/），游戏数据组件（技能表 / 天赋表 / 模组卡 / 档案 / 语音 / 密录…）在 src/arknights/；这里只剩几个页面级的排布 + 舞台与皮肤的接缝 ═══ */
 /* 舞台接缝——不改 Widget 的 CSS / JS，只处理它与皮肤骨架的几处接口（生产环境放 Widget 自己的 <style> 或皮肤的 site 样式里） */
 .charinfo-container { zoom: var(--op-stage-zoom, 1); margin: 0 0 var(--ak-space-4); line-height: 1.6; }   /* 1.6 = Vector 正文行高：Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点 */   /* 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着）；正文列比它窄时整块 zoom——zoom 不像 transform 那样改变 position:fixed 的包含块，Widget 的「全屏查看」（把 wrapper 设成 fixed 铺满视口）照常；系数由页脚脚本按正文列宽算 */
 .charinfo-container:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1; }   /* 全屏查看时不缩 */
 .charinfo-container > .charinfo-wrapper[style*="fixed"] { z-index: calc(var(--ak-z-modal) + 1) !important; }   /* 全屏层要压过皮肤页眉：Widget 内联的 999 只够压 Vector（它顺手把 #mw-panel / #mw-head 压下去，皮肤里没这两个 id） */
 body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查看立绘」全屏层同理 */
-.charinfo-container img, .charimg-m img { max-width: none; }   /* 皮肤 base.css 的 img { max-width: 100%; height: auto } 不进舞台：HUD 图标靠 height="30px" 这类属性定尺寸，height:auto 会把它们放回原图的 32px */
+.charinfo-container img, .charimg-m img { max-width: none; }   /* 皮肤 base/media.css 的 img { max-width: 100%; height: auto } 不进舞台：HUD 图标靠 height="30px" 这类属性定尺寸，height:auto 会把它们放回原图的 32px */
 .charinfo-container img[height="30px"] { height: 30px; } .charinfo-container img[height="22px"] { height: 22px; } .charinfo-container img[height="16px"] { height: 16px; }
 .charinfo-container img[height="100%"], .charimg-m img[height="100%"] { height: 100%; }
 /* 异格一览（{{异格干员}}）：左黑标 + 原型 / 异格头像卡 + 右侧说明 */

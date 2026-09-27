@@ -7,17 +7,11 @@
 <html lang="zh-CN" class="client-nojs skin-theme-clientpref-night" data-default-theme="dark">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；skin.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
+<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；chrome/responsive.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{title}}</title>
-<link rel="stylesheet" href="../src/fonts.css">   <!-- 自托管 web 字体（Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono，OFL；scripts/fetch-fonts.py 生成） -->
-<link rel="stylesheet" href="../src/tokens.css">
-<link rel="stylesheet" href="../src/base.css">
-<link rel="stylesheet" href="../src/components.css">
-<link rel="stylesheet" href="../src/arknights.css">
-<link rel="stylesheet" href="../src/skin.css">
-<link rel="stylesheet" href="../src/utilities.css">
-<link rel="stylesheet" href="demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖 tokens.css §2d 的接口变量 -->
+<link rel="stylesheet" href="../src/index.css">   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
+<link rel="stylesheet" href="../src/chrome/demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖令牌 §2d 的接口变量 -->
 <style>
 /* preview-only helpers */
 .demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
@@ -115,7 +109,7 @@
         <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
         <!-- 用户菜单（MW #p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu 卡片。
              卡片 = 用户名抬头 + 两组门户：「界面设置」#p-user-interface-preferences（ULS 的语言切换就在这里——侧栏不再有 Languages 组）· 「个人工具」#p-personal。
-             <1120 时这张卡在 ≡ 面板里就地展开（skin.css 已写），不再浮出。 -->
+             <1120 时这张卡在 ≡ 面板里就地展开（chrome/responsive.css 已写），不再浮出。 -->
         <div class="ak-dropdown ak-header__user-menu" id="ak-user-menu">
           <details>
             <summary class="ak-btn ak-btn--ghost ak-header__user" title="用户菜单"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></summary>
@@ -152,7 +146,7 @@
   </div>
 </header>
 
-<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、preview/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（skin.css 负外边距，DOM 顺序不变） -->
+<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（chrome/keyart.css 负外边距，DOM 顺序不变） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout">

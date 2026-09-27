@@ -169,7 +169,7 @@
   if (prog) window.addEventListener('scroll', () => { const d = document.documentElement; prog.style.setProperty('--_p', (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%'); }, { passive: true });
 
   /* ── 目录浮层收尾（开合本身是纯 CSS 的 .ak-toc-cb）：
-   *  · 把 checkbox 状态镜像到 html.ak-toc-open —— 这是浮层显示的主路径（skin.css 不再只靠 body:has() 桥接，没有 :has() 的旧内核也是真浮层）；
+   *  · 把 checkbox 状态镜像到 html.ak-toc-open —— 这是浮层显示的主路径（chrome/responsive.css 不再只靠 body:has() 桥接，没有 :has() 的旧内核也是真浮层）；
    *  · 开着时锁页面滚动（VitePress 的 outline dropdown 同样锁，免得浮层内滚到头把页面带走）；
    *  · 跳转后 / 点浮层外 / Esc / 回到 ≥1400（目录回右侧导轨，锁必须撤）收起 ── */
   const tocCb = $('.ak-toc-cb');
@@ -239,7 +239,7 @@
 
   /* ── Collapsible panels（侧栏门户折叠 / 多层树 / 悬停飞出 → 见 ../src/sidebar-tree.js，皮肤与预览共用） ── */
   document.addEventListener('click', e => {
-    const h = e.target.closest('.ak-panel--collapsible > .ak-panel__head'); if (h) h.parentElement.classList.toggle('is-collapsed');
+    const h = e.target.closest('.ak-panel--collapsible > .ak-panel__head'); if (h && !h.closest('[data-no-toggle]')) h.parentElement.classList.toggle('is-collapsed');
     const mwt = e.target.closest('.mw-collapsible-toggle'); if (mwt) { const c = mwt.closest('.mw-collapsible'); c.classList.toggle('mw-collapsed'); const a = $('a', mwt); if (a) a.textContent = c.classList.contains('mw-collapsed') ? '展开' : '折叠'; }
   });
 
