@@ -35,5 +35,8 @@
 @media (max-width: 639px) { .ak-hide-mobile { display: none !important; } }
 @media (min-width: 640px) { .ak-only-mobile { display: none !important; } }
 @media (max-width: 1119px) { .ak-hide-tablet { display: none !important; } }
+/* 按输入方式而非视口分叉的内容（「悬停查看」/「点击查看」）：触屏 = 无悬停能力的粗指针 */
+@media (hover: none) and (pointer: coarse) { .ak-hide-touch { display: none !important; } }
+@media not all and (hover: none) and (pointer: coarse) { .ak-only-touch { display: none !important; } }
 .ak-aspect-16-9 { aspect-ratio: 16/9; } .ak-aspect-1 { aspect-ratio: 1; } .ak-aspect-3-4 { aspect-ratio: 3/4; } .ak-aspect-21-9 { aspect-ratio: 21/9; }
 .ak-object-cover { object-fit: cover; }
