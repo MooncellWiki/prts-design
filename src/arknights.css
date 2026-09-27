@@ -375,6 +375,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-kv { display: grid; grid-template-columns: max-content 1fr; gap: 0; font-size: var(--ak-fs-sm); border-top: 1px solid var(--ak-border); }
 .ak-kv > dt { padding: 6px 12px 6px 0; margin: 0; align-content: center; color: var(--ak-fg-muted); font-weight: 600; border-bottom: 1px solid var(--ak-border-subtle); }
 .ak-kv > dd { padding: 6px 0 6px 12px; margin: 0; align-content: center; border-bottom: 1px solid var(--ak-border-subtle); border-left: 1px solid var(--ak-border-subtle); }
+.ak-kv > dd > :last-child { margin-bottom: 0; }   /* 格子里最后一个块（ul / p / dl）不带正文的下外边距：base.css 的 .mw-parser-output ul:not(:where(…)) 是 (0,1,1)，页面上挂个 .ak-m-0 (0,1,0) 压不过它，「分支信息」格底下就多出 16px */
 .ak-kv--boxed { border: 1px solid var(--ak-border); }
 .ak-kv--boxed > dt { padding-left: 12px; text-align: center; background: var(--ak-bg-surface-2); }   /* 框住的那版：表头居中（同现网 th）；不带框的档案版标签列保持左对齐 */
 
