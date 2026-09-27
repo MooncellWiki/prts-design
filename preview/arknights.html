@@ -56,6 +56,8 @@
   <symbol id="i-star" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 3.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.8l6.1-.7z"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.5 1.5M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.5-1.5"/></symbol>
   <symbol id="i-linkin" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12h12m-4-4 4 4-4 4M18 4h3v16h-3"/></symbol>
+  <symbol id="i-arrow-ne" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M7 17 17 7M9 7h8v8"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM6 11a6 6 0 0 0 12 0M12 17v4m-4 0h8"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/></symbol>
   <symbol id="i-print" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 8V3h10v5M5 8h14a2 2 0 0 1 2 2v6h-4v-3H7v3H3v-6a2 2 0 0 1 2-2zm2 8v5h10v-5"/></symbol>
   <symbol id="i-upload" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 16V4m-5 5 5-5 5 5M4 20h16"/></symbol>
@@ -334,23 +336,35 @@
 </div>
 <div class="demo"><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_017_huang_2.png" alt=""></span><span><span class="ak-op-row__name">煌</span><span class="ak-op-row__meta"><span class="ak-rarity ak-rarity--r6 ak-rarity--sm"><i></i><i></i><i></i><i></i><i></i><i></i></span> 强攻手</span></span></a><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_134_ifrit_2.png" alt=""></span><span><span class="ak-op-row__name">伊芙利特</span><span class="ak-op-row__meta">阵法术师</span></span></a><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_2014_nian_2.png" alt=""></span><span><span class="ak-op-row__name">年</span><span class="ak-op-row__meta">铁卫</span></span></a></div>
 <h3>道具与材料 · Item / Materials</h3>
+<div class="ak-item-list ak-mb-2">
+  <span class="ak-item" data-ak-tip="源岩"><img src="assets/item/framed/30011.png" alt=""><span class="ak-item__count">6</span></span>
+  <span class="ak-item" data-ak-tip="固源岩"><img src="assets/item/framed/30012.png" alt=""><span class="ak-item__count">12</span></span>
+  <span class="ak-item" data-ak-tip="固源岩组"><img src="assets/item/framed/30013.png" alt=""><span class="ak-item__count">5</span></span>
+  <span class="ak-item" data-ak-tip="提纯源岩"><img src="assets/item/framed/30014.png" alt=""><span class="ak-item__count">3</span></span>
+  <span class="ak-item" data-ak-tip="D32钢"><img src="assets/item/framed/30135.png" alt=""><span class="ak-item__count is-short">2</span></span>
+  <span class="ak-item" data-ak-tip="至纯源石"><img src="assets/item/framed/4002.png" alt=""><span class="ak-item__count">1</span></span>
+  <span class="ak-item" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt=""><span class="ak-item__count">30K</span></span>
+  <span class="ak-item" data-ak-tip="近卫双芯片"><img src="assets/item/framed/3223.png" alt=""><span class="ak-item__count">4</span></span>
+  <span class="ak-item" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt=""><span class="ak-item__count">4</span></span>
+  <span class="ak-item" data-ak-tip="技巧概要·卷3"><img src="assets/item/framed/3303.png" alt=""><span class="ak-item__count">8</span></span>
+  <span class="ak-item ak-item--sm" data-ak-tip="技巧概要·卷2"><img src="assets/item/framed/3302.png" alt=""><span class="ak-item__count">8</span></span>
+  <span class="ak-item ak-item--lg" data-ak-tip="高级作战记录"><img src="assets/item/framed/2004.png" alt=""><span class="ak-item__count">99+</span></span>
+  <span class="ak-item is-disabled" data-ak-tip="RMA70-24"><img src="assets/item/framed/30104.png" alt=""><span class="ak-item__count">0</span></span>
+  <span class="ak-item-inline"><span class="ak-item"><img src="assets/item/framed/4001.png" alt=""></span>×30000</span>
+</div>
+<p class="ak-fs-xs ak-fg-muted ak-mt-0 ak-mb-3">图直接用现网拼好的 <code>道具_带框_&lt;名&gt;.png</code>（游戏底图 + 图标，现网 <code>{{道具图标}}</code> 输出的那张，皮肤不自己叠框），数量是骑在框沿上的描边数字（同现网 <code>.prts-item-quantity-label</code>，晕色跟主题）；<code>.is-short</code> 数量不足红字，<code>.is-disabled</code> 去色，<code>--sm</code> 40 / 默认 56 / <code>--lg</code> 76，行内 <code>.ak-item-inline</code> 22。</p>
+<div class="ak-overline ak-mb-2">--bare · 只有裸图标时：底框由 CSS 按 data-rarity 1–6 给（白 / 绿 / 蓝 / 紫 / 金 / 特殊）</div>
 <div class="ak-item-list ak-mb-3">
-  <span class="ak-item" data-rarity="4" data-ak-tip="龙门币"><img src="assets/item/4001.png" alt=""><span class="ak-item__count">30K</span></span>
-  <span class="ak-item" data-rarity="2" data-ak-tip="固源岩"><img src="assets/item/30012.png" alt=""><span class="ak-item__count">12</span></span>
-  <span class="ak-item" data-rarity="3" data-ak-tip="固源岩组"><img src="assets/item/30013.png" alt=""><span class="ak-item__count">5</span></span>
-  <span class="ak-item" data-rarity="4" data-ak-tip="提纯源岩"><img src="assets/item/30014.png" alt=""><span class="ak-item__count">3</span></span>
-  <span class="ak-item" data-rarity="5" data-ak-tip="D32钢"><img src="assets/item/30135.png" alt=""><span class="ak-item__count is-short">2</span></span>
-  <span class="ak-item" data-rarity="5" data-ak-tip="近卫双芯片"><img src="assets/item/3223.png" alt=""><span class="ak-item__count">4</span></span>
-  <span class="ak-item" data-rarity="5" data-ak-tip="模组数据块"><img src="assets/item/mod_unlock_token.png" alt=""><span class="ak-item__count">4</span></span>
-  <span class="ak-item" data-rarity="4" data-ak-tip="技巧概要·卷3"><img src="assets/item/3303.png" alt=""><span class="ak-item__count">8</span></span>
-  <span class="ak-item ak-item--sm" data-rarity="3"><img src="assets/item/3302.png" alt=""><span class="ak-item__count">8</span></span>
-  <span class="ak-item ak-item--lg" data-rarity="5"><img src="assets/item/2004.png" alt=""><span class="ak-item__count">99+</span></span>
-  <span class="ak-item is-disabled" data-rarity="4"><img src="assets/item/30104.png" alt=""><span class="ak-item__count">0</span></span>
-  <span class="ak-item-inline"><span class="ak-item" data-rarity="4"><img src="assets/item/4001.png" alt=""></span>×30000</span>
+  <span class="ak-item ak-item--bare" data-rarity="1" data-ak-tip="源岩"><img src="assets/item/30011.png" alt=""><span class="ak-item__count">6</span></span>
+  <span class="ak-item ak-item--bare" data-rarity="2" data-ak-tip="固源岩"><img src="assets/item/30012.png" alt=""><span class="ak-item__count">12</span></span>
+  <span class="ak-item ak-item--bare" data-rarity="3" data-ak-tip="固源岩组"><img src="assets/item/30013.png" alt=""><span class="ak-item__count">5</span></span>
+  <span class="ak-item ak-item--bare" data-rarity="4" data-ak-tip="提纯源岩"><img src="assets/item/30014.png" alt=""><span class="ak-item__count">3</span></span>
+  <span class="ak-item ak-item--bare" data-rarity="5" data-ak-tip="D32钢"><img src="assets/item/30135.png" alt=""><span class="ak-item__count">2</span></span>
+  <span class="ak-item ak-item--bare" data-rarity="6" data-ak-tip="至纯源石"><img src="assets/item/4002.png" alt=""><span class="ak-item__count">1</span></span>
 </div>
 <div class="ak-materials ak-mb-4">
-  <span class="ak-materials__label"><img src="assets/elite/elite_0.png" alt="">→<img src="assets/elite/elite_1.png" alt=""> 精英一</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/4001.png" alt=""><span class="ak-item__count">30K</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/3221.png" alt=""><span class="ak-item__count">5</span></span><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/30012.png" alt=""><span class="ak-item__count">12</span></span><span class="ak-item ak-item--sm" data-rarity="2"><img src="assets/item/30062.png" alt=""><span class="ak-item__count">3</span></span></span>
-  <span class="ak-materials__label"><img src="assets/elite/elite_1.png" alt="">→<img src="assets/elite/elite_2.png" alt=""> 精英二</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/4001.png" alt=""><span class="ak-item__count">180K</span></span><span class="ak-item ak-item--sm" data-rarity="5"><img src="assets/item/3223.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="5"><img src="assets/item/30115.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-rarity="4"><img src="assets/item/30074.png" alt=""><span class="ak-item__count">6</span></span></span>
+  <span class="ak-materials__label"><img src="assets/elite/elite_0.png" alt="">→<img src="assets/elite/elite_1.png" alt=""> 精英一</span><span class="ak-item-list"><span class="ak-item ak-item--sm"><img src="assets/item/framed/4001.png" alt=""><span class="ak-item__count">30K</span></span><span class="ak-item ak-item--sm"><img src="assets/item/framed/3221.png" alt=""><span class="ak-item__count">5</span></span><span class="ak-item ak-item--sm"><img src="assets/item/framed/30012.png" alt=""><span class="ak-item__count">12</span></span><span class="ak-item ak-item--sm"><img src="assets/item/framed/30062.png" alt=""><span class="ak-item__count">3</span></span></span>
+  <span class="ak-materials__label"><img src="assets/elite/elite_1.png" alt="">→<img src="assets/elite/elite_2.png" alt=""> 精英二</span><span class="ak-item-list"><span class="ak-item ak-item--sm"><img src="assets/item/framed/4001.png" alt=""><span class="ak-item__count">180K</span></span><span class="ak-item ak-item--sm"><img src="assets/item/framed/3223.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm"><img src="assets/item/framed/30115.png" alt=""><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm"><img src="assets/item/framed/30074.png" alt=""><span class="ak-item__count">6</span></span></span>
 </div>
 <h3>技能 · Skill / 天赋 · Talent</h3>
 <div class="ak-flex-col ak-gap-3 ak-mb-3">
@@ -425,7 +439,8 @@
       <div><div class="ak-overline ak-mb-2">阵法 · x-4</div><div class="ak-range" style="--cols:3"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="self"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
       <div><div class="ak-overline ak-mb-2">尺寸 · sm / lg</div><div class="ak-flex ak-gap-3 ak-items-end"><div class="ak-range ak-range--sm" style="--cols:2"><i class="self"></i><i class="on"></i></div><div class="ak-range ak-range--lg" style="--cols:2"><i class="self"></i><i class="on"></i></div></div></div>
     </div>
-    <dl class="ak-kv ak-kv--boxed ak-m-0"><dt>代号</dt><dd>陈 <span class="ak-code-id">Ch'en</span></dd><dt>编号</dt><dd><span class="ak-code-id">LM04</span></dd><dt>阵营</dt><dd><span class="ak-camp"><img src="assets/camp/lgd.png" alt="">龙门近卫局</span></dd><dt>标签</dt><dd><span class="ak-tags"><span class="ak-tag ak-tag--outline">近战位</span><span class="ak-tag ak-tag--outline">爆发</span><span class="ak-tag ak-tag--outline">输出</span></span></dd><dt>画师</dt><dd><a href="#">唯@W</a></dd><dt>上线</dt><dd>2019.05.01</dd></dl>
+    <dl class="ak-kv ak-kv--boxed ak-mb-3"><dt>代号</dt><dd>陈 <span class="ak-code-id">Ch'en</span></dd><dt>编号</dt><dd><span class="ak-code-id">LM04</span></dd><dt>阵营</dt><dd><span class="ak-camp"><img src="assets/camp/lgd.png" alt="">龙门近卫局</span></dd><dt>标签</dt><dd><span class="ak-tags"><span class="ak-tag ak-tag--outline">近战位</span><span class="ak-tag ak-tag--outline">爆发</span><span class="ak-tag ak-tag--outline">输出</span></span></dd><dt>画师</dt><dd><a href="#">唯@W</a></dd><dt>上线</dt><dd>2019.05.01</dd></dl>
+    <dl class="ak-kv ak-kv--inline ak-m-0"><div><dt>所属势力</dt><dd><a href="#">炎-龙门</a> <span class="ak-fg-subtle">›</span> <a href="#">龙门近卫局</a></dd></div><div><dt>隐藏势力</dt><dd><i class="ak-fg-muted">无</i></dd></div><div><dt>获得方式</dt><dd><span class="ak-tag">公开招募</span> <span class="ak-tag">中坚寻访</span></dd></div></dl>
   </div>
 </div>
 <h3>模组 / 语音 / 档案 / 剧情</h3>
