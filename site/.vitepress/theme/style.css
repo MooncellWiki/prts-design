@@ -22,7 +22,7 @@ html.dark {
   --vp-c-default-soft: var(--ak-bg-surface-3);
   --vp-code-bg: var(--ak-bg-surface-3);
   --vp-code-color: var(--ak-fg);
-  --vp-code-block-bg: var(--ak-bg-surface-2);
+  --vp-code-block-bg: var(--ak-bg-inset);   /* 同皮肤 pre；surface-2 在亮色下与画布同色 */
   --vp-sidebar-bg-color: var(--ak-bg-canvas);
   --vp-button-brand-text: var(--ak-accent-fg);
   --vp-button-brand-hover-text: var(--ak-accent-fg);
@@ -66,6 +66,11 @@ html.dark {
 .VPNavBar .divider-line { background: var(--ak-chrome-line) !important; }
 .VPNavBarTitle .title { font-family: var(--ak-font-display); font-weight: 800; letter-spacing: .08em; }
 .VPNavBarTitle .logo { filter: none; }
+/* 搜索触发器：同 .ak-search-trigger——场底 + 细框（默认 --vp-c-bg-alt 在顶栏里就是栏底色，融成一片） */
+@media (min-width: 768px) {
+  .VPNav .DocSearch-Button { background: var(--ak-chrome-field); border-color: var(--ak-chrome-line); }
+  .VPNav .DocSearch-Button:hover { background: var(--ak-chrome-field); border-color: var(--ak-chrome-line-strong); }
+}
 
 /* 直角：方舟不做圆角 */
 .vp-doc div[class*="language-"],
@@ -73,6 +78,7 @@ html.dark {
 .VPButton, .VPFeature, .VPLocalSearchBox .shell, .DocSearch-Button, .VPNavBarSearch .DocSearch-Button, .VPSwitch,
 .VPSocialLink, .VPFlyout .menu, .VPMenu, .vp-doc :not(pre) > code { border-radius: 0 !important; }
 .VPSwitch .check { border-radius: 0 !important; }
+.vp-doc div[class*="language-"] { border: 1px solid var(--ak-border); }   /* 代码块细框，同皮肤 pre */
 
 /* 正文标题：左侧色条（同 wiki 正文 h2） */
 .vp-doc h2 { border-top: 0; margin-top: 48px; padding: 0 0 0 12px; border-left: var(--ak-bar-w) solid var(--ak-accent); line-height: 1.3; }
