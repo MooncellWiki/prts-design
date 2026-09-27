@@ -25,7 +25,7 @@
 ### 1.1 六条原则
 
 1. **Monochrome first** — 大面积黑/白/灰承载信息；青只用于选中、链接、主动作、强调条、文字高亮（`<mark>` / `:target` / 表格当前行都是同一块淡青底）；黄为次强调（稀有度/提示/通知徽标），不做荧光笔；红只表示危险与"NEW/BREAKING"（未读计数不算）。
-2. **Square, not rounded** — `border-radius: 0`，也不做切角 / 斜切 / 斜带；层级与状态用色条、黑白反转、角标三角表达。输入框允许 2px。色条 + 细框的盒子（pre / 消息 / 面板头 / 模组卡 / 弹层顶条 …）用 `border-image` 把色条与 1px 框直角拼接——不同宽度的 border 会被浏览器在角上斜接（miter）出一道小斜边，那也是斜边（`tokens.css` §Shape 有写法）。
+2. **Square, not rounded** — `border-radius: 0`，也不做切角 / 斜切 / 斜带；层级与状态用色条、黑白反转、角标三角表达。输入框允许 2px。例外只有两个圆：单选钮（圆是单选的通用语义）与道具图标 `.ak-item` 的圆框——后者是游戏道具底图（sprite_item_r*）本身，属素材不属 UI 盒子，照游戏 / 现网原样叠图。色条 + 细框的盒子（pre / 消息 / 面板头 / 模组卡 / 弹层顶条 …）用 `border-image` 把色条与 1px 框直角拼接——不同宽度的 border 会被浏览器在角上斜接（miter）出一道小斜边，那也是斜边（`tokens.css` §Shape 有写法）。
 3. **Latin as ornament** — 大写拉丁展示字（Novecento/Bender/Oswald）只做标题旁英文、编号、数值、水印；中文永远用思源黑体，行高 1.7。
 4. **Two canonical themes** — 游戏本身是双色世界（主界面/作战为黑，档案/商店为白灰）。两套主题等价，用 MW 1.43 `skin-theme-clientpref-*` 切换。
 5. **Wiki-native** — 先把 wikitext 产物（标题、表格、TOC、引用、图库、TabberNeue、Cargo）做好，再谈组件；组件是纯 CSS 类，可写进模板/TemplateStyles。
@@ -263,7 +263,7 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 | 只读 `[readonly]` | 底 `--ak-bg-inset`（下沉），边框不变，仍可选中复制。计算器「只显示不编辑」的结果格用它，**不要用 disabled 表示「只是显示」** |
 | 禁用 `:disabled` | 底 `--ak-bg-surface-3`、字 `--ak-fg-disabled`（Safari 需同时写 `-webkit-text-fill-color`）、边 `--ak-border`、`cursor: not-allowed` |
 | 校验失败 | 边 `--ak-danger`，聚焦时环换 `--ak-danger-bg`。触发条件是 `:user-invalid`（用户改过之后才判）或 `aria-invalid="true"`；**不用 `:invalid`**——它一进页面就把 required 空框全标红。设计系统组件另有 `.is-invalid / .is-valid` + `.ak-help--error` 文案 |
-| 勾选 / 单选 | **自绘，裸控件与 `.ak-check` 同一张脸**（`appearance: none`，规则在 base.css 裸控件段；`.ak-check` 只管「控件 + 文字」排布）：18px、2px `--ak-border-strong` 边；勾选框直角，选中 = 主色实底 + 对比色勾（`:indeterminate` = 一横）；**单选是圆**（圆是单选的通用语义，也是整套系统里唯一的圆；不做菱形、不做圆角方），选中 = 主色实底 + 圆点。勾 / 点按百分比画，改 `width/height` 整体缩放（表头里的开关 16px）。禁用 = surface-3 / 选中灰。`accent-color` 仍写着兜底：不认 `appearance: none` 的老 WebView 退回主色原生控件。`vertical-align: middle` 与行内文字中线对齐 |
+| 勾选 / 单选 | **自绘，裸控件与 `.ak-check` 同一张脸**（`appearance: none`，规则在 base.css 裸控件段；`.ak-check` 只管「控件 + 文字」排布）：18px、2px `--ak-border-strong` 边；勾选框直角，选中 = 主色实底 + 对比色勾（`:indeterminate` = 一横）；**单选是圆**（圆是单选的通用语义，也是整套系统里 UI 控件唯一的圆（道具图标 `.ak-item` 的圆框是游戏素材，另算，见 §1.1）；不做菱形、不做圆角方），选中 = 主色实底 + 圆点。勾 / 点按百分比画，改 `width/height` 整体缩放（表头里的开关 16px）。禁用 = surface-3 / 选中灰。`accent-color` 仍写着兜底：不认 `appearance: none` 的老 WebView 退回主色原生控件。`vertical-align: middle` 与行内文字中线对齐 |
 | 滑杆 `type=range` | 保留原生，只上 `accent-color`；要方形滑块用 `.ak-slider` |
 | 数字 `type=number` | `tabular-nums`（改值不跳动）；保留原生 ▲▼ 步进器（Chrome 悬停 / 聚焦时才现身，Firefox 常显）；要一直可见的 − / + 用 `.ak-number` |
 | 下拉 `select` | 自绘箭头：裸 `<select>` 与 `.ak-select` 同一枚 ▾（`--ak-select-arrow`，两条 45° 渐变拼成、颜色随 `--ak-fg-muted`；与下拉按钮的 ▾ 成套），`appearance: none` + 右内边距 30px（表格里 26px）；原生箭头各浏览器长得不一样、与自绘的不成套。`select[multiple]` 不画箭头、上下 4px 内边距 |

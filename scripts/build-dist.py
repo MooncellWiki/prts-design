@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bundle preview/*.html into self-contained single files (inline CSS/JS, images → data URIs) under dist/.
 Images are downscaled (max 256px) to keep the bundle small."""
-import re, base64, io, pathlib, sys, json
+import re, base64, io, os, pathlib, sys, json
 from PIL import Image
 root = pathlib.Path(__file__).resolve().parent.parent
 prev = root / 'preview'
@@ -46,6 +46,8 @@ def css_inline(path):
     # vendor/ 下第三方 css 里相对自身的 url(img/…)（现网 charinfo 样式表引的 HUD 图标）
     if path.is_relative_to(prev / 'vendor'):
         css = re.sub(r'url\((img/[^)"\']+)\)', lambda m: 'url(%s)' % img_uri(str((path.parent / m.group(1)).relative_to(prev))), css)
+    else:   # src/*.css 里相对样式表自身的 url("img/…")（src/img/：道具稀有度底框 183px，不缩）
+        css = re.sub(r'url\("(img/[^"]+)"\)', lambda m: 'url("%s")' % img_uri(os.path.relpath(path.parent / m.group(1), prev)), css)
     return css
 for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全部打包（_src/ 是页面源，不在此列）
     html = (prev / name).read_text(encoding='utf-8')

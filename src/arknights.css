@@ -189,18 +189,34 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
 .ak-op-row__name { font-weight: 700; line-height: 1.2; }
 .ak-op-row__meta { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); display: flex; gap: 6px; align-items: center; }
 
-/* B5. 道具（稀有度框 + 数量） */
-.ak-item { --_s: 56px; position: relative; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); background: var(--ak-bg-surface-2); border: 2px solid var(--ak-r, var(--ak-border-strong)); vertical-align: middle; text-decoration: none; }
-.ak-item > img { width: 88%; height: 88%; object-fit: contain; }
-.ak-item__count { position: absolute; right: -2px; bottom: -2px; padding: 0 5px; min-width: 20px; height: 18px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font: 700 11px/1 var(--ak-font-label); border: 1px solid var(--ak-bg-surface); }
-.ak-item__count.is-short { background: var(--ak-red-700); color: #fff; }
-.ak-item--sm { --_s: 40px; } .ak-item--sm .ak-item__count { height: 15px; font-size: 10px; min-width: 16px; }
+/* B5. 道具（游戏道具图标：底框 + 图标 + 数量角标）
+ *  默认直接用现网拼好的图：prts.wiki 文件:道具_带框_<名>.png（游戏底图 sprite_item_r* + 图标合成，183×183，全站每个道具都有一张，现网 {{道具图标}} 输出的就是它）——
+ *  <span class="ak-item"><img src="道具_带框_X.png"><span class="ak-item__count">5</span></span>，图占满框，皮肤不自己叠框，与现网 / 游戏内一个像素不差。
+ *  预览页 assets/item/framed/<id>.png 就是从 media.prts.wiki 抓的这批（scripts/fetch-item-framed.py）。
+ *  --bare：手里只有裸图标（torappu item_icon 透明 png：解包数据 / 搜索面板）时的备选——底框由 CSS 按 data-rarity 1–6（白 / 绿 / 蓝 / 紫 / 金 / 特殊，不写 = 白）给，
+ *  src/img/item/bg_N.png = 现网 文件:道具_背景_N.png（即游戏 sprite_item_r1–6，scripts/fetch-item-bg.py），图标压上去占 94%（= 现网合成图的比例）。
+ *  数量角标同现网 .prts-item-quantity-label：压在右下角、骑在框沿上的粗体数字带描边光晕（亮色黑字白晕、暗色白字黑晕，晕色取 --ak-bg-surface 自动跟主题），不再是自己画的方框角标。
+ *  这是整套系统里除单选之外唯一的圆：它不是 UI 盒子而是游戏素材本身（01 §1.1）。尺寸只改 --_s，框 / 图 / 角标字号 / 落点 / 头像全按比例走 */
+.ak-item { --_s: 56px; position: relative; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); vertical-align: middle; text-decoration: none; color: var(--ak-fg); }
+.ak-item > img { width: 100%; height: 100%; object-fit: contain; }
+.ak-item--bare { background: url("img/item/bg_1.png") center / 100% 100% no-repeat; }
+.ak-item--bare[data-rarity="2"] { background-image: url("img/item/bg_2.png"); }
+.ak-item--bare[data-rarity="3"] { background-image: url("img/item/bg_3.png"); }
+.ak-item--bare[data-rarity="4"] { background-image: url("img/item/bg_4.png"); }
+.ak-item--bare[data-rarity="5"] { background-image: url("img/item/bg_5.png"); }
+.ak-item--bare[data-rarity="6"] { background-image: url("img/item/bg_6.png"); }
+.ak-item--bare > img { width: 94%; height: 94%; }
+.ak-item > .ak-item__avatar { position: absolute; left: 20%; top: 18%; width: 50%; height: 50%; }   /* 招聘合同：现网 招聘合同_5.png 底图上留着一个空方框，干员头像叠进去（现网 60px 框里 30px 头像落在 12,11） */
+.ak-item__count { --_halo: var(--ak-bg-surface); position: absolute; right: calc(var(--_s) * .04); bottom: calc(var(--_s) * -.06); font: 700 calc(var(--_s) * .34)/1.1 var(--ak-font-label); white-space: nowrap; color: var(--ak-fg);
+  text-shadow: -1px -1px 0 var(--_halo), 1px -1px 0 var(--_halo), -1px 1px 0 var(--_halo), 1px 1px 0 var(--_halo), -2px -2px 4px var(--_halo), 2px -2px 4px var(--_halo), -2px 2px 4px var(--_halo), 2px 2px 4px var(--_halo); }
+.ak-item__count.is-short { color: var(--ak-red-500); }   /* 数量不足 */
+.ak-item--sm { --_s: 40px; }
 .ak-item--lg { --_s: 76px; }
-.ak-item--round { border-radius: 50%; }
 .ak-item.is-disabled > img { filter: grayscale(1) brightness(.6); }
-.ak-item-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+a.ak-item:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 2px; border-radius: 50%; }   /* 焦点环沿圆框走；圆角只给 outline，盒子本身没有 */
+.ak-item-list { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
 .ak-item-inline { display: inline-flex; align-items: center; gap: 4px; }
-.ak-item-inline .ak-item { --_s: 22px; border-width: 1px; }
+.ak-item-inline .ak-item { --_s: 22px; }
 .ak-item-inline .ak-item__count { display: none; }
 /* 材料表：阶段/技能等级 → 材料 */
 .ak-materials { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; align-items: center; }

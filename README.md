@@ -27,6 +27,7 @@ docs/
   03-mediawiki-integration.md  皮肤落地：skin.json、RL 模块、mustache 结构、clientPrefs 主题、Codex 桥接、TemplateStyles/Lua 用法、迁移路线
 src/
   fonts.css         自托管 web 字体的 @font-face（scripts/fetch-fonts.py 生成；最先加载）
+  img/              CSS 直接引用的游戏素材（item/bg_1–6.png 道具稀有度底框 = prts.wiki 文件:道具_背景_N.png，即游戏 sprite_item_r1–r6，给 .ak-item--bare 裸图标叠框用；scripts/fetch-item-bg.py 抓取；NOTICE.md）
   fonts/            woff2 + 各族 LICENSE / NOTICE：官网同源 Novecento Sans Wide 500–800 · Bender 400/700（ASCII 子集，来源见 NOTICE.md）；OFL 的 Noto Sans SC 可变字重（101 片）· Oswald VF · Chakra Petch 400–700 · JetBrains Mono VF（合计 ≈4.9MB）
   tokens.css        令牌 + 双主题 + 页眉/头图/画布主题接口（§2d）+ Codex/MW 令牌桥接（必须最先加载）
   base.css          .mw-parser-output / wikitable / toc / tabber / 表单 / diff …（正文排版规则带 prose / not-prose 作用域：组件最外层标 .ak-not-prose 即不受影响，规范 §1.3）
@@ -38,9 +39,9 @@ src/
   search-palette.js 悬浮搜索面板核心（触发器替换 / 分组结果 / 命令模式 / 键盘 / 最近访问；数据源由调用方注入，皮肤与预览共用）
   utilities.css     工具类
   index.css         本地汇总入口
-skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源：REST 标题搜索 / 动作 / 分类 / 用户 / 文件）（CSS、fonts/、sidebar-tree.js、search-palette.js 为 src 的符号链接）· i18n
+skin/               MediaWiki 皮肤骨架：skin.json · templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源：REST 标题搜索 / 动作 / 分类 / 用户 / 文件）（CSS、fonts/、img/、sidebar-tree.js、search-palette.js 为 src 的符号链接）· i18n
 tokens/tokens.json  机器可读令牌（scripts/export-tokens.py 生成）
-preview/            预览站（vendor/swiper/ 为首页轮播用的 Swiper 11，MIT；vendor/charinfo/ 为现网 Widget:CharinfoV2 的静态文件快照——两份 CSS / charinfo · charId · charVoice 三份 JS / charname 字体 / HUD 图标 / crypto-js，scripts/fetch-charinfo.py 钉版本抓取；vendor/jquery/ 为它要的 jQuery 3.7.1（= MW 1.43）；各见其 NOTICE.md）：home（首页设计稿）/ index（基础）/ chrome / mediawiki / components / arknights / operator 七页，都是 scripts/build-preview.py 从 _src/ 生成的（_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具/技能/头像——profession/ 下大号 hub 图标之外另有 icon_*.png：游戏头像 / 半身像角上那套 26px 小职业图标（= prts.wiki 现网 图标_职业_*.png），干员卡 `.ak-op-card__prof` 该用它；keyart/ 为罗德岛主界面昼夜背景做的头图 + 罗德岛三角章站标；mainpage/ 为首页设计稿的素材——现网轮播横幅（media.prts.wiki，压到 960 宽）、12 个入口图标（现网 Mpbuttons 雪碧图切开）、亮点干员头像、家具图、module/ 游戏模组类型小图标（现网 模组类型_*_小图.png，已剥掉原图的低透明度光晕并裁到字形）；badge/ 为 prts.wiki 现网页脚徽章，badge/mono/ 为 MW / SMW / CC 三枚通用徽章的白描版；charinfo/ 为先前皮肤化舞台草案（src/charinfo.css）用的素材——场景图（Bg_default / Bg_skin）、陈的四张立绘、龙门近卫局 logo、白线稿 UI 图标、时装头像；舞台改成原样跑现网 Widget 后立绘等由脚本从 media.prts.wiki 拉，这批暂不被任何页面引用；module/ 为陈的两个模组图（torappu uniequip_img）与 SWO-X / SWO-Y / ORIGINAL 类型图标）
+preview/            预览站（vendor/swiper/ 为首页轮播用的 Swiper 11，MIT；vendor/charinfo/ 为现网 Widget:CharinfoV2 的静态文件快照——两份 CSS / charinfo · charId · charVoice 三份 JS / charname 字体 / HUD 图标 / crypto-js，scripts/fetch-charinfo.py 钉版本抓取；vendor/jquery/ 为它要的 jQuery 3.7.1（= MW 1.43）；各见其 NOTICE.md）：home（首页设计稿）/ index（基础）/ chrome / mediawiki / components / arknights / operator 七页，都是 scripts/build-preview.py 从 _src/ 生成的（_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js（搜索面板演示数据：干员/道具本地索引 + 假页面）+ demo-theme.css（示例活动主题：只覆盖接口变量）+ assets/（torappu 解包的游戏图标：职业/精英/潜能/专精/稀有度/势力/道具（item/：torappu 裸图标 + manifest.json；item/framed/ 为现网拼好的 道具_带框_*.png，.ak-item 默认用它，scripts/fetch-item-framed.py 抓）/技能/头像——profession/ 下大号 hub 图标之外另有 icon_*.png：游戏头像 / 半身像角上那套 26px 小职业图标（= prts.wiki 现网 图标_职业_*.png），干员卡 `.ak-op-card__prof` 该用它；keyart/ 为罗德岛主界面昼夜背景做的头图 + 罗德岛三角章站标；mainpage/ 为首页设计稿的素材——现网轮播横幅（media.prts.wiki，压到 960 宽）、12 个入口图标（现网 Mpbuttons 雪碧图切开）、亮点干员头像、家具图、module/ 游戏模组类型小图标（现网 模组类型_*_小图.png，已剥掉原图的低透明度光晕并裁到字形）；badge/ 为 prts.wiki 现网页脚徽章，badge/mono/ 为 MW / SMW / CC 三枚通用徽章的白描版；charinfo/ 为先前皮肤化舞台草案（src/charinfo.css）用的素材——场景图（Bg_default / Bg_skin）、陈的四张立绘、龙门近卫局 logo、白线稿 UI 图标、时装头像；舞台改成原样跑现网 Widget 后立绘等由脚本从 media.prts.wiki 拉，这批暂不被任何页面引用；module/ 为陈的两个模组图（torappu uniequip_img）与 SWO-X / SWO-Y / ORIGINAL 类型图标）
 dist/               单文件打包（图片 + 拉丁字体内联，思源黑体指回 ../src/fonts/；scripts/build-dist.py 生成）
 scripts/            fetch-fonts.py（拉字体、生成 src/fonts.css）· export-tokens.py · build-preview.py（_src → preview/*.html）· build-dist.py · build-site.sh（组装 GitHub Pages 站点）
 ```
@@ -70,6 +71,8 @@ scripts/            fetch-fonts.py（拉字体、生成 src/fonts.css）· expor
 ```bash
 python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → src/fonts/ + src/fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/export-tokens.py                       # tokens.css → tokens/tokens.json
+python3 scripts/fetch-item-framed.py                   # 现网拼好的道具图 道具_带框_<名>.png → preview/assets/item/framed/<id>.png（扫各页用到的 id，manifest 查名，按文件名 md5 算 media 路径；已有的跳过，--force 重抓）
+python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度底框（prts.wiki 文件:道具_背景_1–6.png，钉 media 路径）→ src/img/item/bg_1–6.png（.ak-item--bare 用）
 python3 scripts/fetch-charinfo.py                      # 现网 Widget:CharinfoV2 的 CSS / JS / 字体 / HUD 图标 + jQuery → preview/vendor/{charinfo,jquery}/（版本号钉在脚本里；charVoice 只留 --chars 指定的干员）
 python3 scripts/build-preview.py                       # preview/_src/{skeleton.html, pages/*.html} → preview/*.html（改了骨架或任一页都要跑）
 python3 scripts/build-dist.py                          # preview/*.html → dist（需要 Pillow）

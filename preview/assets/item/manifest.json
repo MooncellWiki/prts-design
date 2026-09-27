@@ -388,5 +388,20 @@
   "name": "数据增补仪",
   "iconId": "mod_update_token_2",
   "rarity": "TIER_5"
+ },
+ "7001": {
+  "name": "招聘合同",
+  "iconId": "RECRUIT_TICKET",
+  "rarity": "TIER_6"
+ },
+ "p_char_010_chen": {
+  "name": "陈的信物",
+  "iconId": "p_char_010_chen",
+  "rarity": "TIER_5"
+ },
+ "class_p_char_010_chen": {
+  "name": "陈的中坚信物",
+  "iconId": "class_p_char_010_chen",
+  "rarity": "TIER_5"
  }
 }
