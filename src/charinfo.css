@@ -197,7 +197,7 @@
 .charimg-m .charimg-m-close::after { transform: translate(-50%, -50%) rotate(-45deg); }
 
 /* ═══ 13. 窄屏：舞台整体按容器缩小（--charinfo-scale），HUD 面板在 0.3–0.5 倍下读不清——只留阶段页签与名字牌并放大回来，
- *         其余信息由舞台下方正文流里的身份栏（干员页的 .op-ident）承担；画师 / CV / BGM 等交互在手机上进「看图模式」的替身 .charimg-m ═══ */
+ *         其余信息（职业 / 分支 / 标签 / 画师 / CV）在手机上没了着落——干员页原先兜底的身份栏键值表已删（与桌面 HUD 复读），这份草案真要接入得给手机版另想 HUD 收纳；画师 / CV / BGM 等交互在手机上进「看图模式」的替身 .charimg-m ═══ */
 @media (max-width: 639px) {
   .charinfo-wrapper .paintercv-wrapper, .charinfo-wrapper .bottom-btns, .charinfo-wrapper .music-btn, .charinfo-wrapper .charvoice-wrapper, .charinfo-wrapper .char-logo { display: none; }
   .charinfo-wrapper .top-btns { transform: scale(2); transform-origin: 0 0; }
