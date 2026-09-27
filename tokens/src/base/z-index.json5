@@ -1,0 +1,15 @@
+{
+  layer: {
+    "z-index": {
+      $description: "Z-index",
+      $type: "number",
+      "z-dropdown": { $value: "100" },
+      "z-sticky": { $value: "200" },
+      "z-header": { $value: "1000" },
+      "z-overlay": { $value: "1500" },
+      "z-modal": { $value: "2000" },
+      "z-toast": { $value: "3000" },
+      "z-tooltip": { $value: "4000" },
+    },
+  },
+}

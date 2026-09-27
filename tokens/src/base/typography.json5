@@ -1,0 +1,56 @@
+{
+  typography: {
+    font: {
+      $description: "Typography —— 每条链的前两段都由 fonts.css 自托管（人人一致，也是「上线效果」）：\n① 官网同源的 Novecento Sans Wide / Bender（ASCII 子集：· » — × ° 等非 ASCII 会逐字落到 ②）\n② OFL 的 Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono\n之后是装机备选 → 系统字。fonts.css 没加载（Gadget 关掉 / 离线单文件）时自然退到后两段。",
+      $type: "fontFamily",
+      "font-body": {
+        $value: "\"Source Han Sans SC\", \"Noto Sans SC\", \"Noto Sans CJK SC\", \"PingFang SC\", \"HarmonyOS Sans SC\", \"Microsoft YaHei\", system-ui, -apple-system, sans-serif",
+      },
+      "font-display": {
+        $value: "\"Novecento Sans Wide\", \"Novecentosanswide-Bold\", \"Bender\", \"Oswald\", \"Michroma\", \"Arial Narrow\", system-ui, sans-serif",
+        $description: "拉丁展示字（大写）：Novecento 500–800 → Bender → Oswald 接非 ASCII",
+      },
+      "font-label": {
+        $value: "\"Bender\", \"Bender-Bold\", \"Chakra Petch\", \"Rajdhani\", \"Saira\", \"Oswald\", system-ui, sans-serif",
+        $description: "HUD 标签 / 数值：Bender 400/700 → Chakra Petch 接非 ASCII",
+      },
+      "font-condensed": {
+        $value: "\"Oswald\", \"Roboto Condensed\", \"Arial Narrow\", sans-serif",
+        $description: "自托管 Oswald 200–700",
+      },
+      "font-mono": {
+        $value: "\"JetBrains Mono\", \"SF Mono\", Menlo, Consolas, \"Liberation Mono\", monospace",
+        $description: "自托管 JetBrains Mono 100–800 正 / 斜",
+      },
+    },
+    "font-size": {
+      $description: "字号（rem；注释为 px）",
+      $type: "dimension",
+      "fs-display-xl": { $value: "3.5rem", $description: "56" },
+      "fs-display": { $value: "2.5rem", $description: "40" },
+      "fs-h1": { $value: "2rem", $description: "32" },
+      "fs-h2": { $value: "1.5rem", $description: "24" },
+      "fs-h3": { $value: "1.25rem", $description: "20" },
+      "fs-h4": { $value: "1.0625rem", $description: "17" },
+      "fs-body-lg": { $value: "1.125rem", $description: "18" },
+      "fs-body": { $value: "1rem", $description: "16" },
+      "fs-sm": { $value: "0.875rem", $description: "14" },
+      "fs-xs": { $value: "0.75rem", $description: "12" },
+      "fs-overline": { $value: "0.6875rem", $description: "11" },
+    },
+    "line-height": {
+      $description: "行高",
+      $type: "number",
+      "lh-body": { $value: "1.7", $description: "CJK 正文" },
+      "lh-tight": { $value: "1.25" },
+      "lh-display": { $value: "1.05" },
+    },
+    tracking: {
+      $description: "字距",
+      $type: "dimension",
+      "tracking-caps": { $value: "0.08em" },
+      "tracking-overline": { $value: "0.14em" },
+      "tracking-display": { $value: "-0.02em" },
+    },
+  },
+}

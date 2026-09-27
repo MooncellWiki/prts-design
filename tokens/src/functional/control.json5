@@ -1,0 +1,10 @@
+{
+  control: {
+    "select-arrow": {
+      $description: "下拉箭头 ▾：裸 <select> 与 .ak-select 同一枚（两条 45° 渐变拼成实心三角，颜色随主题的 --ak-fg-muted）",
+      "select-arrow": {
+        $value: "linear-gradient(45deg, transparent 50%, {theme.foreground.fg-muted} 50%), linear-gradient(135deg, {theme.foreground.fg-muted} 50%, transparent 50%)",
+      },
+    },
+  },
+}

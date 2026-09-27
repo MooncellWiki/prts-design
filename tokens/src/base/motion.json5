@@ -1,0 +1,20 @@
+{
+  motion: {
+    duration: {
+      $description: "Motion · 时长",
+      $type: "duration",
+      "dur-instant": { $value: "80ms" },
+      "dur-fast": { $value: "150ms" },
+      "dur-normal": { $value: "250ms" },
+      "dur-slow": { $value: "400ms" },
+    },
+    easing: {
+      $description: "Motion · 缓动",
+      $type: "cubicBezier",
+      ease: { $value: "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+      "ease-in": { $value: "cubic-bezier(0.4, 0, 1, 1)" },
+      "ease-out": { $value: "cubic-bezier(0, 0, 0.2, 1)" },
+      "ease-sharp": { $value: "cubic-bezier(0.4, 0, 0.2, 1)" },
+    },
+  },
+}

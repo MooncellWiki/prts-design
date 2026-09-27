@@ -1,0 +1,12 @@
+{
+  theme: {
+    border: {
+      $type: "color",
+      border: { $value: "{theme.border.border-strong}" },
+    },
+    foreground: {
+      $type: "color",
+      "fg-muted": { $value: "{theme.foreground.fg-secondary}" },
+    },
+  },
+}
