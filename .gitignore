@@ -8,3 +8,4 @@ _verify/
 site/.vitepress/cache/
 site/.vitepress/dist/
 *.tsbuildinfo
+packages/*/dist/

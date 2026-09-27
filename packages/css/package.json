@@ -1,0 +1,21 @@
+{
+  "name": "@mooncellwiki/akds-css",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AKDS 的 CSS 实现：令牌 · MediaWiki 内容样式 · 通用 / 方舟组件 · 皮肤骨架——prts.wiki 皮肤 Skin:Arknights 加载的同一份样式表。不发布 npm（带不可转授的字体与游戏素材），只在工作区内用",
+  "homepage": "https://mooncellwiki.github.io/prts-design/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MooncellWiki/prts-design.git",
+    "directory": "packages/css"
+  },
+  "exports": {
+    ".": "./src/index.css",
+    "./*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "style": "./src/index.css",
+  "sideEffects": [
+    "*.css"
+  ]
+}

@@ -18,7 +18,7 @@ const root = resolve(import.meta.dirname, '../..');
 const outDir = join(root, '_verify');
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const PAGES = ['home', 'operator'];   // 5 张展示页（index / chrome / mediawiki / components / arknights）已退役；_verify/base 里还有它们的旧快照
-const DIR = process.env.PAGES_DIR ?? 'preview';   // PAGES_DIR=dist 拍单文件版（须是仓库顶层目录：单文件版里的思源黑体按 ../src/fonts/ 引）
+const DIR = process.env.PAGES_DIR ?? 'preview';   // PAGES_DIR=dist 拍单文件版（须是仓库顶层目录：单文件版里的思源黑体按 ../src/fonts/ 引，本服务器把 /src/ 映射到 packages/css/src/）
 const SKIP = '.charinfo-container, .charimg-m';
 const NOW = Date.parse('2026-09-27T12:00:00+08:00');   // 页面里的时间冻结在这一刻：首页时钟 / 倒计时 / 今日开放状态才可复现
 
@@ -43,7 +43,8 @@ function serve(): Promise<{ url: string; close: () => void }> {
   const server = createServer(async (req, res) => {
     const path = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname);
     try {
-      const body = await readFile(join(root, path));
+      // 预览页按站点布局引 ../src/…（Pages 上 /src/ = CSS 包），仓库里对应 packages/css/src/
+      const body = await readFile(join(root, path.startsWith('/src/') ? `packages/css${path}` : path));
       res.writeHead(200, { 'content-type': MIME[extname(path)] ?? 'application/octet-stream' });
       res.end(body);
     } catch {

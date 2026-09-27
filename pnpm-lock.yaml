@@ -215,6 +215,35 @@ importers:
         specifier: ^3.3.11
         version: 3.3.11(typescript@6.0.3)
 
+  packages/css: {}
+
+  packages/tokens:
+    devDependencies:
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
+      style-dictionary:
+        specifier: ^5.5.5
+        version: 5.5.5
+
+  packages/vue:
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.9
+        version: 6.0.9(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2))(vue@3.5.43(typescript@6.0.3))
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vite:
+        specifier: ^8.3.1
+        version: 8.3.1(@types/node@26.6.3)(esbuild@0.28.2)
+      vue:
+        specifier: ^3.5.43
+        version: 3.5.43(typescript@6.0.3)
+      vue-tsc:
+        specifier: ^3.3.11
+        version: 3.3.11(typescript@6.0.3)
+
 packages:
 
   '@adobe/css-tools@4.5.0':

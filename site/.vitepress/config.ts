@@ -174,7 +174,7 @@ export default defineConfigWithTheme<DefaultTheme.Config & { akdsTabs: Record<st
   },
   vite: {
     plugins: [akdsMeta()],
-    resolve: { alias: { "@akds/vue": fileURLToPath(new URL("../../vue/src/index.ts", import.meta.url)) } },
+    resolve: { alias: { "@mooncellwiki/akds-vue": fileURLToPath(new URL("../../packages/vue/src/index.ts", import.meta.url)) } },
     server: { fs: { allow: [resolve(site, "..")] } },
   },
 });

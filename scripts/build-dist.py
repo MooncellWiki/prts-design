@@ -6,6 +6,11 @@ from PIL import Image
 root = pathlib.Path(__file__).resolve().parent.parent
 prev = root / 'preview'
 dist = root / 'dist'; dist.mkdir(exist_ok=True)
+css_src = root / 'packages' / 'css' / 'src'
+def from_prev(rel):
+    """预览页按站点布局引 ../src/…（Pages 上 /src/ = CSS 包）；仓库里对应 packages/css/src/"""
+    p = (prev / rel).resolve()
+    return css_src / p.relative_to(root / 'src') if p.is_relative_to(root / 'src') else p
 MAX = 256
 cache = {}
 def img_uri(rel):
@@ -36,7 +41,7 @@ def font_uri(css_path, rel):
         font_stats['inline'] += 1
         return 'data:font/woff2;base64,' + base64.b64encode(p.read_bytes()).decode()
     font_stats['linked'] += 1
-    return '../src/' + rel     # dist/ 与 src/ 同级（仓库里、Pages 站点里都是）；另存离线时退到 tokens.css 链后段的装机 / 系统字
+    return '../src/' + rel     # Pages 站点上 dist/ 与 src/（CSS 包）同级；仓库里直接打开时思源黑体取不到，另存离线时退到 tokens.css 链后段的装机 / 系统字
 def css_inline(path):
     css = path.read_text(encoding='utf-8')
     # @import url("…")：src/index.css → 各层 index.css → 组件文件，递归原位内联（顺序即级联顺序）
@@ -55,12 +60,12 @@ for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全�
     html = (prev / name).read_text(encoding='utf-8')
     # css links（干员页里现网 Widget:CharinfoV2 的两条 <link> 带 media=…（桌面 / 手机各一份），保留到 <style media> 上）
     def repl_css(m):
-        href = m.group(1); p = (prev / href).resolve()
+        href = m.group(1); p = from_prev(href)
         return '<style%s>\n%s\n</style>' % (m.group(2) or '', css_inline(p))
     html = re.sub(r'<link rel="stylesheet" href="([^"]+)"( media="[^"]*")?\s*/?>', repl_css, html)   # 现网 Widget 那两条是 XHTML 写法 " />"
     # js（preview.js、共用的 src/sidebar-tree.js / src/search-palette.js、search-mock.js 都内联）
     def repl_js(m):
-        js = (prev / m.group(1)).resolve().read_text(encoding='utf-8')
+        js = from_prev(m.group(1)).read_text(encoding='utf-8')
         if m.group(1) == 'search-mock.js':   # 演示数据里动态拼接的图片：注入 data URI 表（见 search-mock.js 的 asset()）
             rels = set('avatar/%s.png' % a for a in re.findall(r"char_\d+_[a-z0-9]+_(?:1p|2)", js))
             rels |= set('item/%s.png' % i for i in re.findall(r"\[ '[^']*', '([0-9a-z_]+)', [1-6],", js))

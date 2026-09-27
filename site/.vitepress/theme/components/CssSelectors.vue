@@ -8,7 +8,7 @@
 import { onMounted, ref } from "vue";
 
 const props = defineProps<{ files: string[]; open?: boolean }>();
-const sheets = import.meta.glob<string>("../../../../src/**/*.css", { query: "?raw", import: "default" });
+const sheets = import.meta.glob<string>("../../../../packages/css/src/**/*.css", { query: "?raw", import: "default" });
 
 type Rule = { at: string; selectors: string[]; props: string[] };
 const result = ref<{ file: string; rules: Rule[] }[]>([]);
@@ -92,7 +92,7 @@ function splitSelectors(s: string) {
 
 onMounted(async () => {
   result.value = await Promise.all(
-    props.files.map(async file => ({ file, rules: parse((await sheets[`../../../../src/${file}`]?.()) ?? "") })),
+    props.files.map(async file => ({ file, rules: parse((await sheets[`../../../../packages/css/src/${file}`]?.()) ?? "") })),
   );
 });
 </script>

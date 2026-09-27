@@ -12,15 +12,15 @@ skins/AKDS/
 ├── templates/
 │   └── skin.mustache            ← 骨架（SkinMustache，无需 PHP）
 ├── resources/
-│   ├── fonts.css                ← = src/fonts.css（@font-face，scripts/fetch-fonts.py 生成）
-│   ├── fonts/                   ← = src/fonts/（官网同源 Novecento Sans Wide · Bender；OFL 的 Noto Sans SC 101 片 · Oswald · Chakra Petch · JetBrains Mono；≈4.9MB）
-│   ├── tokens.css               ← = src/tokens.css（生成物：tokens/src/**/*.json5 → pnpm tokens）
-│   ├── base/                    ← = src/base/（MW 内容样式；root.css 随 tokens 模块先载）
-│   ├── components/              ← = src/components/（通用组件，一个组件一个文件）
-│   ├── decor/ · arknights/      ← = src/decor/ · src/arknights/（方舟装饰 · 游戏数据组件）
-│   ├── chrome/                  ← = src/chrome/（皮肤骨架；demo-theme.css 仅预览，不进 skin.json）
-│   ├── img/                     ← = src/img/（.ak-item--bare 的道具底框，arknights/item.css 按 ../img/ 引）
-│   ├── utilities.css            ← = src/utilities.css
+│   ├── fonts.css                ← = packages/css/src/fonts.css（@font-face，scripts/fetch-fonts.py 生成）
+│   ├── fonts/                   ← = packages/css/src/fonts/（官网同源 Novecento Sans Wide · Bender；OFL 的 Noto Sans SC 101 片 · Oswald · Chakra Petch · JetBrains Mono；≈4.9MB）
+│   ├── tokens.css               ← = packages/css/src/tokens.css（生成物：packages/tokens/src/**/*.json5 → pnpm tokens）
+│   ├── base/                    ← = packages/css/src/base/（MW 内容样式；root.css 随 tokens 模块先载）
+│   ├── components/              ← = packages/css/src/components/（通用组件，一个组件一个文件）
+│   ├── decor/ · arknights/      ← = packages/css/src/decor/ · packages/css/src/arknights/（方舟装饰 · 游戏数据组件）
+│   ├── chrome/                  ← = packages/css/src/chrome/（皮肤骨架；demo-theme.css 仅预览，不进 skin.json）
+│   ├── img/                     ← = packages/css/src/img/（.ak-item--bare 的道具底框，arknights/item.css 按 ../img/ 引）
+│   ├── utilities.css            ← = packages/css/src/utilities.css
 │   ├── skin.js                  ← 主题切换 / 抽屉 / TOC scrollspy / 标签页 / toast
 │   └── images/                  ← 职业/精英/稀有度等白色线稿（或走 File: 命名空间）
 └── i18n/{en,zh-hans}.json
@@ -37,7 +37,7 @@ skins/AKDS/
 | `skins.akds.js` | skin.js（`mw.user.clientPrefs`、抽屉、TOC、标签页、data-bind）+ sidebar-tree.js + search-palette.js（悬浮搜索面板核心）+ search-providers.js（MW 数据源）；依赖 `mediawiki.api` | 所有页面（defer）。面板核心 ≈ 35KB 未压缩（含注释；gzip ≈ 11KB），可拆成独立模块在触发器 hover/focus 时 `mw.loader.using` 预取（Citizen 做法） |
 | `skins.akds.mobile` | 移动端追加（若同时供 Minerva 使用则改为 `skinStyles` 注入） | 按 target |
 
-**层序**：`chrome/` 排在通用组件与方舟组件之后——页眉里的 `.ak-btn` / `.ak-menu` / `.ak-fab` 等靠同特指度后到覆盖。拆分前 MW 按 base → skin → components → arknights → utilities 加载、预览按 base → components → arknights → skin → utilities，两边不一致；现统一为预览那套（视觉上验过的顺序），`skin.json`、`src/index.css`、预览 / Storybook 同序。
+**层序**：`chrome/` 排在通用组件与方舟组件之后——页眉里的 `.ak-btn` / `.ak-menu` / `.ak-fab` 等靠同特指度后到覆盖。拆分前 MW 按 base → skin → components → arknights → utilities 加载、预览按 base → components → arknights → skin → utilities，两边不一致；现统一为预览那套（视觉上验过的顺序），`skin.json`、`packages/css/src/index.css`、预览 / Storybook 同序。
 
 `skin.json` 关键项：
 ```json
@@ -197,7 +197,7 @@ prts.wiki 现网页脚有 5 个 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 
 ## 3.5 活动主题（Gadget / MediaWiki:Common.css）——头图 · 顶栏角饰 · 站标 · 主色
 
-现网大活换皮的做法（`ext.gadget.seventhStyle`）是改 `body` 背景大图、`#mw-head` 左右底图、`.mw-wiki-logo`、`#MenuSidebar > p` 渐变。新皮肤把这几个位置抽成 `tokens.css §2d` 的接口变量，活动 Gadget 只写变量、不碰选择器（完整列表见 `01-design-system.md §2.10`，可运行示例见 `src/chrome/demo-theme.css`）：
+现网大活换皮的做法（`ext.gadget.seventhStyle`）是改 `body` 背景大图、`#mw-head` 左右底图、`.mw-wiki-logo`、`#MenuSidebar > p` 渐变。新皮肤把这几个位置抽成 `tokens.css §2d` 的接口变量，活动 Gadget 只写变量、不碰选择器（完整列表见 `01-design-system.md §2.10`，可运行示例见 `packages/css/src/chrome/demo-theme.css`）：
 
 ```css
 /* MediaWiki:Gadget-eventStyle.css（或直接写进 MediaWiki:Common.css）*/
@@ -264,7 +264,7 @@ $wgFooterIcons = [
 - **依赖**：脚本用 `RLQ.push(['jquery', fn])` 等 jQuery——MW 里 ResourceLoader 照常处理；预览页自带 jQuery 3.7.1（= MW 1.43）和两行 RLQ 替身。
 - **接缝规则**（预览页 `<style>` 的「舞台接缝」段；生产放 Widget 自己的 `<style>` 或皮肤的 site 样式）：① 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着），正文列比它窄时整块 `zoom: var(--op-stage-zoom)`（页面脚本按列宽算）。用 zoom 不用 transform：Widget 的「全屏查看」是把 wrapper 设成 `position: fixed` 铺满视口，transform 会改它的包含块、zoom 不会，再加 `:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1 }` 全屏时不缩；② 全屏层与手机「查看立绘」层的 z-index 抬到 `--ak-z-modal` 之上（Widget 内联的 999 只够压 Vector——它顺手压下去的 `#mw-panel` `#mw-head` 皮肤里没有）；③ **皮肤 `base/media.css` 的 `img { max-width: 100%; height: auto }` 不进舞台**——HUD 图标靠 `height="30px"` 这类属性定尺寸，`height: auto` 会把它们放回原图的 32px。这条皮肤落地时要正面处理：站上其它 Widget / 模板同样大量依赖 `height=` 属性，要么皮肤把这条改成不碰带 `height` 属性的图，要么各 Widget 自己补 CSS；④ `line-height: 1.6`（Vector 正文行高；Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点）。
 - **已知的接缝之外**：Widget 的手机版由脚本按父级宽度 <600 在加载时一次性决定（自己 transform 缩放，不响应 resize），皮肤不插手；看图模式的滚轮缩放 / 拖拽用 `getBoundingClientRect` 对 `offsetWidth`，zoom 之下拖动手感会差一个系数（全屏时 zoom 归 1，不受影响）。
-- **换皮（暂不接入）**：`src/charinfo.css` 是对同一套 DOM 的皮肤化草案——黑玻璃 HUD（同页眉）、直角、选中 = 青条 + 青字、名字牌 = 思源 900 + 6px 青条（不再要 `charname` 字体）、时装 / 场景抽屉从右缘滑入、整块按容器宽度 `transform: scale(var(--charinfo-scale))`、≤639 藏 HUD 只留页签与名字牌。真要接入得连 JS 一起改三处：resize 只设 `--charinfo-scale`；选中态从换蓝图标 + 内联 color 改成加类 `.is-active`；面板 / 抽屉开合从内联 height / right / opacity 改成加类 `.is-open .is-show .is-watch`。先把现网的动效 / 文本排布 / 试听语音 / BGM 原样看全，再定换皮范围。
+- **换皮（暂不接入）**：`packages/css/src/charinfo.css` 是对同一套 DOM 的皮肤化草案——黑玻璃 HUD（同页眉）、直角、选中 = 青条 + 青字、名字牌 = 思源 900 + 6px 青条（不再要 `charname` 字体）、时装 / 场景抽屉从右缘滑入、整块按容器宽度 `transform: scale(var(--charinfo-scale))`、≤639 藏 HUD 只留页签与名字牌。真要接入得连 JS 一起改三处：resize 只设 `--charinfo-scale`；选中态从换蓝图标 + 内联 color 改成加类 `.is-active`；面板 / 抽屉开合从内联 height / right / opacity 改成加类 `.is-open .is-show .is-watch`。先把现网的动效 / 文本排布 / 试听语音 / BGM 原样看全，再定换皮范围。
 
 **皮肤这半**：无——干员页不需要皮肤层的特殊处理，标题 / 目录 / 动作簇照常（目录自动收 19 个 h2 + 技能 / 模组的 h3）。
 

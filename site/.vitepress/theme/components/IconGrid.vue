@@ -2,7 +2,7 @@
 /** 全部线稿图标：点击复制名字 */
 import { ref } from "vue";
 
-import { AkIcon, icons, type IconName } from "@akds/vue";
+import { AkIcon, icons, type IconName } from "@mooncellwiki/akds-vue";
 
 const names = Object.keys(icons) as IconName[];
 const copied = ref("");

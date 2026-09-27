@@ -31,7 +31,7 @@ jobs:
       - name: Tokens are up to date
         run: |
           pnpm tokens
-          git diff --exit-code -- src/tokens.css tokens/tokens.json || { echo "::error::src/tokens.css / tokens/tokens.json 与 tokens/src 不一致，本地跑 pnpm tokens 后提交"; exit 1; }
+          git diff --exit-code -- packages/css/src/tokens.css packages/tokens/tokens.json || { echo "::error::packages/css/src/tokens.css / packages/tokens/tokens.json 与 packages/tokens/src 不一致，本地跑 pnpm tokens 后提交"; exit 1; }
 
       - run: pnpm typecheck
 

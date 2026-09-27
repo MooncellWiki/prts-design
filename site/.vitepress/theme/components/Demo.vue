@@ -8,13 +8,16 @@ import { useData } from "vitepress";
 import { type App, type Component, createApp, onBeforeUnmount, onMounted, ref, useSlots, useTemplateRef, watch } from "vue";
 
 import previewJs from "../../../../preview/preview.js?raw";
-import demoThemeCss from "../../../../src/chrome/demo-theme.css?inline";
-import akdsCss from "../../../../src/index.css?inline";
-import { icons } from "../../../../vue/src/icons";
+import demoThemeRaw from "../../../../packages/css/src/chrome/demo-theme.css?raw";
+import akdsCss from "../../../../packages/css/src/index.css?inline";
+import { icons } from "../../../../packages/vue/src/icons";
+
+/** 活动主题示例的素材 url 按站点布局写（/src/chrome/ → ../../preview/assets/），从包目录导入解析不到：按原文取，换成站点里的地址 */
+const demoThemeCss = demoThemeRaw.replaceAll("../../preview/assets/", `${import.meta.env.BASE_URL}preview/assets/`);
 import { serialize } from "../html";
 
 const props = defineProps<{
-  /** Vue 示例：Button/Variants → vue/src/components/Button/demos/Variants.vue */
+  /** Vue 示例：Button/Variants → packages/vue/src/components/Button/demos/Variants.vue */
   src?: string;
   /** 纯 HTML 示例（encodeURIComponent 过） */
   html?: string;
@@ -24,7 +27,7 @@ const props = defineProps<{
   bare?: boolean;
 }>();
 
-const demos = import.meta.glob<{ default: Component }>("../../../../vue/src/components/*/demos/*.vue");
+const demos = import.meta.glob<{ default: Component }>("../../../../packages/vue/src/components/*/demos/*.vue");
 const SPRITE = `<svg width="0" height="0" style="position:absolute" aria-hidden="true">${Object.entries(icons)
   .map(([n, m]) => `<symbol id="i-${n}" viewBox="0 0 24 24">${m}</symbol>`)
   .join("")}</svg>`;
@@ -72,7 +75,7 @@ onMounted(async () => {
 
   if (props.src) {
     const [dir, name] = props.src.split("/");
-    const load = demos[`../../../../vue/src/components/${dir}/demos/${name}.vue`];
+    const load = demos[`../../../../packages/vue/src/components/${dir}/demos/${name}.vue`];
     if (!load) root.textContent = `找不到示例 ${props.src}`;
     else {
       const mod = await load();

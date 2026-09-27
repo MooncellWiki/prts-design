@@ -2,8 +2,8 @@ import { type Theme, useData } from "vitepress";
 import DefaultTheme from "vitepress/theme";
 import { h, watchEffect } from "vue";
 
-import "../../../src/fonts.css";
-import "../../../src/tokens.css";
+import "../../../packages/css/src/fonts.css";
+import "../../../packages/css/src/tokens.css";
 import "./style.css";
 import ComponentGrid from "./components/ComponentGrid.vue";
 import ComponentHeader from "./components/ComponentHeader.vue";

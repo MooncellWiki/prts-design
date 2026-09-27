@@ -2,7 +2,7 @@
  *  AKDS — 明日方舟网页设计系统 · Design Tokens
  *  Arknights Web Design System for MediaWiki skins (prts.wiki)
  *
- *  生成物，勿手改：源文件是 tokens/src/ 下的 *.json5（W3C DTCG 格式），改完 pnpm tokens 重新生成。
+ *  生成物，勿手改：源文件是 packages/tokens/src/ 下的 *.json5（W3C DTCG 格式，@mooncellwiki/akds-tokens），改完 pnpm tokens 重新生成。
  *
  *  层级：
  *    1. Primitive  --ak-{hue}-{step}      原始色板（来源：官网 CSS / 游戏解包 / gamedata）
@@ -14,7 +14,7 @@
  *    <html class="skin-theme-clientpref-night"> 终端模式（暗）
  *    <html class="skin-theme-clientpref-day">   档案模式（亮）
  *  非 MW 环境亦可用 data-theme="dark|light"。
- *  html / body 等元素的全局样式不在这里，见 src/base/root.css。
+ *  html / body 等元素的全局样式不在这里，见 base/root.css。
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ═══ 1. PRIMITIVE PALETTE · 2a. THEME-INDEPENDENT SEMANTICS ═══ */

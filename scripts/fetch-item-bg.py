@@ -13,7 +13,7 @@ prts.wiki 主站对脚本 403，media.prts.wiki 不拦——所以这里直接�
 import pathlib, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-OUT = ROOT / 'src' / 'img' / 'item'
+OUT = ROOT / 'packages' / 'css' / 'src' / 'img' / 'item'
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
 MEDIA = 'https://media.prts.wiki/'
 # 稀有度 → 文件:道具_背景_N.png 在 media.prts.wiki 上的路径（MediaWiki 按文件名 md5 分桶）

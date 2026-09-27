@@ -1,6 +1,6 @@
 # 色彩
 
-令牌分三层：**原始色板** `--ak-{hue}-{step}`（每个颜色标明出处）→ **语义令牌** `--ak-{role}`（随主题变化，组件只用这一层）→ **Codex 桥接**（MediaWiki 核心 / 扩展 UI 自动跟随）。源文件是 `tokens/src/` 下的 JSON5（W3C DTCG 格式），`pnpm tokens` 生成 `src/tokens.css` 与 `tokens/tokens.json`；下面的表都读生成的 JSON。
+令牌分三层：**原始色板** `--ak-{hue}-{step}`（每个颜色标明出处）→ **语义令牌** `--ak-{role}`（随主题变化，组件只用这一层）→ **Codex 桥接**（MediaWiki 核心 / 扩展 UI 自动跟随）。源文件是 `packages/tokens/src/` 下的 JSON5（W3C DTCG 格式），`pnpm tokens` 生成 `src/tokens.css` 与 `tokens/tokens.json`；下面的表都读生成的 JSON。
 
 点色块复制 `var(--…)`。
 

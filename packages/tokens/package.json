@@ -1,0 +1,32 @@
+{
+  "name": "@mooncellwiki/akds-tokens",
+  "version": "0.1.0",
+  "description": "AKDS · 明日方舟网页设计系统的设计令牌：W3C DTCG 格式的 JSON5 源 + 解析后的 tokens.json（每个令牌带 CSS 写法与亮 / 暗解析值）",
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://mooncellwiki.github.io/prts-design/foundations/color",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MooncellWiki/prts-design.git",
+    "directory": "packages/tokens"
+  },
+  "exports": {
+    "./tokens.json": "./tokens.json",
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "tokens.json"
+  ],
+  "scripts": {
+    "build": "node build.ts"
+  },
+  "devDependencies": {
+    "json5": "^2.2.3",
+    "style-dictionary": "^5.5.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

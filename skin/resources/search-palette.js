@@ -1,1 +1,1 @@
-../../src/search-palette.js
+../../packages/css/src/search-palette.js

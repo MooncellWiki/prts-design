@@ -8,9 +8,9 @@ GitHub 的 [Primer](https://primer.style/) 把设计系统拆成令牌（primer/
 
 | 层 | 目录 | 对应 Primer | 谁在用 |
 |---|---|---|---|
-| 令牌 | `tokens/`（源文件）→ `src/tokens.css` | primer/primitives | 所有人；TemplateStyles 里直接 `var(--ak-accent)` |
-| CSS 实现 | `src/`（每个组件一份样式表） | primer/css | MediaWiki 皮肤；模板 / Lua 输出 `.ak-*` 结构 |
-| Vue 实现 | `vue/src/components/` | primer/react | prts-widgets 等 Vue 小部件 |
+| 令牌 | `packages/tokens/`（`@mooncellwiki/akds-tokens`）→ `tokens.css` | primer/primitives | 所有人；TemplateStyles 里直接 `var(--ak-accent)` |
+| CSS 实现 | `packages/css/`（每个组件一份样式表；由皮肤加载，不发 npm） | primer/css | MediaWiki 皮肤；模板 / Lua 输出 `.ak-*` 结构 |
+| Vue 实现 | `packages/vue/`（`@mooncellwiki/akds-vue`） | primer/react | prts-widgets 等 Vue 小部件 |
 | 文档站 | `site/`（本站） | primer.style | 所有人 |
 | Storybook | `.storybook/` + `*.stories.ts` | primer.style/react/storybook | 组件开发 / 视觉走查 |
 

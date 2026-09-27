@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /**
- * 令牌表：数据来自 tokens/tokens.json（pnpm tokens 生成），按路径前缀取一组。
+ * 令牌表：数据来自 packages/tokens/tokens.json（pnpm tokens 生成），按路径前缀取一组。
  *   <TokenTable prefix="color.brand" />            原始色：色块网格
  *   <TokenTable prefix="theme.background" themed />  语义色：亮 / 暗两列并排（色块直接用解析值，不跟文档站当前主题）
  *   <TokenTable prefix="typography.font-size" sample="size" />   其它：名称 · 值 · 说明（可带字号 / 字体样张）
  */
 import { computed } from "vue";
 
-import data from "../../../../tokens/tokens.json";
+import data from "../../../../packages/tokens/tokens.json";
 
 const props = defineProps<{ prefix: string; themed?: boolean; sample?: "size" | "font" | "space" | "shadow" }>();
 type Token = (typeof data.tokens)[number];

@@ -12,7 +12,7 @@
 | `skins.akds.tokens` | `tokens.css`（生成物）+ `base/root.css`（html / body 基底） |
 | `skins.akds.styles` | `base/*` → `components/*` → `decor/*` → `arknights/*` → `chrome/*` → `utilities.css` |
 
-ResourceLoader 把一个模块的文件拼成一张样式表，不跟 `@import`，所以 skin.json 逐文件列出。**顺序只有一个来源**：`src/index.css` 与各层 `index.css` 的 `@import` 顺序；改了之后跑
+ResourceLoader 把一个模块的文件拼成一张样式表，不跟 `@import`，所以 skin.json 逐文件列出。**顺序只有一个来源**：`packages/css/src/index.css` 与各层 `index.css` 的 `@import` 顺序；改了之后跑
 
 ```sh
 node scripts/css-order.ts --write   # 同步进 skin/skin.json；不带 --write 是检查（CI 用）

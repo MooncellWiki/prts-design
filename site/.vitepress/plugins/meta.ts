@@ -7,7 +7,7 @@ import { globSync, readFileSync } from "node:fs";
 import type { UserConfig } from "vitepress";
 import { createChecker, type PropertyMetaSchema } from "vue-component-meta";
 
-import { icons } from "../../../vue/src/icons";
+import { icons } from "../../../packages/vue/src/icons";
 
 /** VitePress 1.x 自带 Vite 5，仓库根目录的 vite 是 8（Storybook 用）——插件类型按 VitePress 的来 */
 type Plugin = Extract<NonNullable<NonNullable<UserConfig["vite"]>["plugins"]>[number], { name: string }>;
@@ -67,7 +67,7 @@ export function akdsMeta(): Plugin {
   let known = new Set<string>();
   /** 按文件缓存：改哪个文件只重算哪个——每次全量重算一百多个组件，开发服务器跑久了会把堆吃满（曾 OOM） */
   const cache = new Map<string, ComponentDoc>();
-  const files = () => globSync("vue/src/components/*/Ak*.vue", { cwd: root }).map(f => resolve(root, f));
+  const files = () => globSync("packages/vue/src/components/*/Ak*.vue", { cwd: root }).map(f => resolve(root, f));
   return {
     name: "akds-meta",
     resolveId: id => (id === ID ? "\0" + ID : undefined),
@@ -89,7 +89,7 @@ export function akdsMeta(): Plugin {
       return `export default ${JSON.stringify(out)}`;
     },
     async handleHotUpdate(ctx) {
-      if (!ctx.file.endsWith(".vue") || !ctx.file.includes("/vue/src/components/")) return;
+      if (!ctx.file.endsWith(".vue") || !ctx.file.includes("/packages/vue/src/components/")) return;
       checker?.updateFile(ctx.file, await ctx.read());
       cache.delete(ctx.file);
       const mod = ctx.server.moduleGraph.getModuleById("\0" + ID);

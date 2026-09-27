@@ -1,7 +1,7 @@
 /**
  * 文档里的两种示例写法（都渲染成 <Demo>：iframe 里挂 AKDS 全套样式 + wiki 正文容器，与文档站自己的样式互不干扰）
  *
- *   @demo Button/Variants            独占一行：vue/src/components/Button/demos/Variants.vue——实时渲染；
+ *   @demo Button/Variants            独占一行：packages/vue/src/components/Button/demos/Variants.vue——实时渲染；
  *                                     「Vue」页签 = 这个 SFC 的源码（构建期 Shiki 高亮），「HTML」页签 = 渲染出来的结构（运行时从 iframe 取）；
  *                                     Storybook 链接 = 注册表里的 storybook 前缀 + demo 名
  *   ```html demo                     纯 CSS 实现的示例（装饰语言 / MW 内容样式 / 还没有 Vue 版的组件）：代码块本身就是 HTML 页签
@@ -48,7 +48,7 @@ export function demoPlugin(md: MarkdownRenderer) {
     const src = tokens[idx].info;
     const flags: string[] = tokens[idx].meta.flags;
     const [dir, name] = src.split("/");
-    const code = readFileSync(resolve(root, `vue/src/components/${dir}/demos/${name}.vue`), "utf8");
+    const code = readFileSync(resolve(root, `packages/vue/src/components/${dir}/demos/${name}.vue`), "utf8");
     const entry = components.find(c => c.vue?.dir === dir);
     const story = entry?.storybook ? `${entry.storybook}--${kebab(name)}` : "";
     const attrs = [`src="${src}"`, story && `story="${story}"`, flags.includes("bare") && "bare"].filter(Boolean).join(" ");

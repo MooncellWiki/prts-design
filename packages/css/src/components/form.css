@@ -43,7 +43,7 @@
 .ak-number > button { all: unset; width: 32px; text-align: center; cursor: pointer; background: var(--ak-bg-surface-2); font-family: inherit; font-weight: 700; }
 .ak-number > button:hover { background: var(--ak-bg-hover); }
 .ak-number > input { width: 56px; border: 0; border-left: 1px solid var(--ak-border); border-right: 1px solid var(--ak-border); text-align: center; font-family: inherit; font-variant-numeric: tabular-nums; background: var(--ak-bg-surface); color: var(--ak-fg); }
-/* ─── 以下是 Vue 实现（vue/src/components/）用到、原先缺的钩子；模板 / Lua 照样可用 ─── */
+/* ─── 以下是 Vue 实现（packages/vue/src/components/）用到、原先缺的钩子；模板 / Lua 照样可用 ─── */
 /* 下拉的尺寸档：同 .ak-input--sm / --lg（30 / 44） */
 .ak-select--sm { min-height: 30px; font-size: var(--ak-fs-xs); } .ak-select--lg { min-height: 44px; font-size: var(--ak-fs-body); }
 /* 校验通过：多行输入 / 下拉与 .ak-input.is-valid 同一道绿边 */

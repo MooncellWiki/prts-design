@@ -1,5 +1,5 @@
 /**
- * AKDS primitives（≈ primer/primitives）：tokens/src/**\/*.json5（W3C DTCG 格式）→ src/tokens.css + tokens/tokens.json
+ * AKDS primitives（≈ primer/primitives，npm 包 @mooncellwiki/akds-tokens）：src/**\/*.json5（W3C DTCG 格式）→ ../css/src/tokens.css + tokens.json
  *
  *   pnpm tokens      （= node tokens/build.ts）
  *
@@ -18,7 +18,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import JSON5 from 'json5';
 import { resolve } from 'node:path';
 
-const root = resolve(import.meta.dirname, '..');
+const root = resolve(import.meta.dirname, '../..');   // 仓库根
 const src = (f: string) => resolve(import.meta.dirname, 'src', f);
 const BASE = ['base/color.json5', 'base/typography.json5', 'base/size.json5', 'base/motion.json5', 'base/z-index.json5', 'base/asset.json5', 'functional/control.json5'].map(src);
 const LIGHT = src('functional/themes/light.json5');
@@ -100,7 +100,7 @@ const css: string[] = [
  *  AKDS — 明日方舟网页设计系统 · Design Tokens
  *  Arknights Web Design System for MediaWiki skins (prts.wiki)
  *
- *  生成物，勿手改：源文件是 tokens/src/ 下的 *.json5（W3C DTCG 格式），改完 pnpm tokens 重新生成。
+ *  生成物，勿手改：源文件是 packages/tokens/src/ 下的 *.json5（W3C DTCG 格式，@mooncellwiki/akds-tokens），改完 pnpm tokens 重新生成。
  *
  *  层级：
  *    1. Primitive  --ak-{hue}-{step}      原始色板（来源：官网 CSS / 游戏解包 / gamedata）
@@ -112,7 +112,7 @@ const css: string[] = [
  *    <html class="skin-theme-clientpref-night"> 终端模式（暗）
  *    <html class="skin-theme-clientpref-day">   档案模式（亮）
  *  非 MW 环境亦可用 data-theme="dark|light"。
- *  html / body 等元素的全局样式不在这里，见 src/base/root.css。
+ *  html / body 等元素的全局样式不在这里，见 base/root.css。
  * ═══════════════════════════════════════════════════════════════════════════ */`,
 ];
 for (const b of BLOCKS) {
@@ -125,7 +125,7 @@ for (const b of BLOCKS) {
   const block = `${sel} {\n${body.join('\n').replace(/^\n/, '')}\n${b.media ? '  ' : ''}}`;
   css.push('', `/* ═══ ${b.title} ═══ */`, b.media ? `@media ${b.media} {\n${block}\n}` : block);
 }
-await writeFile(resolve(root, 'src/tokens.css'), css.join('\n') + '\n');
+await writeFile(resolve(root, 'packages/css/src/tokens.css'), css.join('\n') + '\n');
 
 /* ── tokens.json：给文档站 / 其它平台用——每个令牌带 CSS 写法与亮 / 暗两套解析值 ── */
 const [L, D, C] = await Promise.all([
@@ -139,7 +139,7 @@ const groups = Object.fromEntries(await groupDescriptions([...BASE, LIGHT, CHROM
 const json = {
   $name: 'AKDS · Arknights Web Design System tokens',
   $version: '0.1.0',
-  $generated: '生成物：tokens/build.ts ← tokens/src/ 下的 *.json5',
+  $generated: '生成物：packages/tokens/build.ts ← packages/tokens/src/ 下的 *.json5',
   $sources: {
     site: 'https://ak.hypergryph.com/ (Next.js CSS: #18D1FF, greys, Bender/Novecento/Oswald/SourceHanSans)',
     'game-sprites': 'torappu unpacked UI sprites (ui/pages/home_page, ui/character/*, arts/*_hub)',
@@ -161,4 +161,4 @@ const json = {
   }),
 };
 await writeFile(resolve(import.meta.dirname, 'tokens.json'), JSON.stringify(json, null, 2) + '\n');
-console.log(`tokens: src/tokens.css（${BLOCKS.length} 块）· tokens/tokens.json（${json.tokens.length} 个令牌）`);
+console.log(`tokens: packages/css/src/tokens.css（${BLOCKS.length} 块）· packages/tokens/tokens.json（${json.tokens.length} 个令牌）`);

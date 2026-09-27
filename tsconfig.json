@@ -14,8 +14,9 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "@akds/vue": ["./vue/src/index.ts"]
+      "@mooncellwiki/akds-vue": ["./packages/vue/src/index.ts"]
     }
   },
-  "include": ["vue/**/*.ts", "vue/**/*.vue", ".storybook/**/*.ts", "site/.vitepress/**/*.ts", "site/.vitepress/**/*.vue", "tokens/**/*.ts", "scripts/**/*.ts"]
+  "include": ["packages/*/src/**/*.ts", "packages/*/src/**/*.vue", "packages/*/*.ts", ".storybook/**/*.ts", "site/.vitepress/**/*.ts", "site/.vitepress/**/*.vue", "scripts/**/*.ts"],
+  "exclude": ["packages/*/dist"]
 }

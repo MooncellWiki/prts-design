@@ -13,7 +13,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
-const src = join(root, 'src');
+const src = join(root, 'packages/css/src');
 
 /** 按 @import 顺序把 index.css 展开成叶子文件（相对 src/） */
 async function expand(file: string): Promise<string[]> {

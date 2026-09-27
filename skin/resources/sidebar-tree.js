@@ -1,1 +1,1 @@
-../../src/sidebar-tree.js
+../../packages/css/src/sidebar-tree.js

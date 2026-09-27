@@ -1,6 +1,6 @@
 /**
  * 组件注册表：文档站侧栏 / 组件总览 / 组件页头（实现状态、源码、Storybook、现网模板）都从这里读。
- * 一个组件 = 一份 CSS 实现（src/ 下，MW 模板 / Lua 输出的 HTML 用它）+ 可选的 Vue 实现（vue/src/components/，prts-widgets 用它）。
+ * 一个组件 = 一份 CSS 实现（packages/css/src/ 下，MW 模板 / Lua 输出的 HTML 用它）+ 可选的 Vue 实现（packages/vue/src/components/，prts-widgets 用它）。
  * 新增组件：在 entries/<分组>.ts 里加一条（按领域分文件，并行编辑互不冲突），写 site/<group>/<id>.md（或 <id>/index.md + guidelines.md / accessibility.md 两个页签）。
  */
 import display from "./entries/display";
@@ -22,9 +22,9 @@ export interface ComponentEntry {
   zh: string;
   /** 一句话 */
   description: string;
-  /** CSS 实现：src/ 下的文件（可多个）+ 状态 */
+  /** CSS 实现：packages/css/src/ 下的文件（可多个）+ 状态 */
   css: { files: string[]; status: Status };
-  /** Vue 实现：vue/src/components/<dir>/ 下的组件 + 状态 */
+  /** Vue 实现：packages/vue/src/components/<dir>/ 下的组件 + 状态 */
   vue?: { dir: string; components: string[]; status: Status };
   /** Storybook 标题前缀（Components/Button → components-button） */
   storybook?: string;

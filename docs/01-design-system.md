@@ -46,7 +46,7 @@ DON'T：圆角卡片、阴影堆叠、玻璃拟态；切角、平行四边形、
 
 ## 2. 令牌（Design Tokens）
 
-源：`tokens/src/**/*.json5`（W3C DTCG 格式）；`pnpm tokens`（`tokens/build.ts`，Style Dictionary）生成 `src/tokens.css`（CSS 自定义属性）与 `tokens/tokens.json`（机器可读）——两者都是生成物，改令牌改 json5。命名 `--ak-{group}-{name}`。三层：
+源：`packages/tokens/src/**/*.json5`（W3C DTCG 格式）；`pnpm tokens`（`packages/tokens/build.ts`，Style Dictionary）生成 `packages/css/src/tokens.css`（CSS 自定义属性）与 `packages/tokens/tokens.json`（机器可读）——两者都是生成物，改令牌改 json5。命名 `--ak-{group}-{name}`。三层：
 
 ```
 Primitive  --ak-gray-800 / --ak-cyan-500 / --ak-rarity-6 …   ← 有出处的原始色
@@ -155,12 +155,12 @@ html.skin-theme-clientpref-night  终端模式（暗）
 --ak-font-condensed "Oswald"*,"Roboto Condensed","Arial Narrow"
 --ak-font-mono     "JetBrains Mono"*,"SF Mono",Menlo,Consolas,monospace
 ```
-带 \* 的都由 `src/fonts.css` 用 `@font-face` 自托管（`src/fonts/`，`scripts/fetch-fonts.py` 生成），因此不论访客装没装字体，看到的都是同一套——这也就是上线效果。链的后段（装机备选 → 系统字）只在字体模块被关掉时起作用。
+带 \* 的都由 `packages/css/src/fonts.css` 用 `@font-face` 自托管（`packages/css/src/fonts/`，`scripts/fetch-fonts.py` 生成），因此不论访客装没装字体，看到的都是同一套——这也就是上线效果。链的后段（装机备选 → 系统字）只在字体模块被关掉时起作用。
 
 | 角色 | 自托管 | 来源 / 说明 |
 |---|---|---|
-| 展示字 | **Novecento Sans Wide** 500 / 600 / 700 / 800 | 官网静态资源原文件（web.hycdn.cn）。商用字（Synthview）；PRTS.wiki 为明日方舟官方赞助站点，按与鹰角同一组织下共用授权使用（`src/fonts/novecento-sans-wide/NOTICE.md`） |
-| HUD 标签 / 数值 | **Bender** 400 / 700 | 同上（`src/fonts/bender/NOTICE.md`）。Bender 也是展示链第二位 |
+| 展示字 | **Novecento Sans Wide** 500 / 600 / 700 / 800 | 官网静态资源原文件（web.hycdn.cn）。商用字（Synthview）；PRTS.wiki 为明日方舟官方赞助站点，按与鹰角同一组织下共用授权使用（`packages/css/src/fonts/novecento-sans-wide/NOTICE.md`） |
+| HUD 标签 / 数值 | **Bender** 400 / 700 | 同上（`packages/css/src/fonts/bender/NOTICE.md`）。Bender 也是展示链第二位 |
 | 正文 | Noto Sans SC 可变字重 100–900 | OFL；= 思源黑体的 Google 构建，沿用 Google Fonts 的 101 片 `unicode-range` 切分（共 4.4MB），一页只下载用到的几片 |
 | 压缩字 | Oswald 可变字重 200–700 | OFL；官网也自托管 Oswald。同时是展示链在 Novecento / Bender 之后的接字 |
 | 标签缺字接住 | Chakra Petch 400 / 500 / 600 / 700 | OFL；同为切角方形的 HUD 字，只在 Bender 缺字时逐字顶上 |
@@ -171,7 +171,7 @@ html.skin-theme-clientpref-night  终端模式（暗）
 - ✅ 用 Bender：属性面板 `.ak-attr__value`、`.ak-stat__value`、`.ak-level`、倒计时、SP 芯片、关卡码、稀有度 chip、tag、overline / eyebrow 小标签、`ol::marker`——都是**粗体（700）或 ≥ h3 的独立数值 / 编号 / 大写标签**。显式的 HUD 数字类是 `.ak-num`（粗体 Bender，只用于面板级、不进表格）
 - ❌ 不用 Bender：表格数字列（`.wikitable td.num` / `.ak-table .num`）、目录编号、引用角标、diff 行号、最近更改 ±、分页、时间戳、Stat 的 delta、技能数值行、通知计数徽标（`.ak-badge`：Bender Bold 在 11px 下笔画细字形窄，18px 圆里读不清）——统一正文字体 + `tabular-nums`（Noto Sans SC 的数字默认等宽 521 单位，列天然对齐）。**表格数据数字一律不用 Bender，没有例外**：技能全等级表 / 参数矩阵 / 天赋条件表 / 键值表的数字列都是正文字体；`.ak-num` `.ak-code-id` `.ak-trust` `.ak-item__count` `.ak-elite` 等带数字的 HUD 类若落进 `td` / `th` / `.ak-kv > dd`，`arknights/table-numerals.css`（B99，方舟组件最后一个文件）会兜底回正文字体（字重 / 字距 / 颜色照旧）
 
-**官网发布的 Novecento / Bender 是 ASCII 子集**（各 101 字形：A–Z a–z 0–9 及 ASCII 标点），`·` `»` `—` `–` `…` `×` `°` 等非 ASCII 字符不在其中，浏览器会按链逐字回退——展示字落到 Oswald、标签落到 Chakra Petch，两者风格相近，视觉上是间隔号 / 破折号级别的差异；若日后拿到全字符集文件，替换 `src/fonts/` 里同名 woff2 即可。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
+**官网发布的 Novecento / Bender 是 ASCII 子集**（各 101 字形：A–Z a–z 0–9 及 ASCII 标点），`·` `»` `—` `–` `…` `×` `°` 等非 ASCII 字符不在其中，浏览器会按链逐字回退——展示字落到 Oswald、标签落到 Chakra Petch，两者风格相近，视觉上是间隔号 / 破折号级别的差异；若日后拿到全字符集文件，替换 `packages/css/src/fonts/` 里同名 woff2 即可。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
 
 字号：display-xl 56 / display 40 / h1 32 / h2 24 / h3 20 / h4 17 / body 16 / sm 14 / xs 12 / overline 11。行高：正文 1.7、标题 1.25、展示 1.05。字距：大写 `.08em`、overline `.14em`、展示 `-.02em`。
 
@@ -191,7 +191,7 @@ html.skin-theme-clientpref-night  终端模式（暗）
 
 ### 2.10 页眉 / 头图 / 画布的主题接口（活动主题只改这些）
 
-prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现网 `ext.gadget.seventhStyle` 改的就是这些）。新皮肤把这些位置抽成 `tokens.css §2d` 的一组变量，Gadget / `MediaWiki:Common.css` 在 `:root`（或 `html.skin-theme-clientpref-*` 分昼夜）上覆盖即可，不碰任何选择器；示例见 `src/chrome/demo-theme.css`（罗德岛主界面昼 / 夜背景做头图、警示黄做活动主色、页眉玻璃调到 `.8`）。
+prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现网 `ext.gadget.seventhStyle` 改的就是这些）。新皮肤把这些位置抽成 `tokens.css §2d` 的一组变量，Gadget / `MediaWiki:Common.css` 在 `:root`（或 `html.skin-theme-clientpref-*` 分昼夜）上覆盖即可，不碰任何选择器；示例见 `packages/css/src/chrome/demo-theme.css`（罗德岛主界面昼 / 夜背景做头图、警示黄做活动主色、页眉玻璃调到 `.8`）。
 
 **页眉与头图的关系**：头图 `.ak-keyart` 从页面顶端铺起（盒子上探一个页眉高、`padding-top` 把内容压回页眉之下；<1400 连二级栏一起探），页眉是压在它上面的一块**均匀**黑玻璃——横向无渐隐、纵向无渐变，可读性由玻璃的 alpha 保证，与底下是什么画无关。照片一律走 `--ak-keyart-image`；`--ak-chrome-image` 画在玻璃之上、不会被压暗，只放深色低对比的角饰 / 底纹。
 
@@ -207,13 +207,13 @@ prts.wiki 大活期间会换头图、顶栏角饰、站标、侧栏配色（现�
 | `--ak-canvas-image` / `-position` / `-size` / `-repeat` / `-attachment` | `none` … | **画布底纹**：叠在 body 的 `--ak-bg-canvas` 之上（现网 body 的 bkg 位置）；侧栏 / 目录没有底色，宜低对比 |
 | `--ak-logo-image` | 未设 | **站标**：设了就用 `content` 替换 `.ak-header__logo img`（Chromium / WebKit；Firefox 请改 `$wgLogos`） |
 
-⚠ 接口变量里的 `url()` 请写**绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`chrome/*.css`）的路径解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录（预览的示例主题因此与使用处同放在 `src/chrome/`，才写得了相对路径）。
+⚠ 接口变量里的 `url()` 请写**绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`chrome/*.css`）的路径解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录（预览的示例主题因此与使用处同放在 `packages/css/src/chrome/`，才写得了相对路径）。
 
 ---
 
 ## 3. 装饰语言（Ornament primitives）
 
-全部为可叠加的纯 CSS 类（`src/decor/`，一类一个文件）：
+全部为可叠加的纯 CSS 类（`packages/css/src/decor/`，一类一个文件）：
 
 | 类 | 说明 | 出处 |
 |---|---|---|
@@ -235,7 +235,7 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 
 | 来源 | 例子 | 谁负责 |
 |---|---|---|
-| **裸控件**——Widget / Gadget / 模板直接吐出的 `<input>` `<select>` `<textarea>` `<button>`，身上没有任何 class | 干员页「属性计算器」（`Widget:PropertyCalc`：wikitable 里四个 `<input type="number">`）、公招 / 材料 / 掉落计算器、各种筛选栏、edittools 字符按钮 | **皮肤兜底**（`src/base/forms.css`，本节的规则）；模板什么样式都不用写 |
+| **裸控件**——Widget / Gadget / 模板直接吐出的 `<input>` `<select>` `<textarea>` `<button>`，身上没有任何 class | 干员页「属性计算器」（`Widget:PropertyCalc`：wikitable 里四个 `<input type="number">`）、公招 / 材料 / 掉落计算器、各种筛选栏、edittools 字符按钮 | **皮肤兜底**（`packages/css/src/base/forms.css`，本节的规则）；模板什么样式都不用写 |
 | **设计系统组件** `.ak-input .ak-select .ak-textarea .ak-check .ak-switch .ak-slider .ak-number .ak-field .ak-input-group …` | 模板 / TemplateStyles 里显式使用（文档站 /components/field 等表单各页；裸控件落进 wikitable 的样子见 /content/forms） | `components/form.css`：与裸控件同一套尺寸 / 颜色 / 状态，多了尺寸变体、自绘勾选 / 开关、校验态与文案 |
 | **核心 UI**——Codex `.cdx-*` / OOUI `.oo-ui-*` / `.mw-ui-*`（编辑页、参数设置、特殊页面、Echo） | 颜色经 `tokens.css` 令牌桥接自动跟随，**尺寸不改**（它们自己的 32px 档，成组出现、内部自洽） | 皮肤只桥接 |
 
@@ -302,19 +302,19 @@ wiki 里的表单来自三处，皮肤对它们的态度不同：
 ## 7. 文件与用法
 
 ```
-tokens/src/          令牌源（W3C DTCG json5）：base/ 原始色板 · 字体 · 尺寸 · 动效 · 层级 · functional/ 明暗主题 · 页眉接口 · 控件 · bridge/ Codex 桥接
-tokens/build.ts      pnpm tokens：生成 src/tokens.css + tokens/tokens.json（Style Dictionary；两者都不手改）
-src/tokens.css       令牌 + 主题 + Codex 桥接（生成物；必须最先加载）
-src/base/            MW 内容样式，一块一个文件（root = html / body 全局基底、紧跟 tokens；typography / tables / media / tabber / forms 裸控件 / special-pages / print …）
-src/components/      通用组件，一个组件一个文件（button / tag / card / panel / tabs / message / form / table …）；title-reset 在全部组件之后，keyframes 收齐 ak-* 动画
-src/decor/           方舟装饰语言，一类一个文件（A3–A12：stripes / halftone / corner / type / glyph / inverse …）
-src/arknights/       游戏数据组件（B1–B18：rarity / profession / op-card / item / skill / range / module / dossier / stage …）；table-numerals（B99）最后
-src/chrome/          皮肤骨架（header / keyart / sidebar / page-header / toc / footer / search-palette …；responsive 收齐断点、放最后）· demo-theme.css 示例活动主题（仅预览，不进 index.css / skin.json）
-src/charinfo.css     干员页舞台的皮肤化样式表草案（对现网 Widget:CharinfoV2 同一套 DOM 换皮；预览页目前不接入——舞台先原样跑现网 CSS / JS，见 03 §3.6）
-src/search-palette.js 悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
-src/sidebar-tree.js  侧栏多层导航
-src/utilities.css    工具类
-src/index.css        汇总入口（预览 / Storybook / 文档站）：fonts → tokens → base → components → decor → arknights → chrome → utilities，各层 index.css 按序 @import；skin.json 的逐文件列表由 node scripts/css-order.ts --write 同步成同序
+packages/tokens/src/          令牌源（W3C DTCG json5）：base/ 原始色板 · 字体 · 尺寸 · 动效 · 层级 · functional/ 明暗主题 · 页眉接口 · 控件 · bridge/ Codex 桥接
+packages/tokens/build.ts      pnpm tokens：生成 packages/css/src/tokens.css + packages/tokens/tokens.json（Style Dictionary；两者都不手改）
+packages/css/src/tokens.css       令牌 + 主题 + Codex 桥接（生成物；必须最先加载）
+packages/css/src/base/            MW 内容样式，一块一个文件（root = html / body 全局基底、紧跟 tokens；typography / tables / media / tabber / forms 裸控件 / special-pages / print …）
+packages/css/src/components/      通用组件，一个组件一个文件（button / tag / card / panel / tabs / message / form / table …）；title-reset 在全部组件之后，keyframes 收齐 ak-* 动画
+packages/css/src/decor/           方舟装饰语言，一类一个文件（A3–A12：stripes / halftone / corner / type / glyph / inverse …）
+packages/css/src/arknights/       游戏数据组件（B1–B18：rarity / profession / op-card / item / skill / range / module / dossier / stage …）；table-numerals（B99）最后
+packages/css/src/chrome/          皮肤骨架（header / keyart / sidebar / page-header / toc / footer / search-palette …；responsive 收齐断点、放最后）· demo-theme.css 示例活动主题（仅预览，不进 index.css / skin.json）
+packages/css/src/charinfo.css     干员页舞台的皮肤化样式表草案（对现网 Widget:CharinfoV2 同一套 DOM 换皮；预览页目前不接入——舞台先原样跑现网 CSS / JS，见 03 §3.6）
+packages/css/src/search-palette.js 悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
+packages/css/src/sidebar-tree.js  侧栏多层导航
+packages/css/src/utilities.css    工具类
+packages/css/src/index.css        汇总入口（预览 / Storybook / 文档站）：fonts → tokens → base → components → decor → arknights → chrome → utilities，各层 index.css 按序 @import；skin.json 的逐文件列表由 node scripts/css-order.ts --write 同步成同序
 preview/vendor/      第三方原样：swiper/（首页轮播）· charinfo/（现网 Widget:CharinfoV2 的 CSS / JS / 字体 / HUD 图标快照，scripts/fetch-charinfo.py 钉版本抓取，见其 NOTICE.md）· jquery/（3.7.1，同 MW 1.43，charinfo 脚本要）
 preview/_src/        预览站源：skeleton.html（皮肤骨架，只写一份）+ pages/{home,operator}.html（各页 front matter + 正文；原来的 5 张展示页 index / chrome / mediawiki / components / arknights 已退役，内容在文档站 site/）
 preview/*.html       生成物（scripts/build-preview.py）：home 首页设计稿（信息结构取自现网首页；区块样式在页面自己的 <style> = TemplateStyles，「0. 页面级」那段是静态骨架的补丁——皮肤在首页的收敛行为已由 Skin:Arknights 内置，见 03 §3.4）· operator 干员页整页样例（陈；现网「陈」页面 19 节一节不少，顶部直接复用现网 {{CharinfoV2}} 组件，见 03 §3.6）

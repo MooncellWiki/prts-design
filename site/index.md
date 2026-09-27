@@ -23,7 +23,7 @@ features:
     details: 每个组件一份样式表，纯 CSS、框架无关。MediaWiki 皮肤直接加载，模板 / Lua 输出约定好的 .ak-* 结构即可。
     link: /guide/mediawiki
   - title: Vue 实现
-    details: 同一套结构的 Vue 3 组件（@akds/vue），给 prts-widgets 这类小部件用：状态、键盘、可访问性都在组件里。
+    details: 同一套结构的 Vue 3 组件（@mooncellwiki/akds-vue），给 prts-widgets 这类小部件用：状态、键盘、可访问性都在组件里。
     link: /guide/vue
   - title: 双正典主题
     details: 终端（暗）/ 档案（亮），与 MediaWiki 1.43 的 clientPrefs 机制一致；活动主题只覆盖一组接口变量。

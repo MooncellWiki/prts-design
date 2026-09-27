@@ -20,8 +20,8 @@
 import argparse, gzip, io, json, pathlib, re, sys, tarfile, urllib.error, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-FONT_DIR = ROOT / 'src' / 'fonts'
-CSS_OUT = ROOT / 'src' / 'fonts.css'
+FONT_DIR = ROOT / 'packages' / 'css' / 'src' / 'fonts'
+CSS_OUT = ROOT / 'packages' / 'css' / 'src' / 'fonts.css'
 SITE_HOME = 'https://ak.hypergryph.com/'
 SITE_CDN = 'https://web.hycdn.cn/arknights/official/_next/static/media/'
 

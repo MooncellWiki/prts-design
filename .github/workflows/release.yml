@@ -1,0 +1,19 @@
+name: Release
+
+# 推 v* tag 发布 packages/* 下的公开包（@mooncellwiki/akds-tokens / akds-vue；packages/css 是 private，不发）到 npm，
+# 同 MooncellWiki/sponsorkit：sxzz/workflows 的 release（changelogithub 生成 GitHub Release + pnpm -r publish，OIDC trusted publishing，不存 npm token）。
+# 发版：两个公开包的 version 一起改（同一版本号）→ 提交 → git tag vX.Y.Z → git push --follow-tags
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    uses: sxzz/workflows/.github/workflows/release.yml@v1
+    with:
+      publish: true
+      build: pnpm build
+    permissions:
+      contents: write
+      id-token: write

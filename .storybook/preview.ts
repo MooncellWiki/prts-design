@@ -1,8 +1,11 @@
 import type { Preview } from "@storybook/vue3-vite";
 import { h } from "vue";
 
-import "../src/index.css";
-import "../src/chrome/demo-theme.css";
+import "../packages/css/src/index.css";
+import demoThemeCss from "../packages/css/src/chrome/demo-theme.css?raw";
+
+// 活动主题示例的素材 url 按站点布局写（/src/chrome/ → ../../preview/assets/），从包目录导入时解析不到——按原文注入，素材指向 staticDirs 的 /preview/
+document.head.appendChild(document.createElement("style")).textContent = demoThemeCss.replaceAll("../../preview/assets/", "./preview/assets/");
 
 /** 同预览页 preview.js：终端（暗）/ 档案（亮）/ 跟随系统，MW 的 clientpref 类 + data-theme 两套一起打 */
 function applyTheme(mode: string, demo: boolean) {

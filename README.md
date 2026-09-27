@@ -22,12 +22,12 @@ GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 构建部署�
 
 ## 目录
 
-分层同 [Primer](https://github.com/primer)：令牌（≈ primer/primitives）→ CSS 实现（≈ primer/css）→ Vue 实现（≈ primer/react）→ 文档站（≈ primer.style），放在一个仓库里。
+分层同 [Primer](https://github.com/primer)：令牌（≈ primer/primitives）→ CSS 实现（≈ primer/css）→ Vue 实现（≈ primer/react）→ 文档站（≈ primer.style），放在一个 pnpm workspace 里。前三层在 `packages/` 下（令牌与 Vue 发 npm，scope `@mooncellwiki`；CSS 由皮肤加载、不发 npm），文档站 / Storybook / 预览站 / 皮肤是根目录下的应用。
 
 ```
-tokens/             令牌源（≈ primer/primitives）：src/**/*.json5（W3C DTCG 格式；base/ 原始色板 · 字体 · 尺寸 · 动效 · 层级，functional/ themes/light · dark · contrast-more 语义令牌 + chrome 页眉 / 头图 / 画布主题接口 + control，bridge/codex MediaWiki Codex 桥接）
-                    build.ts（Style Dictionary）→ src/tokens.css（按原选择器结构输出：亮 :root / 暗 data-theme · clientpref-night / 跟随系统 @media 同一份源 / 高对比）+ tokens/tokens.json（每个令牌带 CSS 写法与亮 / 暗解析值，文档站读它）
-src/                CSS 实现（≈ primer/css），每个组件一份样式表；index.css 与各层 index.css 的 @import 顺序 = 唯一的加载顺序
+packages/tokens/    @mooncellwiki/akds-tokens 令牌源（≈ primer/primitives）：src/**/*.json5（W3C DTCG 格式；base/ 原始色板 · 字体 · 尺寸 · 动效 · 层级，functional/ themes/light · dark · contrast-more 语义令牌 + chrome 页眉 / 头图 / 画布主题接口 + control，bridge/codex MediaWiki Codex 桥接）
+                    build.ts（Style Dictionary）→ packages/css/src/tokens.css（按原选择器结构输出：亮 :root / 暗 data-theme · clientpref-night / 跟随系统 @media 同一份源 / 高对比）+ tokens.json（每个令牌带 CSS 写法与亮 / 暗解析值，文档站读它）
+packages/css/src/   CSS 实现（≈ primer/css；private，不发 npm——带不可转授的字体与游戏素材），每个组件一份样式表；index.css 与各层 index.css 的 @import 顺序 = 唯一的加载顺序
   fonts.css         自托管 web 字体的 @font-face（scripts/fetch-fonts.py 生成；最先加载）
   fonts/            woff2 + 各族 LICENSE / NOTICE：官网同源 Novecento Sans Wide 500–800 · Bender 400/700（ASCII 子集，来源见 NOTICE.md）；OFL 的 Noto Sans SC 可变字重（101 片）· Oswald VF · Chakra Petch 400–700 · JetBrains Mono VF（合计 ≈4.9MB）
   img/              CSS 直接引用的游戏素材（item/bg_1–6.png 道具稀有度底框 = prts.wiki 文件:道具_背景_N.png，即游戏 sprite_item_r1–r6，给 .ak-item--bare 裸图标叠框用；scripts/fetch-item-bg.py 抓取；NOTICE.md）
@@ -42,10 +42,10 @@ src/                CSS 实现（≈ primer/css），每个组件一份样式表
   charinfo.css      干员页「干员信息」舞台的皮肤化样式表草案（**预览页目前不接入**，见 preview/vendor/charinfo/ 与 03 §3.6）
   sidebar-tree.js   侧栏多层导航增强（皮肤与预览共用）
   search-palette.js 悬浮搜索面板核心（数据源由调用方注入，皮肤与预览共用）
-vue/                Vue 3 实现（≈ primer/react，@akds/vue）：src/components/<Name>/{Ak<Name>.vue, Ak<Name>.stories.ts, demos/*.vue}（demos 由 Storybook 与文档站共用）· src/icons.ts（界面线稿图标，= 骨架 sprite）· src/index.ts；pages/ 整页样例 stories。组件只输出 .ak-* 结构 + 状态 / 键盘 / ARIA，不带样式
-.storybook/         Storybook 10（@storybook/vue3-vite）：主题 / 活动主题工具栏，组件包在 .mw-body-content.mw-parser-output 里渲染；preview/ 挂到 /preview/
+packages/vue/       @mooncellwiki/akds-vue Vue 3 实现（≈ primer/react；pnpm build 出 dist/：Vite 库模式 JS + vue-tsc 类型）：src/components/<Name>/{Ak<Name>.vue, Ak<Name>.stories.ts, demos/*.vue}（demos 由 Storybook 与文档站共用）· src/icons.ts（界面线稿图标，= 骨架 sprite）· src/index.ts。组件只输出 .ak-* 结构 + 状态 / 键盘 / ARIA，不带样式
+.storybook/         Storybook 10（@storybook/vue3-vite）：pages/ 整页样例 stories；主题 / 活动主题工具栏，组件包在 .mw-body-content.mw-parser-output 里渲染；preview/ 挂到 /preview/
 site/               文档站（≈ primer.style，VitePress）：.vitepress/registry.ts 组件注册表（侧栏 / 总览 / 页头都读它）· plugins/（`@demo X/Y` 示例、```html demo 代码块、vue-component-meta → Props 表）· theme/；public/ 链着 preview/ 与 src/
-skin/               MediaWiki 皮肤骨架：skin.json（样式模块逐文件列出，由 scripts/css-order.ts 从 src/index.css 同步）· templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源）（base/ components/ decor/ arknights/ chrome/ fonts/ img/ 与 tokens.css、utilities.css、共用 JS 为 src 的符号链接）· i18n
+skin/               MediaWiki 皮肤骨架：skin.json（样式模块逐文件列出，由 scripts/css-order.ts 从 packages/css/src/index.css 同步；resources/ 下是指向 packages/css/src/ 各层的链接）· templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源）（base/ components/ decor/ arknights/ chrome/ fonts/ img/ 与 tokens.css、utilities.css、共用 JS 为 src 的符号链接）· i18n
 preview/            预览站（home / operator 两张整页样例，scripts/build-preview.py 从 _src/ 生成：_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js + assets/（torappu 解包的游戏图标 / 现网拼好的道具图 item/framed/ / 头图 keyart/ / 首页素材 mainpage/ / 页脚徽章 badge/ / 模组图 module/ …）+ vendor/（Swiper 11、现网 Widget:CharinfoV2 快照、jQuery 3.7.1，各见其 NOTICE.md）
 dist/               单文件打包（图片 + 拉丁字体内联，思源黑体指回 ../src/fonts/；scripts/build-dist.py 生成）
 docs/               01 规范 · 02 组件清单 · 03 MediaWiki 接入（全文也在文档站「参考」下，内容正逐步拆进文档站各页）
@@ -71,28 +71,33 @@ scripts/            fetch-*.py（字体 / 道具图 / 底框 / Widget 快照）�
 - 任何页面：`<link rel="stylesheet" href="src/index.css">`（按层 @import；`fonts.css` 在最前）。
 - MediaWiki：把 `skin/` 复制到 `skins/AKDS/`，`wfLoadSkin('AKDS')`；`resources/` 下的样式目录 / 文件由 `src/` 同步（符号链接）。skin.json 里样式模块逐文件列出（ResourceLoader 不跟 @import），顺序由 `node scripts/css-order.ts --write` 从 `src/index.css` 同步。字体是独立模块 `skins.akds.fonts`，可整体关掉。详见文档站「在 MediaWiki 中使用」与 `docs/03-mediawiki-integration.md`。
 - 模板/TemplateStyles：直接输出 `.ak-*` 结构（文档站每个示例的「HTML」页签就是要输出的结构），令牌可在 TemplateStyles 中 `var(--ak-accent)` 引用。
-- Vue（prts-widgets 等）：`import { AkButton, AkTabs } from "@akds/vue"`（目前在仓库 `vue/` 里，未发包）；组件不带样式，wiki 页面上由皮肤提供。
+- Vue（prts-widgets 等）：`import { AkButton, AkTabs } from "@mooncellwiki/akds-vue"`（目前在仓库 `vue/` 里，未发包）；组件不带样式，wiki 页面上由皮肤提供。
 
 ## 重新生成
 
 ```bash
 pnpm install                                           # Node 24 + pnpm（版本见 package.json 的 packageManager）
-pnpm tokens                                            # tokens/src/**/*.json5 → src/tokens.css + tokens/tokens.json（CI 会检查两者是否最新）
+pnpm tokens                                            # packages/tokens/src/**/*.json5 → packages/css/src/tokens.css + packages/tokens/tokens.json（CI 会检查两者是否最新）
+pnpm build                                             # 构建要发布的包（目前只有 @mooncellwiki/akds-vue 需要构建：packages/vue/dist/）
 pnpm dev:docs                                              # 文档站开发（site/）
 pnpm storybook                                         # Storybook 开发（:6006）
 pnpm typecheck                                         # vue-tsc
-node scripts/css-order.ts [--write]                    # 检查 / 同步 skin/skin.json 的样式列表与 src/index.css 同序
+node scripts/css-order.ts [--write]                    # 检查 / 同步 skin/skin.json 的样式列表与 packages/css/src/index.css 同序
 node scripts/verify/styles.ts snap <标签> · diff <A> <B> # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照与比对——重构 CSS 前后跑一遍，保证视觉零变化
-python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → src/fonts/ + src/fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
+python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → packages/css/src/fonts/ + fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/fetch-item-framed.py                   # 现网拼好的道具图 道具_带框_<名>.png → preview/assets/item/framed/<id>.png（扫各页用到的 id，manifest 查名，按文件名 md5 算 media 路径；已有的跳过，--force 重抓）
-python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度底框（prts.wiki 文件:道具_背景_1–6.png，钉 media 路径）→ src/img/item/bg_1–6.png（.ak-item--bare 用）
+python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度底框（prts.wiki 文件:道具_背景_1–6.png，钉 media 路径）→ packages/css/src/img/item/bg_1–6.png（.ak-item--bare 用）
 python3 scripts/fetch-charinfo.py                      # 现网 Widget:CharinfoV2 的 CSS / JS / 字体 / HUD 图标 + jQuery → preview/vendor/{charinfo,jquery}/（版本号钉在脚本里；charVoice 只留 --chars 指定的干员）
 python3 scripts/build-preview.py                       # preview/_src/{skeleton.html, pages/*.html} → preview/*.html（改了骨架或任一页都要跑）
 python3 scripts/build-dist.py                          # preview/*.html → dist（需要 Pillow；跟随 @import 内联）
 pnpm build:site                                        # = bash scripts/build-site.sh _site：构建文档站 + Storybook 并组装 Pages 站点（本地自查：AKDS_BASE=/ pnpm build:site，python3 -m http.server -d _site）
 ```
 
+## 发布
+
+`packages/` 下的两个公开包（`@mooncellwiki/akds-tokens`、`@mooncellwiki/akds-vue`，MIT）用同一个版本号，推 `v*` tag 由 `.github/workflows/release.yml` 发布（同 MooncellWiki/sponsorkit：sxzz/workflows 的 release，changelogithub 生成 GitHub Release，`pnpm -r publish` + OIDC trusted publishing，不存 npm token）：改两个 `package.json` 的 `version` → 提交 → `git tag vX.Y.Z` → `git push --follow-tags`。新包第一次需要有 `@mooncellwiki` 组织权限的人手动发布一次，之后才能在 npm 上给它配 trusted publisher。
+
 ## 说明
 
-- 字体：预览与皮肤自托管全部 web 字体（`src/fonts.css`），人人看到一致——展示字 **Novecento Sans Wide**、HUD 标签 / 数值 **Bender** 取自官网静态资源（PRTS 为官方赞助站点，与鹰角同一组织下共用授权；官网发布的是 ASCII 子集，非 ASCII 字符逐字落到后一段）；正文 Noto Sans SC（= 思源黑体，Google 的 101 片切分、页面只下用到的片）、压缩字 Oswald、Chakra Petch（接 Bender 缺字）、等宽 JetBrains Mono 为 OFL。
-- 游戏素材版权归鹰角网络所有；本仓库仅作 PRTS 皮肤设计用途。
+- 字体：预览与皮肤自托管全部 web 字体（`packages/css/src/fonts.css`），人人看到一致——展示字 **Novecento Sans Wide**、HUD 标签 / 数值 **Bender** 取自官网静态资源（PRTS 为官方赞助站点，与鹰角同一组织下共用授权；官网发布的是 ASCII 子集，非 ASCII 字符逐字落到后一段）；正文 Noto Sans SC（= 思源黑体，Google 的 101 片切分、页面只下用到的片）、压缩字 Oswald、Chakra Petch（接 Bender 缺字）、等宽 JetBrains Mono 为 OFL。
+- **许可**：代码（令牌源与构建脚本、CSS、Vue 组件、文档站 / Storybook / 预览站的程序部分、scripts/）以 [MIT](LICENSE) 授权。其余内容不在 MIT 范围内、不对外授权：游戏素材（`preview/assets/`、`packages/css/src/img/` 等）版权归鹰角网络所有；字体按各自目录里的 NOTICE / LICENSE（Novecento Sans Wide、Bender 为官网同源文件，按与鹰角同一组织下的共用授权使用，不可转授）；现网 Widget 快照（`preview/vendor/charinfo/`）归 PRTS；本仓库仅作 PRTS 皮肤设计用途。
