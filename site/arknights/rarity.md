@@ -1,0 +1,62 @@
+---
+title: 稀有度 Rarity
+component: rarity
+---
+
+干员稀有度就是星数（游戏数据里的 `rarity` 是 0–5，显示时 +1）。星形默认用 CSS `clip-path` 画——跟字号走、放进哪行字就是那行的大小、颜色走令牌；要和游戏界面一个像素不差时换成原图。
+
+## 颜色
+
+默认游戏星黄；`white` 走正文色（亮色黑、暗色白），给不想抢眼的列表；`tier` 按稀有度色阶上色（一星灰 → 六星橙，同 `.ak-rarity--r1…r6`），颜色跟着 `value` 走。
+
+@demo Rarity/Variants
+
+## 尺寸
+
+`sm` 0.8em · 默认 1em · `lg` 1.4em。是相对字号的，放进正文 / 标题里跟着那一行缩放。
+
+@demo Rarity/Sizes
+
+## 游戏原图
+
+`src` 换成游戏原图 `.ak-rarity-img`（固定 14px 高）：黄星 `rarity_yellow_N.png` 两套主题都不变；白星 `rarity_N.png` 写 `glyph`，亮色主题下反相为黑（`.ak-glyph`）。N = 星数 − 1。
+
+@demo Rarity/Image
+
+## 稀有度色轨
+
+表格行、卡片、头像要带稀有度色时，不用组件：在容器上写 `data-rarity="1–6"`，它提供 `--ak-r`（色块）/ `--ak-r-text`（文字色：亮色主题下换成加深的 text-safe 版）两个变量，再配下面几个工具类。[干员卡](/arknights/op-card)的色线、[干员条目](/arknights/op-row)的头像色条都是这么来的（[道具](/arknights/item)的裸图标底框也认 `data-rarity`，但画的是游戏底图）。
+
+```html demo
+<div class="ak-flex ak-wrap ak-gap-3 ak-items-center">
+  <span data-rarity="6" class="ak-r-chip">6★</span>
+  <span data-rarity="5" class="ak-r-chip">5★</span>
+  <span data-rarity="4" class="ak-r-chip">4★</span>
+  <span data-rarity="3" class="ak-r-chip">3★</span>
+  <span data-rarity="2" class="ak-r-chip">2★</span>
+  <span data-rarity="1" class="ak-r-chip">1★</span>
+</div>
+<p class="ak-mt-2"><span data-rarity="6"><span class="ak-r-swatch"></span><b class="ak-r-text">陈</b></span>　<span data-rarity="5"><span class="ak-r-swatch"></span><b class="ak-r-text">德克萨斯</b></span>　<span data-rarity="4"><span class="ak-r-swatch"></span><b class="ak-r-text">桃金娘</b></span></p>
+<div data-rarity="6" class="ak-r-bar ak-p-2">左侧稀有度色条（<code>.ak-r-bar</code>）</div>
+```
+
+| 类 | 作用 |
+|---|---|
+| `.ak-r-text` | 文字用稀有度色（`--ak-r-text`） |
+| `.ak-r-bg` | 稀有度色底 + 深色字 |
+| `.ak-r-border` | 边框用稀有度色 |
+| `.ak-r-bar` | 左侧粗色条（`--ak-bar-w`） |
+| `.ak-r-chip` | 20px 高的稀有度色芯片 |
+| `.ak-r-swatch` | 1em 小色块，放在名字前 |
+
+## 可访问性
+
+CSS 星形是一串空的 `<i>`，读屏读不到：`AkRarity` 在外层补 `role="img"` + `aria-label`（默认「六星」，`label` 可改写）；原图版的 `alt` 同样默认「六星」。
+
+## Vue API
+
+<PropsTable of="AkRarity" />
+
+## CSS 实现
+
+<CssClasses :files="['arknights/rarity.css']" />

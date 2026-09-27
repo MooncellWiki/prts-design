@@ -1,0 +1,160 @@
+/* AKDS 文档站外观：VitePress 默认主题 + AKDS 令牌（文档站自己不加载组件 CSS，组件只在示例 iframe 里跑） */
+
+/* ── VitePress 变量 → AKDS 令牌（令牌自己按 html[data-theme] 切明暗） ── */
+:root,
+html.dark {
+  --vp-font-family-base: var(--ak-font-body);
+  --vp-font-family-mono: var(--ak-font-mono);
+  --vp-c-brand-1: var(--ak-accent);
+  --vp-c-brand-2: var(--ak-accent-hover);
+  --vp-c-brand-3: var(--ak-accent);
+  --vp-c-brand-soft: var(--ak-accent-subtle);
+  --vp-c-bg: var(--ak-bg-canvas);
+  --vp-c-bg-alt: var(--ak-bg-surface);
+  --vp-c-bg-elv: var(--ak-bg-surface);
+  --vp-c-bg-soft: var(--ak-bg-surface-2);
+  --vp-c-text-1: var(--ak-fg);
+  --vp-c-text-2: var(--ak-fg-secondary);
+  --vp-c-text-3: var(--ak-fg-muted);
+  --vp-c-divider: var(--ak-border);
+  --vp-c-border: var(--ak-border-strong);
+  --vp-c-gutter: var(--ak-border-subtle);
+  --vp-c-default-soft: var(--ak-bg-surface-3);
+  --vp-code-bg: var(--ak-bg-surface-3);
+  --vp-code-color: var(--ak-fg);
+  --vp-code-block-bg: var(--ak-bg-surface-2);
+  --vp-sidebar-bg-color: var(--ak-bg-canvas);
+  --vp-button-brand-text: var(--ak-accent-fg);
+  --vp-button-brand-hover-text: var(--ak-accent-fg);
+  --vp-button-brand-active-text: var(--ak-accent-fg);
+  --vp-home-hero-name-color: var(--ak-fg);
+  --vp-c-tip-1: var(--ak-success);
+  --vp-c-tip-soft: var(--ak-success-bg);
+  --vp-c-warning-1: var(--ak-warning);
+  --vp-c-warning-soft: var(--ak-warning-bg);
+  --vp-c-danger-1: var(--ak-danger);
+  --vp-c-danger-soft: var(--ak-danger-bg);
+  --vp-c-note-1: var(--ak-info);
+  --vp-c-indigo-soft: var(--ak-info-bg);
+}
+
+/* 顶栏：同皮肤——两套主题下都是黑色「终端」栏，只读 --ak-chrome-* */
+.VPNav {
+  --vp-nav-bg-color: var(--ak-chrome-bg-solid);
+  --vp-c-bg: var(--ak-chrome-bg-solid);
+  --vp-c-bg-alt: var(--ak-chrome-bg-solid);
+  --vp-c-bg-soft: var(--ak-chrome-field);
+  --vp-c-bg-elv: var(--ak-chrome-bg-solid);
+  --vp-c-text-1: var(--ak-chrome-fg);
+  --vp-c-text-2: var(--ak-chrome-fg-2);
+  --vp-c-text-3: var(--ak-chrome-fg-muted);
+  --vp-c-divider: var(--ak-chrome-line);
+  --vp-c-gutter: var(--ak-chrome-line);
+  --vp-c-brand-1: var(--ak-theme-accent);
+  --vp-c-brand-2: var(--ak-theme-accent);
+  --vp-c-default-soft: var(--ak-chrome-hover);
+}
+.VPNavBar,
+.VPNavBar.has-sidebar .content-body,
+.VPNavBar:not(.home.top) .content-body { background: var(--ak-chrome-bg-solid) !important; }
+.VPNavBar .divider-line { background: var(--ak-chrome-line) !important; }
+.VPNavBarTitle .title { font-family: var(--ak-font-display); font-weight: 800; letter-spacing: .08em; }
+.VPNavBarTitle .logo { filter: none; }
+
+/* 直角：方舟不做圆角 */
+.vp-doc div[class*="language-"],
+.vp-doc .custom-block,
+.VPButton, .VPFeature, .VPLocalSearchBox .shell, .DocSearch-Button, .VPNavBarSearch .DocSearch-Button, .VPSwitch,
+.VPSocialLink, .VPFlyout .menu, .VPMenu, .vp-doc :not(pre) > code { border-radius: 0 !important; }
+.VPSwitch .check { border-radius: 0 !important; }
+
+/* 正文标题：左侧色条（同 wiki 正文 h2） */
+.vp-doc h2 { border-top: 0; margin-top: 48px; padding: 0 0 0 12px; border-left: var(--ak-bar-w) solid var(--ak-accent); line-height: 1.3; }
+.vp-doc h3 { margin-top: 32px; }
+.vp-doc a { text-decoration: none; }
+.vp-doc a:hover { text-decoration: underline; }
+.VPSidebarItem.level-0 > .item > .text { font-family: var(--ak-font-label); letter-spacing: .06em; }
+
+/* ═══ 组件页头 ═══ */
+.akd-ch { margin: 0 0 32px; padding-bottom: 0; }
+.akd-ch__eyebrow { font: 700 11px/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin-bottom: 10px; }
+.akd-ch__title { font-size: 32px; line-height: 1.2; font-weight: 800; margin: 0; padding-left: 12px; border-left: var(--ak-bar-w-lg) solid var(--ak-accent); }
+.akd-ch__title span { margin-left: 12px; font: 700 .55em/1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--ak-fg-muted); }
+.akd-ch__desc { margin: 12px 0 16px; color: var(--ak-fg-secondary); font-size: 16px; }
+.akd-ch__impl { margin: 0; border-top: 1px solid var(--ak-border); }
+.akd-ch__impl > div { display: grid; grid-template-columns: 56px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--ak-border); align-items: baseline; }
+.akd-ch__impl dt { font: 700 12px/1.8 var(--ak-font-label); letter-spacing: .08em; color: var(--ak-fg-muted); }
+.akd-ch__impl dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 13px; }
+.akd-ch__impl code { font-size: 12px; }
+.akd-ch__sep { color: var(--ak-fg-muted); font-size: 12px; }
+.akd-ch__tabs { display: flex; gap: 2px; margin-top: 20px; border-bottom: 1px solid var(--ak-border); }
+.akd-ch__tabs a { padding: 8px 16px; font-weight: 600; font-size: 14px; color: var(--ak-fg-muted); border-bottom: 3px solid transparent; margin-bottom: -1px; text-decoration: none !important; }
+.akd-ch__tabs a:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
+.akd-ch__tabs a.is-active { color: var(--ak-accent); border-bottom-color: var(--ak-accent); }
+
+/* 实现状态（≈ Primer 的 lifecycle label） */
+.akd-status { display: inline-flex; align-items: center; height: 20px; padding: 0 7px; font: 700 11px/1 var(--ak-font-body); white-space: nowrap; background: var(--ak-bg-surface-3); color: var(--ak-fg-secondary); }
+.akd-status.is-ready { background: var(--ak-success-bg); color: var(--ak-success); }
+.akd-status.is-experimental { background: var(--ak-warning-bg); color: var(--ak-warning); }
+.akd-status.is-deprecated { background: var(--ak-danger-bg); color: var(--ak-danger); }
+
+/* ═══ 示例块 ═══ */
+.akd-demo { margin: 16px 0 28px; border: 1px solid var(--ak-border); }
+.akd-demo__frame { display: block; width: 100%; height: 72px; border: 0; background: var(--ak-bg-canvas); }
+.akd-demo__bar { display: flex; align-items: stretch; gap: 2px; padding: 0 8px; border-top: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+.akd-demo__bar button, .akd-demo__bar a { padding: 7px 10px; font: 700 12px/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-muted); border-bottom: 2px solid transparent; text-decoration: none; }
+.akd-demo__bar button:hover, .akd-demo__bar a:hover { color: var(--ak-fg); }
+.akd-demo__bar button.is-on { color: var(--ak-accent); border-bottom-color: var(--ak-accent); }
+.akd-demo__spacer { flex: 1; }
+.akd-demo__code { border-top: 1px solid var(--ak-border); }
+.akd-demo__code div[class*="language-"] { margin: 0 !important; border: 0 !important; }
+.akd-demo__markup { position: relative; background: var(--vp-code-block-bg); }
+.akd-demo__markup pre { margin: 0; padding: 20px 24px; overflow-x: auto; }
+.akd-demo__markup code { font: 13px/1.7 var(--ak-font-mono); white-space: pre; color: var(--ak-fg-secondary); }
+.akd-demo__copy { position: absolute; top: 8px; right: 8px; z-index: 2; padding: 4px 8px; font-size: 12px; color: var(--ak-fg-muted); border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+.akd-demo__copy:hover { color: var(--ak-fg); }
+.akd-demo__markup .lang { display: none; }
+.akd-demo__note { margin: 0; padding: 8px 24px; font-size: 12px; color: var(--ak-fg-muted); border-top: 1px solid var(--ak-border-subtle); }
+.akd-hl-t { color: var(--ak-accent); }
+.akd-hl-a { color: var(--ak-rt-rem); }
+.akd-hl-v { color: var(--ak-rt-gild); }
+
+/* ═══ Props / 类名 / 令牌表 ═══ */
+.akd-props table, .akd-classes table, .akd-tokens { font-size: 13px; }
+.akd-tokens td code, .akd-props td:first-child code { white-space: nowrap; }
+.akd-tokens td:last-child, .akd-props td:last-child { min-width: 180px; }
+.akd-props__req { margin-left: 6px; font-size: 11px; color: var(--ak-danger); font-weight: 700; }
+.akd-props__none { color: var(--ak-fg-subtle); }
+.akd-props__values, .akd-classes td { line-height: 2; }
+.akd-props__values code, .akd-classes td code, .akd-classes__extra code { margin: 0 4px 4px 0; display: inline-block; line-height: 1.5; }
+.akd-classes__extra { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ak-fg-muted); }
+.akd-tokens td { vertical-align: middle; }
+.akd-tokens__chip { display: inline-block; width: 18px; height: 18px; margin-right: 8px; vertical-align: middle; border: 1px solid var(--ak-border); }
+.akd-tokens__dark { background: #0f0f10; }
+.akd-tokens__dark code { background: #232425 !important; color: #f0f0f0 !important; }
+.akd-tokens__light { background: #f5f5f5; }
+.akd-tokens__light code { background: #ebebeb !important; color: #1d1f20 !important; }
+.akd-tokens__bar { display: block; height: 12px; background: var(--ak-accent); }
+.akd-tokens__shadow { display: block; width: 64px; height: 32px; background: var(--ak-bg-surface); }
+.akd-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; margin: 16px 0 24px; }
+.akd-swatch { display: flex; flex-direction: column; align-items: stretch; text-align: left; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); cursor: copy; }
+.akd-swatch__chip { height: 52px; border-bottom: 1px solid var(--ak-border); }
+.akd-swatch__name { padding: 6px 8px 0; font-size: 11px; font-weight: 700; background: none !important; overflow-wrap: anywhere; }
+.akd-swatch__value { padding: 0 8px 6px; font-size: 11px; color: var(--ak-fg-muted); background: none !important; }
+.akd-swatch__note { padding: 0 8px 8px; font-size: 11px; color: var(--ak-fg-muted); line-height: 1.4; }
+
+/* ═══ 总览卡片 / 图标 / 整页 ═══ */
+.akd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin: 16px 0 32px; }
+.akd-card { display: flex; flex-direction: column; gap: 8px; padding: 16px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); color: var(--ak-fg) !important; text-decoration: none !important; transition: border-color var(--ak-dur-fast); }
+.akd-card:hover { border-color: var(--ak-accent); }
+.akd-card__name { font-weight: 800; font-size: 16px; }
+.akd-card__name span { margin-left: 4px; font: 700 12px/1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--ak-fg-muted); }
+.akd-card__desc { font-size: 13px; line-height: 1.6; color: var(--ak-fg-secondary); flex: 1; }
+.akd-card__impl { display: flex; gap: 6px; flex-wrap: wrap; }
+.akd-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; margin: 16px 0; }
+.akd-icons__item { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px 10px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); color: var(--ak-fg); cursor: copy; }
+.akd-icons__item:hover { border-color: var(--ak-accent); color: var(--ak-accent); }
+.akd-icons__item code { font-size: 11px; background: none !important; }
+.akd-page { margin: 16px 0; border: 1px solid var(--ak-border); }
+.akd-page__bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; border-bottom: 1px solid var(--ak-border); font-size: 13px; background: var(--ak-bg-surface); }
+.akd-page iframe { display: block; width: 100%; border: 0; }

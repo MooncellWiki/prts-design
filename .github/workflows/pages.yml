@@ -3,6 +3,7 @@ name: Deploy preview to GitHub Pages
 on:
   push:
     branches: [master]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -11,7 +12,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -20,15 +21,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Assemble site
+      - uses: pnpm/action-setup@v4 # 版本读 package.json 的 packageManager
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Tokens are up to date
+        run: |
+          pnpm tokens
+          git diff --exit-code -- src/tokens.css tokens/tokens.json || { echo "::error::src/tokens.css / tokens/tokens.json 与 tokens/src 不一致，本地跑 pnpm tokens 后提交"; exit 1; }
+
+      - run: pnpm typecheck
+
+      - name: Assemble site (docs + storybook + preview + dist)
         run: bash scripts/build-site.sh _site
 
       - uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request'
       - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
         with:
           path: _site
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:
