@@ -8,7 +8,7 @@ L1 是皮肤最重要的一层：把编辑写出来的 wikitext 渲染得好看�
 
 所以这一层没有 Vue 实现，也没有 `@demo`：下面各页的示例都是 **MW 原生 DOM**，只换肤；「HTML」页签里的结构就是 MW 实际输出的样子。模板 / Lua 要输出的是设计系统组件（见[组件](/components/)），不是这一层。
 
-源文件在 `src/base/`，一块一个文件，按 `src/base/index.css` 的顺序加载，排在所有组件之前——组件靠同特指度后到覆盖正文排版（层序见[在 MediaWiki 中使用](/guide/mediawiki)）。
+源文件在 `packages/css/src/base/`，一块一个文件，按 `base/index.css` 的顺序加载，排在所有组件之前——组件靠同特指度后到覆盖正文排版（层序见[模块与层序](/guide/resourceloader#层序)）。
 
 ## 作用域
 

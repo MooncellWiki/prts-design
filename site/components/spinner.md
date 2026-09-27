@@ -30,6 +30,6 @@ component: spinner
 
 ## CSS 实现
 
-大小由 `font-size` 定（默认 12px → 29px 见方），`--_c` 换色。说明与加载层（`.ak-spin` / `.ak-spin-container`）是给 Vue 组件补的外壳，模板里一般直接放 `<span class="ak-spinner" role="status" aria-label="加载中"></span>`。
+大小由 `font-size` 定（默认 12px → 29px 见方），`--_c` 换色。`::before` 是中央常驻的空心菱形（.75em、2px 线）；`::after` 是涟漪环——同一枚菱形用 border 画，`width` / `height` 从刚好箍住中央那枚外沿扩到 1.65em（不用 `scale`，线宽恒 2px），`opacity` 另一条曲线淡到 0，各 1.2s。游戏里环出生时还带随机剪切，这个尺寸下施展不开，没做。菱形是源石母题，见[设计理念 · 菱形](/foundations/principles#菱形-源石)。说明与加载层（`.ak-spin` / `.ak-spin-container`）是给 Vue 组件补的外壳，模板里一般直接放 `<span class="ak-spinner" role="status" aria-label="加载中"></span>`。
 
 <CssClasses :files="['components/spinner.css']" />

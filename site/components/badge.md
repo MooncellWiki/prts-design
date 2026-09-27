@@ -29,6 +29,8 @@ component: badge
 
 ## CSS 实现
 
-行内徽标：`<span class="ak-badge">12</span>`；骑在内容上：`<span class="ak-badge-wrap"><button …>…</button><span class="ak-badge">3</span></span>`。
+行内徽标：`<span class="ak-badge">12</span>`；骑在内容上：`<span class="ak-badge-wrap"><button …>…</button><span class="ak-badge">3</span></span>`。页眉的 Echo 通知就是它：notices 默认黄，alerts 加 `.ak-badge--danger`。
+
+18px 高、`border-box`（`min-width` = 高，所以一位数是正圆）；`padding-bottom: 1px` 补思源黑体上下伸不对称带来的约 0.7px 下沉，数字才坐在正中。
 
 <CssClasses :files="['components/badge.css']" />

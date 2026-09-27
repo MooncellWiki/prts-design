@@ -7,7 +7,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 prts.wiki 大活期间会换头图、顶栏底图、站标、侧栏配色（现网 `ext.gadget.seventhStyle` 改的就是这些：`body` 背景大图、`#mw-head` 左右底图、`.mw-wiki-logo`、`#MenuSidebar > p` 渐变）。新皮肤把这些位置抽成一组**接口变量**（令牌 `chrome.*`，生成在 `tokens.css` §2d），活动主题——一份 Gadget 或 `MediaWiki:Common.css`——只在 `:root` 上覆盖变量，**不碰任何选择器**。卸载 Gadget 即恢复默认，不用 purge 页面缓存。
 
-下面是一份示例（`src/chrome/demo-theme.css`）：罗德岛主界面昼 / 夜背景做头图（跟随档案 / 终端主题，画从页面顶端铺起，页眉玻璃调到 `.8` 让它多透一点）、警示黄做活动主色、换站标、画布点阵。切文档站的外观看昼夜两幅；上方开关可以关掉它对比默认。
+下面是一份示例（`packages/css/src/chrome/demo-theme.css`）：罗德岛主界面昼 / 夜背景做头图（跟随档案 / 终端主题，画从页面顶端铺起，页眉玻璃调到 `.8` 让它多透一点）、警示黄做活动主色、换站标、画布点阵。切文档站的外观看昼夜两幅；上方开关可以关掉它对比默认。
 
 <SkinFrame :height="760" state="demo" />
 
@@ -30,29 +30,31 @@ prts.wiki 大活期间会换头图、顶栏底图、站标、侧栏配色（现�
 各变量的生成值与说明见[色彩 · 页眉 / 头图 / 画布的主题接口](/foundations/color#页眉-头图-画布的主题接口)。
 
 ::: warning url() 写绝对地址
-接口变量里的 `url()` 请写**绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`chrome/*.css`）解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录。示例主题因此和使用处同放在 `src/chrome/`，才写得了相对路径。
+接口变量里的 `url()` 请写**绝对地址**（`//media.prts.wiki/…`）：Chromium 把自定义属性里的相对 `url()` 按「使用处」（`chrome/*.css`）解析，Firefox / WebKit 按「声明处」解析，相对地址在两边会指向不同目录。示例主题因此和使用处同放在 `packages/css/src/chrome/`，才写得了相对路径。
 :::
 
 一次活动主题就这么多：
 
 ```css
-/* MediaWiki:Gadget-eventStyle.css */
+/* MediaWiki:Gadget-eventStyle.css（或直接写进 MediaWiki:Common.css） */
 :root {
   --ak-theme-accent: #72a330;
   --ak-keyart-image: url(//media.prts.wiki/…/kv.jpg);  --ak-keyart-h: 220px;   /* 头图从页面顶端铺起，页眉玻璃压在上面 */
   --ak-chrome-bg:    rgba(8, 9, 10, .8);                                     /* 可选：玻璃调淡让头图多透一点（默认 .9） */
-  --ak-logo-image:   url(//media.prts.wiki/…/logo.png);
+  --ak-chrome-image: url(//media.prts.wiki/…/headleft.png);  --ak-chrome-image-position: left top;   /* 可选：顶栏角饰，只放深色低对比素材 */
+  --ak-logo-image:   url(//media.prts.wiki/…/logo.png);                          /* Chromium / WebKit 生效；Firefox 请改 $wgLogos */
   --ak-canvas-image: url(//media.prts.wiki/…/bkg.png);  --ak-canvas-size: 100% auto;  --ak-canvas-repeat: no-repeat;
 }
 html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/kv-night.jpg); }   /* 终端模式换夜景（可选） */
 ```
 
+- 头图取景：`--ak-keyart-position` / `-size` 相对「页眉 + 可见段」整块算（桌面 56 + `--ak-keyart-h`，<1400 再加 48 的二级栏）；头图不必自己压暗顶部——可读性由页眉玻璃的 alpha 保证。
 - **页眉本身在两套主题下都是黑的**，所以角饰 / 站标只需准备一套；头图与画布图要分昼夜，就按 `html.skin-theme-clientpref-day | night` 分写（跟随系统时另加 `@media (prefers-color-scheme: dark)` 分支，`demo-theme.css` 里有写法）。
 - 只换 `--ak-theme-accent` 时正文不动，只有「框」在换——这是有意的：活动皮不该把内容页读起来的对比度也一起赌上。想连正文的链接 / 选中色一起换，再覆盖 `--ak-accent`（亮 / 暗各写一次）。
 
 ## 头图
 
-`.ak-keyart` 是 `.ak-layout` 之上的一条通栏画，皮肤恒输出、默认 `--ak-keyart-h: 0` 不占位。画从**页面顶端**铺起：盒子上移一个页眉高、再用同样的 `padding-top` 把内容压回页眉之下（<1400 连二级栏一起探），于是画的顶端在粘性页眉（更高的 z-index）背后——页眉是压在画上的一块均匀黑玻璃，黑框 + 画是一整块，不是「顶栏一张、头图一张」两段裁切。底部按 `--ak-keyart-fade` 渐隐进画布色。
+`.ak-keyart` 是 `.ak-layout` 之上的一条通栏画，皮肤恒输出、默认 `--ak-keyart-h: 0` 不占位。画从**页面顶端**铺起：盒子上移一个页眉高、再用同样的 `padding-top` 把内容压回页眉之下（<1400 连二级栏一起探），于是画的顶端在粘性页眉（更高的 z-index）背后——页眉是压在画上的一块均匀黑玻璃，黑框 + 画是一整块，不是「顶栏一张、头图一张」两段裁切。底部按 `--ak-keyart-fade` 渐隐进画布色（取 `min(-fade, -h)`：高度为 0 时不会往页眉后面画渐隐）；`--ak-keyart-bg` 默认透明。
 
 - 头图上要放活动标题 / 倒计时，Gadget 往 `.ak-keyart__inner` 里塞内容（它与页眉三列同宽、在页眉之下）；`.ak-keyart` 带 `aria-hidden`，放可读内容时记得去掉。
 - 画布底纹 `--ak-canvas-image` 画在 `body.skin-akds` 上，叠在 `--ak-bg-canvas` 之上。

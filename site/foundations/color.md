@@ -1,12 +1,40 @@
 # 色彩
 
-令牌分三层：**原始色板** `--ak-{hue}-{step}`（每个颜色标明出处）→ **语义令牌** `--ak-{role}`（随主题变化，组件只用这一层）→ **Codex 桥接**（MediaWiki 核心 / 扩展 UI 自动跟随）。源文件是 `packages/tokens/src/` 下的 JSON5（W3C DTCG 格式），`pnpm tokens` 生成 `src/tokens.css` 与 `tokens/tokens.json`；下面的表都读生成的 JSON。
+令牌分三层：**原始色板** `--ak-{hue}-{step}`（每个颜色标明出处）→ **语义令牌** `--ak-{role}`（随主题变化，组件只用这一层）→ **Codex 桥接**（MediaWiki 核心 / 扩展 UI 自动跟随）。
+
+```
+Primitive  --ak-gray-800 / --ak-cyan-500 / --ak-rarity-6 …          有出处的原始色
+Semantic   --ak-bg-surface / --ak-fg-muted / --ak-accent / --ak-link …  随主题变化
+Bridge     --background-color-base / --color-progressive …           Codex / MW 令牌映射
+```
+
+命名一律 `--ak-{group}-{name}`。源文件是 `packages/tokens/src/` 下的 JSON5（W3C DTCG 格式）；`pnpm tokens`（`packages/tokens/build.ts`，Style Dictionary）生成 `packages/css/src/tokens.css`（CSS 自定义属性）与 `packages/tokens/tokens.json`（机器可读，下面的表都读它）——两者都是生成物，改令牌改 JSON5，CI 会检查生成物是否最新。
 
 点色块复制 `var(--…)`。
 
 ## 原始色板
 
-组件不直接用原始色；需要时经由语义令牌引用。
+组件不直接用原始色；需要时经由语义令牌引用。每个颜色都有出处，不用「看起来像」：
+
+| 令牌 | 出处 | 用途 |
+|---|---|---|
+| gray-50 `#F5F5F5` | 游戏亮色面板 `left_bkg` | 亮色画布 |
+| gray-500 / 600 / 700 | 游戏 `btn_done` / `max_bg` / `btn_account_center` | |
+| gray-800 `#313131` | **游戏标准按钮** `btn_off` / `black_btn` | 默认按钮 |
+| gray-200 / 400 / 850 / 900 | 官网 | 官网灰阶、面板 |
+| gray-950 `#181818` / 1000 `#000` | 游戏深底 / 官网页面底 | |
+| **cyan-500** `#18D1FF` | 官网 CSS（42 处） | 暗色主题主强调 |
+| cyan-400 / 300 / 200 | 游戏 `select_round` / 官网 | 暗色链接、悬停 |
+| **blue-500** `#0098DC` | 游戏 `selected_back`、`bkg_openserver`、`<ba.vup>` | 亮色主题主强调；富文本增益 |
+| blue-400 / 600 | `<ba.kw>` / 游戏 `toggle_on` | 关键词 / 开关开启 |
+| **yellow-500** `#FFD800` | 游戏 `go_to_shop`、`image_exp_circle`；稀有度星 `#FFDE00` | 次强调、稀有度、提示 |
+| yellow-600 `#FFC90E` | `<ga.subtitle>` | 卡池副标题 |
+| lime-400 / 500 / 600 | 游戏 SP cost 底 / 官网 | SP、自动回复 |
+| orange-400 / 500 / 600 | 六星色 / `<ba.rem>` / 游戏任务追踪 | 六星、提醒 |
+| red-400 / 500 / 600 | `<ba.vdown>` / `<ba.enemy>` / 游戏 NEW | 减益、敌方、NEW |
+| red-700 / 800 / 900 | BREAKING NEWS / 确认按钮 / 专精三角 | 危险横幅、危险动作、专精 |
+| green-500 `#2FAC78` | `<ba.gild>` | 镀层 / 成功 |
+| purple-400 `#BF96ED` | 四星色 | |
 
 ### 中性色
 
@@ -70,6 +98,8 @@
 ### 链接
 
 <TokenTable prefix="theme.link" themed />
+
+已访问链接不换色相（不用紫），就是链接色「褪一层」：亮色 = 链接色 55% + `--ak-fg-muted` 45%，暗色 = 青 62% + 画布 38%；悬停回到完整的 `--ak-link-hover`。**写死算好的实色**：不用 `color-mix`（正文链接不该依赖较新的特性），也不能写半透明——浏览器为防历史嗅探会丢掉 `:visited` 颜色的 alpha。活动主题要改链接色，就连 `--ak-link-visited` 一起给。样张见[排版 · 链接与行内](/content/typography#链接与行内)；对比度要求见[可访问性](/foundations/accessibility#对比度)。
 
 ### 边框 / 焦点 / 选区
 

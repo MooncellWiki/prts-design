@@ -1,7 +1,7 @@
 /*! AKDS · base/typography.css — Typography 正文排版（prose / not-prose 作用域、标题色条、链接、列表、行内、引用、代码） · 依赖：tokens.css */
 /* ─── Typography ────────────────────────────────────────────────────────── */
 /* prose / not-prose（同 Tailwind Typography）：
- *  wikitext 解析产物（.mw-parser-output）天然是「正文」，下面这些排版规则——标题色条、段距、列表方块符、dl / blockquote、链接色（含 :visited 褪色）、外链图标——
+ *  wikitext 解析产物（.mw-parser-output）天然是「正文」，下面这些排版规则——标题色条、段距、列表菱形符、dl / blockquote、链接色（含 :visited 褪色）、外链图标——
  *  默认作用于整篇；每条都带 :not(:where(.ak-not-prose, .ak-not-prose *))（特指度 0，不改原规则的权重），
  *  模板 / 组件把 `ak-not-prose` 标在输出的最外层，子树内就完全不受正文排版影响：链接退回 color: inherit、无下划线，颜色 / 悬停由组件自己定
  *  （否则 a.ak-op-card / a.ak-stage 这类「整块是链接」的组件写 color（0,1,0）永远打不过全局 a:visited（0,1,1），页眉 / 搜索面板 / 分页都曾各自补丁）。

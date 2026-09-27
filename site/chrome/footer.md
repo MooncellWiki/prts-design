@@ -39,7 +39,21 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 `$wgFooterIcons` 的输出结构原样保留（`ul#footer-icons > li#footer-*ico > a.cdx-button.cdx-button--fake-button > img`，一个 `li` 里可以有好几枚）：徽章**原样显示**——26px 高、无底板、不灰度、不降透明、无悬停效果（只保留键盘焦点描边）；`cdx-button` 假按钮的圆角 / 最小高度 / 内边距归零，站点配置里的内联 `margin-left` 用 `!important` 压掉。顺序 = `$wgFooterIcons` 的键序。
 
 - 通用徽章（MediaWiki / SMW / CC BY-NC-SA）建议换成**白描版**（白色单色、透明底，`preview/assets/badge/mono/`，由官方矢量重着色）：1.43 自带的 `poweredby_mediawiki.svg` 是透明底黑字，放在黑页脚上看不见。站点自己的徽章（Mooncell / HoRain）用原图。
-- 某枚通用徽章仍是原彩色时，给 `#footer-icons` 加 `.ak-footer__icons--plate`，恢复 31px 高的浅色底板。
+- 某枚通用徽章仍是原彩色时，给 `#footer-icons` 加 `.ak-footer__icons--plate`，恢复 31px 高的浅色底板（`#f5f5f5`，不随暗色翻转——Vector / Citizen 给透明底黑字徽章垫的也是这种固定浅底）。
+
+prts.wiki 现网页脚有 5 枚 88×31 徽章：CC BY-NC-SA（`copyright`）、Powered by MediaWiki + HoRain + a Mooncell project（`poweredby`，后两枚由 LocalSettings 追加）、Semantic MediaWiki（扩展自己加的 `poweredbysmw`）。换成白描版是站点层的事，皮肤不用改——在 LocalSettings 里改 `src`（starcitizen.tools 就是这么换成自绘单色徽章的），例如：
+
+```php
+$wgFooterIcons = [
+  'sponsors'  => [ 'mooncell' => [ 'src' => '//static.prts.wiki/…/mooncell.png', 'url' => 'https://project.mooncell.wiki', 'alt' => 'a Mooncell project' ],
+                   'horain'   => [ 'src' => '//static.prts.wiki/…/horain.png',   'url' => 'https://www.horain.net/',        'alt' => 'HoRain' ] ],
+  'poweredby' => [ 'mediawiki' => [ 'src' => '/skins/AKDS/resources/badge/mediawiki.svg', 'url' => 'https://www.mediawiki.org/', 'alt' => 'Powered by MediaWiki' ] ],
+  // SMW 会自己追加 poweredbysmw；换 src 用 $smwgFooterIcon 或 SkinTemplateNavigation::Universal 钩子
+  'copyright' => [ 'copyright' => [ 'src' => '/skins/AKDS/resources/badge/cc-by-nc-sa.svg', 'url' => 'https://creativecommons.org/licenses/by-nc-sa/4.0/', 'alt' => 'CC BY-NC-SA 4.0' ] ],
+];
+```
+
+（`resources/badge/` 目前不在 `skin/` 里：白描版在 `preview/assets/badge/mono/`，部署时拷过去或上传到站点。）
 
 ::: warning mustache 里的 data-footer
 核心会把 `data-footer.*` 的 `html-items` 剥掉，只留 `array-items[{id, html}]`，页脚三处必须像 Vector 那样写成 <code v-pre>{{#array-items}}&lt;li id="{{id}}"&gt;{{{html}}}&lt;/li&gt;{{/array-items}}</code>，用 <code v-pre>{{{html-items}}}</code> 会渲染成空。

@@ -4,8 +4,63 @@ title: 干员页样例（陈）
 
 # 干员页样例（陈）
 
-信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节。顶部「干员信息」= 现网 `CharinfoV2` Widget 原样（DOM / CSS / JS 一字不改，静态文件快照在 `preview/vendor/charinfo/`），其余章节 = 现网各模板 → 设计系统组件的映射（见[参考 · 03 §3.6](/reference/mediawiki-integration)）。
+信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节。顶部「干员信息」= 现网 `CharinfoV2` Widget 原样（DOM / CSS / JS 一字不改，静态文件快照在 `preview/vendor/charinfo/`），其余章节 = 现网各模板 → 设计系统组件的映射（见下）。
 
 源文件 `preview/_src/pages/operator.html`；单文件离线版 `dist/operator.html`。
 
 <PageFrame page="operator.html" />
+
+## 章节
+
+现网「陈」页面的 wikitext 是 19 节模板调用。新皮肤下**干员页的 wikitext 一字不改，章节一节不少**：改的是各模板输出的 HTML（换成设计系统组件）；<code v-pre>{{CharinfoV2}}</code> 这块连样式表都先不动——原样跑现网 Widget，皮肤只补接缝。
+
+异格一览 `.op-alter` → **干员信息**（现网 Widget 原样）→ 特性 `.ak-kv--boxed` → 获得方式 `.ak-kv--inline` → 属性（`.op-calc` 属性计算器 + 模组选择 + `.ak-attrs` / 四档 wikitable）→ 攻击范围 ×3 → 天赋（条件表 + 潜能 · 算法开关）→ 潜能提升 `.ak-pot-list` → 技能 ×3（全等级表 + 日 / 英名 + 提示 + 范围 + 备注）→ 后勤技能 → 精英化材料 → 技能升级材料（+ 专精三技能表）→ 模组 ×3 `.ak-module`（原型证章 + X + Y）→ 相关道具 → 干员档案（竖排页签 9 段 + 未获得时档案 `.ak-archive`）→ 语音记录（语种切换 + 38 条 `.ak-voice`）→ 干员密录 → 悖论模拟 → 干员异格任务（已删除存档）→ 干员模型 `.op-spine` → 引用 + navbox。
+
+- 舞台之下**不设身份栏 / 题注**：代号 / 星级 / 职业 · 分支 · 位置 / 标签 / 画师 / CV / 时装舞台 HUD 上都有（手机版样式表只藏按钮，这些字段照留），所属在「属性」节的所属势力行；HUD 之外只剩情报编号 / 干员序号 / 游戏内 ID / 日文名——前三者不是关键信息，日文名属多语言名称数据，都不值得在门面外显。先前的身份栏键值表 8 行里 6 行与 HUD 复读，已整块删掉。舞台文字全由 JS 填入，无 JS / 爬虫看到的舞台是空的——生产环境若在意，让模板另出一份 `visually-hidden` 的键值，不做可见复读。
+- 属性表四维之下再四行：部署费用 / 阻挡 / 攻击间隔 / 再部署——这四项游戏数据里就是按精英阶段存的，和四维同一个轴，不另起键值表（现网附加属性表里 colspan 横跨的那几项，「19 → 21 → 23」是在一格里手搓列轴）；势力两项 `.ak-kv--inline` 一行做表脚。
+
+## 现网模板 → 组件
+
+| 现网（wikitext → 输出） | 新结构 | 说明 |
+|---|---|---|
+| <code v-pre>{{异格干员}}</code> → `.alter-operator-list` wikitable | `.op-alter`：黑标「异格一览」+ 原型 / 异格 [`.ak-op-card--sm`](/arknights/op-card)（当前页 `.is-current`）+ `<details>` 说明 | 现网的 popup 说明改成就地展开 |
+| <code v-pre>{{CharinfoV2}}</code> → <code v-pre>{{#widget:charinfoV2}}</code> | **原样**：DOM、`charinfo_*.min.css` ×2（600px 切桌面 / 手机）、`charinfo_*.min.js` + `charId*.js` + `charVoice*.js`、模板参数生成的内联数据全部照旧；皮肤只补几条接缝规则 | 见下「CharinfoV2 怎么接」 |
+| <code v-pre>{{干员获得方式}}</code> → cbox 提示 + wikitable | [`.ak-cbox--tip`](/components/cbox)（另见「干员上线时间一览」，位置同现网：先提示后表）+ [`dl.ak-kv--inline`](/arknights/kv)（两对一行；获得方式值用中性 `.ak-tag`，不用 `--yellow`——整页的黄只留给真要强调的东西） | |
+| <code v-pre>{{属性}}</code> → `Widget:CharEquipSelector` 模组下拉 + 附加属性表 + 四档属性表 + `Widget:PropertyCalc` 计算器 | `.op-calc`（[`.ak-phase-tabs`](/arknights/phase-tabs) + 裸 `<input>` `<select>`：等级 / 信赖 / 潜能 / 模组 + [`.ak-attrs`](/arknights/attrs) HUD 读数）+ `wikitable.ak-compact`（精英 0 1 级 / 精英 0 满级 / 精英 1 满级 / 精英 2 满级 / 信赖加成上限；四维 + 部署四项）+ `dl.ak-kv--inline`（所属势力 / 隐藏势力） | 计算器与模组选择合成一块：选了潜能，「潜能提升」节里对应格点亮 |
+| <code v-pre>{{干员攻击范围}}</code> → 三格 wikitable | `.op-ranges > .ak-range` ×3（精英零 / 一 / 二），见[攻击范围](/arknights/range) | |
+| <code v-pre>{{天赋列表3}}</code> → wikitable + `Widget:Passages switch` | [`table.ak-talent-table`](/arknights/talent-table)：潜能开关 `.is-pot`（描述换成潜能版）+ **算法开关 `.is-calc`**（描述里每个加成项前露出 `.ak-calc--add / --mul / --fadd / --fmul` 四枚标记 + `tfoot` 图例行） | 同现网「潜能 / 算法」两个复选框 |
+| <code v-pre>{{潜能提升}}</code> → 五格 wikitable | [`.ak-pot-list > .ak-pot`](/arknights/pot-list)（图标 + 小标 + 效果；`.is-on` 由属性面板点亮） | |
+| <code v-pre>{{技能}}</code> ×3 → 表头 + 全等级 wikitable + 备注 | [`.ak-skill-sheet`](/arknights/skill-sheet)：表头（图标 / 名称 + 日 / 英名 / SP 芯片（提示解释回复与触发方式）/ 开放阶段 / 范围 `.ak-range--sm`）+ `.ak-skill-table`（1–7 + 专精 Ⅰ–Ⅲ；列头芯片带提示：初始 / 消耗 / 持续的定义）+ `__note`；术语与异常效果 = `.ak-rt-term.ak-tip--wide` | 现网的 <code v-pre>{{术语}}</code> / <code v-pre>{{异常效果}}</code> 弹窗 → 宽版提示 |
+| <code v-pre>{{后勤技能}}</code> → wikitable（条件 / 图标 / 技能 / 房间 / 描述） | `wikitable.ak-compact` + `.ak-elite`；图标位 `.ak-glyph-box` | 现网技能图标由 Cargo 查出，样例用线稿占位 |
+| <code v-pre>{{精英化材料}}</code> <code v-pre>{{技能升级材料}}</code> → wikitable | [`.ak-materials`](/arknights/materials)（1→2 … 6→7，`__divider` 写「达到精英阶段 1 后解锁」）+ 专精 `wikitable`（三技能 × 专精 Ⅰ–Ⅲ，同现网一张表对比） | 材料 `.ak-item--sm` + 提示名称；图还是现网那张 `道具_带框_<名>.png`，<code v-pre>{{道具图标}}</code> 只换外壳：`<div style="display:inline-block;position:relative">` + `.prts-item-quantity-label` → `.ak-item` + `.ak-item__count` |
+| <code v-pre>{{模组}}</code> ×N → `.equiptemplate` | [`.ak-module[data-color]`](/arknights/module)：型号块（类型图标 + SWO-X）+ 名称 + 说明提示 + 基础信息（故事默认 3 行，「全文阅读」checkbox 展开）+ 三阶段表（属性 / 特性追加 · 天赋更新）+ 解锁任务 + 解锁需求与材料（信赖 / 等级 / 任务 + `.ak-item-list`）；原型证章 = 同一张卡不带 `data-color` | `类型颜色` → `data-color`；<code v-pre>{{修正}}</code> → `.template-fix-mark` + `<references group=注>` |
+| <code v-pre>{{相关道具}}</code> → wikitable | `wikitable.ak-compact` + `.ak-item` | |
+| <code v-pre>{{人员档案}}</code> → 折叠 wikitable（9 段）+ 未获得时档案 | `.op-files`：左 `.ak-tabs--vertical`（9 项 + 英文小标；<768 横排）+ 右 `.ak-tabpanel > .ak-dossier`（基础档案 `.ak-kv`、综合体检 `.ak-attrs--compact`、其余段落；`__unlock` 写解锁条件）；未获得时档案 → `.ak-archive`（解锁条件 `.ak-stage-code`），见[档案](/arknights/dossier) | 游戏档案页的「左列表右正文」；9 段全在 DOM 里 |
+| <code v-pre>{{:xx/语音记录}}</code>（`#voice-table-root` VoiceTable + `#voice-data-root` 多语种数据） | 语种切换（`.ak-chip`：普通话 / 方言 / 日 / 英 / 韩，带 CV 名）+ [`.ak-voice-list > .ak-voice`](/arknights/voice)（标题 / 语种徽标 / `__cond` 解锁条件 / 文件名 `.ak-code-id` / 文本 `data-cn data-jp data-en data-kr data-yue`） | 38 条全部列出；切语种只换文本 |
+| <code v-pre>{{干员密录}}</code> <code v-pre>{{悖论模拟}}</code> → 折叠 wikitable | [`.ak-archive`](/arknights/archive)：头（kicker + 标题 + 解锁条件 `.ak-elite` / `.ak-trust`）+ 体（文案）+ 脚（阅读密录 / 关卡 `.ak-stage` / 首通奖励 `.ak-item`） | |
+| <code v-pre>{{干员异格任务}}</code> → cbox + wikitable | `.ak-cbox--warning`（已删除、仅存档；图标 `i-trash` = 现网 delete-empty）+ `wikitable.ak-compact` + `.ak-item-list` + `.ak-chevrons` | |
+| <code v-pre>{{spineId}}</code>（SpineViewer） | `.op-spine`：黑色 16:9 网格舞台 + `.ak-btn--primary` 载入 | |
+| <code v-pre>{{干员导航}}</code> | `.navbox`（见[分类栏与杂项](/content/catlinks#工具类)） | |
+
+## CharinfoV2 怎么接
+
+样例页就是这么接的，生产环境同理。
+
+- **Widget 原样**：<code v-pre>{{#widget:charinfoV2}}</code> 输出的 DOM、模板参数生成的内联数据（`char_info` / `charimg_params` / `charskin_params` / `back_list` …）、`charinfo_*.min.css`（桌面 / 手机两份，600px 切）、`charinfo_*.min.js` + `charId*.js` + `charVoice*.js`、crypto-js、`charname` 字体全部照旧。样例把这些静态文件钉版本抓成快照 `preview/vendor/charinfo/`（`scripts/fetch-charinfo.py`；`NOTICE.md` 记着来源与仅有的改动——CSS 里几处 `url()` 改相对路径、charVoice 只留陈），立绘 / 场景图 / 职业 · 星级 · 分支图标 / BGM / 语音仍由脚本运行时从 media / static / torappu.prts.wiki 拉。
+- **依赖**：脚本用 `RLQ.push(['jquery', fn])` 等 jQuery——MW 里 ResourceLoader 照常处理；样例页自带 jQuery 3.7.1（= MW 1.43）和两行 RLQ 替身。
+- **接缝规则**（样例页 `<style>` 的「舞台接缝」段；生产放 Widget 自己的 `<style>` 或站点样式）：
+  1. 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着），正文列比它窄时整块 `zoom: var(--op-stage-zoom)`（页面脚本按列宽算）。用 zoom 不用 transform：Widget 的「全屏查看」是把 wrapper 设成 `position: fixed` 铺满视口，transform 会改它的包含块、zoom 不会；再加 `:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1 }`，全屏时不缩。
+  2. 全屏层与手机「查看立绘」层的 z-index 抬到 `--ak-z-modal` 之上（Widget 内联的 999 只够压 Vector——它顺手压下去的 `#mw-panel` `#mw-head` 皮肤里没有）。
+  3. **皮肤 `base/media.css` 的 `img { max-width: 100%; height: auto }` 不进舞台**——HUD 图标靠 `height="30px"` 这类属性定尺寸，`height: auto` 会把它们放回原图的 32px。这条皮肤落地时要正面处理：站上其它 Widget / 模板同样大量依赖 `height=` 属性，要么皮肤把这条改成不碰带 `height` 属性的图，要么各 Widget 自己补 CSS（见[缩略图与图库 · 图片](/content/media#图片)）。
+  4. `line-height: 1.6`（Vector 正文行高；Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点）。
+- **接缝之外**：Widget 的手机版由脚本按父级宽度 <600 在加载时一次性决定（自己 transform 缩放，不响应 resize），皮肤不插手；看图模式的滚轮缩放 / 拖拽用 `getBoundingClientRect` 对 `offsetWidth`，zoom 之下拖动手感会差一个系数（全屏时 zoom 归 1，不受影响）。
+
+### 换皮草案（暂不接入）
+
+`packages/css/src/charinfo.css` 是对同一套 DOM 的皮肤化草案：黑玻璃 HUD（同页眉）、直角、选中 = 青条 + 青字、名字牌 = 思源 900 + 6px 青条（不再要 `charname` 字体）、时装 / 场景抽屉从右缘滑入、整块按容器宽度 `transform: scale(var(--charinfo-scale))`、≤639 藏 HUD 只留页签与名字牌。它不在 `index.css` / `skin.json` 里。真要接入得连 JS 一起改三处：resize 只设 `--charinfo-scale`；选中态从换蓝图标 + 内联 color 改成加类 `.is-active`；面板 / 抽屉开合从内联 height / right / opacity 改成加类 `.is-open` `.is-show` `.is-watch`。先把现网的动效 / 文本排布 / 试听语音 / BGM 原样看全，再定换皮范围。
+
+## 皮肤与页面的分工
+
+**皮肤这半**：无——干员页不需要皮肤层的特殊处理，标题 / 目录 / 动作簇照常（目录自动收 19 个 h2 + 技能 / 模组的 h3）。
+
+**页面这半**：`.op-*` 的几条排布规则归各模板的 TemplateStyles（`Template:异格干员/styles.css`、`Template:属性/styles.css`、`Template:人员档案/styles.css`、语音记录 / SpineViewer 各自的），样例页把它们合在页面的一个 `<style>` 里；属性计算器 / 语音语种切换与播放的脚本，生产环境分别是 `Widget:PropertyCalc`、VoiceTable——样例页脚本只是演示这些交互在新结构上怎么接（语音记录的播放钮走的是与现网同一套 torappu.prts.wiki 音频地址）；舞台的交互就是现网 charinfo JS 本身，样例页只算一个 zoom 系数。

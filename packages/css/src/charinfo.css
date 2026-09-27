@@ -1,6 +1,6 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
  *  AKDS · charinfo.css — 干员页「干员信息」舞台 = prts.wiki 现网 Widget:CharinfoV2 的皮肤版样式表（换皮草案）
- *  ⚠ 预览页目前不接入这份：舞台先原样跑现网的 CSS / JS（preview/vendor/charinfo/，接法见 docs/03 §3.6「CharinfoV2 怎么接」），把动效 / 文本排布 / 试听语音 / BGM 看全后再定换皮范围。
+ *  ⚠ 预览页目前不接入这份：舞台先原样跑现网的 CSS / JS（preview/vendor/charinfo/，接法见文档站 /patterns/operator#charinfov2-怎么接），把动效 / 文本排布 / 试听语音 / BGM 看全后再定换皮范围。
  *
  *  现网：{{CharinfoV2}} → {{#widget:charinfoV2}} 输出 .charinfo-container > #charinfo-wrapper（1024×576 的绝对定位舞台）
  *        + static.prts.wiki/charinfo/charinfo_*.min.js（定位立绘、切换精英 / 时装 / 场景、试听语音、BGM、画师 / CV 折叠）。
@@ -12,7 +12,7 @@
  *      选中 = 左侧青条 + 青字（游戏 selected_back），拉丁小标用 Bender，中文用思源
  *    · 两套主题下舞台都是黑的（它是游戏画面，不是纸面），只有外框 1px 读 --ak-border
  *    · 状态类：.is-active（阶段 / 时装页签、当前时装）· .is-open（画师 / CV 面板、时装 / 场景抽屉、场景按钮）· .is-show（语音气泡）
- *      · .is-watch（看图模式：藏起所有 HUD）——现网 JS 用内联 style 切 opacity / height / right，皮肤版建议改成加类（见 docs/03 §3.6）
+ *      · .is-watch（看图模式：藏起所有 HUD）——现网 JS 用内联 style 切 opacity / height / right，皮肤版建议改成加类（见文档站 /patterns/operator#换皮草案-暂不接入）
  *  依赖：tokens.css（字体 / 青色 / 缓动令牌）
  * ═══════════════════════════════════════════════════════════════════════════ */
 

@@ -1,6 +1,6 @@
 /*! AKDS · chrome/sidebar.css — Sidebar 侧栏 · 依赖：tokens.css · components/ */
 /* ═══ Sidebar ═══
- *  内容来源两种都支持（见 docs/03 §3.1）：
+ *  内容来源两种都支持（见文档站 /guide/skin-template#侧栏与-menusidebar）：
  *   a) MediaWiki:Sidebar 门户 → .ak-portlet > h3.ak-portlet__title + ul
  *   b) PRTS #MenuSidebar 原始 wikitext 树 → p（分组标题）+ ul > li > (a|b) [+ ul …任意深度]
  *  多层展开由 sidebar-tree.js 增强：li.ak-tree__branch(.is-open) > .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list

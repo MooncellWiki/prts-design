@@ -30,6 +30,14 @@ component: cbox
 
 现网夜间样式本来就把 lv2 / lv3 并成一档，这里沿用。
 
+其余参数：`title=` → `.ak-cbox__title`，`text=` → `.ak-cbox__body` 的正文；三个自定义色参数落到私有变量上，模板用 `style="--_c:…;--_bg:…"` 覆盖即可——`bg` → `--_bg`（底色），`iconcolor` → `--_c`（图标与标题色），`bgleft`（图标井底）由 `--_c` 按 24% 算出，不单独给。
+
+`mdi=true` + `icon=` 的 MDI 图标改从皮肤的 SVG sprite 取：`arrow-top-right-thick` → `i-arrow-ne`、`microphone-message` → `i-mic`、`delete-empty` → `i-trash`，提示 / 警告用 `i-info` / `i-warn`。MDI 名 → `i-*` 名的对照表由模板维护，缺的图标往 sprite 里补（见[图标](/foundations/icons#界面线稿图标)）。模板输出：
+
+```html
+<div class="ak-cbox ak-cbox--tip"><span class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></span><div class="ak-cbox__body">…</div></div>
+```
+
 ## Vue API
 
 <PropsTable of="AkCbox" />

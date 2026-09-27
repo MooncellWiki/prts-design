@@ -1,6 +1,18 @@
 # 装饰语言
 
-方舟界面的「签名」不是某个组件，而是一组可叠加的几何装饰：左侧色条 / 短横条 / 斜纹 / 半调网点 / 角标三角 / 黑白反转 / 大写拉丁字 / 白色线稿图标。全部是纯 CSS 类（`src/decor/`），可以叠在任何盒子上。**没有切角、斜切、斜带**——层级与状态靠色条、黑白反转、角标三角表达。
+方舟界面的「签名」不是某个组件，而是一组可叠加的几何装饰：左侧色条 / 短横条 / 斜纹 / 半调网点 / 角标三角 / 黑白反转 / 大写拉丁字 / 白色线稿图标。全部是纯 CSS 类（`packages/css/src/decor/`，一类一个文件），可以叠在任何盒子上。**没有切角、斜切、斜带**——层级与状态靠色条、黑白反转、角标三角表达。菱形是有意的——源石母题（列表符号、加载涟漪、时间线节点、敌人威胁度），它是一枚独立的小图形，不是盒子的斜边，见[设计理念 · 菱形](/foundations/principles#菱形-源石)。
+
+| 类 | 说明 | 出处 |
+|---|---|---|
+| `.ak-stripes` `--strong` `--warning` `--danger` `--hazard` · `.ak-stripe-bar` · `.ak-stripe-edge` | 45° 斜纹（危险 / 施工 / 禁用 / 分隔） | 游戏 `btn_done`、`image_btn_ap_confirm` |
+| `.ak-halftone` `--l` `--full` · `.ak-halftone-fade` · `.ak-blue-band` | 半调网点渐隐；蓝色标题条 | 游戏 `bkg_openserver` |
+| `.ak-bg-grid` `.ak-bg-dots` `.ak-bg-diag` `.ak-scanlines` | 网格 / 点阵 / 斜线 / 扫描线背景 | PRTS 终端 |
+| `.ak-corner` `--tr` `--yellow` `--red` `--lg` | 角标三角；带文字的角标用矩形 `.ak-tag` 叠在角上（45° 斜带已移除） | 官网右上三角、游戏 `selected_decor` |
+| `.ak-brackets` | 细线边角（只用于图片） | |
+| `.ak-en` `.ak-display` `--xl` `.ak-overline` `.ak-num` `.ak-code-id` `.ak-label` `.ak-watermark` · `.ak-bilingual` | 拉丁装饰字（见[字体排印](/foundations/typography#拉丁装饰字)） | 官网 |
+| `.ak-glyph` `--keep` `--white` · `.ak-glyph-box` | 白色线稿图标亮色反相；`--keep` / `--white` 不反相 | |
+| `.ak-inverse` | 黑白反转块 | 游戏 `btn_on` / `btn_off` |
+| `.ak-chevrons` | 链接尾部 `»` | 游戏 `transferarrow` |
 
 ## 色条 + 细框
 

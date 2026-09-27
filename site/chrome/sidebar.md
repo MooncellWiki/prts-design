@@ -24,7 +24,7 @@ div#MenuSidebar
   …任意深度
 ```
 
-`.ak-sidebar p` 与 `.ak-portlet__title` 是同一套分组标题；`li > b` 与 `li > a` 是同一套行；`li > ul` 缩进 + 左侧导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页。现网末尾的「Languages」组（语言切换改在页眉用户菜单「界面设置」）与「工具」组（工具箱整组搬进标题行的「更多」）在新皮肤下退役，建议从 MenuSidebar 里删掉。现网 `<span style="…">NEW</span>` 角标建议换成 `.ak-tag.ak-tag--sm.ak-tag--new`。
+`.ak-sidebar p` 与 `.ak-portlet__title` 是同一套分组标题；`li > b` 与 `li > a` 是同一套行；`li > ul` 缩进 + 左侧导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页。现网末尾的「Languages」组（语言切换改在页眉用户菜单「界面设置」）与「工具」组（工具箱整组搬进标题行的「更多」）在新皮肤下退役，建议从 MenuSidebar 里删掉。现网 `<span style="…">NEW</span>` 角标建议换成 `.ak-tag.ak-tag--sm.ak-tag--new`。现网把 `#MenuSidebar` 移进侧栏的内联脚本在新皮肤里照样工作（`#mw-panel`、`#p-tb` 的 id 都保留），皮肤侧的处理见[skin.mustache 结构 · 侧栏](/guide/skin-template#侧栏与-menusidebar)。
 
 ## 多层树
 
@@ -37,7 +37,7 @@ li.ak-tree__branch[.is-open][.is-current-path]
   > ul.ak-tree__list
 ```
 
-- 展开状态记在 `localStorage['akds-sidebar-tree']`（键 = 分组标题 / 标签路径）；作者默认展开写 `li class="is-open"`，用户操作后以记忆为准。
+- 展开状态记在 `localStorage['akds-sidebar-tree']`（键 = 分组标题 / 标签路径；可折叠门户的整组开合也记在这里，键 `portlet:<id>`）；作者默认展开写 `li class="is-open"`，用户操作后以记忆为准。
 - 当前页所在分支（`a.selflink` / `li.is-active` / `href` 等于当前地址）总是自动展开，并加 `.is-current-path`（标签与导轨变淡青）。
 - 键盘 ← → 收起 / 展开。晚注入的内容由 MutationObserver 接住。
 

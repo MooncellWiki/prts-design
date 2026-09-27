@@ -27,7 +27,7 @@ MW 1.40+ 的媒体 DOM 是 `figure[typeof="mw:File/Thumb"] > a > img + figcaptio
 
 ## 图片
 
-- `img { max-width: 100%; height: auto }`：正文里的大图不会撑破栏宽。⚠ 这条会把只靠 `height="30"` 属性定尺寸的图（Widget 里的 HUD 图标）放回原图高度——干员页的 CharinfoV2 舞台就单独排除了它，见[参考 · 03 §3.6](/reference/mediawiki-integration)。
+- `img { max-width: 100%; height: auto }`：正文里的大图不会撑破栏宽。⚠ 这条会把只靠 `height="30"` 属性定尺寸的图（Widget 里的 HUD 图标）放回原图高度——干员页的 CharinfoV2 舞台就单独排除了它，见[干员页样例 · CharinfoV2 怎么接](/patterns/operator#charinfov2-怎么接)。皮肤正式上线时要正面处理：站上其它 Widget / 模板同样大量依赖 `height=` 属性，要么这条改成不碰带 `height` 属性的图，要么各 Widget 自己补 CSS。
 - `img.ak-pixel`：像素图（小尺寸游戏图标放大）用 `image-rendering: pixelated`，不糊。
 - 游戏的白色线稿图标（职业 / 精英 / 势力）加 `.ak-glyph`，亮色主题下自动反相，见[装饰语言](/foundations/decoration#白色线稿图标-ak-glyph)。
 

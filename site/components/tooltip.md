@@ -12,8 +12,8 @@ component: tooltip
 | 写法 | 任意元素加 `data-ak-tip="文字"`（气泡是 `::after`） | `#trigger` 放触发元素，默认插槽放内容 |
 | 内容 | 属性里的一句字符串 | 任意内容（加粗、换行、链接） |
 | 方向 | 只在上方 | `placement`：上 / 下 / 左 / 右，上下可左 / 右缘对齐 |
-| 触发 | 悬停 + 触发元素自己 `:focus-visible` | 悬停 + 聚焦（默认）/ 只聚焦 / 点击 / 手动（`v-model`） |
-| 读屏 | 气泡文字不关联到元素 | 触发元素 `aria-describedby` 指向 `role="tooltip"`；`Esc` 收起 |
+| 触发 | 悬停 + 触发元素自己 `:focus-visible`（不可聚焦的元素由皮肤脚本补 `tabindex="0"`） | 悬停 + 聚焦（默认）/ 只聚焦 / 点击 / 手动（`v-model`） |
+| 读屏 | 皮肤脚本补 `aria-describedby`，指向页面里一个隐藏的描述节点（提示与元素自身名称相同时跳过，如道具图 `alt` = 道具名）；无 JS 时不关联 | 触发元素 `aria-describedby` 指向 `role="tooltip"`；`Esc` 收起 |
 | 用在 | MW 模板、Lua 输出、不需要 JS 的地方；`AkItem` 的 `tip` 也是它 | 小部件里需要上面任何一项时 |
 
 两者外观相同（`.ak-tooltip` 与 `[data-ak-tip]::after` 用同一组令牌）。一两句话的长解释：纯 CSS 版加 `.ak-tip--wide`（允许折行、最宽 280）；Vue 版自动在 280px 处折行。
@@ -23,7 +23,7 @@ component: tooltip
 <p>技能生效期间，持有效果：<span class="ak-term ak-tip--wide" data-ak-tip="无敌：无法被不同阵营选中（属于无法选择类效果）；受到的伤害与元素值变为 0；无法触发任何单位未绑定选择器的能力">无敌</span>、<span class="ak-term ak-tip--wide" data-ak-tip="晕眩免疫：使自身的晕眩失效，但不会清除相关 Buff">晕眩免疫</span></p>
 ```
 
-纯 CSS 版的气泡闲置时收成 0 宽（`max-width: 0` + `overflow: hidden`），不只是透明——透明的气泡仍占布局，靠近右缘的长提示会把手机页面撑出横向滚动。
+纯 CSS 版的气泡闲置时收成 0 宽（`max-width: 0` + `overflow: hidden`），不只是透明——透明的气泡仍占布局，靠近右缘的长提示会把手机页面撑出横向滚动、整页跟着缩小（干员页 130 枚提示就是这么发现的，见[贡献一个组件 · 命名与约定](/guide/contributing#命名与约定)）。
 
 ## 基本用法
 

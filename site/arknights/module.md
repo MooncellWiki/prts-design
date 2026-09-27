@@ -17,7 +17,7 @@ component: module
 
 故事默认只露 3 行，「全文阅读」展开、「收起全文」收回。展开态是组件自己的状态，也可以用 `v-model` 接出来（外面放「全部展开」之类的开关）。无论展开与否，全文都在 DOM 里，可被搜索。
 
-CSS 版的开关靠 `data-toggle-class` 约定 + 预览页脚本切 `.is-open`，真皮肤的 skin.js 目前没有这段处理、开关不工作；Vue 版自带状态，不受影响。
+CSS 版的开关靠 `data-toggle-class` 约定：勾选「全文阅读」时皮肤脚本（`skin.js`，预览里是 `preview.js`）给 `data-toggle-target=".ak-module__main"` 切 `.is-open`；无 JS 时复选框照样在，只是故事停在 3 行。Vue 版自带状态。
 
 @demo Module/Collapse
 

@@ -202,7 +202,7 @@
   --ak-z-toast: 3000;
   --ak-z-tooltip: 4000;
 
-  /* ─── asset · 资源路径约定：图标资源目录的基准（默认相对 preview/assets；生产环境见 docs/03 §图标资源）。目前没有 CSS 读取它，留作模板 / Gadget 拼路径的约定 */
+  /* ─── asset · 资源路径约定：图标资源目录的基准（默认相对 preview/assets；生产环境见文档站 /foundations/icons#游戏图标）。目前没有 CSS 读取它，留作模板 / Gadget 拼路径的约定 */
   --ak-asset-base: assets;
 
   /* ─── control */

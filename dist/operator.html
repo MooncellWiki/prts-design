@@ -9,7 +9,7 @@
 <style>
 /*! AKDS — 明日方舟网页设计系统 · 汇总入口（预览 / Storybook / 文档站 / 普通站点用；MW 中按 ResourceLoader 模块逐文件加载，
  *  列表由 scripts/css-order.ts 从下面这些 index.css 同步进 skin/skin.json，两边顺序一致）
- *  层：tokens（令牌）→ base（L1 MW 内容）→ components（L3 通用）→ decor + arknights（L4 方舟）→ chrome（L2 皮肤骨架）→ utilities */
+ *  层：tokens（令牌）→ base（L1 MW 内容）→ components（L3 通用）→ decor + arknights（L4 方舟）→ chrome（L2 皮肤骨架）→ utilities → forced-colors（强制色模式） */
 /*! AKDS — 自托管 Web 字体（scripts/fetch-fonts.py 生成，勿手改；重跑：python3 scripts/fetch-fonts.py）
  *  各族链见 tokens.css「Typography」。url() 相对本文件（src/）；MW 皮肤侧 resources/fonts.css + resources/fonts/ 是指向 src/ 的符号链接，ResourceLoader 按 resources/ 重写路径。
  *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集；PRTS 为官方赞助站点，与鹰角同一组织下共用授权）：
@@ -359,7 +359,7 @@
   --ak-z-toast: 3000;
   --ak-z-tooltip: 4000;
 
-  /* ─── asset · 资源路径约定：图标资源目录的基准（默认相对 preview/assets；生产环境见 docs/03 §图标资源）。目前没有 CSS 读取它，留作模板 / Gadget 拼路径的约定 */
+  /* ─── asset · 资源路径约定：图标资源目录的基准（默认相对 preview/assets；生产环境见文档站 /foundations/icons#游戏图标）。目前没有 CSS 读取它，留作模板 / Gadget 拼路径的约定 */
   --ak-asset-base: assets;
 
   /* ─── control */
@@ -833,7 +833,7 @@ body {
 /*! AKDS · base/typography.css — Typography 正文排版（prose / not-prose 作用域、标题色条、链接、列表、行内、引用、代码） · 依赖：tokens.css */
 /* ─── Typography ────────────────────────────────────────────────────────── */
 /* prose / not-prose（同 Tailwind Typography）：
- *  wikitext 解析产物（.mw-parser-output）天然是「正文」，下面这些排版规则——标题色条、段距、列表方块符、dl / blockquote、链接色（含 :visited 褪色）、外链图标——
+ *  wikitext 解析产物（.mw-parser-output）天然是「正文」，下面这些排版规则——标题色条、段距、列表菱形符、dl / blockquote、链接色（含 :visited 褪色）、外链图标——
  *  默认作用于整篇；每条都带 :not(:where(.ak-not-prose, .ak-not-prose *))（特指度 0，不改原规则的权重），
  *  模板 / 组件把 `ak-not-prose` 标在输出的最外层，子树内就完全不受正文排版影响：链接退回 color: inherit、无下划线，颜色 / 悬停由组件自己定
  *  （否则 a.ak-op-card / a.ak-stage 这类「整块是链接」的组件写 color（0,1,0）永远打不过全局 a:visited（0,1,1），页眉 / 搜索面板 / 分页都曾各自补丁）。
@@ -922,7 +922,7 @@ a.external:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-ex
 /* Lists */
 .mw-parser-output ul:not(:where(.ak-not-prose, .ak-not-prose *)) { list-style: none; margin: 0 0 var(--ak-space-4) 0; padding-left: 1.4em; }
 .mw-parser-output ul > li:not(:where(.ak-not-prose, .ak-not-prose *)) { position: relative; margin: .25em 0; }
-.mw-parser-output ul > li:not(:where(.ak-not-prose, .ak-not-prose *))::before {   /* 方形项目符号 → 方舟的直角语言 */
+.mw-parser-output ul > li:not(:where(.ak-not-prose, .ak-not-prose *))::before {   /* 菱形项目符号（正方形转 45°，致敬源石）——与加载菱形涟漪、时间线菱形节点同一母题 */
   content: ""; position: absolute; left: -1.05em; top: .72em; width: 5px; height: 5px;
   background: var(--ak-accent); transform: rotate(45deg);
 }
@@ -1195,7 +1195,7 @@ sup.reference a { padding: 0 .1em; }
 
 /*! AKDS · base/forms.css — Forms · 裸控件（Widget / Gadget / 模板直接吐出的 input / select / textarea）+ mw-ui / cdx 按钮 + 编辑器 · 依赖：tokens.css */
 /* ─── Forms · 裸控件（Widget / Gadget / 模板直接吐出、身上没有任何 class 的 <input> <select> <textarea>）
-   规范见 docs/01-design-system.md §4。这里只管「裸」控件：.ak-input 等设计系统组件在 components/form.css；
+   规范见文档站 /content/forms。这里只管「裸」控件：.ak-input 等设计系统组件在 components/form.css；
    Codex / OOUI 靠 tokens.css 的令牌桥接 + 本段末尾几条颜色覆盖，尺寸不动（它们成组出现、内部自洽）。
    · 整组选择器包在 :where() 里让特指度归零（与下面裸 <button> 的做法相同）：.ak-input / .cdx-text-input__input /
      .oo-ui-inputWidget-input 以及模板自己的 class 都稳稳压在它上面，不必再和 input[type=…] 的 (0,1,1) 较劲。
@@ -1606,7 +1606,7 @@ a.ak-card { text-decoration: none; }
 /* ═══ Tooltip / Popover (CSS-only via data-tip; JS 版由 gadget 增强) ═══ */
 [data-ak-tip] { position: relative; }
 /* 闲置时把气泡收成 0 宽（max-width: 0 + overflow: hidden）而不只是 opacity: 0：透明的气泡仍占布局，靠近右缘的一条长提示会把文档撑出横向滚动——
- * 手机上只要有任何元素横向溢出，Chrome 就把布局视口撑宽、整页缩小，fixed 元素被推到可见区外（见 02 §命名与约定）。悬停 / 聚焦时再放开宽度，淡入照旧 */
+ * 手机上只要有任何元素横向溢出，Chrome 就把布局视口撑宽、整页缩小，fixed 元素被推到可见区外（见文档站 /guide/contributing#命名与约定）。悬停 / 聚焦时再放开宽度，淡入照旧 */
 [data-ak-tip]::after { content: attr(data-ak-tip); position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translate(-50%, 4px);
   background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-xs); line-height: 1.4; padding: 0; white-space: nowrap; max-width: 0; overflow: hidden;
   opacity: 0; pointer-events: none; transition: opacity var(--ak-dur-fast), transform var(--ak-dur-fast); z-index: var(--ak-z-tooltip); }
@@ -1794,17 +1794,26 @@ a.ak-card { text-decoration: none; }
 
 /*! AKDS · components/timeline.css — Timeline 时间线 · 依赖：tokens.css */
 /* ═══ Timeline / Stepper ═══ */
-.ak-timeline { list-style: none; margin: 0; padding: 0 0 0 20px; border-left: 2px solid var(--ak-border); }
-.ak-timeline > li { position: relative; padding: 0 0 var(--ak-space-5) var(--ak-space-4); }
-.ak-timeline > li::before { content: ""; position: absolute; left: -26px; top: 6px; width: 10px; height: 10px; background: var(--ak-bg-surface); border: 2px solid var(--ak-fg-muted); transform: rotate(45deg); }
+/* 在正文里（.mw-parser-output）也成立，不用标 ak-not-prose：base/typography.css 的正文列表规则 ul (0,1,1) / ul > li (0,1,2) / ul > li::before (0,1,3)
+ * 特指度都比下面的 .ak-timeline… 高，会改掉缩进与下外边距、给每项加段距、把菱形节点换成 5px 的项目符号。所以前三条各带一个 .mw-parser-output 前缀的同义选择器
+ * （多一个类，压过它们），声明照旧——正文外外观不变；li 显式 margin: 0 抵掉正文列表项的 .25em 段距。
+ * 状态色那条 (0,2,2) 与带前缀的 ::before 同特指度，靠写在后面生效。说明里的链接照常是正文链接 */
+.ak-timeline, .mw-parser-output .ak-timeline { list-style: none; margin: 0; padding: 0 0 0 20px; border-left: 2px solid var(--ak-border); }
+.ak-timeline > li, .mw-parser-output .ak-timeline > li { position: relative; margin: 0; padding: 0 0 var(--ak-space-5) var(--ak-space-4); }
+.ak-timeline > li::before, .mw-parser-output .ak-timeline > li::before { content: ""; position: absolute; left: -26px; top: 6px; width: 10px; height: 10px; background: var(--ak-bg-surface); border: 2px solid var(--ak-fg-muted); transform: rotate(45deg); }
 .ak-timeline > li.is-active::before, .ak-timeline > li.is-done::before { background: var(--ak-accent); border-color: var(--ak-accent); }
 .ak-timeline__date { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); letter-spacing: .04em; margin-bottom: 4px; display: block; }
 .ak-timeline__title { font-weight: 700; margin: 0 0 2px; }
 .ak-timeline__desc { color: var(--ak-fg-secondary); font-size: var(--ak-fs-sm); }
 
 /*! AKDS · components/stepper.css — Stepper 步骤 · 依赖：tokens.css */
+/* 结构：ol.ak-stepper > li.ak-step（序号由计数器画）。列表重置：去掉原生序号、缩进与外边距；放在正文（.mw-parser-output）里时
+ * base/typography.css 的 ol (0,1,1) / ol > li (0,1,2) 还会加缩进、段距与主色序号，所以两条重置各带一个 .mw-parser-output 前缀的同义选择器（多一个类，压过它们）。
+ * 只是重置——正文外、写成 div 时外观不变 */
 .ak-stepper { display: flex; gap: 0; counter-reset: step; }
+.ak-stepper, .mw-parser-output .ak-stepper { list-style: none; margin: 0; padding: 0; }
 .ak-step { flex: 1; position: relative; text-align: center; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); padding-top: 28px; }
+.ak-step, .mw-parser-output .ak-step { margin: 0; padding-left: 0; padding-right: 0; }
 .ak-step::before { counter-increment: step; content: counter(step); position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 22px; display: grid; place-items: center; font: 700 11px/1 var(--ak-font-label); background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); border: 1px solid var(--ak-border-strong); }
 .ak-step::after { content: ""; position: absolute; top: 11px; left: calc(50% + 12px); right: calc(-50% + 12px); height: 1px; background: var(--ak-border-strong); }
 .ak-step:last-child::after { display: none; }
@@ -1822,7 +1831,7 @@ a.ak-card { text-decoration: none; }
 .ak-input, .ak-select, .ak-textarea { box-sizing: border-box; font: inherit; font-size: var(--ak-fs-sm); color: var(--ak-fg); background: var(--ak-bg-surface); border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm); padding: 0 10px; min-height: 36px; width: 100%; transition: border-color var(--ak-dur-fast), box-shadow var(--ak-dur-fast); }   /* border-box：MW 没有全局 box-sizing 重置，width:100% + padding 会在窄屏撑破容器 */
 .ak-textarea { padding: 8px 10px; min-height: 90px; line-height: 1.5; resize: vertical; }
 .ak-input:focus, .ak-select:focus, .ak-textarea:focus { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
-/* 状态与裸控件同一套（base/forms.css / 规范 §4）。裸控件那边是零特指度，这里要显式再写一遍，否则 .ak-input 的底色会把它们盖掉 */
+/* 状态与裸控件同一套（base/forms.css / 文档站 /content/forms）。裸控件那边是零特指度，这里要显式再写一遍，否则 .ak-input 的底色会把它们盖掉 */
 .ak-input[readonly], .ak-textarea[readonly] { background: var(--ak-bg-inset); }
 .ak-input:disabled, .ak-select:disabled, .ak-textarea:disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); -webkit-text-fill-color: var(--ak-fg-disabled); opacity: 1; border-color: var(--ak-border); cursor: not-allowed; }
 .ak-input.is-invalid, .ak-field.is-invalid .ak-input, :is(.ak-input, .ak-select, .ak-textarea):where(:user-invalid, [aria-invalid="true"]) { border-color: var(--ak-danger); }
@@ -1862,7 +1871,7 @@ a.ak-card { text-decoration: none; }
 .ak-select--sm { min-height: 30px; font-size: var(--ak-fs-xs); } .ak-select--lg { min-height: 44px; font-size: var(--ak-fs-body); }
 /* 校验通过：多行输入 / 下拉与 .ak-input.is-valid 同一道绿边 */
 .ak-textarea.is-valid, .ak-select.is-valid { border-color: var(--ak-success); }
-/* 滑杆：上面 .ak-slider 的 outline:0 盖掉了全局 :focus-visible 描边，这里补回（规范 §4.2 / §6）；禁用半透明 */
+/* 滑杆：上面 .ak-slider 的 outline:0 盖掉了全局 :focus-visible 描边，这里补回（文档站 /content/forms · /foundations/accessibility#焦点）；禁用半透明 */
 .ak-slider:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 4px; }
 .ak-slider:disabled { opacity: .45; cursor: not-allowed; }
 /* 字段是纵向 flex：定宽 / 内容宽的控件别被拉满一行（步进器、开关、单个勾选、单选按钮组 —— .ak-btn-group 是 button.css 的，单独写一条） */
@@ -1920,6 +1929,7 @@ a.ak-card { text-decoration: none; }
 /*! AKDS · components/fab.css — FAB 回到顶部 · 依赖：tokens.css */
 /* ═══ Back-to-top / floating action ═══ */
 .ak-fab { position: fixed; right: var(--ak-space-5); bottom: var(--ak-space-5); width: 44px; height: 44px; padding: 0; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); border: 0; cursor: pointer; z-index: var(--ak-z-sticky); box-shadow: var(--ak-shadow-md); opacity: 0; transform: translateY(8px); transition: all var(--ak-dur-normal) var(--ak-ease); }
+.ak-fab:not(.is-visible) { visibility: hidden; }   /* 隐藏时不只是透明：点不到、Tab 不到、读屏也跳过（visibility 在淡出结束时才切，动画不受影响） */
 .ak-fab.is-visible { opacity: 1; transform: none; }
 .ak-fab:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
 /* 贴最近的定位祖先右下（Vue 版 AkBackTop position="absolute"：页面里某个滚动区域自己的回到顶部）。
@@ -2177,7 +2187,7 @@ a.ak-chevrons:hover::after { transform: translateX(3px); }
  *  --bare：手里只有裸图标（torappu item_icon 透明 png：解包数据 / 搜索面板）时的备选——底框由 CSS 按 data-rarity 1–6（白 / 绿 / 蓝 / 紫 / 金 / 特殊，不写 = 白）给，
  *  src/img/item/bg_N.png = 现网 文件:道具_背景_N.png（即游戏 sprite_item_r1–6，scripts/fetch-item-bg.py），图标压上去占 94%（= 现网合成图的比例）。
  *  数量角标同现网 .prts-item-quantity-label：压在右下角、骑在框沿上的粗体数字带描边光晕（亮色黑字白晕、暗色白字黑晕，晕色取 --ak-bg-surface 自动跟主题），不再是自己画的方框角标。
- *  这是整套系统里除单选之外唯一的圆：它不是 UI 盒子而是游戏素材本身（01 §1.1）。尺寸只改 --_s，框 / 图 / 角标字号 / 落点 / 头像全按比例走 */
+ *  这是整套系统里除单选之外唯一的圆：它不是 UI 盒子而是游戏素材本身（见文档站 /foundations/principles）。尺寸只改 --_s，框 / 图 / 角标字号 / 落点 / 头像全按比例走 */
 .ak-item { --_s: 56px; position: relative; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); vertical-align: middle; text-decoration: none; color: var(--ak-fg); }
 .ak-item > img { width: 100%; height: 100%; object-fit: contain; }
 .ak-item--bare { background: url("data:image/png;base64,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") center / 100% 100% no-repeat; }
@@ -2209,7 +2219,7 @@ a.ak-item:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 2
 
 /*! AKDS · arknights/skill.css — B6 技能卡 Skill · 依赖：tokens.css · decor/ */
 /* B6. 技能（图标 + SP 类型 + 触发类型）
- *  结构：.ak-skill > .ak-skill__icon + <div>( .ak-skill__head( __name + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats( .ak-sp-cost .ak-sp-init ) ) [+ .ak-skill__aside] + .ak-skill__desc
+ *  结构：.ak-skill > .ak-skill__icon + <div>( .ak-skill__head( __name [+ __alias] + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats( .ak-sp-cost .ak-sp-init ) ) [+ .ak-skill__aside] + .ak-skill__desc
  *  右栏撑满图标高度并上下两端对齐：名称行贴图标顶边、SP 芯片行贴图标底边（不再悬在中间） */
 .ak-skill { display: grid; grid-template-columns: 64px 1fr; gap: 12px 14px; padding: 12px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); position: relative; }
 .ak-skill > .ak-skill__icon + :not(.ak-skill__desc) { display: flex; flex-direction: column; justify-content: space-between; gap: 6px; min-height: 68px; min-width: 0; }
@@ -2223,6 +2233,10 @@ a.ak-item:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 2
 .ak-skill__icon.is-locked::before { content: "🔒"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; z-index: 1; }
 .ak-skill__head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ak-skill__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }
+/* 技能名后的别名（干员页全等级表的表头）：英文名 .ak-en（Bender 大写，再小一号）+ 日文名，灰色小字、与技能名基线对齐
+ *  结构：.ak-skill__alias > span.ak-en + span（日文名） */
+.ak-skill__alias { display: inline-flex; gap: 8px; align-items: baseline; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.ak-skill__alias .ak-en { font-size: 10px; }
 .ak-skill__meta { display: flex; gap: 6px; flex-wrap: wrap; font-size: var(--ak-fs-xs); }
 .ak-skill__desc { grid-column: 1 / -1; font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); line-height: 1.7; }
 .ak-skill__stats { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; font-size: var(--ak-fs-sm); font-variant-numeric: tabular-nums; }   /* 正文字体；SP 芯片自带 Bender；与图标底边对齐由上面的 space-between 负责（不要再给它 ak-mt-*） */
@@ -2581,7 +2595,7 @@ a.ak-stage-code.ak-not-prose:hover { text-decoration: underline; text-underline-
 .ak-countdown > span { display: inline-flex; flex-direction: column; align-items: center; min-width: 40px; padding: 4px 6px; background: var(--ak-bg-surface-3); color: var(--ak-fg); }   /* 灰块读数，不反白（理由见 .ak-level--badge） */
 .ak-countdown > span > b { font-size: var(--ak-fs-h3); line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
 .ak-countdown > span > small { font-size: 9px; font-weight: 600; letter-spacing: .12em; color: var(--ak-fg-muted); text-transform: uppercase; }
-.ak-event { position: relative; display: grid; grid-template-columns: 1fr; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; }
+.ak-event { position: relative; display: grid; grid-template-columns: 1fr; align-content: start; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; }
 .ak-event__banner { aspect-ratio: 21/9; background: #1d1f20; object-fit: cover; width: 100%; }
 .ak-event__body { padding: 12px 14px; }
 .ak-event__type { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-accent); }
@@ -2620,7 +2634,7 @@ a.ak-stage-code.ak-not-prose:hover { text-decoration: underline; text-underline-
 
 /*! ═══════════════════════════════════════════════════════════════════════════
  *  AKDS · chrome/ — L2 MediaWiki 皮肤骨架（原 skin.css）
- *  DOM 约定（见 docs/03-mediawiki-integration.md 中的 skin.mustache 结构）：
+ *  DOM 约定（见文档站 /guide/skin-template）：
  *    body.skin-akds
  *      header.ak-header > .ak-header__inner > [menu][logo][nav][search][tools]
  *      .ak-layout > aside.ak-sidebar + main.ak-main
@@ -2785,7 +2799,7 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 
 /*! AKDS · chrome/sidebar.css — Sidebar 侧栏 · 依赖：tokens.css · components/ */
 /* ═══ Sidebar ═══
- *  内容来源两种都支持（见 docs/03 §3.1）：
+ *  内容来源两种都支持（见文档站 /guide/skin-template#侧栏与-menusidebar）：
  *   a) MediaWiki:Sidebar 门户 → .ak-portlet > h3.ak-portlet__title + ul
  *   b) PRTS #MenuSidebar 原始 wikitext 树 → p（分组标题）+ ul > li > (a|b) [+ ul …任意深度]
  *  多层展开由 sidebar-tree.js 增强：li.ak-tree__branch(.is-open) > .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list
@@ -3280,6 +3294,61 @@ body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak
 .ak-aspect-16-9 { aspect-ratio: 16/9; } .ak-aspect-1 { aspect-ratio: 1; } .ak-aspect-3-4 { aspect-ratio: 3/4; } .ak-aspect-21-9 { aspect-ratio: 21/9; }
 .ak-object-cover { object-fit: cover; }
 
+/*! AKDS · forced-colors.css — 强制色模式（Windows 高对比度等，@media (forced-colors: active)）· 依赖：全部组件，最后加载
+ *  强制色下浏览器把颜色换成系统色（Canvas / CanvasText / LinkText / Highlight / ButtonText / GrayText），抹掉 background-color 与 box-shadow：
+ *  只靠「底色」或「阴影」表达的状态就看不见了。这里把它们改用系统色表达，平时一条都不生效：
+ *   · 选中 / 当前项 = Highlight 底 + HighlightText 字（要 forced-color-adjust: none，否则底色照样被抹）
+ *   · 自绘控件（勾选 / 单选 / 开关 / 滑块 / 进度）的填充改成系统色
+ *   · 用 box-shadow 画的焦点补回 outline；只有底色、边框透明的块补 1px 轮廓（outline 不占位，不影响排版）
+ *   · 用 clip-path 裁出来的实心图形（稀有度星、信赖心）改成 CanvasText 填充
+ *  斜纹 / 网点 / 头图这类纯装饰在强制色下消失无妨，不处理。 */
+@media (forced-colors: active) {
+  /* 选中 / 当前项 */
+  .ak-tabs--pill .ak-tab.is-active,
+  .ak-tabs--block .ak-tab.is-active,
+  .ak-btn-group > .ak-btn.is-active,
+  .ak-chip.is-active, .ak-chip[aria-pressed="true"],
+  .ak-phase-tabs > button.is-active,
+  .ak-skill-levels > button.is-active,
+  .ak-pagination .is-active {
+    forced-color-adjust: none; background: Highlight; color: HighlightText; border-color: Highlight;
+  }
+  .ak-phase-tabs > button.is-active > img, .ak-skill-levels > button.is-active > img { filter: none; }
+  /* 下划线 / 竖排页签的当前项：色条本来就是 border，改成 Highlight 与其余页签区分开 */
+  .ak-tab.is-active, .ak-tab[aria-selected="true"] { border-color: Highlight; color: Highlight; }
+
+  /* 自绘勾选 / 单选（base/forms.css，裸控件与 .ak-check 同一张脸） */
+  :where(input[type="checkbox"], input[type="radio"]) { forced-color-adjust: none; background: Canvas; border-color: CanvasText; }
+  :where(input[type="checkbox"], input[type="radio"]):checked, :where(input[type="checkbox"]):indeterminate { background: Highlight; border-color: Highlight; }
+  :where(input[type="checkbox"]):checked::before { border-color: HighlightText; }
+  :where(input[type="checkbox"]):indeterminate::before, :where(input[type="radio"]):checked::before { background: HighlightText; }
+  :where(input[type="checkbox"], input[type="radio"]):disabled { background: Canvas; border-color: GrayText; }
+  :where(input[type="checkbox"], input[type="radio"]):disabled:checked { background: GrayText; border-color: GrayText; }
+
+  /* 开关 / 滑块 / 进度 */
+  .ak-switch > input { forced-color-adjust: none; background: Canvas; outline: 1px solid CanvasText; }
+  .ak-switch > input::before { background: CanvasText; }
+  .ak-switch > input:checked { background: Highlight; outline-color: Highlight; }
+  .ak-switch > input:checked::before { background: HighlightText; }
+  .ak-slider { forced-color-adjust: none; background: CanvasText; }
+  .ak-slider::-webkit-slider-thumb { background: Highlight; border-color: Canvas; box-shadow: none; }
+  .ak-slider::-moz-range-thumb { background: Highlight; border-color: Canvas; }
+  .ak-progress { forced-color-adjust: none; background: Canvas; outline: 1px solid CanvasText; }
+  .ak-progress::before, .ak-progress--segmented > i.is-on { background: Highlight; }
+  .ak-progress--segmented { outline: 0; }
+  .ak-progress--segmented > i { background: Canvas; outline: 1px solid CanvasText; }
+
+  /* 焦点：这几处平时用边框色 + box-shadow 表示焦点（outline: 0），强制色下补回 outline */
+  :where(input[type="checkbox"], input[type="radio"]):focus-visible,
+  .ak-input:focus, .ak-select:focus, .ak-textarea:focus, .ak-slider:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+
+  /* 只有底色、边框透明的块：补轮廓 */
+  .ak-tag, .ak-badge, .ak-btn--ghost, .ak-toast, .ak-message, .ak-cbox { outline: 1px solid CanvasText; outline-offset: -1px; }
+
+  /* clip-path 裁出来的实心图形 */
+  .ak-rarity > i, .ak-trust::before { forced-color-adjust: none; background: CanvasText; }
+}
+
 
 </style>   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
 <style>
@@ -3317,25 +3386,6 @@ html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-
 }
 
 </style>   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖令牌 §2d 的接口变量 -->
-<style>
-/* preview-only helpers */
-.demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
-.demo--col { flex-direction: column; align-items: stretch; }
-.demo--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 12px; }
-.demo-box { border: 1px dashed var(--ak-border-strong); padding: 16px; }
-.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 12px 0 20px; }
-.ak-swatch { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); cursor: pointer; font-size: 11px; }
-.ak-swatch__chip { height: 52px; border-bottom: 1px solid var(--ak-border); }
-.ak-swatch__name { padding: 6px 8px 0; font-weight: 700; font-family: var(--ak-font-mono); font-size: 10.5px; overflow-wrap: anywhere; }
-.ak-swatch__value { padding: 0 8px 6px; color: var(--ak-fg-muted); font-family: var(--ak-font-mono); font-size: 10px; }
-.ak-swatch__note { padding: 0 8px 6px; color: var(--ak-fg-muted); }
-.type-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--ak-border-subtle); }
-.type-row .meta { font: 600 11px/1.5 var(--ak-font-mono); color: var(--ak-fg-muted); }
-.type-row > * { min-width: 0; }
-@media (max-width: 639px) { .type-row { grid-template-columns: 1fr; gap: 4px; } }   /* 200px 元数据列 + 56px 展示字在手机上放不下一行 */
-.spec-table td:first-child, .spec-table tr:has(td) > th:first-child { font-family: var(--ak-font-mono); font-size: 12px; white-space: nowrap; text-align: left; font-weight: 600; }
-.dark-only-demo { background: #0f0f10; padding: 16px; color: #f0f0f0; }
-</style>
 <meta name="referrer" content="no-referrer">   <!-- static.prts.wiki 有防盗链：Referer 不是 prts.wiki 就 403（空 Referer 放行）；舞台脚本运行时从那里拉职业 / 星级 / 分支图标与 BGM，本页不带 Referer 即可（media / torappu.prts.wiki 不查） -->
 <script>
 /*! jQuery v3.7.1 | (c) OpenJS Foundation and other contributors | jquery.org/license */
@@ -3379,9 +3429,6 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 /* 攻击范围：三阶段并排 */
 .op-ranges { display: flex; gap: 28px; flex-wrap: wrap; margin: 0 0 var(--ak-space-4); }
 .op-ranges > div { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
-/* 技能表头里的日 / 英名 */
-.ak-skill__alias { display: inline-flex; gap: 8px; align-items: baseline; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
-.ak-skill__alias .ak-en { font-size: 10px; }
 /* 人员档案：左侧竖排页签（游戏档案页的列表）+ 右侧内容；<768 页签横排 */
 .op-files { display: grid; grid-template-columns: 208px minmax(0, 1fr); gap: 16px; align-items: start; margin: 0 0 var(--ak-space-4); }
 .op-files .ak-tabs--vertical { position: sticky; top: calc(var(--ak-header-h) + 16px); }
@@ -3450,6 +3497,10 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
   <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 5l14 14M19 5L5 19"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 15l7-7 7 7"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 4v16l12-8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 4h4v16H6zm8 0h4v16h-4z"/></symbol>
   <symbol id="i-empty" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10"/></symbol>
 </svg>
 
@@ -3670,7 +3721,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
       <div class="ak-body" id="bodyContent">
       <div class="mw-body-content mw-parser-output">
 
-<div class="ak-message ak-message--neutral ak-fs-xs"><div class="ak-message__body">这是<b>干员页整页样例</b>（信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节，数据取自现网 wikitext / gamedata 2.7.61）。顶部「干员信息」= 现网 <code>{{CharinfoV2}}</code> Widget <b>原样</b>（DOM / CSS / JS 一字不改，静态文件快照在 <code>vendor/charinfo/</code>；立绘 / 场景 / BGM / 语音运行时从现网拉，试听语音 · BGM · 时装 / 场景抽屉 · 看图 / 全屏都是现网的行为）——先把现网的动效与排布原样看全，再决定换皮范围；其余章节 = 现网各模板 → 设计系统组件的映射，见 03 §3.6。</div></div>
+<div class="ak-message ak-message--neutral ak-fs-xs"><div class="ak-message__body">这是<b>干员页整页样例</b>（信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节，数据取自现网 wikitext / gamedata 2.7.61）。顶部「干员信息」= 现网 <code>{{CharinfoV2}}</code> Widget <b>原样</b>（DOM / CSS / JS 一字不改，静态文件快照在 <code>vendor/charinfo/</code>；立绘 / 场景 / BGM / 语音运行时从现网拉，试听语音 · BGM · 时装 / 场景抽屉 · 看图 / 全屏都是现网的行为）——先把现网的动效与排布原样看全，再决定换皮范围；其余章节 = 现网各模板 → 设计系统组件的映射，见文档站 /patterns/operator。</div></div>
 <div class="op-alter ak-not-prose">
   <div class="op-alter__label">异格一览<span class="ak-en">Alter</span></div>
   <div class="op-alter__list">
@@ -5348,7 +5399,6 @@ $(".stage-btn-img").css("opacity","1"),$(".stage-btn-blue").css("opacity","0"),$
   document.addEventListener('click', e => {
     const o = e.target.closest('[data-dialog-open]'); if (o) { const d = $(o.dataset.dialogOpen); if (d && d.showModal) d.showModal(); }
     const c = e.target.closest('[data-dialog-close]'); if (c) { const d = c.closest('dialog'); if (d) d.close(); }
-    const t = e.target.closest('[data-toast]'); if (t) toast(t.dataset.toast, t.dataset.toastType || '', t.dataset.toastTitle || '');
   });
   function toast(msg, type, title) {
     let wrap = $('.ak-toasts'); if (!wrap) { wrap = document.createElement('div'); wrap.className = 'ak-toasts'; document.body.appendChild(wrap); }
@@ -5358,6 +5408,18 @@ $(".stage-btn-img").css("opacity","1"),$(".stage-btn-blue").css("opacity","0"),$
   }
   window.akdsToast = toast;
 
+  /* ── 纯 CSS 提示 [data-ak-tip] 的可访问性补齐（与 skin.js 相同）：aria-describedby 接进读屏，名称之外的提示在不可聚焦元素上补 tabindex=0 ── */
+  let tipSeq = 0, tipBox = null;
+  $$('[data-ak-tip]').forEach(el => {
+    const tip = el.getAttribute('data-ak-tip').trim(); if (!tip) return;
+    const names = [el.getAttribute('aria-label'), el.textContent, ...$$('img[alt]', el).map(i => i.alt)];
+    if (names.some(n => n && n.trim() === tip)) return;
+    if (!tipBox) { tipBox = document.createElement('div'); tipBox.hidden = true; tipBox.id = 'ak-tips'; document.body.appendChild(tipBox); }
+    const d = document.createElement('span'); d.id = 'ak-tip-' + (++tipSeq); d.textContent = tip; tipBox.appendChild(d);
+    el.setAttribute('aria-describedby', ((el.getAttribute('aria-describedby') || '') + ' ' + d.id).trim());
+    if (!el.matches('a[href], button, input, select, textarea, summary, [tabindex]') && !el.closest('a[href], button')) el.tabIndex = 0;
+  });
+
   /* ── Voice play mock ───────────────────────────────────────── */
   document.addEventListener('click', e => { const p = e.target.closest('.ak-voice__play'); if (p) p.classList.toggle('is-playing'); });
 
@@ -5366,20 +5428,6 @@ $(".stage-btn-img").css("opacity","1"),$(".stage-btn-blue").css("opacity","0"),$
   if (fab) { window.addEventListener('scroll', () => fab.classList.toggle('is-visible', window.scrollY > 600), { passive: true }); fab.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' })); }
   // 目录浮层里的「回到顶部」（<1400 时替代 .ak-fab）：同样平滑滚动，且不往 URL 里塞 #
   document.addEventListener('click', e => { if (e.target.closest('.ak-toc__top')) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
-
-  /* ── Copy token on click (swatches) ────────────────────────── */
-  document.addEventListener('click', e => {
-    const sw = e.target.closest('[data-copy]'); if (!sw) return;
-    navigator.clipboard && navigator.clipboard.writeText(sw.dataset.copy).then(() => toast('已复制 ' + sw.dataset.copy, 'success'));
-  });
-
-  /* ── Auto-generate palette swatch computed values ──────────── */
-  $$('[data-token]').forEach(el => {
-    const v = getComputedStyle(document.documentElement).getPropertyValue(el.dataset.token).trim();
-    const out = $('.ak-swatch__value', el); if (out && v) out.textContent = v.startsWith('var(') ? '' : v;
-  });
-  const mo = new MutationObserver(() => $$('[data-token]').forEach(el => { const v = getComputedStyle(document.documentElement).getPropertyValue(el.dataset.token).trim(); const out = $('.ak-swatch__value', el); if (out) out.textContent = v; }));
-  mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
 })();
 
 </script>

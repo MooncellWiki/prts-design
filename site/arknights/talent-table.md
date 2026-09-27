@@ -22,7 +22,7 @@ component: talent-table
 
 @demo TalentTable/Toggles
 
-预览页 / 皮肤里的纯 CSS 版靠 `input[data-toggle-class]` + 脚本给表加类（`.is-pot` / `.is-calc`），现皮肤脚本还没接上这段；Vue 版自带状态，不受影响。
+预览页 / 皮肤里的纯 CSS 版靠 `input[data-toggle-class]` 约定：勾选时皮肤脚本（`skin.js` / `preview.js`，document 级委托）给最近的 `data-toggle-target`（默认 `table`）加 / 去类（`.is-pot` / `.is-calc`）；生产环境这几行也可以归 Gadget。Vue 版自带状态。
 
 ## 可访问性
 

@@ -5,7 +5,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 # 皮肤骨架
 
-L2 是正文之外的一切：页眉、头图、侧栏、页面头（标题与动作簇）、目录、正文白纸、分类栏的位置、页脚、搜索面板。它由皮肤的 `skin.mustache` 输出，编辑和模板都碰不到；样式在 `src/chrome/`，排在所有组件之后加载——页眉里的 `.ak-btn` / `.ak-menu` / `.ak-fab` 靠同特指度后到覆盖。
+L2 是正文之外的一切：页眉、头图、侧栏、页面头（标题与动作簇）、目录、正文白纸、分类栏的位置、页脚、搜索面板。它由皮肤的 `skin.mustache` 输出，编辑和模板都碰不到；样式在 `packages/css/src/chrome/`，排在所有组件之后加载——页眉里的 `.ak-btn` / `.ak-menu` / `.ak-fab` 靠同特指度后到覆盖。
 
 骨架的形态由**视口宽度**决定（≥1400 目录在右侧导轨，<1400 页眉长出二级吸顶栏，<1120 侧栏变抽屉，≤639 手机），所以这一区的示例不是普通的示例块，而是一整页：按上方选定的视口宽度排版、再缩放进正文列。里面照常可以滚动、点击、切换，和真皮肤一致（交互脚本同预览页）；「示例活动主题」开关见[头图与主题接口](/chrome/theming)。
 
@@ -13,7 +13,7 @@ L2 是正文之外的一切：页眉、头图、侧栏、页面头（标题与�
 
 ## DOM 约定
 
-与 `skin.mustache` 一一对应（完整的 mustache 数据映射见[参考 · 03 MediaWiki 接入 §3](/reference/mediawiki-integration)）：
+与 `skin.mustache` 一一对应（完整的 mustache 数据映射见[入门 · skin.mustache 结构](/guide/skin-template)）：
 
 ```
 body.skin-akds

@@ -167,7 +167,7 @@ def main():
                 faces.append(face)
             (d / 'NOTICE.md').write_text(
                 '# %s\n\n来源：明日方舟官网（%s）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源），未做任何修改。\n'
-                '授权：%s。PRTS.wiki 为明日方舟官方赞助站点，按与鹰角网络同一组织下共用授权使用（项目方决定，见 docs/01-design-system.md §2.8）。\n'
+                '授权：%s。PRTS.wiki 为明日方舟官方赞助站点，按与鹰角网络同一组织下共用授权使用（项目方决定，见文档站 /foundations/typography#字族）。\n'
                 '注意：官网发布的是 ASCII 子集（各 101 字形），非 ASCII 字符由 tokens.css 字体链后段接住。\n\n'
                 '| 文件 | 字重 | 抓取地址 |\n|---|---|---|\n%s\n'
                 % (spec['family'], SITE_HOME, spec['license'], '\n'.join('| %s | %s | %s |' % (f['file'], f['weight'], f['url']) for f in faces)),

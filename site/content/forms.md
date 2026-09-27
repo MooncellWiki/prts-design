@@ -16,19 +16,34 @@ import CssSelectors from "../.vitepress/theme/components/CssSelectors.vue";
 
 ## 裸控件
 
-- **高度确定**：`border-box` + 上下 0 内边距 + `min-height: 36px`，单行文字由浏览器在盒内垂直居中——正文（行高 1.7）和表格（1.5）里一样高，与 `.ak-btn` / `.ak-input` 同一档。不靠 padding 撑高度。
-- **直角**：输入类 2px（`--ak-radius-sm`，系统里唯一允许的小圆角），按钮 0；无阴影、无辉光。
-- **宽度不接管**：保留浏览器按 `size` 算的宽度，只加 `max-width: 100%`；要满宽写 `width: 100%`。
-- **勾选 / 单选自绘**：18px；勾选框直角，选中 = 主色实底 + 对比色勾；单选是圆（圆是「单选」的通用语义，也是 UI 控件里唯一的圆）。下拉统一画一枚 ▾，与 `.ak-select` 成套。
-- 用排除法选中文本类：不写 `type` 的 `<input>`、日期 / 时间 / 电话、未知 type 都按文本框处理。
+- **高度三档 30 / 36 / 44**，与 `.ak-btn` / `.ak-input` 同一刻度（`--sm` / 默认 / `--lg`）。裸控件默认 **36**：裸 `<input>`、`.ak-input`、`.ak-btn`、裸 `<button>` 都是 36，一行里混排齐平；落进表格单元格自动收到 30（见[落进表格](#落进表格)）。
+- **高度是确定的**：`box-sizing: border-box` + 上下 0 内边距 + `min-height` 定高，单行文字由浏览器在盒内垂直居中，所以正文（行高 1.7）和表格（1.5）里一样高。**不靠 padding 撑高度**——以前 content-box 下「`min-height` 34 + 上下 6px + 边框」= 48px，就是属性计算器那种比表头还高一截的输入框。
+- **直角**：输入类 2px（`--ak-radius-sm`，系统里唯一允许的小圆角），按钮 0；边框 1px `--ak-border-strong`；无阴影、无内阴影、无辉光。
+- **内边距与字**：`0 10px`（表格里 `0 8px`）；`textarea` 为 `8px 10px`、最小高 72px、只允许竖向拖拽。字 14px（`--ak-fs-sm`）正文字体、常规字重（在 `th` 里也不加粗）、行高 1.5；数字输入 `tabular-nums`，改值时不跳。iPhone 上文本类控件在 ≤639 提到 16px——iOS Safari 对更小的输入框聚焦时会把整页放大且不缩回。
+- **宽度不接管**：保留浏览器按 `size` 算的宽度（约 20 字符），只加 `max-width: 100%` 保证不撑破容器——一格里常常是「输入框 + 按钮」，强制满宽会把按钮挤到下一行。要满宽写 `width: 100%`（已是 border-box，不必再 `calc(100% - .8em)`）；要窄写 `size="4"` 或 `style="width:5em"`。
+- **用排除法选中文本类**：不写 `type` 的 `<input>`、日期 / 时间 / 电话等、未知 type 都按文本框处理，不留浏览器 2px inset 的默认外观。
+
+颜色全部取语义令牌，两套主题各自成立，不写死色值：
 
 | 状态 | 表现 |
 |---|---|
-| 焦点 | 青边 + 3px 淡青环；文本框用 `:focus`（鼠标点进去也亮），勾选 / 单选只在键盘 `:focus-visible` 时亮 |
-| 只读 `[readonly]` | 下沉底 `--ak-bg-inset`——计算器里「只显示不编辑」的结果格用它，**不要用 disabled** |
-| 禁用 | `--ak-bg-surface-3` 底 + 禁用色 + 禁用光标 |
-| 校验失败 | 红边；条件是 `:user-invalid`（用户改过之后才判）或 `aria-invalid="true"`，不用 `:invalid`——那样一进页面必填空框全红 |
-| 悬停 | 输入框没有悬停态，按钮才有 |
+| 默认 | 底 `--ak-bg-surface`、字 `--ak-fg`、边 `--ak-border-strong` |
+| 占位符 | `--ak-fg-subtle`（Firefox 默认的 `opacity` 归 1）；只做提示，不承载必填等信息 |
+| 悬停 | 输入框**没有**悬停态，按钮才有 |
+| 焦点 | 边 `--ak-accent` + `--ak-shadow-accent`（3px 淡青环，同 `.ak-input`）；文本框用 `:focus`（鼠标点进去也亮），勾选 / 单选只在键盘 `:focus-visible` 时亮同一套；滑杆保留全局的 `:focus-visible` 2px 描边 |
+| 只读 `[readonly]` | 下沉底 `--ak-bg-inset`，边框不变、仍可选中复制——计算器里「只显示不编辑」的结果格用它，**不要用 disabled 表示「只是显示」** |
+| 禁用 `:disabled` | 底 `--ak-bg-surface-3`、字 `--ak-fg-disabled`（Safari 要同时写 `-webkit-text-fill-color`）、边 `--ak-border`、`cursor: not-allowed` |
+| 校验失败 | 边 `--ak-danger`，聚焦时环换成 `--ak-danger-bg`。条件是 `:user-invalid`（用户改过之后才判）或 `aria-invalid="true"`；不用 `:invalid`——那样一进页面必填空框全红。设计系统组件另有 `.is-invalid` / `.is-valid` 与 `.ak-help--error` 文案（见[表单字段](/components/field)） |
+
+各类控件：
+
+| 控件 | 做法 |
+|---|---|
+| 勾选 / 单选 | **自绘，裸控件与 `.ak-check` 同一张脸**（`appearance: none`；`.ak-check` 只管「控件 + 文字」的排布）：18px、2px `--ak-border-strong` 边；勾选框直角，选中 = 主色实底 + 对比色勾（`:indeterminate` = 一横）；**单选是圆**（圆是单选的通用语义，也是表单控件里唯一的圆；不做菱形、不做圆角方），选中 = 主色实底 + 圆点。勾 / 点按百分比画，改 `width` / `height` 整体缩放（表头里的开关 16px）。禁用 = surface-3 底 / 选中灰。`accent-color` 仍写着兜底：不认 `appearance: none` 的老 WebView 退回主色的原生控件。`vertical-align: middle`，与行内文字中线对齐 |
+| 下拉 `select` | 自绘箭头：裸 `<select>` 与 `.ak-select` 同一枚 ▾（`--ak-select-arrow`：两条 45° 渐变拼成，颜色随 `--ak-fg-muted`，与下拉按钮的 ▾ 成套），`appearance: none` + 右内边距 30px（表格里 26px）——各浏览器的原生箭头长得不一样。`select[multiple]` 不画箭头、上下 4px 内边距 |
+| 数字 `type=number` | `tabular-nums`；保留原生 ▲▼ 步进器（Chrome 悬停 / 聚焦时才现身，Firefox 常显）；要一直看得见的 − / + 用[数字输入](/components/input-number) `.ak-number` |
+| 滑杆 `type=range` | 保留原生，只上 `accent-color`；要方形滑块用[滑杆](/components/slider) `.ak-slider` |
+| 按钮 `button`、`input` 的 `button` / `submit` / `reset` | 同 `.ak-btn` 默认外观（36px、直角、1px 边、悬停浅底）；不设 `min-height`——带 class 的定尺寸按钮不会被撑高 |
 
 ```html demo
 <div class="ak-flex ak-gap-3 ak-wrap ak-items-center">
@@ -55,7 +70,7 @@ import CssSelectors from "../.vitepress/theme/components/CssSelectors.vue";
 
 ## 落进表格
 
-wikitable 一行本身只有 ~35px，36 的控件会把行顶成 50：**单元格里的裸控件自动收到 30px 紧凑档**，字号跟表格；文本类输入的**对齐跟随单元格**——下面居中的计算器里，输入的数字和结果一样居中，`td.num` 右对齐列里的输入也右对齐。一格里「输入 + 按钮」照常并排。
+wikitable 一行本身只有 ~35px，36 的控件会把行顶成 50：**单元格里的裸控件自动收到 30px 紧凑档**（裸 `<button>` 同样），字号跟表格——30 正好比表头行高一点，读得出「这一行是输入」又不抢戏；表格里想要 36 就显式用 `.ak-input`。文本类输入的**对齐跟随单元格**（`text-align: inherit`）——下面居中的计算器里，输入的数字和结果一样居中，`td.num` 右对齐列里的输入也右对齐；`select` 不跟。一格里「输入 + 按钮」照常并排。
 
 ```html demo
 <div class="ak-flex-col ak-gap-4">
@@ -75,7 +90,13 @@ wikitable 一行本身只有 ~35px，36 的控件会把行顶成 50：**单元�
 </div>
 ```
 
-给 Widget / 模板作者：直接写 `<input>`，不要写内联样式；列头当标签 `<th><label for="elite">精英等级</label></th>`（点标签能聚焦、读屏器读得到）；结果格用 `readonly` 或纯文本。手机上 wikitable 横向滚动，按 `size` 定宽的控件不会缩，写了 `width:100%` 的随列宽缩。iPhone 上文本类控件在 ≤639 提到 16px——iOS Safari 对更小的输入框聚焦时会把整页放大且不缩回。
+### 给 Widget / 模板作者
+
+- 直接写 `<input>`，不要写内联样式——高度 / 对齐 / 颜色 / 主题都会自己对；宽度要满就 `width:100%`。
+- 列头当标签：`<th><label for="elite">精英等级</label></th>` + `<td><input id="elite">`（`Widget:PropertyCalc` 已经这么写），点标签能聚焦、读屏器读得到；不方便放 label 的加 `aria-label`。
+- 结果格用 `readonly` 输入或直接写文本，不用 `disabled`。
+- 一行里要拼「前缀 / 输入 / 按钮」用[输入组](/components/input) `.ak-input-group`；带标签 + 帮助 + 错误文案的用[表单字段](/components/field) `.ak-field`；步进用 `.ak-number`。
+- 手机（≤639）上 wikitable 横向滚动，按 `size` 定宽的控件不会缩；写了 `width:100%` 的随列宽缩（属性计算器原来写的 `calc(100% - .8em)` 就是这么活下来的，现在直接 `100%` 更好）。Widget 里针对旧皮肤的样式补丁（`.skin-minerva #calc input { border… }` 这类）可以删掉，只留 `width:100%` 这类布局意图。
 
 ## 核心按钮与编辑器
 

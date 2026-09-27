@@ -21,7 +21,7 @@ import CssSelectors from "../.vitepress/theme/components/CssSelectors.vue";
 
 ## 变体
 
-变体类要落在 `.tabber` 元素本身上（选择器是 `.tabber.ak-tabber-*`）：
+变体类必须和 `.tabber` 写在**同一个元素**上（选择器是 `.tabber.ak-tabber-*`）：wikitext 里写成 `<tabber class="ak-tabber-block">`，让类落到 TabberNeue 输出的 `div.tabber` 上；外面包一层 `<div class="ak-tabber-block">` 不生效。（上线前在站点的 TabberNeue 版本上确认 `class` 属性会带到输出上；带不上时由 Gadget 给 `.tabber` 补类。）
 
 | 类 | 外观 |
 |---|---|

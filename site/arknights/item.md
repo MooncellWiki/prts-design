@@ -39,6 +39,8 @@ component: item
 
 ## CSS 实现
 
+结构 `.ak-item( .ak-item--sm / --lg / .is-disabled ) > img + .ak-item__count( .is-short )`；尺寸只改私有变量 `--_s`，框 / 图 / 数量字号 / 落点按比例走。数量是骑在框沿右下的粗体描边数字（现网 `.prts-item-quantity-label` 的做法：亮色黑字白晕、暗色白字黑晕，晕色取 `--ak-bg-surface`）。招聘合同 = 现网 `招聘合同_5.png` 底图（留着一个空方框）+ `img.ak-item__avatar` 把干员头像叠进方框（同现网 60px 框 / 30px 头像的落点）。早先自己画的「稀有度色方框 + 黑底数量角标」已经换掉，`--round` 随之移除；圆框是游戏素材本身（见[设计理念](/foundations/principles)）。
+
 材料表 `.ak-materials`（阶段 → 材料行）也在这里。
 
 <CssClasses :files="['arknights/item.css', 'arknights/materials.css']" />

@@ -34,7 +34,17 @@ const sidebar: DefaultTheme.Sidebar = [
     text: "入门",
     items: [
       { text: "介绍", link: "/guide/" },
-      { text: "在 MediaWiki 中使用", link: "/guide/mediawiki" },
+      {
+        text: "在 MediaWiki 中使用",
+        link: "/guide/mediawiki",
+        collapsed: false,
+        items: [
+          { text: "模块与层序", link: "/guide/resourceloader" },
+          { text: "skin.mustache 结构", link: "/guide/skin-template" },
+          { text: "模板与 TemplateStyles", link: "/guide/templates" },
+          { text: "迁移与上线", link: "/guide/rollout" },
+        ],
+      },
       { text: "在 Vue / prts-widgets 中使用", link: "/guide/vue" },
       { text: "贡献一个组件", link: "/guide/contributing" },
     ],
@@ -48,9 +58,10 @@ const sidebar: DefaultTheme.Sidebar = [
       { text: "尺寸 / 动效 / 层级", link: "/foundations/size" },
       { text: "装饰语言", link: "/foundations/decoration" },
       { text: "图标", link: "/foundations/icons" },
+      { text: "可访问性", link: "/foundations/accessibility" },
     ],
   },
-  // L1：给 wikitext / MW 核心输出换肤（纯 CSS，src/base/）；L2：正文之外的皮肤骨架（src/chrome/）
+  // L1：给 wikitext / MW 核心输出换肤（纯 CSS，packages/css/src/base/）；L2：正文之外的皮肤骨架（packages/css/src/chrome/）
   {
     text: "MediaWiki 内容样式",
     collapsed: false,
@@ -87,17 +98,9 @@ const sidebar: DefaultTheme.Sidebar = [
   {
     text: "整页样例",
     items: [
+      { text: "概述", link: "/patterns/" },
       { text: "首页设计稿", link: "/patterns/home" },
       { text: "干员页（陈）", link: "/patterns/operator" },
-    ],
-  },
-  {
-    text: "参考（旧文档全文）",
-    collapsed: true,
-    items: [
-      { text: "01 设计规范", link: "/reference/design-system" },
-      { text: "02 组件清单", link: "/reference/components" },
-      { text: "03 MediaWiki 接入", link: "/reference/mediawiki-integration" },
     ],
   },
 ];
@@ -114,7 +117,7 @@ export default defineConfigWithTheme<DefaultTheme.Config & { akdsTabs: Record<st
   cleanUrls: true,
   lastUpdated: false,
   appearance: "dark", // 与预览站一致：默认终端（暗）
-  // 旧文档（docs/*.md）里的相对链接指向仓库文件，不是站点页面
+  // 指向仓库文件的相对链接（../x.css 之类）与 .css / .js / .html 等文件链接不是站点页面，不查
   ignoreDeadLinks: [/^\.\.?\//, /\.(css|js|py|sh|json|html)$/],
   head: [
     ["meta", { name: "referrer", content: "no-referrer" }], // 干员页样例从 static.prts.wiki 拉 Widget 资源，那边防盗链

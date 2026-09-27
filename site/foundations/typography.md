@@ -1,6 +1,6 @@
 # 字体排印
 
-中文永远用思源黑体（行高 1.7）；大写拉丁展示字只做标题旁英文、编号、数值、水印——**Latin as ornament**。全部字体自托管（`src/fonts.css`），人人看到一致。
+中文永远用思源黑体（行高 1.7）；大写拉丁展示字只做标题旁英文、编号、数值、水印——**Latin as ornament**。全部字体自托管，不论访客装没装，看到的都是同一套——这也就是上线效果。
 
 ## 字族
 
@@ -8,14 +8,16 @@
 
 | 角色 | 自托管 | 来源 / 说明 |
 |---|---|---|
-| 展示字 | **Novecento Sans Wide** 500–800 | 官网静态资源原文件；PRTS.wiki 为明日方舟官方赞助站点，按与鹰角同一组织下共用授权使用 |
+| 展示字 | **Novecento Sans Wide** 500 / 600 / 700 / 800 | 官网静态资源原文件（web.hycdn.cn）。商用字（Synthview）；PRTS.wiki 为明日方舟官方赞助站点，按与鹰角同一组织下共用授权使用，不可转授 |
 | HUD 标签 / 数值 | **Bender** 400 / 700 | 同上；也是展示字链的第二位 |
-| 正文 | Noto Sans SC 可变字重（= 思源黑体） | OFL；沿用 Google Fonts 的 101 片 `unicode-range` 切分，一页只下载用到的几片 |
-| 压缩字 | Oswald | OFL；展示字链在 Novecento / Bender 之后的接字 |
-| 标签缺字 | Chakra Petch | OFL；同为方形 HUD 字，只在 Bender 缺字时逐字顶上 |
-| 等宽 | JetBrains Mono | OFL；语法高亮的注释用斜体 |
+| 正文 | Noto Sans SC 可变字重 100–900（= 思源黑体的 Google 构建） | OFL；沿用 Google Fonts 的 101 片 `unicode-range` 切分（共 ≈ 4.5MB），一页只下载用到的几片 |
+| 压缩字 | Oswald 可变字重 200–700 | OFL；官网也自托管 Oswald。同时是展示字链在 Novecento / Bender 之后的接字 |
+| 标签缺字 | Chakra Petch 400 / 500 / 600 / 700 | OFL；同为方形 HUD 字，只在 Bender 缺字时逐字顶上 |
+| 等宽 | JetBrains Mono 可变字重 100–800，正体 + 斜体 | OFL；语法高亮的注释用斜体 |
 
-官网发布的 Novecento / Bender 是 **ASCII 子集**：`·` `»` `—` `…` `×` 这类非 ASCII 字符逐字回退到后一段（展示字落到 Oswald、标签落到 Chakra Petch），视觉上是间隔号 / 破折号级别的差异。字体模块 `skins.akds.fonts` 可以整体关掉（低带宽 / 用户偏好），关掉后字体链自然退到装机 / 系统字。
+`packages/css/src/fonts.css`（121 条 `@font-face`，`font-display: swap`）与 `packages/css/src/fonts/` 由 `python3 scripts/fetch-fonts.py` 生成（官网同源两族抓官网静态资源，OFL 四族取 Fontsource 的 npm 包，版本钉死）；各族目录里的 `NOTICE.md` / `LICENSE` 记着来源与授权。字体链（上表 `--ak-font-*`）的后段——装机备选、系统字——只在字体模块被关掉时起作用：MW 上字体是独立的 `skins.akds.fonts` 模块，可以整体关掉（低带宽 / 用户偏好 / Gadget）。
+
+官网发布的 Novecento / Bender 是 **ASCII 子集**（各 101 字形：A–Z a–z 0–9 与 ASCII 标点）：`·` `»` `—` `–` `…` `×` `°` 这类非 ASCII 字符逐字回退到后一段（展示字落到 Oswald、标签落到 Chakra Petch），两者风格相近，视觉上是间隔号 / 破折号级别的差异；日后拿到全字符集文件，替换 `packages/css/src/fonts/` 里同名 woff2 即可。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
 
 ## 字号
 
@@ -46,8 +48,9 @@
 
 Bender 是游戏 HUD 字——粗体、大字号、独立出现时才成立。14px 常规字重时笔画细、斜杠 0 读作「Ø」、和思源混排灰度不齐；而且**它的数字是比例宽度**、子集不带 `tnum`，`font-variant-numeric: tabular-nums` 对它无效，数字列对不齐。
 
-- ✅ 用 Bender：属性面板读数、统计数值、等级、倒计时、SP 芯片、关卡码、稀有度 chip、标签、overline / eyebrow 小标签、`ol::marker`——都是**粗体或 ≥ h3 的独立数值 / 编号 / 大写标签**。显式的 HUD 数字类是 `.ak-num`。
-- ❌ 不用 Bender：表格数字列、目录编号、引用角标、diff 行号、最近更改 ±、分页、时间戳、技能数值行、通知计数徽标——统一正文字体 + `tabular-nums`（思源的数字默认等宽，列天然对齐）。**表格数据数字一律不用 Bender，没有例外**：HUD 类（`.ak-num` `.ak-code-id` `.ak-item__count` …）落进 `td` / `th` / 键值表 `dd` 时，`arknights/table-numerals.css` 兜底回正文字体。
+- ✅ 用 Bender：属性面板读数 `.ak-attr__value`、统计数值 `.ak-stat__value`、等级 `.ak-level`、倒计时、SP 芯片、关卡码、稀有度 chip、标签、overline / eyebrow 小标签、`ol::marker`——都是**粗体（700）或 ≥ h3 的独立数值 / 编号 / 大写标签**。显式的 HUD 数字类是 `.ak-num`（粗体 Bender，只用于面板级、不进表格）。
+- ❌ 不用 Bender：表格数字列（`.wikitable td.num` / `.ak-table .num`）、目录编号、引用角标、diff 行号、最近更改 ±、分页、时间戳、统计的变化量、技能数值行、通知计数徽标（`.ak-badge`：Bender Bold 在 11–12px 下笔画细、字形窄，18px 的圆里读不清）——统一正文字体 + `tabular-nums`（思源的数字默认等宽，列天然对齐）。
+- **表格数据数字一律不用 Bender，没有例外**：技能全等级表 / 参数矩阵 / 天赋条件表 / 键值表的数字列都是正文字体；`.ak-num` `.ak-code-id` `.ak-trust` `.ak-item__count` `.ak-elite` 等带数字的 HUD 类落进 `td` / `th` / `.ak-kv > dd` 时，`arknights/table-numerals.css`（方舟组件的最后一个文件）兜底回正文字体，字重 / 字距 / 颜色照旧。
 
 ```html demo
 <div class="ak-flex-col ak-gap-3">

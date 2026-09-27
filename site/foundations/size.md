@@ -14,7 +14,7 @@
 
 ## 布局
 
-断点与 Codex 一致：320 / 640 / 1120 / 1680；另有 1400 作为目录导轨的断点。各断点下皮肤骨架的形态见[皮肤骨架 · 响应式](/chrome/responsive)。
+断点与 Codex 一致：320 / 640 / 1120 / 1680；另有 1400 作为目录导轨的断点。≥1680 时侧栏与目录导轨加宽到 268px（覆盖写在 `:root` 上，页眉网格与布局共用）。各断点下皮肤骨架的形态见[皮肤骨架 · 响应式](/chrome/responsive)。
 
 <TokenTable prefix="size.layout" />
 
@@ -28,7 +28,9 @@
 <TokenTable prefix="motion.duration" />
 <TokenTable prefix="motion.easing" />
 
-`prefers-reduced-motion: reduce` 下所有动画与过渡缩到 0.01ms（`src/base/root.css`）。
+`prefers-reduced-motion: reduce` 下所有动画与过渡缩到 0.01ms（`base/root.css`，见[可访问性 · 用户偏好](/foundations/accessibility#用户偏好)）。
+
+加载指示是游戏内 loading 的菱形涟漪（[加载 Spinner](/components/spinner)，菱形母题见[设计理念](/foundations/principles#菱形-源石)）；按钮的加载态只有 36px 高、涟漪放不开，退回 14px 圆弧转圈。
 
 ## 阴影
 

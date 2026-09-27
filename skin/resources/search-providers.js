@@ -1,6 +1,6 @@
 /* skins.akds.js · search-providers.js — 搜索面板的 MediaWiki 数据源（核心在 search-palette.js，与预览共用）
  *
- *  数据源分层（详见 docs/03 §搜索）：
+ *  数据源分层（详见文档站 /chrome/search#在-mediawiki-里）：
  *    1. 标题搜索  REST /rest.php/v1/search/title（同 Vector 2022 / Citizen；有 PageImages 给缩略图、ShortDescription/Description2 给描述）
  *    2. 模式      > 动作（本页菜单 #p-views #p-cactions #p-tb #p-personal + 常用特殊页面）· # 分类 · @ 用户 · ~ 文件（Action API）
  *    3. 可选：本地即时索引（干员/道具 JSON，拼音首字母 / 别名 / 结构化元数据）—— 预留 hook：mw.hook('akds.search.local').fire(fn)

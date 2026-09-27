@@ -2,7 +2,7 @@
 /* ═══ Tooltip / Popover (CSS-only via data-tip; JS 版由 gadget 增强) ═══ */
 [data-ak-tip] { position: relative; }
 /* 闲置时把气泡收成 0 宽（max-width: 0 + overflow: hidden）而不只是 opacity: 0：透明的气泡仍占布局，靠近右缘的一条长提示会把文档撑出横向滚动——
- * 手机上只要有任何元素横向溢出，Chrome 就把布局视口撑宽、整页缩小，fixed 元素被推到可见区外（见 02 §命名与约定）。悬停 / 聚焦时再放开宽度，淡入照旧 */
+ * 手机上只要有任何元素横向溢出，Chrome 就把布局视口撑宽、整页缩小，fixed 元素被推到可见区外（见文档站 /guide/contributing#命名与约定）。悬停 / 聚焦时再放开宽度，淡入照旧 */
 [data-ak-tip]::after { content: attr(data-ak-tip); position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translate(-50%, 4px);
   background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-xs); line-height: 1.4; padding: 0; white-space: nowrap; max-width: 0; overflow: hidden;
   opacity: 0; pointer-events: none; transition: opacity var(--ak-dur-fast), transform var(--ak-dur-fast); z-index: var(--ak-z-tooltip); }

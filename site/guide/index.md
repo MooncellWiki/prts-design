@@ -16,6 +16,19 @@ GitHub 的 [Primer](https://primer.style/) 把设计系统拆成令牌（primer/
 
 **CSS 是唯一的样式实现。** Vue 组件只负责输出同样的结构、管理状态与可访问性，不带自己的样式；组件文档里每个示例的「HTML」页签，就是 Vue 组件实际渲染出的结构——模板照着输出，外观一模一样。
 
+## 按 MediaWiki 皮肤的需要分层
+
+AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构 + 类名**，模板作者（Lua / wikitext）输出这段结构，皮肤保证外观与主题。样式按层组织，加载顺序也按层（见[模块与层序](/guide/resourceloader#层序)）：
+
+| 层 | 管什么 | 源文件（`packages/css/src/`） | 文档 |
+|---|---|---|---|
+| L0 令牌 | 颜色 / 字体 / 尺寸 / 动效 / 层级，明暗主题，Codex 桥接 | `tokens.css`（生成物，源在 `packages/tokens/src/`） | [基础](/foundations/color) |
+| L1 MediaWiki 内容 | wikitext 产物与核心 UI 的样式——编辑不需要知道设计系统存在 | `base/` | [MediaWiki 内容样式](/content/) |
+| L2 皮肤骨架 | 黑色页眉 / 头图 / 侧栏 / 页面头 / 目录 / 页脚 / 搜索面板 / 响应式 | `chrome/` | [皮肤骨架](/chrome/) |
+| L3 通用组件 | 纯 CSS 组件，可写进模板 / TemplateStyles | `components/` | [通用组件](/components/) |
+| L4 方舟 | 装饰语言 + 游戏数据组件 | `decor/` + `arknights/` | [装饰语言](/foundations/decoration) · 方舟组件 |
+| L5 页面模式 | 干员页 / 首页 / 列表页 … | `preview/` 样例页 | [页面模式](/patterns/) |
+
 ## 实现状态
 
 每个组件的页头都列出两种实现各自的状态（参考 [Primer 的组件生命周期](https://primer.style/guides/component-lifecycle)）：
