@@ -93,13 +93,37 @@ onMounted(async () => {
     applyTheme(doc); // preview.js 初始化时会按自己的记忆打主题，压回文档站当前的
   }
 
-  const fit = () => (f.style.height = `${Math.ceil(doc.body.getBoundingClientRect().height)}px`);
+  /**
+   * iframe 高度 = 内容高度；打开着的浮层也算进去：下拉 / 气泡是 absolute、对话框在 top layer、Toast 是 fixed，都不撑高 body，
+   * 不量的话会被 iframe 裁掉（以前靠示例里写死 min-height 预留）。浮层关掉后自然缩回。
+   */
+  const OVERLAYS = "dialog[open], .ak-toasts, .ak-menu, .ak-popover, .ak-tooltip";
+  let settle = 0;
+  const fit = () => {
+    let h = doc.body.getBoundingClientRect().height;
+    for (const el of doc.querySelectorAll<HTMLElement>(OVERLAYS)) {
+      const r = el.getBoundingClientRect();
+      if (!r.height) continue;
+      // 对话框居中、Toast 贴底：要的是「装得下」（对话框有视口高度上限，iframe 矮时会被压扁——取内容全高 scrollHeight）；
+      // 下拉 / 气泡挂在触发元素下面：要的是「底边露得出来」
+      h = Math.max(h, el.matches("dialog, .ak-toasts") ? Math.max(r.height, el.scrollHeight) + 48 : r.bottom + 8);
+    }
+    const px = `${Math.ceil(h)}px`;
+    // iframe 变高后，受视口高度约束的浮层（对话框）会跟着长，再量一次直到稳定（最多 5 轮，防来回振荡）
+    if (f.style.height !== px && settle++ < 5) requestAnimationFrame(fit);
+    else settle = 0;
+    f.style.height = px;
+  };
   ro = new ResizeObserver(fit);
   ro.observe(doc.body);
   fit();
-  const refresh = () => (markup.value = serialize(root));
+  const refresh = () => {
+    markup.value = serialize(root);
+    fit();
+  };
   mo = new MutationObserver(refresh);
-  mo.observe(root, { subtree: true, childList: true, attributes: true, characterData: true });
+  // 看整个 body：Toast 容器 / 对话框可能被 Teleport 到 #root 外面
+  mo.observe(doc.body, { subtree: true, childList: true, attributes: true, characterData: true });
   refresh();
 });
 

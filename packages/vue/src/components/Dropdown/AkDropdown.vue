@@ -6,7 +6,7 @@
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, useId, useTemplateRef, watch, type VNode } from "vue";
 
-import { Render, decorateTrigger } from "../Tooltip/trigger";
+import { Render, decorateTrigger, firstId } from "../Tooltip/trigger";
 import MenuItem from "./MenuItem.vue";
 import type { DropdownKey, DropdownMixedOption, DropdownOption } from "./types";
 
@@ -35,7 +35,7 @@ const emit = defineEmits<{
 }>();
 
 const slots = defineSlots<{
-  /** 触发元素：取第一个元素 / 组件，自动补 id / aria-haspopup / aria-expanded / aria-controls 与键盘 */
+  /** 触发元素：取第一个元素 / 组件，自动补 aria-haspopup / aria-expanded / aria-controls 与键盘；id 它自己写了就沿用，没写才补一个（菜单的 aria-labelledby 指向它） */
   default?: () => VNode[];
 }>();
 
@@ -75,13 +75,22 @@ function onTriggerKeydown(e: KeyboardEvent) {
 }
 
 const triggerAttrs = computed(() => ({
-  id: triggerId,
   "aria-haspopup": "menu",
   "aria-expanded": model.value,
   "aria-controls": menuId,
   onClick: onTriggerClick,
   onKeydown: onTriggerKeydown,
 }));
+
+/** 渲染期取触发元素：它自己写了 id 就沿用（菜单的 aria-labelledby 跟着它），没写才补生成的 triggerId。
+ *  插槽只能在渲染期调用，所以由模板调用，结果记在 rendered 里给后面的菜单用（同一次渲染、触发元素在前） */
+const rendered = { triggerId };
+function renderTrigger() {
+  const nodes = slots.default?.();
+  const own = firstId(nodes);
+  rendered.triggerId = own ?? triggerId;
+  return decorateTrigger(nodes, own === undefined ? { id: triggerId, ...triggerAttrs.value } : triggerAttrs.value);
+}
 
 /** 首字母跳转：从当前项往后找第一个文字以这个字符开头的 */
 function typeahead(list: HTMLElement[], from: number, ch: string) {
@@ -156,13 +165,13 @@ onBeforeUnmount(() => doc?.removeEventListener("pointerdown", onOutside, true));
 <template>
   <!-- ak-not-prose：菜单是 ul / li / a，别吃正文的列表符、段距与链接色 -->
   <div ref="root" :class="['ak-dropdown', 'ak-not-prose', { 'is-open': model }]">
-    <Render :content="decorateTrigger(slots.default?.(), triggerAttrs)" />
+    <Render :content="renderTrigger()" />
     <ul
       :id="menuId"
       ref="menu"
       role="menu"
       :class="['ak-menu', placement === 'bottom-end' && 'ak-menu--right']"
-      :aria-labelledby="label ? undefined : triggerId"
+      :aria-labelledby="label ? undefined : rendered.triggerId"
       :aria-label="label"
       @keydown="onMenuKeydown"
     >

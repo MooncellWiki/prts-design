@@ -90,7 +90,7 @@ a.external:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-ex
 /* Lists */
 .mw-parser-output ul:not(:where(.ak-not-prose, .ak-not-prose *)) { list-style: none; margin: 0 0 var(--ak-space-4) 0; padding-left: 1.4em; }
 .mw-parser-output ul > li:not(:where(.ak-not-prose, .ak-not-prose *)) { position: relative; margin: .25em 0; }
-.mw-parser-output ul > li:not(:where(.ak-not-prose, .ak-not-prose *))::before {   /* 方形项目符号 → 方舟的直角语言 */
+.mw-parser-output ul > li:not(:where(.ak-not-prose, .ak-not-prose *))::before {   /* 菱形项目符号（正方形转 45°，致敬源石）——与加载菱形涟漪、时间线菱形节点同一母题 */
   content: ""; position: absolute; left: -1.05em; top: .72em; width: 5px; height: 5px;
   background: var(--ak-accent); transform: rotate(45deg);
 }

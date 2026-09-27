@@ -43,4 +43,4 @@ component: input
 
 `<input class="ak-input">` / `<textarea class="ak-textarea">`；尺寸 `.ak-input--sm` / `--lg`；状态 `[readonly]` `:disabled` `.is-invalid` / `[aria-invalid="true"]` / `:user-invalid` `.is-valid`。输入组 `.ak-input-group > .ak-input-group__addon + .ak-input + .ak-btn`。
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-input', 'ak-textarea', 'ak-input-group']" />

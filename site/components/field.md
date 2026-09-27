@@ -55,4 +55,4 @@ component: field
 
 `.ak-check-group`（一组勾选 / 单选的横排容器）、各尺寸档、禁用态等也在同一个文件里。
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-field', 'ak-label', 'ak-help']" />

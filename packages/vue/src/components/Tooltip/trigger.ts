@@ -6,6 +6,13 @@ const FOCUSABLE = new Set(["a", "button", "input", "select", "textarea", "summar
 const flatten = (nodes: VNode[]): VNode[] =>
   nodes.flatMap(n => (n.type === Fragment && Array.isArray(n.children) ? flatten(n.children as VNode[]) : n.type === Comment ? [] : [n]));
 
+/** 触发元素（插槽里第一个元素 / 组件）自己写的 id；只有文字、没写时 undefined */
+export function firstId(nodes: VNode[] | undefined): string | undefined {
+  const first = flatten(nodes ?? []).find(n => n.type !== Text || String(n.children).trim());
+  const id = first && first.type !== Text ? first.props?.id : undefined;
+  return id == null || id === "" ? undefined : String(id);
+}
+
 /**
  * 触发元素写在插槽里（同 Naive 的 NPopover #trigger / NDropdown 默认插槽）：取第一个元素 / 组件 vnode 克隆一份，
  * 补上 ARIA 属性与事件（与它自己的合并，不覆盖）。只有文字时包一层 <span>；

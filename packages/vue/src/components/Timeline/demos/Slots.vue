@@ -17,6 +17,6 @@ const events = [
         {{ e.title }} <AkTag size="sm" :variant="e.status === 'active' ? 'accent-soft' : 'default'">{{ e.type }}</AkTag>
       </template>
     </AkTimelineItem>
-    <AkTimelineItem time="TBA" title="下一期活动">敬请期待。</AkTimelineItem>
+    <AkTimelineItem time="TBA" title="下一期活动">敬请期待，往期见<a href="#">活动一览</a>。</AkTimelineItem>
   </AkTimeline>
 </template>

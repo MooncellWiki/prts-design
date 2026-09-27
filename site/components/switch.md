@@ -35,4 +35,4 @@ component: switch
 
 轨道与滑块尺寸由私有变量 `--_w` / `--_h` 定，`--sm` 就是改了这两个。
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-switch']" />

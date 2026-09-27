@@ -19,7 +19,7 @@ component: stepper
 
 ## 可访问性
 
-- 输出 `role="list"` / `listitem`，`label` 作列表名（如「精英化进度」）。
+- 输出 `<ol>` / `<li>`（有序列表，步骤有先后），`label` 作列表名（如「精英化进度」）。`<ol>` 上显式写 `role="list"`：Safari（VoiceOver）对去掉列表符号（`list-style: none`）的列表不报列表语义。
 - 当前步骤 `aria-current="step"`；已完成的步骤带一段只给读屏的「（已完成）」（`.ak-sr-only`）——颜色之外的状态说明。
 
 ## Vue API
@@ -34,13 +34,15 @@ component: stepper
 
 ## CSS 实现
 
+结构 `ol.ak-stepper > li.ak-step`：`.ak-stepper` 自己去掉原生序号、缩进与外边距（序号由 CSS 计数器画），直接写在正文里也不吃正文有序列表的缩进、段距与主色序号。
+
 ```html demo
-<div class="ak-stepper" role="list" aria-label="精英化进度">
-  <div class="ak-step is-done" role="listitem">精英零</div>
-  <div class="ak-step is-done" role="listitem">精英一</div>
-  <div class="ak-step is-active" role="listitem" aria-current="step">精英二</div>
-  <div class="ak-step" role="listitem">满级</div>
-</div>
+<ol class="ak-stepper" role="list" aria-label="精英化进度">
+  <li class="ak-step is-done">精英零</li>
+  <li class="ak-step is-done">精英一</li>
+  <li class="ak-step is-active" aria-current="step">精英二</li>
+  <li class="ak-step">满级</li>
+</ol>
 ```
 
 <CssClasses :files="['components/stepper.css']" />

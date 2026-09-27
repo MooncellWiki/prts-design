@@ -4,7 +4,7 @@
 .ak-countdown > span { display: inline-flex; flex-direction: column; align-items: center; min-width: 40px; padding: 4px 6px; background: var(--ak-bg-surface-3); color: var(--ak-fg); }   /* 灰块读数，不反白（理由见 .ak-level--badge） */
 .ak-countdown > span > b { font-size: var(--ak-fs-h3); line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; }
 .ak-countdown > span > small { font-size: 9px; font-weight: 600; letter-spacing: .12em; color: var(--ak-fg-muted); text-transform: uppercase; }
-.ak-event { position: relative; display: grid; grid-template-columns: 1fr; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; }
+.ak-event { position: relative; display: grid; grid-template-columns: 1fr; align-content: start; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; }
 .ak-event__banner { aspect-ratio: 21/9; background: #1d1f20; object-fit: cover; width: 100%; }
 .ak-event__body { padding: 12px 14px; }
 .ak-event__type { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-accent); }

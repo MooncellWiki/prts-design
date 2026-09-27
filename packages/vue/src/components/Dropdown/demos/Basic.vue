@@ -26,8 +26,7 @@ const langLabel = computed(() => langs.find(l => l.key === lang.value)?.label);
 </script>
 
 <template>
-  <!-- 示例框留出菜单展开的高度（菜单是绝对定位，不撑开外层） -->
-  <div class="ak-flex ak-wrap ak-gap-3 ak-items-start" style="min-height: 240px">
+  <div class="ak-flex ak-wrap ak-gap-3 ak-items-start">
     <AkDropdown :options="actions" @select="(_, o) => (last = o.label)">
       <AkButton>页面操作 ▾</AkButton>
     </AkDropdown>

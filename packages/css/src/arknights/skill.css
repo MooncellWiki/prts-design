@@ -1,6 +1,6 @@
 /*! AKDS · arknights/skill.css — B6 技能卡 Skill · 依赖：tokens.css · decor/ */
 /* B6. 技能（图标 + SP 类型 + 触发类型）
- *  结构：.ak-skill > .ak-skill__icon + <div>( .ak-skill__head( __name + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats( .ak-sp-cost .ak-sp-init ) ) [+ .ak-skill__aside] + .ak-skill__desc
+ *  结构：.ak-skill > .ak-skill__icon + <div>( .ak-skill__head( __name [+ __alias] + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats( .ak-sp-cost .ak-sp-init ) ) [+ .ak-skill__aside] + .ak-skill__desc
  *  右栏撑满图标高度并上下两端对齐：名称行贴图标顶边、SP 芯片行贴图标底边（不再悬在中间） */
 .ak-skill { display: grid; grid-template-columns: 64px 1fr; gap: 12px 14px; padding: 12px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); position: relative; }
 .ak-skill > .ak-skill__icon + :not(.ak-skill__desc) { display: flex; flex-direction: column; justify-content: space-between; gap: 6px; min-height: 68px; min-width: 0; }
@@ -14,6 +14,10 @@
 .ak-skill__icon.is-locked::before { content: "🔒"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; z-index: 1; }
 .ak-skill__head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ak-skill__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }
+/* 技能名后的别名（干员页全等级表的表头）：英文名 .ak-en（Bender 大写，再小一号）+ 日文名，灰色小字、与技能名基线对齐
+ *  结构：.ak-skill__alias > span.ak-en + span（日文名） */
+.ak-skill__alias { display: inline-flex; gap: 8px; align-items: baseline; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.ak-skill__alias .ak-en { font-size: 10px; }
 .ak-skill__meta { display: flex; gap: 6px; flex-wrap: wrap; font-size: var(--ak-fs-xs); }
 .ak-skill__desc { grid-column: 1 / -1; font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); line-height: 1.7; }
 .ak-skill__stats { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; font-size: var(--ak-fs-sm); font-variant-numeric: tabular-nums; }   /* 正文字体；SP 芯片自带 Bender；与图标底边对齐由上面的 space-between 负责（不要再给它 ak-mt-*） */

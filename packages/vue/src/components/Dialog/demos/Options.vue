@@ -10,8 +10,7 @@ const confirm = ref(false);
 </script>
 
 <template>
-  <!-- 示例框留出对话框的高度：模态对话框在示例 iframe 的视口里居中 -->
-  <div class="ak-flex ak-wrap ak-gap-3 ak-items-start" style="min-height: 360px">
+  <div class="ak-flex ak-wrap ak-gap-3 ak-items-start">
     <AkButton @click="small = true">小（sm）</AkButton>
     <AkButton @click="large = true">大（lg）</AkButton>
     <AkButton variant="danger" @click="confirm = true">删除页面…</AkButton>

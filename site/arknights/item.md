@@ -15,7 +15,7 @@ component: item
 
 ## 尺寸 · 状态 · 行内
 
-`sm` 40 · 默认 56 · `lg` 76；`disabled` 去色；`inline` 是放进正文的 22px 小图 + 文字：文字默认是「×`count`」（也可以写在默认插槽里），`href` / `tip` / `insufficient` 照常生效，`size` / `avatar` 不适用。
+`sm` 40 · 默认 56 · `lg` 76；`AkItemList` 的 `size` 给整排定默认尺寸（道具自己写了 `size` 以自己为准，同按钮组；[材料表](/arknights/materials)的每行就是这样给成 `sm`）；`disabled` 去色；`inline` 是放进正文的 22px 小图 + 文字：文字默认是「×`count`」（也可以写在默认插槽里），`href` / `tip` / `insufficient` 照常生效，`size` / `avatar` 不适用。
 
 @demo Item/Sizes
 
@@ -33,7 +33,9 @@ component: item
 
 ### AkItemList
 
-一排道具：换行，间距 6 / 8。只有默认插槽。
+一排道具：换行，间距 6 / 8。
+
+<PropsTable of="AkItemList" />
 
 ## CSS 实现
 

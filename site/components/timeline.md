@@ -21,7 +21,7 @@ component: timeline
 
 ### AkTimeline
 
-只有默认插槽（若干 `AkTimelineItem`），输出 `<ul class="ak-timeline ak-not-prose">`。
+只有默认插槽（若干 `AkTimelineItem`），输出 `<ul class="ak-timeline">`。
 
 ### AkTimelineItem
 
@@ -29,11 +29,11 @@ component: timeline
 
 ## CSS 实现
 
-放在正文（`.mw-parser-output`）里时 `<ul>` 要标 `ak-not-prose`：正文列表的方块项目符号（`ul > li::before`）特指度更高，会盖掉菱形节点、改掉缩进（Vue 版已标上）。代价是列表里的链接不再用正文链接色、而是继承文字色——说明里要放链接时留意。
+`<ul class="ak-timeline">` 直接写在正文（`.mw-parser-output`）里就对，不用标 `ak-not-prose`：正文列表的缩进、段距与项目符号（`ul > li::before`）由时间线自己的规则压住（各带一个 `.mw-parser-output` 前缀的同义选择器），菱形节点不受影响；说明里的链接照常是正文链接。
 
 ```html demo
-<ul class="ak-timeline ak-not-prose">
-  <li class="is-done"><span class="ak-timeline__date">2019.04.30</span><div class="ak-timeline__title">公开测试开启</div><div class="ak-timeline__desc">明日方舟正式上线。</div></li>
+<ul class="ak-timeline">
+  <li class="is-done"><span class="ak-timeline__date">2019.04.30</span><div class="ak-timeline__title">公开测试开启</div><div class="ak-timeline__desc">明日方舟正式上线，见<a href="#">版本记录</a>。</div></li>
   <li class="is-active"><span class="ak-timeline__date">2026.08.01</span><div class="ak-timeline__title">2.7.61 版本</div><div class="ak-timeline__desc">当前数据版本。</div></li>
   <li><span class="ak-timeline__date">TBA</span><div class="ak-timeline__title">下一版本</div></li>
 </ul>

@@ -5,7 +5,7 @@ component: materials
 
 精英化 / 技能升级 / 专精训练要的材料：左列是阶段或等级（Bender 小号大写标签字，可带精英化图标），右列是这一步要的一排[道具](/arknights/item)，一行一步。两列网格对齐，左列按最宽的标签收紧。
 
-写法同 Naive UI 的 `n-descriptions`：`AkMaterials` 里放若干 `AkMaterialsRow`（`label` 是左列文字，默认插槽放 `AkItem`）；里面的 `AkItem` 没写 `size` 时自动画成 `sm`（40px，材料表的规格），写了就以写的为准。
+写法同 Naive UI 的 `n-descriptions`：`AkMaterials` 里放若干 `AkMaterialsRow`（`label` 是左列文字，默认插槽放 `AkItem`）；里面的 `AkItem` 没写 `size` 时自动画成 `sm`（40px，材料表的规格；同 `AkItemList` 的 `size`，由行向下提供），写了就以写的为准。
 
 ## 精英化材料
 

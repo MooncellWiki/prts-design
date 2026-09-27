@@ -8,25 +8,6 @@
 <title>首页 - PRTS · 首页设计稿</title>
 <link rel="stylesheet" href="../src/index.css">   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
 <link rel="stylesheet" href="../src/chrome/demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖令牌 §2d 的接口变量 -->
-<style>
-/* preview-only helpers */
-.demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
-.demo--col { flex-direction: column; align-items: stretch; }
-.demo--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 12px; }
-.demo-box { border: 1px dashed var(--ak-border-strong); padding: 16px; }
-.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 12px 0 20px; }
-.ak-swatch { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); cursor: pointer; font-size: 11px; }
-.ak-swatch__chip { height: 52px; border-bottom: 1px solid var(--ak-border); }
-.ak-swatch__name { padding: 6px 8px 0; font-weight: 700; font-family: var(--ak-font-mono); font-size: 10.5px; overflow-wrap: anywhere; }
-.ak-swatch__value { padding: 0 8px 6px; color: var(--ak-fg-muted); font-family: var(--ak-font-mono); font-size: 10px; }
-.ak-swatch__note { padding: 0 8px 6px; color: var(--ak-fg-muted); }
-.type-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--ak-border-subtle); }
-.type-row .meta { font: 600 11px/1.5 var(--ak-font-mono); color: var(--ak-fg-muted); }
-.type-row > * { min-width: 0; }
-@media (max-width: 639px) { .type-row { grid-template-columns: 1fr; gap: 4px; } }   /* 200px 元数据列 + 56px 展示字在手机上放不下一行 */
-.spec-table td:first-child, .spec-table tr:has(td) > th:first-child { font-family: var(--ak-font-mono); font-size: 12px; white-space: nowrap; text-align: left; font-weight: 600; }
-.dark-only-demo { background: #0f0f10; padding: 16px; color: #f0f0f0; }
-</style>
 <link rel="stylesheet" href="vendor/swiper/swiper-bundle.min.css">   <!-- Swiper 11（MIT，preview/vendor/swiper/NOTICE.md）：只给首页 Hero 轮播用；生产环境由 Gadget 按页加载 -->
 <style>
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -384,6 +365,10 @@
   <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 5l14 14M19 5L5 19"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 15l7-7 7 7"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 4v16l12-8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 4h4v16H6zm8 0h4v16h-4z"/></symbol>
   <symbol id="i-empty" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10"/></symbol>
 </svg>
 

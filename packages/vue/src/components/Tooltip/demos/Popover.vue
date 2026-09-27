@@ -14,8 +14,7 @@ const materials = [
 </script>
 
 <template>
-  <!-- 示例框留出卡片展开的高度（气泡是绝对定位，不撑开外层） -->
-  <div class="ak-flex ak-wrap ak-gap-4 ak-items-start" style="min-height: 200px">
+  <div class="ak-flex ak-wrap ak-gap-4 ak-items-start">
     <AkPopover title="精英二 · 陈" placement="bottom-start">
       <template #trigger><AkButton variant="contrast">精英化材料</AkButton></template>
       <AkItemList class="ak-mt-2">

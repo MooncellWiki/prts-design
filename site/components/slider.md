@@ -27,4 +27,4 @@ CSS 没有刻度（Naive 的 `marks`）与拖动时的数值气泡，这里也�
 <input class="ak-slider" type="range" min="1" max="90" value="90" aria-label="等级">
 ```
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-slider']" />

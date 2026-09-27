@@ -41,6 +41,10 @@ export const icons = {
   "check": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" d=\"M4 12l5 5L20 6\"/>",
   "x": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" d=\"M5 5l14 14M19 5L5 19\"/>",
   "up": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" d=\"M5 15l7-7 7 7\"/>",
+  "chevron-left": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" d=\"M15 5l-7 7 7 7\"/>",
+  "chevron-right": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" d=\"M9 5l7 7-7 7\"/>",
+  "play": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\" d=\"M7 4v16l12-8z\"/>",
+  "pause": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M6 4h4v16H6zm8 0h4v16h-4z\"/>",
   "empty": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" d=\"M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10\"/>",
 } as const;
 

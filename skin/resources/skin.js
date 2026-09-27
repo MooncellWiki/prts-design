@@ -209,6 +209,49 @@
 		$$( '[data-show-' + sel + ']', scope ).forEach( ( el ) => { el.hidden = el.getAttribute( 'data-show-' + sel ) !== key; } );
 	} );
 
+	/* data-toggle-class：复选框勾选 → 给最近的 data-toggle-target（默认 table）加 / 去一个类（天赋表「潜能 / 算法」开关、模组卡「全文阅读」；与 preview.js 相同约定） */
+	document.addEventListener( 'change', ( e ) => {
+		const t = e.target.closest( '[data-toggle-class]' ); if ( !t ) { return; }
+		const host = t.closest( t.dataset.toggleTarget || 'table' ); if ( host ) { host.classList.toggle( t.dataset.toggleClass, t.checked ); }
+	} );
+
+	/* 技能参数矩阵 .ak-skill-matrix：悬停 / 点某一列 → 整列高亮，描述里的 .ak-var[data-var] 换成该级数值；离开还原区间（无 JS 时是一张静态矩阵；与 preview.js 相同） */
+	$$( '.ak-skill-matrix' ).forEach( ( tb ) => {
+		const sheet = tb.closest( '.ak-skill-sheet' ) || tb.parentElement; const vars = $$( '.ak-var[data-var]', sheet );
+		vars.forEach( ( v ) => { v.dataset.range = v.textContent; } );
+		const cols = $$( 'thead th', tb ); let pinned = -1;
+		const paint = ( i ) => {
+			cols.forEach( ( th, k ) => th.classList.toggle( 'is-hl', k === i ) );
+			$$( 'tbody tr', tb ).forEach( ( tr ) => {
+				Array.prototype.forEach.call( tr.children, ( c, k ) => c.classList.toggle( 'is-hl', k === i ) );
+				const v = tr.dataset.var; if ( v ) { vars.filter( ( x ) => x.dataset.var === v ).forEach( ( x ) => { x.textContent = i > 0 && tr.children[ i ] ? tr.children[ i ].textContent : x.dataset.range; } ); }
+			} );
+		};
+		const colOf = ( e ) => { const c = e.target.closest( 'th, td' ); return c && tb.contains( c ) ? Array.prototype.indexOf.call( c.parentElement.children, c ) : -1; };
+		tb.addEventListener( 'mouseover', ( e ) => { const i = colOf( e ); if ( i > 0 ) { paint( i ); } } );
+		tb.addEventListener( 'mouseleave', () => paint( pinned ) );
+		tb.addEventListener( 'click', ( e ) => { const i = colOf( e ); if ( i < 0 ) { return; } pinned = ( i > 0 && pinned !== i ) ? i : -1; paint( pinned ); } );
+	} );
+
+	/* 纯 CSS 提示 [data-ak-tip]（components/tooltip.css）的可访问性补齐：
+	 *  提示文字接进读屏（aria-describedby → 一个 hidden 容器里的描述节点）；提示与元素自身名称相同时（道具图的 alt = 道具名）不重复念；
+	 *  不在可聚焦元素上、又带着名称之外信息的提示，补 tabindex=0，键盘聚焦时 :focus-visible 也能看到。wikipage.content 钩子覆盖预览 / 动态载入的正文 */
+	let tipSeq = 0; let tipBox = null;
+	const tipA11y = ( root ) => {
+		$$( '[data-ak-tip]:not([data-ak-tip-bound])', root ).forEach( ( el ) => {
+			el.setAttribute( 'data-ak-tip-bound', '' );
+			const tip = el.getAttribute( 'data-ak-tip' ).trim(); if ( !tip ) { return; }
+			const names = [ el.getAttribute( 'aria-label' ), el.textContent ].concat( $$( 'img[alt]', el ).map( ( i ) => i.alt ) );
+			if ( names.some( ( n ) => n && n.trim() === tip ) ) { return; }
+			if ( !tipBox ) { tipBox = document.createElement( 'div' ); tipBox.hidden = true; tipBox.id = 'ak-tips'; document.body.appendChild( tipBox ); }
+			const d = document.createElement( 'span' ); d.id = 'ak-tip-' + ( ++tipSeq ); d.textContent = tip; tipBox.appendChild( d );
+			el.setAttribute( 'aria-describedby', ( ( el.getAttribute( 'aria-describedby' ) || '' ) + ' ' + d.id ).trim() );
+			if ( !el.matches( 'a[href], button, input, select, textarea, summary, [tabindex]' ) && !el.closest( 'a[href], button' ) ) { el.tabIndex = 0; }
+		} );
+	};
+	tipA11y( document );
+	if ( window.mw && mw.hook ) { mw.hook( 'wikipage.content' ).add( ( $c ) => tipA11y( $c[ 0 ] ) ); }
+
 	/* Toast helper: mw.notify 已由 base/special-pages.css 主题化；这里提供 AKDS 样式的 toast */
 	window.akdsToast = function ( msg, type, title ) {
 		let wrap = $( '.ak-toasts' ); if ( !wrap ) { wrap = document.createElement( 'div' ); wrap.className = 'ak-toasts'; document.body.appendChild( wrap ); }

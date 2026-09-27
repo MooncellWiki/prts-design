@@ -193,7 +193,8 @@
         "chrome/search-palette.css",
         "chrome/special-pages.css",
         "chrome/responsive.css",
-        "utilities.css"
+        "utilities.css",
+        "forced-colors.css"
       ],
       "targets": [
         "desktop",

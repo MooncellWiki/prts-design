@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, inject } from "vue";
+
+import { itemListKey, type ItemSize } from "./context";
 
 const props = withDefaults(
   defineProps<{
@@ -11,8 +13,8 @@ const props = withDefaults(
     count?: number | string;
     /** 数量不足（红字） */
     insufficient?: boolean;
-    /** 尺寸：sm 40 · md 56 · lg 76（px）；inline 时固定 22 */
-    size?: "sm" | "md" | "lg";
+    /** 尺寸：sm 40 · md 56 · lg 76（px）；不写时跟 AkItemList 的 size（材料表里是 sm），再不然是 md；inline 时固定 22 */
+    size?: ItemSize;
     /** 裸图标：底框由 CSS 按 rarity 画（只有 torappu 透明图标、没有合成图时用） */
     bare?: boolean;
     /** bare 时的底框稀有度 1–6（白 / 绿 / 蓝 / 紫 / 金 / 特殊） */
@@ -28,12 +30,15 @@ const props = withDefaults(
     /** 行内：22px 小图 + 文字，放在正文里（龙门币×30000）；文字默认是「×count」，可用默认插槽改写 */
     inline?: boolean;
   }>(),
-  { count: undefined, size: "md", rarity: undefined, avatar: undefined, href: undefined, tip: undefined },
+  { count: undefined, size: undefined, rarity: undefined, avatar: undefined, href: undefined, tip: undefined },
 );
+
+const list = inject(itemListKey, null);
+const size = computed(() => props.size ?? list?.size ?? "md");
 
 const classes = computed(() => [
   "ak-item",
-  !props.inline && props.size !== "md" && `ak-item--${props.size}`,
+  !props.inline && size.value !== "md" && `ak-item--${size.value}`,
   { "ak-item--bare": props.bare, "is-disabled": props.disabled },
 ]);
 const tipText = computed(() => (props.tip === false ? undefined : (props.tip ?? props.name)));

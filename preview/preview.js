@@ -277,7 +277,6 @@
   document.addEventListener('click', e => {
     const o = e.target.closest('[data-dialog-open]'); if (o) { const d = $(o.dataset.dialogOpen); if (d && d.showModal) d.showModal(); }
     const c = e.target.closest('[data-dialog-close]'); if (c) { const d = c.closest('dialog'); if (d) d.close(); }
-    const t = e.target.closest('[data-toast]'); if (t) toast(t.dataset.toast, t.dataset.toastType || '', t.dataset.toastTitle || '');
   });
   function toast(msg, type, title) {
     let wrap = $('.ak-toasts'); if (!wrap) { wrap = document.createElement('div'); wrap.className = 'ak-toasts'; document.body.appendChild(wrap); }
@@ -287,6 +286,18 @@
   }
   window.akdsToast = toast;
 
+  /* ── 纯 CSS 提示 [data-ak-tip] 的可访问性补齐（与 skin.js 相同）：aria-describedby 接进读屏，名称之外的提示在不可聚焦元素上补 tabindex=0 ── */
+  let tipSeq = 0, tipBox = null;
+  $$('[data-ak-tip]').forEach(el => {
+    const tip = el.getAttribute('data-ak-tip').trim(); if (!tip) return;
+    const names = [el.getAttribute('aria-label'), el.textContent, ...$$('img[alt]', el).map(i => i.alt)];
+    if (names.some(n => n && n.trim() === tip)) return;
+    if (!tipBox) { tipBox = document.createElement('div'); tipBox.hidden = true; tipBox.id = 'ak-tips'; document.body.appendChild(tipBox); }
+    const d = document.createElement('span'); d.id = 'ak-tip-' + (++tipSeq); d.textContent = tip; tipBox.appendChild(d);
+    el.setAttribute('aria-describedby', ((el.getAttribute('aria-describedby') || '') + ' ' + d.id).trim());
+    if (!el.matches('a[href], button, input, select, textarea, summary, [tabindex]') && !el.closest('a[href], button')) el.tabIndex = 0;
+  });
+
   /* ── Voice play mock ───────────────────────────────────────── */
   document.addEventListener('click', e => { const p = e.target.closest('.ak-voice__play'); if (p) p.classList.toggle('is-playing'); });
 
@@ -295,18 +306,4 @@
   if (fab) { window.addEventListener('scroll', () => fab.classList.toggle('is-visible', window.scrollY > 600), { passive: true }); fab.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' })); }
   // 目录浮层里的「回到顶部」（<1400 时替代 .ak-fab）：同样平滑滚动，且不往 URL 里塞 #
   document.addEventListener('click', e => { if (e.target.closest('.ak-toc__top')) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
-
-  /* ── Copy token on click (swatches) ────────────────────────── */
-  document.addEventListener('click', e => {
-    const sw = e.target.closest('[data-copy]'); if (!sw) return;
-    navigator.clipboard && navigator.clipboard.writeText(sw.dataset.copy).then(() => toast('已复制 ' + sw.dataset.copy, 'success'));
-  });
-
-  /* ── Auto-generate palette swatch computed values ──────────── */
-  $$('[data-token]').forEach(el => {
-    const v = getComputedStyle(document.documentElement).getPropertyValue(el.dataset.token).trim();
-    const out = $('.ak-swatch__value', el); if (out && v) out.textContent = v.startsWith('var(') ? '' : v;
-  });
-  const mo = new MutationObserver(() => $$('[data-token]').forEach(el => { const v = getComputedStyle(document.documentElement).getPropertyValue(el.dataset.token).trim(); const out = $('.ak-swatch__value', el); if (out) out.textContent = v; }));
-  mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
 })();

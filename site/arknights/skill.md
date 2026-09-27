@@ -25,12 +25,18 @@ component: skill
 
 @demo Skill/Wide
 
+## 别名
+
+`alias` 在技能名后接一段灰色小字：`en` 英文名（Bender 大写，`.ak-en`）、`ja` 日文名，与技能名基线对齐——干员页全等级表的表头卡就是这样写的。要放别的内容（多一种语言、带链接）时用 `#alias` 插槽，内容进 `.ak-skill__alias`。
+
+@demo Skill/Alias
+
 ## Vue API
 
 <PropsTable of="AkSkill" />
 
 ## CSS 实现
 
-结构：`.ak-skill > .ak-skill__icon + div( .ak-skill__head( __name + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats ) [+ .ak-skill__aside] + .ak-skill__desc`。技能名是标题元素（`heading-level`，默认 `h4`；干员页正文里是 `h3`），MW 章节标题的装饰由 `title-reset.css` 去掉。
+结构：`.ak-skill > .ak-skill__icon + div( .ak-skill__head( __name [+ __alias] + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats ) [+ .ak-skill__aside] + .ak-skill__desc`；别名是 `span.ak-skill__alias > span.ak-en + span`（英文名 + 日文名）。技能名是标题元素（`heading-level`，默认 `h4`；干员页正文里是 `h3`），MW 章节标题的装饰由 `title-reset.css` 去掉。
 
 <CssClasses :files="['arknights/skill.css']" />

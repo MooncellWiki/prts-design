@@ -48,4 +48,4 @@ component: checkbox
 </div>
 ```
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-check', 'ak-check-group']" />

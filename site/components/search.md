@@ -33,4 +33,4 @@ component: search
 
 键帽 `.ak-search__kbd` 是[键帽](/components/kbd) `.ak-kbd` 的绝对定位版。
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-search']" />

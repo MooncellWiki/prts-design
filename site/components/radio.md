@@ -63,4 +63,4 @@ component: radio
 
 单选按钮组的 `.ak-btn-group` / `.ak-btn.is-active` 在 `components/button.css`；CSS 实现只有外观，方向键要皮肤脚本或 Vue 组件补。
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css', 'components/button.css']" :blocks="['ak-check', 'ak-check-group', 'ak-btn-group']" />

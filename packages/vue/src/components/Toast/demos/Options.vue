@@ -14,8 +14,7 @@ const rich = () =>
 </script>
 
 <template>
-  <!-- 示例框留出高度：提示栈固定在示例 iframe 视口的右下角 -->
-  <div style="min-height: 260px">
+  <div>
     <AkToastProvider ref="toaster" :max="3">
       <div class="ak-flex ak-wrap ak-gap-3">
         <AkButton @click="sticky">常驻（duration: 0）</AkButton>

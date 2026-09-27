@@ -1,6 +1,11 @@
 /*! AKDS · components/stepper.css — Stepper 步骤 · 依赖：tokens.css */
+/* 结构：ol.ak-stepper > li.ak-step（序号由计数器画）。列表重置：去掉原生序号、缩进与外边距；放在正文（.mw-parser-output）里时
+ * base/typography.css 的 ol (0,1,1) / ol > li (0,1,2) 还会加缩进、段距与主色序号，所以两条重置各带一个 .mw-parser-output 前缀的同义选择器（多一个类，压过它们）。
+ * 只是重置——正文外、写成 div 时外观不变 */
 .ak-stepper { display: flex; gap: 0; counter-reset: step; }
+.ak-stepper, .mw-parser-output .ak-stepper { list-style: none; margin: 0; padding: 0; }
 .ak-step { flex: 1; position: relative; text-align: center; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); padding-top: 28px; }
+.ak-step, .mw-parser-output .ak-step { margin: 0; padding-left: 0; padding-right: 0; }
 .ak-step::before { counter-increment: step; content: counter(step); position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 22px; display: grid; place-items: center; font: 700 11px/1 var(--ak-font-label); background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); border: 1px solid var(--ak-border-strong); }
 .ak-step::after { content: ""; position: absolute; top: 11px; left: calc(50% + 12px); right: calc(-50% + 12px); height: 1px; background: var(--ak-border-strong); }
 .ak-step:last-child::after { display: none; }

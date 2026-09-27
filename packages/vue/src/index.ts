@@ -15,6 +15,7 @@ export { default as AkTabPane } from "./components/Tabs/AkTabPane.vue";
 export { default as AkTab } from "./components/Tabs/AkTab.vue";
 export { default as AkItem } from "./components/Item/AkItem.vue";
 export { default as AkItemList } from "./components/Item/AkItemList.vue";
+export type { ItemSize } from "./components/Item/context";
 
 // ── 通用 · 展示 ──
 export { default as AkChip } from "./components/Chip/AkChip.vue";

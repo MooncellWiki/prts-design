@@ -42,7 +42,8 @@ const done = ref(false);
       <span class="ak-fs-sm ak-fg-muted">到秒 · duration 90 秒</span>
       <AkCountdown v-if="!done" :duration="90e3" precision="sec" :active="active" @finish="done = true" />
       <span v-else class="ak-fs-sm">已结束</span>
-      <AkButton size="sm" :disabled="done" @click="active = !active">{{ active ? "暂停" : "继续" }}</AkButton>
+      <!-- 图标按钮：label 作读屏名与 title，随状态换成「暂停」/「继续」 -->
+      <AkButton size="sm" :icon="active ? 'pause' : 'play'" :label="active ? '暂停' : '继续'" :disabled="done" @click="active = !active" />
     </div>
   </div>
 </template>

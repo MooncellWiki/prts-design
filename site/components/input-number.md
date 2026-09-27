@@ -40,4 +40,4 @@ component: input-number
 <div class="ak-number"><button type="button" tabindex="-1" aria-label="减少">−</button><input value="12" role="spinbutton"><button type="button" tabindex="-1" aria-label="增加">+</button></div>
 ```
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-number']" />

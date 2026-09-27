@@ -1,0 +1,54 @@
+/*! AKDS · forced-colors.css — 强制色模式（Windows 高对比度等，@media (forced-colors: active)）· 依赖：全部组件，最后加载
+ *  强制色下浏览器把颜色换成系统色（Canvas / CanvasText / LinkText / Highlight / ButtonText / GrayText），抹掉 background-color 与 box-shadow：
+ *  只靠「底色」或「阴影」表达的状态就看不见了。这里把它们改用系统色表达，平时一条都不生效：
+ *   · 选中 / 当前项 = Highlight 底 + HighlightText 字（要 forced-color-adjust: none，否则底色照样被抹）
+ *   · 自绘控件（勾选 / 单选 / 开关 / 滑块 / 进度）的填充改成系统色
+ *   · 用 box-shadow 画的焦点补回 outline；只有底色、边框透明的块补 1px 轮廓（outline 不占位，不影响排版）
+ *   · 用 clip-path 裁出来的实心图形（稀有度星、信赖心）改成 CanvasText 填充
+ *  斜纹 / 网点 / 头图这类纯装饰在强制色下消失无妨，不处理。 */
+@media (forced-colors: active) {
+  /* 选中 / 当前项 */
+  .ak-tabs--pill .ak-tab.is-active,
+  .ak-tabs--block .ak-tab.is-active,
+  .ak-btn-group > .ak-btn.is-active,
+  .ak-chip.is-active, .ak-chip[aria-pressed="true"],
+  .ak-phase-tabs > button.is-active,
+  .ak-skill-levels > button.is-active,
+  .ak-pagination .is-active {
+    forced-color-adjust: none; background: Highlight; color: HighlightText; border-color: Highlight;
+  }
+  .ak-phase-tabs > button.is-active > img, .ak-skill-levels > button.is-active > img { filter: none; }
+  /* 下划线 / 竖排页签的当前项：色条本来就是 border，改成 Highlight 与其余页签区分开 */
+  .ak-tab.is-active, .ak-tab[aria-selected="true"] { border-color: Highlight; color: Highlight; }
+
+  /* 自绘勾选 / 单选（base/forms.css，裸控件与 .ak-check 同一张脸） */
+  :where(input[type="checkbox"], input[type="radio"]) { forced-color-adjust: none; background: Canvas; border-color: CanvasText; }
+  :where(input[type="checkbox"], input[type="radio"]):checked, :where(input[type="checkbox"]):indeterminate { background: Highlight; border-color: Highlight; }
+  :where(input[type="checkbox"]):checked::before { border-color: HighlightText; }
+  :where(input[type="checkbox"]):indeterminate::before, :where(input[type="radio"]):checked::before { background: HighlightText; }
+  :where(input[type="checkbox"], input[type="radio"]):disabled { background: Canvas; border-color: GrayText; }
+  :where(input[type="checkbox"], input[type="radio"]):disabled:checked { background: GrayText; border-color: GrayText; }
+
+  /* 开关 / 滑块 / 进度 */
+  .ak-switch > input { forced-color-adjust: none; background: Canvas; outline: 1px solid CanvasText; }
+  .ak-switch > input::before { background: CanvasText; }
+  .ak-switch > input:checked { background: Highlight; outline-color: Highlight; }
+  .ak-switch > input:checked::before { background: HighlightText; }
+  .ak-slider { forced-color-adjust: none; background: CanvasText; }
+  .ak-slider::-webkit-slider-thumb { background: Highlight; border-color: Canvas; box-shadow: none; }
+  .ak-slider::-moz-range-thumb { background: Highlight; border-color: Canvas; }
+  .ak-progress { forced-color-adjust: none; background: Canvas; outline: 1px solid CanvasText; }
+  .ak-progress::before, .ak-progress--segmented > i.is-on { background: Highlight; }
+  .ak-progress--segmented { outline: 0; }
+  .ak-progress--segmented > i { background: Canvas; outline: 1px solid CanvasText; }
+
+  /* 焦点：这几处平时用边框色 + box-shadow 表示焦点（outline: 0），强制色下补回 outline */
+  :where(input[type="checkbox"], input[type="radio"]):focus-visible,
+  .ak-input:focus, .ak-select:focus, .ak-textarea:focus, .ak-slider:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+
+  /* 只有底色、边框透明的块：补轮廓 */
+  .ak-tag, .ak-badge, .ak-btn--ghost, .ak-toast, .ak-message, .ak-cbox { outline: 1px solid CanvasText; outline-offset: -1px; }
+
+  /* clip-path 裁出来的实心图形 */
+  .ak-rarity > i, .ak-trust::before { forced-color-adjust: none; background: CanvasText; }
+}

@@ -10,6 +10,8 @@ const props = withDefaults(
   defineProps<{
     /** 技能名 */
     name: string;
+    /** 别名，跟在技能名后的灰色小字（干员页全等级表的表头）：en 英文名（Bender 大写）· ja 日文名；要放别的内容用 #alias 插槽 */
+    alias?: { en?: string; ja?: string };
     /** 技能图标地址（游戏 skill_icon，64px 见方） */
     icon?: string;
     /** 技力回复方式：决定图标描边 + 底条色与 SP 标签；auto 自动回复 · attack 攻击回复 · hit 受击回复 · passive 被动 */
@@ -34,6 +36,7 @@ const props = withDefaults(
     headingLevel?: 2 | 3 | 4 | 5 | 6;
   }>(),
   {
+    alias: undefined,
     icon: undefined,
     spType: "auto",
     trigger: undefined,
@@ -49,12 +52,15 @@ const props = withDefaults(
 const slots = defineSlots<{
   /** 技能描述（游戏原始标记可以套 AkRichText） */
   default?: () => unknown;
+  /** 技能名后的别名（代替 alias），放进 .ak-skill__alias */
+  alias?: () => unknown;
   /** 名称行末尾的附加内容（「未解锁」标签等） */
   "header-extra"?: () => unknown;
   /** 右侧槽（开放条件之后）：技能范围等；写了就是三栏的宽卡（.ak-skill--wide） */
   aside?: () => unknown;
 }>();
 
+const hasAlias = computed(() => !!props.alias?.en || !!props.alias?.ja || !!slots.alias);
 const wide = computed(() => !!props.unlock || !!slots.aside);
 const hasStats = computed(() => props.cost !== undefined || props.init !== undefined || props.duration !== undefined);
 const durationText = computed(() => (typeof props.duration === "number" ? `${props.duration}s` : props.duration));
@@ -68,6 +74,12 @@ const durationText = computed(() => (typeof props.duration === "number" ? `${pro
     <div>
       <div class="ak-skill__head">
         <component :is="`h${headingLevel}`" class="ak-skill__name">{{ name }}</component>
+        <span v-if="hasAlias" class="ak-skill__alias">
+          <slot name="alias">
+            <span v-if="alias?.en" class="ak-en" lang="en">{{ alias.en }}</span>
+            <span v-if="alias?.ja" lang="ja">{{ alias.ja }}</span>
+          </slot>
+        </span>
         <AkSp :sp-type="spType" />
         <AkSpTrigger v-if="trigger" :auto="trigger === 'auto'" />
         <slot name="header-extra" />

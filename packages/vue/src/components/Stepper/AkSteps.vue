@@ -6,6 +6,7 @@ import AkStep, { type StepStatus } from "./AkStep.vue";
 /**
  * 步骤条（= Naive 的 NSteps，只有横排）：一排带序号的步骤 + 连线，放若干 AkStep。
  * 同 AkTabs：从默认插槽读 AkStep 的 props 自己画，首次渲染 / SSR 预渲染就是完整的。只是展示进度，不可点。
+ * 输出 ol > li；ol 上显式 role="list"：Safari（VoiceOver）对 list-style: none 的列表不报列表语义，写上补回。
  */
 const props = defineProps<{
   /** 当前步骤（从 1 数，同 Naive）：之前的已完成、这一步是当前、之后未到；超过步数 = 全部完成；不写则各步按自己的 status */
@@ -47,15 +48,14 @@ const Render = (p: { content: unknown }) => (typeof p.content === "function" ? p
 </script>
 
 <template>
-  <div class="ak-stepper" role="list" :aria-label="label">
-    <div
+  <ol class="ak-stepper" role="list" :aria-label="label">
+    <li
       v-for="s in collect()"
       :key="s.key"
       :class="['ak-step', s.status !== 'wait' && `is-${s.status}`]"
-      role="listitem"
       :aria-current="s.status === 'active' ? 'step' : undefined"
     >
       <Render :content="s.title" /><span v-if="s.status === 'done'" class="ak-sr-only">（已完成）</span>
-    </div>
-  </div>
+    </li>
+  </ol>
 </template>

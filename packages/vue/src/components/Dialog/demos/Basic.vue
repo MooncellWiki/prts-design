@@ -18,8 +18,7 @@ const materials = [
 </script>
 
 <template>
-  <!-- 示例框留出对话框的高度：模态对话框在示例 iframe 的视口里居中 -->
-  <div class="ak-flex ak-gap-3 ak-items-start" style="min-height: 320px">
+  <div class="ak-flex ak-gap-3 ak-items-start">
     <AkButton variant="primary" @click="open = true">打开对话框</AkButton>
     <span v-if="result" class="ak-fs-sm ak-fg-muted ak-py-2">{{ result }}</span>
     <AkDialog

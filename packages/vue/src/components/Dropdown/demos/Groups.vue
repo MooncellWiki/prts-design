@@ -29,8 +29,8 @@ const more: DropdownMixedOption[] = [
 </script>
 
 <template>
-  <!-- 示例框留出菜单展开的高度；触发按钮靠右，菜单用 bottom-end 右对齐 -->
-  <div class="ak-flex ak-justify-end ak-items-start" style="min-height: 340px">
+  <!-- 触发按钮靠右，菜单用 bottom-end 右对齐 -->
+  <div class="ak-flex ak-justify-end ak-items-start">
     <AkDropdown :options="more" placement="bottom-end">
       <AkButton icon="more" variant="ghost">更多</AkButton>
     </AkDropdown>

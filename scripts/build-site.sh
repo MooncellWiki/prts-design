@@ -16,6 +16,7 @@ base="${AKDS_BASE:-/prts-design/}"
 
 cd "$root"
 node scripts/css-order.ts                      # skin.json 与 index.css 同序，否则失败
+node scripts/sprite-sync.ts                    # 图标：骨架 sprite / 皮肤模板 sprite / icons.ts 三处一致，否则失败
 AKDS_BASE="$base" pnpm build:docs
 pnpm build:storybook
 

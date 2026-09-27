@@ -21,4 +21,4 @@ component: kbd
 <kbd class="ak-kbd">Ctrl</kbd> + <kbd class="ak-kbd">K</kbd>
 ```
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-kbd']" />

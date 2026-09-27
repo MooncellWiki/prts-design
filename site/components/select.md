@@ -36,4 +36,4 @@ component: select
 
 `<select class="ak-select">`；尺寸 `.ak-select--sm` / `--lg`；状态 `:disabled` `[aria-invalid="true"]` / `:user-invalid` `.is-valid`。
 
-<CssClasses :files="['components/form.css']" />
+<CssClasses :files="['components/form.css']" :blocks="['ak-select']" />
