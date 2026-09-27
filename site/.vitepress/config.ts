@@ -146,7 +146,8 @@ export default defineConfigWithTheme<DefaultTheme.Config & { akdsTabs: Record<st
       },
       { text: "组件", link: "/components/", activeMatch: "^/(components|arknights)/" },
       { text: "整页样例", link: "/patterns/home", activeMatch: "^/patterns/" },
-      { text: "Storybook", link: process.env.NODE_ENV === "production" ? `${base}storybook/` : "http://localhost:6006/" },
+      // 站内路径由 VitePress 自己补 base；target 让路由器不接管（否则当成文档页走 404）
+      { text: "Storybook", link: process.env.NODE_ENV === "production" ? "/storybook/" : "http://localhost:6006/", target: "_blank" },
     ],
     sidebar,
     akdsTabs,
