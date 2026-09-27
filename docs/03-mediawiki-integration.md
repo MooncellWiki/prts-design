@@ -278,6 +278,7 @@ $wgFooterIcons = [
 ## 5. 模板 / TemplateStyles / Lua 如何使用组件
 
 - 组件类全部是纯 CSS，无需 JS：模板直接输出 `<div class="ak-skill">…</div>` 等结构（见 `docs/02-components.md` 与 `preview/*.html` 源码）。
+- 正文提示框：现网 `{{Cbox2|lv=N|mdi=true|icon=…|title=…|text=…}}` → `<div class="ak-cbox ak-cbox--tip"><span class="ak-cbox__icon"><svg><use href="#i-arrow-ne"/></svg></span><div class="ak-cbox__body">…</div></div>`；lv0 → `--tip`、lv1 → 默认、lv2 / lv3 → `--warning`、lv4 → `--danger`；`bg` / `bgleft` / `iconcolor` 三个自定义色参数分别落到 `--_bg` / 井底（由 `--_c` 算）/ `--_c`，模板用 `style="--_c:…;--_bg:…"` 覆盖即可；图标从皮肤的 SVG 雪碧图取（`i-arrow-ne` = arrow-top-right-thick、`i-mic` = microphone-message、`i-trash` = delete-empty、`i-info` / `i-warn`），MDI 名 → `i-*` 名的对照表由模板维护，缺的图标往雪碧图里补。
 - **TemplateStyles**：组件 CSS 已随皮肤加载，模板样式表只写模板特有布局；需要令牌时直接 `var(--ak-accent)`（css-sanitizer 5.x 支持自定义属性）。
 - Lua（Scribunto）把 gamedata 富文本 `<@ba.vup>x</>` 转 `<span class="ak-rt-vup">x</span>`；`<$ba.stun>` 转 `<span class="ak-rt-term" data-ak-tip="…">`。
 - 稀有度：容器 `data-rarity="6"`；子元素用 `.ak-r-*`。职业：`data-prof="warrior"`。

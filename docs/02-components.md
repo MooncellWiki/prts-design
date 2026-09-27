@@ -88,6 +88,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 | Section heading | `.ak-heading` | `--stack --lg --underline`；`__title __en __aside` | ✅ |
 | Tabs | `.ak-tabs` `.ak-tab` `.ak-tabpanel` | `--pill --block --vertical` | ✅🧩 |
 | Message | `.ak-message` | `--success --warning --danger --neutral --accent --banner --stripes` | ✅ |
+| Cbox（正文提示框，= 现网 `{{Cbox2}}`） | `.ak-cbox` | `--tip`（lv0 绿「另见 / 提示」）· 默认蓝（lv1）· `--warning`（lv2 / lv3，现网夜间样式也并成一档）· `--danger`（lv4）· `--neutral` · `--narrow`（= 模板 narrow=，最宽 640）；`__icon`（40px 图标井：等级色 24% 淡底 + 等级色线稿，图标贴顶、井随正文拉高）`__title __body`。与 Message 的分工：Message 是界面反馈（横幅 / 可关闭 / 与 Toast 同族），Cbox 是编辑写在正文里的提示 | ✅ |
 | Tooltip | `[data-ak-tip]` `.ak-tooltip` `.ak-term`；`.ak-tip--wide`（允许折行、最宽 280，给术语 / 异常效果那种一两句话的解释） | CSS-only + JS 增强。**闲置时气泡收成 0 宽**（`max-width: 0; overflow: hidden`，不只是 `opacity: 0`）：透明气泡仍占布局，靠近右缘的长提示会把文档撑出横向滚动，手机上整页跟着缩小——干员页 130 枚 tooltip 就是这么发现的；悬停 / 聚焦再放开 | ✅ |
 | Popover | `.ak-popover` | | ✅🧩 |
 | Dropdown / Menu | `.ak-dropdown` `.ak-menu` | `details/summary` 原生 | ✅ |
