@@ -2,16 +2,16 @@
  * 样式回归：把预览页每个元素（含 ::before / ::after）的计算样式 + <html> 上全部 --ak-* 令牌的计算值拍成快照，前后两份逐项比对。
  * 用来保证「令牌改由 JSON 生成」「CSS 按组件拆文件」这类重构视觉零变化。
  *
- *   node scripts/verify/styles.ts snap <标签> [页面…]      → _verify/<标签>/<页面>@<模式>.json
- *   node scripts/verify/styles.ts diff <标签A> <标签B>      → 逐页逐模式列出不同的元素 / 属性
- *   PAGES_DIR=dist node scripts/verify/styles.ts snap …     → 拍 dist/ 单文件版（默认 preview/）
- *   node scripts/verify/styles.ts hosts [标签]              → 跨宿主比对：对照页 preview/gallery.html 在 akds / vector / bare 三个宿主 × 暗 / 亮下拍快照
- *                                                              （_verify/<标签，默认 hosts>/gallery@<宿主>-<主题>.json），以 akds 为基准，
- *                                                              每个 [data-gallery] 里的元素（含伪元素）在另两个宿主上必须逐属性相同，否则退出码 1。
- *                                                              交互态另比一轮：块里的链接 / 控件用 CDP 强制 :hover / :focus-visible / :visited，拍元素 + 子树的计算样式
- *                                                              （快照里路径带 [hover] 等前缀；不含伪元素；这一轮关掉过渡，否则强制后立刻取值可能还是过渡起点）。:visited 的颜色 getComputedStyle 出于隐私永远按未访问给，
- *                                                              这一轮走 CSS.getComputedStyleForNode（DevTools 计算面板的那条路）。
- *                                                              vector 宿主要先 node scripts/fetch-vector-css.ts（夹具不入库；没有就只比 bare 并警告）
+ *   node e2e/styles.ts snap <标签> [页面…]      → _verify/<标签>/<页面>@<模式>.json
+ *   node e2e/styles.ts diff <标签A> <标签B>      → 逐页逐模式列出不同的元素 / 属性
+ *   PAGES_DIR=dist node e2e/styles.ts snap …     → 拍 dist/ 单文件版（默认 preview/）
+ *   node e2e/styles.ts hosts [标签]              → 跨宿主比对：对照页 preview/gallery.html 在 akds / vector / bare 三个宿主 × 暗 / 亮下拍快照
+ *                                                （_verify/<标签，默认 hosts>/gallery@<宿主>-<主题>.json），以 akds 为基准，
+ *                                                每个 [data-gallery] 里的元素（含伪元素）在另两个宿主上必须逐属性相同，否则退出码 1。
+ *                                                交互态另比一轮：块里的链接 / 控件用 CDP 强制 :hover / :focus-visible / :visited，拍元素 + 子树的计算样式
+ *                                                （快照里路径带 [hover] 等前缀；不含伪元素；这一轮关掉过渡，否则强制后立刻取值可能还是过渡起点）。:visited 的颜色 getComputedStyle 出于隐私永远按未访问给，
+ *                                                这一轮走 CSS.getComputedStyleForNode（DevTools 计算面板的那条路）。
+ *                                                vector 宿主要先 node scripts/fetch-vector-css.ts（夹具不入库；没有就只比 bare 并警告）
  *
  * 模式 = 主题（?theme=）× 视口 × 配色偏好；一律 prefers-reduced-motion: reduce（动画直接落到终态、首页轮播不自动播，快照才稳定）。
  * 干员页的「干员信息」舞台是现网 Widget 原样（不归本仓库管，图片从现网拉、时序不定），整棵子树跳过；页面里的 Date 冻结在 NOW。
@@ -21,7 +21,7 @@ import { readFile, mkdir, writeFile, readdir } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
 import puppeteer from 'puppeteer-core';
 
-const root = resolve(import.meta.dirname, '../..');
+const root = resolve(import.meta.dirname, '..');
 const outDir = join(root, '_verify');
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const CHROME_ARGS = ['--hide-scrollbars', '--font-render-hinting=none', ...(process.env.CI ? ['--no-sandbox'] : [])];   // CI（GitHub Actions 的 Ubuntu 24.04）不给 Chrome 用户命名空间沙箱
@@ -337,4 +337,4 @@ const [cmd, ...args] = process.argv.slice(2);
 if (cmd === 'snap' && args[0]) await snap(args[0], args.length > 1 ? args.slice(1) : PAGES);
 else if (cmd === 'diff' && args.length === 2) await diff(args[0], args[1]);
 else if (cmd === 'hosts' && args.length <= 1) { const label = args[0] ?? 'hosts'; await hostDiff(label, await hostSnap(label)); }
-else { console.error('用法：node scripts/verify/styles.ts snap <标签> [页面…] | diff <标签A> <标签B> | hosts [标签]'); process.exitCode = 2; }
+else { console.error('用法：node e2e/styles.ts snap <标签> [页面…] | diff <标签A> <标签B> | hosts [标签]'); process.exitCode = 2; }

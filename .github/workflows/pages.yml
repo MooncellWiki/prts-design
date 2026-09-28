@@ -42,7 +42,7 @@ jobs:
         run: |
           # Vector 样式夹具不入库，现抓；prts.wiki 的 WAF 拦了就只比 AKDS ↔ 站外（hosts 会提示），不让外站抖动卡住部署
           node scripts/fetch-vector-css.ts || echo "::warning::抓不到 prts.wiki 的 Vector 2022 样式，这次只比 AKDS 皮肤 ↔ 站外"
-          node scripts/verify/styles.ts hosts
+          node e2e/styles.ts hosts
 
       - name: Assemble site (docs + storybook + preview + dist)
         run: bash scripts/build-site.sh _site

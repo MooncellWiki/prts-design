@@ -6,7 +6,7 @@
             html / body 的类与 #bodyContent.vector-body > #mw-content-text.mw-body-content > .mw-parser-output 的嵌套照现网 Vector 2022 抄；组件根 .ak-scope
     bare    只有 ../src/standalone.css，body 无类；组件根 .ak-scope（= 站外页面 / npm 包）
   三个宿主都加载 ../src/fonts.css（只有 @font-face，不参与层叠）：字形一致，宽高这类「按版面算出来」的计算值才可比；组件根定宽 1000px 同理。
-  scripts/verify/styles.ts hosts 逐元素比对每个 [data-gallery] 里的计算样式；?theme= 由 preview.js 处理。
+  e2e/styles.ts hosts 逐元素比对每个 [data-gallery] 里的计算样式；?theme= 由 preview.js 处理。
   {{占位}} 由 scripts/build-preview.py 用 _src/pages/*.html 里 front matter 写了 skeleton: gallery-skeleton.html 的页面填进去。
 ═══════════════════════════════════════════════════════════════════════════ -->
 <!DOCTYPE html>

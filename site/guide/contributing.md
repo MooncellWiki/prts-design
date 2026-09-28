@@ -81,9 +81,9 @@ scripts/                      fetch-*.py · fetch-vector-css.ts · build-preview
 重构类改动（不应改变外观的）用样式快照比对：
 
 ```sh
-node scripts/verify/styles.ts snap before   # 改之前
-node scripts/verify/styles.ts snap after    # 改之后
-node scripts/verify/styles.ts diff before after
+node e2e/styles.ts snap before   # 改之前
+node e2e/styles.ts snap after    # 改之后
+node e2e/styles.ts diff before after
 ```
 
 它把预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式拍下来逐项比对。令牌由 `packages/tokens/src/` 下的 JSON5 生成：改完跑 `pnpm tokens`。
@@ -93,7 +93,7 @@ node scripts/verify/styles.ts diff before after
 ```sh
 node scripts/fetch-vector-css.ts           # 抓现网 Vector 2022 的样式夹具（vector.css）与站点自定义样式（site.css）到 preview/vendor/vector/（不入库；只需抓一次）
 python3 scripts/build-preview.py           # 改了 preview/_src/pages/gallery.html 时
-node scripts/verify/styles.ts hosts        # 对照页 preview/gallery.html 在 akds / vector / bare × 暗 / 亮 下拍快照并比对
+node e2e/styles.ts hosts                   # 对照页 preview/gallery.html 在 akds / vector / bare × 暗 / 亮 下拍快照并比对
 ```
 
 `hosts` 以 AKDS 皮肤（`?host=akds`）为基准，每个 `[data-gallery]` 块里的元素在 Vector 2022（夹具 + `standalone.css` + 站点自定义样式 `site.css`——MW 上动态加载的模块插在 `site.styles` 之前，所以 Common.css 排在组件样式之后）与站外（只有 `standalone.css`）上必须逐属性相同，否则列出不同的元素 / 属性、退出码 1；白名单写在脚本里、逐条注明原因（道具底框素材、正文标题的锚点偏移、Vector 自己的减弱动效规则）。静态之外再比一轮交互态：块里的链接 / 控件逐个用 CDP 强制 `:hover` / `:focus-visible` / `:visited`（快照里路径带 `[hover]` 等前缀，不含伪元素）。没覆盖的：`:active`、强制色模式、窄视口、真实的键盘焦点顺序。CI 每次跑它；抓不到夹具（prts.wiki 的 WAF 按 TLS 指纹拦非浏览器客户端，所以脚本用 puppeteer 开真浏览器取）时只比 AKDS ↔ 站外并警告。浏览器里直接看：`preview/gallery.html?host=vector&theme=light`；Storybook 工具栏的「宿主」同一张表。差异多半落在：组件靠了 `base/` 的规则或 body 的继承（组件自己补声明，用令牌）、组件标题是 `h1`–`h6` 却没有标签限定的选择器、宿主的元素规则漏进组件（`scope.css` 的重置）、链接型组件的根节点颜色没写到 `:hover` / `:visited` 上。

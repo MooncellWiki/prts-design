@@ -18,7 +18,7 @@
     "build:site": "bash scripts/build-site.sh _site",
     "typecheck": "vue-tsc --noEmit",
     "check:css-order": "node scripts/css-order.ts",
-    "verify:styles": "node scripts/verify/styles.ts"
+    "verify:styles": "node e2e/styles.ts"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^10.6.0",

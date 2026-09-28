@@ -10,7 +10,7 @@ import demoThemeCss from "../packages/css/src/chrome/demo-theme.css?raw";
 document.head.appendChild(document.createElement("style")).textContent = demoThemeCss.replaceAll("../../preview/assets/", "./preview/assets/");
 
 /**
- * 宿主（工具栏「宿主」）：同一个组件在三种页面上应当一模一样（对照页 preview/gallery.html 与 scripts/verify/styles.ts hosts 同一张表）——
+ * 宿主（工具栏「宿主」）：同一个组件在三种页面上应当一模一样（对照页 preview/gallery.html 与 e2e/styles.ts hosts 同一张表）——
  *   akds    皮肤全套 index.css（= prts.wiki 上的 Skin:Arknights）
  *   vector  Vector 2022 的样式夹具（scripts/fetch-vector-css.ts 抓取，不入库）+ standalone.css + fonts.css + 站点自定义样式 site.css（= prts.wiki 上别的皮肤 + mw.loader.using("skins.akds.components")；
  *           MW 上动态加载的样式插在 site.styles 之前，所以 site.css 排在组件样式之后）

@@ -17,7 +17,7 @@
 
 /* ═══ 别的宿主上：把宿主的页面环境换成 AKDS 皮肤上组件看到的那一个 ═══
  * 下面各条都只对「不在 AKDS 皮肤页面里」的作用域生效（:not(.skin-akds *)）——AKDS 皮肤上这些本来就由 base/ 全页提供，
- * 那里 <AkScope> 只剩上面的排版基线（与 body 同值）。scripts/verify/styles.ts hosts 以 AKDS 皮肤为基准逐元素比对 Vector 2022 / 站外，差异应当为零。
+ * 那里 <AkScope> 只剩上面的排版基线（与 body 同值）。e2e/styles.ts hosts 以 AKDS 皮肤为基准逐元素比对 Vector 2022 / 站外，差异应当为零。
  * 特指度都压得很低：只求压过宿主的元素级规则（Vector 的 h3 / p / li / img / code …是 (0,0,1)），组件类（0,1,0）照样盖得过。 */
 
 /* 1. 宿主继承下来的文字属性（Vector 的 .vector-body 等会往下传 overflow-wrap 之类）：作用域根上回到初始值——AKDS 皮肤的 body 上就是初始值 */

@@ -1,7 +1,7 @@
 /**
  * 把 prts.wiki 现网 Vector 2022 皮肤的样式抓成回归夹具 preview/vendor/vector/vector.css，站点自定义样式（site.styles = MediaWiki:Common.css / Vector.css …）
  * 抓成同目录 site.css（**不入库**：Vector 是 GPL-2.0-or-later、站点样式版权归 prts.wiki 编者，目录在 .gitignore 里）。
- * 跨宿主对照页 preview/gallery.html?host=vector、Storybook 工具栏「宿主：Vector 2022」、scripts/verify/styles.ts hosts 都读它：
+ * 跨宿主对照页 preview/gallery.html?host=vector、Storybook 工具栏「宿主：Vector 2022」、e2e/styles.ts hosts 都读它：
  * 同一份组件 HTML 放在 Vector 页面里，看宿主的正文 / 链接 / 标题规则有没有漏进组件。
  *
  *   node scripts/fetch-vector-css.ts           （CHROME=… 指定浏览器；默认 macOS 的 Google Chrome）
@@ -60,7 +60,7 @@ await writeFile(
 
 ${FILES.map(f => `    ${loadUrl(f.modules)}`).join('\n')}
 
-**仅作跨宿主回归测试的夹具**（\`preview/gallery.html?host=vector\`、Storybook「宿主：Vector 2022」、\`node scripts/verify/styles.ts hosts\`），不属于 AKDS，不入库（目录在 \`.gitignore\` 里），也不随文档站发布。
+**仅作跨宿主回归测试的夹具**（\`preview/gallery.html?host=vector\`、Storybook「宿主：Vector 2022」、\`node e2e/styles.ts hosts\`），不属于 AKDS，不入库（目录在 \`.gitignore\` 里），也不随文档站发布。
 
 许可：Vector 皮肤与 MediaWiki 核心样式为 GPL-2.0-or-later（https://www.mediawiki.org/wiki/Skin:Vector），各扩展按其各自的许可；站点自定义样式版权归 prts.wiki 的编者。
 `,

@@ -2,9 +2,9 @@
  * 组件自检：无头 Chrome 打开 Storybook story / 文档站页面，报渲染是否成功 + 控制台错误 / Vue 警告，并截图。
  * 需要先开着 pnpm storybook（:6006）/ pnpm dev:docs（:5173）。
  *
- *   node scripts/verify/stories.ts components-chip arknights-rarity     按 story id 前缀（= 注册表 storybook 字段）挑 story
- *   node scripts/verify/stories.ts --docs /components/chip /arknights/rarity   文档站页面（示例在 iframe 里，逐个查）
- *   THEME=light node scripts/verify/stories.ts …                          亮色（默认暗）
+ *   node e2e/stories.ts components-chip arknights-rarity     按 story id 前缀（= 注册表 storybook 字段）挑 story
+ *   node e2e/stories.ts --docs /components/chip /arknights/rarity   文档站页面（示例在 iframe 里，逐个查）
+ *   THEME=light node e2e/stories.ts …                          亮色（默认暗）
  *
  * 截图 → _verify/stories/<id>.png、_verify/docs/<路径>.png；有错误时退出码 1。
  */
@@ -16,13 +16,13 @@ const CHROME = process.env.CHROME ?? "/Applications/Google Chrome.app/Contents/M
 const SB = process.env.SB ?? "http://localhost:6006";
 const DOCS = process.env.DOCS ?? "http://localhost:5173";
 const THEME = process.env.THEME ?? "dark";
-const root = resolve(import.meta.dirname, "../..");
+const root = resolve(import.meta.dirname, "..");
 
 const args = process.argv.slice(2);
 const docsMode = args[0] === "--docs";
 const targets = docsMode ? args.slice(1) : args;
 if (!targets.length) {
-  console.error("用法：node scripts/verify/stories.ts <story id 前缀…> | --docs <路径…>");
+  console.error("用法：node e2e/stories.ts <story id 前缀…> | --docs <路径…>");
   process.exit(2);
 }
 

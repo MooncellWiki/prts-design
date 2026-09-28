@@ -89,9 +89,9 @@ pnpm dev:docs                                              # 文档站开发（s
 pnpm storybook                                         # Storybook 开发（:6006）
 pnpm typecheck                                         # vue-tsc
 node scripts/css-order.ts [--write]                    # 检查 / 同步 skin/skin.json 的样式列表与 packages/css/src/index.css 同序
-node scripts/verify/styles.ts snap <标签> · diff <A> <B> # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照与比对——重构 CSS 前后跑一遍，保证视觉零变化
+node e2e/styles.ts snap <标签> · diff <A> <B>            # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照与比对——重构 CSS 前后跑一遍，保证视觉零变化
 node scripts/fetch-vector-css.ts                       # 现网 Vector 2022 的皮肤 + 扩展样式 → preview/vendor/vector/vector.css，站点自定义样式 → site.css（回归夹具，不入库；prts.wiki 的 WAF 拦 curl / urllib，所以用 puppeteer 开真浏览器取）
-node scripts/verify/styles.ts hosts                    # 跨宿主：对照页 preview/gallery.html 在 AKDS 皮肤 / Vector 2022 / 站外 × 暗 / 亮 下逐元素比对（静态 + :hover / :focus-visible / :visited），组件的计算样式必须一样（白名单写在脚本里）；CI 每次跑
+node e2e/styles.ts hosts                               # 跨宿主：对照页 preview/gallery.html 在 AKDS 皮肤 / Vector 2022 / 站外 × 暗 / 亮 下逐元素比对（静态 + :hover / :focus-visible / :visited），组件的计算样式必须一样（白名单写在脚本里）；CI 每次跑
 python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → packages/css/src/fonts/ + fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/fetch-item-framed.py                   # 现网拼好的道具图 道具_带框_<名>.png → preview/assets/item/framed/<id>.png（扫各页用到的 id，manifest 查名，按文件名 md5 算 media 路径；已有的跳过，--force 重抓）
 python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度底框（prts.wiki 文件:道具_背景_1–6.png，钉 media 路径）→ packages/css/src/img/item/bg_1–6.png（.ak-item--bare 用）

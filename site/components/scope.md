@@ -32,7 +32,7 @@ AKDS 皮肤上 body 本身就是作用域，包不包都一样；所以写 widge
 - **not-prose 隔离**：宿主皮肤的全局链接规则（Vector 的 `a` 链接色、`a:visited` / `a:active` 换色、`a:hover` 换色 + 下划线）会把「整块是链接」的组件（`a.ak-card`、`a.ak-op-card` …）染成链接色。作用域里 `ak-not-prose` 子树内的链接按宿主规则的特指度逐条退回继承色、去下划线——与宿主同特指度、靠后加载压过宿主，组件自己的 `a` 规则仍在它之后生效。AKDS 皮肤自己的正文链接规则本来就排除 not-prose，用不着这段。
   这些 (0,1,1) 规则也压得过组件写在 `<a>` 根节点上的单个类 (0,1,0)：根节点颜色不是继承色的链接型组件（`.ak-btn`、`.ak-stage-code`、`.ak-op-card`、`a.ak-card`、`a.ak-item` …）自己把颜色规则写到 `:hover` / `:visited` / `:active` 上（0,2,0+），新组件照做。
 
-组件里夹的正文内容（不带 `ak-` 类、不在 not-prose 里的段落 / 列表 / 链接）不动，跟着宿主的正文排版走——MW 正文排版（`base/`）不随组件走。三种宿主一致由 `node scripts/verify/styles.ts hosts` 逐元素核对（对照页 `preview/gallery.html?host=akds|vector|bare`），静态与 `:hover` / `:focus-visible` / `:visited` 各比一轮。
+组件里夹的正文内容（不带 `ak-` 类、不在 not-prose 里的段落 / 列表 / 链接）不动，跟着宿主的正文排版走——MW 正文排版（`base/`）不随组件走。三种宿主一致由 `node e2e/styles.ts hosts` 逐元素核对（对照页 `preview/gallery.html?host=akds|vector|bare`），静态与 `:hover` / `:focus-visible` / `:visited` 各比一轮。
 
 ## Vue API
 
