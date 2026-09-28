@@ -81,7 +81,7 @@ for name in sorted(f.name for f in prev.glob('*.html') if f.name != 'gallery.htm
     # cross links between the two pages → keep relative (both in dist)
     # theme default note: artifacts render in viewer theme; keep script default
     # artifact skeleton strips <html>/<body> tags → restore body class + set a product-like title
-    html = html.replace('<body class="skin-akds">', '<body class="skin-akds"><script>document.body.classList.add("skin-akds");</script>')
+    html = html.replace('<body class="skin-arknights">', '<body class="skin-arknights"><script>document.body.classList.add("skin-arknights");</script>')
     html = html.replace('<title>陈 - PRTS · 干员页样例</title>', '<title>干员页样例 · 陈</title>').replace('<title>首页 - PRTS · 首页设计稿</title>', '<title>首页设计稿 · PRTS</title>')
     # cross-links between the two published artifacts
     html = html.replace('href="home.html"', 'href="https://claude.ai/code/artifact/4c4b164a-8459-43e4-8e81-a3df7d566618"').replace('href="operator.html"', 'href="https://claude.ai/code/artifact/0b7e2137-5569-416d-8f3a-620b12ce81a2"')

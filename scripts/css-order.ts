@@ -85,8 +85,8 @@ if (k !== standalone.length) {
   process.exitCode = 1;
 }
 
-// (3) scope.css 第 4 段 ↔ base/forms.css：去掉 :where(.ak-scope:not(.skin-akds *) *) 前缀后，与 forms.css 里不带类 / id 的规则（裸控件）集合相等
-const SCOPE_PREFIX = ':where(.ak-scope:not(.skin-akds *) *)';
+// (3) scope.css 第 4 段 ↔ base/forms.css：去掉 :where(.ak-scope:not(.skin-arknights *) *) 前缀后，与 forms.css 里不带类 / id 的规则（裸控件）集合相等
+const SCOPE_PREFIX = ':where(.ak-scope:not(.skin-arknights *) *)';
 const rulesOf = (css: string) =>
   [...css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@(supports|media)[^{]*\{/g, '').replace(/\s+/g, ' ').matchAll(/([^{}]+)\{([^{}]*)\}/g)]
     .map(m => [m[1].trim(), m[2].trim().replace(/;$/, '')] as const);

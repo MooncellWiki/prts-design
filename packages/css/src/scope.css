@@ -1,11 +1,11 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
  *  AKDS · scope.css — 作用域根：组件所需的排版基线（字体 / 字号 / 行高 / 前景色）挂在 .ak-scope 或皮肤的 body 上，不依赖宿主的 body。
- *  AKDS 皮肤：body.skin-akds 就是作用域；别的皮肤 / 站外：widget 根节点加 class="ak-scope"（Vue：<AkScope>）。
+ *  AKDS 皮肤：body.skin-arknights 就是作用域；别的皮肤 / 站外：widget 根节点加 class="ak-scope"（Vue：<AkScope>）。
  *  局部主题 .ak-scope[data-theme="dark|light"]：令牌在 tokens.css 里跟着挂到作用域上，这里补画布底色——否则终端模式的浅色字落在宿主的白底上。
  *  组件层（components / decor / arknights / utilities）只依赖本文件与 tokens.css：需要的字体 / 行高自己写令牌，不靠宿主继承。
  *  依赖：tokens.css
  * ═══════════════════════════════════════════════════════════════════════════ */
-.ak-scope, body.skin-akds {
+.ak-scope, body.skin-arknights {
   color: var(--ak-fg);
   font-family: var(--ak-font-body);
   font-size: var(--ak-fs-body);
@@ -16,25 +16,25 @@
 .ak-scope[data-theme] { background-color: var(--ak-bg-canvas); }
 
 /* ═══ 别的宿主上：把宿主的页面环境换成 AKDS 皮肤上组件看到的那一个 ═══
- * 下面各条都只对「不在 AKDS 皮肤页面里」的作用域生效（:not(.skin-akds *)）——AKDS 皮肤上这些本来就由 base/ 全页提供，
+ * 下面各条都只对「不在 AKDS 皮肤页面里」的作用域生效（:not(.skin-arknights *)）——AKDS 皮肤上这些本来就由 base/ 全页提供，
  * 那里 <AkScope> 只剩上面的排版基线（与 body 同值）。e2e/hosts.spec.ts 以 AKDS 皮肤为基准逐元素比对 Vector 2022 / 站外，差异应当为零。
  * 特指度都压得很低：只求压过宿主的元素级规则（Vector 的 h3 / p / li / img / code …是 (0,0,1)），组件类（0,1,0）照样盖得过。 */
 
 /* 1. 宿主继承下来的文字属性（Vector 的 .vector-body 等会往下传 overflow-wrap 之类）：作用域根上回到初始值——AKDS 皮肤的 body 上就是初始值 */
-:where(.ak-scope:not(.skin-akds *)) {
+:where(.ak-scope:not(.skin-arknights *)) {
   font-style: normal; font-weight: 400; font-variant: normal; letter-spacing: normal; word-spacing: normal;
   text-transform: none; text-indent: 0; text-align: start; text-shadow: none; white-space: normal; overflow-wrap: normal; word-break: normal; hyphens: manual;
 }
 
 /* 2. 皮肤全局基底（base/root.css：滚动条 / 选区 / 焦点环 / 减弱动效）在 AKDS 皮肤上是全页的，这里在作用域内补同一套 */
-:where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *) { scrollbar-color: var(--ak-scrollbar) transparent; scrollbar-width: thin; }
-:where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::-webkit-scrollbar { width: 8px; height: 8px; }
-:where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::-webkit-scrollbar-thumb { background: var(--ak-scrollbar); }
-:where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::selection { background: var(--ak-selection); }
-:where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *):where(:focus-visible) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
-a:focus-visible:where(.ak-scope:not(.skin-akds *) *) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }   /* 链接单独一条 (0,1,1)：宿主的 a:focus-visible（Vector：outline: solid 2px #36c）是 (0,1,1)，上面压成 0 的那条压不过；组件自己的 .ak-x:focus-visible (0,2,0) 照样盖得过 */
+:where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *) { scrollbar-color: var(--ak-scrollbar) transparent; scrollbar-width: thin; }
+:where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::-webkit-scrollbar { width: 8px; height: 8px; }
+:where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::-webkit-scrollbar-thumb { background: var(--ak-scrollbar); }
+:where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::selection { background: var(--ak-selection); }
+:where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *):where(:focus-visible) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+a:focus-visible:where(.ak-scope:not(.skin-arknights *) *) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }   /* 链接单独一条 (0,1,1)：宿主的 a:focus-visible（Vector：outline: solid 2px #36c）是 (0,1,1)，上面压成 0 的那条压不过；组件自己的 .ak-x:focus-visible (0,2,0) 照样盖得过 */
 @media (prefers-reduced-motion: reduce) {
-  :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *), :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::before, :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *), :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::before, :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
 /* 3. 宿主的元素级规则（Vector：h1–h6 的字号 / 外边距 / display: flow-root、li 的下外边距、img 的 vertical-align、code 的底色边框 …）
@@ -42,22 +42,22 @@ a:focus-visible:where(.ak-scope:not(.skin-akds *) *) { outline: 2px solid var(--
  *    组件元素上的正文规则也该被组件类盖掉：组件要的外边距 / 行高 / 字号自己写（hosts 比对里曾靠正文规则拿到的几处——技能名行高、键值表外边距——已补在组件里）。
  *    特指度 (0,0,1)，与宿主的元素规则相同、靠后加载；组件类照样盖得过它。
  *    表单控件不在这里（下一段给 AKDS 的裸控件外观）；not-prose 之外、不带 ak- 类的正文内容（段落 / 列表 / 链接）归宿主的正文排版，不动。 */
-:where(.ak-scope:not(.skin-akds *) *):where([class^="ak-"], [class*=" ak-"], .ak-not-prose *, :is([class^="ak-"], [class*=" ak-"]) > img):is(h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, pre, code, kbd, samp, img, table, caption, th, td, blockquote, figure, figcaption, hr) {
+:where(.ak-scope:not(.skin-arknights *) *):where([class^="ak-"], [class*=" ak-"], .ak-not-prose *, :is([class^="ak-"], [class*=" ak-"]) > img):is(h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, pre, code, kbd, samp, img, table, caption, th, td, blockquote, figure, figcaption, hr) {
   margin: revert; padding: revert; border: revert; border-radius: revert; background-color: revert; color: revert;
   font-family: revert; font-size: revert; font-weight: revert; line-height: revert;
   display: revert; list-style: revert; vertical-align: revert; white-space: revert; word-break: revert; overflow-wrap: revert;
 }
 /* 宿主正文里带类名上下文的几条（Vector 2022：.mw-body p 的段距 (0,1,1)、.mw-parser-output a 的 word-wrap (0,1,1)）：同特指度压回——
  * 只在 not-prose 子树里的段落 / 组件与 not-prose 里的链接上，组件在这些元素上写外边距 / 断词都用不低于 (0,1,1) 的选择器 */
-:where(.ak-scope:not(.skin-akds *) *):is(.ak-not-prose p) { margin: revert; }
-:where(.ak-scope:not(.skin-akds *) *):is(.ak-not-prose a, a.ak-not-prose, a:is([class^="ak-"], [class*=" ak-"])) { overflow-wrap: revert; word-break: revert; }
+:where(.ak-scope:not(.skin-arknights *) *):is(.ak-not-prose p) { margin: revert; }
+:where(.ak-scope:not(.skin-arknights *) *):is(.ak-not-prose a, a.ak-not-prose, a:is([class^="ak-"], [class*=" ak-"])) { overflow-wrap: revert; word-break: revert; }
 
 /* 4. 裸控件：组件里的 <button> / <input> / <select> / <textarea>（.ak-btn、.ak-tab、分页、勾选 / 单选、开关 …）的底子是 base/forms.css 的裸控件规则
  *    （去掉原生外观、字体跟正文、勾选框 / 单选的自绘脸），这里给作用域补同一套——与 base/forms.css 逐条对应、同步改。
  *    特指度与 base/forms.css 完全相同（只在前面加一个 :where() 前缀）：两边都在组件之前加载，和组件规则谁压谁的结果才一样
  *    （如 :disabled:checked 那条 (0,2,0) 压过 .ak-switch > input 的 border: 0）。表格里的紧凑档（MW 正文专用，选择器带 .mw-body-content）不搬。
- *    scripts/css-order.ts 会把本段去掉 :where(.ak-scope:not(.skin-akds *) *) 前缀后逐条与 base/forms.css 对照：两边少一条、改一边都报错。 */
-:where(.ak-scope:not(.skin-akds *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"]), select, textarea) {
+ *    scripts/css-order.ts 会把本段去掉 :where(.ak-scope:not(.skin-arknights *) *) 前缀后逐条与 base/forms.css 对照：两边少一条、改一边都报错。 */
+:where(.ak-scope:not(.skin-arknights *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"]), select, textarea) {
   box-sizing: border-box; max-width: 100%;
   font: inherit; font-size: var(--ak-fs-sm); font-weight: 400; line-height: 1.5;
   color: var(--ak-fg); background: var(--ak-bg-surface);
@@ -65,43 +65,43 @@ a:focus-visible:where(.ak-scope:not(.skin-akds *) *) { outline: 2px solid var(--
   padding: 0 10px; min-height: 36px;
   transition: border-color var(--ak-dur-fast), box-shadow var(--ak-dur-fast);
 }
-:where(.ak-scope:not(.skin-akds *) *):where(textarea) { padding: 8px 10px; min-height: 72px; resize: vertical; }
-:where(.ak-scope:not(.skin-akds *) *):where(select[multiple]) { padding: 4px 0; }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="search"]) { -webkit-appearance: none; appearance: none; }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="number"]) { font-variant-numeric: tabular-nums; }
-:where(.ak-scope:not(.skin-akds *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"]), select, textarea):focus { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
-:where(.ak-scope:not(.skin-akds *) *):where(input, textarea)::placeholder { color: var(--ak-fg-subtle); opacity: 1; }
-:where(.ak-scope:not(.skin-akds *) *):where(input, textarea)[readonly] { background: var(--ak-bg-inset); }
-:where(.ak-scope:not(.skin-akds *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]), select, textarea):disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); -webkit-text-fill-color: var(--ak-fg-disabled); opacity: 1; border-color: var(--ak-border); cursor: not-allowed; }
-:where(.ak-scope:not(.skin-akds *) *):where(input, textarea, select):where(:user-invalid, [aria-invalid="true"]) { border-color: var(--ak-danger); }
-:where(.ak-scope:not(.skin-akds *) *):where(input, textarea, select):where(:user-invalid, [aria-invalid="true"]):focus { box-shadow: 0 0 0 3px var(--ak-danger-bg); }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"], input[type="radio"]) { appearance: none; -webkit-appearance: none; accent-color: var(--ak-accent); box-sizing: border-box; width: 18px; height: 18px; margin: 0; flex: none; display: inline-grid; place-items: center; vertical-align: middle;
+:where(.ak-scope:not(.skin-arknights *) *):where(textarea) { padding: 8px 10px; min-height: 72px; resize: vertical; }
+:where(.ak-scope:not(.skin-arknights *) *):where(select[multiple]) { padding: 4px 0; }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="search"]) { -webkit-appearance: none; appearance: none; }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="number"]) { font-variant-numeric: tabular-nums; }
+:where(.ak-scope:not(.skin-arknights *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"]), select, textarea):focus { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input, textarea)::placeholder { color: var(--ak-fg-subtle); opacity: 1; }
+:where(.ak-scope:not(.skin-arknights *) *):where(input, textarea)[readonly] { background: var(--ak-bg-inset); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]), select, textarea):disabled { background: var(--ak-bg-surface-3); color: var(--ak-fg-disabled); -webkit-text-fill-color: var(--ak-fg-disabled); opacity: 1; border-color: var(--ak-border); cursor: not-allowed; }
+:where(.ak-scope:not(.skin-arknights *) *):where(input, textarea, select):where(:user-invalid, [aria-invalid="true"]) { border-color: var(--ak-danger); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input, textarea, select):where(:user-invalid, [aria-invalid="true"]):focus { box-shadow: 0 0 0 3px var(--ak-danger-bg); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="checkbox"], input[type="radio"]) { appearance: none; -webkit-appearance: none; accent-color: var(--ak-accent); box-sizing: border-box; width: 18px; height: 18px; margin: 0; flex: none; display: inline-grid; place-items: center; vertical-align: middle;
   border: 2px solid var(--ak-border-strong); background: var(--ak-bg-surface); cursor: pointer; transition: background var(--ak-dur-fast), border-color var(--ak-dur-fast); }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="radio"]) { border-radius: 50%; }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"], input[type="radio"]):checked { background: var(--ak-accent); border-color: var(--ak-accent); }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"]):checked::before { content: ""; width: 56%; height: 32%; border: 0 solid var(--ak-accent-fg); border-width: 0 0 2px 2px; transform: translateY(-15%) rotate(-45deg); }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"]):indeterminate { background: var(--ak-accent); border-color: var(--ak-accent); }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"]):indeterminate::before { content: ""; width: 56%; height: 2px; background: var(--ak-accent-fg); }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="radio"]):checked::before { content: ""; width: 44%; height: 44%; border-radius: 50%; background: var(--ak-accent-fg); }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"], input[type="radio"]):focus-visible { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"], input[type="radio"]):disabled { background: var(--ak-bg-surface-3); border-color: var(--ak-border); cursor: not-allowed; }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"], input[type="radio"]):disabled:checked { background: var(--ak-fg-disabled); border-color: var(--ak-fg-disabled); }
-:where(.ak-scope:not(.skin-akds *) *):where(select:not([multiple])) { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--ak-select-arrow); background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
-:where(.ak-scope:not(.skin-akds *) *):where(input[type="range"]) { accent-color: var(--ak-accent); vertical-align: middle; }
-label:where(.ak-scope:not(.skin-akds *) *) { cursor: pointer; }
-:where(.ak-scope:not(.skin-akds *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]) {
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="radio"]) { border-radius: 50%; }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="checkbox"], input[type="radio"]):checked { background: var(--ak-accent); border-color: var(--ak-accent); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="checkbox"]):checked::before { content: ""; width: 56%; height: 32%; border: 0 solid var(--ak-accent-fg); border-width: 0 0 2px 2px; transform: translateY(-15%) rotate(-45deg); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="checkbox"]):indeterminate { background: var(--ak-accent); border-color: var(--ak-accent); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="checkbox"]):indeterminate::before { content: ""; width: 56%; height: 2px; background: var(--ak-accent-fg); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="radio"]):checked::before { content: ""; width: 44%; height: 44%; border-radius: 50%; background: var(--ak-accent-fg); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="checkbox"], input[type="radio"]):focus-visible { outline: 0; border-color: var(--ak-accent); box-shadow: var(--ak-shadow-accent); }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="checkbox"], input[type="radio"]):disabled { background: var(--ak-bg-surface-3); border-color: var(--ak-border); cursor: not-allowed; }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="checkbox"], input[type="radio"]):disabled:checked { background: var(--ak-fg-disabled); border-color: var(--ak-fg-disabled); }
+:where(.ak-scope:not(.skin-arknights *) *):where(select:not([multiple])) { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--ak-select-arrow); background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+:where(.ak-scope:not(.skin-arknights *) *):where(input[type="range"]) { accent-color: var(--ak-accent); vertical-align: middle; }
+label:where(.ak-scope:not(.skin-arknights *) *) { cursor: pointer; }
+:where(.ak-scope:not(.skin-arknights *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]) {
   box-sizing: border-box; appearance: none; -webkit-appearance: none;
   font-family: var(--ak-font-body); font-size: var(--ak-fs-sm); font-weight: 600; line-height: 20px;
   color: var(--ak-fg); background: var(--ak-bg-surface);
   border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius);
   padding: 7px 12px; cursor: pointer;
 }
-:where(.ak-scope:not(.skin-akds *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]):hover { background: var(--ak-bg-hover); border-color: var(--ak-fg-muted); }
-:where(.ak-scope:not(.skin-akds *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]):disabled { color: var(--ak-fg-disabled); background: var(--ak-bg-surface-3); border-color: var(--ak-border); cursor: default; }
+:where(.ak-scope:not(.skin-arknights *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]):hover { background: var(--ak-bg-hover); border-color: var(--ak-fg-muted); }
+:where(.ak-scope:not(.skin-arknights *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]):disabled { color: var(--ak-fg-disabled); background: var(--ak-bg-surface-3); border-color: var(--ak-border); cursor: default; }
 /* iPhone：iOS Safari 对字号 <16px 的文本类控件聚焦时会把整页放大且不缩回，手机断点下提到 16px（= base/forms.css 同一条） */
 @supports (-webkit-touch-callout: none) {
   @media (max-width: 639px) {
-    :where(.ak-scope:not(.skin-akds *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"]), select, textarea) { font-size: 16px; }
+    :where(.ak-scope:not(.skin-arknights *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"]), select, textarea) { font-size: 16px; }
   }
 }
 
@@ -114,6 +114,6 @@ label:where(.ak-scope:not(.skin-akds *) *) { cursor: pointer; }
  * 这几条 (0,1,1) 会盖过组件写在 <a> 根节点上的 (0,1,0) 颜色——但宿主的同特指度规则本来就盖过了，这里只是把链接色换回继承色；
  * 根节点颜色不是继承色的链接型组件（.ak-btn / .ak-stage-code / .ak-op-card / .ak-item …）自己把颜色规则写到 :hover / :visited / :active 上（0,2,0+），
  * 与 AKDS 皮肤上的表现一致（那里 base/typography.css 的链接规则排除了 not-prose）。getComputedStyle 看不到 :visited，工具测不出来，只能靠这条约定。 */
-a:where(.ak-scope:not(.skin-akds *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; text-decoration: none; background: none; }
-a:is(:visited, :active):where(.ak-scope:not(.skin-akds *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; }
-a:is(:hover, :focus):where(.ak-scope:not(.skin-akds *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; text-decoration: none; }
+a:where(.ak-scope:not(.skin-arknights *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; text-decoration: none; background: none; }
+a:is(:visited, :active):where(.ak-scope:not(.skin-arknights *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; }
+a:is(:hover, :focus):where(.ak-scope:not(.skin-arknights *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; text-decoration: none; }

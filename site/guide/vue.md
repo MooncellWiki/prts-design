@@ -12,7 +12,7 @@ Vue 实现全部处于「实验」状态，API 可能调整。
 
 | 宿主 | 样式来源 | 作用域 | 主题 |
 |---|---|---|---|
-| prts.wiki · AKDS 皮肤 | 皮肤已加载全套，什么都不用做 | `body.skin-akds`（包不包 `<AkScope>` 都一样） | 跟皮肤 |
+| prts.wiki · AKDS 皮肤 | 皮肤已加载全套，什么都不用做 | `body.skin-arknights`（包不包 `<AkScope>` 都一样） | 跟皮肤 |
 | prts.wiki · 其它皮肤（Vector 2022 …） | widget 挂载前 `await mw.loader.using(["skins.arknights.components"])`（prts.wiki 上的生产皮肤 Skin:Arknights 注册的模块；本仓库 `skin/` 骨架里叫 `skins.akds.components`。需要官网字体再加 `"skins.arknights.fonts"`）；AKDS 皮肤上这行是空操作。动态加载的样式插在皮肤样式之后、`MediaWiki:Common.css` 之前 | 根节点 `<AkScope>` 或 `class="ak-scope"` | 跟 clientpref 类；或 `<AkScope theme>` 强制 |
 | 站外 | `import "@mooncellwiki/akds-css"`（= `standalone.css`）；图片 / 素材 URL 由调用方传 props；想要道具底框自己覆盖 `--ak-item-bg-*` | 同上 | `html[data-theme]` 或 `<AkScope theme>`；不设则跟随系统 |
 

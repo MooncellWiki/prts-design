@@ -10,7 +10,7 @@ npm 包只含**代码部分**（MIT）：令牌、作用域根、通用 / 方舟
 
 | 宿主 | 样式来源 | 作用域 |
 |---|---|---|
-| prts.wiki · AKDS 皮肤 | 皮肤已加载全套，什么都不用做 | `body.skin-akds` |
+| prts.wiki · AKDS 皮肤 | 皮肤已加载全套，什么都不用做 | `body.skin-arknights` |
 | prts.wiki · 其它皮肤（Vector 2022 …） | `mw.loader.using("skins.arknights.components")`（令牌 + 作用域 + 组件，一个模块就齐；要官网字体再加 `"skins.arknights.fonts"`。模块由生产皮肤 Skin:Arknights 注册，仓库内 `skin/` 骨架里叫 `skins.akds.*`）；AKDS 皮肤上是空操作 | 根节点 `class="ak-scope"` |
 | 站外 | `import "@mooncellwiki/akds-css"`（= `standalone.css`） | 同上 |
 

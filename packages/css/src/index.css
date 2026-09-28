@@ -9,7 +9,7 @@
 @import url("bridge-codex.css");      /* 生成物：Codex / MW 令牌桥接（只属于皮肤：加载到别的皮肤上会改掉宿主的 Codex 配色） */
 @import url("base/skin-assets.css");  /* 皮肤持有的素材接口（--ak-item-bg-*）；不在 base/index.css 里，base/ 可以单独 import */
 @import url("base/index.css");
-@import url("scope.css");             /* 作用域根：排版基线挂在 body.skin-akds / .ak-scope 上；在 base 之后、组件之前（MW 上它是 skins.akds.components 的开头） */
+@import url("scope.css");             /* 作用域根：排版基线挂在 body.skin-arknights / .ak-scope 上；在 base 之后、组件之前（MW 上它是 skins.akds.components 的开头） */
 @import url("components/index.css");
 @import url("decor/index.css");
 @import url("arknights/index.css");

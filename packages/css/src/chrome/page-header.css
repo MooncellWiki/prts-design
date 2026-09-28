@@ -7,7 +7,7 @@
 .ak-page-header__top .mw-indicators:empty { display: none; }
 .ak-page-header__top .mw-indicator { display: inline-flex; align-items: center; }
 .ak-page-header__ns { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }   /* 同 .ak-card__eyebrow：命名空间是不可点的装饰小标签，不上青 */
-.ak-page-header__title, .skin-akds .mw-body h1#firstHeading, .skin-akds #firstHeading {
+.ak-page-header__title, .skin-arknights .mw-body h1#firstHeading, .skin-arknights #firstHeading {
   font-family: var(--ak-font-body); font-size: var(--ak-fs-h1); font-weight: 800; line-height: 1.2; margin: 0;
   padding: 0 0 0 var(--ak-space-4); border: 0; border-left: var(--ak-bar-w-lg) solid var(--ak-accent); letter-spacing: .01em; overflow-wrap: anywhere; }
 .ak-page-header__title .ak-en, #firstHeading .ak-en { display: block; font-size: .5em; color: var(--ak-fg-muted); margin-top: 2px; letter-spacing: var(--ak-tracking-caps); }
@@ -16,7 +16,7 @@
 .ak-page-header__title .mw-page-title-parenthesis { color: var(--ak-fg-muted); font-weight: 500; font-size: .7em; }
 /* 皮肤可以把 h1 包在 .ak-page-heading 里、下面挂一行 tagline（Skin:Arknights：「来自 PRTS」/ 按名字空间的说明）：色条与左内边距挪到包装上，h1 自己不再画 */
 .ak-page-heading { position: relative; flex: 1 1 auto; min-width: 0; padding-left: var(--ak-space-4); border-left: var(--ak-bar-w-lg) solid var(--ak-accent); }
-.ak-page-heading > .ak-page-header__title, .skin-akds .ak-page-heading > h1#firstHeading, .skin-akds .ak-page-heading > #firstHeading { padding-left: 0; border-left: 0; }
+.ak-page-heading > .ak-page-header__title, .skin-arknights .ak-page-heading > h1#firstHeading, .skin-arknights .ak-page-heading > #firstHeading { padding-left: 0; border-left: 0; }
 .ak-page-heading--blank { display: none; }   /* 标题为空（MediaWiki:Mainpage-title = -） */
 .ak-page-heading__tagline { display: block; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin-top: 4px; line-height: 1.5; }
 .ak-page-heading__tagline:empty { display: none; }

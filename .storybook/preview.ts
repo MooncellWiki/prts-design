@@ -103,7 +103,7 @@ const preview: Preview = {
       applyTheme(ctx.globals.theme, ctx.globals.eventTheme === "on");
       const current = (ctx.globals.host ?? "akds") as Host;
       applyHost(current);
-      /* 组件都是给 wiki 正文用的：包在作用域 + .mw-body-content.mw-parser-output 里渲染（同 MW 页面），整页样例（Pages/）不包（页面自带 body.skin-akds） */
+      /* 组件都是给 wiki 正文用的：包在作用域 + .mw-body-content.mw-parser-output 里渲染（同 MW 页面），整页样例（Pages/）不包（页面自带 body.skin-arknights） */
       if (ctx.parameters.akdsBare) return { render: () => h(story()) };
       return {
         render: () => [

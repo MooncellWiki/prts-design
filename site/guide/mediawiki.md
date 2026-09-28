@@ -7,7 +7,7 @@ prts.wiki 实际部署的是 [mediawiki-skins-Arknights](https://github.com/Moon
 
 | 本仓库 `skin/` | Skin:Arknights |
 |---|---|
-| 皮肤名 `akds`，`body.skin-akds` | 皮肤名 `arknights`，`body.skin-arknights.skin-akds`（两个类都有：设计系统的 `scope.css` / `base/print.css` 按 `skin-akds` 判断「在 AKDS 皮肤里」） |
+| 皮肤名 `akds`，bodyClasses 显式加 `skin-arknights`（MW 还会按皮肤名自动加 `skin-akds`） | 皮肤名 `arknights`，`body.skin-arknights` 是 MW 自动加的。设计系统里「在皮肤里」的标记统一是 `skin-arknights`：`scope.css` 用 `:not(.skin-arknights *)` 区分别的宿主，`chrome/` 与 `base/print.css` 也按它写 |
 | `skins.akds.base / components / fonts / shell / tokens` | `skins.arknights.base / components / fonts / shell / tokens`，另有 `skins.arknights.icons`（OOUI 图标包）与排在最后的 `skins.arknights.styles`（MediaWiki 胶水 LESS） |
 | `$wgAKDSDefaultTheme` / `$wgAKDSSearchPalette` | `$wgArknightsThemeDefault` / `$wgArknightsSearchPalette`（全部配置见其 README） |
 | `mw.hook('akds.search.local')` · `localStorage['akds-recent']` | `mw.hook('skin.arknights.search')` · `localStorage['arknights-search-recent']`；另有 `$wgArknightsSearchIndex` 把 Cargo 表做成带拼音的本地索引 |
@@ -61,7 +61,7 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
   "name": "akds", "template": "skin",
   "responsive": true, "supportsMwHeading": true,
   "toc": false, "wrapSiteNotice": true, "clientPrefEnabled": true,
-  "bodyClasses": ["skin-akds"],
+  "bodyClasses": ["skin-arknights"],
   "styles": ["skins.akds.base", "skins.akds.components", "skins.akds.fonts", "skins.akds.shell"],
   "scripts": ["skins.akds.js"]
 }]}},

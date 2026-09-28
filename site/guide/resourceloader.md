@@ -40,7 +40,7 @@ node scripts/css-order.ts --write   # 同步进 skin/skin.json（五个模块的
 
 - `chrome/`（皮肤骨架）排在通用组件、方舟组件、工具类与强制色**之后**：页眉里的 `.ak-btn` / `.ak-menu` / `.ak-fab` 等靠同特指度后到覆盖。以前骨架在 `utilities.css` / `forced-colors.css` 之前，挪到最后前核过：工具类在骨架元素上只有 `!important` 的 `ak-only-mobile`，强制色规则与骨架只有一处同特指度冲突（搜索面板的加载条轨道，已在 `chrome/search-palette.css` 里给回），首页 / 干员页在各模式和强制色模式下的计算样式快照都零差异。
 - `base/`（正文排版）排在所有组件**之前**：组件靠同特指度后到覆盖正文规则；正文规则本身都带 `:not(:where(.ak-not-prose, .ak-not-prose *))`，模板用 `ak-not-prose` 整块退出（见[设计理念 · prose / not-prose](/foundations/principles#prose-not-prose)）。
-- `scope.css` 在 `base/` 之后、组件之前（它是 `skins.akds.components` 的开头）：`body.skin-akds` / `.ak-scope` 上挂排版基线；别的宿主上还要把宿主的元素规则、裸控件、链接色换成 AKDS 皮肤上组件看到的那一套（见[作用域](/components/scope)）。`base/print.css` 的 body 前景色因此写成 `html body.skin-akds`，高一档才压得住。
+- `scope.css` 在 `base/` 之后、组件之前（它是 `skins.akds.components` 的开头）：`body.skin-arknights` / `.ak-scope` 上挂排版基线；别的宿主上还要把宿主的元素规则、裸控件、链接色换成 AKDS 皮肤上组件看到的那一套（见[作用域](/components/scope)）。`base/print.css` 的 body 前景色因此写成 `html body.skin-arknights`，高一档才压得住。
 - 每层内部的顺序也有意义：`components/title-reset.css` 在全部组件之后、`keyframes.css` 收齐动画；`arknights/table-numerals.css` 是方舟组件的最后一个；`chrome/responsive.css` 收齐断点、放骨架最后（同选择器同特指度的规则靠先后生效，见[响应式](/chrome/responsive)）。`forced-colors.css` 平时一条都不生效，压在组件层最后。
 - 拆分成按组件的文件之前，MW 按 base → skin → components → arknights → utilities 加载，而预览按 base → components → arknights → skin → utilities，两边不一致；现在统一成一套（视觉上验过的顺序）。
 - `chrome/demo-theme.css`（示例活动主题）与 `charinfo.css`（干员舞台的换皮草案）不在 `index.css`、也不进 `skin.json`。

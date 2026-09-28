@@ -49,7 +49,7 @@ packages/tokens/build.ts      pnpm tokens：生成 packages/css/src/tokens.css +
 packages/css/src/
   tokens.css                  令牌 + 主题（含 .ak-scope[data-theme] 局部主题）；生成物
   bridge-codex.css            Codex / MW 令牌桥接（生成物；只属于皮肤）
-  scope.css                   作用域根：body.skin-akds / .ak-scope 的排版基线；别的宿主上把宿主环境换成皮肤上那一套
+  scope.css                   作用域根：body.skin-arknights / .ak-scope 的排版基线；别的宿主上把宿主环境换成皮肤上那一套
   fonts.css · fonts/          自托管字体（scripts/fetch-fonts.py 生成）
   base/                       L1 MW 内容样式，一块一个文件（root = html / body 基底；typography / tables / media / tabber / forms / special-pages / print …）；skin-assets.css = 皮肤的素材接口（--ak-item-bg-*，由 index.css 直接引）
   components/                 L3 通用组件，一个组件一个文件；title-reset 在全部组件之后，keyframes 收齐 ak-* 动画

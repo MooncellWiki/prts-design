@@ -57,7 +57,7 @@ html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/
 `.ak-keyart` 是 `.ak-layout` 之上的一条通栏画，皮肤恒输出、默认 `--ak-keyart-h: 0` 不占位。画从**页面顶端**铺起：盒子上移一个页眉高、再用同样的 `padding-top` 把内容压回页眉之下（<1400 连二级栏一起探），于是画的顶端在粘性页眉（更高的 z-index）背后——页眉是压在画上的一块均匀黑玻璃，黑框 + 画是一整块，不是「顶栏一张、头图一张」两段裁切。底部按 `--ak-keyart-fade` 渐隐进画布色（取 `min(-fade, -h)`：高度为 0 时不会往页眉后面画渐隐）；`--ak-keyart-bg` 默认透明。
 
 - 头图上要放活动标题 / 倒计时，Gadget 往 `.ak-keyart__inner` 里塞内容（它与页眉三列同宽、在页眉之下）；`.ak-keyart` 带 `aria-hidden`，放可读内容时记得去掉。
-- 画布底纹 `--ak-canvas-image` 画在 `body.skin-akds` 上，叠在 `--ak-bg-canvas` 之上。
+- 画布底纹 `--ak-canvas-image` 画在 `body.skin-arknights` 上，叠在 `--ak-bg-canvas` 之上。
 
 ## CSS
 

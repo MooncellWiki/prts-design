@@ -92,7 +92,7 @@
   .ak-header__wordmark { font-size: 17px; }
   .ak-header__wordmark small { display: none; }
   .ak-header__search { display: none; }   /* 手机：搜索收成主行里的图标按钮（.ak-header__search-toggle），同样打开悬浮面板 */
-  .ak-page-header__title, .skin-akds #firstHeading { font-size: var(--ak-fs-h2); }
+  .ak-page-header__title, .skin-arknights #firstHeading { font-size: var(--ak-fs-h2); }
   .ak-page-heading { padding-left: var(--ak-space-3); }
   .ak-body { padding: var(--ak-space-4) var(--ak-space-3); border-left: 0; border-right: 0; margin: 0 calc(-1 * var(--ak-gutter)); }
   .ak-local-nav { padding: 0 calc(var(--ak-gutter) - 8px); }

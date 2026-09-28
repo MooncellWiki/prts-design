@@ -3,7 +3,7 @@ title: 作用域 Scope
 component: scope
 ---
 
-组件的排版基线——字体、字号、行高、前景色——不靠宿主页面的 `<body>` 继承，而是挂在「作用域根」上：AKDS 皮肤上是 `body.skin-akds`，别的地方是 `class="ak-scope"` 的元素（Vue：`<AkScope>`）。所以同一个 widget 放在 AKDS 皮肤、prts.wiki 的其它皮肤（Vector 2022 …）或站外页面里，看起来都一样。样式从哪来按宿主分，见[在 Vue / prts-widgets 中使用](/guide/vue#样式从哪来)。
+组件的排版基线——字体、字号、行高、前景色——不靠宿主页面的 `<body>` 继承，而是挂在「作用域根」上：AKDS 皮肤上是 `body.skin-arknights`，别的地方是 `class="ak-scope"` 的元素（Vue：`<AkScope>`）。所以同一个 widget 放在 AKDS 皮肤、prts.wiki 的其它皮肤（Vector 2022 …）或站外页面里，看起来都一样。样式从哪来按宿主分，见[在 Vue / prts-widgets 中使用](/guide/vue#样式从哪来)。
 
 ```vue
 <template>
@@ -23,7 +23,7 @@ AKDS 皮肤上 body 本身就是作用域，包不包都一样；所以写 widge
 
 ## 作用域里还有什么
 
-排版基线之外，作用域在**别的宿主上**（不在 `body.skin-akds` 里时，选择器都带 `:not(.skin-akds *)`）还要把宿主的页面环境换成 AKDS 皮肤上组件看到的那一个——AKDS 皮肤上这些本来就由 `base/` 全页提供，所以不生效：
+排版基线之外，作用域在**别的宿主上**（不在 `body.skin-arknights` 里时，选择器都带 `:not(.skin-arknights *)`）还要把宿主的页面环境换成 AKDS 皮肤上组件看到的那一个——AKDS 皮肤上这些本来就由 `base/` 全页提供，所以不生效：
 
 - **继承下来的文字属性**：宿主容器往下传的 `overflow-wrap`、`letter-spacing`、`text-align` 之类在作用域根上回到初始值。
 - **皮肤全局基底**（`base/root.css`）里组件看得见的几条：滚动条、选区色、焦点环、减弱动效（`prefers-reduced-motion`）。

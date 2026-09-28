@@ -16,7 +16,7 @@ L2 是正文之外的一切：页眉、头图、侧栏、页面头（标题与�
 与 `skin.mustache` 一一对应（完整的 mustache 数据映射见[入门 · skin.mustache 结构](/guide/skin-template)）：
 
 ```
-body.skin-akds
+body.skin-arknights
   a.ak-skip                                  跳到内容
   header.ak-header                           页眉：黑色「终端」顶栏
     .ak-header__inner                        品牌 · 搜索 · 工具（外观 / 通知 / 用户菜单）· ≡
@@ -38,7 +38,7 @@ body.skin-akds
 
 | 部分 | 文件 | 页面 |
 |---|---|---|
-| 外壳：`body.skin-akds`、跳转链接、`.ak-sr-only` | `shell.css` | 本页 |
+| 外壳：`body.skin-arknights`、跳转链接、`.ak-sr-only` | `shell.css` | 本页 |
 | 两列布局、目录导轨的让位 | `layout.css` | 本页 |
 | 正文白纸、页脚信息行 | `body.css` | 本页 |
 | 页眉、二级吸顶栏、外观开关 | `header.css` · `local-nav.css` · `theme-toggle.css` | [页眉](/chrome/header) |
@@ -71,7 +71,7 @@ body.skin-akds
 
 ## 外壳
 
-- `body.skin-akds` 是纵向 flex，页脚 `margin-top: auto` 贴底——内容短的页面页脚也在视口底部。
+- `body.skin-arknights` 是纵向 flex，页脚 `margin-top: auto` 贴底——内容短的页面页脚也在视口底部。
 - `.ak-skip`「跳到内容」：平时完全移出视口，键盘 Tab 到它才出现在左上角（主色实底）。
 - `.ak-sr-only`：只给读屏器的文字（动作簇的当前项、只有图标的按钮名）。
 

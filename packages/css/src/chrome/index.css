@@ -1,7 +1,7 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
  *  AKDS · chrome/ — L2 MediaWiki 皮肤骨架（原 skin.css）
  *  DOM 约定（见文档站 /guide/skin-template）：
- *    body.skin-akds
+ *    body.skin-arknights
  *      header.ak-header > .ak-header__inner > [menu][logo][nav][search][tools]
  *      .ak-layout > aside.ak-sidebar + main.ak-main
  *        main.ak-main > .ak-main__inner > header.ak-page-header + aside.ak-toc + .ak-body + …

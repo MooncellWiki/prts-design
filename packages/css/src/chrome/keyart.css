@@ -12,4 +12,4 @@
 .ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: min(var(--ak-keyart-fade), var(--ak-keyart-h)); background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)); pointer-events: none; }
 .ak-keyart__inner { position: relative; height: 100%; max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽，且在页眉之下（padding-top 之内不算） */
 @media (max-width: 639px) { .ak-keyart { height: min(var(--ak-keyart-h), 40vw); } .ak-keyart::after { height: min(var(--ak-keyart-fade), var(--ak-keyart-h), 40vw); } }
-body.skin-akds { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak-canvas-position) / var(--ak-canvas-size) var(--ak-canvas-repeat); background-attachment: var(--ak-canvas-attachment); }
+body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak-canvas-position) / var(--ak-canvas-size) var(--ak-canvas-repeat); background-attachment: var(--ak-canvas-attachment); }

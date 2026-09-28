@@ -1,6 +1,6 @@
 <!-- ═══════════════════════════════════════════════════════════════════════════
   preview/_src/gallery-skeleton.html — 跨宿主对照页的骨架（不是皮肤骨架）：同一份组件 HTML 放进三种页面，?host= 切换
-    akds    皮肤全套 ../src/index.css，body.skin-akds；组件在 .mw-body-content > .mw-parser-output 里（= prts.wiki 上的 Skin:Arknights，不包 ak-scope）
+    akds    皮肤全套 ../src/index.css，body.skin-arknights；组件在 .mw-body-content > .mw-parser-output 里（= prts.wiki 上的 Skin:Arknights，不包 ak-scope）
     vector  Vector 2022 的样式夹具 vendor/vector/vector.css（scripts/fetch-vector-css.ts 抓取，入库只作回归测试，不随站点发布）+ ../src/standalone.css + 站点自定义样式 vendor/vector/site.css
             （现网 Common.css / Vector.css：MW 上动态加载的模块插在 site.styles 之前，所以它排在组件样式之后）；
             html / body 的类与 #bodyContent.vector-body > #mw-content-text.mw-body-content > .mw-parser-output 的嵌套照现网 Vector 2022 抄；组件根 .ak-scope
@@ -58,7 +58,7 @@
   (function () {
     var host = document.documentElement.getAttribute('data-host');
     var CLS = {
-      akds: { body: 'skin-akds', page: '', content: '', bodyContent: 'ak-body', 'mw-content-text': 'mw-body-content', parser: 'mw-parser-output', 'gallery-root': '' },
+      akds: { body: 'skin-arknights', page: '', content: '', bodyContent: 'ak-body', 'mw-content-text': 'mw-body-content', parser: 'mw-parser-output', 'gallery-root': '' },
       vector: { body: 'skin--responsive skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject skin-vector-2022 action-view', page: 'mw-page-container', content: 'mw-body', bodyContent: 'vector-body', 'mw-content-text': 'mw-body-content', parser: 'mw-parser-output', 'gallery-root': 'ak-scope' },
       bare: { body: '', page: '', content: '', bodyContent: '', 'mw-content-text': '', parser: '', 'gallery-root': 'ak-scope' }
     }[host];

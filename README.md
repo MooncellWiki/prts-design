@@ -33,7 +33,7 @@ packages/css/src/   CSS 实现（≈ primer/css；npm 包 @mooncellwiki/akds-css
   img/              CSS 引用的游戏素材（item/bg_1–6.png 道具稀有度底框 = prts.wiki 文件:道具_背景_N.png，即游戏 sprite_item_r1–r6，给 .ak-item--bare 裸图标叠框用，经 base/skin-assets.css 的变量引；scripts/fetch-item-bg.py 抓取；NOTICE.md）
   tokens.css        生成物（pnpm tokens）：令牌 + 双主题 + 局部主题 + 页眉/头图/画布主题接口（§2d）；任何宿主都能加载
   bridge-codex.css  生成物（pnpm tokens）：Codex/MW 令牌桥接——只属于皮肤（加载到别的皮肤上会改掉宿主的 Codex 配色）
-  scope.css         作用域根：排版基线挂在 body.skin-akds / .ak-scope 上；别的宿主上把宿主的继承属性 / 元素规则 / 裸控件 / 链接色换成皮肤上那一套（Vue：<AkScope>）
+  scope.css         作用域根：排版基线挂在 body.skin-arknights / .ak-scope 上；别的宿主上把宿主的继承属性 / 元素规则 / 裸控件 / 链接色换成皮肤上那一套（Vue：<AkScope>）
   base/             L1 MediaWiki 内容：root（html / body 基底）· skin-assets（皮肤持有的素材接口 --ak-item-bg-*，由 index.css 直接引；放在 base/ 这一层是因为 Chromium 按使用处解析自定义属性里的相对 url()）· typography（正文排版，带 prose / not-prose 作用域，见文档站 /foundations/principles#prose-not-prose）· tables · media · toc · collapsible · references · notices · catlinks · tabber · forms（裸控件）· special-pages · print
   components/       L3 通用组件：button · tag · chip · badge · card · panel · heading · tabs · message · cbox · tooltip · dropdown · dialog · toast · progress · stat · skeleton · spinner · empty · avatar · breadcrumb · pagination · timeline · stepper · form · table · accordion · divider · fab · title-reset · keyframes
   decor/            L4 方舟装饰语言（色条/斜纹/网点/角标/线稿/反转/拉丁字…）
