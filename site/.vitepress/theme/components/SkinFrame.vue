@@ -112,6 +112,8 @@ function build(dark: boolean) {
       .replace(/<html[^>]*>/, `<html lang="zh-CN" class="client-nojs skin-theme-clientpref-${dark ? "night" : "day"}" data-theme="${theme}" data-default-theme="${theme}">`)
       .replace("<head>", `<head><base href="${withBase("/preview/")}">`)
       .replace(/\{\{(\w+)\}\}/g, (_, k: string) => fill[k] ?? "")
+      // <base> 管得住真正的加载，但 Chromium 的预加载扫描器在 srcdoc 里不认它：相对地址先按文档页的地址白发一轮（/chrome/assets/… 404）——直接写成绝对地址
+      .replace(/(\s(?:src|href)=")(?![a-z][\w+.-]*:|\/|#)([^"]*)"/gi, (_, attr: string, rel: string) => `${attr}${new URL(rel, `http://x${withBase("/preview/")}`).pathname}"`)
   );
 }
 
