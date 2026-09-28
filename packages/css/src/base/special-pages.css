@@ -33,7 +33,8 @@ table.diff td { padding: .3em .5em; }
 .error, .errorbox { color: var(--ak-danger); }
 .warningbox { color: var(--ak-warning); }
 .successbox { color: var(--ak-success); }
-.mw-body-content .mw-tag-markers, .mw-tag-marker { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); padding: 0 6px; }
+.mw-body-content .mw-tag-markers { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+.mw-body-content .mw-tag-marker { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: 0 6px; }
 .mw-body-content .mw-tag-marker-mobile-edit { border-color: var(--ak-accent-muted); }
 /* Echo */
 .mw-echo-ui-notificationItemWidget { background: var(--ak-bg-surface); border-color: var(--ak-border); color: var(--ak-fg); }
