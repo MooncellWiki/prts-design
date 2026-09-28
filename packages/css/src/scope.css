@@ -20,10 +20,11 @@
  * 那里 <AkScope> 只剩上面的排版基线（与 body 同值）。e2e/hosts.spec.ts 以 AKDS 皮肤为基准逐元素比对 Vector 2022 / 站外，差异应当为零。
  * 特指度都压得很低：只求压过宿主的元素级规则（Vector 的 h3 / p / li / img / code …是 (0,0,1)），组件类（0,1,0）照样盖得过。 */
 
-/* 1. 宿主继承下来的文字属性（Vector 的 .vector-body 等会往下传 overflow-wrap 之类）：作用域根上回到初始值——AKDS 皮肤的 body 上就是初始值 */
+/* 1. 宿主继承下来的文字属性（Vector 的 .vector-body 等会往下传 overflow-wrap 之类）：作用域根上回到 AKDS 皮肤正文里组件继承到的值——
+ *    都是初始值，只有 overflow-wrap 跟正文（chrome/body.css 的 .ak-body .mw-body-content）走 break-word，两边同步改 */
 :where(.ak-scope:not(.skin-arknights *)) {
   font-style: normal; font-weight: 400; font-variant: normal; letter-spacing: normal; word-spacing: normal;
-  text-transform: none; text-indent: 0; text-align: start; text-shadow: none; white-space: normal; overflow-wrap: normal; word-break: normal; hyphens: manual;
+  text-transform: none; text-indent: 0; text-align: start; text-shadow: none; white-space: normal; overflow-wrap: break-word; word-break: normal; hyphens: manual;
 }
 
 /* 2. 皮肤全局基底（base/root.css：滚动条 / 选区 / 焦点环 / 减弱动效）在 AKDS 皮肤上是全页的，这里在作用域内补同一套 */

@@ -91,7 +91,8 @@ function compare(base: HostSnap, other: HostSnap, host: HostName) {
 const report = (out: Map<string, string[]>, perSection = Infinity) => [...out].map(([sec, lines]) =>
   [` [${sec}]`, ...lines.slice(0, perSection), ...(lines.length > perSection ? [`  …共 ${lines.length} 处`] : [])].join('\n')).join('\n');
 
-test.describe.configure({ mode: 'parallel' });
+// 一个用例开两个页面、逐个元素强制交互态拍计算样式：CI 的 2 核机器上要 20–30s，重试开了 trace 更慢，默认的 30s 不够
+test.describe.configure({ mode: 'parallel', timeout: 120_000 });
 
 for (const theme of ['dark', 'light']) {
   for (const host of HOSTS.filter(h => h !== 'akds')) {

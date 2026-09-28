@@ -25,7 +25,7 @@ AKDS 皮肤上 body 本身就是作用域，包不包都一样；所以写 widge
 
 排版基线之外，作用域在**别的宿主上**（不在 `body.skin-arknights` 里时，选择器都带 `:not(.skin-arknights *)`）还要把宿主的页面环境换成 AKDS 皮肤上组件看到的那一个——AKDS 皮肤上这些本来就由 `base/` 全页提供，所以不生效：
 
-- **继承下来的文字属性**：宿主容器往下传的 `overflow-wrap`、`letter-spacing`、`text-align` 之类在作用域根上回到初始值。
+- **继承下来的文字属性**：宿主容器往下传的 `overflow-wrap`、`letter-spacing`、`text-align` 之类在作用域根上回到 AKDS 皮肤正文里的值——都是初始值，只有 `overflow-wrap` 是正文给的 `break-word`（`chrome/body.css`：长 URL / 长串不撑破正文）。
 - **皮肤全局基底**（`base/root.css`）里组件看得见的几条：滚动条、选区色、焦点环、减弱动效（`prefers-reduced-motion`）。
 - **宿主的元素规则**：Vector 给 `h1`–`h6` 的字号 / 外边距 / `display: flow-root`、`li` 的下外边距、`img` 的 `vertical-align`、`code` 的底色边框 …在组件自己的元素（类名以 `ak-` 开头的，以及组件元素直接包着的 `<img>`）和 `ak-not-prose` 子树里退回浏览器默认（`revert`，特指度 (0,0,1)，组件类照样盖得过）；Vector 带类名上下文的 `.mw-body p` 段距、`.mw-parser-output a` 断词也在这些地方同特指度压回。宿主正文里 `.mw-body h3` 这类 (0,1,1) 规则压得过单个组件类——组件标题元素是 `h1`–`h6` 时，规则自带一条 `:is(h1, h2, h3, h4, h5, h6).ak-x` 的同义选择器。
 - **裸控件**：组件里的 `<button>` / `<input>` / `<select>` / 勾选框的底子是 `base/forms.css` 的裸控件规则（去原生外观、字体跟正文、勾选 / 单选的自绘脸），作用域补同一套，特指度与 `base/forms.css` 完全相同；`scripts/css-order.ts` 逐条核对两边一致。
