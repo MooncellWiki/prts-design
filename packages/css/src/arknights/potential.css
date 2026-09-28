@@ -1,4 +1,4 @@
-/*! AKDS · arknights/potential.css — B3 潜能 / 专精 Potential · Specialization · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/potential.css — B3 潜能 / 专精 Potential · Specialization · 依赖：tokens.css · decor/ */
 .ak-potential, .ak-spec { display: inline-grid; place-items: center; background: #1d1f20; padding: 2px; vertical-align: middle; }
 .ak-potential > img, .ak-spec > img { height: 20px; width: auto; display: block; }
 .ak-potential--bare, .ak-spec--bare { background: none; padding: 0; }

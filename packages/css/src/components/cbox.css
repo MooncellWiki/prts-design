@@ -1,4 +1,4 @@
-/*! AKDS · components/cbox.css — Cbox 正文提示框（= 现网 {{Cbox2}}） · 依赖：tokens.css */
+/*! PRTS Design · components/cbox.css — Cbox 正文提示框（= 现网 {{Cbox2}}） · 依赖：tokens.css */
 /* ═══ Cbox — 正文提示框（= 现网 {{Cbox2}}：左侧图标井 + 右侧正文） ═══
    与 .ak-message 的分工：.ak-message 是界面 / 系统反馈（横幅、可关闭、与 Toast 同族）；.ak-cbox 是编辑写在正文里的提示——「另见 xx 页面」「本节内容已删除仅作存档」，现网满站都是这个模板。
    等级对应：lv0 绿（另见 / 提示）→ --tip · lv1 蓝（信息）→ 默认 · lv2 黄 / lv3 橙（注意）→ --warning（现网夜间样式也把 2 / 3 并成一档）· lv4 红 → --danger。

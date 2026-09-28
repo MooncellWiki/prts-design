@@ -1,4 +1,4 @@
-/*! AKDS · decor/type.css — A8 拉丁展示字 / 标签字 / 数值 / 编号 / 水印 · 依赖：tokens.css */
+/*! PRTS Design · decor/type.css — A8 拉丁展示字 / 标签字 / 数值 / 编号 / 水印 · 依赖：tokens.css */
 /* A8. 拉丁展示字 / 标签字（Novecento / Bender 语言） */
 .ak-en, .ak-display { font-family: var(--ak-font-display); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-weight: 700; }
 .ak-display { font-size: var(--ak-fs-display); line-height: var(--ak-lh-display); letter-spacing: var(--ak-tracking-display); }

@@ -5,9 +5,9 @@
 骨架只写一份（_src/skeleton.html，{{占位}}），每页只写 front matter + 正文：
 
     <!--page
-    order: 4                      侧栏「AKDS 预览 · DEMO」里的顺序
+    order: 4                      侧栏「PRTS Design 预览 · DEMO」里的顺序
     nav: 通用组件                  侧栏文案
-    title: AKDS · 通用组件          <title>
+    title: PRTS Design · 通用组件          <title>
     crumb: 首页 > PRTS:皮肤 > 设计系统 > 通用组件    面包屑（最后一项 = 当前页）
     h1: 通用组件 / h1en: Core components              页面标题 + 英文副题
     indicators: <span …>          （可选）页头右上角指示器 HTML
@@ -21,7 +21,7 @@
     …正文（放进 .mw-body-content）…
 
 front matter 写了 `skeleton: gallery-skeleton.html` 的页面换用那份骨架（跨宿主对照页 gallery.html：不是皮肤骨架，?host= 切 akds / vector / bare），
-只填 title / head / content 三个占位，也不进侧栏「AKDS 预览 · DEMO」的页面列表。
+只填 title / head / content 三个占位，也不进侧栏「PRTS Design 预览 · DEMO」的页面列表。
 
 用法：python3 scripts/build-preview.py   （之后 build-dist.py / build-site.sh 照旧处理 preview/*.html）
 """

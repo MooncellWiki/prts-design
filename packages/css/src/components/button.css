@@ -1,4 +1,4 @@
-/*! AKDS · components/button.css — Button 按钮 · Button group · 依赖：tokens.css */
+/*! PRTS Design · components/button.css — Button 按钮 · Button group · 依赖：tokens.css */
 /* ═══ Button ═══ */
 .ak-btn {
   --_bg: var(--ak-bg-surface-2); --_fg: var(--ak-fg); --_bd: var(--ak-border-strong);

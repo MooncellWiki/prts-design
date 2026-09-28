@@ -1,4 +1,4 @@
-/*! AKDS · components/table.css — Table 数据表（非 wikitable） · 依赖：tokens.css */
+/*! PRTS Design · components/table.css — Table 数据表（非 wikitable） · 依赖：tokens.css */
 /* ═══ Table helpers (design-system table, 非 wikitable) ═══ */
 .ak-table { width: 100%; border-collapse: collapse; border-spacing: 0; font-size: var(--ak-fs-sm); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
 .ak-table th, .ak-table td { padding: 8px 12px; border-bottom: 1px solid var(--ak-border); text-align: left; vertical-align: middle; }

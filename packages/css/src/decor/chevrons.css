@@ -1,4 +1,4 @@
-/*! AKDS · decor/chevrons.css — A12 双箭头 Chevrons · 依赖：tokens.css */
+/*! PRTS Design · decor/chevrons.css — A12 双箭头 Chevrons · 依赖：tokens.css */
 /* A12. 双箭头 >> (transferarrow) */
 .ak-chevrons { white-space: nowrap; }   /* 动作链接整体不断行：CJK 任意字间都能断，「前往 »」折行时会被拆成「前 / 往 »」，箭头也可能单独掉到下一行 */
 .ak-chevrons::after { content: "»"; font-family: var(--ak-font-label); margin-left: .35em; transition: transform var(--ak-dur-fast); display: inline-block; }

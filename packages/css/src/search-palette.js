@@ -1,9 +1,9 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS · search-palette.js — 悬浮搜索面板（Command Palette）
+ *  PRTS Design · search-palette.js — 悬浮搜索面板（Command Palette）
  *  皮肤（skins.akds.js 通过 require 引入）与 preview 共用；无依赖，不带任何数据源 ——
  *  数据由调用方以 providers 注入（MW：skin/resources/search-providers.js；预览：preview/search-mock.js）。
  *
- *  交互模型（参考 Citizen 的 Command Palette，视觉换成 AKDS）：
+ *  交互模型（参考 Citizen 的 Command Palette，视觉换成 PRTS Design）：
  *    · 页眉里的 form.ak-header__search 被换成 button.ak-search-trigger（长得像输入框）；真表单被搬进面板顶部，
  *      #searchInput / action / hidden title 都还在 → Gadget 与无 JS 提交不受影响。
  *    · 开：点触发器 / .ak-header__search-toggle / 键 "/"、Ctrl(⌘)K、accesskey F。

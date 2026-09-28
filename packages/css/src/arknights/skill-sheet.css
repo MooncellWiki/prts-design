@@ -1,4 +1,4 @@
-/*! AKDS · arknights/skill-sheet.css — B6b 技能全等级表 Skill sheet · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/skill-sheet.css — B6b 技能全等级表 Skill sheet · 依赖：tokens.css · decor/ */
 /* B6b. 技能全等级表——prts.wiki 现网的「等级 × 描述 / 初始 / 消耗 / 持续」对比：一张表看完 1–7 + 专精 Ⅰ–Ⅲ，不靠等级切换器来回点
  *  结构：.ak-skill-sheet > .ak-skill.ak-skill--wide（表头：图标 / 名称 / SP 类型 / 开放条件 / 范围）+ table.ak-skill-table + .ak-skill-sheet__note */
 .ak-skill-sheet { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: 0 0 var(--ak-space-4); }

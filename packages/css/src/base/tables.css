@@ -1,4 +1,4 @@
-/*! AKDS · base/tables.css — Tables · wikitable / 数据表 · 依赖：tokens.css */
+/*! PRTS Design · base/tables.css — Tables · wikitable / 数据表 · 依赖：tokens.css */
 /* ─── Tables ────────────────────────────────────────────────────────────── */
 .mw-parser-output table { border-collapse: collapse; border-spacing: 0; }
 /* border-collapse 要写在 .wikitable 自己身上，不能只靠上面那条：MediaWiki 有一批核心 PHP 生成的

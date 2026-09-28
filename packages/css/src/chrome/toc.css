@@ -1,4 +1,4 @@
-/*! AKDS · chrome/toc.css — TOC 目录导轨 / 折叠条 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/toc.css — TOC 目录导轨 / 折叠条 · 依赖：tokens.css · components/ */
 /* ═══ TOC ═══
  *  一份 DOM、两种形态（不做第二份目录，也不用角落浮动按钮）：
  *   ≥1400  绝对定位进 .ak-main 右侧预留的导轨，.ak-toc__inner 粘性跟随滚动；

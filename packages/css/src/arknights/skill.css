@@ -1,4 +1,4 @@
-/*! AKDS · arknights/skill.css — B6 技能卡 Skill · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/skill.css — B6 技能卡 Skill · 依赖：tokens.css · decor/ */
 /* B6. 技能（图标 + SP 类型 + 触发类型）
  *  结构：.ak-skill > .ak-skill__icon + <div>( .ak-skill__head( __name [+ __alias] + .ak-sp + .ak-sp-trigger ) + .ak-skill__stats( .ak-sp-cost .ak-sp-init ) ) [+ .ak-skill__aside] + .ak-skill__desc
  *  右栏撑满图标高度并上下两端对齐：名称行贴图标顶边、SP 芯片行贴图标底边（不再悬在中间） */

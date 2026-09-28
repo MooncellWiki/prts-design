@@ -1,4 +1,4 @@
-/*! AKDS · arknights/kv.css — B8 键值表 Key-value · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/kv.css — B8 键值表 Key-value · 依赖：tokens.css · decor/ */
 /* 键值表（信息栏）—— dt / dd 都要显式 margin: 0：正文的 .mw-parser-output dt { margin-top } / dd { margin } 会漏进来（同优先级，靠顺序压）；
  *  两列都 align-content: center（block 容器上的 align-content，不动 inline 流），行高由高的一侧（图标 / 标签）决定时另一侧垂直居中，同现网 infobox 的 th / td middle */
 .ak-kv { display: grid; grid-template-columns: max-content 1fr; gap: 0; margin: 0 0 var(--ak-space-4); font-size: var(--ak-fs-sm); border-top: 1px solid var(--ak-border); }   /* 外边距自己写（= 正文 dl 的段距），不靠宿主的 dl 规则 */

@@ -1,6 +1,6 @@
 {
   codex: {
-    $description: "MediaWiki 1.43 核心与扩展（Codex 组件、mw-message-box、OOUI WikimediaUI 主题的部分）读取这些 CSS 变量。\n把它们映射到 AKDS 语义令牌，皮肤外的 UI 即可自动换肤。",
+    $description: "MediaWiki 1.43 核心与扩展（Codex 组件、mw-message-box、OOUI WikimediaUI 主题的部分）读取这些 CSS 变量。\n把它们映射到 PRTS Design 语义令牌，皮肤外的 UI 即可自动换肤。",
     "background-color-base": { $value: "{theme.background.bg-surface}" },
     "background-color-neutral": { $value: "{theme.background.bg-surface-2}" },
     "background-color-neutral-subtle": { $value: "{theme.background.bg-canvas}" },

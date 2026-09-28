@@ -1,4 +1,4 @@
-/*! AKDS · chrome/search-palette.css — Search palette 悬浮搜索面板 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/search-palette.css — Search palette 悬浮搜索面板 · 依赖：tokens.css · components/ */
 /* ═══ Search palette（悬浮搜索面板）═══
  *  参考 Citizen 的 Command Palette（starcitizen.tools）：搜索不再是页眉里的一条输入框，而是一块居中悬浮的「终端窗口」。
  *  页眉里的 form.ak-header__search 在有 JS 时被 search-palette.js 换成 button.ak-search-trigger（长得像输入框），

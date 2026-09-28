@@ -22,7 +22,7 @@ site/.vitepress/entries/<分组>.ts        注册一条：名字、描述、CSS 
 4. **Stories**：`export const Variants: Story = { name: "变体", ...demo(VariantsDemo) };`——`name` 写在字面量里 Storybook 才读得到。
 5. **文档**：示例用独占一行的 `@demo <Name>/<Demo>`；Vue API 用 `<PropsTable of="AkX" />`；CSS 类名一览用 `<CssClasses :files="['components/x.css']" />`（自动从样式表抽取）。正文里要写现网模板名 <code v-pre>{{Cbox2}}</code> 这类双花括号时用 `<code v-pre>`——普通行内代码挡不住 Vue 插值。
 6. **注册**：在 `site/.vitepress/entries/` 对应分组的文件里加一条（`registry.ts` 汇总它们），侧栏、总览、页头都从这里来。
-7. **导出**：在 `packages/vue/src/index.ts` 导出组件（与要公开的类型）；`pnpm build` 出 `@mooncellwiki/akds-vue` 的 dist。
+7. **导出**：在 `packages/vue/src/index.ts` 导出组件（与要公开的类型）；`pnpm build` 出 `@mooncellwiki/prts-design-vue` 的 dist。
 
 ## 命名与约定
 
@@ -34,7 +34,7 @@ site/.vitepress/entries/<分组>.ts        注册一条：名字、描述、CSS 
 - 整块是链接、或会被放进正文的组件，最外层标 `ak-not-prose`（见[设计理念 · prose / not-prose](/foundations/principles#prose-not-prose)）。渲染成 `<a>` 且根节点颜色不是继承色的组件，把颜色规则写到 `:hover` / `:visited` / `:active` 上（`.ak-x:is(:visited, :active) { color: … }`）：宿主与正文的 `a:visited` / `a:hover` 是 (0,1,1)，单个类压不过；`getComputedStyle` 看不到 `:visited`，`hosts` 用 CDP 强制伪类才测得到。
 - **`width: 100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外。`.ak-input` / `.ak-select` / `.ak-textarea` / `.ak-stat` / `.ak-blue-band` 已处理，裸 `input` / `select` / `textarea` / `button` 由 `base/forms.css` 统一设了 border-box；闲置的提示气泡也收成 0 宽（见[文字提示](/components/tooltip)），新组件照做。
 - 形状与装饰遵守[设计理念](/foundations/principles)：直角、不斜切；色条 + 细框用 `border-image` 直角拼接（见[装饰语言 · 色条 + 细框](/foundations/decoration#色条-细框)）。
-- **组件在任何宿主上都得一样**（AKDS 皮肤 / prts.wiki 的其它皮肤 / 站外，见[在 Vue / prts-widgets 中使用](/guide/vue#样式从哪来)）。组件层（`components/` `decor/` `arknights/` `utilities.css`）随 `standalone.css` 出去，没有 `base/`、`chrome/`、字体与素材：
+- **组件在任何宿主上都得一样**（Arknights 皮肤 / prts.wiki 的其它皮肤 / 站外，见[在 Vue / prts-widgets 中使用](/guide/vue#样式从哪来)）。组件层（`components/` `decor/` `arknights/` `utilities.css`）随 `standalone.css` 出去，没有 `base/`、`chrome/`、字体与素材：
   - 不依赖 body 的排版声明：需要的字体 / 字号 / 行高自己用令牌写（`--ak-font-*` / `--ak-fs-*` / `--ak-lh-*`），作用域根（`scope.css`）只给正文的那一档。
   - 不依赖 `base/` 的规则：正文排版给标题的行高、给 `dl` 的段距、`.wikitable` 的表格样式都不算数——组件元素上要的值自己写（`.ak-skill__name` 的行高、`.ak-kv` 的外边距、`.ak-table` 的 `border-spacing` 都是这么补的）。裸控件外观（`base/forms.css`）例外：作用域在别的宿主上补了同一套（`scope.css` 第 4 段，`node scripts/css-order.ts` 逐条核对两边一致，改一边要同步改另一边）。
   - 组件元素可能是 `h1`–`h6` 的（标题标签由调用方选的那种），规则再带一条标签限定的同义选择器 `:is(h1, h2, h3, h4, h5, h6).ak-x`（0,1,1）——宿主正文的 `.mw-body h3`（Vector 2022）是 (0,1,1)，单个类压不过。
@@ -59,7 +59,7 @@ packages/css/src/
   utilities.css               工具类
   forced-colors.css           强制色模式（最后加载）
   index.css                   皮肤全套的汇总入口（预览 / Storybook / 文档站）：各层 index.css 按序 @import；skin.json 的逐文件列表由 scripts/css-order.ts 同步
-  standalone.css              组件入口（npm 包 @mooncellwiki/akds-css 的默认入口）：tokens + scope + 组件 + 工具类 + 强制色，是 index.css 的子序列
+  standalone.css              组件入口（npm 包 @mooncellwiki/prts-design-css 的默认入口）：tokens + scope + 组件 + 工具类 + 强制色，是 index.css 的子序列
   charinfo.css                干员页舞台的换皮草案（不接入，见 /patterns/operator）
   search-palette.js           悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
   sidebar-tree.js             侧栏多层导航（皮肤与预览共用）
@@ -96,4 +96,4 @@ python3 scripts/build-preview.py           # 改了 preview/_src/pages/gallery.h
 pnpm e2e --project=hosts                   # 对照页 preview/gallery.html 在 akds / vector / bare × 暗 / 亮 下拍快照并比对
 ```
 
-`hosts` 以 AKDS 皮肤（`?host=akds`）为基准，每个 `[data-gallery]` 块里的元素在 Vector 2022（夹具 + `standalone.css` + 站点自定义样式 `site.css`——MW 上动态加载的模块插在 `site.styles` 之前，所以 Common.css 排在组件样式之后）与站外（只有 `standalone.css`）上必须逐属性相同，否则列出不同的元素 / 属性、用例失败；白名单写在 `e2e/hosts.spec.ts` 里、逐条注明原因（道具底框素材、正文标题的锚点偏移、Vector 自己的减弱动效规则）。静态之外再比一轮交互态：块里的链接 / 控件逐个用 CDP 强制 `:hover` / `:focus-visible` / `:visited`（快照里路径带 `[hover]` 等前缀，不含伪元素）。没覆盖的：`:active`、强制色模式、窄视口、真实的键盘焦点顺序。CI 的 e2e 流水线（`.github/workflows/e2e.yml`，与部署分开、不挡部署）每次推送 / PR 跑它，连同 Storybook 每个 story 的自检（`--project=stories`，测 `pnpm build:storybook` 构建好的 `_build/storybook`）。测试一律不出网（`e2e/support/test.ts` 在浏览器里拦下外站请求），Vector 夹具入库，CI 不访问 prts.wiki；重抓夹具（prts.wiki 的 WAF 按指纹拦非浏览器客户端，Playwright 的 headless shell 也拦，所以脚本用本机的 Google Chrome）是维护时的手动操作。浏览器里直接看：`preview/gallery.html?host=vector&theme=light`；Storybook 工具栏的「宿主」同一张表。差异多半落在：组件靠了 `base/` 的规则或 body 的继承（组件自己补声明，用令牌）、组件标题是 `h1`–`h6` 却没有标签限定的选择器、宿主的元素规则漏进组件（`scope.css` 的重置）、链接型组件的根节点颜色没写到 `:hover` / `:visited` 上。
+`hosts` 以 Arknights 皮肤（`?host=akds`）为基准，每个 `[data-gallery]` 块里的元素在 Vector 2022（夹具 + `standalone.css` + 站点自定义样式 `site.css`——MW 上动态加载的模块插在 `site.styles` 之前，所以 Common.css 排在组件样式之后）与站外（只有 `standalone.css`）上必须逐属性相同，否则列出不同的元素 / 属性、用例失败；白名单写在 `e2e/hosts.spec.ts` 里、逐条注明原因（道具底框素材、正文标题的锚点偏移、Vector 自己的减弱动效规则）。静态之外再比一轮交互态：块里的链接 / 控件逐个用 CDP 强制 `:hover` / `:focus-visible` / `:visited`（快照里路径带 `[hover]` 等前缀，不含伪元素）。没覆盖的：`:active`、强制色模式、窄视口、真实的键盘焦点顺序。CI 的 e2e 流水线（`.github/workflows/e2e.yml`，与部署分开、不挡部署）每次推送 / PR 跑它，连同 Storybook 每个 story 的自检（`--project=stories`，测 `pnpm build:storybook` 构建好的 `_build/storybook`）。测试一律不出网（`e2e/support/test.ts` 在浏览器里拦下外站请求），Vector 夹具入库，CI 不访问 prts.wiki；重抓夹具（prts.wiki 的 WAF 按指纹拦非浏览器客户端，Playwright 的 headless shell 也拦，所以脚本用本机的 Google Chrome）是维护时的手动操作。浏览器里直接看：`preview/gallery.html?host=vector&theme=light`；Storybook 工具栏的「宿主」同一张表。差异多半落在：组件靠了 `base/` 的规则或 body 的继承（组件自己补声明，用令牌）、组件标题是 `h1`–`h6` 却没有标签限定的选择器、宿主的元素规则漏进组件（`scope.css` 的重置）、链接型组件的根节点颜色没写到 `:hover` / `:visited` 上。

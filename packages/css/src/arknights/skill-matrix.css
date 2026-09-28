@@ -1,4 +1,4 @@
-/*! AKDS · arknights/skill-matrix.css — B6d 技能参数矩阵 Skill matrix · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/skill-matrix.css — B6d 技能参数矩阵 Skill matrix · 依赖：tokens.css · decor/ */
 /* B6d. 技能参数矩阵——另一种对比法：等级横着放、参数竖着放（游戏内技能详情 / 各类工具箱的写法），和 B6b 的全等级表二选一
  *  描述只写一遍，变量位 .ak-var 写区间（200%→320%）；每个变量一行、每级一列，较上一级有变化的格子 .is-up 正常色、没变的淡掉——
  *  一眼看出「哪一级涨了什么、涨了多少」，十行重复的句子不用读十遍；手机上也不用横向滚。

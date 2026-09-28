@@ -1,4 +1,4 @@
-/*! AKDS · arknights/rich-text.css — B7 游戏内富文本 Rich text · 数值变化 · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/rich-text.css — B7 游戏内富文本 Rich text · 数值变化 · 依赖：tokens.css · decor/ */
 /* B7. 游戏内富文本（<@ba.vup> 等 → span 类） */
 .ak-rt-vup, .ba-vup, .ak-buff { color: var(--ak-rt-vup); font-weight: 600; }
 .ak-rt-vdown, .ba-vdown, .ak-debuff { color: var(--ak-rt-vdown); font-weight: 600; }

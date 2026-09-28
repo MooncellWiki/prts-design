@@ -1,4 +1,4 @@
-/*! AKDS · chrome/keyart.css — Key art 头图带 · 画布底图 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/keyart.css — Key art 头图带 · 画布底图 · 依赖：tokens.css · components/ */
 /* ═══ Key art（头图带）＋ 画布底图 ═══
  *  .ak-keyart 是 .ak-layout 之上的一条通栏画，默认 --ak-keyart-h: 0 不占位、无 DOM 副作用；活动主题设 --ak-keyart-image + --ak-keyart-h 即出现
  *  （现网 body 背景里那幅头图的位置）。画从页面顶端铺起：盒子上移一个页眉高、再用同样的 padding-top 把内容压回页眉之下，于是画的顶端在

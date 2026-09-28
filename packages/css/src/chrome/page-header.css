@@ -1,4 +1,4 @@
-/*! AKDS · chrome/page-header.css — Page header 页面头 · 标题行动作簇 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/page-header.css — Page header 页面头 · 标题行动作簇 · 依赖：tokens.css · components/ */
 /* ═══ Page header ═══ */
 .ak-page-header { margin-bottom: var(--ak-space-5); }
 .ak-page-header__top { display: flex; align-items: center; gap: var(--ak-space-3); min-height: 24px; margin-bottom: 4px; }

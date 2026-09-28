@@ -1,5 +1,5 @@
 /**
- * 跨宿主：同一份组件 HTML（对照页 preview/gallery.html）在 AKDS 皮肤 / Vector 2022 / 站外三种页面上的计算样式必须一样。
+ * 跨宿主：同一份组件 HTML（对照页 preview/gallery.html）在 Arknights 皮肤 / Vector 2022 / 站外三种页面上的计算样式必须一样。
  * 每个用例 = 一个宿主 × 主题，和同主题的 akds 宿主比：每个 [data-gallery] 块里的元素（含伪元素）逐属性相同，否则列出不同的元素 / 属性。
  * 交互态另比一轮：块里的链接 / 控件用 CDP 强制 :hover / :focus-visible / :visited，拍元素 + 子树的计算样式（路径带 [hover] 等前缀；不含伪元素）。
  * vector 宿主用仓库里的 Vector 2022 样式夹具 preview/vendor/vector/（scripts/fetch-vector-css.ts 从现网抓来入库；测试本身不出网，见 support/test.ts）。
@@ -27,11 +27,11 @@ const ALLOW: { hosts: HostName[]; el?: (tag: string, cls: string[]) => boolean; 
   },
   {
     hosts: ['vector', 'bare'], el: t => /^h[1-6]$/.test(t), props: ['scroll-margin-top', 'scroll-margin-block-start'],
-    why: 'AKDS 正文标题给固定页眉让出的锚点偏移（base/typography.css），只在皮肤页面上有意义，不影响渲染',
+    why: 'Arknights 皮肤正文标题给固定页眉让出的锚点偏移（base/typography.css），只在皮肤页面上有意义，不影响渲染',
   },
   {
     hosts: ['vector', 'bare'], el: (t, c) => t === 'a' && c.includes('ak-btn'), props: ['text-underline-offset', 'text-decoration-thickness'],
-    why: '链接形态的 .ak-btn 不标 ak-not-prose，AKDS 正文的 a:hover（base/typography.css）给了下划线偏移 / 粗细；.ak-btn:hover 没有下划线，看不见',
+    why: '链接形态的 .ak-btn 不标 ak-not-prose，Arknights 皮肤正文的 a:hover（base/typography.css）给了下划线偏移 / 粗细；.ak-btn:hover 没有下划线，看不见',
   },
   {
     hosts: ['vector'], props: ['animation-delay'],

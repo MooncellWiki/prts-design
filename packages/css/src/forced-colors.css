@@ -1,4 +1,4 @@
-/*! AKDS · forced-colors.css — 强制色模式（Windows 高对比度等，@media (forced-colors: active)）· 依赖：全部组件，最后加载
+/*! PRTS Design · forced-colors.css — 强制色模式（Windows 高对比度等，@media (forced-colors: active)）· 依赖：全部组件，最后加载
  *  强制色下浏览器把颜色换成系统色（Canvas / CanvasText / LinkText / Highlight / ButtonText / GrayText），抹掉 background-color 与 box-shadow：
  *  只靠「底色」或「阴影」表达的状态就看不见了。这里把它们改用系统色表达，平时一条都不生效：
  *   · 选中 / 当前项 = Highlight 底 + HighlightText 字（要 forced-color-adjust: none，否则底色照样被抹）

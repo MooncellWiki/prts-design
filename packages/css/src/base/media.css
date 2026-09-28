@@ -1,4 +1,4 @@
-/*! AKDS · base/media.css — Figures / thumbs / galleries 缩略图与图库 · 依赖：tokens.css */
+/*! PRTS Design · base/media.css — Figures / thumbs / galleries 缩略图与图库 · 依赖：tokens.css */
 /* ─── Figures / thumbs / galleries ─────────────────────────────────────── */
 figure[typeof~="mw:File/Thumb"], figure[typeof~="mw:File/Frame"], .thumb {
   background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: var(--ak-space-1);

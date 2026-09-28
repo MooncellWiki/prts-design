@@ -1,5 +1,5 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS · arknights/ — L4 游戏数据组件（原 arknights.css B 段）
+ *  PRTS Design · arknights/ — L4 游戏数据组件（原 arknights.css B 段）
  *  稀有度 / 职业 / 精英化 / 潜能 / 专精 / 干员卡 / 道具 / 技能 / 攻击范围 / 材料 / 富文本 / 模组 / 语音 / 档案 / 关卡
  *  顺序：skill.css 在 skill-sheet.css 之前（全等级表的窄屏规则同特指度覆盖技能卡）；table-numerals.css（B99）最后。
  *  依赖：tokens.css · decor/（.ak-en / .ak-overline 等）

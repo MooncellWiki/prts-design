@@ -1,4 +1,4 @@
-/*! AKDS · arknights/profession.css — B2 职业 / 分支 Profession · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/profession.css — B2 职业 / 分支 Profession · 依赖：tokens.css · decor/ */
 /* B2. 职业 / 分支图标 */
 .ak-prof { --_s: 32px; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); flex: none; }
 .ak-prof > img { width: 82%; height: 82%; object-fit: contain; filter: var(--ak-glyph-filter); }

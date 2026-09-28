@@ -1,4 +1,4 @@
-/* AKDS preview — 搜索面板的演示数据源（模拟 MW 侧 skin/resources/search-providers.js 的接口）
+/* PRTS Design preview — 搜索面板的演示数据源（模拟 MW 侧 skin/resources/search-providers.js 的接口）
  * 演示两级数据源的设想：本地即时索引（干员 / 道具，支持拼音首字母与别名，0 网络等待，带结构化元数据）
  * + 站内标题搜索（REST v1/search/title，这里用假数据 + 150ms 延迟模拟）。 */
 ( function () {

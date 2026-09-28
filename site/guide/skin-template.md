@@ -70,7 +70,7 @@ button.ak-fab                                   ← 回到顶部（≥1400）
 
 ## 侧栏与 #MenuSidebar
 
-现网 prts.wiki（Vector legacy）的侧栏**不是** `MediaWiki:Sidebar` 门户，而是一段 wikitext 生成、放在页面末尾的 `div#MenuSidebar`，由内联脚本在 `DOMContentLoaded` 时移进 `#mw-panel`（并把 `#p-tb ul` 的内容复制进 `#MSToolbox`、删掉其余门户）。AKDS 不用改现网 wikitext / 站点脚本就能工作：
+现网 prts.wiki（Vector legacy）的侧栏**不是** `MediaWiki:Sidebar` 门户，而是一段 wikitext 生成、放在页面末尾的 `div#MenuSidebar`，由内联脚本在 `DOMContentLoaded` 时移进 `#mw-panel`（并把 `#p-tb ul` 的内容复制进 `#MSToolbox`、删掉其余门户）。Arknights 皮肤不用改现网 wikitext / 站点脚本就能工作：
 
 | 层 | 处理 |
 |---|---|

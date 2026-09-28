@@ -1,4 +1,4 @@
-/*! AKDS · chrome/responsive.css — Responsive 断点（各块的响应式规则集中在这里，顺序敏感，暂不拆） · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/responsive.css — Responsive 断点（各块的响应式规则集中在这里，顺序敏感，暂不拆） · 依赖：tokens.css · components/ */
 /* ═══ Responsive ═══ */
 /* < 1400：右侧导轨收起 —— 页眉长出二级吸顶栏，目录改由它拉下的浮层承载 */
 @media (max-width: 1400px) {

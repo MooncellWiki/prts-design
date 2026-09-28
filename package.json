@@ -2,7 +2,7 @@
   "name": "akds",
   "version": "0.1.0",
   "private": true,
-  "description": "AKDS · 明日方舟网页设计系统（prts.wiki 皮肤）——令牌 / CSS / Vue 三层实现 + 文档站 + Storybook",
+  "description": "PRTS Design · 明日方舟网页设计系统（prts.wiki 皮肤）——令牌 / CSS / Vue 三层实现 + 文档站 + Storybook",
   "type": "module",
   "packageManager": "pnpm@12.4.2",
   "engines": {

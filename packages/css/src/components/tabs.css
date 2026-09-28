@@ -1,4 +1,4 @@
-/*! AKDS · components/tabs.css — Tabs 标签页 · 依赖：tokens.css */
+/*! PRTS Design · components/tabs.css — Tabs 标签页 · 依赖：tokens.css */
 /* ═══ Tabs (纯 CSS 结构；TabberNeue 见 base/tabber.css) ═══ */
 .ak-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--ak-border); overflow-x: auto; scrollbar-width: none; }
 .ak-tabs::-webkit-scrollbar { display: none; }

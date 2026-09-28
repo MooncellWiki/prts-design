@@ -84,13 +84,13 @@ const preview: Preview = {
       },
     },
     host: {
-      description: "宿主页面：AKDS 皮肤全套 / prts.wiki 上的 Vector 2022 / 站外（只有 standalone.css）",
+      description: "宿主页面：Arknights 皮肤全套 / prts.wiki 上的 Vector 2022 / 站外（只有 standalone.css）",
       toolbar: {
         title: "宿主",
         icon: "browser",
         dynamicTitle: true,
         items: [
-          { value: "akds", title: "宿主：AKDS 皮肤" },
+          { value: "akds", title: "宿主：Arknights 皮肤" },
           { value: "vector", title: "宿主：Vector 2022" },
           { value: "bare", title: "宿主：站外" },
         ],

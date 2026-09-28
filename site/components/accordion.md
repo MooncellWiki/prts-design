@@ -43,7 +43,7 @@ Vue 版照 Naive UI 叫 `AkCollapse` + `AkCollapseItem`（同 `n-collapse`）：
 
 ```html demo
 <details class="ak-details" open>
-  <summary>什么是 AKDS？</summary>
+  <summary>什么是 PRTS Design？</summary>
   <div class="ak-details__body">明日方舟网页设计系统，为 prts.wiki 皮肤设计。</div>
 </details>
 <details class="ak-details">

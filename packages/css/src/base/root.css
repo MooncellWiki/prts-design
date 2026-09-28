@@ -1,6 +1,6 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS · base/root.css — 皮肤全局基底：html / body 的底色、选区、焦点环、滚动条、减弱动效
- *  base/ 的第一个文件（MW：skins.akds.base 模块，只有 AKDS 皮肤加载）。原在 tokens.css 末尾「Global base」段，令牌改为生成后搬到这里。
+ *  PRTS Design · base/root.css — 皮肤全局基底：html / body 的底色、选区、焦点环、滚动条、减弱动效
+ *  base/ 的第一个文件（MW：skins.akds.base 模块，只有 Arknights 皮肤加载）。原在 tokens.css 末尾「Global base」段，令牌改为生成后搬到这里。
  *  正文字体 / 字号 / 行高 / 前景色不在这里：挂在 scope.css 的 body.skin-arknights / .ak-scope 上，组件不靠宿主的 body 继承。
  *  依赖：tokens.css · scope.css
  * ═══════════════════════════════════════════════════════════════════════════ */

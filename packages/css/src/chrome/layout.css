@@ -1,4 +1,4 @@
-/*! AKDS · chrome/layout.css — Layout 三列布局 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/layout.css — Layout 三列布局 · 依赖：tokens.css · components/ */
 /* ═══ Layout ═══
  *  两列网格：侧栏 + 主列。目录导轨不是第三列，而是由 .ak-main 的右内边距预留出来的
  *  —— 这样 aside.ak-toc 在 DOM 上可以待在页面标题下方（属于页面而非布局），

@@ -1,4 +1,4 @@
-/*! AKDS · components/fab.css — FAB 回到顶部 · 依赖：tokens.css */
+/*! PRTS Design · components/fab.css — FAB 回到顶部 · 依赖：tokens.css */
 /* ═══ Back-to-top / floating action ═══ */
 .ak-fab { position: fixed; right: var(--ak-space-5); bottom: var(--ak-space-5); width: 44px; height: 44px; padding: 0; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); border: 0; cursor: pointer; z-index: var(--ak-z-sticky); box-shadow: var(--ak-shadow-md); opacity: 0; transform: translateY(8px); transition: all var(--ak-dur-normal) var(--ak-ease); }
 .ak-fab:not(.is-visible) { visibility: hidden; }   /* 隐藏时不只是透明：点不到、Tab 不到、读屏也跳过（visibility 在淡出结束时才切，动画不受影响） */

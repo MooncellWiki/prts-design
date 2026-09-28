@@ -1,4 +1,4 @@
-/*! AKDS · arknights/enemy.css — B15 敌人卡 Enemy · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/enemy.css — B15 敌人卡 Enemy · 依赖：tokens.css · decor/ */
 /* B15. 敌人卡 */
 .ak-enemy { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 10px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
 .ak-enemy--boss, .ak-enemy--elite { border-left-width: 4px; border-image: linear-gradient(to right, var(--_bar) 4px, var(--ak-border) 4px) 1 1 1 4; }

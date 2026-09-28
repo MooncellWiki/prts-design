@@ -16,7 +16,7 @@ const meta = {
     components: { AkCollapse, AkCollapseItem },
     setup: () => ({ args }),
     template: `<AkCollapse v-bind="args" v-model="args.modelValue">
-  <AkCollapseItem name="akds" title="什么是 AKDS？"><p>明日方舟网页设计系统，为 prts.wiki 皮肤设计。</p></AkCollapseItem>
+  <AkCollapseItem name="akds" title="什么是 PRTS Design？"><p>明日方舟网页设计系统，为 prts.wiki 皮肤设计。</p></AkCollapseItem>
   <AkCollapseItem name="codex" title="为什么不用 Codex 默认外观？"><p>视觉语言完全按明日方舟本体重建，而不是套一层配色。</p></AkCollapseItem>
   <AkCollapseItem name="tokens" title="令牌从哪来？"><p>packages/tokens/src 的 DTCG JSON 源，经 Style Dictionary 生成 packages/css/src/tokens.css。</p></AkCollapseItem>
 </AkCollapse>`,

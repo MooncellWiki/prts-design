@@ -1,4 +1,4 @@
-/*! AKDS · components/timeline.css — Timeline 时间线 · 依赖：tokens.css */
+/*! PRTS Design · components/timeline.css — Timeline 时间线 · 依赖：tokens.css */
 /* ═══ Timeline / Stepper ═══ */
 /* 在正文里（.mw-parser-output）也成立，不用标 ak-not-prose：base/typography.css 的正文列表规则 ul (0,1,1) / ul > li (0,1,2) / ul > li::before (0,1,3)
  * 特指度都比下面的 .ak-timeline… 高，会改掉缩进与下外边距、给每项加段距、把菱形节点换成 5px 的项目符号。所以前三条各带一个 .mw-parser-output 前缀的同义选择器

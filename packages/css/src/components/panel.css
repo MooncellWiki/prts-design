@@ -1,4 +1,4 @@
-/*! AKDS · components/panel.css — Panel 面板 · 依赖：tokens.css */
+/*! PRTS Design · components/panel.css — Panel 面板 · 依赖：tokens.css */
 /* Panel: 带标题栏的容器（游戏内 announce panel 风格） */
 .ak-panel { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0 0 var(--ak-space-4); }
 .ak-panel__head { display: flex; align-items: center; gap: var(--ak-space-3); min-height: 40px; padding: 0 var(--ak-space-4) 0 var(--ak-space-3);

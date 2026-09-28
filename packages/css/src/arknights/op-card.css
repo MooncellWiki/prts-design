@@ -1,4 +1,4 @@
-/*! AKDS · arknights/op-card.css — B4 干员卡 Operator card · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/op-card.css — B4 干员卡 Operator card · 依赖：tokens.css · decor/ */
 /* B4. 干员卡（游戏内干员列表卡） */
 .ak-op-card { --_w: 128px; width: var(--_w); position: relative; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); overflow: hidden; text-decoration: none; color: var(--ak-fg); display: block; transition: transform var(--ak-dur-normal) var(--ak-ease), border-color var(--ak-dur-normal), box-shadow var(--ak-dur-normal); }
 .ak-op-card:hover { transform: translateY(-3px); border-color: var(--ak-accent); box-shadow: var(--ak-shadow-md); text-decoration: none; color: var(--ak-fg); }

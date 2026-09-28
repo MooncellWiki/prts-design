@@ -1,9 +1,9 @@
-/*! AKDS — 明日方舟网页设计系统 · 汇总入口（皮肤全套：预览 / Storybook / 文档站用；MW 中按 ResourceLoader 模块逐文件加载，
+/*! PRTS Design — 明日方舟网页设计系统 · 汇总入口（皮肤全套：预览 / Storybook / 文档站用；MW 中按 ResourceLoader 模块逐文件加载，
  *  列表由 scripts/css-order.ts 从下面这些 index.css 同步进 skin/skin.json，MW 上的实际加载顺序与这里一致）
- *  层：fonts + tokens + 桥接 + 素材（只有 @font-face / 自定义属性，位置无关）→ base（MW 正文，只属于 AKDS 皮肤）→ scope（作用域根）→ components
- *      → decor + arknights（L4 方舟）→ utilities → forced-colors（强制色模式）→ chrome（L2 皮肤骨架，只属于 AKDS 皮肤）
+ *  层：fonts + tokens + 桥接 + 素材（只有 @font-face / 自定义属性，位置无关）→ base（MW 正文，只属于 Arknights 皮肤）→ scope（作用域根）→ components
+ *      → decor + arknights（L4 方舟）→ utilities → forced-colors（强制色模式）→ chrome（L2 皮肤骨架，只属于 Arknights 皮肤）
  *  scope 起到 forced-colors 为止 = 随组件走的部分（MW：skins.akds.components 模块，别的皮肤也能加载）；
- *  别的皮肤 / 站外只要组件：用 standalone.css（npm 包 @mooncellwiki/akds-css 的入口，不含字体、Codex 桥接、素材、base、chrome）。 */
+ *  别的皮肤 / 站外只要组件：用 standalone.css（npm 包 @mooncellwiki/prts-design-css 的入口，不含字体、Codex 桥接、素材、base、chrome）。 */
 @import url("fonts.css");             /* 自托管 web 字体（@font-face），scripts/fetch-fonts.py 生成 */
 @import url("tokens.css");            /* 生成物：tokens/src/ 下的 json5 → pnpm tokens */
 @import url("bridge-codex.css");      /* 生成物：Codex / MW 令牌桥接（只属于皮肤：加载到别的皮肤上会改掉宿主的 Codex 配色） */

@@ -20,7 +20,7 @@ component: toast
 
 ```ts
 // 任意子组件
-import { useToast } from "@mooncellwiki/akds-vue";
+import { useToast } from "@mooncellwiki/prts-design-vue";
 
 const toast = useToast();
 toast.success("页面已加入监视列表", { title: "完成" });
@@ -47,7 +47,7 @@ toast.error("保存失败：会话过期");
 
 <PropsTable of="AkToastProvider" />
 
-`useToast()` 返回 `ToastApi`：`create / info / success / warning / error(内容, 选项?) => { destroy }` 与 `destroyAll()`；类型 `ToastApi` / `ToastOptions` / `ToastVariant` 从 `@mooncellwiki/akds-vue` 导出。
+`useToast()` 返回 `ToastApi`：`create / info / success / warning / error(内容, 选项?) => { destroy }` 与 `destroyAll()`；类型 `ToastApi` / `ToastOptions` / `ToastVariant` 从 `@mooncellwiki/prts-design-vue` 导出。
 
 ## CSS 实现
 

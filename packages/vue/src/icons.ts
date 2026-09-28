@@ -1,5 +1,5 @@
 /**
- * AKDS 线稿图标（24×24，stroke / fill 用 currentColor）——与预览骨架 preview/_src/skeleton.html 的 SVG sprite 同一套路径。
+ * PRTS Design 线稿图标（24×24，stroke / fill 用 currentColor）——与预览骨架 preview/_src/skeleton.html 的 SVG sprite 同一套路径。
  * Vue 组件内联渲染（<AkIcon name="search" />），不依赖页面里有没有 sprite；MW 皮肤 / 模板那边仍走 <svg><use href="#i-…"></svg>。
  */
 export const icons = {

@@ -1,13 +1,13 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS — 明日方舟网页设计系统 · Design Tokens
- *  Arknights Web Design System for MediaWiki skins (prts.wiki)
+ *  PRTS Design — 明日方舟网页设计系统 · Design Tokens
+ *  Design system of the Arknights MediaWiki skin (prts.wiki)
  *
- *  生成物，勿手改：源文件是 packages/tokens/src/ 下的 *.json5（W3C DTCG 格式，@mooncellwiki/akds-tokens），改完 pnpm tokens 重新生成。
+ *  生成物，勿手改：源文件是 packages/tokens/src/ 下的 *.json5（W3C DTCG 格式，@mooncellwiki/prts-design-tokens），改完 pnpm tokens 重新生成。
  *
  *  层级：
  *    1. Primitive  --ak-{hue}-{step}      原始色板（来源：官网 CSS / 游戏解包 / gamedata）
  *    2. Semantic   --ak-{role}            语义令牌（随主题变化）
- *  Codex / MediaWiki 令牌桥接（原第 3 段，让 MW 核心 & 扩展 UI 跟随主题）只属于 AKDS 皮肤，在 bridge-codex.css；本文件任何宿主都能加载。
+ *  Codex / MediaWiki 令牌桥接（原第 3 段，让 MW 核心 & 扩展 UI 跟随主题）只属于 Arknights 皮肤，在 bridge-codex.css；本文件任何宿主都能加载。
  *
  *  主题机制（与 MediaWiki 1.43 clientPrefs 一致）：
  *    <html class="skin-theme-clientpref-os">    跟随系统（默认）

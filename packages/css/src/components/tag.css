@@ -1,4 +1,4 @@
-/*! AKDS · components/tag.css — Tag 标签 · 依赖：tokens.css */
+/*! PRTS Design · components/tag.css — Tag 标签 · 依赖：tokens.css */
 /* ═══ Tag / Badge / Chip ═══ */
 .ak-tag {
   --_bg: var(--ak-bg-surface-3); --_fg: var(--ak-fg-secondary); --_bd: transparent;

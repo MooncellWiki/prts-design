@@ -1,4 +1,4 @@
-/*! AKDS · components/divider.css — Divider 分隔线 · 依赖：tokens.css */
+/*! PRTS Design · components/divider.css — Divider 分隔线 · 依赖：tokens.css */
 /* ═══ Divider ═══ */
 .ak-divider { border: 0; height: 1px; background: var(--ak-border); margin: var(--ak-space-6) 0; }
 .ak-divider--accent { background: linear-gradient(90deg, var(--ak-accent) 0 80px, var(--ak-border) 80px); height: 2px; }

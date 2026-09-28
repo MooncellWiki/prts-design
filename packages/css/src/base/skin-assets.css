@@ -1,4 +1,4 @@
-/*! AKDS · base/skin-assets.css — 皮肤持有的游戏素材接口：组件层（standalone.css）引用的图片一律经这里的变量，自己不直接 url() 素材。
+/*! PRTS Design · base/skin-assets.css — 皮肤持有的游戏素材接口：组件层（standalone.css）引用的图片一律经这里的变量，自己不直接 url() 素材。
  *  只属于皮肤（MW：skins.akds.base 模块；src/index.css 直接引，不在 base/index.css 里）：素材（src/img/）不随 npm 包发布。
  *  站外 / 其它宿主：不加载本文件，则 .ak-item--bare 无底框（var() 的回退 none）；想要底框，自己在 :root 上覆盖这几个变量，指到 media.prts.wiki 的绝对地址。
  *  为什么放在 base/ 而不是 src/ 根上：Chromium 把自定义属性里的相对 url() 按「使用处」（arknights/item.css）解析，Firefox / WebKit 按「声明处」

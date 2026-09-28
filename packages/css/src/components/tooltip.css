@@ -1,4 +1,4 @@
-/*! AKDS · components/tooltip.css — Tooltip / Popover / Term 提示 · 依赖：tokens.css */
+/*! PRTS Design · components/tooltip.css — Tooltip / Popover / Term 提示 · 依赖：tokens.css */
 /* ═══ Tooltip / Popover (CSS-only via data-tip; JS 版由 gadget 增强) ═══ */
 [data-ak-tip] { position: relative; }
 /* 闲置时把气泡收成 0 宽（max-width: 0 + overflow: hidden）而不只是 opacity: 0：透明的气泡仍占布局，靠近右缘的一条长提示会把文档撑出横向滚动——

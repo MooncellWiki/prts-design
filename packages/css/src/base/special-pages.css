@@ -1,4 +1,4 @@
-/*! AKDS · base/special-pages.css — Diff / history / recent changes / search / Echo / Minerva · 依赖：tokens.css */
+/*! PRTS Design · base/special-pages.css — Diff / history / recent changes / search / Echo / Minerva · 依赖：tokens.css */
 /* ─── Diff / history / recent changes / search ─────────────────────────── */
 table.diff { font-size: var(--ak-fs-sm); }
 table.diff td { padding: .3em .5em; }
@@ -39,5 +39,5 @@ table.diff td { padding: .3em .5em; }
 .mw-echo-ui-notificationItemWidget { background: var(--ak-bg-surface); border-color: var(--ak-border); color: var(--ak-fg); }
 .mw-echo-ui-notificationItemWidget-unread { background: var(--ak-accent-subtle); }
 .mw-echo-ui-notificationBadgeButtonPopupWidget-popup .oo-ui-popupWidget-popup { background: var(--ak-bg-surface); }
-/* MobileFrontend/Minerva overrides when AKDS tokens are loaded */
+/* MobileFrontend/Minerva overrides when PRTS Design tokens are loaded */
 .minerva-header, .header-container { background: var(--ak-bg-surface); border-color: var(--ak-border); }

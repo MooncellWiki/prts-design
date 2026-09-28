@@ -3,10 +3,10 @@
  * MediaWiki 的 ResourceLoader 不跟 @import（一个模块里的文件被拼成一张样式表，后面的 @import 失效），
  * 所以 skin/skin.json 必须逐文件列出——这里把 index.css 展开成文件列表，按规则分进模块：
  *
- *   skins.akds.base         bridge-codex.css + base/*（含 base/skin-assets.css；SkinModule）  Codex 桥接、皮肤素材、html / body 基底、MW 正文排版      只有 AKDS 皮肤
- *   skins.akds.components   tokens.css + scope.css + components → decor → arknights → utilities → forced-colors                                 AKDS 皮肤 + 任何皮肤的 widget / 模板入口
- *   skins.akds.fonts        fonts.css                                                                                                        AKDS 皮肤；别的皮肤想要官网字体时加载
- *   skins.akds.shell        chrome/*（L2 皮肤骨架）                                                                                            只有 AKDS 皮肤
+ *   skins.akds.base         bridge-codex.css + base/*（含 base/skin-assets.css；SkinModule）  Codex 桥接、皮肤素材、html / body 基底、MW 正文排版      只有 Arknights 皮肤
+ *   skins.akds.components   tokens.css + scope.css + components → decor → arknights → utilities → forced-colors                                 Arknights 皮肤 + 任何皮肤的 widget / 模板入口
+ *   skins.akds.fonts        fonts.css                                                                                                        Arknights 皮肤；别的皮肤想要官网字体时加载
+ *   skins.akds.shell        chrome/*（L2 皮肤骨架）                                                                                            只有 Arknights 皮肤
  *   skins.akds.tokens       tokens.css + scope.css（纯令牌 + 作用域根，= components 的开头，不进皮肤的 styles）                                   别的皮肤上只要令牌时加载
  *
  * 两条 MediaWiki 事实决定了这个分法（includes/ResourceLoader/ClientHtml.php · FileModule.php，REL1_43）：
@@ -14,7 +14,7 @@
  *     所以 base < components < shell 这个字母序就是层叠顺序；骨架模块不能叫 chrome（chrome < components）。
  *   · 带 dependencies 的模块不是 style-only（FileModule::getType() → LOAD_GENERAL），放进皮肤 styles 会被跳过（"Unexpected general module in styles queue"）。
  *     所以 components 不靠依赖拿令牌，而是自己带上 tokens.css + scope.css：别的皮肤 mw.loader.using("skins.akds.components") 一个模块就齐，
- *     AKDS 皮肤上它已经在 styles 里（状态 ready），这行是空操作。
+ *     Arknights 皮肤上它已经在 styles 里（状态 ready），这行是空操作。
  * 校验：
  *   (1) 皮肤 styles 里的模块按字母序拼起来，去掉「位置无关」的文件（只有 @font-face / 自定义属性 / color-scheme，挪到哪都一样）后，
  *       必须等于 index.css 的完整展开去掉同一批文件——即 MW 上的层叠顺序 = 单文件顺序；位置无关的文件本身也逐条检查确实只有这些声明。

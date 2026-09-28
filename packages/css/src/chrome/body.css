@@ -1,4 +1,4 @@
-/*! AKDS · chrome/body.css — Body content area 正文区 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/body.css — Body content area 正文区 · 依赖：tokens.css · components/ */
 /* ═══ Body content area ═══ */
 .ak-body { position: relative; min-width: 0; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: var(--ak-space-6) var(--ak-space-8); }
 .ak-body--flat { background: transparent; border: 0; padding: 0; }

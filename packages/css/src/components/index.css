@@ -1,5 +1,5 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS · components/ — L3 通用组件（原 components.css；框架无关，纯 CSS，可用于 TemplateStyles / Gadgets）
+ *  PRTS Design · components/ — L3 通用组件（原 components.css；框架无关，纯 CSS，可用于 TemplateStyles / Gadgets）
  *  命名：BEM-lite  .ak-{block}  .ak-{block}__{el}  .ak-{block}--{mod}  状态 .is-{state} / aria-*
  *  顺序：title-reset.css 必须在全部通用组件之后、方舟组件之前（它压掉 message / empty 等标题的颜色，又会被
  *        dossier / hero 的标题规则压回）；keyframes.css 里的 ak-* 动画皮肤 / 方舟组件 / 工具类都在用。

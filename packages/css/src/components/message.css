@@ -1,4 +1,4 @@
-/*! AKDS · components/message.css — Message 消息 · 依赖：tokens.css */
+/*! PRTS Design · components/message.css — Message 消息 · 依赖：tokens.css */
 /* ═══ Message / Alert / Callout ═══ */
 .ak-message { --_c: var(--ak-info); --_bg: var(--ak-info-bg);
   display: flex; gap: var(--ak-space-3); padding: var(--ak-space-3) var(--ak-space-4); margin: 0 0 var(--ak-space-4);

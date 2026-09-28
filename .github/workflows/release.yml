@@ -1,6 +1,6 @@
 name: Release
 
-# 推 v* tag 发布 packages/* 下的三个公开包（@mooncellwiki/akds-tokens / akds-css / akds-vue；akds-css 只发代码，files 排除了字体与游戏素材）到 npm，
+# 推 v* tag 发布 packages/* 下的三个公开包（@mooncellwiki/prts-design-tokens / prts-design-css / prts-design-vue；prts-design-css 只发代码，files 排除了字体与游戏素材）到 npm，
 # 同 MooncellWiki/sponsorkit：sxzz/workflows 的 release（changelogithub 生成 GitHub Release + pnpm -r publish，OIDC trusted publishing，不存 npm token）。
 # 发版：三个公开包的 version 一起改（同一版本号）→ 提交 → git tag vX.Y.Z → git push --follow-tags
 on:

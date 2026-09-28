@@ -1,4 +1,4 @@
-/*! AKDS · decor/corner.css — A6 角标三角 Corner · 依赖：tokens.css */
+/*! PRTS Design · decor/corner.css — A6 角标三角 Corner · 依赖：tokens.css */
 /* A6. 角标（corner triangle）· 官网右上角三角 / 游戏内选中角标 */
 .ak-corner { position: relative; }
 .ak-corner::before { content: ""; position: absolute; top: 0; left: 0; border-style: solid; border-width: 10px 10px 0 0; border-color: var(--ak-accent) transparent transparent transparent; z-index: 1; }

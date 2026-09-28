@@ -1,4 +1,4 @@
-/*! AKDS · arknights/elite.css — B3 精英化 Elite · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/elite.css — B3 精英化 Elite · 依赖：tokens.css · decor/ */
 /* B3. 精英化 / 潜能 / 专精 / 等级 */
 .ak-elite { display: inline-flex; align-items: center; gap: 4px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); }
 .ak-elite > img { height: 16px; width: auto; filter: var(--ak-glyph-filter); }

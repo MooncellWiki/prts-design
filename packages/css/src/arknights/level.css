@@ -1,4 +1,4 @@
-/*! AKDS · arknights/level.css — B3 等级读数 Level · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/level.css — B3 等级读数 Level · 依赖：tokens.css · decor/ */
 /* 等级读数「LV 90」：横排、LV 小标坐在数字基线上；数字 18px + 3px 内距 = 24px 高，与阶段页签 / 开关 / .ak-trust 同一条线
  *  （此前竖排 LV 叠数字 42px 高，在控制行里比左右所有东西都高出一截）。tabular-nums：E0/E1/E2 切换 50 → 80 → 90 宽度不跳 */
 .ak-level { display: inline-flex; align-items: baseline; gap: 5px; line-height: 1; font-family: var(--ak-font-label); }

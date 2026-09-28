@@ -1,6 +1,6 @@
 # 在 MediaWiki 中使用
 
-皮肤 `skin/`（AKDS）通过 ResourceLoader 加载全部 CSS；模板、TemplateStyles、Widget 只需要**输出约定好的结构**，不用自己带组件样式。皮肤装上以后，组件那一份（`skins.akds.components`）在别的皮肤的页面上也能 `mw.loader.using`，见[模块与层序](/guide/resourceloader#resourceloader-模块)。
+皮肤骨架 `skin/`（Arknights 皮肤的参考实现）通过 ResourceLoader 加载全部 CSS；模板、TemplateStyles、Widget 只需要**输出约定好的结构**，不用自己带组件样式。皮肤装上以后，组件那一份（`skins.akds.components`）在别的皮肤的页面上也能 `mw.loader.using`，见[模块与层序](/guide/resourceloader#resourceloader-模块)。
 
 ::: tip 生产皮肤是 Skin:Arknights
 prts.wiki 实际部署的是 [mediawiki-skins-Arknights](https://github.com/MooncellWiki/mediawiki-skins-Arknights)（`wfLoadSkin('Arknights')`，皮肤名 `arknights`）。它用 `scripts/sync-design-system.sh` 把本仓库 `packages/css/src/` 原样拷进 `resources/design-system/`（连同 `chrome/`），按 `index.css` 的顺序写进自己的 skin.json；模板（PHP 组件喂数据的 Mustache partial）按 `chrome/` 的类名输出，它自己的 LESS 只剩 MediaWiki 胶水（核心 / 扩展 UI 的 skinStyles、`.notheme` 生成物、无 JS 的真搜索表单这类）。本仓库的 `skin/` 是骨架参考实现，本节其余内容以它为例；两者的名字对照：
@@ -78,7 +78,7 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
 
 - `<html>` 上的类：`skin-theme-clientpref-os | -day | -night`，与 Vector 2022 一致（核心 `mediawiki.page.ready` 读写 cookie / localStorage 的 `mwclientpreferences`）。`tokens.css` 已按这三个类定义两套语义令牌，见[色彩 · 主题机制](/foundations/color#主题机制)。
 - 切换：`mw.user.clientPrefs.set('skin-theme', 'night')`；页眉的外观开关就是做这件事。未登录也可用（clientPrefs 走 localStorage）。主题类在 `<html>` 上、clientPrefs 的内联脚本早于样式执行，没有 FOUC。
-- **Codex 桥接**：`bridge-codex.css`（生成物，在 `skins.akds.base` 里，只有 AKDS 皮肤加载——放到别的皮肤上会改掉宿主自己的 Codex 配色）把 `--background-color-base`、`--color-progressive`、`--border-color-base` 等 Codex 令牌映射到 AKDS 语义令牌，`mw-message-box`、Codex 表单、Echo 弹窗等核心 UI 因此自动跟随；OOUI 少量写死的颜色在 `base/forms.css` 等处覆盖（见[色彩 · Codex / MediaWiki 桥接](/foundations/color#codex-mediawiki-桥接)）。
+- **Codex 桥接**：`bridge-codex.css`（生成物，在 `skins.akds.base` 里，只有 Arknights 皮肤加载——放到别的皮肤上会改掉宿主自己的 Codex 配色）把 `--background-color-base`、`--color-progressive`、`--border-color-base` 等 Codex 令牌映射到 PRTS Design 语义令牌，`mw-message-box`、Codex 表单、Echo 弹窗等核心 UI 因此自动跟随；OOUI 少量写死的颜色在 `base/forms.css` 等处覆盖（见[色彩 · Codex / MediaWiki 桥接](/foundations/color#codex-mediawiki-桥接)）。
 - 游戏的白色线稿图标统一走 `filter: var(--ak-glyph-filter)`（亮色反相），模板里放游戏图标时给 `<img>` 加 `.ak-glyph`。
 
 ## 与现有扩展的配合
@@ -86,7 +86,7 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
 | 扩展 | 处理 |
 |---|---|
 | TabberNeue | `base/tabber.css` 覆盖 `.tabber__*`；变体 `ak-tabber-boxed` / `ak-tabber-block` 必须和 `.tabber` 在同一个元素上（`<tabber class="…">`），包一层 div 不生效，见 [TabberNeue](/content/tabber#变体) |
-| Cargo / SMW / DPL3 | 结果表继承 wikitable 规则（`.cargoTable` / `table.mw-datatable`）；结果格式用 `template` 时输出 AKDS 组件结构 |
+| Cargo / SMW / DPL3 | 结果表继承 wikitable 规则（`.cargoTable` / `table.mw-datatable`）；结果格式用 `template` 时输出 PRTS Design 组件结构 |
 | Echo | 徽标用 `.ak-badge`（notices 默认黄；alerts 加 `--danger` 红）；弹窗走 Codex 桥接 |
 | WikiEditor / CodeMirror | 编辑器底色 `--ak-bg-inset`，在 `base/forms.css` 覆盖（见[表单控件 · 核心按钮与编辑器](/content/forms#核心按钮与编辑器)） |
 | MobileFrontend + Minerva | 两条路：(a) 皮肤 `responsive: true`，直接当移动端皮肤用（≤639 规则已写）；(b) 保留 Minerva，把令牌 + Codex 桥接（`tokens.css` + `bridge-codex.css`）经 `skinStyles` 注入 Minerva、只换色（仓库里还没有这样的模块；组件本身在 Minerva 上直接 `mw.loader.using("skins.akds.components")` 即可）。推荐 (a)，分阶段替换 |

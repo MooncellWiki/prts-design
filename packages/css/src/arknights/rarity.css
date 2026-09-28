@@ -1,4 +1,4 @@
-/*! AKDS · arknights/rarity.css — B1 稀有度 Rarity · 色轨 · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/rarity.css — B1 稀有度 Rarity · 色轨 · 依赖：tokens.css · decor/ */
 /* B1. 稀有度 ─ 星级 & 色阶 */
 .ak-rarity { display: inline-flex; align-items: center; gap: 1px; height: 1em; vertical-align: middle; --_c: var(--ak-yellow-500); }
 .ak-rarity > i { width: .9em; height: .9em; background: var(--_c); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }

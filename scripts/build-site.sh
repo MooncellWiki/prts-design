@@ -6,18 +6,18 @@
 #   /storybook/   Storybook
 #   /dist/        单文件打包版（按 ../src/fonts/ 引思源黑体 → /src/fonts/）
 # 旧地址留跳转页：预览站原来在站点根目录（/components.html …），后来在 /preview/；5 张展示页（index / chrome / mediawiki / components / arknights）已退役，内容在文档站。
-# 用法：bash scripts/build-site.sh [输出目录]   （默认 _site；站点 base 默认 /prts-design/，本地根目录自查用 AKDS_BASE=/）
+# 用法：bash scripts/build-site.sh [输出目录]   （默认 _site；站点 base 默认 /prts-design/，本地根目录自查用 PRTS_DESIGN_BASE=/）
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 out="${1:-_site}"
 [[ "$out" = /* ]] || out="$PWD/$out"
-base="${AKDS_BASE:-/prts-design/}"
+base="${PRTS_DESIGN_BASE:-/prts-design/}"
 
 cd "$root"
 node scripts/css-order.ts                      # skin.json 与 index.css 同序，否则失败
 node scripts/sprite-sync.ts                    # 图标：骨架 sprite / 皮肤模板 sprite / icons.ts 三处一致，否则失败
-AKDS_BASE="$base" pnpm build:docs
+PRTS_DESIGN_BASE="$base" pnpm build:docs
 pnpm build:storybook
 
 rm -rf "$out"

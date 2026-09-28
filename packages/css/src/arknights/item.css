@@ -1,4 +1,4 @@
-/*! AKDS · arknights/item.css — B5 道具 Item · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/item.css — B5 道具 Item · 依赖：tokens.css · decor/ */
 /* B5. 道具（游戏道具图标：底框 + 图标 + 数量角标）
  *  默认直接用现网拼好的图：prts.wiki 文件:道具_带框_<名>.png（游戏底图 sprite_item_r* + 图标合成，183×183，全站每个道具都有一张，现网 {{道具图标}} 输出的就是它）——
  *  <span class="ak-item"><img src="道具_带框_X.png"><span class="ak-item__count">5</span></span>，图占满框，皮肤不自己叠框，与现网 / 游戏内一个像素不差。

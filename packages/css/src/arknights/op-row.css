@@ -1,4 +1,4 @@
-/*! AKDS · arknights/op-row.css — B4 干员横向条目 Operator row · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/op-row.css — B4 干员横向条目 Operator row · 依赖：tokens.css · decor/ */
 /* 干员横向条目（列表/表格内） */
 .ak-op-row { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
 .ak-op-row .ak-avatar { --_s: 36px; border-left-width: 3px; border-image: linear-gradient(to right, var(--ak-r, var(--ak-border)) 3px, var(--ak-border) 3px) 1 1 1 3; }

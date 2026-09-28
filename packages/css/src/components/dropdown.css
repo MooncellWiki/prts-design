@@ -1,4 +1,4 @@
-/*! AKDS · components/dropdown.css — Dropdown / Menu 下拉菜单 · 依赖：tokens.css */
+/*! PRTS Design · components/dropdown.css — Dropdown / Menu 下拉菜单 · 依赖：tokens.css */
 /* ═══ Dropdown / Menu ═══ */
 .ak-dropdown { position: relative; display: inline-block; }
 .ak-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; z-index: var(--ak-z-dropdown);

@@ -1,4 +1,4 @@
-/*! AKDS · arknights/camp.css — B14 阵营 / 势力 Camp · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/camp.css — B14 阵营 / 势力 Camp · 依赖：tokens.css · decor/ */
 /* B14. 阵营 / 势力 logo */
 .ak-camp { display: inline-flex; align-items: center; gap: 8px; }
 .ak-camp > img { height: 28px; width: auto; filter: var(--ak-glyph-filter); }

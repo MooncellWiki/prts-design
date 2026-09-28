@@ -1,18 +1,18 @@
 /**
- * AKDS primitives（≈ primer/primitives，npm 包 @mooncellwiki/akds-tokens）：src/**\/*.json5（W3C DTCG 格式）→ ../css/src/tokens.css + bridge-codex.css + tokens.json
+ * PRTS Design primitives（≈ primer/primitives，npm 包 @mooncellwiki/prts-design-tokens）：src/**\/*.json5（W3C DTCG 格式）→ ../css/src/tokens.css + bridge-codex.css + tokens.json
  *
  *   pnpm tokens      （= node tokens/build.ts）
  *
  * 源文件分三层，和 CSS 里的块一一对应：
  *   base/*            原始色板 + 主题无关的尺寸 / 字体 / 动效 / 层级        → :root
  *   functional/*      语义令牌：themes/light · dark（同一套键）、contrast-more、chrome（页眉 / 头图 / 画布主题接口）、control
- *   bridge/codex      MediaWiki Codex 令牌 → AKDS 语义令牌的桥接（变量名不带 --ak- 前缀）
+ *   bridge/codex      MediaWiki Codex 令牌 → PRTS Design 语义令牌的桥接（变量名不带 --ak- 前缀）
  *
  * 命名：变量名 = 路径最后一段（`color.neutral.gray-50` → --ak-gray-50；bridge/codex 下的不加前缀），分组只管组织和文档。
  * 引用 `{theme.foreground.fg-muted}` 输出成 var(--ak-fg-muted)——主题切换靠级联，不在构建期解析。
  * 暗色块输出两次：显式暗色（data-theme / clientpref-night）+ 跟随系统的 @media 版，同一份源，不再手抄。
  * 亮 / 暗块另外挂在 .ak-scope[data-theme] 上：一个 widget 可以局部走终端 / 档案配色（自定义属性在更近的祖先上声明就覆盖继承值，与特指度无关）。
- * Codex 桥接单独输出到 bridge-codex.css：它只属于 AKDS 皮肤（加载到 Vector 等皮肤上会改掉宿主自己的 Codex 配色），tokens.css 则任何宿主都能加载；
+ * Codex 桥接单独输出到 bridge-codex.css：它只属于 Arknights 皮肤（加载到 Vector 等皮肤上会改掉宿主自己的 Codex 配色），tokens.css 则任何宿主都能加载；
  * tokens.css 另复制一份到本包根目录（packages/tokens/tokens.css），只要令牌的站外用户装本包即可。
  */
 import StyleDictionary from 'style-dictionary';
@@ -108,15 +108,15 @@ function emit(node: DesignTokens, pad: string, out: string[], descs: Map<string,
 
 const css: string[] = [
   `/*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS — 明日方舟网页设计系统 · Design Tokens
- *  Arknights Web Design System for MediaWiki skins (prts.wiki)
+ *  PRTS Design — 明日方舟网页设计系统 · Design Tokens
+ *  Design system of the Arknights MediaWiki skin (prts.wiki)
  *
- *  生成物，勿手改：源文件是 packages/tokens/src/ 下的 *.json5（W3C DTCG 格式，@mooncellwiki/akds-tokens），改完 pnpm tokens 重新生成。
+ *  生成物，勿手改：源文件是 packages/tokens/src/ 下的 *.json5（W3C DTCG 格式，@mooncellwiki/prts-design-tokens），改完 pnpm tokens 重新生成。
  *
  *  层级：
  *    1. Primitive  --ak-{hue}-{step}      原始色板（来源：官网 CSS / 游戏解包 / gamedata）
  *    2. Semantic   --ak-{role}            语义令牌（随主题变化）
- *  Codex / MediaWiki 令牌桥接（原第 3 段，让 MW 核心 & 扩展 UI 跟随主题）只属于 AKDS 皮肤，在 bridge-codex.css；本文件任何宿主都能加载。
+ *  Codex / MediaWiki 令牌桥接（原第 3 段，让 MW 核心 & 扩展 UI 跟随主题）只属于 Arknights 皮肤，在 bridge-codex.css；本文件任何宿主都能加载。
  *
  *  主题机制（与 MediaWiki 1.43 clientPrefs 一致）：
  *    <html class="skin-theme-clientpref-os">    跟随系统（默认）
@@ -129,13 +129,13 @@ const css: string[] = [
 ];
 const bridge: string[] = [
   `/*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS · bridge-codex.css — Codex / MediaWiki 令牌桥接
+ *  PRTS Design · bridge-codex.css — Codex / MediaWiki 令牌桥接
  *
  *  生成物，勿手改：源文件是 packages/tokens/src/bridge/codex.json5，改完 pnpm tokens 重新生成。
  *
  *  MediaWiki 1.43 核心与扩展（Codex 组件、mw-message-box、OOUI WikimediaUI 主题的部分）读取这些不带 --ak- 前缀的变量；
- *  这里把它们映射到 AKDS 语义令牌，皮肤外的 UI 即可自动换肤、跟随主题。
- *  只属于 AKDS 皮肤（skins.akds.base 模块）：加载到别的皮肤（Vector 2022 …）上会把宿主自己的 Codex 配色整体改掉，所以不进 standalone.css。
+ *  这里把它们映射到 PRTS Design 语义令牌，皮肤外的 UI 即可自动换肤、跟随主题。
+ *  只属于 Arknights 皮肤（skins.akds.base 模块）：加载到别的皮肤（Vector 2022 …）上会把宿主自己的 Codex 配色整体改掉，所以不进 standalone.css。
  *  依赖：tokens.css
  * ═══════════════════════════════════════════════════════════════════════════ */`,
 ];
@@ -151,7 +151,7 @@ for (const b of BLOCKS) {
 }
 const tokensCss = css.join('\n') + '\n';
 await writeFile(resolve(root, 'packages/css/src/tokens.css'), tokensCss);
-await writeFile(resolve(import.meta.dirname, 'tokens.css'), tokensCss);   // 同一份，随 @mooncellwiki/akds-tokens 发布
+await writeFile(resolve(import.meta.dirname, 'tokens.css'), tokensCss);   // 同一份，随 @mooncellwiki/prts-design-tokens 发布
 await writeFile(resolve(root, 'packages/css/src/bridge-codex.css'), bridge.join('\n') + '\n');
 
 /* ── tokens.json：给文档站 / 其它平台用——每个令牌带 CSS 写法与亮 / 暗两套解析值 ── */
@@ -164,7 +164,7 @@ const dark = new Map(D.allTokens.map(t => [t.name, t]));
 const contrast = new Map(C.allTokens.filter(t => t.isSource).map(t => [t.name, t]));
 const groups = Object.fromEntries(await groupDescriptions([...BASE, LIGHT, CHROME, CODEX]));
 const json = {
-  $name: 'AKDS · Arknights Web Design System tokens',
+  $name: 'PRTS Design tokens',
   $version: '0.1.0',
   $generated: '生成物：packages/tokens/build.ts ← packages/tokens/src/ 下的 *.json5',
   $sources: {

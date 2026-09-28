@@ -1,4 +1,4 @@
-/*! AKDS · arknights/event.css — B16 活动 / 倒计时 Event · Countdown · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/event.css — B16 活动 / 倒计时 Event · Countdown · 依赖：tokens.css · decor/ */
 /* B16. 活动 / 倒计时 */
 .ak-countdown { display: inline-flex; gap: 6px; font-family: var(--ak-font-label); }
 .ak-countdown > span { display: inline-flex; flex-direction: column; align-items: center; min-width: 40px; padding: 4px 6px; background: var(--ak-bg-surface-3); color: var(--ak-fg); }   /* 灰块读数，不反白（理由见 .ak-level--badge） */

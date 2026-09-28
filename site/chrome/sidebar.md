@@ -13,7 +13,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 `chrome/sidebar.css` 对两种结构用同一套样式：
 
-1. **`MediaWiki:Sidebar` 门户** → `.ak-portlet > h3.ak-portlet__title + ul`。首个门户可渲染成 `.ak-portlet--grid`（两列格子）；`.ak-portlet--collapsible` 整组可折叠（示例左上「AKDS 预览 · DEMO」那组）。
+1. **`MediaWiki:Sidebar` 门户** → `.ak-portlet > h3.ak-portlet__title + ul`。首个门户可渲染成 `.ak-portlet--grid`（两列格子）；`.ak-portlet--collapsible` 整组可折叠（示例左上「PRTS Design 预览 · DEMO」那组）。
 2. **PRTS 现网的 `#MenuSidebar`**——现网侧栏不是门户，而是一段 wikitext 生成的 `div#MenuSidebar`，结构原样支持，不用改现网 wikitext：
 
 ```

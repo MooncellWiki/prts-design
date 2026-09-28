@@ -4,7 +4,7 @@ import CssSelectors from "../.vitepress/theme/components/CssSelectors.vue";
 
 # 特殊页面
 
-`base/special-pages.css`：不是 wikitext、而是 MW 核心 / 扩展直接渲染的界面——差异、历史、最近更改、搜索结果、通知气泡、Echo、编辑标签。布局都由核心自己的样式模块负责（`mediawiki.diff`、`mediawiki.special.changeslist` …），皮肤只把颜色、字号、强调换成 AKDS 的：
+`base/special-pages.css`：不是 wikitext、而是 MW 核心 / 扩展直接渲染的界面——差异、历史、最近更改、搜索结果、通知气泡、Echo、编辑标签。布局都由核心自己的样式模块负责（`mediawiki.diff`、`mediawiki.special.changeslist` …），皮肤只把颜色、字号、强调换成 PRTS Design 的：
 
 | 界面 | 皮肤做了什么 |
 |---|---|
@@ -15,7 +15,7 @@ import CssSelectors from "../.vitepress/theme/components/CssSelectors.vue";
 | `.usermessage`（「你有新留言」）· `.error` / `.warningbox` / `.successbox` | 状态色 |
 | 编辑标签 `.mw-tag-marker` | 浅底细框的小块 |
 | Echo 通知弹窗 | 底色 / 未读淡青 |
-| Minerva（移动端） | 加载了 AKDS 令牌时页眉换底色 |
+| Minerva（移动端） | 加载了 PRTS Design 令牌时页眉换底色 |
 
 ::: tip 为什么这些示例是「裸」的
 这些界面不在 `.mw-parser-output` 里（没有正文排版），示例因此用 `html demo bare`；核心自己的布局样式没有加载，所以看到的是「皮肤这一半」。

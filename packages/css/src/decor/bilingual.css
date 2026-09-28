@@ -1,4 +1,4 @@
-/*! AKDS · decor/bilingual.css — A11 双语标题 Bilingual · 依赖：tokens.css */
+/*! PRTS Design · decor/bilingual.css — A11 双语标题 Bilingual · 依赖：tokens.css */
 /* A11. 双语标题（CJK + EN） */
 .ak-bilingual { display: flex; flex-direction: column; line-height: 1.1; }
 .ak-bilingual__cn { font-weight: 800; }

@@ -5,7 +5,7 @@
  */
 withDefaults(
   defineProps<{
-    /** 大标题（展示字、全大写），拉丁字母最好看：AKDS / RHODES ISLAND */
+    /** 大标题（展示字、全大写），拉丁字母最好看：PRTS / RHODES ISLAND */
     title: string;
     /** 标题下的中文副标（正文字体、半号） */
     subtitle?: string;

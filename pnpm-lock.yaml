@@ -215,7 +215,14 @@ importers:
         specifier: ^3.3.11
         version: 3.3.11(typescript@6.0.3)
 
-  packages/css: {}
+  packages/css:
+    devDependencies:
+      '@mooncellwiki/prts-design-tokens':
+        specifier: workspace:*
+        version: link:../tokens
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
 
   packages/tokens:
     devDependencies:
@@ -228,7 +235,7 @@ importers:
 
   packages/vue:
     dependencies:
-      '@mooncellwiki/akds-css':
+      '@mooncellwiki/prts-design-css':
         specifier: workspace:^
         version: link:../css
     devDependencies:

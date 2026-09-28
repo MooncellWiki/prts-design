@@ -1,4 +1,4 @@
-/*! AKDS · arknights/talent-table.css — B6c 天赋条件表 Talent table · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/talent-table.css — B6c 天赋条件表 Talent table · 依赖：tokens.css · decor/ */
 /* B6c. 天赋条件表——prts.wiki 现网的「条件 × 描述」对比（精英阶段 / 模组等级），潜能加成用表头右侧的开关切换描述
  *  结构：table.ak-talent-table > thead( th.name th.cond th.desc( label.ak-check.ak-talent-table__toggle > input[data-toggle-class=is-pot] ) ) + tbody > tr( td.name[rowspan] td.cond td.desc( .ak-talent-table__base + .ak-talent-table__pot ) ) */
 .ak-talent-table { width: 100%; border-collapse: collapse; font-size: var(--ak-fs-sm); line-height: 1.6; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0 0 var(--ak-space-3); }

@@ -1,4 +1,4 @@
-/*! AKDS · components/title-reset.css — 组件内标题不继承 MW 章节标题装饰（必须在全部通用组件之后、方舟组件之前） · 依赖：tokens.css */
+/*! PRTS Design · components/title-reset.css — 组件内标题不继承 MW 章节标题装饰（必须在全部通用组件之后、方舟组件之前） · 依赖：tokens.css */
 /* ═══ Component headings: 组件内标题不继承 MW 章节标题装饰 ═══
    两条都再带一条标签限定的同义选择器 (0,1,1)：宿主正文（Vector 2022 的 .mw-body h3 …）是 (0,1,1)，单个类压不过；
    写成 h1–h6 的组件标题（card / panel / dialog / heading / skill / module / hero）各自的规则也是这么写的。 */

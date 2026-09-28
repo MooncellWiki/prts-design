@@ -252,7 +252,7 @@
 	tipA11y( document );
 	if ( window.mw && mw.hook ) { mw.hook( 'wikipage.content' ).add( ( $c ) => tipA11y( $c[ 0 ] ) ); }
 
-	/* Toast helper: mw.notify 已由 base/special-pages.css 主题化；这里提供 AKDS 样式的 toast */
+	/* Toast helper: mw.notify 已由 base/special-pages.css 主题化；这里提供 PRTS Design 样式的 toast */
 	window.akdsToast = function ( msg, type, title ) {
 		let wrap = $( '.ak-toasts' ); if ( !wrap ) { wrap = document.createElement( 'div' ); wrap.className = 'ak-toasts'; document.body.appendChild( wrap ); }
 		const el = document.createElement( 'div' ); el.className = 'ak-toast' + ( type ? ' ak-toast--' + type : '' ); el.style.position = 'relative'; el.style.overflow = 'hidden';

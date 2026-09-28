@@ -1,4 +1,4 @@
-/*! AKDS · arknights/range.css — B9 攻击范围 Range · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/range.css — B9 攻击范围 Range · 依赖：tokens.css · decor/ */
 /* B9. 攻击范围格 —— 同现网 prts.wiki Widget:Range/* 的画法：自身格 = 实心蓝方块，攻击格 = 灰色 2px 空心框，不在范围内的格不画；
  *  格 22px + 间隙 4px（= 现网 26px 格距），只画范围的外接矩形（1-1 就是 1×2，不要补空格撑成 3×3）。
  *  i.self 自身 · i.on 可攻击 · i.off（或不写 class）空格。颜色两个钩子：--ak-range-self（自身）/ --ak-range-cell（攻击格描边） */

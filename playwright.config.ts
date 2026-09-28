@@ -3,7 +3,7 @@
  * 测试一律不出网（e2e/support/test.ts）：只测本机静态服务上的预览页 / 对照页 / 构建好的 Storybook，不访问 prts.wiki 现网。
  *
  *   pnpm e2e                                   全部（snapshots 没有基准、stories 没有 _build/storybook 时自动跳过）
- *   pnpm e2e --project=hosts                   跨宿主：对照页在 AKDS 皮肤 / Vector 2022 / 站外上的计算样式必须一样（CI：e2e.yml，不挡部署）
+ *   pnpm e2e --project=hosts                   跨宿主：对照页在 Arknights 皮肤 / Vector 2022 / 站外上的计算样式必须一样（CI：e2e.yml，不挡部署）
  *   pnpm e2e --project=snapshots -u            重构前：拍整页计算样式基准 → _verify/snapshots/（不入库）
  *   pnpm e2e --project=snapshots               重构后：逐项比对
  *   pnpm e2e --project=stories -g chip         Storybook 每个 story 渲染成功、控制台干净（先 pnpm build:storybook）

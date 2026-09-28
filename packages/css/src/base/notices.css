@@ -1,4 +1,4 @@
-/*! AKDS · base/notices.css — Hatnotes / message boxes / notices · 依赖：tokens.css */
+/*! PRTS Design · base/notices.css — Hatnotes / message boxes / notices · 依赖：tokens.css */
 /* ─── Hatnotes / message boxes / notices ───────────────────────────────── */
 .hatnote, .dablink, .rellink { font-style: normal; color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); padding: .3em 0 .3em 1em; border-left: 2px solid var(--ak-border-strong); margin: 0 0 var(--ak-space-3); }
 .mw-message-box, .cdx-message { --_c: var(--ak-border-strong);

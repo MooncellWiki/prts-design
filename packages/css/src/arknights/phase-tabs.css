@@ -1,4 +1,4 @@
-/*! AKDS · arknights/phase-tabs.css — B3 精英化阶段选择器 Phase tabs · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/phase-tabs.css — B3 精英化阶段选择器 Phase tabs · 依赖：tokens.css · decor/ */
 /* 精英化阶段选择器（E0 / E1 / E2） */
 .ak-phase-tabs { display: inline-flex; border: 1px solid var(--ak-border-strong); }
 .ak-phase-tabs > button { all: unset; cursor: pointer; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }

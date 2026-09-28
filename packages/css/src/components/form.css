@@ -1,4 +1,4 @@
-/*! AKDS · components/form.css — Form controls 表单（field / input / select / check / switch / slider / search / kbd / number） · 依赖：tokens.css */
+/*! PRTS Design · components/form.css — Form controls 表单（field / input / select / check / switch / slider / search / kbd / number） · 依赖：tokens.css */
 /* ═══ Form controls (design-system versions) ═══ */
 .ak-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--ak-space-4); }
 .ak-label { font-weight: 600; font-size: var(--ak-fs-sm); }

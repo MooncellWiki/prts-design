@@ -1,8 +1,8 @@
 /**
- * AKDS 文档站（≈ primer.style）：VitePress。
+ * PRTS Design 文档站（≈ primer.style）：VitePress。
  *   pnpm dev:docs          开发
  *   pnpm build:docs    → site/.vitepress/dist（Pages 站点根目录；scripts/build-site.sh 再并上 /storybook/ 与 /dist/）
- * 组件示例在 iframe 里跑 AKDS 全套样式（见 theme/components/Demo.vue），文档站自己的外观只借令牌。
+ * 组件示例在 iframe 里跑 PRTS Design 全套样式（见 theme/components/Demo.vue），文档站自己的外观只借令牌。
  */
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
@@ -14,7 +14,7 @@ import { demoPlugin } from "./plugins/demo";
 import { components, GROUP_LABEL, REPO, type ComponentEntry } from "./registry";
 
 const site = resolve(import.meta.dirname, "..");
-const base = process.env.AKDS_BASE ?? "/";
+const base = process.env.PRTS_DESIGN_BASE ?? "/";
 
 /** 组件页：<group>/<id>.md 或 <group>/<id>/index.md（有指南 / 可访问性页签时用目录） */
 const componentLink = (c: ComponentEntry) => (existsSync(resolve(site, c.group, c.id, "index.md")) ? `/${c.group}/${c.id}/` : `/${c.group}/${c.id}`);
@@ -45,6 +45,7 @@ const sidebar: DefaultTheme.Sidebar = [
           { text: "迁移与上线", link: "/guide/rollout" },
         ],
       },
+      { text: "在纯 HTML 中使用", link: "/guide/html" },
       { text: "在 Vue / prts-widgets 中使用", link: "/guide/vue" },
       { text: "贡献一个组件", link: "/guide/contributing" },
     ],
@@ -107,9 +108,9 @@ const sidebar: DefaultTheme.Sidebar = [
 
 export default defineConfigWithTheme<DefaultTheme.Config & { akdsTabs: Record<string, string[]> }>({
   lang: "zh-CN",
-  title: "AKDS",
-  titleTemplate: ":title · AKDS 明日方舟网页设计系统",
-  description: "AKDS · 明日方舟网页设计系统（prts.wiki 新皮肤）——令牌 / CSS / Vue 三层实现",
+  title: "PRTS Design",
+  titleTemplate: ":title · PRTS Design 明日方舟网页设计系统",
+  description: "PRTS Design · 明日方舟网页设计系统（prts.wiki 新皮肤）——令牌 / CSS / Vue 三层实现",
   base,
   srcDir: ".",
   srcExclude: ["public/**"], // public/preview、public/src 是指向仓库的链接，里面的 NOTICE.md 不是页面
@@ -121,7 +122,7 @@ export default defineConfigWithTheme<DefaultTheme.Config & { akdsTabs: Record<st
   ignoreDeadLinks: [/^\.\.?\//, /\.(css|js|py|sh|json|html)$/],
   head: [
     ["meta", { name: "referrer", content: "no-referrer" }], // 干员页样例从 static.prts.wiki 拉 Widget 资源，那边防盗链
-    // AKDS 令牌按 html[data-theme] 切明暗；VitePress 的外观开关只打 .dark——首屏前同步一次，避免闪
+    // PRTS Design 令牌按 html[data-theme] 切明暗；VitePress 的外观开关只打 .dark——首屏前同步一次，避免闪
     [
       "script",
       {},
@@ -133,7 +134,7 @@ export default defineConfigWithTheme<DefaultTheme.Config & { akdsTabs: Record<st
   },
   themeConfig: {
     logo: { src: "/preview/assets/camp/rhodes.png", alt: "" },
-    siteTitle: "AKDS",
+    siteTitle: "PRTS Design",
     nav: [
       { text: "基础", link: "/foundations/principles", activeMatch: "^/foundations/" },
       {
@@ -174,11 +175,11 @@ export default defineConfigWithTheme<DefaultTheme.Config & { akdsTabs: Record<st
     darkModeSwitchTitle: "切换到终端模式（暗）",
     sidebarMenuLabel: "菜单",
     returnToTopLabel: "回到顶部",
-    footer: { message: "文本 CC BY-NC-SA 4.0 · 游戏素材版权归鹰角网络所有", copyright: "PRTS.wiki · AKDS" },
+    footer: { message: "文本 CC BY-NC-SA 4.0 · 游戏素材版权归鹰角网络所有", copyright: "PRTS.wiki · PRTS Design" },
   },
   vite: {
     plugins: [akdsMeta()],
-    resolve: { alias: { "@mooncellwiki/akds-vue": fileURLToPath(new URL("../../packages/vue/src/index.ts", import.meta.url)) } },
+    resolve: { alias: { "@mooncellwiki/prts-design-vue": fileURLToPath(new URL("../../packages/vue/src/index.ts", import.meta.url)) } },
     server: { fs: { allow: [resolve(site, "..")] } },
   },
 });

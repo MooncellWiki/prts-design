@@ -127,7 +127,7 @@ def main():
     ap.add_argument('--offline', action='store_true', help='不下载，用 src/fonts/<dir>/_faces.json 重新生成 fonts.css')
     args = ap.parse_args()
 
-    css = ['/*! AKDS — 自托管 Web 字体（scripts/fetch-fonts.py 生成，勿手改；重跑：python3 scripts/fetch-fonts.py）',
+    css = ['/*! PRTS Design — 自托管 Web 字体（scripts/fetch-fonts.py 生成，勿手改；重跑：python3 scripts/fetch-fonts.py）',
            ' *  各族链见 tokens.css「Typography」。url() 相对本文件（src/）；MW 皮肤侧 resources/fonts.css + resources/fonts/ 是指向 src/ 的符号链接，ResourceLoader 按 resources/ 重写路径。',
            ' *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集；PRTS 为官方赞助站点，与鹰角同一组织下共用授权）：']
     for s in SITE_FONTS:

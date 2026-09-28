@@ -1,18 +1,18 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS · bridge-codex.css — Codex / MediaWiki 令牌桥接
+ *  PRTS Design · bridge-codex.css — Codex / MediaWiki 令牌桥接
  *
  *  生成物，勿手改：源文件是 packages/tokens/src/bridge/codex.json5，改完 pnpm tokens 重新生成。
  *
  *  MediaWiki 1.43 核心与扩展（Codex 组件、mw-message-box、OOUI WikimediaUI 主题的部分）读取这些不带 --ak- 前缀的变量；
- *  这里把它们映射到 AKDS 语义令牌，皮肤外的 UI 即可自动换肤、跟随主题。
- *  只属于 AKDS 皮肤（skins.akds.base 模块）：加载到别的皮肤（Vector 2022 …）上会把宿主自己的 Codex 配色整体改掉，所以不进 standalone.css。
+ *  这里把它们映射到 PRTS Design 语义令牌，皮肤外的 UI 即可自动换肤、跟随主题。
+ *  只属于 Arknights 皮肤（skins.akds.base 模块）：加载到别的皮肤（Vector 2022 …）上会把宿主自己的 Codex 配色整体改掉，所以不进 standalone.css。
  *  依赖：tokens.css
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ═══ 3. CODEX / MEDIAWIKI BRIDGE ═══ */
 :root, html.skin-theme-clientpref-night, :root[data-theme="dark"] {
   /* ─── codex · MediaWiki 1.43 核心与扩展（Codex 组件、mw-message-box、OOUI WikimediaUI 主题的部分）读取这些 CSS 变量。
-   * 把它们映射到 AKDS 语义令牌，皮肤外的 UI 即可自动换肤。 */
+   * 把它们映射到 PRTS Design 语义令牌，皮肤外的 UI 即可自动换肤。 */
   --background-color-base: var(--ak-bg-surface);
   --background-color-neutral: var(--ak-bg-surface-2);
   --background-color-neutral-subtle: var(--ak-bg-canvas);

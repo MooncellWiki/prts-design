@@ -1,16 +1,18 @@
 # 介绍
 
-AKDS（Arknights Web Design System）是 prts.wiki（MediaWiki 1.43）新皮肤的设计系统。视觉母体是[明日方舟官网](https://ak.hypergryph.com/)与游戏内 UI（torappu 解包），不是一层换色的通用后台。
+PRTS Design（明日方舟网页设计系统）是 prts.wiki（MediaWiki 1.43）新皮肤 Arknights（[Skin:Arknights](https://github.com/MooncellWiki/mediawiki-skins-Arknights)）的设计系统。视觉母体是[明日方舟官网](https://ak.hypergryph.com/)与游戏内 UI（torappu 解包），不是一层换色的通用后台。
+
+**叫法**：设计系统（本仓库：令牌、CSS、Vue、文档）叫 **PRTS Design**；加载它的 MediaWiki 皮肤叫 **Arknights**。npm 包是 `@mooncellwiki/prts-design-*`。类名前缀 `ak-`、令牌前缀 `--ak-` 不变；本仓库皮肤骨架 `skin/` 的扩展名 `AKDS`、模块名 `skins.akds.*` 等是早期的代码标识，没有改名（与生产皮肤的名字对照见[在 MediaWiki 中使用](/guide/mediawiki)）。
 
 ## 三层，和 Primer 一样分开
 
-GitHub 的 [Primer](https://primer.style/) 把设计系统拆成令牌（primer/primitives）、CSS（primer/css）、框架实现（primer/react、primer/view_components）和文档站几块。AKDS 按同样的思路组织，只是放在一个仓库里：
+GitHub 的 [Primer](https://primer.style/) 把设计系统拆成令牌（primer/primitives）、CSS（primer/css）、框架实现（primer/react、primer/view_components）和文档站几块。PRTS Design 按同样的思路组织，只是放在一个仓库里：
 
 | 层 | 目录 | 对应 Primer | 谁在用 |
 |---|---|---|---|
-| 令牌 | `packages/tokens/`（`@mooncellwiki/akds-tokens`，带 `tokens.css`）→ `tokens.css` | primer/primitives | 所有人；TemplateStyles 里直接 `var(--ak-accent)` |
-| CSS 实现 | `packages/css/`（每个组件一份样式表；由皮肤加载，组件部分另发 npm `@mooncellwiki/akds-css`，不含字体与素材） | primer/css | MediaWiki 皮肤；模板 / Lua 输出 `.ak-*` 结构；别的皮肤 / 站外的 widget |
-| Vue 实现 | `packages/vue/`（`@mooncellwiki/akds-vue`） | primer/react | prts-widgets 等 Vue 小部件 |
+| 令牌 | `packages/tokens/`（`@mooncellwiki/prts-design-tokens`，带 `tokens.css`）→ `tokens.css` | primer/primitives | 所有人；TemplateStyles 里直接 `var(--ak-accent)` |
+| CSS 实现 | `packages/css/`（每个组件一份样式表；由皮肤加载，组件部分另发 npm `@mooncellwiki/prts-design-css`，不含字体与素材） | primer/css | MediaWiki 皮肤；模板 / Lua 输出 `.ak-*` 结构；别的皮肤 / 站外的 widget；纯 HTML 页面（单文件版，见[在纯 HTML 中使用](/guide/html)） |
+| Vue 实现 | `packages/vue/`（`@mooncellwiki/prts-design-vue`） | primer/react | prts-widgets 等 Vue 小部件 |
 | 文档站 | `site/`（本站） | primer.style | 所有人 |
 | Storybook | `.storybook/` + `*.stories.ts` | primer.style/react/storybook | 组件开发 / 视觉走查 |
 
@@ -18,7 +20,7 @@ GitHub 的 [Primer](https://primer.style/) 把设计系统拆成令牌（primer/
 
 ## 按 MediaWiki 皮肤的需要分层
 
-AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构 + 类名**，模板作者（Lua / wikitext）输出这段结构，皮肤保证外观与主题。样式按层组织，加载顺序也按层（见[模块与层序](/guide/resourceloader#层序)）：
+PRTS Design 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构 + 类名**，模板作者（Lua / wikitext）输出这段结构，皮肤保证外观与主题。样式按层组织，加载顺序也按层（见[模块与层序](/guide/resourceloader#层序)）：
 
 | 层 | 管什么 | 源文件（`packages/css/src/`） | 文档 |
 |---|---|---|---|

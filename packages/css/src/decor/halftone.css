@@ -1,4 +1,4 @@
-/*! AKDS · decor/halftone.css — A4 半调网点 Halftone · 蓝色标题条 · 依赖：tokens.css */
+/*! PRTS Design · decor/halftone.css — A4 半调网点 Halftone · 蓝色标题条 · 依赖：tokens.css */
 /* A4. 半调网点（halftone）· 游戏内蓝色标题条的网点渐隐 */
 .ak-halftone { position: relative; isolation: isolate; }
 .ak-halftone::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;

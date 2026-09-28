@@ -1,4 +1,4 @@
-/*! AKDS · decor/stripes.css — A3 斜纹 Hazard stripes · 依赖：tokens.css */
+/*! PRTS Design · decor/stripes.css — A3 斜纹 Hazard stripes · 依赖：tokens.css */
 /* A3. 斜纹（hazard stripes）· 危险 / 施工 / 禁用 / 分隔 */
 .ak-stripes { background-image: repeating-linear-gradient(-45deg, var(--ak-stripe-color) 0 var(--ak-stripe-size), transparent var(--ak-stripe-size) calc(var(--ak-stripe-size) * 2)); }
 .ak-stripes--strong { --ak-stripe-color: rgba(127,127,127,.25); }

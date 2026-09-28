@@ -1,4 +1,4 @@
-/*! AKDS · arknights/stage.css — B13 关卡 / 关卡编号 / 理智 Stage · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/stage.css — B13 关卡 / 关卡编号 / 理智 Stage · 依赖：tokens.css · decor/ */
 /* B13. 关卡卡 / 关卡编号 */
 .ak-stage { --_bd: var(--ak-border); display: grid; grid-template-columns: max-content 1fr; gap: 12px; align-items: center; padding: 10px 14px; background: var(--ak-bg-surface); border: 1px solid var(--_bd); text-decoration: none; color: inherit; position: relative; }
 .ak-stage:hover { --_bd: var(--ak-accent); text-decoration: none; color: inherit; }

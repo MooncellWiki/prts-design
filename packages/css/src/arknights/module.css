@@ -1,4 +1,4 @@
-/*! AKDS · arknights/module.css — B10 模组卡 Module · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/module.css — B10 模组卡 Module · 依赖：tokens.css · decor/ */
 /* B10. 模组卡 —— 同现网 {{模组}}（Template:模组 输出的 .equiptemplate）一张卡装完：型号 + 名称 + 基础信息（故事，默认只露 3 行）+ 三阶段属性 / 特性追加 · 天赋更新 + 解锁任务 + 解锁需求与材料
  *  结构：.ak-module[data-color=red] > .ak-module__img + .ak-module__main( .ak-module__head( .ak-module__type + h3.ak-module__name + [.ak-module__hint] ) + .ak-module__story + label.ak-module__more( input[type=checkbox][data-toggle-class=is-open][data-toggle-target=.ak-module__main] + .off + .on ) )
  *                                   + .ak-module__body( table.ak-module__stages + .ak-module__tasks + table.ak-module__unlock )

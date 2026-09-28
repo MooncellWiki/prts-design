@@ -1,4 +1,4 @@
-/*! AKDS · arknights/archive.css — B12b 档案类卡片 Archive · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/archive.css — B12b 档案类卡片 Archive · 依赖：tokens.css · decor/ */
 /* B12b. 档案类卡片（干员密录 / 悖论模拟 / 未获得时的情报资料 …）——现网「————干员密录」「————悖论模拟」那几张折叠 wikitable 的替身，与 .ak-dossier 同一张脸但多了解锁条件与页脚：
  *  .ak-archive > .ak-archive__head( .ak-archive__kicker + .ak-archive__title + .ak-archive__req ) + .ak-archive__body + [.ak-archive__foot（关卡 / 奖励 / 播放 …）] */
 .ak-archive { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0 0 var(--ak-space-3); }

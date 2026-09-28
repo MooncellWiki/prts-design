@@ -1,4 +1,4 @@
-/*! AKDS · base/print.css — Print 打印 · 依赖：tokens.css */
+/*! PRTS Design · base/print.css — Print 打印 · 依赖：tokens.css */
 /* Print */
 @media print {
   body { background: #fff; color: #000; }

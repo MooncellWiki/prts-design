@@ -1,4 +1,4 @@
-/*! AKDS · chrome/footer.css — Footer 页脚 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/footer.css — Footer 页脚 · 依赖：tokens.css · components/ */
 /* ═══ Footer ═══ */
 /* 页脚和页眉一样是「框」：两套主题下都黑，读 --ak-chrome-*（此前读 --ak-bg-inverse——那是给反白组件用的，暗色下是白；显式选 night 时有覆盖、跟随系统为暗时没有，页脚就白了） */
 .ak-footer { background: var(--ak-chrome-bg-solid); color: var(--ak-chrome-fg); margin-top: auto; position: relative; overflow: hidden; }

@@ -1,4 +1,4 @@
-/*! AKDS · arknights/voice.css — B11 语音条目 Voice · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/voice.css — B11 语音条目 Voice · 依赖：tokens.css · decor/ */
 /* B11. 语音条目 */
 .ak-voice { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: start; }
 .ak-voice__play { all: unset; width: 32px; height: 32px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; }

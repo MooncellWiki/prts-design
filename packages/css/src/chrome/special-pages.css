@@ -1,4 +1,4 @@
-/*! AKDS · chrome/special-pages.css — Special pages / forms container · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/special-pages.css — Special pages / forms container · 依赖：tokens.css · components/ */
 /* ═══ Special pages / forms container ═══ */
 .mw-special-Search .ak-body, .ns-special .ak-body { padding: var(--ak-space-5); }
 .skin-arknights .mw-htmlform-field-HTMLTextField, .skin-arknights .oo-ui-fieldLayout { margin-bottom: var(--ak-space-3); }

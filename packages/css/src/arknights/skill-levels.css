@@ -1,4 +1,4 @@
-/*! AKDS · arknights/skill-levels.css — B6 技能等级选择器 Skill levels · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/skill-levels.css — B6 技能等级选择器 Skill levels · 依赖：tokens.css · decor/ */
 /* 技能等级选择器 1-7 + M1-M3 */
 .ak-skill-levels { display: inline-flex; border: 1px solid var(--ak-border-strong); }
 .ak-skill-levels > button { all: unset; cursor: pointer; width: 30px; height: 26px; display: grid; place-items: center; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); }

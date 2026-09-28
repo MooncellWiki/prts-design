@@ -1,6 +1,6 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
- *  AKDS · scope.css — 作用域根：组件所需的排版基线（字体 / 字号 / 行高 / 前景色）挂在 .ak-scope 或皮肤的 body 上，不依赖宿主的 body。
- *  AKDS 皮肤：body.skin-arknights 就是作用域；别的皮肤 / 站外：widget 根节点加 class="ak-scope"（Vue：<AkScope>）。
+ *  PRTS Design · scope.css — 作用域根：组件所需的排版基线（字体 / 字号 / 行高 / 前景色）挂在 .ak-scope 或皮肤的 body 上，不依赖宿主的 body。
+ *  Arknights 皮肤：body.skin-arknights 就是作用域；别的皮肤 / 站外：widget 根节点加 class="ak-scope"（Vue：<AkScope>）。
  *  局部主题 .ak-scope[data-theme="dark|light"]：令牌在 tokens.css 里跟着挂到作用域上，这里补画布底色——否则终端模式的浅色字落在宿主的白底上。
  *  组件层（components / decor / arknights / utilities）只依赖本文件与 tokens.css：需要的字体 / 行高自己写令牌，不靠宿主继承。
  *  依赖：tokens.css
@@ -15,19 +15,19 @@
 }
 .ak-scope[data-theme] { background-color: var(--ak-bg-canvas); }
 
-/* ═══ 别的宿主上：把宿主的页面环境换成 AKDS 皮肤上组件看到的那一个 ═══
- * 下面各条都只对「不在 AKDS 皮肤页面里」的作用域生效（:not(.skin-arknights *)）——AKDS 皮肤上这些本来就由 base/ 全页提供，
- * 那里 <AkScope> 只剩上面的排版基线（与 body 同值）。e2e/hosts.spec.ts 以 AKDS 皮肤为基准逐元素比对 Vector 2022 / 站外，差异应当为零。
+/* ═══ 别的宿主上：把宿主的页面环境换成 Arknights 皮肤上组件看到的那一个 ═══
+ * 下面各条都只对「不在 Arknights 皮肤页面里」的作用域生效（:not(.skin-arknights *)）——Arknights 皮肤上这些本来就由 base/ 全页提供，
+ * 那里 <AkScope> 只剩上面的排版基线（与 body 同值）。e2e/hosts.spec.ts 以 Arknights 皮肤为基准逐元素比对 Vector 2022 / 站外，差异应当为零。
  * 特指度都压得很低：只求压过宿主的元素级规则（Vector 的 h3 / p / li / img / code …是 (0,0,1)），组件类（0,1,0）照样盖得过。 */
 
-/* 1. 宿主继承下来的文字属性（Vector 的 .vector-body 等会往下传 overflow-wrap 之类）：作用域根上回到 AKDS 皮肤正文里组件继承到的值——
+/* 1. 宿主继承下来的文字属性（Vector 的 .vector-body 等会往下传 overflow-wrap 之类）：作用域根上回到 Arknights 皮肤正文里组件继承到的值——
  *    都是初始值，只有 overflow-wrap 跟正文（chrome/body.css 的 .ak-body .mw-body-content）走 break-word，两边同步改 */
 :where(.ak-scope:not(.skin-arknights *)) {
   font-style: normal; font-weight: 400; font-variant: normal; letter-spacing: normal; word-spacing: normal;
   text-transform: none; text-indent: 0; text-align: start; text-shadow: none; white-space: normal; overflow-wrap: break-word; word-break: normal; hyphens: manual;
 }
 
-/* 2. 皮肤全局基底（base/root.css：滚动条 / 选区 / 焦点环 / 减弱动效）在 AKDS 皮肤上是全页的，这里在作用域内补同一套 */
+/* 2. 皮肤全局基底（base/root.css：滚动条 / 选区 / 焦点环 / 减弱动效）在 Arknights 皮肤上是全页的，这里在作用域内补同一套 */
 :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *) { scrollbar-color: var(--ak-scrollbar) transparent; scrollbar-width: thin; }
 :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::-webkit-scrollbar { width: 8px; height: 8px; }
 :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::-webkit-scrollbar-thumb { background: var(--ak-scrollbar); }
@@ -39,10 +39,10 @@ a:focus-visible:where(.ak-scope:not(.skin-arknights *) *) { outline: 2px solid v
 }
 
 /* 3. 宿主的元素级规则（Vector：h1–h6 的字号 / 外边距 / display: flow-root、li 的下外边距、img 的 vertical-align、code 的底色边框 …）
- *    在「组件自己的元素」（类名以 ak- 开头的——按词匹配，不是子串：break-* / track-* 这类正文类名不算；以及组件元素直接包着的 <img>）和 not-prose 子树里退回浏览器默认（revert）——AKDS 的正文排版不进 not-prose，
+ *    在「组件自己的元素」（类名以 ak- 开头的——按词匹配，不是子串：break-* / track-* 这类正文类名不算；以及组件元素直接包着的 <img>）和 not-prose 子树里退回浏览器默认（revert）——PRTS Design 的正文排版不进 not-prose，
  *    组件元素上的正文规则也该被组件类盖掉：组件要的外边距 / 行高 / 字号自己写（hosts 比对里曾靠正文规则拿到的几处——技能名行高、键值表外边距——已补在组件里）。
  *    特指度 (0,0,1)，与宿主的元素规则相同、靠后加载；组件类照样盖得过它。
- *    表单控件不在这里（下一段给 AKDS 的裸控件外观）；not-prose 之外、不带 ak- 类的正文内容（段落 / 列表 / 链接）归宿主的正文排版，不动。 */
+ *    表单控件不在这里（下一段给 PRTS Design 的裸控件外观）；not-prose 之外、不带 ak- 类的正文内容（段落 / 列表 / 链接）归宿主的正文排版，不动。 */
 :where(.ak-scope:not(.skin-arknights *) *):where([class^="ak-"], [class*=" ak-"], .ak-not-prose *, :is([class^="ak-"], [class*=" ak-"]) > img):is(h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, pre, code, kbd, samp, img, table, caption, th, td, blockquote, figure, figcaption, hr) {
   margin: revert; padding: revert; border: revert; border-radius: revert; background-color: revert; color: revert;
   font-family: revert; font-size: revert; font-weight: revert; line-height: revert;
@@ -108,13 +108,13 @@ label:where(.ak-scope:not(.skin-arknights *) *) { cursor: pointer; }
 
 /* 5. not-prose 隔离·链接：宿主皮肤的全局链接规则会把整块是链接的组件染成链接色——
  *   a（0,0,1）上链接色、a:visited / a:active（0,1,1）换色、a:hover / a:focus（0,1,1）画下划线。
- * AKDS 皮肤上用不着这段（base/typography.css 的正文链接规则自带 :not(:where(.ak-not-prose …))，not-prose 子树里没有要压的）。
+ * Arknights 皮肤上用不着这段（base/typography.css 的正文链接规则自带 :not(:where(.ak-not-prose …))，not-prose 子树里没有要压的）。
  * 逐条与宿主同特指度、靠后加载压过宿主，不再高——组件自己的 a 规则都在本文件之后：
  *   a（0,0,1）：链接色退回继承、去下划线，组件类（0,1,0）照样盖得过；
  *   a:visited / a:active / a:hover / a:focus（0,1,1）：退颜色、去下划线（Vector 的 a:hover 除下划线外还换色）。
  * 这几条 (0,1,1) 会盖过组件写在 <a> 根节点上的 (0,1,0) 颜色——但宿主的同特指度规则本来就盖过了，这里只是把链接色换回继承色；
  * 根节点颜色不是继承色的链接型组件（.ak-btn / .ak-stage-code / .ak-op-card / .ak-item …）自己把颜色规则写到 :hover / :visited / :active 上（0,2,0+），
- * 与 AKDS 皮肤上的表现一致（那里 base/typography.css 的链接规则排除了 not-prose）。getComputedStyle 看不到 :visited，工具测不出来，只能靠这条约定。 */
+ * 与 Arknights 皮肤上的表现一致（那里 base/typography.css 的链接规则排除了 not-prose）。getComputedStyle 看不到 :visited，工具测不出来，只能靠这条约定。 */
 a:where(.ak-scope:not(.skin-arknights *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; text-decoration: none; background: none; }
 a:is(:visited, :active):where(.ak-scope:not(.skin-arknights *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; }
 a:is(:hover, :focus):where(.ak-scope:not(.skin-arknights *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; text-decoration: none; }

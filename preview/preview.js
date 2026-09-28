@@ -1,4 +1,4 @@
-/* AKDS preview — 交互脚本（演示用；MW 中对应 ResourceLoader 模块 skins.akds.js） */
+/* PRTS Design preview — 交互脚本（演示用；MW 中对应 ResourceLoader 模块 skins.akds.js） */
 (function () {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);

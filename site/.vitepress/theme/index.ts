@@ -22,7 +22,7 @@ export default {
     for (const [name, c] of Object.entries({ Demo, PropsTable, CssClasses, ComponentGrid, TokenTable, IconGrid, PageFrame })) app.component(name, c);
   },
   setup() {
-    // AKDS 令牌按 html[data-theme] 切明暗，跟着 VitePress 的外观开关走
+    // PRTS Design 令牌按 html[data-theme] 切明暗，跟着 VitePress 的外观开关走
     const { isDark } = useData();
     watchEffect(() => {
       if (typeof document !== "undefined") document.documentElement.setAttribute("data-theme", isDark.value ? "dark" : "light");

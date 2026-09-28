@@ -1,4 +1,4 @@
-/*! AKDS · arknights/trust.css — B3 信赖 Trust · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/trust.css — B3 信赖 Trust · 依赖：tokens.css · decor/ */
 /* 信赖 */
 .ak-trust { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ak-font-label); font-weight: 700; }
 .ak-trust::before { content: ""; width: 12px; height: 12px; background: var(--ak-red-500); clip-path: polygon(50% 100%, 0 38%, 15% 10%, 50% 30%, 85% 10%, 100% 38%); }

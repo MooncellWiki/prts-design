@@ -1,4 +1,4 @@
-/*! AKDS · base/typography.css — Typography 正文排版（prose / not-prose 作用域、标题色条、链接、列表、行内、引用、代码） · 依赖：tokens.css */
+/*! PRTS Design · base/typography.css — Typography 正文排版（prose / not-prose 作用域、标题色条、链接、列表、行内、引用、代码） · 依赖：tokens.css */
 /* ─── Typography ────────────────────────────────────────────────────────── */
 /* prose / not-prose（同 Tailwind Typography）：
  *  wikitext 解析产物（.mw-parser-output）天然是「正文」，下面这些排版规则——标题色条、段距、列表菱形符、dl / blockquote、链接色（含 :visited 褪色）、外链图标——

@@ -1,4 +1,4 @@
-/*! AKDS · base/forms.css — Forms · 裸控件（Widget / Gadget / 模板直接吐出的 input / select / textarea）+ mw-ui / cdx 按钮 + 编辑器 · 依赖：tokens.css */
+/*! PRTS Design · base/forms.css — Forms · 裸控件（Widget / Gadget / 模板直接吐出的 input / select / textarea）+ mw-ui / cdx 按钮 + 编辑器 · 依赖：tokens.css */
 /* ─── Forms · 裸控件（Widget / Gadget / 模板直接吐出、身上没有任何 class 的 <input> <select> <textarea>）
    规范见文档站 /content/forms。这里只管「裸」控件：.ak-input 等设计系统组件在 components/form.css；
    Codex / OOUI 靠 tokens.css 的令牌桥接 + 本段末尾几条颜色覆盖，尺寸不动（它们成组出现、内部自洽）。

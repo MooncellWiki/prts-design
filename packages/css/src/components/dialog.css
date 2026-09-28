@@ -1,4 +1,4 @@
-/*! AKDS · components/dialog.css — Dialog / Overlay / Drawer 对话框 · 依赖：tokens.css */
+/*! PRTS Design · components/dialog.css — Dialog / Overlay / Drawer 对话框 · 依赖：tokens.css */
 /* ═══ Dialog / Modal ═══ */
 .ak-dialog { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); color: var(--ak-fg); padding: 0; max-width: min(92vw, 640px); width: 100%; box-shadow: var(--ak-shadow-lg); }
 .ak-dialog::backdrop { background: var(--ak-bg-overlay); backdrop-filter: blur(2px); }

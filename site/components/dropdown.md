@@ -40,7 +40,7 @@ component: dropdown
 
 <PropsTable of="AkDropdown" />
 
-`options` 的类型 `DropdownMixedOption` / `DropdownOption` 从 `@mooncellwiki/akds-vue` 导出。
+`options` 的类型 `DropdownMixedOption` / `DropdownOption` 从 `@mooncellwiki/prts-design-vue` 导出。
 
 ## CSS 实现
 

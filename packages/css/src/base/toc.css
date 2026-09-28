@@ -1,4 +1,4 @@
-/*! AKDS · base/toc.css — TOC（正文内联目录，legacy） · 依赖：tokens.css */
+/*! PRTS Design · base/toc.css — TOC（正文内联目录，legacy） · 依赖：tokens.css */
 /* ─── TOC (inline, legacy) ─────────────────────────────────────────────── */
 .toc, .mw-parser-output .toc, #toc {
   display: inline-block; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top-width: 3px;

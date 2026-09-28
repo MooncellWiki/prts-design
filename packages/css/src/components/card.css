@@ -1,4 +1,4 @@
-/*! AKDS · components/card.css — Card 卡片 · 依赖：tokens.css */
+/*! PRTS Design · components/card.css — Card 卡片 · 依赖：tokens.css */
 /* ═══ Card / Panel ═══ */
 .ak-card {
   background: var(--ak-bg-surface); border: 1px solid var(--ak-border); color: var(--ak-fg);

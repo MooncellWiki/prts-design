@@ -1,4 +1,4 @@
-/*! AKDS · components/chip.css — Chip 筛选芯片 · 依赖：tokens.css */
+/*! PRTS Design · components/chip.css — Chip 筛选芯片 · 依赖：tokens.css */
 /* Chip: 可交互（筛选） */
 .ak-chip { position: relative; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; font: 500 var(--ak-fs-sm)/1 var(--ak-font-body);
   color: var(--ak-fg-secondary); background: var(--ak-bg-surface); border: 1px solid var(--ak-border-strong); cursor: pointer; user-select: none;

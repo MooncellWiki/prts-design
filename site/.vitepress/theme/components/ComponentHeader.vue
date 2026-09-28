@@ -40,7 +40,7 @@ const storybook = computed(() =>
         <dt>Vue</dt>
         <dd>
           <span :class="['akd-status', `is-${c.vue.status}`]">{{ STATUS_LABEL[c.vue.status] }}</span>
-          <code>import { {{ c.vue.components.join(", ") }} } from "@mooncellwiki/akds-vue"</code>
+          <code>import { {{ c.vue.components.join(", ") }} } from "@mooncellwiki/prts-design-vue"</code>
           <a v-if="storybook" :href="storybook" target="_blank" rel="noopener">Storybook ↗</a>
           <a :href="`${REPO}/tree/master/packages/vue/src/components/${c.vue.dir}`" target="_blank" rel="noopener">源码 ↗</a>
         </dd>

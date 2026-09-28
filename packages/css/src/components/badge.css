@@ -1,4 +1,4 @@
-/*! AKDS · components/badge.css — Badge 计数徽标 · 依赖：tokens.css */
+/*! PRTS Design · components/badge.css — Badge 计数徽标 · 依赖：tokens.css */
 /* Count badge（通知计数 / 未读点）—— 默认黄（次强调「提示」），不走红：红只留给危险与 NEW/BREAKING，
    未读数不是高危信息。Echo 的 alerts 类（回退 / 权限变更）才用 --danger；NEW 角标是 .ak-tag--new，不是徽标 */
 /* 数字是正文字体 + tabular-nums，不用 Bender：Bender Bold 在 11px 下笔画比思源黑体细、字形也窄（数字墨迹约 4×8px 对 6×9px），黑字落在 18px 黄圆里读不清；

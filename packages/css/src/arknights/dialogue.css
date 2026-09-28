@@ -1,4 +1,4 @@
-/*! AKDS · arknights/dialogue.css — B12 剧情对话 Dialogue · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/dialogue.css — B12 剧情对话 Dialogue · 依赖：tokens.css · decor/ */
 /* 剧情对话 */
 .ak-dialogue { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: var(--ak-fs-sm); }
 .ak-dialogue > dt { font-weight: 800; color: var(--ak-accent); text-align: right; }

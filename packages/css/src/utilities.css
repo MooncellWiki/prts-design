@@ -1,4 +1,4 @@
-/*! AKDS · utilities.css — 少量原子工具类（供模板/小工具使用） */
+/*! PRTS Design · utilities.css — 少量原子工具类（供模板/小工具使用） */
 .ak-flex { display: flex; } .ak-flex-col { display: flex; flex-direction: column; } .ak-inline-flex { display: inline-flex; }
 .ak-items-center { align-items: center; } .ak-items-start { align-items: flex-start; } .ak-items-end { align-items: flex-end; } .ak-items-baseline { align-items: baseline; }
 .ak-justify-between { justify-content: space-between; } .ak-justify-center { justify-content: center; } .ak-justify-end { justify-content: flex-end; }

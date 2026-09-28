@@ -1,4 +1,4 @@
-/*! AKDS · components/empty.css — Empty 空状态 · 依赖：tokens.css */
+/*! PRTS Design · components/empty.css — Empty 空状态 · 依赖：tokens.css */
 .ak-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: var(--ak-space-12) var(--ak-space-4); color: var(--ak-fg-muted); border: 1px dashed var(--ak-border-strong); background: var(--ak-bg-surface-2); gap: var(--ak-space-2); }
 .ak-empty__icon { width: 48px; height: 48px; opacity: .5; }
 .ak-empty__title { margin: 0; font-weight: 700; color: var(--ak-fg-secondary); font-size: var(--ak-fs-body); }

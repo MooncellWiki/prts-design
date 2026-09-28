@@ -1,4 +1,4 @@
-/*! AKDS · base/tabber.css — TabberNeue（ext.tabberNeue） · 依赖：tokens.css */
+/*! PRTS Design · base/tabber.css — TabberNeue（ext.tabberNeue） · 依赖：tokens.css */
 /* ─── TabberNeue (ext.tabberNeue) ──────────────────────────────────────── */
 .tabber { margin: var(--ak-space-4) 0; }
 .tabber__header { box-shadow: none; border-bottom: 1px solid var(--ak-border); position: relative; background: transparent; }

@@ -1,4 +1,4 @@
-{{! AKDS · skin.mustache — 与 packages/css/src/chrome/ 的类名一一对应；保留 MW 标准 id 以兼容 Gadget }}
+{{! Arknights 皮肤骨架 · skin.mustache — 与 packages/css/src/chrome/ 的类名一一对应；保留 MW 标准 id 以兼容 Gadget }}
 <!-- ═══ SVG sprite（scripts/sprite-sync.ts 从 preview/_src/skeleton.html 同步，勿手改）═══ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-menu" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></symbol>
@@ -167,7 +167,7 @@
   </div>
   {{! 底栏：左 = 站名 + 皮肤；右 = $wgFooterIcons 徽章（结构同 Vector/Citizen：ul#footer-icons > li#footer-*ico > a > img；见 chrome/footer.css .ak-footer__icons） }}
   <div class="ak-footer__bottom">
-    <div class="ak-footer__bottom-text"><span>{{msg-sitetitle}}</span><span class="ak-en">Skin AKDS</span></div>
+    <div class="ak-footer__bottom-text"><span>{{msg-sitetitle}}</span><span class="ak-en">Skin Arknights</span></div>
     {{#data-footer.data-icons}}<ul class="ak-footer__icons{{#className}} {{.}}{{/className}}" id="{{id}}">{{#array-items}}<li id="{{id}}">{{{html}}}</li>{{/array-items}}</ul>{{/data-footer.data-icons}}
   </div>
   <span class="ak-watermark" aria-hidden="true">{{msg-sitetitle}}</span>

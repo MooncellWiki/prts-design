@@ -6,7 +6,7 @@ export default [
     group: "components",
     name: "Scope",
     zh: "作用域",
-    description: "组件的排版基线与局部主题：别的皮肤 / 站外页面上，widget 根节点包一层就和 AKDS 皮肤上一样。",
+    description: "组件的排版基线与局部主题：别的皮肤 / 站外页面上，widget 根节点包一层就和 Arknights 皮肤上一样。",
     css: { files: ["scope.css"], status: "ready" },
     vue: { dir: "Scope", components: ["AkScope"], status: "experimental" },
     storybook: "components-scope",

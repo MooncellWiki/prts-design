@@ -1,4 +1,4 @@
-/*! AKDS · decor/glyph.css — A9 白色线稿图标 Glyph · 依赖：tokens.css */
+/*! PRTS Design · decor/glyph.css — A9 白色线稿图标 Glyph · 依赖：tokens.css */
 /* A9. 白色线稿图标在亮色主题下反相 */
 .ak-glyph { filter: var(--ak-glyph-filter); }
 .ak-glyph--keep { filter: none; }

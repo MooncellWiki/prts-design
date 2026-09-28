@@ -1,6 +1,6 @@
-/* AKDS 文档站外观：VitePress 默认主题 + AKDS 令牌（文档站自己不加载组件 CSS，组件只在示例 iframe 里跑） */
+/* PRTS Design 文档站外观：VitePress 默认主题 + PRTS Design 令牌（文档站自己不加载组件 CSS，组件只在示例 iframe 里跑） */
 
-/* ── VitePress 变量 → AKDS 令牌（令牌自己按 html[data-theme] 切明暗） ── */
+/* ── VitePress 变量 → PRTS Design 令牌（令牌自己按 html[data-theme] 切明暗） ── */
 :root,
 html.dark {
   --vp-font-family-base: var(--ak-font-body);
@@ -174,6 +174,11 @@ html.dark {
 .akd-icons__item { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px 10px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); color: var(--ak-fg); cursor: copy; }
 .akd-icons__item:hover { border-color: var(--ak-accent); color: var(--ak-accent); }
 .akd-icons__item code { font-size: 11px; background: none !important; }
+.akd-icons__mode { display: flex; align-items: center; gap: 2px; margin-top: 16px; font-size: 13px; color: var(--ak-fg-muted); }
+.akd-icons__mode span { margin-right: 8px; }
+.akd-icons__mode button { padding: 4px 12px; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); color: var(--ak-fg-muted); font-weight: 600; }
+.akd-icons__mode button:hover { color: var(--ak-fg); }
+.akd-icons__mode button[aria-checked="true"] { border-color: var(--ak-accent); color: var(--ak-accent); }
 .akd-page { margin: 16px 0; border: 1px solid var(--ak-border); }
 .akd-page__bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; border-bottom: 1px solid var(--ak-border); font-size: 13px; background: var(--ak-bg-surface); }
 .akd-page iframe { display: block; width: 100%; border: 0; }

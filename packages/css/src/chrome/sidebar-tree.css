@@ -1,4 +1,4 @@
-/*! AKDS · chrome/sidebar-tree.css — Sidebar tree 多层展开 · 悬停飞出 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/sidebar-tree.css — Sidebar tree 多层展开 · 悬停飞出 · 依赖：tokens.css · components/ */
 /* ── Sidebar tree（多层展开） ── */
 .ak-tree__branch > .ak-tree__label { padding-right: 32px; }
 .ak-tree__branch > b.ak-tree__label, .ak-tree__branch > span.ak-tree__label { font-weight: 600; color: var(--ak-fg-secondary); }

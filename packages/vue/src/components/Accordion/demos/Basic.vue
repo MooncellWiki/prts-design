@@ -10,7 +10,7 @@ const expanded = ref(["akds"]);
 <template>
   <div>
     <AkCollapse v-model="expanded">
-      <AkCollapseItem name="akds" title="什么是 AKDS？">
+      <AkCollapseItem name="akds" title="什么是 PRTS Design？">
         <p>明日方舟网页设计系统，为 prts.wiki 皮肤设计。</p>
       </AkCollapseItem>
       <AkCollapseItem name="codex" title="为什么不用 Codex 默认外观？">

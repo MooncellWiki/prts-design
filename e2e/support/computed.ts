@@ -63,7 +63,7 @@ export const snapshot = (page: Page, withClass = false) => page.evaluate(dump, {
  * 返回这版 Chromium 不能强制的伪类（跳过）。
  */
 export async function stateRows(page: Page, snap: Snap, selector: string, states: string[]): Promise<string[]> {
-  // 减弱动效的 * { transition-duration: .01ms }（AKDS / 作用域 / Vector 都有）让每个元素的所有属性都带过渡（transition-property 初值是 all）：
+  // 减弱动效的 * { transition-duration: .01ms }（Arknights 皮肤 / 作用域 / Vector 都有）让每个元素的所有属性都带过渡（transition-property 初值是 all）：
   // 强制伪类后没过一帧就取值，拿到的是过渡起点（未悬停 / 未聚焦的样子）；撤掉强制时祖先的颜色也在往回过渡、子树继承到中间值。
   // 这一轮把过渡关掉，各宿主一样；transition-* 本身在静态那轮已比过
   await page.addStyleTag({ content: '*, *::before, *::after { transition: none !important; }' });

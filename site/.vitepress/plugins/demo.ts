@@ -1,5 +1,5 @@
 /**
- * 文档里的两种示例写法（都渲染成 <Demo>：iframe 里挂 AKDS 全套样式 + wiki 正文容器，与文档站自己的样式互不干扰）
+ * 文档里的两种示例写法（都渲染成 <Demo>：iframe 里挂 PRTS Design 全套样式 + wiki 正文容器，与文档站自己的样式互不干扰）
  *
  *   @demo Button/Variants            独占一行：packages/vue/src/components/Button/demos/Variants.vue——实时渲染；
  *                                     「Vue」页签 = 这个 SFC 的源码（构建期 Shiki 高亮），「HTML」页签 = 渲染出来的结构（运行时从 iframe 取）；

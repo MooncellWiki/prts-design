@@ -1,4 +1,4 @@
-/*! AKDS · chrome/theme-toggle.css — Theme toggle 外观切换 · 依赖：tokens.css · components/ */
+/*! PRTS Design · chrome/theme-toggle.css — Theme toggle 外观切换 · 依赖：tokens.css · components/ */
 /* ═══ Theme toggle (3-state: os / day / night) ═══ */
 .ak-theme-toggle { display: inline-flex; border: 1px solid var(--ak-border-strong); }
 .ak-theme-toggle > button { all: unset; box-sizing: border-box; cursor: pointer; width: 30px; height: 28px; display: grid; place-items: center; color: var(--ak-fg-muted); transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }

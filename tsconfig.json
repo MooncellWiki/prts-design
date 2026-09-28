@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "@mooncellwiki/akds-vue": ["./packages/vue/src/index.ts"]
+      "@mooncellwiki/prts-design-vue": ["./packages/vue/src/index.ts"]
     }
   },
   "include": ["packages/*/src/**/*.ts", "packages/*/src/**/*.vue", "packages/*/*.ts", ".storybook/**/*.ts", "site/.vitepress/**/*.ts", "site/.vitepress/**/*.vue", "scripts/**/*.ts", "e2e/**/*.ts", "playwright.config.ts"],

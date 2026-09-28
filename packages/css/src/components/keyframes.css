@@ -1,4 +1,4 @@
-/*! AKDS · components/keyframes.css — Keyframes（ak-* 动画，皮肤 / 方舟组件 / 工具类共用） · 依赖：tokens.css */
+/*! PRTS Design · components/keyframes.css — Keyframes（ak-* 动画，皮肤 / 方舟组件 / 工具类共用） · 依赖：tokens.css */
 /* ═══ Keyframes ═══ */
 @keyframes ak-spin { to { transform: rotate(360deg); } }
 @keyframes ak-ripple { from { width: calc(.75em + 5px); height: calc(.75em + 5px); } to { width: 1.65em; height: 1.65em; } }   /* 涟漪环外扩：出生时刚好箍在中央菱形外沿 */

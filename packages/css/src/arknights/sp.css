@@ -1,4 +1,4 @@
-/*! AKDS · arknights/sp.css — B6 SP 类型 / 触发 / 数值芯片 · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/sp.css — B6 SP 类型 / 触发 / 数值芯片 · 依赖：tokens.css · decor/ */
 /* SP 类型标签（游戏内：绿=自动 橙=攻击 黄=受击 灰=被动） */
 .ak-sp { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: #1d1f20; background: var(--ak-sp-auto); }
 .ak-sp--attack { background: var(--ak-sp-attack); } .ak-sp--hit { background: var(--ak-sp-hit); } .ak-sp--passive { background: var(--ak-sp-passive); color: #fff; }

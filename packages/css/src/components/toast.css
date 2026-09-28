@@ -1,4 +1,4 @@
-/*! AKDS · components/toast.css — Toast 轻提示 · 依赖：tokens.css */
+/*! PRTS Design · components/toast.css — Toast 轻提示 · 依赖：tokens.css */
 /* ═══ Toast ═══ */
 .ak-toasts { position: fixed; right: var(--ak-space-4); bottom: var(--ak-space-4); display: flex; flex-direction: column; gap: var(--ak-space-2); z-index: var(--ak-z-toast); max-width: min(92vw, 380px); }
 .ak-toast { --_c: var(--ak-accent); background: var(--ak-bg-surface); color: var(--ak-fg); border: 1px solid var(--ak-border); border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_c) 4px, var(--ak-border) 4px) 1 1 1 4; box-shadow: var(--ak-shadow-lg);

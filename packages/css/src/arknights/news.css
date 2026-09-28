@@ -1,4 +1,4 @@
-/*! AKDS · arknights/news.css — B17 Breaking-news 横幅 News · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/news.css — B17 Breaking-news 横幅 News · 依赖：tokens.css · decor/ */
 /* B17. Breaking-news 横幅（游戏内主界面）*/
 .ak-news { display: flex; align-items: stretch; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-size: var(--ak-fs-sm); overflow: hidden; }
 .ak-news__label { background: var(--ak-red-700); color: #fff; padding: 6px 14px; font: 800 var(--ak-fs-xs)/1.4 var(--ak-font-display); letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; }   /* 矩形红块（不斜切） */

@@ -1,4 +1,4 @@
-/*! AKDS · arknights/dossier.css — B12 档案 / 剧情文本块 Dossier · Redacted · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/dossier.css — B12 档案 / 剧情文本块 Dossier · Redacted · 依赖：tokens.css · decor/ */
 /* B12. 档案 / 剧情文本块（含未解锁遮罩） */
 .ak-dossier { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: 16px 20px; position: relative; font-size: var(--ak-fs-sm); line-height: 1.85; }
 .ak-dossier__title { display: flex; align-items: center; gap: 10px; font-weight: 800; margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--ak-border); }

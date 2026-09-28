@@ -1,4 +1,4 @@
-/*! AKDS · arknights/materials.css — B5 材料表 Materials · 依赖：tokens.css · decor/ */
+/*! PRTS Design · arknights/materials.css — B5 材料表 Materials · 依赖：tokens.css · decor/ */
 /* 材料表：阶段/技能等级 → 材料 */
 .ak-materials { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; align-items: center; }
 .ak-materials__label { font: 700 var(--ak-fs-xs)/1.2 var(--ak-font-label); text-transform: uppercase; letter-spacing: .06em; color: var(--ak-fg-muted); display: flex; align-items: center; gap: 6px; }

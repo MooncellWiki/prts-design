@@ -1,4 +1,4 @@
-/*! AKDS · base/catlinks.css — Category links 页面底部分类栏 · 依赖：tokens.css */
+/*! PRTS Design · base/catlinks.css — Category links 页面底部分类栏 · 依赖：tokens.css */
 /* ─── Category links（页面底部分类栏）─────────────────────────────────────
  *  MW 输出：div.catlinks > div.mw-normal-catlinks( a[分类] + "：" 文本节点 + ul > li > a ) [+ div.mw-hidden-catlinks( "隐藏分类：" 文本 + ul )]
  *  设计（参考 fz.wiki）：不再做芯片盒；一行 = 树状图标 + overline 小标签 + 普通下划线链接。

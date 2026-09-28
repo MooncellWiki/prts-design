@@ -1,4 +1,4 @@
-/*! AKDS · components/progress.css — Progress / Ring 进度 · 依赖：tokens.css */
+/*! PRTS Design · components/progress.css — Progress / Ring 进度 · 依赖：tokens.css */
 /* ═══ Progress / Meter ═══ */
 .ak-progress { --_v: 0%; --_c: var(--ak-accent); position: relative; height: 8px; background: var(--ak-bg-surface-3); overflow: hidden; }
 .ak-progress::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--_v); background: var(--_c); transition: width var(--ak-dur-slow) var(--ak-ease); }

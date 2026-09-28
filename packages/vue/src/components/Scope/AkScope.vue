@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
  * 作用域根：组件的排版基线（字体 / 字号 / 行高 / 前景色）挂在这一层，不靠宿主页面的 body 继承——prts.wiki 上别的皮肤（Vector 2022 …）、
- * 站外页面里，widget 的根节点包一层，就和 AKDS 皮肤上看起来一样；theme 让这一块局部走终端（暗）/ 档案（亮）配色。
- * AKDS 皮肤上 body.skin-arknights 本身就是作用域，包不包都一样。样式在 CSS 实现的 scope.css（= class="ak-scope"）。
+ * 站外页面里，widget 的根节点包一层，就和 Arknights 皮肤上看起来一样；theme 让这一块局部走终端（暗）/ 档案（亮）配色。
+ * Arknights 皮肤上 body.skin-arknights 本身就是作用域，包不包都一样。样式在 CSS 实现的 scope.css（= class="ak-scope"）。
  */
 withDefaults(
   defineProps<{
