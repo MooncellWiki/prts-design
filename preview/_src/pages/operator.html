@@ -23,9 +23,6 @@ hiddencats: 对原文有修正的页面
 .charinfo-container:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1; }   /* 全屏查看时不缩 */
 .charinfo-container > .charinfo-wrapper[style*="fixed"] { z-index: calc(var(--ak-z-modal) + 1) !important; }   /* 全屏层要压过皮肤页眉：Widget 内联的 999 只够压 Vector（它顺手把 #mw-panel / #mw-head 压下去，皮肤里没这两个 id） */
 body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查看立绘」全屏层同理 */
-.charinfo-container img, .charimg-m img { max-width: none; }   /* 皮肤 base/media.css 的 img { max-width: 100%; height: auto } 不进舞台：HUD 图标靠 height="30px" 这类属性定尺寸，height:auto 会把它们放回原图的 32px */
-.charinfo-container img[height="30px"] { height: 30px; } .charinfo-container img[height="22px"] { height: 22px; } .charinfo-container img[height="16px"] { height: 16px; }
-.charinfo-container img[height="100%"], .charimg-m img[height="100%"] { height: 100%; }
 /* 异格一览（{{异格干员}}）：左黑标 + 原型 / 异格头像卡 + 右侧说明 */
 .op-alter { display: flex; align-items: stretch; flex-wrap: wrap; gap: 10px 16px; margin: 0 0 var(--ak-space-4); background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
 .op-alter__label { display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 8px 16px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font-weight: 800; font-size: var(--ak-fs-sm); white-space: nowrap; }

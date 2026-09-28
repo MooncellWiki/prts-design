@@ -11,7 +11,7 @@ figure[typeof~="mw:File/Thumb"] > figcaption, .thumbcaption { padding: var(--ak-
 .mw-halign-center, .center { text-align: center; }
 figure.mw-halign-center { margin-left: auto; margin-right: auto; }
 .magnify { display: none; }
-img { max-width: 100%; height: auto; }
+.mw-file-element { max-width: 100%; height: auto; }   /* 正文大图不撑破栏宽。只管 [[文件:]] 嵌入图（MW 新媒体 DOM 给 img 的类；文件描述页大图由核心 filepage 模块的 #file img 管），不写成全局 img：Widget / 模板里的图靠 height="30px" 这类属性定尺寸，height: auto 会把它们放回原图大小；百分比 max-width 又让图的最小宽度计 0，只装图标的表格列（语音记录的播放 / 下载格）会被 width: 100% 的兄弟列挤成 0 宽 */
 .mw-parser-output img.ak-pixel { image-rendering: pixelated; }
 /* gallery */
 ul.gallery { display: flex; flex-wrap: wrap; gap: var(--ak-space-3); margin: var(--ak-space-4) 0; padding: 0; }

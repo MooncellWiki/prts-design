@@ -51,8 +51,7 @@ title: 干员页样例（陈）
 - **接缝规则**（样例页 `<style>` 的「舞台接缝」段；生产放 Widget 自己的 `<style>` 或站点样式）：
   1. 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着），正文列比它窄时整块 `zoom: var(--op-stage-zoom)`（页面脚本按列宽算）。用 zoom 不用 transform：Widget 的「全屏查看」是把 wrapper 设成 `position: fixed` 铺满视口，transform 会改它的包含块、zoom 不会；再加 `:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1 }`，全屏时不缩。
   2. 全屏层与手机「查看立绘」层的 z-index 抬到 `--ak-z-modal` 之上（Widget 内联的 999 只够压 Vector——它顺手压下去的 `#mw-panel` `#mw-head` 皮肤里没有）。
-  3. **皮肤 `base/media.css` 的 `img { max-width: 100%; height: auto }` 不进舞台**——HUD 图标靠 `height="30px"` 这类属性定尺寸，`height: auto` 会把它们放回原图的 32px。这条皮肤落地时要正面处理：站上其它 Widget / 模板同样大量依赖 `height=` 属性，要么皮肤把这条改成不碰带 `height` 属性的图，要么各 Widget 自己补 CSS（见[缩略图与图库 · 图片](/content/media#图片)）。
-  4. `line-height: 1.6`（Vector 正文行高；Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点）。
+  3. `line-height: 1.6`（Vector 正文行高；Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点）。
 - **接缝之外**：Widget 的手机版由脚本按父级宽度 <600 在加载时一次性决定（自己 transform 缩放，不响应 resize），皮肤不插手；看图模式的滚轮缩放 / 拖拽用 `getBoundingClientRect` 对 `offsetWidth`，zoom 之下拖动手感会差一个系数（全屏时 zoom 归 1，不受影响）。
 
 ### 换皮草案（暂不接入）

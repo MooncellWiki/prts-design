@@ -27,7 +27,11 @@ MW 1.40+ 的媒体 DOM 是 `figure[typeof="mw:File/Thumb"] > a > img + figcaptio
 
 ## 图片
 
-- `img { max-width: 100%; height: auto }`：正文里的大图不会撑破栏宽。⚠ 这条会把只靠 `height="30"` 属性定尺寸的图（Widget 里的 HUD 图标）放回原图高度——干员页的 CharinfoV2 舞台就单独排除了它，见[干员页样例 · CharinfoV2 怎么接](/patterns/operator#charinfov2-怎么接)。皮肤正式上线时要正面处理：站上其它 Widget / 模板同样大量依赖 `height=` 属性，要么这条改成不碰带 `height` 属性的图，要么各 Widget 自己补 CSS。
+- `.mw-file-element { max-width: 100%; height: auto }`：正文里的大图不会撑破栏宽。只管 `[[文件:]]` 嵌入图（正文、`<gallery>` 都带这个类；文件描述页的大图由核心 `filepage` 模块的 `#file img` 管），Widget / 模板直接写的 `<img>` 不碰——早先这条是全局 `img`，出过两种问题：
+  - `height: auto` 盖掉 HTML 的 `height="30px"` 属性，只靠属性定尺寸的图（CharinfoV2 舞台的 HUD 图标）变回原图大小；
+  - 百分比 `max-width` 让图的最小宽度计 0。表格自动布局按最小宽度给列分宽，只装图标的列（语音记录的播放 / 下载格）会被 `width: 100%` 的兄弟列挤成 0 宽。
+
+  文件图放进表格照样有第二种风险：图标列旁边别放 `width: 100%` 的列，或者给图标列定宽。
 - `img.ak-pixel`：像素图（小尺寸游戏图标放大）用 `image-rendering: pixelated`，不糊。
 - 游戏的白色线稿图标（职业 / 精英 / 势力）加 `.ak-glyph`，亮色主题下自动反相，见[装饰语言](/foundations/decoration#白色线稿图标-ak-glyph)。
 
