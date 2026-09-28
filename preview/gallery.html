@@ -57,16 +57,16 @@
       a.href = '?host=' + a.getAttribute('data-host-link') + location.search.replace(/^\?/, '&').replace(/&host=[^&]*/, '');
       if (a.getAttribute('data-host-link') === host) a.setAttribute('aria-current', 'true');
     });
-    if (host === 'vector') {   /* 夹具没抓过：提示一行，页面照常（等于站外宿主） */
+    if (host === 'vector') {   /* 夹具不在（站点上不发布）：提示一行，页面照常（等于站外宿主） */
       var probe = new XMLHttpRequest();
       probe.open('HEAD', 'vendor/vector/vector.css');
-      probe.onload = function () { if (probe.status !== 200) document.getElementById('gallery-note').textContent = 'Vector 样式夹具不存在：先跑 node scripts/fetch-vector-css.ts（不入库）'; };
+      probe.onload = function () { if (probe.status !== 200) document.getElementById('gallery-note').textContent = 'Vector 样式夹具不随站点发布（在仓库的 preview/vendor/vector/，只作回归测试）：本地打开对照页才有，现在等于站外宿主'; };
       probe.send();
     }
   })();
 </script>
 <!-- 组件 HTML 取自 Vue 示例的渲染结果（= 文档站各示例「HTML」页签里的结构；下拉菜单手动打开）；每块外层 <section data-gallery="…">，
-     e2e/styles.ts hosts 以 akds 宿主为基准，逐元素比对 vector / bare 宿主里同一块的计算样式。增删示例不必改脚本。
+     e2e/hosts.spec.ts 以 akds 宿主为基准，逐元素比对 vector / bare 宿主里同一块的计算样式。增删示例不必改脚本。
      示例里夹着的正文内容（不带 ak- 类、不在 not-prose 里的链接 / 列表 / <code> / wikitable）归各宿主自己的正文排版，按设计就不一样，这里去掉了：
      standalone.css 不含 MW 正文排版（base/），组件在任何宿主上一样，组件里的正文跟着宿主。 -->
 <h2 class="gallery-h">按钮</h2>

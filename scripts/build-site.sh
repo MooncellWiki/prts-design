@@ -25,7 +25,7 @@ mkdir -p "$out"
 cp -R site/.vitepress/dist/. "$out/"
 rm -rf "$out/preview/_src"                      # 页面源（scripts/build-preview.py 的输入），不上站
 cp -R _build/storybook "$out/storybook"
-rm -rf "$out/preview/vendor/vector" "$out/storybook/preview/vendor/vector"   # Vector 样式夹具（GPL，scripts/fetch-vector-css.ts 抓的回归夹具）不入库也不上站；站上的对照页 / Storybook 选 Vector 宿主时只提示一行
+rm -rf "$out/preview/vendor/vector" "$out/storybook/preview/vendor/vector"   # Vector 样式夹具（GPL / 站点样式，入库只作回归测试）不上站；站上的对照页 / Storybook 选 Vector 宿主时只提示一行
 cp -R dist "$out/dist"
 
 # 跳转页：redirect <输出文件> <目标> <站点首页>（目标、首页都相对输出文件）

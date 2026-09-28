@@ -5,6 +5,9 @@ node_modules/
 _build/
 _site/
 _verify/
+test-results/
+playwright-report/
+blob-report/
 site/.vitepress/cache/
 site/.vitepress/dist/
 *.tsbuildinfo

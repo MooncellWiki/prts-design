@@ -4,7 +4,7 @@
 
 ## 在线预览
 
-GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 构建部署，`scripts/build-site.sh` 组装）：
+GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 构建部署，`scripts/build-site.sh` 组装；e2e 是单独的 `.github/workflows/e2e.yml`，不挡部署）：
 
 - **文档站**（参考 [primer.style](https://primer.style/)，VitePress，`site/`）：https://mooncellwiki.github.io/prts-design/ ——
   入门（含 MediaWiki 接入：模块与层序 / skin.mustache 结构 / 模板与 TemplateStyles / 迁移与上线）· 基础（令牌表由 `packages/tokens/tokens.json` 生成：设计理念 / 色彩 / 字体 / 尺寸 / 装饰语言 / 图标 / 可访问性）· 组件（页头列出 CSS / Vue 两种实现各自的状态、源码、Storybook、现网模板；
@@ -50,9 +50,10 @@ packages/vue/       @mooncellwiki/akds-vue Vue 3 实现（≈ primer/react；pnp
 .storybook/         Storybook 10（@storybook/vue3-vite）：pages/ 整页样例 stories；主题 / 活动主题 / 宿主（AKDS 皮肤 / Vector 2022 / 站外）工具栏，组件包在 .ak-scope（+ 宿主的正文容器类）里渲染；preview/ 挂到 /preview/
 site/               文档站（≈ primer.style，VitePress）：.vitepress/registry.ts 组件注册表（侧栏 / 总览 / 页头都读它）· plugins/（`@demo X/Y` 示例、```html demo 代码块、vue-component-meta → Props 表）· theme/；public/ 链着 preview/ 与 src/
 skin/               MediaWiki 皮肤骨架：skin.json（样式模块 skins.akds.base / components / fonts / shell 进皮肤的 styles——MW 按模块名字母序输出，字母序即层序；另有只给别的皮肤用的 skins.akds.tokens；逐文件列表由 scripts/css-order.ts 从 packages/css/src/index.css 同步）· templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源）（base/ components/ decor/ arknights/ chrome/ fonts/ img/ 与 tokens.css、bridge-codex.css、scope.css、utilities.css、共用 JS 为 src 的符号链接）· i18n
-preview/            预览站（home / operator 两张整页样例 + gallery 跨宿主对照页（?host=akds|vector|bare，骨架是 _src/gallery-skeleton.html），scripts/build-preview.py 从 _src/ 生成：_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js + assets/（torappu 解包的游戏图标 / 现网拼好的道具图 item/framed/ / 头图 keyart/ / 首页素材 mainpage/ / 页脚徽章 badge/ / 模组图 module/ …）+ vendor/（Swiper 11、现网 Widget:CharinfoV2 快照、jQuery 3.7.1，各见其 NOTICE.md；vector/ 是 Vector 2022 样式夹具，脚本抓取、不入库）
+preview/            预览站（home / operator 两张整页样例 + gallery 跨宿主对照页（?host=akds|vector|bare，骨架是 _src/gallery-skeleton.html），scripts/build-preview.py 从 _src/ 生成：_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js + assets/（torappu 解包的游戏图标 / 现网拼好的道具图 item/framed/ / 头图 keyart/ / 首页素材 mainpage/ / 页脚徽章 badge/ / 模组图 module/ …）+ vendor/（Swiper 11、现网 Widget:CharinfoV2 快照、jQuery 3.7.1，各见其 NOTICE.md；vector/ 是 Vector 2022 样式夹具，脚本抓取，入库只作回归测试、不随站点发布）
 dist/               单文件打包（图片 + 拉丁字体内联，思源黑体指回 ../src/fonts/；scripts/build-dist.py 生成）
-scripts/            fetch-*.py（字体 / 道具图 / 底框 / Widget 快照）· fetch-vector-css.ts（Vector 2022 样式夹具）· build-preview.py（_src → preview/*.html）· build-dist.py · build-site.sh（组装 Pages 站点）· css-order.ts（skin.json ↔ index.css 同序，按 MW 的字母序加载核；scope.css 的裸控件副本 ↔ base/forms.css）· sprite-sync.ts（三处图标 sprite 一致）· verify/（styles.ts 计算样式快照比对 + hosts 跨宿主比对 · stories.ts story / 文档页自检）
+scripts/            fetch-*.py（字体 / 道具图 / 底框 / Widget 快照）· fetch-vector-css.ts（Vector 2022 样式夹具）· build-preview.py（_src → preview/*.html）· build-dist.py · build-site.sh（组装 Pages 站点）· css-order.ts（skin.json ↔ index.css 同序，按 MW 的字母序加载核；scope.css 的裸控件副本 ↔ base/forms.css）· sprite-sync.ts（三处图标 sprite 一致）
+e2e/                Playwright Test（playwright.config.ts）：hosts.spec.ts 跨宿主比对 · snapshots.spec.ts 整页计算样式快照 · stories.spec.ts / docs.spec.ts Storybook 与文档站自检（测 _site）· support/（静态服务、计算样式快照、控制台收集）
 ```
 
 ## 三句话看懂这套系统
@@ -89,9 +90,12 @@ pnpm dev:docs                                              # 文档站开发（s
 pnpm storybook                                         # Storybook 开发（:6006）
 pnpm typecheck                                         # vue-tsc
 node scripts/css-order.ts [--write]                    # 检查 / 同步 skin/skin.json 的样式列表与 packages/css/src/index.css 同序
-node e2e/styles.ts snap <标签> · diff <A> <B>            # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照与比对——重构 CSS 前后跑一遍，保证视觉零变化
-node scripts/fetch-vector-css.ts                       # 现网 Vector 2022 的皮肤 + 扩展样式 → preview/vendor/vector/vector.css，站点自定义样式 → site.css（回归夹具，不入库；prts.wiki 的 WAF 拦 curl / urllib，所以用 puppeteer 开真浏览器取）
-node e2e/styles.ts hosts                               # 跨宿主：对照页 preview/gallery.html 在 AKDS 皮肤 / Vector 2022 / 站外 × 暗 / 亮 下逐元素比对（静态 + :hover / :focus-visible / :visited），组件的计算样式必须一样（白名单写在脚本里）；CI 每次跑
+pnpm exec playwright install --only-shell chromium     # e2e 的浏览器：Playwright 的 headless shell（装一次）
+node scripts/fetch-vector-css.ts                       # 现网 Vector 2022 的皮肤 + 扩展样式 → preview/vendor/vector/vector.css，站点自定义样式 → site.css（回归夹具，入库、不随站点发布；e2e 不出网、CI 不抓，现网 MW 升级或 Common.css 改了再本地重抓提交；prts.wiki 的 WAF 拦 curl / urllib 与 headless shell，所以用本机的 Google Chrome 取）
+pnpm e2e --project=hosts                               # 跨宿主：对照页 preview/gallery.html 在 AKDS 皮肤 / Vector 2022 / 站外 × 暗 / 亮 下逐元素比对（静态 + :hover / :focus-visible / :visited），组件的计算样式必须一样（白名单写在 e2e/hosts.spec.ts 里）；e2e.yml 每次推送 / PR 跑，不挡部署
+pnpm e2e --project=snapshots [-u]                      # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照：重构 CSS 前 -u 拍基准（_verify/snapshots/），改完再跑一遍比对，保证视觉零变化
+pnpm e2e --project=stories · --project=docs            # Storybook 每个 story / 文档站每一页：渲染成功、示例不空白、控制台干净（测组装好的 _site，先 pnpm build:site；-g 按 story id / 路径挑）
+pnpm exec playwright show-report                       # e2e 的 HTML 报告：失败的差异列表、截图、trace 都在附件里
 python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → packages/css/src/fonts/ + fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/fetch-item-framed.py                   # 现网拼好的道具图 道具_带框_<名>.png → preview/assets/item/framed/<id>.png（扫各页用到的 id，manifest 查名，按文件名 md5 算 media 路径；已有的跳过，--force 重抓）
 python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度底框（prts.wiki 文件:道具_背景_1–6.png，钉 media 路径）→ packages/css/src/img/item/bg_1–6.png（.ak-item--bare 用）
@@ -108,4 +112,4 @@ pnpm build:site                                        # = bash scripts/build-si
 ## 说明
 
 - 字体：预览与皮肤自托管全部 web 字体（`packages/css/src/fonts.css`），人人看到一致——展示字 **Novecento Sans Wide**、HUD 标签 / 数值 **Bender** 取自官网静态资源（PRTS 为官方赞助站点，与鹰角同一组织下共用授权；官网发布的是 ASCII 子集，非 ASCII 字符逐字落到后一段）；正文 Noto Sans SC（= 思源黑体，Google 的 101 片切分、页面只下用到的片）、压缩字 Oswald、Chakra Petch（接 Bender 缺字）、等宽 JetBrains Mono 为 OFL。
-- **许可**：代码（令牌源与构建脚本、CSS、Vue 组件、文档站 / Storybook / 预览站的程序部分、scripts/）以 [MIT](LICENSE) 授权。其余内容不在 MIT 范围内、不对外授权：游戏素材（`preview/assets/`、`packages/css/src/img/` 等）版权归鹰角网络所有；字体按各自目录里的 NOTICE / LICENSE（Novecento Sans Wide、Bender 为官网同源文件，按与鹰角同一组织下的共用授权使用，不可转授）；现网 Widget 快照（`preview/vendor/charinfo/`）归 PRTS；Vector 2022 样式夹具（`preview/vendor/vector/`，GPL-2.0-or-later）只在本地 / CI 抓来做回归测试，不入库、不随站点发布；本仓库仅作 PRTS 皮肤设计用途。npm 包 `@mooncellwiki/akds-css` 只含 MIT 的代码部分。
+- **许可**：代码（令牌源与构建脚本、CSS、Vue 组件、文档站 / Storybook / 预览站的程序部分、scripts/）以 [MIT](LICENSE) 授权。其余内容不在 MIT 范围内、不对外授权：游戏素材（`preview/assets/`、`packages/css/src/img/` 等）版权归鹰角网络所有；字体按各自目录里的 NOTICE / LICENSE（Novecento Sans Wide、Bender 为官网同源文件，按与鹰角同一组织下的共用授权使用，不可转授）；现网 Widget 快照（`preview/vendor/charinfo/`）归 PRTS；Vector 2022 样式夹具（`preview/vendor/vector/`，Vector 与 MW 核心样式 GPL-2.0-or-later，站点自定义样式版权归 prts.wiki 编者）入库只作回归测试，不随站点发布；本仓库仅作 PRTS 皮肤设计用途。npm 包 `@mooncellwiki/akds-css` 只含 MIT 的代码部分。

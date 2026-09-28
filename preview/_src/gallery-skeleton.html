@@ -1,12 +1,12 @@
 <!-- ═══════════════════════════════════════════════════════════════════════════
   preview/_src/gallery-skeleton.html — 跨宿主对照页的骨架（不是皮肤骨架）：同一份组件 HTML 放进三种页面，?host= 切换
     akds    皮肤全套 ../src/index.css，body.skin-akds；组件在 .mw-body-content > .mw-parser-output 里（= prts.wiki 上的 Skin:Arknights，不包 ak-scope）
-    vector  Vector 2022 的样式夹具 vendor/vector/vector.css（scripts/fetch-vector-css.ts 抓取，不入库）+ ../src/standalone.css + 站点自定义样式 vendor/vector/site.css
+    vector  Vector 2022 的样式夹具 vendor/vector/vector.css（scripts/fetch-vector-css.ts 抓取，入库只作回归测试，不随站点发布）+ ../src/standalone.css + 站点自定义样式 vendor/vector/site.css
             （现网 Common.css / Vector.css：MW 上动态加载的模块插在 site.styles 之前，所以它排在组件样式之后）；
             html / body 的类与 #bodyContent.vector-body > #mw-content-text.mw-body-content > .mw-parser-output 的嵌套照现网 Vector 2022 抄；组件根 .ak-scope
     bare    只有 ../src/standalone.css，body 无类；组件根 .ak-scope（= 站外页面 / npm 包）
   三个宿主都加载 ../src/fonts.css（只有 @font-face，不参与层叠）：字形一致，宽高这类「按版面算出来」的计算值才可比；组件根定宽 1000px 同理。
-  e2e/styles.ts hosts 逐元素比对每个 [data-gallery] 里的计算样式；?theme= 由 preview.js 处理。
+  e2e/hosts.spec.ts 逐元素比对每个 [data-gallery] 里的计算样式；?theme= 由 preview.js 处理。
   {{占位}} 由 scripts/build-preview.py 用 _src/pages/*.html 里 front matter 写了 skeleton: gallery-skeleton.html 的页面填进去。
 ═══════════════════════════════════════════════════════════════════════════ -->
 <!DOCTYPE html>
@@ -67,10 +67,10 @@
       a.href = '?host=' + a.getAttribute('data-host-link') + location.search.replace(/^\?/, '&').replace(/&host=[^&]*/, '');
       if (a.getAttribute('data-host-link') === host) a.setAttribute('aria-current', 'true');
     });
-    if (host === 'vector') {   /* 夹具没抓过：提示一行，页面照常（等于站外宿主） */
+    if (host === 'vector') {   /* 夹具不在（站点上不发布）：提示一行，页面照常（等于站外宿主） */
       var probe = new XMLHttpRequest();
       probe.open('HEAD', 'vendor/vector/vector.css');
-      probe.onload = function () { if (probe.status !== 200) document.getElementById('gallery-note').textContent = 'Vector 样式夹具不存在：先跑 node scripts/fetch-vector-css.ts（不入库）'; };
+      probe.onload = function () { if (probe.status !== 200) document.getElementById('gallery-note').textContent = 'Vector 样式夹具不随站点发布（在仓库的 preview/vendor/vector/，只作回归测试）：本地打开对照页才有，现在等于站外宿主'; };
       probe.send();
     }
   })();

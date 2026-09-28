@@ -1,0 +1,49 @@
+name: E2E
+
+# 浏览器里跑的检查（Playwright Test，见 playwright.config.ts）：跨宿主比对（hosts）、Storybook 每个 story（stories）、文档站每一页（docs）。
+# 与 pages.yml 分开：这里红了不挡部署（别把它设成必需检查，也别和 pages.yml 用 needs / workflow_run 串起来）。
+# 结果看本次运行的注解，细节下载 playwright-report 附件（HTML 报告：差异列表 / 截图 / trace；pnpm exec playwright show-report <zip> 直接打开）。
+# 浏览器不缓存：Playwright 文档不推荐（恢复缓存和重新下载差不多慢，Linux 的系统依赖本来就缓存不了）。
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30   # 兜底；测试本身的上限是 playwright.config.ts 的 globalTimeout，要比它宽，否则超时时报告写不出来
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6 # 版本读 package.json 的 packageManager（v6.1 起支持 pnpm 12）
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # 测试只跑无头：只装 headless shell。测试不出网（e2e/support/test.ts），Vector 样式夹具在仓库里，不访问 prts.wiki
+      - name: Install Playwright Chromium (headless shell)
+        run: pnpm exec playwright install --with-deps --only-shell chromium
+
+      - name: Assemble site (stories / docs test the built _site)
+        run: bash scripts/build-site.sh _site
+
+      - name: Run Playwright tests
+        run: pnpm exec playwright test --project=hosts --project=stories --project=docs
+
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-${{ github.run_attempt }}
+          path: playwright-report/
+          retention-days: 14

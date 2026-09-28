@@ -10,9 +10,9 @@ import demoThemeCss from "../packages/css/src/chrome/demo-theme.css?raw";
 document.head.appendChild(document.createElement("style")).textContent = demoThemeCss.replaceAll("../../preview/assets/", "./preview/assets/");
 
 /**
- * 宿主（工具栏「宿主」）：同一个组件在三种页面上应当一模一样（对照页 preview/gallery.html 与 e2e/styles.ts hosts 同一张表）——
+ * 宿主（工具栏「宿主」）：同一个组件在三种页面上应当一模一样（对照页 preview/gallery.html 与 e2e/hosts.spec.ts 同一张表）——
  *   akds    皮肤全套 index.css（= prts.wiki 上的 Skin:Arknights）
- *   vector  Vector 2022 的样式夹具（scripts/fetch-vector-css.ts 抓取，不入库）+ standalone.css + fonts.css + 站点自定义样式 site.css（= prts.wiki 上别的皮肤 + mw.loader.using("skins.akds.components")；
+ *   vector  Vector 2022 的样式夹具（scripts/fetch-vector-css.ts 抓取，入库只作回归测试，不随站点发布）+ standalone.css + fonts.css + 站点自定义样式 site.css（= prts.wiki 上别的皮肤 + mw.loader.using("skins.akds.components")；
  *           MW 上动态加载的样式插在 site.styles 之前，所以 site.css 排在组件样式之后）
  *   bare    只有 standalone.css（= 站外页面 + npm 包）
  */
@@ -108,7 +108,7 @@ const preview: Preview = {
       return {
         render: () => [
           current === "vector" && vectorOk.value === false
-            ? h("p", { style: "margin: 0 0 12px; font: 13px/1.5 system-ui; color: #b86f00" }, "Vector 样式夹具不存在：先跑 node scripts/fetch-vector-css.ts（抓到 preview/vendor/vector/，不入库）。现在等于「站外」宿主。")
+            ? h("p", { style: "margin: 0 0 12px; font: 13px/1.5 system-ui; color: #b86f00" }, "Vector 样式夹具不随站点发布（在仓库的 preview/vendor/vector/，只作回归测试），本地开 Storybook 才有。现在等于「站外」宿主。")
             : null,
           h("div", { class: WRAPPER[current] }, [h(story())]),
         ],

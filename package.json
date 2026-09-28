@@ -18,9 +18,10 @@
     "build:site": "bash scripts/build-site.sh _site",
     "typecheck": "vue-tsc --noEmit",
     "check:css-order": "node scripts/css-order.ts",
-    "verify:styles": "node e2e/styles.ts"
+    "e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@storybook/addon-a11y": "^10.6.0",
     "@storybook/addon-docs": "^10.6.0",
     "@storybook/vue3-vite": "^10.6.0",
@@ -28,7 +29,6 @@
     "@vitejs/plugin-vue": "^6.0.9",
     "@vue/tsconfig": "^0.9.1",
     "json5": "^2.2.3",
-    "puppeteer-core": "^25.12.0",
     "storybook": "^10.6.0",
     "style-dictionary": "^5.5.5",
     "typescript": "~6.0.3",
