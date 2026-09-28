@@ -9,7 +9,7 @@
  *                                                              （_verify/<标签，默认 hosts>/gallery@<宿主>-<主题>.json），以 akds 为基准，
  *                                                              每个 [data-gallery] 里的元素（含伪元素）在另两个宿主上必须逐属性相同，否则退出码 1。
  *                                                              交互态另比一轮：块里的链接 / 控件用 CDP 强制 :hover / :focus-visible / :visited，拍元素 + 子树的计算样式
- *                                                              （快照里路径带 [hover] 等前缀；不含伪元素）。:visited 的颜色 getComputedStyle 出于隐私永远按未访问给，
+ *                                                              （快照里路径带 [hover] 等前缀；不含伪元素；这一轮关掉过渡，否则强制后立刻取值可能还是过渡起点）。:visited 的颜色 getComputedStyle 出于隐私永远按未访问给，
  *                                                              这一轮走 CSS.getComputedStyleForNode（DevTools 计算面板的那条路）。
  *                                                              vector 宿主要先 node scripts/fetch-vector-css.ts（夹具不入库；没有就只比 bare 并警告）
  *
@@ -213,6 +213,10 @@ type HostSnap = { rows: Row[]; table: string[]; sections: string[]; skipped?: st
 const STATES = ['hover', 'focus-visible', 'visited'];
 const INTERACTIVE = '[data-gallery] :is(a[href], button, input, select, textarea, [tabindex])';
 async function stateRows(page: import('puppeteer-core').Page, origin: string, intern: (s: string) => number): Promise<{ rows: Row[]; skipped: string[] }> {
+  // 减弱动效的 * { transition-duration: .01ms }（AKDS / 作用域 / Vector 都有）让每个元素的所有属性都带过渡（transition-property 初值是 all）：
+  // 强制伪类后没过一帧就取值，拿到的是过渡起点（未悬停 / 未聚焦的样子）；撤掉强制时祖先的颜色也在往回过渡、子树继承到中间值。
+  // 这一轮把过渡关掉，三个宿主一样；transition-* 本身在静态那轮已比过
+  await page.addStyleTag({ content: '*, *::before, *::after { transition: none !important; }' });
   const cdp = await page.createCDPSession();
   await cdp.send('DOM.enable'); await cdp.send('CSS.enable');
   const { root: doc } = await cdp.send('DOM.getDocument', { depth: 0 });
