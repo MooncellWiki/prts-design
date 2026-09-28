@@ -1,0 +1,14 @@
+/*! AKDS · base/skin-assets.css — 皮肤持有的游戏素材接口：组件层（standalone.css）引用的图片一律经这里的变量，自己不直接 url() 素材。
+ *  只属于皮肤（MW：skins.akds.base 模块；src/index.css 直接引，不在 base/index.css 里）：素材（src/img/）不随 npm 包发布。
+ *  站外 / 其它宿主：不加载本文件，则 .ak-item--bare 无底框（var() 的回退 none）；想要底框，自己在 :root 上覆盖这几个变量，指到 media.prts.wiki 的绝对地址。
+ *  为什么放在 base/ 而不是 src/ 根上：Chromium 把自定义属性里的相对 url() 按「使用处」（arknights/item.css）解析，Firefox / WebKit 按「声明处」
+ *  （同 chrome/demo-theme.css 的说明）——本文件与使用处同在 src/ 下一层，../img/ 两种解析都落到 src/img/。
+ *  MW 上 ResourceLoader 按本文件的位置重写 url()，与此无关。 */
+:root {
+  --ak-item-bg-1: url("../img/item/bg_1.png");   /* 道具稀有度底框 白 / 绿 / 蓝 / 紫 / 金 / 特殊 = prts.wiki 文件:道具_背景_N.png（游戏 sprite_item_r1–6） */
+  --ak-item-bg-2: url("../img/item/bg_2.png");
+  --ak-item-bg-3: url("../img/item/bg_3.png");
+  --ak-item-bg-4: url("../img/item/bg_4.png");
+  --ak-item-bg-5: url("../img/item/bg_5.png");
+  --ak-item-bg-6: url("../img/item/bg_6.png");
+}

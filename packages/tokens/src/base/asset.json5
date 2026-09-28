@@ -1,6 +1,6 @@
 {
   asset: {
-    $description: "资源路径约定：图标资源目录的基准（默认相对 preview/assets；生产环境见文档站 /foundations/icons#游戏图标）。目前没有 CSS 读取它，留作模板 / Gadget 拼路径的约定",
+    $description: "资源路径约定：模板 / Gadget 拼图标路径的基准（默认相对 preview/assets；生产环境见文档站 /foundations/icons#游戏图标）。CSS 不读它——url() 里不能放 var()；CSS 引用的游戏素材走 base/skin-assets.css 的 --ak-item-bg-* 接口",
     "asset-base": { $value: "assets" },
   },
 }

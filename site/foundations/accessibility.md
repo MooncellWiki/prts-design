@@ -25,7 +25,7 @@
 
 ## 焦点
 
-- 所有交互元素 `:focus-visible` 时 2px 青色描边（`--ak-focus`，外偏 2px，`base/root.css`）——鼠标点击不出环，键盘才出。不要去掉 `outline`。
+- 所有交互元素 `:focus-visible` 时 2px 青色描边（`--ak-focus`，外偏 2px，`base/root.css`；别的皮肤 / 站外由 `scope.css` 在作用域里补同一条）——鼠标点击不出环，键盘才出。不要去掉 `outline`。
 - 文本类输入框例外：用 `:focus` 的青边 + 3px 淡青环（`--ak-shadow-accent`），鼠标点进去也亮；勾选 / 单选只在键盘聚焦时亮同一套（见[表单控件](/content/forms)）。
 - `all: unset` 去掉原生外观的按钮（技能等级选择、参数矩阵列头、消息的关闭钮）各自补回了焦点环。
 
@@ -44,7 +44,7 @@
 
 | 偏好 | 处理 |
 |---|---|
-| `prefers-reduced-motion: reduce` | 全局把动画与过渡缩到 0.01ms（`base/root.css`；不是 `none`，`animationend` 之类的事件照常触发，依赖它的脚本不会卡住）；平滑滚动关掉。个别需要「不动」而不只是「很快」的地方另写了 `animation: none`（侧栏树、搜索面板、窄屏页眉），加载菱形只留中央静止的一枚，首页轮播不自动播 |
+| `prefers-reduced-motion: reduce` | 全局把动画与过渡缩到 0.01ms（`base/root.css`，别的宿主上 `scope.css` 在作用域里补；不是 `none`，`animationend` 之类的事件照常触发，依赖它的脚本不会卡住）；平滑滚动关掉。个别需要「不动」而不只是「很快」的地方另写了 `animation: none`（侧栏树、搜索面板、窄屏页眉），加载菱形只留中央静止的一枚，首页轮播不自动播 |
 | `prefers-contrast: more` | 令牌层（`tokens.css` 末尾）把次要文字提到 `--ak-fg-secondary`、细边框换成 `--ak-border-strong`。⚠ 目前只在亮色主题生效：暗色主题的选择器特指度更高，压过这里的 `:root`（沿用原行为，未改） |
 | `forced-colors: active`（Windows 高对比度等） | 见下 |
 

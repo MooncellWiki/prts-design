@@ -2,6 +2,7 @@
 /* Print */
 @media print {
   body { background: #fff; color: #000; }
+  html body.skin-akds { color: #000; }   /* scope.css 的前景色挂在 body.skin-akds（0,1,1）上、且在 base/ 之后加载，要高一档才压得住 */
   .mw-editsection, .noprint, .catlinks, .mw-indicators, .toc { display: none !important; }
   a { color: inherit; text-decoration: underline; }
   .wikitable > * > tr > th { background: #eee; }

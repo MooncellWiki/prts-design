@@ -46,6 +46,7 @@
 .ak-palette__close > span { display: none; }   /* 桌面只显示 Esc 键帽；手机换成文字「取消」 */
 .ak-palette__loading { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; visibility: hidden; }
 .ak-palette.is-loading .ak-palette__loading { visibility: visible; }
+@media (forced-colors: active) { .ak-palette__loading { background: Canvas; } }   /* 强制色下保留 forced-colors.css 给 .ak-progress 的 Canvas 轨道：骨架在它之后加载，上面同特指度的 transparent 会盖掉 */
 /* 体：高度过渡容器（JS 用 ResizeObserver 把 __viewport 的高度写到 __body 上） */
 .ak-palette__body { flex: 1 1 auto; min-height: 0; overflow: hidden; transition: height var(--ak-dur-normal) var(--ak-ease-out); }
 .ak-palette__list { max-height: calc(100vh - var(--_top) * 2 - var(--_head-h) - var(--_foot-h) - 4px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; margin: 0; padding: 6px 0; list-style: none; }

@@ -1,8 +1,9 @@
 /*! ═══════════════════════════════════════════════════════════════════════════
  *  AKDS · base/ — L1 MediaWiki 内容基础样式（原 base.css）
  *  作用域：.mw-body-content / .mw-parser-output（wikitext 解析产物）以及 MW 常见 UI 结构
- *  root.css 是 html / body 全局基底，紧跟 tokens.css（MW 里在 skins.akds.tokens 模块）；其余按下列顺序。
- *  依赖：tokens.css
+ *  root.css 是 html / body 全局基底，放最前；其余按下列顺序。整层只属于 AKDS 皮肤（MW：skins.akds.base 模块），不进 standalone.css。
+ *  skin-assets.css（皮肤持有的素材接口）也在本目录，但由 src/index.css 直接引、不在这里：本层可以单独 import，素材不随 npm 包走。
+ *  依赖：tokens.css · scope.css
  * ═══════════════════════════════════════════════════════════════════════════ */
 @import url("root.css");
 @import url("typography.css");

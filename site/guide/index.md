@@ -8,8 +8,8 @@ GitHub 的 [Primer](https://primer.style/) 把设计系统拆成令牌（primer/
 
 | 层 | 目录 | 对应 Primer | 谁在用 |
 |---|---|---|---|
-| 令牌 | `packages/tokens/`（`@mooncellwiki/akds-tokens`）→ `tokens.css` | primer/primitives | 所有人；TemplateStyles 里直接 `var(--ak-accent)` |
-| CSS 实现 | `packages/css/`（每个组件一份样式表；由皮肤加载，不发 npm） | primer/css | MediaWiki 皮肤；模板 / Lua 输出 `.ak-*` 结构 |
+| 令牌 | `packages/tokens/`（`@mooncellwiki/akds-tokens`，带 `tokens.css`）→ `tokens.css` | primer/primitives | 所有人；TemplateStyles 里直接 `var(--ak-accent)` |
+| CSS 实现 | `packages/css/`（每个组件一份样式表；由皮肤加载，组件部分另发 npm `@mooncellwiki/akds-css`，不含字体与素材） | primer/css | MediaWiki 皮肤；模板 / Lua 输出 `.ak-*` 结构；别的皮肤 / 站外的 widget |
 | Vue 实现 | `packages/vue/`（`@mooncellwiki/akds-vue`） | primer/react | prts-widgets 等 Vue 小部件 |
 | 文档站 | `site/`（本站） | primer.style | 所有人 |
 | Storybook | `.storybook/` + `*.stories.ts` | primer.style/react/storybook | 组件开发 / 视觉走查 |
@@ -22,7 +22,7 @@ AKDS 是皮肤而不是 JS 组件库：组件 = **一段约定好的 HTML 结构
 
 | 层 | 管什么 | 源文件（`packages/css/src/`） | 文档 |
 |---|---|---|---|
-| L0 令牌 | 颜色 / 字体 / 尺寸 / 动效 / 层级，明暗主题，Codex 桥接 | `tokens.css`（生成物，源在 `packages/tokens/src/`） | [基础](/foundations/color) |
+| L0 令牌 | 颜色 / 字体 / 尺寸 / 动效 / 层级，明暗主题（含局部主题），Codex 桥接；作用域根（排版基线） | `tokens.css` · `bridge-codex.css`（生成物，源在 `packages/tokens/src/`）· `scope.css` | [基础](/foundations/color) · [作用域](/components/scope) |
 | L1 MediaWiki 内容 | wikitext 产物与核心 UI 的样式——编辑不需要知道设计系统存在 | `base/` | [MediaWiki 内容样式](/content/) |
 | L2 皮肤骨架 | 黑色页眉 / 头图 / 侧栏 / 页面头 / 目录 / 页脚 / 搜索面板 / 响应式 | `chrome/` | [皮肤骨架](/chrome/) |
 | L3 通用组件 | 纯 CSS 组件，可写进模板 / TemplateStyles | `components/` | [通用组件](/components/) |

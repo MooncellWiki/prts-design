@@ -5,16 +5,17 @@
  *  预览页 assets/item/framed/<id>.png 就是从 media.prts.wiki 抓的这批（scripts/fetch-item-framed.py）。
  *  --bare：手里只有裸图标（torappu item_icon 透明 png：解包数据 / 搜索面板）时的备选——底框由 CSS 按 data-rarity 1–6（白 / 绿 / 蓝 / 紫 / 金 / 特殊，不写 = 白）给，
  *  src/img/item/bg_N.png = 现网 文件:道具_背景_N.png（即游戏 sprite_item_r1–6，scripts/fetch-item-bg.py），图标压上去占 94%（= 现网合成图的比例）。
+ *  底框图经 --ak-item-bg-1…6 取（皮肤的 base/skin-assets.css 声明；组件层不直接 url() 素材）：没加载皮肤素材的宿主（站外 / npm 包）上是 none，无底框。
  *  数量角标同现网 .prts-item-quantity-label：压在右下角、骑在框沿上的粗体数字带描边光晕（亮色黑字白晕、暗色白字黑晕，晕色取 --ak-bg-surface 自动跟主题），不再是自己画的方框角标。
  *  这是整套系统里除单选之外唯一的圆：它不是 UI 盒子而是游戏素材本身（见文档站 /foundations/principles）。尺寸只改 --_s，框 / 图 / 角标字号 / 落点 / 头像全按比例走 */
 .ak-item { --_s: 56px; position: relative; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); vertical-align: middle; text-decoration: none; color: var(--ak-fg); }
 .ak-item > img { width: 100%; height: 100%; object-fit: contain; }
-.ak-item--bare { background: url("../img/item/bg_1.png") center / 100% 100% no-repeat; }
-.ak-item--bare[data-rarity="2"] { background-image: url("../img/item/bg_2.png"); }
-.ak-item--bare[data-rarity="3"] { background-image: url("../img/item/bg_3.png"); }
-.ak-item--bare[data-rarity="4"] { background-image: url("../img/item/bg_4.png"); }
-.ak-item--bare[data-rarity="5"] { background-image: url("../img/item/bg_5.png"); }
-.ak-item--bare[data-rarity="6"] { background-image: url("../img/item/bg_6.png"); }
+.ak-item--bare { background: var(--ak-item-bg-1, none) center / 100% 100% no-repeat; }
+.ak-item--bare[data-rarity="2"] { background-image: var(--ak-item-bg-2, none); }
+.ak-item--bare[data-rarity="3"] { background-image: var(--ak-item-bg-3, none); }
+.ak-item--bare[data-rarity="4"] { background-image: var(--ak-item-bg-4, none); }
+.ak-item--bare[data-rarity="5"] { background-image: var(--ak-item-bg-5, none); }
+.ak-item--bare[data-rarity="6"] { background-image: var(--ak-item-bg-6, none); }
 .ak-item--bare > img { width: 94%; height: 94%; }
 .ak-item > .ak-item__avatar { position: absolute; left: 20%; top: 18%; width: 50%; height: 50%; }   /* 招聘合同：现网 招聘合同_5.png 底图上留着一个空方框，干员头像叠进去（现网 60px 框里 30px 头像落在 12,11） */
 .ak-item__count { --_halo: var(--ak-bg-surface); position: absolute; right: calc(var(--_s) * .04); bottom: calc(var(--_s) * -.06); font: 700 calc(var(--_s) * .34)/1.1 var(--ak-font-label); white-space: nowrap; color: var(--ak-fg);

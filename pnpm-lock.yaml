@@ -227,6 +227,10 @@ importers:
         version: 5.5.5
 
   packages/vue:
+    dependencies:
+      '@mooncellwiki/akds-css':
+        specifier: workspace:^
+        version: link:../css
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^6.0.9

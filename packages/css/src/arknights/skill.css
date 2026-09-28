@@ -13,7 +13,7 @@
 .ak-skill__icon.is-locked > img { filter: grayscale(1) brightness(.4); }
 .ak-skill__icon.is-locked::before { content: "🔒"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; z-index: 1; }
 .ak-skill__head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.ak-skill__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }
+.ak-skill__name, :is(h1, h2, h3, h4, h5, h6).ak-skill__name { font-weight: 800; font-size: var(--ak-fs-body-lg); line-height: var(--ak-lh-tight); margin: 0; }   /* 标签限定那条 (0,1,1)：压过宿主正文的 .mw-body h4（Vector）；行高自己写，不靠正文标题规则 */
 /* 技能名后的别名（干员页全等级表的表头）：英文名 .ak-en（Bender 大写，再小一号）+ 日文名，灰色小字、与技能名基线对齐
  *  结构：.ak-skill__alias > span.ak-en + span（日文名） */
 .ak-skill__alias { display: inline-flex; gap: 8px; align-items: baseline; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }

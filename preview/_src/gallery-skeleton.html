@@ -1,0 +1,81 @@
+<!-- ═══════════════════════════════════════════════════════════════════════════
+  preview/_src/gallery-skeleton.html — 跨宿主对照页的骨架（不是皮肤骨架）：同一份组件 HTML 放进三种页面，?host= 切换
+    akds    皮肤全套 ../src/index.css，body.skin-akds；组件在 .mw-body-content > .mw-parser-output 里（= prts.wiki 上的 Skin:Arknights，不包 ak-scope）
+    vector  Vector 2022 的样式夹具 vendor/vector/vector.css（scripts/fetch-vector-css.ts 抓取，不入库）+ ../src/standalone.css；
+            html / body 的类与 #bodyContent.vector-body > #mw-content-text.mw-body-content > .mw-parser-output 的嵌套照现网 Vector 2022 抄；组件根 .ak-scope
+    bare    只有 ../src/standalone.css，body 无类；组件根 .ak-scope（= 站外页面 / npm 包）
+  三个宿主都加载 ../src/fonts.css（只有 @font-face，不参与层叠）：字形一致，宽高这类「按版面算出来」的计算值才可比；组件根定宽 1000px 同理。
+  scripts/verify/styles.ts hosts 逐元素比对每个 [data-gallery] 里的计算样式；?theme= 由 preview.js 处理。
+  {{占位}} 由 scripts/build-preview.py 用 _src/pages/*.html 里 front matter 写了 skeleton: gallery-skeleton.html 的页面填进去。
+═══════════════════════════════════════════════════════════════════════════ -->
+<!DOCTYPE html>
+<html lang="zh-CN" class="client-nojs" data-default-theme="dark">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<script>
+  /* 宿主：样式表按序同步写进 <head>（宿主样式在前、组件样式在后，同 MW 上动态加载的模块插在皮肤样式之后） */
+  (function () {
+    var HOSTS = {
+      akds: ['../src/index.css'],   /* index.css 自己带 fonts.css */
+      vector: ['vendor/vector/vector.css', '../src/fonts.css', '../src/standalone.css'],
+      bare: ['../src/fonts.css', '../src/standalone.css']
+    };
+    var host = new URLSearchParams(location.search).get('host');
+    if (!HOSTS.hasOwnProperty(host)) host = 'akds';
+    var html = document.documentElement;
+    html.setAttribute('data-host', host);
+    /* 现网 Vector 2022（MW 1.43.9，2026-09-28）<html> 上的特性类；主题类（skin-theme-clientpref-*）由 preview.js 打 */
+    if (host === 'vector') html.className += ' vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled vector-toc-available';
+    HOSTS[host].forEach(function (href) { document.write('<link rel="stylesheet" href="' + href + '">'); });
+  })();
+</script>
+<style>
+  /* 对照页自己的框：不带 ak- 类，也不在任何 [data-gallery] 里，不参与比对 */
+  .gallery-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 0 0 24px; padding: 8px 12px; border: 1px solid rgba(128,128,128,.4); font: 13px/1.5 system-ui, sans-serif; }
+  .gallery-bar a, .gallery-bar button { font: inherit; color: inherit; }
+  .gallery-bar [aria-current="true"] { font-weight: 700; text-decoration: underline; }
+  .gallery-h { margin: 32px 0 12px; font: 700 13px/1.5 system-ui, sans-serif; letter-spacing: .04em; opacity: .7; border: 0; padding: 0; }
+  .gallery-h::after { content: none; }
+  html[data-host="bare"] body { margin: 0; padding: 24px; background: var(--ak-bg-canvas); }   /* 站外页面自己的底色：这里借画布色，暗色主题下才看得清 */
+  html[data-host="akds"] body { padding: 24px; }
+</style>
+{{head}}
+</head>
+<body>
+<div class="gallery-bar" role="navigation" aria-label="对照页">
+  <strong>跨宿主对照</strong>
+  <span>宿主：<a href="?host=akds" data-host-link="akds">AKDS 皮肤</a> · <a href="?host=vector" data-host-link="vector">Vector 2022</a> · <a href="?host=bare" data-host-link="bare">站外</a></span>
+  <span>主题：<button type="button" onclick="akdsSetTheme('dark')">终端（暗）</button> <button type="button" onclick="akdsSetTheme('light')">档案（亮）</button> <button type="button" onclick="akdsSetTheme('os')">跟随系统</button></span>
+  <span id="gallery-note"></span>
+</div>
+<div id="page"><main id="content"><div id="bodyContent"><div id="mw-content-text"><div id="parser"><div id="gallery-root" style="width: 1000px; max-width: none; margin: 0; padding: 0">
+<script>
+  /* 各宿主的类：akds 与 vector 照各自皮肤的正文容器嵌套，bare 只有 .ak-scope */
+  (function () {
+    var host = document.documentElement.getAttribute('data-host');
+    var CLS = {
+      akds: { body: 'skin-akds', page: '', content: '', bodyContent: 'ak-body', 'mw-content-text': 'mw-body-content', parser: 'mw-parser-output', 'gallery-root': '' },
+      vector: { body: 'skin--responsive skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject skin-vector-2022 action-view', page: 'mw-page-container', content: 'mw-body', bodyContent: 'vector-body', 'mw-content-text': 'mw-body-content', parser: 'mw-parser-output', 'gallery-root': 'ak-scope' },
+      bare: { body: '', page: '', content: '', bodyContent: '', 'mw-content-text': '', parser: '', 'gallery-root': 'ak-scope' }
+    }[host];
+    for (var id in CLS) (id === 'body' ? document.body : document.getElementById(id)).className = CLS[id];
+    document.querySelectorAll('[data-host-link]').forEach(function (a) {
+      a.href = '?host=' + a.getAttribute('data-host-link') + location.search.replace(/^\?/, '&').replace(/&host=[^&]*/, '');
+      if (a.getAttribute('data-host-link') === host) a.setAttribute('aria-current', 'true');
+    });
+    if (host === 'vector') {   /* 夹具没抓过：提示一行，页面照常（等于站外宿主） */
+      var probe = new XMLHttpRequest();
+      probe.open('HEAD', 'vendor/vector/vector.css');
+      probe.onload = function () { if (probe.status !== 200) document.getElementById('gallery-note').textContent = 'Vector 样式夹具不存在：先跑 node scripts/fetch-vector-css.ts（不入库）'; };
+      probe.send();
+    }
+  })();
+</script>
+{{content}}
+</div></div></div></div></main></div>
+<script src="preview.js"></script>
+</body>
+</html>

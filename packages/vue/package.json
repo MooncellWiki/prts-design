@@ -1,7 +1,7 @@
 {
   "name": "@mooncellwiki/akds-vue",
   "version": "0.1.0",
-  "description": "AKDS 的 Vue 3 实现：输出与 CSS 实现相同的 .ak-* 结构，自带状态、键盘与可访问性；不带样式（prts.wiki 页面上由皮肤提供）",
+  "description": "AKDS 的 Vue 3 实现：输出与 CSS 实现相同的 .ak-* 结构，自带状态、键盘与可访问性；不带样式——prts.wiki 上由皮肤 / skins.akds.components 模块提供，站外用 @mooncellwiki/akds-css",
   "license": "MIT",
   "type": "module",
   "homepage": "https://mooncellwiki.github.io/prts-design/guide/vue",
@@ -27,7 +27,13 @@
     "build": "vite build && vue-tsc -p tsconfig.build.json"
   },
   "peerDependencies": {
+    "@mooncellwiki/akds-css": "workspace:^",
     "vue": "^3.5.0"
+  },
+  "peerDependenciesMeta": {
+    "@mooncellwiki/akds-css": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.9",

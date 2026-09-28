@@ -28,6 +28,7 @@
 .ak-shadow-sm { box-shadow: var(--ak-shadow-sm); } .ak-shadow-md { box-shadow: var(--ak-shadow-md); } .ak-shadow-lg { box-shadow: var(--ak-shadow-lg); }
 .ak-relative { position: relative; } .ak-absolute { position: absolute; } .ak-sticky-top { position: sticky; top: calc(var(--ak-header-h) + 8px); }
 .ak-overflow-auto { overflow: auto; } .ak-overflow-x { overflow-x: auto; } .ak-hidden { display: none !important; } .ak-block { display: block; } .ak-inline-block { display: inline-block; }
+.ak-sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* 只给读屏：步骤条 / 技能等级 / 徽标 …组件和皮肤骨架都用（原在 chrome/shell.css，组件层要自带） */
 .ak-pointer { cursor: pointer; } .ak-select-none { user-select: none; } .ak-transition { transition: all var(--ak-dur-fast) var(--ak-ease); }
 .ak-fade-in { animation: ak-fade-in var(--ak-dur-normal) var(--ak-ease) both; } .ak-slide-up { animation: ak-slide-up var(--ak-dur-normal) var(--ak-ease) both; }
 .ak-stagger > * { animation: ak-slide-up var(--ak-dur-slow) var(--ak-ease) both; }

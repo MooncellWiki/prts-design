@@ -1,6 +1,6 @@
 <!-- 整页样例（Pages/）的干员页从 static.prts.wiki 拉 Widget 图标 / BGM：那边防盗链，Referer 不是 prts.wiki 就 403，不带 Referer 放行 -->
 <meta name="referrer" content="no-referrer">
 <style>
-  /* 画布跟主题走（令牌在 html 上切换），Storybook 自己的背景不要 */
-  html, body { background: var(--ak-bg-canvas); }
+  /* 画布跟主题走（令牌在 html 上切换），Storybook 自己的背景不要；「Vector 2022」宿主下让给 Vector 自己的底色（preview.ts 打 data-akds-host） */
+  html:not([data-akds-host="vector"]), html:not([data-akds-host="vector"]) body { background: var(--ak-bg-canvas); }
 </style>

@@ -1,5 +1,5 @@
 /**
- * AKDS primitives（≈ primer/primitives，npm 包 @mooncellwiki/akds-tokens）：src/**\/*.json5（W3C DTCG 格式）→ ../css/src/tokens.css + tokens.json
+ * AKDS primitives（≈ primer/primitives，npm 包 @mooncellwiki/akds-tokens）：src/**\/*.json5（W3C DTCG 格式）→ ../css/src/tokens.css + bridge-codex.css + tokens.json
  *
  *   pnpm tokens      （= node tokens/build.ts）
  *
@@ -11,6 +11,9 @@
  * 命名：变量名 = 路径最后一段（`color.neutral.gray-50` → --ak-gray-50；bridge/codex 下的不加前缀），分组只管组织和文档。
  * 引用 `{theme.foreground.fg-muted}` 输出成 var(--ak-fg-muted)——主题切换靠级联，不在构建期解析。
  * 暗色块输出两次：显式暗色（data-theme / clientpref-night）+ 跟随系统的 @media 版，同一份源，不再手抄。
+ * 亮 / 暗块另外挂在 .ak-scope[data-theme] 上：一个 widget 可以局部走终端 / 档案配色（自定义属性在更近的祖先上声明就覆盖继承值，与特指度无关）。
+ * Codex 桥接单独输出到 bridge-codex.css：它只属于 AKDS 皮肤（加载到 Vector 等皮肤上会改掉宿主自己的 Codex 配色），tokens.css 则任何宿主都能加载；
+ * tokens.css 另复制一份到本包根目录（packages/tokens/tokens.css），只要令牌的站外用户装本包即可。
  */
 import StyleDictionary from 'style-dictionary';
 import type { DesignTokens, TransformedToken } from 'style-dictionary/types';
@@ -38,17 +41,22 @@ async function load(source: string[], include: string[] = []) {
   return sd.getPlatformTokens('css');
 }
 
-type Block = { title: string; selector: string; media?: string; decls?: string[]; source: string[]; include?: string[] };
-const DARK_SELECTOR = ':root[data-theme="dark"],\nhtml.skin-theme-clientpref-night';
+/** only：只输出满足条件的令牌（空分组连标题一起略去）；file：输出到哪个文件（默认 tokens.css） */
+type Block = { title: string; selector: string; media?: string; decls?: string[]; source: string[]; include?: string[]; only?: (t: TransformedToken) => boolean; file?: 'bridge' };
+const DARK_SELECTOR = ':root[data-theme="dark"],\nhtml.skin-theme-clientpref-night,\n.ak-scope[data-theme="dark"]';
+/** 主题无关块（:root）里引用了语义令牌的几个（--ak-select-arrow 引 --ak-fg-muted）在 :root 上就解析成了页面主题的值、再往下继承，局部主题的作用域得重新声明一遍 */
+const refsTheme = (t: TransformedToken) => /\{theme\./.test(String(t.original.$value));
 const OS_DARK_SELECTOR = ':root:not([data-theme="light"]):not(.skin-theme-clientpref-day):not([data-theme="dark"]):not(.skin-theme-clientpref-night)';
 const BLOCKS: Block[] = [
   { title: '1. PRIMITIVE PALETTE · 2a. THEME-INDEPENDENT SEMANTICS', selector: ':root', source: BASE, include: [LIGHT] },
   { title: '2b. SEMANTIC TOKENS · LIGHT（"档案模式" · in-game archive / white UI）', selector: ':root', decls: ['color-scheme: light'], source: [LIGHT], include: BASE },
   { title: '2c. SEMANTIC TOKENS · DARK（"终端模式" · main menu / PRTS terminal）', selector: DARK_SELECTOR, decls: ['color-scheme: dark'], source: [DARK], include: BASE },
   { title: '跟随系统：仅当未显式指定时生效（= 2c，同一份源）', media: '(prefers-color-scheme: dark)', selector: OS_DARK_SELECTOR, decls: ['color-scheme: dark'], source: [DARK], include: BASE },
+  { title: "2b′. SEMANTIC TOKENS · LIGHT（作用域内强制亮色：= 2b，同一份源）", selector: '.ak-scope[data-theme="light"]', decls: ['color-scheme: light'], source: [LIGHT], include: BASE },
+  { title: '2a′. 作用域主题：2a 里引用语义令牌的几个，在作用域上按作用域的主题重新解析', selector: '.ak-scope[data-theme]', source: BASE, include: [LIGHT], only: refsTheme },
   { title: '2d. CHROME · 页眉 / 头图 / 画布 的主题接口', selector: ':root', source: [CHROME], include: [...BASE, LIGHT] },
-  { title: '3. CODEX / MEDIAWIKI BRIDGE', selector: ':root, html.skin-theme-clientpref-night, :root[data-theme="dark"]', source: [CODEX], include: [...BASE, LIGHT] },
-  { title: '高对比偏好：只有亮色吃得到（暗色块选择器特指度更高，压过这里的 :root——沿用原行为）', media: '(prefers-contrast: more)', selector: ':root', source: [CONTRAST], include: [...BASE, LIGHT] },
+  { title: '3. CODEX / MEDIAWIKI BRIDGE', selector: ':root, html.skin-theme-clientpref-night, :root[data-theme="dark"]', source: [CODEX], include: [...BASE, LIGHT], file: 'bridge' },
+  { title: '高对比偏好：只有亮色吃得到（暗色块选择器特指度更高，压过这里的 :root——沿用原行为；.ak-scope[data-theme="light"] 与 2b′ 同特指度、本块在后，作用域亮色同样吃得到）', media: '(prefers-contrast: more)', selector: ':root,\n.ak-scope[data-theme="light"]', source: [CONTRAST], include: [...BASE, LIGHT] },
 ];
 
 /** 分组的 $description：Style Dictionary 变换后的树里不保留，直接读源文件（按块各读各的，亮 / 暗的分组说明可以不同） */
@@ -72,12 +80,16 @@ const comment = (text: string, pad: string) => {
   return lines.length === 1 ? `${pad}/* ${text} */` : `${pad}/* ${lines.join(`\n${pad} * `)} */`;
 };
 
+/** 分组里有没有要输出的令牌 */
+const hasOutput = (node: DesignTokens, only: (t: TransformedToken) => boolean): boolean =>
+  Object.entries(node).some(([k, v]) => !k.startsWith('$') && !!v && typeof v === 'object' && (isToken(v) ? !!v.isSource && only(v) : hasOutput(v as DesignTokens, only)));
+
 /** 按源文件里的顺序走树：分组的 $description 输出成小标题注释，令牌的 $description 跟在行尾 */
-function emit(node: DesignTokens, pad: string, out: string[], descs: Map<string, string>, trail: string[] = []) {
+function emit(node: DesignTokens, pad: string, out: string[], descs: Map<string, string>, only: (t: TransformedToken) => boolean = () => true, trail: string[] = []) {
   for (const [k, v] of Object.entries(node)) {
     if (k.startsWith('$') || !v || typeof v !== 'object') continue;
     if (isToken(v)) {
-      if (!v.isSource) continue;
+      if (!v.isSource || !only(v)) continue;
       const decl = `${pad}--${v.name}: ${cssValue(v.original.$value)};`;
       const d = v.$description as string | undefined;
       if (!d) out.push(decl);
@@ -86,12 +98,11 @@ function emit(node: DesignTokens, pad: string, out: string[], descs: Map<string,
       continue;
     }
     const group = v as DesignTokens;
-    const hasSource = JSON.stringify(group).includes('"isSource":true');
-    if (!hasSource) continue;
+    if (!hasOutput(group, only)) continue;
     const path = [...trail, k];
     const d = descs.get(path.join('.'));
     out.push('', comment(d ? `─── ${path.join(' · ')} · ${d}` : `─── ${path.join(' · ')}`, pad));
-    emit(group, pad, out, descs, path);
+    emit(group, pad, out, descs, only, path);
   }
 }
 
@@ -105,14 +116,27 @@ const css: string[] = [
  *  层级：
  *    1. Primitive  --ak-{hue}-{step}      原始色板（来源：官网 CSS / 游戏解包 / gamedata）
  *    2. Semantic   --ak-{role}            语义令牌（随主题变化）
- *    3. Bridge     Codex / MediaWiki 令牌   让 MW 核心 & 扩展 UI 自动跟随主题
+ *  Codex / MediaWiki 令牌桥接（原第 3 段，让 MW 核心 & 扩展 UI 跟随主题）只属于 AKDS 皮肤，在 bridge-codex.css；本文件任何宿主都能加载。
  *
  *  主题机制（与 MediaWiki 1.43 clientPrefs 一致）：
  *    <html class="skin-theme-clientpref-os">    跟随系统（默认）
  *    <html class="skin-theme-clientpref-night"> 终端模式（暗）
  *    <html class="skin-theme-clientpref-day">   档案模式（亮）
  *  非 MW 环境亦可用 data-theme="dark|light"。
- *  html / body 等元素的全局样式不在这里，见 base/root.css。
+ *  局部主题：.ak-scope[data-theme="dark|light"]——作用域内走终端 / 档案配色，不写 data-theme 的 .ak-scope 跟随页面。
+ *  排版基线（字体 / 字号 / 行高 / 前景色）见 scope.css；html / body 的底色、选区、焦点环等皮肤全局样式见 base/root.css。
+ * ═══════════════════════════════════════════════════════════════════════════ */`,
+];
+const bridge: string[] = [
+  `/*! ═══════════════════════════════════════════════════════════════════════════
+ *  AKDS · bridge-codex.css — Codex / MediaWiki 令牌桥接
+ *
+ *  生成物，勿手改：源文件是 packages/tokens/src/bridge/codex.json5，改完 pnpm tokens 重新生成。
+ *
+ *  MediaWiki 1.43 核心与扩展（Codex 组件、mw-message-box、OOUI WikimediaUI 主题的部分）读取这些不带 --ak- 前缀的变量；
+ *  这里把它们映射到 AKDS 语义令牌，皮肤外的 UI 即可自动换肤、跟随主题。
+ *  只属于 AKDS 皮肤（skins.akds.base 模块）：加载到别的皮肤（Vector 2022 …）上会把宿主自己的 Codex 配色整体改掉，所以不进 standalone.css。
+ *  依赖：tokens.css
  * ═══════════════════════════════════════════════════════════════════════════ */`,
 ];
 for (const b of BLOCKS) {
@@ -120,12 +144,15 @@ for (const b of BLOCKS) {
   const pad = b.media ? '    ' : '  ';
   const body: string[] = [];
   for (const d of b.decls ?? []) body.push(`${pad}${d};`);
-  emit(dict.tokens, pad, body, await groupDescriptions(b.source));
+  emit(dict.tokens, pad, body, await groupDescriptions(b.source), b.only);
   const sel = b.media ? b.selector.split('\n').map(s => '  ' + s).join('\n') : b.selector;
   const block = `${sel} {\n${body.join('\n').replace(/^\n/, '')}\n${b.media ? '  ' : ''}}`;
-  css.push('', `/* ═══ ${b.title} ═══ */`, b.media ? `@media ${b.media} {\n${block}\n}` : block);
+  (b.file === 'bridge' ? bridge : css).push('', `/* ═══ ${b.title} ═══ */`, b.media ? `@media ${b.media} {\n${block}\n}` : block);
 }
-await writeFile(resolve(root, 'packages/css/src/tokens.css'), css.join('\n') + '\n');
+const tokensCss = css.join('\n') + '\n';
+await writeFile(resolve(root, 'packages/css/src/tokens.css'), tokensCss);
+await writeFile(resolve(import.meta.dirname, 'tokens.css'), tokensCss);   // 同一份，随 @mooncellwiki/akds-tokens 发布
+await writeFile(resolve(root, 'packages/css/src/bridge-codex.css'), bridge.join('\n') + '\n');
 
 /* ── tokens.json：给文档站 / 其它平台用——每个令牌带 CSS 写法与亮 / 暗两套解析值 ── */
 const [L, D, C] = await Promise.all([
@@ -161,4 +188,5 @@ const json = {
   }),
 };
 await writeFile(resolve(import.meta.dirname, 'tokens.json'), JSON.stringify(json, null, 2) + '\n');
-console.log(`tokens: packages/css/src/tokens.css（${BLOCKS.length} 块）· packages/tokens/tokens.json（${json.tokens.length} 个令牌）`);
+const nBridge = BLOCKS.filter(b => b.file === 'bridge').length;
+console.log(`tokens: packages/css/src/tokens.css（${BLOCKS.length - nBridge} 块，= packages/tokens/tokens.css）· bridge-codex.css（${nBridge} 块）· packages/tokens/tokens.json（${json.tokens.length} 个令牌）`);

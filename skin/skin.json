@@ -28,9 +28,10 @@
             "skin-akds"
           ],
           "styles": [
+            "skins.akds.base",
+            "skins.akds.components",
             "skins.akds.fonts",
-            "skins.akds.tokens",
-            "skins.akds.styles"
+            "skins.akds.shell"
           ],
           "scripts": [
             "skins.akds.js"
@@ -63,16 +64,7 @@
     "remoteSkinPath": "AKDS/resources"
   },
   "ResourceModules": {
-    "skins.akds.fonts": {
-      "styles": [
-        "fonts.css"
-      ],
-      "targets": [
-        "desktop",
-        "mobile"
-      ]
-    },
-    "skins.akds.tokens": {
+    "skins.akds.base": {
       "class": "MediaWiki\\ResourceLoader\\SkinModule",
       "features": {
         "normalize": true,
@@ -84,12 +76,9 @@
         "logo": true
       },
       "styles": [
-        "tokens.css",
-        "base/root.css"
-      ]
-    },
-    "skins.akds.styles": {
-      "styles": [
+        "bridge-codex.css",
+        "base/skin-assets.css",
+        "base/root.css",
         "base/typography.css",
         "base/tables.css",
         "base/media.css",
@@ -101,7 +90,17 @@
         "base/tabber.css",
         "base/forms.css",
         "base/special-pages.css",
-        "base/print.css",
+        "base/print.css"
+      ],
+      "targets": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    "skins.akds.components": {
+      "styles": [
+        "tokens.css",
+        "scope.css",
         "components/button.css",
         "components/tag.css",
         "components/chip.css",
@@ -178,6 +177,25 @@
         "arknights/news.css",
         "arknights/hero.css",
         "arknights/table-numerals.css",
+        "utilities.css",
+        "forced-colors.css"
+      ],
+      "targets": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    "skins.akds.fonts": {
+      "styles": [
+        "fonts.css"
+      ],
+      "targets": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    "skins.akds.shell": {
+      "styles": [
         "chrome/shell.css",
         "chrome/header.css",
         "chrome/local-nav.css",
@@ -192,9 +210,17 @@
         "chrome/theme-toggle.css",
         "chrome/search-palette.css",
         "chrome/special-pages.css",
-        "chrome/responsive.css",
-        "utilities.css",
-        "forced-colors.css"
+        "chrome/responsive.css"
+      ],
+      "targets": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    "skins.akds.tokens": {
+      "styles": [
+        "tokens.css",
+        "scope.css"
       ],
       "targets": [
         "desktop",

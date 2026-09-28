@@ -56,7 +56,7 @@ def css_inline(path):
     else:   # src/**/*.css 里相对样式表自身的 url("../img/…")（src/img/：道具稀有度底框 183px，不缩；arknights/item.css 在子目录里）
         css = re.sub(r'url\("((?:\.\./)*img/[^"]+)"\)', lambda m: 'url("%s")' % img_uri(os.path.relpath(path.parent / m.group(1), prev)), css)
     return css
-for name in sorted(f.name for f in prev.glob('*.html')):   # preview/*.html 全部打包（_src/ 是页面源，不在此列）
+for name in sorted(f.name for f in prev.glob('*.html') if f.name != 'gallery.html'):   # preview/*.html 全部打包（_src/ 是页面源，不在此列；gallery.html 是跨宿主对照页——样式表由脚本按 ?host= 写进去，打不成单文件，也不需要）
     html = (prev / name).read_text(encoding='utf-8')
     # css links（干员页里现网 Widget:CharinfoV2 的两条 <link> 带 media=…（桌面 / 手机各一份），保留到 <style media> 上）
     def repl_css(m):

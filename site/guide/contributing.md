@@ -34,37 +34,46 @@ site/.vitepress/entries/<分组>.ts        注册一条：名字、描述、CSS 
 - 整块是链接、或会被放进正文的组件，最外层标 `ak-not-prose`（见[设计理念 · prose / not-prose](/foundations/principles#prose-not-prose)）。
 - **`width: 100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外。`.ak-input` / `.ak-select` / `.ak-textarea` / `.ak-stat` / `.ak-blue-band` 已处理，裸 `input` / `select` / `textarea` / `button` 由 `base/forms.css` 统一设了 border-box；闲置的提示气泡也收成 0 宽（见[文字提示](/components/tooltip)），新组件照做。
 - 形状与装饰遵守[设计理念](/foundations/principles)：直角、不斜切；色条 + 细框用 `border-image` 直角拼接（见[装饰语言 · 色条 + 细框](/foundations/decoration#色条-细框)）。
+- **组件在任何宿主上都得一样**（AKDS 皮肤 / prts.wiki 的其它皮肤 / 站外，见[在 Vue / prts-widgets 中使用](/guide/vue#样式从哪来)）。组件层（`components/` `decor/` `arknights/` `utilities.css`）随 `standalone.css` 出去，没有 `base/`、`chrome/`、字体与素材：
+  - 不依赖 body 的排版声明：需要的字体 / 字号 / 行高自己用令牌写（`--ak-font-*` / `--ak-fs-*` / `--ak-lh-*`），作用域根（`scope.css`）只给正文的那一档。
+  - 不依赖 `base/` 的规则：正文排版给标题的行高、给 `dl` 的段距、`.wikitable` 的表格样式都不算数——组件元素上要的值自己写（`.ak-skill__name` 的行高、`.ak-kv` 的外边距、`.ak-table` 的 `border-spacing` 都是这么补的）。裸控件外观（`base/forms.css`）例外：作用域在别的宿主上补了同一套。
+  - 组件元素可能是 `h1`–`h6` 的（标题标签由调用方选的那种），规则再带一条标签限定的同义选择器 `:is(h1, h2, h3, h4, h5, h6).ak-x`（0,1,1）——宿主正文的 `.mw-body h3`（Vector 2022）是 (0,1,1)，单个类压不过。
+  - 只给读屏的文字用 `.ak-sr-only`（在 `utilities.css`，不在骨架里）。
+  - 不直接 `url()` 游戏素材：图片经皮肤的素材接口变量取（如 `var(--ak-item-bg-1, none)`，声明在 `base/skin-assets.css`），站外没有就是回退值。
 
 ## 仓库结构
 
 ```
 packages/tokens/src/          令牌源（W3C DTCG JSON5）：base/ 原始色板 · 字体 · 尺寸 · 动效 · 层级 · functional/ 明暗主题 · 页眉接口 · 控件 · bridge/ Codex 桥接
-packages/tokens/build.ts      pnpm tokens：生成 packages/css/src/tokens.css + packages/tokens/tokens.json（Style Dictionary；两者都不手改）
+packages/tokens/build.ts      pnpm tokens：生成 packages/css/src/tokens.css + bridge-codex.css、packages/tokens/tokens.css（同一份，随令牌包发布）+ tokens.json（Style Dictionary；都不手改）
 packages/css/src/
-  tokens.css                  令牌 + 主题 + Codex 桥接（生成物；必须最先加载）
+  tokens.css                  令牌 + 主题（含 .ak-scope[data-theme] 局部主题）；生成物
+  bridge-codex.css            Codex / MW 令牌桥接（生成物；只属于皮肤）
+  scope.css                   作用域根：body.skin-akds / .ak-scope 的排版基线；别的宿主上把宿主环境换成皮肤上那一套
   fonts.css · fonts/          自托管字体（scripts/fetch-fonts.py 生成）
-  base/                       L1 MW 内容样式，一块一个文件（root = html / body 基底、紧跟 tokens；typography / tables / media / tabber / forms / special-pages / print …）
+  base/                       L1 MW 内容样式，一块一个文件（root = html / body 基底；typography / tables / media / tabber / forms / special-pages / print …）；skin-assets.css = 皮肤的素材接口（--ak-item-bg-*，由 index.css 直接引）
   components/                 L3 通用组件，一个组件一个文件；title-reset 在全部组件之后，keyframes 收齐 ak-* 动画
   decor/                      L4 方舟装饰语言，一类一个文件（stripes / halftone / corner / type / glyph / inverse …）
   arknights/                  L4 游戏数据组件（rarity / profession / op-card / item / skill / range / module / dossier / stage …）；table-numerals 最后
   chrome/                     L2 皮肤骨架（header / keyart / sidebar / page-header / toc / footer / search-palette …；responsive 收齐断点、放最后）；demo-theme.css 示例活动主题（不进 index.css / skin.json）
   utilities.css               工具类
   forced-colors.css           强制色模式（最后加载）
-  index.css                   汇总入口（预览 / Storybook / 文档站）：各层 index.css 按序 @import；skin.json 的逐文件列表由 scripts/css-order.ts 同步
+  index.css                   皮肤全套的汇总入口（预览 / Storybook / 文档站）：各层 index.css 按序 @import；skin.json 的逐文件列表由 scripts/css-order.ts 同步
+  standalone.css              组件入口（npm 包 @mooncellwiki/akds-css 的默认入口）：tokens + scope + 组件 + 工具类 + 强制色，是 index.css 的子序列
   charinfo.css                干员页舞台的换皮草案（不接入，见 /patterns/operator）
   search-palette.js           悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
   sidebar-tree.js             侧栏多层导航（皮肤与预览共用）
   img/                        CSS 直接引用的游戏素材（道具稀有度底框）
 packages/vue/src/             Vue 实现（见上）
-skin/                         MediaWiki 皮肤：skin.json · templates/skin.mustache · resources/（skin.js、search-providers.js + 指向 packages/css/src 的链接）· i18n/
+skin/                         MediaWiki 皮肤：skin.json（样式模块 base / components / fonts / shell / tokens）· templates/skin.mustache · resources/（skin.js、search-providers.js + 指向 packages/css/src 的链接）· i18n/
 preview/
-  _src/                       样例站源：skeleton.html（皮肤骨架，只写一份）+ pages/{home,operator}.html
-  *.html                      生成物（scripts/build-preview.py）：首页设计稿 · 干员页整页样例
-  vendor/                     第三方原样：swiper/（首页轮播）· charinfo/（现网 Widget:CharinfoV2 快照，scripts/fetch-charinfo.py）· jquery/（3.7.1，同 MW 1.43）
+  _src/                       样例站源：skeleton.html（皮肤骨架，只写一份）+ gallery-skeleton.html（跨宿主对照页的骨架，?host= 切换）+ pages/{home,operator,gallery}.html
+  *.html                      生成物（scripts/build-preview.py）：首页设计稿 · 干员页整页样例 · 跨宿主对照页
+  vendor/                     第三方原样：swiper/（首页轮播）· charinfo/（现网 Widget:CharinfoV2 快照，scripts/fetch-charinfo.py）· jquery/（3.7.1，同 MW 1.43）· vector/（Vector 2022 样式夹具，scripts/fetch-vector-css.ts 抓取，GPL，不入库）
   assets/                     游戏图标 / 现网道具图 / 头图 / 首页素材 / 页脚徽章 …
 site/                         本文档站（VitePress）
 .storybook/                   Storybook（整页样例 story 在 pages/）
-scripts/                      fetch-*.py · build-preview.py · build-dist.py · build-site.sh · css-order.ts · sprite-sync.ts · verify/
+scripts/                      fetch-*.py · fetch-vector-css.ts · build-preview.py · build-dist.py · build-site.sh · css-order.ts · sprite-sync.ts · verify/
 ```
 
 ## 改 CSS 之后
@@ -78,3 +87,13 @@ node scripts/verify/styles.ts diff before after
 ```
 
 它把预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式拍下来逐项比对。令牌由 `packages/tokens/src/` 下的 JSON5 生成：改完跑 `pnpm tokens`。
+
+改了组件（或 `scope.css`）之后，再核一遍它在别的宿主上是不是还一样：
+
+```sh
+node scripts/fetch-vector-css.ts           # 抓现网 Vector 2022 的样式夹具到 preview/vendor/vector/（不入库；只需抓一次）
+python3 scripts/build-preview.py           # 改了 preview/_src/pages/gallery.html 时
+node scripts/verify/styles.ts hosts        # 对照页 preview/gallery.html 在 akds / vector / bare × 暗 / 亮 下拍快照并比对
+```
+
+`hosts` 以 AKDS 皮肤（`?host=akds`）为基准，每个 `[data-gallery]` 块里的元素在 Vector 2022（夹具 + `standalone.css`）与站外（只有 `standalone.css`）上必须逐属性相同，否则列出不同的元素 / 属性、退出码 1；白名单写在脚本里、逐条注明原因（道具底框素材、正文标题的锚点偏移、Vector 自己的减弱动效规则）。CI 每次跑它；抓不到夹具（prts.wiki 的 WAF 按 TLS 指纹拦非浏览器客户端，所以脚本用 puppeteer 开真浏览器取）时只比 AKDS ↔ 站外并警告。浏览器里直接看：`preview/gallery.html?host=vector&theme=light`；Storybook 工具栏的「宿主」同一张表。差异多半落在：组件靠了 `base/` 的规则或 body 的继承（组件自己补声明，用令牌）、组件标题是 `h1`–`h6` 却没有标签限定的选择器、宿主的元素规则漏进组件（`scope.css` 的重置）。

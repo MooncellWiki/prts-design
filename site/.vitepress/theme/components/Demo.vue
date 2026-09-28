@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * 示例块：上面是实时渲染（iframe 里挂 AKDS 全套样式 + wiki 正文容器，与文档站的样式互不干扰，也和 MW 页面上的环境一致），
+ * 示例块：上面是实时渲染（iframe 里挂 AKDS 全套样式 + 作用域根 .ak-scope + wiki 正文容器，与文档站的样式互不干扰，也和 MW 页面上的环境一致），
  * 下面是代码页签——Vue（demo SFC 源码，构建期高亮，由 markdown 插件塞进 #vue 插槽）/ HTML（渲染出的结构，或 html demo 的源码 #html 插槽）。
  * 用法见 site/.vitepress/plugins/demo.ts。
  */
@@ -63,7 +63,7 @@ onMounted(async () => {
   doc.write(
     `<!DOCTYPE html><html lang="zh-CN" class="client-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">` +
       `<style>${akdsCss}</style><style>${demoThemeCss}</style><style>${FRAME_CSS}</style></head>` +
-      `<body>${SPRITE}<div id="root"${props.bare ? "" : ' class="mw-body-content mw-parser-output"'}></div></body></html>`,
+      `<body>${SPRITE}<div id="root" class="ak-scope${props.bare ? "" : " mw-body-content mw-parser-output"}"></div></body></html>`,
   );
   doc.close();
   applyTheme(doc);

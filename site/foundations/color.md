@@ -8,7 +8,7 @@ Semantic   --ak-bg-surface / --ak-fg-muted / --ak-accent / --ak-link …  随主
 Bridge     --background-color-base / --color-progressive …           Codex / MW 令牌映射
 ```
 
-命名一律 `--ak-{group}-{name}`。源文件是 `packages/tokens/src/` 下的 JSON5（W3C DTCG 格式）；`pnpm tokens`（`packages/tokens/build.ts`，Style Dictionary）生成 `packages/css/src/tokens.css`（CSS 自定义属性）与 `packages/tokens/tokens.json`（机器可读，下面的表都读它）——两者都是生成物，改令牌改 JSON5，CI 会检查生成物是否最新。
+命名一律 `--ak-{group}-{name}`。源文件是 `packages/tokens/src/` 下的 JSON5（W3C DTCG 格式）；`pnpm tokens`（`packages/tokens/build.ts`，Style Dictionary）生成 `packages/css/src/tokens.css`（CSS 自定义属性；同一份复制到 `packages/tokens/tokens.css`，随 `@mooncellwiki/akds-tokens` 发布）、`packages/css/src/bridge-codex.css`（Codex 桥接，见下）与 `packages/tokens/tokens.json`（机器可读，下面的表都读它）——两者都是生成物，改令牌改 JSON5，CI 会检查生成物是否最新。
 
 点色块复制 `var(--…)`。
 
@@ -149,7 +149,7 @@ html.skin-theme-clientpref-day     档案模式（亮）
 html.skin-theme-clientpref-night   终端模式（暗）
 ```
 
-非 MW 环境（预览、Storybook、本站示例）用 `data-theme="light | dark"`。切换：`mw.user.clientPrefs.set('skin-theme', 'night')`；页眉里的外观开关就是做这件事（见[皮肤骨架 · 页眉](/chrome/header#外观开关)）。
+非 MW 环境（预览、Storybook、本站示例）用 `data-theme="light | dark"`。**局部主题**：亮 / 暗两块令牌同时挂在 `.ak-scope[data-theme="light | dark"]` 上（自定义属性在更近的祖先上声明就覆盖继承值），一个 widget 可以固定走终端 / 档案配色，与页面主题无关——Vue 里是 `<AkScope theme>`，见[作用域](/components/scope)；主题无关块里引用了语义令牌的 `--ak-select-arrow` 在作用域上重新声明，高对比偏好也作用于作用域亮色。切换：`mw.user.clientPrefs.set('skin-theme', 'night')`；页眉里的外观开关就是做这件事（见[皮肤骨架 · 页眉](/chrome/header#外观开关)）。
 
 ## 页眉 / 头图 / 画布的主题接口
 
@@ -159,6 +159,6 @@ html.skin-theme-clientpref-night   终端模式（暗）
 
 ## Codex / MediaWiki 桥接
 
-MediaWiki 核心与扩展（Codex 组件、mw-message-box、OOUI 的一部分）读这些变量；映射到 AKDS 语义令牌后，皮肤之外的 UI 自动换肤。
+MediaWiki 核心与扩展（Codex 组件、mw-message-box、OOUI 的一部分）读这些变量；映射到 AKDS 语义令牌后，皮肤之外的 UI 自动换肤。它们单独生成在 `bridge-codex.css`（`skins.akds.base` 模块），只属于 AKDS 皮肤：加载到别的皮肤（Vector 2022 …）上会把宿主自己的 Codex 配色整体改掉，所以不在 `tokens.css`、也不进 npm 包的默认入口 `standalone.css`。
 
 <TokenTable prefix="codex" />

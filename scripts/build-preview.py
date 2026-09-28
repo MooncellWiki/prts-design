@@ -20,13 +20,21 @@
     -->
     …正文（放进 .mw-body-content）…
 
+front matter 写了 `skeleton: gallery-skeleton.html` 的页面换用那份骨架（跨宿主对照页 gallery.html：不是皮肤骨架，?host= 切 akds / vector / bare），
+只填 title / head / content 三个占位，也不进侧栏「AKDS 预览 · DEMO」的页面列表。
+
 用法：python3 scripts/build-preview.py   （之后 build-dist.py / build-site.sh 照旧处理 preview/*.html）
 """
 import re, pathlib, html
 root = pathlib.Path(__file__).resolve().parent.parent
 src = root / 'preview' / '_src'
 out = root / 'preview'
-skeleton = (src / 'skeleton.html').read_text(encoding='utf-8')
+SKELETON = 'skeleton.html'
+skeletons = {}
+def skeleton_of(meta):
+    name = meta.get('skeleton', SKELETON)
+    if name not in skeletons: skeletons[name] = (src / name).read_text(encoding='utf-8')
+    return skeletons[name]
 
 def parse(text):
     m = re.match(r'\s*<!--page\n(.*?)\n-->\n', text, re.S)
@@ -47,6 +55,7 @@ for f in sorted((src / 'pages').glob('*.html')):
     meta['file'] = f.name
     pages.append((meta, body))
 pages.sort(key=lambda p: int(p[0].get('order', 99)))
+in_nav = [m for m, _ in pages if m.get('skeleton', SKELETON) == SKELETON]   # 侧栏页面列表只列皮肤骨架里的页
 
 def crumb(s):
     parts = [p.strip() for p in s.split('>')]
@@ -54,21 +63,23 @@ def crumb(s):
     return '<ul class="ak-breadcrumb ak-m-0">%s<li aria-current="page">%s</li></ul>' % (items, html.escape(parts[-1]))
 
 for meta, body in pages:
-    nav = '\n'.join('        <li%s><a href="%s">%s</a></li>' % (' class="is-active"' if m['file'] == meta['file'] else '', m['file'], m['nav']) for m, _ in pages)
-    cats = ''.join('<li><a href="#">%s</a></li>' % c.strip() for c in meta.get('cats', '').split(',') if c.strip())
-    hidden = ''.join('<li><a href="#">%s</a></li>' % c.strip() for c in meta.get('hiddencats', '').split(',') if c.strip())
-    hiddencats = '<div class="mw-hidden-catlinks mw-hidden-cats-hidden">隐藏分类：\u200b<ul>%s</ul></div>' % hidden if hidden else ''
-    page = skeleton
-    for k, v in {
-        'title': meta['title'], 'head': meta['head'], 'nav': nav, 'crumb': crumb(meta['crumb']),
-        'indicators': meta.get('indicators', ''), 'h1': meta['h1'], 'h1en': meta.get('h1en', ''),
-        'actions': meta.get('actions', ''), 'content': body.rstrip() + '\n', 'lastmod': meta.get('lastmod', ''), 'cats': cats, 'hiddencats': hiddencats,
-    }.items():
+    fills = {'title': meta['title'], 'head': meta['head'], 'content': body.rstrip() + '\n'}
+    if meta.get('skeleton', SKELETON) == SKELETON:
+        nav = '\n'.join('        <li%s><a href="%s">%s</a></li>' % (' class="is-active"' if m['file'] == meta['file'] else '', m['file'], m['nav']) for m in in_nav)
+        cats = ''.join('<li><a href="#">%s</a></li>' % c.strip() for c in meta.get('cats', '').split(',') if c.strip())
+        hidden = ''.join('<li><a href="#">%s</a></li>' % c.strip() for c in meta.get('hiddencats', '').split(',') if c.strip())
+        hiddencats = '<div class="mw-hidden-catlinks mw-hidden-cats-hidden">隐藏分类：\u200b<ul>%s</ul></div>' % hidden if hidden else ''
+        fills.update({
+            'nav': nav, 'crumb': crumb(meta['crumb']), 'indicators': meta.get('indicators', ''), 'h1': meta['h1'], 'h1en': meta.get('h1en', ''),
+            'actions': meta.get('actions', ''), 'lastmod': meta.get('lastmod', ''), 'cats': cats, 'hiddencats': hiddencats,
+        })
+    page = skeleton_of(meta)
+    for k, v in fills.items():
         page = page.replace('{{%s}}' % k, v)
     left = re.findall(r'\{\{[a-z0-9]+\}\}', page)
     if left: raise SystemExit('%s: 未填的占位 %s' % (meta['file'], left))
     # 去掉骨架文件头那段「这是模板」的注释（生成物里不需要），换成「生成物勿改」提示
     page = re.sub(r'\A<!-- ═+\n.*?═+ -->\n', '', page, flags=re.S)
-    page = page.replace('<!DOCTYPE html>', '<!DOCTYPE html>\n<!-- 生成物：由 scripts/build-preview.py 从 preview/_src/skeleton.html + _src/pages/%s 生成，改源文件再重跑 -->' % meta['file'], 1)
+    page = page.replace('<!DOCTYPE html>', '<!DOCTYPE html>\n<!-- 生成物：由 scripts/build-preview.py 从 preview/_src/%s + _src/pages/%s 生成，改源文件再重跑 -->' % (meta.get('skeleton', SKELETON), meta['file']), 1)
     (out / meta['file']).write_text(page, encoding='utf-8')
     print('%-16s ← %s (%d bytes)' % (meta['file'], 'pages/' + meta['file'], len(page)))

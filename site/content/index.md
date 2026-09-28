@@ -24,7 +24,7 @@ L1 是皮肤最重要的一层：把编辑写出来的 wikitext 渲染得好看�
 
 | 文件 | 管什么 | 页面 |
 |---|---|---|
-| `root.css` | html / body 底色与正文字体、选区、焦点环、滚动条、减弱动效 | [本页](#全局基底) |
+| `root.css` | html / body 底色、选区、焦点环、滚动条、减弱动效（正文字体 / 字号 / 行高在 `scope.css`） | [本页](#全局基底) |
 | `typography.css` | 标题（含编辑段落链接）、段落、链接、行内元素、列表、引用、代码 | [排版](/content/typography) |
 | `tables.css` | `.wikitable`、可排序表、Cargo / `mw-datatable` | [表格](/content/tables) |
 | `media.css` | 缩略图、浮动与对齐、图库 | [缩略图与图库](/content/media) |
@@ -38,9 +38,9 @@ L1 是皮肤最重要的一层：把编辑写出来的 wikitext 渲染得好看�
 
 ## 全局基底
 
-`root.css` 紧跟 `tokens.css` 加载（MW 里是 `skins.akds.tokens` 模块的第二个文件），所以任何页面——哪怕皮肤的主样式模块还没到——底色和字都已经对了：
+`root.css` 是 `base/` 的第一个文件（MW 里在 `skins.akds.base` 模块——皮肤的样式模块按模块名字母序输出，这个模块排在最前）：
 
-- `html` / `body` 底色 `--ak-bg-canvas`，正文字体思源黑体 16px / 1.7（中文长文的行高）。
+- `html` / `body` 底色 `--ak-bg-canvas`。正文字体思源黑体 16px / 1.7（中文长文的行高）与前景色不在这里，挂在 `scope.css` 的 `body.skin-akds` / `.ak-scope` 上——组件不靠宿主的 body 继承，别的皮肤 / 站外的 widget 根节点加 `ak-scope` 就是同一套基线（见[作用域](/components/scope)）。
 - 选区 `--ak-selection`（淡青），焦点环 `:focus-visible` 2px `--ak-focus` 描边——鼠标点击不出环，键盘才出。文本类输入框另用 `:focus` 的青边 + 淡青环，见[表单控件](/content/forms)。
 - 滚动条细（`scrollbar-width: thin` / 8px），颜色 `--ak-scrollbar`。
 - `prefers-reduced-motion: reduce` 时所有动画与过渡缩到 0.01ms——不是 `none`，`animationend` 之类的事件照常触发，依赖它的脚本不会卡住。

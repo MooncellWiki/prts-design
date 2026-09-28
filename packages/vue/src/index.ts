@@ -1,9 +1,13 @@
 /**
  * @mooncellwiki/akds-vue —— AKDS 的 Vue 3 实现（≈ primer/react 之于 primer/css）。
- * 组件只负责输出约定好的 .ak-* 结构 + 状态 / 可访问性；样式全部来自 CSS 实现（packages/css，MW 上由皮肤加载；不发 npm），这里不打包 CSS。
- * 在 prts-widgets 里：页面已有皮肤样式，直接 import 组件即可。
+ * 组件只负责输出约定好的 .ak-* 结构 + 状态 / 可访问性；样式全部来自 CSS 实现（@mooncellwiki/akds-css），这里不打包 CSS。样式从哪来按宿主分：
+ *   prts.wiki · AKDS 皮肤        皮肤已加载全套，直接 import 组件即可
+ *   prts.wiki · 其它皮肤          挂载前 await mw.loader.using("skins.akds.components")（AKDS 皮肤上是空操作），根节点包 <AkScope>
+ *   站外                          import "@mooncellwiki/akds-css"（= standalone.css），根节点包 <AkScope>
+ * 详见文档站 /guide/vue。
  */
 export { icons, type IconName } from "./icons";
+export { default as AkScope } from "./components/Scope/AkScope.vue";
 export { default as AkIcon } from "./components/Icon/AkIcon.vue";
 export { default as AkButton } from "./components/Button/AkButton.vue";
 export { default as AkButtonGroup } from "./components/Button/AkButtonGroup.vue";

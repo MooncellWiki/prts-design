@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 组装 GitHub Pages 站点（CI 与本地同一脚本；需要先 pnpm install）：
 #   /             文档站（VitePress，site/；site/public 里链着 preview/ 与 src/，构建时一并拷进来）
-#   /preview/     预览站：整页样例 home / operator（按 ../src/ 引样式 → /src/，素材在 /preview/assets/）
+#   /preview/     预览站：整页样例 home / operator + 跨宿主对照页 gallery（按 ../src/ 引样式 → /src/，素材在 /preview/assets/）
 #   /src/         CSS / 字体 / 皮肤共用脚本
 #   /storybook/   Storybook
 #   /dist/        单文件打包版（按 ../src/fonts/ 引思源黑体 → /src/fonts/）
@@ -25,6 +25,7 @@ mkdir -p "$out"
 cp -R site/.vitepress/dist/. "$out/"
 rm -rf "$out/preview/_src"                      # 页面源（scripts/build-preview.py 的输入），不上站
 cp -R _build/storybook "$out/storybook"
+rm -rf "$out/preview/vendor/vector" "$out/storybook/preview/vendor/vector"   # Vector 样式夹具（GPL，scripts/fetch-vector-css.ts 抓的回归夹具）不入库也不上站；站上的对照页 / Storybook 选 Vector 宿主时只提示一行
 cp -R dist "$out/dist"
 
 # 跳转页：redirect <输出文件> <目标> <站点首页>（目标、首页都相对输出文件）

@@ -31,9 +31,17 @@ jobs:
       - name: Tokens are up to date
         run: |
           pnpm tokens
-          git diff --exit-code -- packages/css/src/tokens.css packages/tokens/tokens.json || { echo "::error::packages/css/src/tokens.css / packages/tokens/tokens.json 与 packages/tokens/src 不一致，本地跑 pnpm tokens 后提交"; exit 1; }
+          git diff --exit-code -- packages/css/src/tokens.css packages/css/src/bridge-codex.css packages/tokens/tokens.css packages/tokens/tokens.json || { echo "::error::tokens.css / bridge-codex.css / tokens.json 与 packages/tokens/src 不一致，本地跑 pnpm tokens 后提交"; exit 1; }
 
       - run: pnpm typecheck
+
+      - name: Same look on every host (AKDS skin / Vector 2022 / off-wiki)
+        env:
+          CHROME: /usr/bin/google-chrome
+        run: |
+          # Vector 样式夹具不入库，现抓；prts.wiki 的 WAF 拦了就只比 AKDS ↔ 站外（hosts 会提示），不让外站抖动卡住部署
+          node scripts/fetch-vector-css.ts || echo "::warning::抓不到 prts.wiki 的 Vector 2022 样式，这次只比 AKDS 皮肤 ↔ 站外"
+          node scripts/verify/styles.ts hosts
 
       - name: Assemble site (docs + storybook + preview + dist)
         run: bash scripts/build-site.sh _site
