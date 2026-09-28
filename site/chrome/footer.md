@@ -47,13 +47,13 @@ prts.wiki 现网页脚有 5 枚 88×31 徽章：CC BY-NC-SA（`copyright`）、P
 $wgFooterIcons = [
   'sponsors'  => [ 'mooncell' => [ 'src' => '//static.prts.wiki/…/mooncell.png', 'url' => 'https://project.mooncell.wiki', 'alt' => 'a Mooncell project' ],
                    'horain'   => [ 'src' => '//static.prts.wiki/…/horain.png',   'url' => 'https://www.horain.net/',        'alt' => 'HoRain' ] ],
-  'poweredby' => [ 'mediawiki' => [ 'src' => '/skins/AKDS/resources/badge/mediawiki.svg', 'url' => 'https://www.mediawiki.org/', 'alt' => 'Powered by MediaWiki' ] ],
+  'poweredby' => [ 'mediawiki' => [ 'src' => '/skins/Arknights/resources/badge/mediawiki.svg', 'url' => 'https://www.mediawiki.org/', 'alt' => 'Powered by MediaWiki' ] ],
   // SMW 会自己追加 poweredbysmw；换 src 用 $smwgFooterIcon 或 SkinTemplateNavigation::Universal 钩子
-  'copyright' => [ 'copyright' => [ 'src' => '/skins/AKDS/resources/badge/cc-by-nc-sa.svg', 'url' => 'https://creativecommons.org/licenses/by-nc-sa/4.0/', 'alt' => 'CC BY-NC-SA 4.0' ] ],
+  'copyright' => [ 'copyright' => [ 'src' => '/skins/Arknights/resources/badge/cc-by-nc-sa.svg', 'url' => 'https://creativecommons.org/licenses/by-nc-sa/4.0/', 'alt' => 'CC BY-NC-SA 4.0' ] ],
 ];
 ```
 
-（`resources/badge/` 目前不在 `skin/` 里：白描版在 `preview/assets/badge/mono/`，部署时拷过去或上传到站点。）
+（生产皮肤 Skin:Arknights 已自带 `resources/badge/`（MediaWiki / SMW / CC BY-NC-SA 三枚白描版），其 README「页脚徽章」一节有整份 `$wgFooterIcons` 的写法与三条注意——必须整份赋值、`poweredbysmw` 抢在 SMW 注册之前占位、`copyright` 写了 `src` 后核心不再用 `$wgRightsIcon`。本仓库的 `skin/` 里没有这个目录：白描版在 `preview/assets/badge/mono/`。）
 
 ::: warning mustache 里的 data-footer
 核心会把 `data-footer.*` 的 `html-items` 剥掉，只留 `array-items[{id, html}]`，页脚三处必须像 Vector 那样写成 <code v-pre>{{#array-items}}&lt;li id="{{id}}"&gt;{{{html}}}&lt;/li&gt;{{/array-items}}</code>，用 <code v-pre>{{{html-items}}}</code> 会渲染成空。

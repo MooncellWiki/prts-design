@@ -56,8 +56,9 @@
 .ak-nav-cb:focus-visible ~ .ak-header__burger { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 .ak-header__logo { grid-column: 1; justify-self: start; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; }   /* 品牌盖着侧栏列；不带任何分隔线 / 底线（右侧竖线是「品牌 | 导航」的分界，导航没了它就是悬着的；品牌列底下的主色横线也试过——意味不明，去掉） */
 .ak-header__logo:hover { text-decoration: none; color: inherit; }
-.ak-header__logo img { height: 28px; width: auto; filter: var(--ak-glyph-filter); content: var(--ak-logo-image, normal); }   /* --ak-logo-image 设了就换站标（Chromium / WebKit 支持 content 替换 <img>；Firefox 忽略，请改 $wgLogos） */
-.ak-header__wordmark { font: 800 20px/1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; }
+.ak-header__logo > img { height: 28px; width: auto; max-width: 48px; object-fit: contain; filter: var(--ak-glyph-filter); content: var(--ak-logo-image, normal); }   /* 站标：--ak-logo-image 设了就换（Chromium / WebKit 支持 content 替换 <img>；Firefox 忽略，请改 $wgLogos） */
+.ak-header__wordmark { font: 800 20px/1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.ak-header__wordmark img { display: block; max-height: 30px; width: auto; }   /* MW $wgLogos.wordmark：站名是一张图时 */
 .ak-header__wordmark small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .18em; color: var(--ak-theme-accent); margin-top: 3px; }   /* 标语用活动主色：官网导航当前项那一点青 */
 .ak-header__search { grid-column: 2; justify-self: start; width: 100%; max-width: 560px; min-width: 0; }   /* 从正文列左缘起，与面包屑 / 标题左缘同线；有 JS 时这是 button.ak-search-trigger（保留此类名，它自带 width:100%，所以上限用 max-width 写） */
 .ak-header__search .ak-input, .ak-header__search input[type="search"] { min-height: 34px; background: var(--ak-bg-surface-2); border-color: var(--ak-chrome-line); color: var(--ak-fg); }   /* 无 JS 回退：真表单 */
@@ -68,7 +69,8 @@
 .ak-search-trigger:hover { border-color: var(--ak-chrome-line-strong); color: var(--ak-fg-secondary); }
 .ak-search-trigger:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
 .ak-search-trigger[aria-expanded="true"] { border-color: var(--ak-theme-accent); background: rgba(0,0,0,.35); color: var(--ak-fg); }
-.ak-search-trigger__icon { flex: none; align-self: stretch; width: 32px; height: auto; padding: 8px; box-sizing: border-box; background: rgba(0,0,0,.35); color: var(--ak-theme-accent); transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger__icon { flex: none; align-self: stretch; width: 32px; height: auto; padding: 8px; box-sizing: border-box; display: grid; place-items: center; background: rgba(0,0,0,.35); color: var(--ak-theme-accent); transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger__icon .ak-icon { width: 16px; height: 16px; }   /* 皮肤把自己的图标（<span class="ak-icon ak-icon--search">）放进框里时的尺寸；sprite <svg> 由 padding 定 */
 .ak-search-trigger[aria-expanded="true"] .ak-search-trigger__icon { background: var(--ak-theme-accent); color: var(--ak-theme-accent-fg); }   /* 打开时图标框反成主色实底（游戏 selected 态） */
 .ak-search-trigger__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ak-header .ak-search__kbd, .ak-header .ak-kbd { background: rgba(0,0,0,.4); border-color: var(--ak-chrome-line-strong); box-shadow: inset 0 -1px 0 var(--ak-chrome-line-strong); color: var(--ak-fg-muted); }
@@ -79,12 +81,18 @@
 .ak-header__user { display: inline-flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; }
 .ak-header__user:hover { --_fg: var(--ak-theme-accent); }   /* 走 .ak-btn 的 --_fg（下面 :visited 也读它），悬停变活动主色 */
 .ak-header__user .ak-avatar { --_s: 28px; border-color: var(--ak-chrome-line-strong); }
+.ak-header__user > span:not(.ak-avatar, .ak-icon) { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }   /* 用户名过长截断 */
 /* 用户菜单卡片（#p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu.ak-header__user-card——用户名抬头 + 「界面设置」（ULS 语言）+ 「个人工具」两组门户。
  * 颜色不用另写：.ak-header 内 --ak-bg-surface / --ak-border / --ak-fg 已重映射到 --ak-chrome-*，卡片自动是页眉配色 */
 .ak-header__user-menu > details[open] > .ak-header__user { --_fg: var(--ak-theme-accent); background: var(--ak-bg-hover); }
 .ak-header__user-card { min-width: 240px; top: calc(100% + 6px); padding: 0 0 6px; }
 .ak-header__user-card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
 .ak-header__user-card a:hover .ak-icon { color: var(--ak-fg); }
+/* Echo 通知徽标（MW #p-notifications > ul > li#pt-notifications-alert / -notice）：与工具区其它按钮同高并排 */
+.ak-header__notifications { display: flex; align-items: center; height: 100%; }
+.ak-header__notifications ul { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.ak-header__notifications li { margin: 0; }
+.ak-header__notifications li::before { display: none !important; }
 .ak-header__notifications a:hover { color: var(--ak-theme-accent); }
 /* 页眉里的链接不分已访问：base/typography.css 的 a:visited（紫）在黑底上发暗，用户名 / #p-personal / Echo 一律用自己的颜色 */
 .ak-header a:visited { color: inherit; }

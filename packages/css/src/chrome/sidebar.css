@@ -16,11 +16,17 @@
 .ak-portlet li::before, .ak-sidebar li::before { display: none !important; }
 .ak-sidebar li { position: relative; }
 /* 行：链接 a / 非链接标签 b（PRTS 用粗体 b 表示有子级的分组项） */
-.ak-portlet li a, .ak-sidebar li a, .ak-sidebar li > b, .ak-sidebar li > .ak-tree__label { display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: var(--ak-fg-secondary); font-weight: 400; text-decoration: none; border-left: 2px solid transparent; transition: color var(--ak-dur-fast), background var(--ak-dur-fast), border-color var(--ak-dur-fast); cursor: pointer; }
-.ak-portlet li a:hover, .ak-sidebar li a:hover, .ak-sidebar li > b:hover, .ak-sidebar .ak-tree__branch.is-peek > .ak-tree__label { color: var(--ak-fg); background: var(--ak-bg-hover); border-left-color: var(--ak-border-strong); text-decoration: none; }
+.ak-portlet li a, .ak-sidebar li a, .ak-sidebar li > b, .ak-sidebar li > span, .ak-sidebar li > .ak-tree__label { display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: var(--ak-fg-secondary); font-weight: 400; text-decoration: none; border-left: 2px solid transparent; line-height: 1.4; transition: color var(--ak-dur-fast), background var(--ak-dur-fast), border-color var(--ak-dur-fast); cursor: pointer; }   /* 1.4：行高 = 6 + 20 + 6 = 32，与 .ak-tree__toggle 的 30px 对得齐；正文的 1.7 会把行撑到 34 */
+.ak-portlet li a:hover, .ak-sidebar li a:hover, .ak-sidebar li > b:hover, .ak-sidebar li > span:hover, .ak-sidebar .ak-tree__branch.is-peek > .ak-tree__label { color: var(--ak-fg); background: var(--ak-bg-hover); border-left-color: var(--ak-border-strong); text-decoration: none; }
 .ak-portlet li.is-active > a, .ak-portlet li.selected > a, .ak-sidebar li.is-active > a, .ak-sidebar li.selected > a, .ak-sidebar li.is-current > a, .ak-sidebar a.selflink, .ak-sidebar a.mw-selflink { color: var(--ak-accent); border-left-color: var(--ak-accent); font-weight: 700; background: var(--ak-accent-subtle); }
 .ak-sidebar a.selflink, .ak-sidebar a.mw-selflink { cursor: default; }
 .ak-sidebar a.external { background: none; padding-right: 10px; }   /* 去掉 MW 外链图标 */
+.ak-sidebar li > a.new { color: var(--ak-link-new); }   /* MW 红链 */
+.ak-sidebar li > span:not(.ak-tree__label) { flex-wrap: wrap; cursor: default; }   /* 非链接行（Widget 渲染成 <span>）：里面可以夹行内链接 */
+.ak-sidebar li > span:not(.ak-tree__label) a { color: var(--ak-link); }
+.client-nojs .ak-sidebar li > ul { display: block; }   /* 无 JS：所有层级展开 */
+.ak-sidebar__head { display: none; }   /* 抽屉抬头（标题 + 关闭钮）：只在 <1120 的抽屉里出现，见 responsive.css */
+.ak-overlay--sidebar, .ak-overlay--drawer { animation: ak-fade-in var(--ak-dur-fast) var(--ak-ease); }   /* 抽屉遮罩（.ak-overlay 本体在 components/dialog.css；由 JS 生成） */
 .ak-portlet li a .ak-icon { width: 16px; height: 16px; opacity: .7; }
 .ak-portlet--grid ul { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
 .ak-portlet--grid li a { border: 1px solid var(--ak-border); padding: 8px; justify-content: center; text-align: center; font-size: var(--ak-fs-xs); }

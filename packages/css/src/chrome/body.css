@@ -1,10 +1,13 @@
 /*! AKDS · chrome/body.css — Body content area 正文区 · 依赖：tokens.css · components/ */
 /* ═══ Body content area ═══ */
-.ak-body { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: var(--ak-space-6) var(--ak-space-8); }
+.ak-body { position: relative; min-width: 0; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: var(--ak-space-6) var(--ak-space-8); }
 .ak-body--flat { background: transparent; border: 0; padding: 0; }
-.ak-body > .mw-body-content > *:first-child { margin-top: 0; }
+.ak-body > .mw-body-content > *:first-child, .ak-body > .mw-body-content > .mw-parser-output > *:first-child { margin-top: 0; }
+.ak-body .mw-body-content { overflow-wrap: break-word; }   /* 长 URL / 长串不撑破白纸；宽表格自己走 .ak-table-scroll */
 .ak-body-foot { display: flex; flex-wrap: wrap; gap: var(--ak-space-3) var(--ak-space-6); align-items: center; list-style: none; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin: var(--ak-space-6) 0 0; padding: var(--ak-space-3) 0 0; border-top: 1px solid var(--ak-border); }   /* MW：ul#footer-info > li#footer-info-lastmod / -copyright */
 .ak-body-foot li { margin: 0; padding: 0; }
 .ak-body-foot li::before { display: none !important; }
 .ak-body-foot #footer-info-lastmod, .ak-body-foot .ak-lastmod { font-variant-numeric: tabular-nums; }
 .ak-body-foot #footer-info-copyright { flex-basis: 100%; }
+.ak-body-foot a { color: var(--ak-fg-secondary); }
+.ak-body-foot a:hover { color: var(--ak-accent); }

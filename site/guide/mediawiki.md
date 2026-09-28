@@ -2,6 +2,20 @@
 
 皮肤 `skin/`（AKDS）通过 ResourceLoader 加载全部 CSS；模板、TemplateStyles、Widget 只需要**输出约定好的结构**，不用自己带组件样式。皮肤装上以后，组件那一份（`skins.akds.components`）在别的皮肤的页面上也能 `mw.loader.using`，见[模块与层序](/guide/resourceloader#resourceloader-模块)。
 
+::: tip 生产皮肤是 Skin:Arknights
+prts.wiki 实际部署的是 [mediawiki-skins-Arknights](https://github.com/MooncellWiki/mediawiki-skins-Arknights)（`wfLoadSkin('Arknights')`，皮肤名 `arknights`）。它用 `scripts/sync-design-system.sh` 把本仓库 `packages/css/src/` 原样拷进 `resources/design-system/`（连同 `chrome/`），按 `index.css` 的顺序写进自己的 skin.json；模板（PHP 组件喂数据的 Mustache partial）按 `chrome/` 的类名输出，它自己的 LESS 只剩 MediaWiki 胶水（核心 / 扩展 UI 的 skinStyles、`.notheme` 生成物、无 JS 的真搜索表单这类）。本仓库的 `skin/` 是骨架参考实现，本节其余内容以它为例；两者的名字对照：
+
+| 本仓库 `skin/` | Skin:Arknights |
+|---|---|
+| 皮肤名 `akds`，`body.skin-akds` | 皮肤名 `arknights`，`body.skin-arknights.skin-akds`（两个类都有：设计系统的 `scope.css` / `base/print.css` 按 `skin-akds` 判断「在 AKDS 皮肤里」） |
+| `skins.akds.base / components / fonts / shell / tokens` | `skins.arknights.base / components / fonts / shell / tokens`，另有 `skins.arknights.icons`（OOUI 图标包）与排在最后的 `skins.arknights.styles`（MediaWiki 胶水 LESS） |
+| `$wgAKDSDefaultTheme` / `$wgAKDSSearchPalette` | `$wgArknightsThemeDefault` / `$wgArknightsSearchPalette`（全部配置见其 README） |
+| `mw.hook('akds.search.local')` · `localStorage['akds-recent']` | `mw.hook('skin.arknights.search')` · `localStorage['arknights-search-recent']`；另有 `$wgArknightsSearchIndex` 把 Cargo 表做成带拼音的本地索引 |
+| 主题：核心 `clientPrefEnabled` + `ClientPreferences` | 同一套 `skin-theme-clientpref-*` 类与 `mwclientpreferences` 存储，由皮肤自己的内联脚本与 `theme.js` 读写 |
+| 侧栏 `#MenuSidebar` 由现网内联脚本搬入 | 服务端以当前页为上下文解析 `MediaWiki:MenuSidebar`（`$wgArknightsMenuSidebar`），无内联脚本 |
+| 图标 sprite 内联在 skin.mustache | 同样内联（`templates/IconSprite.mustache`，同步脚本从本仓库抽取）；骨架自身另用 OOUI 图标包 `<span class="ak-icon ak-icon--{name}">` |
+:::
+
 - 目标站点：prts.wiki · MediaWiki 1.43.9 · 现默认 Vector 2022（未开夜间模式），移动端 MobileFrontend + Minerva。
 - 已装、与皮肤相关的扩展：TemplateStyles · Gadgets · Widgets · TabberNeue · Cargo · SemanticMediaWiki · DPL3 · Echo · CodeMirror · WikiEditor · UniversalLanguageSelector · MsUpload · PageImages · TextExtracts。
 - 未装：DarkMode（皮肤自带明暗）· Popups · VisualEditor。
@@ -57,8 +71,8 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
 - `styles` 里的模块按模块名字母序输出（MW 的实现如此），这四个的字母序就是层叠顺序；它们都不能带 `dependencies`。为什么这么分、各装什么见[模块与层序](/guide/resourceloader)。
 - `toc: false`：关掉 MW 的内联目录，皮肤自己用 `data-toc`（1.40+ 提供 `array-sections`）渲染右侧粘性目录 / 窄屏浮层，见[皮肤骨架 · 目录](/chrome/toc)。
 - `supportsMwHeading`：配合站点的 `$wgParserEnableLegacyHeadingDOM = false` 用新版标题 DOM——编辑段落链接的「悬停显形」要求它（见[排版 · 标题](/content/typography#标题)）。
-- 要关掉核心的 `mediawiki.searchSuggest`（与搜索面板冲突），`class` 得换成一个极小的 `SkinAKDS extends SkinMustache`，见[搜索面板](/chrome/search#在-mediawiki-里)。
-- 配置项：`$wgAKDSDefaultTheme`（`os` / `day` / `night`）、`$wgAKDSSearchPalette`（`false` 关掉悬浮搜索面板）。
+- 要关掉核心的 `mediawiki.searchSuggest`（与搜索面板冲突）：在 `SkinPageReadyConfig` 钩子里把 `search` 置 `false`（Vector 2022 的做法；Skin:Arknights 的 `SkinHooks::onSkinPageReadyConfig()`），见[搜索面板](/chrome/search#在-mediawiki-里)。
+- 配置项：`$wgAKDSDefaultTheme`（`os` / `day` / `night`）、`$wgAKDSSearchPalette`（`false` 关掉悬浮搜索面板）；Skin:Arknights 叫 `$wgArknightsThemeDefault` / `$wgArknightsSearchPalette`。
 
 ## 明暗主题
 
@@ -79,4 +93,4 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
 | UniversalLanguageSelector | 语言切换在页眉用户菜单的「界面设置」组 `#p-user-interface-preferences`，侧栏不再有 Languages 组 |
 | Gadgets | 依赖 Vector 类名（`#mw-panel`、`.vector-*`）的要迁移；骨架保留 MW 标准 id（`#p-personal #p-views #p-cactions #p-navigation #p-tb #searchform #searchInput #firstHeading #bodyContent #catlinks`） |
 | Widgets / Gadgets 吐出的裸表单控件（`Widget:PropertyCalc`、各计算器 / 筛选栏） | `base/forms.css` 兜底：36px 定高、表格里 30px 且对齐跟随单元格、主题化颜色与状态；Widget 里针对旧皮肤的样式补丁可以删掉，见[表单控件](/content/forms) |
-| 搜索（核心 `mediawiki.searchSuggest`） | 与悬浮面板冲突，需 `SkinAKDS::getDefaultModules()` 清空 `search` 组，见[搜索面板](/chrome/search#在-mediawiki-里) |
+| 搜索（核心 `mediawiki.searchSuggest`） | 与悬浮面板冲突，在 `SkinPageReadyConfig` 钩子里把 `search` 置 `false`（1.43 里 `Skin::getDefaultModules()` 的 `search` 组本来就是空的，改那里没用），见[搜索面板](/chrome/search#在-mediawiki-里) |

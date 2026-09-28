@@ -2,10 +2,10 @@
 
 ## 分阶段替换
 
-1. **Phase 0 · 令牌落地**：装上皮肤（`wfLoadSkin('AKDS')`；还不想让用户在参数设置里选到，就先放进 `$wgSkipSkins`）后，它注册的模块在任何皮肤的页面上都能加载——Vector 2022 上用 `mw.loader.using("skins.akds.components")`（令牌 + 作用域根 + 组件，自带齐，见[模块与层序](/guide/resourceloader#resourceloader-模块)）先让模板 / prts-widgets 用上 `.ak-*` 组件（`data-rarity`、`.ak-rt-*`、`.ak-item` …），输出的最外层包 `ak-scope`；逐步替换现有模板里写死的颜色。不需要 Gadget 再复制一份样式，RL 也不会重复取已加载的模块。
-2. **Phase 1 · 皮肤上线（可选皮肤）**：把 `akds` 从 `$wgSkipSkins` 里拿掉，`$wgDefaultSkin` 不变，用户在 `Special:Preferences` 里自选；收集 Gadget 兼容问题。
+1. **Phase 0 · 令牌落地**：装上皮肤（生产皮肤 Skin:Arknights：`wfLoadSkin('Arknights')`；还不想让用户在参数设置里选到，就先把 `arknights` 放进 `$wgSkipSkins`）后，它注册的模块在任何皮肤的页面上都能加载——Vector 2022 上用 `mw.loader.using("skins.arknights.components")`（令牌 + 作用域根 + 组件，自带齐，见[模块与层序](/guide/resourceloader#resourceloader-模块)）先让模板 / prts-widgets 用上 `.ak-*` 组件（`data-rarity`、`.ak-rt-*`、`.ak-item` …），输出的最外层包 `ak-scope`；逐步替换现有模板里写死的颜色。不需要 Gadget 再复制一份样式，RL 也不会重复取已加载的模块。
+2. **Phase 1 · 皮肤上线（可选皮肤）**：把 `arknights` 从 `$wgSkipSkins` 里拿掉，`$wgDefaultSkin` 不变，用户在 `Special:Preferences` 里自选；收集 Gadget 兼容问题。
 3. **Phase 2 · 核心模板改造**：干员 / 关卡 / 道具等模板按[干员页样例](/patterns/operator)的结构调整 Template / Module，Cargo 查询输出组件结构（对照表见[模板与 TemplateStyles](/guide/templates#现网模板-→-组件)）。
-4. **Phase 3 · 设为默认**：`$wgDefaultSkin = 'akds'`；评估移动端是否替代 Minerva（见[与现有扩展的配合](/guide/mediawiki#与现有扩展的配合)）。
+4. **Phase 3 · 设为默认**：`$wgDefaultSkin = 'arknights'`；评估移动端是否替代 Minerva（见[与现有扩展的配合](/guide/mediawiki#与现有扩展的配合)）。
 5. **持续**：令牌与组件版本化（CHANGELOG）；样例页作为回归基准——改 CSS 前后用 `pnpm e2e --project=snapshots` 拍计算样式快照比对；跨宿主对照页（`preview/gallery.html`）由 `e2e/hosts.spec.ts` 核组件在 AKDS 皮肤 / Vector 2022 / 站外三处一致，CI 的 e2e 流水线每次跑（不挡部署）（见[贡献一个组件 · 改 CSS 之后](/guide/contributing#改-css-之后)）。
 
 ## 上线前检查

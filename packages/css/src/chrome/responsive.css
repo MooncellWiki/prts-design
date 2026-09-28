@@ -5,7 +5,7 @@
   .ak-local-nav { display: flex; }
   .ak-keyart { --_over: calc(var(--ak-header-h) + var(--ak-local-nav-h)); }   /* 头图探到两行页眉的背后，两行玻璃底下是同一幅画 */
   .ak-fab { display: none; }   /* 回到顶部收进目录浮层，不再浮在内容上 */
-  .ak-main { padding-right: 0; }
+  .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
   /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
   :root.ak-condensed .ak-header { transform: translateY(calc(-1 * var(--ak-header-h))); }
   :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标 */
@@ -43,15 +43,19 @@
 /* 1120–1400 且页面无目录（.ak-layout--no-toc）：两个入口都不需要，别留一条空栏 */
 @media (min-width: 1120px) and (max-width: 1400px) {
   .ak-local-nav:not(:has(.ak-toc-cb)) { display: none; }
+  body:not(:has(.ak-toc-cb)) .ak-keyart { --_over: var(--ak-header-h); }   /* 二级栏收起了，页眉又是一行，头图只探一行 */
 }
 @media (max-width: 1119px) {
   .ak-local-nav__menu { display: inline-flex; }   /* 侧栏变抽屉后才需要这个入口 */
   .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
   /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截）。
    * 展开时 JS 给 <html> 加 .ak-scroll-lock 锁住页面滚动（VitePress VPSidebar 同）：抽屉自己 overflow-y:auto + overscroll-behavior:contain（沿用导轨态声明），滚到头也不会把页面带着走 */
-  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); padding: var(--ak-space-4); transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
+  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); border-right: 1px solid var(--ak-border); padding: 0 var(--ak-space-3) var(--ak-space-6); box-sizing: border-box; transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
   .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
-  .ak-sidebar__close { display: block; }
+  /* 抽屉抬头：粘在顶部的一行 = 「导航」小标 + 关闭钮（.ak-btn--icon） */
+  .ak-sidebar__head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; height: var(--ak-header-h); margin: 0 calc(-1 * var(--ak-space-3)) var(--ak-space-3); padding: 0 var(--ak-space-2) 0 var(--ak-space-4); background: var(--ak-bg-surface); border-bottom: 1px solid var(--ak-border); }
+  .ak-sidebar__title { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }
+  .ak-sidebar__close { display: inline-flex; }
   .ak-header__inner { display: flex; gap: var(--ak-space-4); }   /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex */
   .ak-header__logo { margin-right: auto; }   /* 品牌靠左，其余（搜索 / ≡）靠右 */
   .ak-header__search { flex: 1; width: auto; max-width: none; }
@@ -89,6 +93,7 @@
   .ak-header__wordmark small { display: none; }
   .ak-header__search { display: none; }   /* 手机：搜索收成主行里的图标按钮（.ak-header__search-toggle），同样打开悬浮面板 */
   .ak-page-header__title, .skin-akds #firstHeading { font-size: var(--ak-fs-h2); }
+  .ak-page-heading { padding-left: var(--ak-space-3); }
   .ak-body { padding: var(--ak-space-4) var(--ak-space-3); border-left: 0; border-right: 0; margin: 0 calc(-1 * var(--ak-gutter)); }
   .ak-local-nav { padding: 0 calc(var(--ak-gutter) - 8px); }
   .ak-local-nav__btn { padding: 0 8px; }
@@ -98,10 +103,12 @@
   .ak-page-tabs li a > span:not(.ak-icon), .ak-page-tools__btn > span:not(.ak-icon) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .ak-page-tabs li a, .ak-page-tools__btn { padding: 0 7px; }
   .ak-page-tools__card { max-width: calc(100vw - 2 * var(--ak-gutter)); }
-  .ak-footer__inner { grid-template-columns: 1fr 1fr; gap: var(--ak-space-6); }
+  .ak-footer__inner { grid-auto-flow: row; grid-template-columns: 1fr 1fr; grid-auto-columns: auto; gap: var(--ak-space-6); }   /* 链接列两两并排 */
   .ak-footer__brand { grid-column: 1 / -1; }
   .ak-footer__bottom { flex-direction: column; align-items: flex-start; }
   .ak-footer__icons { margin-left: 0; }
+  .ak-footer .ak-watermark { font-size: 5rem; }
+  .ak-fab { right: var(--ak-space-3); bottom: var(--ak-space-3); }
   .mw-parser-output table.wikitable { display: block; overflow-x: auto; max-width: 100%; }
   .mw-halign-right, .tright, figure.mw-halign-right, .mw-halign-left, .tleft, figure.mw-halign-left { float: none; margin-left: 0; margin-right: 0; }
 }
@@ -115,6 +122,6 @@
 @media print {
   .ak-header, .ak-keyart, .ak-sidebar, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tools, .ak-fab { display: none !important; }
   .ak-layout { display: block; padding: 0; }
-  .ak-main { padding-right: 0; }
+  .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
   .ak-body { border: 0; padding: 0; }
 }

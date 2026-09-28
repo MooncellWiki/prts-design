@@ -51,17 +51,17 @@ MW 侧的数据源是 `skin/resources/search-providers.js`（与核心同在 `sk
 | 层 | 来源 | 说明 |
 |---|---|---|
 | 标题搜索 | `GET /rest.php/v1/search/title?q=&limit=10` | 与 Vector 2022 / Citizen 相同；缩略图要 PageImages、描述要 ShortDescription / Description2（PRTS 可用 <code v-pre>{{SHORTDESC:…}}</code> 补）；`matched_title` 只在「别名式重定向」时显示 |
-| 本地即时索引（可选） | `mw.hook('akds.search.local').fire(fn)` 注入 `fn(q) → Group[]` | 干员 / 道具 / 关卡 JSON（Cargo 定时导出到 `MediaWiki:*.json`，或 API 缓存到 IndexedDB），支持拼音首字母 / 别名、0 网络等待，还能给结构化元数据（职业图标、稀有度）——预览里 `yh` → 银灰、`nts` → 能天使演示的就是这一层 |
+| 本地即时索引（可选） | `mw.hook('akds.search.local').fire(fn)` 注入 `fn(q) → Group[]`（Skin:Arknights：`mw.hook('skin.arknights.search')`） | 干员 / 道具 / 关卡 JSON（Cargo 定时导出到 `MediaWiki:*.json`，或 API 缓存到 IndexedDB），支持拼音首字母 / 别名、0 网络等待，还能给结构化元数据（职业图标、稀有度）——预览里 `yh` → 银灰、`nts` → 能天使演示的就是这一层 |
 | `>` 动作 | 本页菜单 `#p-views #p-cactions #p-tb #p-personal` + 常用特殊页面 | 同 Citizen「从页面菜单拉动作」 |
 | `#` 分类 | 空查询：本页所属分类（`prop=categories`）；有字：`list=prefixsearch&psnamespace=14` | |
 | `@` 用户 · `~` 文件 | `list=allusers&auprefix=` · `generator=prefixsearch&gpsnamespace=6&prop=pageimages` | |
 | 兜底 | `Special:Search?search=q&go=Go` / `…&fulltext=1` | 结果未到就回车 → Go；`⇧` `↵` 与末尾固定行 → 全文 |
 
 ::: warning 核心的 searchSuggest 要关掉
-核心 `Skin::getDefaultModules()` 会给所有皮肤加载 `mediawiki.searchSuggest`，它在 `#searchInput` 上挂旧式建议下拉，与面板打架。和 Vector 2022 / Citizen 一样，需要一个极小的 `SkinAKDS extends SkinMustache` 覆盖 `getDefaultModules()`，把 `$modules['search'] = []`（`skin.json` 的 `class` 改指向它）。退而求其次可以在 `search-providers.js` 里检测到 `mediawiki.searchSuggest` 时把 `#searchInput` 的 `id` 换掉，但那样依赖 `#searchInput` 的 Gadget 就不兼容了。
+核心的 `mediawiki.page.ready` 会在搜索框**聚焦时**懒加载 `mediawiki.searchSuggest`，它在 `#searchInput` 上挂旧式建议下拉——面板把这个输入框搬进了自己里面，不关掉就会在面板里再画一份列表。和 Vector 2022 一样，在 `SkinPageReadyConfig` 钩子里把 `search` 开关置 `false`（Skin:Arknights 的 `SkinHooks::onSkinPageReadyConfig()`，只在面板开启时）。**不是** `Skin::getDefaultModules()`：1.43 里那里的 `search` 组本来就是空的，覆盖它没有效果。退而求其次可以在 `search-providers.js` 里检测到 `mediawiki.searchSuggest` 时把 `#searchInput` 的 `id` 换掉，但那样依赖 `#searchInput` 的 Gadget 就不兼容了。
 :::
 
-- **开关**：`$wgAKDSSearchPalette = false` 关掉面板、保留原表单（要让 JS 读到，需在 `ResourceLoaderGetConfigVars` 钩子里输出 `wgAKDSSearchPalette`）。文案全部走 `akds-search-*` 消息（i18n 已含 zh-hans / en）。
+- **开关**：`$wgAKDSSearchPalette = false` 关掉面板、保留原表单（要让 JS 读到，需在 `ResourceLoaderGetConfigVars` 钩子里输出 `wgAKDSSearchPalette`）。文案全部走 `akds-search-*` 消息（i18n 已含 zh-hans / en）。Skin:Arknights 里对应 `$wgArknightsSearchPalette`、`arknights-search-*` 消息；本地索引的钩子叫 `mw.hook('skin.arknights.search')`，最近访问存 `localStorage['arknights-search-recent']`，面板整包拆成 `skins.arknights.search` 模块按需加载（悬停预取、聚焦 / 按键时加载并打开），空态的快捷入口由 `MediaWiki:Arknights-search-shortcuts` 决定，`$wgArknightsSearchIndex` 把 Cargo 表做成带服务端拼音的本地索引——细节见其 README「搜索」一节。
 - **体积**：`search-palette.js` ≈ 35KB 未压缩（含注释；gzip ≈ 11KB），可以拆成独立 RL 模块，在触发器 hover / focus 时 `mw.loader.using` 预取（Citizen 的做法）。
 - **待办**：`/ns:` 命名空间模式（REST 标题搜索本身支持 `模板:xx` 前缀，优先级低）；Related（RelatedArticles）；Cargo 查询模式；拆模块做 intent prefetch。
 

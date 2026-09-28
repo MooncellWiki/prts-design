@@ -13,6 +13,8 @@
 | `skins.akds.tokens` | `tokens.css` + `scope.css`（= `skins.akds.components` 的开头两个文件） | **不进皮肤的 `styles`**；别的皮肤上只要令牌（Gadget / 自写样式）时加载。AKDS 皮肤上令牌已随 components 到位，再加载它只是重复一份 |
 | `skins.akds.js` | `skin.js` + `sidebar-tree.js` + `search-palette.js` + `search-providers.js`（`packageFiles`）；依赖 `mediawiki.user` / `mediawiki.util` / `mediawiki.cookie` / `mediawiki.api` | 所有页面 |
 
+生产皮肤 Skin:Arknights 是同样的分法，模块名前缀换成 `skins.arknights.`：`base` / `components` / `fonts` / `shell` / `tokens` 的文件列表由它的 `scripts/sync-design-system.sh` 按本仓库 `index.css` 展开写入（`base` 的 `SkinModule` 特性按它自己的 skinStyles 配置；`shell` 逐文件列出 `chrome/`，哪些文件进去由脚本里的 `ADOPTED_CHROME` 定，现在是全部 15 个）；另有 `skins.arknights.icons`（OOUI 图标包）与字母序排在最后的 `skins.arknights.styles`——只装 MediaWiki 胶水 LESS，压在骨架之上。所以 prts.wiki 上别的皮肤用组件写的是 `mw.loader.using("skins.arknights.components")`。
+
 皮肤的 `styles` 是 `skins.akds.base`、`skins.akds.components`、`skins.akds.fonts`、`skins.akds.shell` 四个。这么分是被两条 MediaWiki 的实现细节定下来的（`includes/ResourceLoader/ClientHtml.php` · `FileModule.php`，REL1_43；prts.wiki 现为 1.43.9）：
 
 - **皮肤 `styles` 里的模块在同一个 `load.php` 请求里按模块名字母序输出**——`ClientHtml::makeLoad()` 先 `sort($modules)`，不是 skin.json 里写的顺序。所以字母序就是层叠顺序：`base` < `components` < `fonts` < `shell`。骨架模块因此叫 `shell` 而不是 `chrome`（`chrome` 排在 `components` 前面，页眉就压不住组件了）；`fonts` 与令牌只有 `@font-face` / 自定义属性，排在哪都一样。

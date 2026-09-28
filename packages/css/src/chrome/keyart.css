@@ -7,7 +7,7 @@
  *  底部按 --ak-keyart-fade 渐隐进画布色（min() 兜住 -h: 0 时不往页眉后面画一道）；-bg 默认透明，所以没有头图时页眉背后什么也不多画。
  *  --ak-canvas-image 叠在 body 的 --ak-bg-canvas 之上（现网 body 的 bkg 底纹 / 大图位置）；侧栏与目录没有底色，所以画布图应当是低对比的底纹。 */
 .ak-keyart { --_over: var(--ak-header-h);   /* 往上探进页眉背后的高度；<1400 页眉多一行二级栏，见 responsive.css */
-  position: relative; box-sizing: content-box; height: var(--ak-keyart-h); padding-top: var(--_over); margin: calc(-1 * var(--_over)) 0 0; overflow: hidden;
+  position: relative; flex: none; box-sizing: content-box; height: var(--ak-keyart-h); padding-top: var(--_over); margin: calc(-1 * var(--_over)) 0 0; overflow: hidden;
   background: var(--ak-keyart-bg) var(--ak-keyart-image) var(--ak-keyart-position) / var(--ak-keyart-size) no-repeat; }
 .ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: min(var(--ak-keyart-fade), var(--ak-keyart-h)); background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)); pointer-events: none; }
 .ak-keyart__inner { position: relative; height: 100%; max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽，且在页眉之下（padding-top 之内不算） */

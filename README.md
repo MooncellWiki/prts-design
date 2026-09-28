@@ -73,11 +73,12 @@ e2e/                Playwright Test（playwright.config.ts）：hosts.spec.ts �
 ## 使用
 
 - 皮肤全套（本地 / 预览）：`<link rel="stylesheet" href="packages/css/src/index.css">`（按层 @import；`fonts.css` 在最前）。
-- MediaWiki：把 `skin/` 复制到 `skins/AKDS/`，`wfLoadSkin('AKDS')`；`resources/` 下的样式目录 / 文件是指向 `packages/css/src/` 的符号链接。skin.json 里样式模块逐文件列出（ResourceLoader 不跟 @import），顺序由 `node scripts/css-order.ts --write` 从 `packages/css/src/index.css` 同步。字体是独立模块 `skins.akds.fonts`，可整体关掉。详见文档站「在 MediaWiki 中使用」（/guide/mediawiki 及其下各页）。
+- MediaWiki（生产）：prts.wiki 用的是 [mediawiki-skins-Arknights](https://github.com/MooncellWiki/mediawiki-skins-Arknights)（Skin:Arknights，`wfLoadSkin('Arknights')`）——它的 `scripts/sync-design-system.sh` 把 `packages/css/src/` 原样拷进自己的 `resources/design-system/`、按 `index.css` 的顺序写进 skin.json（模块 `skins.arknights.base / components / fonts / shell / tokens`，`chrome/` 整层进 `shell`），它自己的 LESS 只剩 MediaWiki 胶水。改 CSS 只在这里改，然后去那边重跑同步脚本。
+- MediaWiki（仓库内骨架 `skin/`，参考实现）：把 `skin/` 复制到 `skins/AKDS/`，`wfLoadSkin('AKDS')`；`resources/` 下的样式目录 / 文件是指向 `packages/css/src/` 的符号链接。skin.json 里样式模块逐文件列出（ResourceLoader 不跟 @import），顺序由 `node scripts/css-order.ts --write` 从 `packages/css/src/index.css` 同步。字体是独立模块 `skins.akds.fonts`，可整体关掉。详见文档站「在 MediaWiki 中使用」（/guide/mediawiki 及其下各页）。
 - 模板/TemplateStyles：直接输出 `.ak-*` 结构（文档站每个示例的「HTML」页签就是要输出的结构），令牌可在 TemplateStyles 中 `var(--ak-accent)` 引用。
 - Vue（prts-widgets 等）：`import { AkButton, AkScope, AkTabs } from "@mooncellwiki/akds-vue"`（`packages/vue/`）；组件不带样式，样式按宿主来，三种宿主上看起来一样（文档站 /guide/vue#样式从哪来）：
   - prts.wiki · AKDS 皮肤：皮肤已加载全套，什么都不用做；
-  - prts.wiki · 其它皮肤（Vector 2022 …）：widget 挂载前 `await mw.loader.using(["skins.akds.components"])`（令牌 + 作用域 + 组件一个模块就齐；AKDS 皮肤上是空操作），根节点包 `<AkScope>`（= `class="ak-scope"`）；
+  - prts.wiki · 其它皮肤（Vector 2022 …）：widget 挂载前 `await mw.loader.using(["skins.arknights.components"])`（Skin:Arknights 注册的模块，令牌 + 作用域 + 组件一个模块就齐；AKDS 皮肤上是空操作；仓库内 `skin/` 骨架里叫 `skins.akds.components`），根节点包 `<AkScope>`（= `class="ak-scope"`）；
   - 站外：`import "@mooncellwiki/akds-css"`（= `standalone.css`，不含字体与素材），根节点包 `<AkScope>`；`<AkScope theme="dark|light">` 可局部固定主题。
 
 ## 重新生成

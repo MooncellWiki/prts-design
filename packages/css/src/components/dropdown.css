@@ -2,6 +2,7 @@
 /* ═══ Dropdown / Menu ═══ */
 .ak-dropdown { position: relative; display: inline-block; }
 .ak-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; z-index: var(--ak-z-dropdown);
+  max-width: min(92vw, 360px); max-height: min(70vh, 560px); overflow-y: auto; overscroll-behavior: contain;   /* 长菜单（MW 工具箱 + Gadget 追加的项）在卡片内滚，不撑出视口 */
   background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0; margin: 0; list-style: none; }
 .ak-menu--right { left: auto; right: 0; }
 .ak-menu li::before { display: none !important; }

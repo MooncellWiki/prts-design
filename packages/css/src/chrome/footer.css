@@ -3,7 +3,7 @@
 /* 页脚和页眉一样是「框」：两套主题下都黑，读 --ak-chrome-*（此前读 --ak-bg-inverse——那是给反白组件用的，暗色下是白；显式选 night 时有覆盖、跟随系统为暗时没有，页脚就白了） */
 .ak-footer { background: var(--ak-chrome-bg-solid); color: var(--ak-chrome-fg); margin-top: auto; position: relative; overflow: hidden; }
 .ak-footer::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: repeating-linear-gradient(-45deg, var(--ak-theme-accent) 0 12px, transparent 12px 24px); opacity: .9; }
-.ak-footer__inner { max-width: 1680px; margin: 0 auto; padding: var(--ak-space-10) var(--ak-gutter) var(--ak-space-6); box-sizing: border-box; display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: var(--ak-space-8); }
+.ak-footer__inner { max-width: 1680px; margin: 0 auto; padding: var(--ak-space-10) var(--ak-gutter) var(--ak-space-6); box-sizing: border-box; display: grid; grid-auto-flow: column; grid-template-columns: 1.4fr; grid-auto-columns: 1fr; gap: var(--ak-space-8); }   /* 品牌占显式的 1.4fr 列，后面每个 .ak-footer__col 各得一条隐式 1fr 列：列数由内容定（预览三列，MW 皮肤只有一列 #footer-places） */
 .ak-footer__brand .ak-header__wordmark { font-size: 26px; }
 .ak-footer__brand p { font-size: var(--ak-fs-xs); opacity: .6; max-width: 40ch; margin: 12px 0 0; line-height: 1.7; }
 .ak-footer__col h4 { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; opacity: .55; margin: 0 0 12px; }

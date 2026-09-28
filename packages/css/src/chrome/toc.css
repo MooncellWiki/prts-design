@@ -22,3 +22,17 @@
 .ak-toc .tocnumber { display: none; }
 .ak-toc__progress { height: 2px; background: var(--ak-border); margin: 0 0 8px; overflow: hidden; }
 .ak-toc__progress > i { display: block; height: 100%; width: var(--_p, 0%); background: var(--ak-accent); transition: width .1s linear; }
+/* ── 皮肤按核心 data-toc 渲染出的目录（Skin:Arknights）比预览多几样：一级项加粗；父项右侧的折叠钮（标题多时默认收起子节，$wgArknightsTableOfContentsCollapseAtCount）；
+ *    当前小节的祖先路径提亮；核心给的 .tocnumber 序号不显示。条目类名：li.ak-toc__item(--parent)(.is-collapsed)(.is-active-path) > a + button.ak-toc__toggle + ul */
+.ak-toc__inner > ul > li > a { font-weight: 600; color: var(--ak-fg-secondary); }   /* 一级项：比子节重一档 */
+.ak-toc li.is-active-path > a { color: var(--ak-fg); }
+.ak-toc li.ak-toc__item--parent > a { padding-right: 26px; }   /* 给折叠钮留位 */
+.ak-toc__num { display: none; }
+.ak-toc__toggle { position: absolute; top: 3px; right: 2px; width: 22px; height: 20px; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ak-fg-subtle); cursor: pointer; display: grid; place-items: center; }
+.ak-toc__toggle::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-1px) rotate(45deg); transition: transform var(--ak-dur-fast) var(--ak-ease); }
+.ak-toc__toggle:hover { color: var(--ak-accent); }
+.ak-toc__toggle:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ak-toc li { position: relative; }
+.ak-toc li.is-collapsed > .ak-toc__toggle::before { transform: translate(-1px, 0) rotate(-45deg); }
+.ak-toc li.is-collapsed > ul { display: none; }
+@media (prefers-reduced-motion: reduce) { .ak-toc__toggle::before { transition: none; } }

@@ -35,7 +35,7 @@
 .ak-palette__form input[type="search"], .ak-palette__form input[type="text"] { flex: 1; min-width: 0; height: var(--_head-h); margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; font: inherit; font-size: var(--ak-fs-body); line-height: var(--_head-h); outline: 0; box-shadow: none; appearance: none; -webkit-appearance: none; }
 .ak-palette__form input::placeholder { color: var(--ak-fg-subtle); }
 .ak-palette__form input::-webkit-search-cancel-button, .ak-palette__form input::-webkit-search-decoration { -webkit-appearance: none; display: none; }
-.ak-palette__form button, .ak-palette__form .searchButton, .ak-palette__form .ak-search__icon, .ak-palette__form .ak-search__kbd { display: none; }   /* 表单自带的图标 / 键帽 / 无 JS 提交按钮在面板里不需要 */
+.ak-palette__form button, .ak-palette__form .searchButton, .ak-palette__form .ak-search__icon, .ak-palette__form .ak-search__icon-wrap, .ak-palette__form .ak-search__kbd { display: none; }   /* 表单自带的图标（皮肤里可能包在 label.ak-search__icon-wrap 里，给 #searchInput 当可见标签）/ 键帽 / 无 JS 提交按钮在面板里不需要 */
 @supports (-webkit-touch-callout: none) { .ak-palette__form input[type="search"] { font-size: 16px; } }   /* iOS Safari：≥16px 才不会聚焦时自动缩放页面 */
 .ak-palette__clear, .ak-palette__close { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; min-width: 28px; padding: 0 4px; border: 1px solid transparent; background: transparent; color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-xs); cursor: pointer; }
 .ak-palette__clear:hover, .ak-palette__close:hover { color: var(--ak-fg); border-color: var(--ak-border-strong); }

@@ -2,7 +2,10 @@
 /* ═══ Page header ═══ */
 .ak-page-header { margin-bottom: var(--ak-space-5); }
 .ak-page-header__top { display: flex; align-items: center; gap: var(--ak-space-3); min-height: 24px; margin-bottom: 4px; }
-.ak-page-header__top .mw-indicators { margin-left: auto; float: none; }
+.ak-page-header__top:empty { display: none; }
+.ak-page-header__top .mw-indicators { display: flex; flex-wrap: wrap; gap: var(--ak-space-2); margin-left: auto; float: none; font-size: var(--ak-fs-xs); }   /* MW 页面状态指示器（<indicator>）：靠右一排 */
+.ak-page-header__top .mw-indicators:empty { display: none; }
+.ak-page-header__top .mw-indicator { display: inline-flex; align-items: center; }
 .ak-page-header__ns { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }   /* 同 .ak-card__eyebrow：命名空间是不可点的装饰小标签，不上青 */
 .ak-page-header__title, .skin-akds .mw-body h1#firstHeading, .skin-akds #firstHeading {
   font-family: var(--ak-font-body); font-size: var(--ak-fs-h1); font-weight: 800; line-height: 1.2; margin: 0;
@@ -10,6 +13,13 @@
 .ak-page-header__title .ak-en, #firstHeading .ak-en { display: block; font-size: .5em; color: var(--ak-fg-muted); margin-top: 2px; letter-spacing: var(--ak-tracking-caps); }
 .ak-page-header__title .mw-page-title-namespace { color: var(--ak-fg-muted); font-weight: 600; }
 .ak-page-header__title .mw-page-title-separator { color: var(--ak-fg-subtle); }
+.ak-page-header__title .mw-page-title-parenthesis { color: var(--ak-fg-muted); font-weight: 500; font-size: .7em; }
+/* 皮肤可以把 h1 包在 .ak-page-heading 里、下面挂一行 tagline（Skin:Arknights：「来自 PRTS」/ 按名字空间的说明）：色条与左内边距挪到包装上，h1 自己不再画 */
+.ak-page-heading { position: relative; flex: 1 1 auto; min-width: 0; padding-left: var(--ak-space-4); border-left: var(--ak-bar-w-lg) solid var(--ak-accent); }
+.ak-page-heading > .ak-page-header__title, .skin-akds .ak-page-heading > h1#firstHeading, .skin-akds .ak-page-heading > #firstHeading { padding-left: 0; border-left: 0; }
+.ak-page-heading--blank { display: none; }   /* 标题为空（MediaWiki:Mainpage-title = -） */
+.ak-page-heading__tagline { display: block; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin-top: 4px; line-height: 1.5; }
+.ak-page-heading__tagline:empty { display: none; }
 /* ── 标题行：h1 + 页面动作簇（Citizen 式）──
  * 标题 flex:1，簇靠右、底线与标题青条底对齐；标题很长时整簇换到标题下方。不再有整条下划线页签——簇里没有「当前」要标。
  * DOM 仍按 MW 菜单顺序（associated-pages → views → variants → 更多），显示顺序由 order 定：讨论 → 查看历史 → 编辑 / 查看源代码 → ★ → 变体 → 更多。 */
@@ -22,6 +32,7 @@
 /* 当前态（选中的命名空间页签「页面」、「阅读」）只留给读屏器——sr-only 而不是 display:none，accesskey 还在。
  * 它们只在不是当前态时才是一个动作：讨论页上出现「页面」、历史 / diff 页上出现「阅读」（diff 页 body 仍是 action-view，皮肤要用 :has(.diff) 把 #ca-view 放回来）。 */
 .ak-page-tabs li.selected { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.action-view:has(.diff, .mw-revision) .ak-page-tabs li#ca-view { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: nowrap; }   /* diff / oldid 页 body 仍是 action-view，核心把「阅读」标成 selected：这里把回到文章的那一个放回来（同 Citizen） */
 /* 32px 幽灵按钮：1px 透明框（实底 / 细框变体只换颜色，不改尺寸） */
 .ak-page-tabs li a, .ak-page-tools__btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border: 1px solid transparent; box-sizing: border-box; font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1; color: var(--ak-fg-secondary); text-decoration: none; white-space: nowrap; cursor: pointer; transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
 .ak-page-tabs li a:hover, .ak-page-tools__btn:hover { color: var(--ak-fg); background: var(--ak-bg-hover); text-decoration: none; }
@@ -40,6 +51,7 @@
 #ca-watch > a > span:not(.ak-icon), #ca-unwatch > a > span:not(.ak-icon) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 #ca-watch .ak-icon, #ca-unwatch .ak-icon { width: 20px; height: 20px; }
 #ca-unwatch .ak-icon { color: var(--ak-accent-2); }
+#ca-watch > a.loading .ak-icon, #ca-unwatch > a.loading .ak-icon { opacity: .4; }   /* mediawiki.page.watch.ajax 请求中 */
 /* 簇内顺序 */
 #p-associated-pages { order: 1; } #p-views { order: 2; } .ak-page-tools__variants { order: 3; } .ak-page-tools__more { order: 4; }
 #ca-history { order: 1; } #ca-viewsource, #ca-edit, #ca-ve-edit { order: 2; } #ca-watch, #ca-unwatch { order: 3; }
@@ -53,3 +65,4 @@
 .ak-page-tools__card a:hover .ak-icon { color: var(--ak-fg); }
 /* Content sub / redirected from */
 .ak-page-header__sub { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin: 6px 0 0; }
+.ak-page-header__sub:empty { display: none; }
