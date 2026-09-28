@@ -84,6 +84,8 @@ html.dark {
 .VPSocialLink, .VPFlyout .menu, .VPMenu, .VPNavScreenAppearance, .vp-doc :not(pre) > code { border-radius: 0 !important; }
 .VPSwitch .check { border-radius: 0 !important; }
 .vp-doc div[class*="language-"] { border: 1px solid var(--ak-border); }   /* 代码块细框，同皮肤 pre */
+/* 首页特性卡：默认底 / 框都是 --vp-c-bg-soft（surface-2，亮色下与画布同色）；同 .akd-card——surface 底 + 细框 */
+.VPFeatures .VPFeature { background: var(--ak-bg-surface); border-color: var(--ak-border); }
 
 /* 正文标题：左侧色条（同 wiki 正文 h2） */
 .vp-doc h2 { border-top: 0; margin-top: 48px; padding: 0 0 0 12px; border-left: var(--ak-bar-w) solid var(--ak-accent); line-height: 1.3; }
