@@ -71,7 +71,6 @@ cats: 首页
 .mp-hero__caption { position: relative; flex: none; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 24px; align-items: end; padding: 14px 20px 18px; }
 .mp-hero__caption::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: radial-gradient(rgba(255,255,255,.16) 1.2px, transparent 1.3px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(270deg, #000, transparent 45%); mask-image: linear-gradient(270deg, #000, transparent 45%); opacity: .5; pointer-events: none; }   /* 右侧半调网点向左渐隐（游戏 bkg_openserver） */
 .mp-hero__eyebrow { display: flex; align-items: center; gap: 8px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-cyan-500); }
-.mp-hero__slide.is-live .mp-hero__eyebrow::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--ak-red-500); animation: ak-blink 1.2s step-end infinite; }
 .mp-hero__title { font: 800 var(--ak-fs-h2)/1.2 var(--ak-font-body); color: #fff; margin: 4px 0 0; border: 0; padding: 0; letter-spacing: .01em; }
 .mp-hero__title::after { display: none; }
 .mp-hero__title a { color: inherit; text-decoration: none; }
@@ -286,12 +285,15 @@ cats: 首页
 @media (max-width: 959px) {
   .mp-hero { grid-template-columns: 1fr; }
   .mp-hero__stage { border-right: 0; border-bottom: 1px solid #2f3133; }
-  .mp-hero__list { flex-direction: row; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }   /* 候选列表横着滚：一行缩略图；进度条仍在当前项底边 */
+  .mp-hero__list { flex-direction: row; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }   /* 候选列表横着滚：一行缩略图；选中条 + 进度条合成当前项顶边一条 */
   .mp-hero__list::-webkit-scrollbar { display: none; }
   .mp-hero__list > li { flex: 0 0 188px; border-bottom: 0; border-right: 1px solid #2f3133; }
-  .mp-hero__list > li.is-active::after { bottom: 0; }
   .mp-hero__item { grid-template-columns: 1fr; gap: 6px; padding: 8px 10px 10px; border-left: 0; border-top: 3px solid transparent; }
-  .mp-hero__list > li.is-active .mp-hero__item { border-left: 0; border-top-color: var(--ak-cyan-500); }
+  /* 手机上选中条和进度条都是横的，一上一下会像给卡片描了个框；合成一条：顶边选中条压暗当轨道，进度用亮青在同一条上从左往右填 */
+  .mp-hero__list > li.is-active .mp-hero__item { border-left: 0; border-top-color: rgba(24,209,255,.32); }
+  .mp-hero__list > li.is-active::after { top: 0; bottom: auto; height: 3px; }
+  .mp-hero.is-stopped .mp-hero__list > li.is-active .mp-hero__item { border-top-color: var(--ak-cyan-500); }   /* 手动暂停：填充收起、轨道变实色 = 纯「当前项」条 */
+  .mp-hero.is-stopped .mp-hero__list > li.is-active::after { display: none; }
   .mp-hero__thumb { width: 100%; height: 54px; }
   .mp-hero__list .ak-tag { position: absolute; right: 8px; top: 12px; }
   .mp-hero__item { position: relative; }
@@ -330,7 +332,7 @@ cats: 首页
   <div class="mp-hero__stage">
     <div class="swiper mp-hero__swiper" id="mp-hero-swiper">
       <div class="swiper-wrapper">
-      <div class="swiper-slide mp-hero__slide is-live">
+      <div class="swiper-slide mp-hero__slide">
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-qixiang.jpg" alt=""><img src="assets/mainpage/banner-qixiang.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
@@ -352,7 +354,7 @@ cats: 首页
           <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">活动预告</a><a class="ak-btn" href="#">游戏内容前瞻</a></div>
         </div>
       </div>
-      <div class="swiper-slide mp-hero__slide is-live">
+      <div class="swiper-slide mp-hero__slide">
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-ra-anchor.jpg" alt=""><img src="assets/mainpage/banner-ra-anchor.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
@@ -374,7 +376,7 @@ cats: 首页
           <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">主题页面</a><a class="ak-btn" href="#">集成战略一览</a></div>
         </div>
       </div>
-      <div class="swiper-slide mp-hero__slide is-live">
+      <div class="swiper-slide mp-hero__slide">
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-core14.jpg" alt=""><img src="assets/mainpage/banner-gacha-core14.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
@@ -385,7 +387,7 @@ cats: 首页
           <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">寻访模拟</a><a class="ak-btn" href="#">卡池一览</a></div>
         </div>
       </div>
-      <div class="swiper-slide mp-hero__slide is-live">
+      <div class="swiper-slide mp-hero__slide">
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-joint23.jpg" alt=""><img src="assets/mainpage/banner-gacha-joint23.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
