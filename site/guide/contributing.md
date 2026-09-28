@@ -74,7 +74,7 @@ preview/
 site/                         本文档站（VitePress）
 .storybook/                   Storybook（整页样例 story 在 pages/）
 scripts/                      fetch-*.py · fetch-vector-css.ts · build-preview.py · build-dist.py · build-site.sh · css-order.ts · sprite-sync.ts
-e2e/                          Playwright Test：hosts / snapshots / stories / docs 四组（配置在 playwright.config.ts；support/ 是静态服务与计算样式快照）
+e2e/                          Playwright Test：hosts / snapshots / stories 三组（配置在 playwright.config.ts；support/ 是静态服务与计算样式快照）
 ```
 
 ## 改 CSS 之后
@@ -96,4 +96,4 @@ python3 scripts/build-preview.py           # 改了 preview/_src/pages/gallery.h
 pnpm e2e --project=hosts                   # 对照页 preview/gallery.html 在 akds / vector / bare × 暗 / 亮 下拍快照并比对
 ```
 
-`hosts` 以 AKDS 皮肤（`?host=akds`）为基准，每个 `[data-gallery]` 块里的元素在 Vector 2022（夹具 + `standalone.css` + 站点自定义样式 `site.css`——MW 上动态加载的模块插在 `site.styles` 之前，所以 Common.css 排在组件样式之后）与站外（只有 `standalone.css`）上必须逐属性相同，否则列出不同的元素 / 属性、用例失败；白名单写在 `e2e/hosts.spec.ts` 里、逐条注明原因（道具底框素材、正文标题的锚点偏移、Vector 自己的减弱动效规则）。静态之外再比一轮交互态：块里的链接 / 控件逐个用 CDP 强制 `:hover` / `:focus-visible` / `:visited`（快照里路径带 `[hover]` 等前缀，不含伪元素）。没覆盖的：`:active`、强制色模式、窄视口、真实的键盘焦点顺序。CI 的 e2e 流水线（`.github/workflows/e2e.yml`，与部署分开、不挡部署）每次推送 / PR 跑它，连同 Storybook 每个 story 与文档站每一页的自检（`--project=stories` / `--project=docs`，测组装好的 `_site`）。测试一律不出网（`e2e/support/test.ts` 在浏览器里拦下外站请求），Vector 夹具入库，CI 不访问 prts.wiki；重抓夹具（prts.wiki 的 WAF 按指纹拦非浏览器客户端，Playwright 的 headless shell 也拦，所以脚本用本机的 Google Chrome）是维护时的手动操作。浏览器里直接看：`preview/gallery.html?host=vector&theme=light`；Storybook 工具栏的「宿主」同一张表。差异多半落在：组件靠了 `base/` 的规则或 body 的继承（组件自己补声明，用令牌）、组件标题是 `h1`–`h6` 却没有标签限定的选择器、宿主的元素规则漏进组件（`scope.css` 的重置）、链接型组件的根节点颜色没写到 `:hover` / `:visited` 上。
+`hosts` 以 AKDS 皮肤（`?host=akds`）为基准，每个 `[data-gallery]` 块里的元素在 Vector 2022（夹具 + `standalone.css` + 站点自定义样式 `site.css`——MW 上动态加载的模块插在 `site.styles` 之前，所以 Common.css 排在组件样式之后）与站外（只有 `standalone.css`）上必须逐属性相同，否则列出不同的元素 / 属性、用例失败；白名单写在 `e2e/hosts.spec.ts` 里、逐条注明原因（道具底框素材、正文标题的锚点偏移、Vector 自己的减弱动效规则）。静态之外再比一轮交互态：块里的链接 / 控件逐个用 CDP 强制 `:hover` / `:focus-visible` / `:visited`（快照里路径带 `[hover]` 等前缀，不含伪元素）。没覆盖的：`:active`、强制色模式、窄视口、真实的键盘焦点顺序。CI 的 e2e 流水线（`.github/workflows/e2e.yml`，与部署分开、不挡部署）每次推送 / PR 跑它，连同 Storybook 每个 story 的自检（`--project=stories`，测 `pnpm build:storybook` 构建好的 `_build/storybook`）。测试一律不出网（`e2e/support/test.ts` 在浏览器里拦下外站请求），Vector 夹具入库，CI 不访问 prts.wiki；重抓夹具（prts.wiki 的 WAF 按指纹拦非浏览器客户端，Playwright 的 headless shell 也拦，所以脚本用本机的 Google Chrome）是维护时的手动操作。浏览器里直接看：`preview/gallery.html?host=vector&theme=light`；Storybook 工具栏的「宿主」同一张表。差异多半落在：组件靠了 `base/` 的规则或 body 的继承（组件自己补声明，用令牌）、组件标题是 `h1`–`h6` 却没有标签限定的选择器、宿主的元素规则漏进组件（`scope.css` 的重置）、链接型组件的根节点颜色没写到 `:hover` / `:visited` 上。

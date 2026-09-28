@@ -1,6 +1,6 @@
 /**
  * Storybook 自检：每个 story 渲染成功（#storybook-root 有内容、没有 Storybook 的错误页），控制台没有错误 / 警告、没有失败的请求；截图进报告（CI 上只截失败的）。
- * 测的是 _site/storybook（bash scripts/build-site.sh _site 组装的 Pages 站点，与上线的是同一份；没有就跳过）。不出网：story 里 media.prts.wiki 的图在浏览器里拦下（support/test.ts）。
+ * 测的是构建好的 _build/storybook（pnpm build:storybook；Pages 上的 /storybook/ 就是它；没有就跳过）。不出网：story 里 media.prts.wiki 的图在浏览器里拦下（support/test.ts）。
  *
  *   pnpm e2e --project=stories                   全部
  *   pnpm e2e --project=stories -g components-chip   按 story id（= 注册表 storybook 字段）挑
@@ -9,24 +9,23 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { collectProblems, shouldShoot } from './support/problems.ts';
-import { SITE_BASE } from './support/server.ts';
 import { test, expect } from './support/test.ts';
 
 const THEME = process.env.THEME ?? 'dark';
-const index = resolve(import.meta.dirname, '../_site/storybook/index.json');
+const index = resolve(import.meta.dirname, '../_build/storybook/index.json');
 const stories = existsSync(index)
   ? Object.values((JSON.parse(readFileSync(index, 'utf8')) as { entries: Record<string, { id: string; type: string; title: string; name: string }> }).entries).filter(e => e.type === 'story')
   : [];
 
 test.describe.configure({ mode: 'parallel' });
 
-if (!stories.length) test('Storybook', () => test.skip(true, '没有 _site/storybook：先 bash scripts/build-site.sh _site'));
+if (!stories.length) test('Storybook', () => test.skip(true, '没有 _build/storybook：先 pnpm build:storybook'));
 
 for (const s of stories) {
   test(`${s.id}（${s.title} / ${s.name}）`, async ({ page }, testInfo) => {
     const problems = collectProblems(page, testInfo);
     await page.setViewportSize({ width: 1200, height: 800 });
-    await page.goto(`${SITE_BASE}storybook/iframe.html?id=${s.id}&viewMode=story&globals=theme:${THEME}`, { waitUntil: 'networkidle' });
+    await page.goto(`/storybook/iframe.html?id=${s.id}&viewMode=story&globals=theme:${THEME}`, { waitUntil: 'networkidle' });
     const state = await page.waitForFunction(() => {
       const err = document.querySelector<HTMLElement>('.sb-show-errordisplay .sb-errordisplay');
       if (err) return { ok: false, text: err.innerText.slice(0, 600) };

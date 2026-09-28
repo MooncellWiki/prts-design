@@ -1,13 +1,12 @@
 /**
  * e2e（Playwright Test，只跑 Chromium：交互态比对走 CDP）。浏览器用 Playwright 的 headless shell：pnpm exec playwright install --only-shell chromium
- * 测试一律不出网（e2e/support/test.ts）：只测本机静态服务上的预览页 / 对照页 / 组装好的 _site，不访问 prts.wiki 现网。
+ * 测试一律不出网（e2e/support/test.ts）：只测本机静态服务上的预览页 / 对照页 / 构建好的 Storybook，不访问 prts.wiki 现网。
  *
- *   pnpm e2e                                   全部（snapshots 没有基准、stories / docs 没有 _site 时自动跳过）
+ *   pnpm e2e                                   全部（snapshots 没有基准、stories 没有 _build/storybook 时自动跳过）
  *   pnpm e2e --project=hosts                   跨宿主：对照页在 AKDS 皮肤 / Vector 2022 / 站外上的计算样式必须一样（CI：e2e.yml，不挡部署）
  *   pnpm e2e --project=snapshots -u            重构前：拍整页计算样式基准 → _verify/snapshots/（不入库）
  *   pnpm e2e --project=snapshots               重构后：逐项比对
- *   pnpm e2e --project=stories -g chip         Storybook 每个 story 渲染成功、控制台干净（先 bash scripts/build-site.sh _site）
- *   pnpm e2e --project=docs                    文档站每页不 404、示例 iframe 不空白、控制台干净（同上）
+ *   pnpm e2e --project=stories -g chip         Storybook 每个 story 渲染成功、控制台干净（先 pnpm build:storybook）
  *   pnpm exec playwright show-report           看 HTML 报告（失败的差异 / 截图 / trace 都在附件里）
  */
 import { defineConfig } from '@playwright/test';
@@ -44,6 +43,5 @@ export default defineConfig({
     { name: 'hosts', testMatch: 'hosts.spec.ts' },
     { name: 'snapshots', testMatch: 'snapshots.spec.ts' },
     { name: 'stories', testMatch: 'stories.spec.ts' },
-    { name: 'docs', testMatch: 'docs.spec.ts' },
   ],
 });

@@ -1,12 +1,12 @@
 import type { Page, TestInfo } from '@playwright/test';
 
-/** 截图进报告：本地每个都截（报告就是一份总览），CI 上只截失败的（每页都截报告有六十多 MB） */
+/** 截图进报告：本地每个都截（报告就是一份总览），CI 上只截失败的（附件小） */
 export const shouldShoot = (testInfo: TestInfo) => !process.env.CI || testInfo.errors.length > 0;
 
 /**
  * 收集控制台错误 / 警告、未捕获异常、失败的请求与 HTTP 4xx / 5xx（favicon 404、Vite / DevTools 提示之类的噪声除外）。
  * 不算问题的：net::ERR_BLOCKED_BY_CLIENT（测试不出网，外站请求是 support/test.ts 拦的，只在注解里记个数）；
- * net::ERR_ABORTED（请求被取消：示例 iframe 重新装载、图片换了地址）。
+ * net::ERR_ABORTED（请求被取消：页面重新装载、图片换了地址）。
  */
 export function collectProblems(page: Page, testInfo: TestInfo) {
   const problems: string[] = [];

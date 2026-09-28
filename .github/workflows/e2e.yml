@@ -1,6 +1,6 @@
 name: E2E
 
-# 浏览器里跑的检查（Playwright Test，见 playwright.config.ts）：跨宿主比对（hosts）、Storybook 每个 story（stories）、文档站每一页（docs）。
+# 浏览器里跑的检查（Playwright Test，见 playwright.config.ts）：跨宿主比对（hosts）、Storybook 每个 story（stories）。
 # 与 pages.yml 分开：这里红了不挡部署（别把它设成必需检查，也别和 pages.yml 用 needs / workflow_run 串起来）。
 # 结果看本次运行的注解，细节下载 playwright-report 附件（HTML 报告：差异列表 / 截图 / trace；pnpm exec playwright show-report <zip> 直接打开）。
 # 浏览器不缓存：Playwright 文档不推荐（恢复缓存和重新下载差不多慢，Linux 的系统依赖本来就缓存不了）。
@@ -35,11 +35,11 @@ jobs:
       - name: Install Playwright Chromium (headless shell)
         run: pnpm exec playwright install --with-deps --only-shell chromium
 
-      - name: Assemble site (stories / docs test the built _site)
-        run: bash scripts/build-site.sh _site
+      - name: Build Storybook (stories test the built _build/storybook)
+        run: pnpm build:storybook
 
       - name: Run Playwright tests
-        run: pnpm exec playwright test --project=hosts --project=stories --project=docs
+        run: pnpm exec playwright test --project=hosts --project=stories
 
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}

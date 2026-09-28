@@ -53,7 +53,7 @@ skin/               MediaWiki 皮肤骨架：skin.json（样式模块 skins.akds
 preview/            预览站（home / operator 两张整页样例 + gallery 跨宿主对照页（?host=akds|vector|bare，骨架是 _src/gallery-skeleton.html），scripts/build-preview.py 从 _src/ 生成：_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js + assets/（torappu 解包的游戏图标 / 现网拼好的道具图 item/framed/ / 头图 keyart/ / 首页素材 mainpage/ / 页脚徽章 badge/ / 模组图 module/ …）+ vendor/（Swiper 11、现网 Widget:CharinfoV2 快照、jQuery 3.7.1，各见其 NOTICE.md；vector/ 是 Vector 2022 样式夹具，脚本抓取，入库只作回归测试、不随站点发布）
 dist/               单文件打包（图片 + 拉丁字体内联，思源黑体指回 ../src/fonts/；scripts/build-dist.py 生成）
 scripts/            fetch-*.py（字体 / 道具图 / 底框 / Widget 快照）· fetch-vector-css.ts（Vector 2022 样式夹具）· build-preview.py（_src → preview/*.html）· build-dist.py · build-site.sh（组装 Pages 站点）· css-order.ts（skin.json ↔ index.css 同序，按 MW 的字母序加载核；scope.css 的裸控件副本 ↔ base/forms.css）· sprite-sync.ts（三处图标 sprite 一致）
-e2e/                Playwright Test（playwright.config.ts）：hosts.spec.ts 跨宿主比对 · snapshots.spec.ts 整页计算样式快照 · stories.spec.ts / docs.spec.ts Storybook 与文档站自检（测 _site）· support/（静态服务、计算样式快照、控制台收集）
+e2e/                Playwright Test（playwright.config.ts）：hosts.spec.ts 跨宿主比对 · snapshots.spec.ts 整页计算样式快照 · stories.spec.ts Storybook 每个 story 自检（测 _build/storybook）· support/（静态服务、计算样式快照、控制台收集）
 ```
 
 ## 三句话看懂这套系统
@@ -94,7 +94,7 @@ pnpm exec playwright install --only-shell chromium     # e2e 的浏览器：Play
 node scripts/fetch-vector-css.ts                       # 现网 Vector 2022 的皮肤 + 扩展样式 → preview/vendor/vector/vector.css，站点自定义样式 → site.css（回归夹具，入库、不随站点发布；e2e 不出网、CI 不抓，现网 MW 升级或 Common.css 改了再本地重抓提交；prts.wiki 的 WAF 拦 curl / urllib 与 headless shell，所以用本机的 Google Chrome 取）
 pnpm e2e --project=hosts                               # 跨宿主：对照页 preview/gallery.html 在 AKDS 皮肤 / Vector 2022 / 站外 × 暗 / 亮 下逐元素比对（静态 + :hover / :focus-visible / :visited），组件的计算样式必须一样（白名单写在 e2e/hosts.spec.ts 里）；e2e.yml 每次推送 / PR 跑，不挡部署
 pnpm e2e --project=snapshots [-u]                      # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照：重构 CSS 前 -u 拍基准（_verify/snapshots/），改完再跑一遍比对，保证视觉零变化
-pnpm e2e --project=stories · --project=docs            # Storybook 每个 story / 文档站每一页：渲染成功、示例不空白、控制台干净（测组装好的 _site，先 pnpm build:site；-g 按 story id / 路径挑）
+pnpm e2e --project=stories                             # Storybook 每个 story 渲染成功、控制台干净（测构建好的 _build/storybook，先 pnpm build:storybook；-g 按 story id 挑）
 pnpm exec playwright show-report                       # e2e 的 HTML 报告：失败的差异列表、截图、trace 都在附件里
 python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → packages/css/src/fonts/ + fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/fetch-item-framed.py                   # 现网拼好的道具图 道具_带框_<名>.png → preview/assets/item/framed/<id>.png（扫各页用到的 id，manifest 查名，按文件名 md5 算 media 路径；已有的跳过，--force 重抓）
