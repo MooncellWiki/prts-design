@@ -56,13 +56,18 @@ html.dark {
   /* 开关变量在 :root 上已按正文令牌解析好了，得在顶栏里重声明一次 */
   --vp-input-switch-bg-color: var(--ak-chrome-field);
   --vp-input-border-color: var(--ak-chrome-line-strong);
+  /* 窄屏 ≡ 面板（.VPNavScreen 在 .VPNav 里，文字已跟着读 chrome）：底色默认按 :root 的 --vp-c-bg 解析成画布，亮色下浅底浅字；同飞出菜单走栏底色 */
+  --vp-nav-screen-bg-color: var(--ak-chrome-bg-solid);
 }
 /* 外观开关的钮：默认是 --vp-c-neutral-inverse（亮色下白钮 + 顶栏浅色图标 = 看不见）；同 .ak-theme-toggle，强调色实底，明暗一致 */
 .VPNav .VPSwitch .check { background-color: var(--ak-theme-accent); box-shadow: none; }
 .VPNav .VPSwitch .check .icon [class^="vpi-"] { color: var(--ak-theme-accent-fg); }
-.VPNavBar,
-.VPNavBar.has-sidebar .content-body,
-.VPNavBar:not(.home.top) .content-body { background: var(--ak-chrome-bg-solid) !important; }
+.VPNavBar { background: var(--ak-chrome-bg-solid) !important; }
+/* content-body 高 = 栏高，刷底色会盖住 ≡ 打开时 .VPNavBar 的 1px 下边框（只剩两头露出来）；同 VitePress 只在 ≥960 刷 */
+@media (min-width: 960px) {
+  .VPNavBar.has-sidebar .content-body,
+  .VPNavBar:not(.home.top) .content-body { background: var(--ak-chrome-bg-solid) !important; }
+}
 .VPNavBar .divider-line { background: var(--ak-chrome-line) !important; }
 .VPNavBarTitle .title { font-family: var(--ak-font-display); font-weight: 800; letter-spacing: .08em; }
 .VPNavBarTitle .logo { filter: none; }
@@ -76,7 +81,7 @@ html.dark {
 .vp-doc div[class*="language-"],
 .vp-doc .custom-block,
 .VPButton, .VPFeature, .VPLocalSearchBox .shell, .DocSearch-Button, .VPNavBarSearch .DocSearch-Button, .VPSwitch,
-.VPSocialLink, .VPFlyout .menu, .VPMenu, .vp-doc :not(pre) > code { border-radius: 0 !important; }
+.VPSocialLink, .VPFlyout .menu, .VPMenu, .VPNavScreenAppearance, .vp-doc :not(pre) > code { border-radius: 0 !important; }
 .VPSwitch .check { border-radius: 0 !important; }
 .vp-doc div[class*="language-"] { border: 1px solid var(--ak-border); }   /* 代码块细框，同皮肤 pre */
 
