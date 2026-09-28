@@ -4,7 +4,7 @@
 .ak-dialog::backdrop { background: var(--ak-bg-overlay); backdrop-filter: blur(2px); }
 .ak-dialog--sm { max-width: 420px; } .ak-dialog--lg { max-width: 900px; } .ak-dialog--full { max-width: 96vw; height: 92vh; }
 .ak-dialog__head { display: flex; align-items: center; gap: var(--ak-space-3); padding: var(--ak-space-3) var(--ak-space-4); border: 0 solid var(--ak-border); border-width: 0 0 1px var(--ak-bar-w); border-image: linear-gradient(to right, var(--ak-accent) 4px, var(--ak-border) 4px) 0 0 1 4; }
-.ak-dialog__title { font-weight: 700; font-size: var(--ak-fs-body-lg); margin: 0; flex: 1; }
+.ak-dialog__title, :is(h1, h2, h3, h4, h5, h6).ak-dialog__title { font-weight: 700; font-size: var(--ak-fs-body-lg); margin: 0; flex: 1; }
 .ak-dialog__body { padding: var(--ak-space-4); max-height: 70vh; overflow: auto; }
 .ak-dialog__foot { display: flex; justify-content: flex-end; gap: var(--ak-space-2); padding: var(--ak-space-3) var(--ak-space-4); border-top: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); }
 .ak-dialog[open] { animation: ak-dialog-in var(--ak-dur-normal) var(--ak-ease); }

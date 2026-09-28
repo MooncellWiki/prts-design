@@ -3,6 +3,8 @@
 @media print {
   body { background: #fff; color: #000; }
   html body.skin-akds { color: #000; }   /* scope.css 的前景色挂在 body.skin-akds（0,1,1）上、且在 base/ 之后加载，要高一档才压得住 */
+  html .ak-scope { color: #000; }        /* 页面里包了 <AkScope> 的 widget 同理：.ak-scope 自带前景色（0,1,0），暗色页打印出来不能是浅字 */
+  html .ak-scope[data-theme] { background: #fff; }   /* 局部主题的画布底色不上纸 */
   .mw-editsection, .noprint, .catlinks, .mw-indicators, .toc { display: none !important; }
   a { color: inherit; text-decoration: underline; }
   .wikitable > * > tr > th { background: #eee; }

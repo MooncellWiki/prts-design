@@ -25,3 +25,4 @@
 /* 整卡是链接（<a class="ak-card ak-not-prose">，Vue AkCard 的 href）：not-prose 只把子孙 a 的下划线归零（:where(.ak-not-prose) a），
    <a> 自己还带着 UA 的下划线，这里去掉；与 .ak-op-card / .ak-stage 同做法 */
 a.ak-card { text-decoration: none; }
+a.ak-card:is(:visited, :hover, :active) { color: var(--ak-fg); }   /* 整张卡是链接时，宿主的 a:visited / a:hover (0,1,1) 压得过 .ak-card 的前景色（Vector 悬停会把没自带颜色的正文染蓝） */

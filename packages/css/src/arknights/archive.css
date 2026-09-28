@@ -15,6 +15,7 @@
 .ak-archive__foot > .ak-overline { margin-right: -10px; }
 .ak-archive__play { all: unset; display: inline-flex; align-items: center; gap: 10px; padding-right: 12px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); white-space: nowrap; }
 .ak-archive__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-archive__play:is(:visited, :active) { color: var(--ak-fg-inverse); }   /* 渲染成 <a> 时，宿主 / 正文的 a:visited、a:active (0,1,1) 压得过 all: unset 后的 (0,1,0) 颜色 */
 .ak-archive__play:hover > .ak-voice__play { background: transparent; color: inherit; }
 .ak-archive__play:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 .ak-archive__play > .ak-voice__play { pointer-events: none; }

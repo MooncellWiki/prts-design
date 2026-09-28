@@ -13,7 +13,7 @@
 .ak-module__type { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; background: var(--_bar); color: #fff; font: 800 var(--ak-fs-sm)/1 var(--ak-font-display); letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; }
 .ak-module__type img { height: 16px; width: auto; }
 .ak-module__type small { font-family: var(--ak-font-label); font-size: .72em; font-weight: 600; letter-spacing: .1em; opacity: .85; }
-.ak-module__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }
+.ak-module__name, :is(h1, h2, h3, h4, h5, h6).ak-module__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }
 .ak-module__hint { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-muted); cursor: help; border: 1px solid var(--ak-border-strong); padding: 3px 6px; }
 .ak-module__story { font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); line-height: 1.7; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .ak-module__main.is-open .ak-module__story { display: block; -webkit-line-clamp: unset; }

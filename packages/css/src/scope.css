@@ -32,16 +32,17 @@
 :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::-webkit-scrollbar-thumb { background: var(--ak-scrollbar); }
 :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::selection { background: var(--ak-selection); }
 :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *):where(:focus-visible) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+a:focus-visible:where(.ak-scope:not(.skin-akds *) *) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }   /* 链接单独一条 (0,1,1)：宿主的 a:focus-visible（Vector：outline: solid 2px #36c）是 (0,1,1)，上面压成 0 的那条压不过；组件自己的 .ak-x:focus-visible (0,2,0) 照样盖得过 */
 @media (prefers-reduced-motion: reduce) {
   :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *), :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::before, :where(.ak-scope:not(.skin-akds *), .ak-scope:not(.skin-akds *) *)::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
 /* 3. 宿主的元素级规则（Vector：h1–h6 的字号 / 外边距 / display: flow-root、li 的下外边距、img 的 vertical-align、code 的底色边框 …）
- *    在「组件自己的元素」（带 ak- 类的，以及组件元素直接包着的 <img>）和 not-prose 子树里退回浏览器默认（revert）——AKDS 的正文排版不进 not-prose，
+ *    在「组件自己的元素」（类名以 ak- 开头的——按词匹配，不是子串：break-* / track-* 这类正文类名不算；以及组件元素直接包着的 <img>）和 not-prose 子树里退回浏览器默认（revert）——AKDS 的正文排版不进 not-prose，
  *    组件元素上的正文规则也该被组件类盖掉：组件要的外边距 / 行高 / 字号自己写（hosts 比对里曾靠正文规则拿到的几处——技能名行高、键值表外边距——已补在组件里）。
  *    特指度 (0,0,1)，与宿主的元素规则相同、靠后加载；组件类照样盖得过它。
  *    表单控件不在这里（下一段给 AKDS 的裸控件外观）；not-prose 之外、不带 ak- 类的正文内容（段落 / 列表 / 链接）归宿主的正文排版，不动。 */
-:where(.ak-scope:not(.skin-akds *) *):where([class*="ak-"], .ak-not-prose *, [class*="ak-"] > img):is(h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, pre, code, kbd, samp, img, table, caption, th, td, blockquote, figure, figcaption, hr) {
+:where(.ak-scope:not(.skin-akds *) *):where([class^="ak-"], [class*=" ak-"], .ak-not-prose *, :is([class^="ak-"], [class*=" ak-"]) > img):is(h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, pre, code, kbd, samp, img, table, caption, th, td, blockquote, figure, figcaption, hr) {
   margin: revert; padding: revert; border: revert; border-radius: revert; background-color: revert; color: revert;
   font-family: revert; font-size: revert; font-weight: revert; line-height: revert;
   display: revert; list-style: revert; vertical-align: revert; white-space: revert; word-break: revert; overflow-wrap: revert;
@@ -49,12 +50,13 @@
 /* 宿主正文里带类名上下文的几条（Vector 2022：.mw-body p 的段距 (0,1,1)、.mw-parser-output a 的 word-wrap (0,1,1)）：同特指度压回——
  * 只在 not-prose 子树里的段落 / 组件与 not-prose 里的链接上，组件在这些元素上写外边距 / 断词都用不低于 (0,1,1) 的选择器 */
 :where(.ak-scope:not(.skin-akds *) *):is(.ak-not-prose p) { margin: revert; }
-:where(.ak-scope:not(.skin-akds *) *):is(.ak-not-prose a, a.ak-not-prose, a[class*="ak-"]) { overflow-wrap: revert; word-break: revert; }
+:where(.ak-scope:not(.skin-akds *) *):is(.ak-not-prose a, a.ak-not-prose, a:is([class^="ak-"], [class*=" ak-"])) { overflow-wrap: revert; word-break: revert; }
 
 /* 4. 裸控件：组件里的 <button> / <input> / <select> / <textarea>（.ak-btn、.ak-tab、分页、勾选 / 单选、开关 …）的底子是 base/forms.css 的裸控件规则
  *    （去掉原生外观、字体跟正文、勾选框 / 单选的自绘脸），这里给作用域补同一套——与 base/forms.css 逐条对应、同步改。
  *    特指度与 base/forms.css 完全相同（只在前面加一个 :where() 前缀）：两边都在组件之前加载，和组件规则谁压谁的结果才一样
- *    （如 :disabled:checked 那条 (0,2,0) 压过 .ak-switch > input 的 border: 0）。表格里的紧凑档（MW 正文专用）不搬。 */
+ *    （如 :disabled:checked 那条 (0,2,0) 压过 .ak-switch > input 的 border: 0）。表格里的紧凑档（MW 正文专用，选择器带 .mw-body-content）不搬。
+ *    scripts/css-order.ts 会把本段去掉 :where(.ak-scope:not(.skin-akds *) *) 前缀后逐条与 base/forms.css 对照：两边少一条、改一边都报错。 */
 :where(.ak-scope:not(.skin-akds *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"]), select, textarea) {
   box-sizing: border-box; max-width: 100%;
   font: inherit; font-size: var(--ak-fs-sm); font-weight: 400; line-height: 1.5;
@@ -86,7 +88,7 @@
 :where(.ak-scope:not(.skin-akds *) *):where(input[type="checkbox"], input[type="radio"]):disabled:checked { background: var(--ak-fg-disabled); border-color: var(--ak-fg-disabled); }
 :where(.ak-scope:not(.skin-akds *) *):where(select:not([multiple])) { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--ak-select-arrow); background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
 :where(.ak-scope:not(.skin-akds *) *):where(input[type="range"]) { accent-color: var(--ak-accent); vertical-align: middle; }
-:where(.ak-scope:not(.skin-akds *) *):is(label) { cursor: pointer; }
+label:where(.ak-scope:not(.skin-akds *) *) { cursor: pointer; }
 :where(.ak-scope:not(.skin-akds *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]) {
   box-sizing: border-box; appearance: none; -webkit-appearance: none;
   font-family: var(--ak-font-body); font-size: var(--ak-fs-sm); font-weight: 600; line-height: 20px;
@@ -96,14 +98,22 @@
 }
 :where(.ak-scope:not(.skin-akds *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]):hover { background: var(--ak-bg-hover); border-color: var(--ak-fg-muted); }
 :where(.ak-scope:not(.skin-akds *) *):where(button, input[type="button"], input[type="submit"], input[type="reset"]):disabled { color: var(--ak-fg-disabled); background: var(--ak-bg-surface-3); border-color: var(--ak-border); cursor: default; }
+/* iPhone：iOS Safari 对字号 <16px 的文本类控件聚焦时会把整页放大且不缩回，手机断点下提到 16px（= base/forms.css 同一条） */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 639px) {
+    :where(.ak-scope:not(.skin-akds *) *):where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"]), select, textarea) { font-size: 16px; }
+  }
+}
 
 /* 5. not-prose 隔离·链接：宿主皮肤的全局链接规则会把整块是链接的组件染成链接色——
  *   a（0,0,1）上链接色、a:visited / a:active（0,1,1）换色、a:hover / a:focus（0,1,1）画下划线。
  * AKDS 皮肤上用不着这段（base/typography.css 的正文链接规则自带 :not(:where(.ak-not-prose …))，not-prose 子树里没有要压的）。
  * 逐条与宿主同特指度、靠后加载压过宿主，不再高——组件自己的 a 规则都在本文件之后：
  *   a（0,0,1）：链接色退回继承、去下划线，组件类（0,1,0）照样盖得过；
- *   a:visited / a:active（0,1,1）：只退颜色。会盖过组件写在 a 本身上的（0,1,0）颜色，但宿主本来就盖过了——这里只是把链接紫换回继承色；
- *   a:hover / a:focus（0,1,1）：只去下划线，组件的悬停规则（.x:hover 0,2,0）照样生效。 */
+ *   a:visited / a:active / a:hover / a:focus（0,1,1）：退颜色、去下划线（Vector 的 a:hover 除下划线外还换色）。
+ * 这几条 (0,1,1) 会盖过组件写在 <a> 根节点上的 (0,1,0) 颜色——但宿主的同特指度规则本来就盖过了，这里只是把链接色换回继承色；
+ * 根节点颜色不是继承色的链接型组件（.ak-btn / .ak-stage-code / .ak-op-card / .ak-item …）自己把颜色规则写到 :hover / :visited / :active 上（0,2,0+），
+ * 与 AKDS 皮肤上的表现一致（那里 base/typography.css 的链接规则排除了 not-prose）。getComputedStyle 看不到 :visited，工具测不出来，只能靠这条约定。 */
 a:where(.ak-scope:not(.skin-akds *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; text-decoration: none; background: none; }
 a:is(:visited, :active):where(.ak-scope:not(.skin-akds *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; }
-a:is(:hover, :focus):where(.ak-scope:not(.skin-akds *) *):where(.ak-not-prose, .ak-not-prose *) { text-decoration: none; }
+a:is(:hover, :focus):where(.ak-scope:not(.skin-akds *) *):where(.ak-not-prose, .ak-not-prose *) { color: inherit; text-decoration: none; }

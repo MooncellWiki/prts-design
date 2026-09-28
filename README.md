@@ -52,7 +52,7 @@ site/               文档站（≈ primer.style，VitePress）：.vitepress/reg
 skin/               MediaWiki 皮肤骨架：skin.json（样式模块 skins.akds.base / components / fonts / shell 进皮肤的 styles——MW 按模块名字母序输出，字母序即层序；另有只给别的皮肤用的 skins.akds.tokens；逐文件列表由 scripts/css-order.ts 从 packages/css/src/index.css 同步）· templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源）（base/ components/ decor/ arknights/ chrome/ fonts/ img/ 与 tokens.css、bridge-codex.css、scope.css、utilities.css、共用 JS 为 src 的符号链接）· i18n
 preview/            预览站（home / operator 两张整页样例 + gallery 跨宿主对照页（?host=akds|vector|bare，骨架是 _src/gallery-skeleton.html），scripts/build-preview.py 从 _src/ 生成：_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js + assets/（torappu 解包的游戏图标 / 现网拼好的道具图 item/framed/ / 头图 keyart/ / 首页素材 mainpage/ / 页脚徽章 badge/ / 模组图 module/ …）+ vendor/（Swiper 11、现网 Widget:CharinfoV2 快照、jQuery 3.7.1，各见其 NOTICE.md；vector/ 是 Vector 2022 样式夹具，脚本抓取、不入库）
 dist/               单文件打包（图片 + 拉丁字体内联，思源黑体指回 ../src/fonts/；scripts/build-dist.py 生成）
-scripts/            fetch-*.py（字体 / 道具图 / 底框 / Widget 快照）· fetch-vector-css.ts（Vector 2022 样式夹具）· build-preview.py（_src → preview/*.html）· build-dist.py · build-site.sh（组装 Pages 站点）· css-order.ts（skin.json ↔ index.css 同序，按 MW 的字母序加载核）· sprite-sync.ts（三处图标 sprite 一致）· verify/（styles.ts 计算样式快照比对 + hosts 跨宿主比对 · stories.ts story / 文档页自检）
+scripts/            fetch-*.py（字体 / 道具图 / 底框 / Widget 快照）· fetch-vector-css.ts（Vector 2022 样式夹具）· build-preview.py（_src → preview/*.html）· build-dist.py · build-site.sh（组装 Pages 站点）· css-order.ts（skin.json ↔ index.css 同序，按 MW 的字母序加载核；scope.css 的裸控件副本 ↔ base/forms.css）· sprite-sync.ts（三处图标 sprite 一致）· verify/（styles.ts 计算样式快照比对 + hosts 跨宿主比对 · stories.ts story / 文档页自检）
 ```
 
 ## 三句话看懂这套系统
@@ -90,8 +90,8 @@ pnpm storybook                                         # Storybook 开发（:600
 pnpm typecheck                                         # vue-tsc
 node scripts/css-order.ts [--write]                    # 检查 / 同步 skin/skin.json 的样式列表与 packages/css/src/index.css 同序
 node scripts/verify/styles.ts snap <标签> · diff <A> <B> # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照与比对——重构 CSS 前后跑一遍，保证视觉零变化
-node scripts/fetch-vector-css.ts                       # 现网 Vector 2022 的皮肤 + 扩展样式 → preview/vendor/vector/vector.css（回归夹具，GPL，不入库；prts.wiki 的 WAF 拦 curl / urllib，所以用 puppeteer 开真浏览器取）
-node scripts/verify/styles.ts hosts                    # 跨宿主：对照页 preview/gallery.html 在 AKDS 皮肤 / Vector 2022 / 站外 × 暗 / 亮 下逐元素比对，组件的计算样式必须一样（白名单写在脚本里）；CI 每次跑
+node scripts/fetch-vector-css.ts                       # 现网 Vector 2022 的皮肤 + 扩展样式 → preview/vendor/vector/vector.css，站点自定义样式 → site.css（回归夹具，不入库；prts.wiki 的 WAF 拦 curl / urllib，所以用 puppeteer 开真浏览器取）
+node scripts/verify/styles.ts hosts                    # 跨宿主：对照页 preview/gallery.html 在 AKDS 皮肤 / Vector 2022 / 站外 × 暗 / 亮 下逐元素比对（静态 + :hover / :focus-visible / :visited），组件的计算样式必须一样（白名单写在脚本里）；CI 每次跑
 python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → packages/css/src/fonts/ + fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/fetch-item-framed.py                   # 现网拼好的道具图 道具_带框_<名>.png → preview/assets/item/framed/<id>.png（扫各页用到的 id，manifest 查名，按文件名 md5 算 media 路径；已有的跳过，--force 重抓）
 python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度底框（prts.wiki 文件:道具_背景_1–6.png，钉 media 路径）→ packages/css/src/img/item/bg_1–6.png（.ak-item--bare 用）

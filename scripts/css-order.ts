@@ -19,6 +19,8 @@
  *   (1) 皮肤 styles 里的模块按字母序拼起来，去掉「位置无关」的文件（只有 @font-face / 自定义属性 / color-scheme，挪到哪都一样）后，
  *       必须等于 index.css 的完整展开去掉同一批文件——即 MW 上的层叠顺序 = 单文件顺序；位置无关的文件本身也逐条检查确实只有这些声明。
  *   (2) standalone.css（npm 入口）展开后必须是 index.css 展开的子序列（同序，层叠结果与皮肤全套一致）。
+ *   (3) scope.css 第 4 段（别的宿主上补的裸控件外观）是 base/forms.css 裸控件规则的手抄副本：去掉作用域前缀后必须与 forms.css 里
+ *       不带类 / id 的规则一一对应（少一条、改一边都报错）——两边同步改。
  *
  *   node scripts/css-order.ts          检查 skin.json 是否与 index.css 同序（CI 用，不一致退出码 1）
  *   node scripts/css-order.ts --write  写回 skin.json（各模块的 styles 与皮肤的 styles 列表）
@@ -83,6 +85,24 @@ if (k !== standalone.length) {
   process.exitCode = 1;
 }
 
+// (3) scope.css 第 4 段 ↔ base/forms.css：去掉 :where(.ak-scope:not(.skin-akds *) *) 前缀后，与 forms.css 里不带类 / id 的规则（裸控件）集合相等
+const SCOPE_PREFIX = ':where(.ak-scope:not(.skin-akds *) *)';
+const rulesOf = (css: string) =>
+  [...css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@(supports|media)[^{]*\{/g, '').replace(/\s+/g, ' ').matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .map(m => [m[1].trim(), m[2].trim().replace(/;$/, '')] as const);
+const formsBare = new Set(rulesOf(await readFile(join(src, 'base/forms.css'), 'utf8')).filter(([sel]) => !/[.#]/.test(sel)).map(r => r.join(' { ') + ' }'));
+const scopeCss = await readFile(join(src, 'scope.css'), 'utf8');
+const [s4, s5] = [scopeCss.indexOf('/* 4. '), scopeCss.indexOf('/* 5. ')];   // 只看第 4 段（段标注释 /* 4. … /* 5.）
+if (s4 < 0 || s5 < s4) throw new Error('scope.css 里找不到「/* 4. 」「/* 5. 」两个段标，forms.css 副本校验无从下手');
+const scopeCopy = new Set(rulesOf(scopeCss.slice(s4, s5)).filter(([sel]) => sel.includes(SCOPE_PREFIX)).map(([sel, decl]) => [sel.replaceAll(SCOPE_PREFIX, '').trim(), decl] as const).map(r => r.join(' { ') + ' }'));
+const onlyForms = [...formsBare].filter(r => !scopeCopy.has(r)), onlyScope = [...scopeCopy].filter(r => !formsBare.has(r));
+if (onlyForms.length || onlyScope.length) {
+  console.error('scope.css 第 4 段与 base/forms.css 的裸控件规则不一致（两边要同步改）：');
+  for (const r of onlyForms) console.error(`  只在 forms.css：${r}`);
+  for (const r of onlyScope) console.error(`  只在 scope.css：${r}`);
+  process.exitCode = 1;
+}
+
 const path = join(root, 'skin/skin.json');
 const json = JSON.parse(await readFile(path, 'utf8'));
 const mods = json.ResourceModules;
@@ -104,5 +124,5 @@ if (process.argv.includes('--write')) {
   console.error('skin/skin.json 的样式列表与 src/index.css 不同序，跑 node scripts/css-order.ts --write');
   process.exitCode = 1;
 } else if (!process.exitCode) {
-  console.log(`skin.json 与 index.css 同序（${files.length} 个文件：${summary}）；standalone.css 是其子序列（${standalone.length} 个文件）`);
+  console.log(`skin.json 与 index.css 同序（${files.length} 个文件：${summary}）；standalone.css 是其子序列（${standalone.length} 个文件）；scope.css 的裸控件副本与 base/forms.css 一致（${formsBare.size} 条）`);
 }

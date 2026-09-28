@@ -10,6 +10,7 @@
 }
 .ak-btn:hover { --_bg: var(--ak-bg-surface-3); --_bd: var(--ak-fg-muted); text-decoration: none; color: var(--_fg); }
 .ak-btn:active { transform: translateY(1px); }
+.ak-btn:is(:visited, :active) { color: var(--_fg); }   /* 链接形态（<a>）：宿主 / 正文的 a:visited、a:active 是 (0,1,1)，压得过 .ak-btn 的颜色，这里 (0,2,0) 压回来（:hover 上面已写） */
 .ak-btn:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 .ak-btn:disabled, .ak-btn.is-disabled, .ak-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; pointer-events: none; }
 .ak-btn--primary { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); }

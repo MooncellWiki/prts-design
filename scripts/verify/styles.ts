@@ -8,6 +8,9 @@
  *   node scripts/verify/styles.ts hosts [标签]              → 跨宿主比对：对照页 preview/gallery.html 在 akds / vector / bare 三个宿主 × 暗 / 亮下拍快照
  *                                                              （_verify/<标签，默认 hosts>/gallery@<宿主>-<主题>.json），以 akds 为基准，
  *                                                              每个 [data-gallery] 里的元素（含伪元素）在另两个宿主上必须逐属性相同，否则退出码 1。
+ *                                                              交互态另比一轮：块里的链接 / 控件用 CDP 强制 :hover / :focus-visible / :visited，拍元素 + 子树的计算样式
+ *                                                              （快照里路径带 [hover] 等前缀；不含伪元素）。:visited 的颜色 getComputedStyle 出于隐私永远按未访问给，
+ *                                                              这一轮走 CSS.getComputedStyleForNode（DevTools 计算面板的那条路）。
  *                                                              vector 宿主要先 node scripts/fetch-vector-css.ts（夹具不入库；没有就只比 bare 并警告）
  *
  * 模式 = 主题（?theme=）× 视口 × 配色偏好；一律 prefers-reduced-motion: reduce（动画直接落到终态、首页轮播不自动播，快照才稳定）。
@@ -63,7 +66,7 @@ function serve(): Promise<{ url: string; close: () => void }> {
 }
 
 /* 在页面里跑：返回 { rows: [路径, 本体样式 id, ::before id, ::after id, (withClass 时) 类名][], table: 样式串[], tokens: {--ak-*: 值} } */
-function dump(skip: string, withClass = false) {
+function dump(skip: string, withClass = false, within?: string, tag?: string, pathsOnly = false) {   // within / tag / pathsOnly：交互态那轮只要子树的路径 / 类名，样式由 CDP 取，元素打上 data-ak-n=行号供对齐
   const table = new Map<string, number>();
   const intern = (s: string) => { let id = table.get(s); if (id === undefined) { id = table.size; table.set(s, id); } return id; };
   const ser = (cs: CSSStyleDeclaration) => {
@@ -84,9 +87,10 @@ function dump(skip: string, withClass = false) {
     return cs.content === 'none' || cs.content === 'normal' ? -1 : intern(ser(cs));
   };
   const rows: ([string, number, number, number] | [string, number, number, number, string])[] = [];
-  for (const el of document.querySelectorAll('html, html *')) {
+  for (const el of document.querySelectorAll(within ? `${within}, ${within} *` : 'html, html *')) {
     if (el.closest(skip) || el.closest('svg') && el.tagName.toLowerCase() !== 'svg') continue;
-    const row: [string, number, number, number] = [path(el), intern(ser(getComputedStyle(el))), pseudo(el, '::before'), pseudo(el, '::after')];
+    if (pathsOnly) el.setAttribute('data-ak-n', String(rows.length));
+    const row: [string, number, number, number] = [(tag ? `[${tag}] ` : '') + path(el), pathsOnly ? -1 : intern(ser(getComputedStyle(el))), pathsOnly ? -1 : pseudo(el, '::before'), pathsOnly ? -1 : pseudo(el, '::after')];
     rows.push(withClass ? [...row, el.getAttribute('class') ?? ''] : row);
   }
   const tokens: Record<string, string> = {};
@@ -193,16 +197,52 @@ const ALLOW: { hosts: HostName[]; el?: (tag: string, cls: string[]) => boolean; 
     why: 'AKDS 正文标题给固定页眉让出的锚点偏移（base/typography.css），只在皮肤页面上有意义，不影响渲染',
   },
   {
+    hosts: ['vector', 'bare'], el: (t, c) => t === 'a' && c.includes('ak-btn'), props: ['text-underline-offset', 'text-decoration-thickness'],
+    why: '链接形态的 .ak-btn 不标 ak-not-prose，AKDS 正文的 a:hover（base/typography.css）给了下划线偏移 / 粗细；.ak-btn:hover 没有下划线，看不见',
+  },
+  {
     hosts: ['vector'], props: ['animation-delay'],
     why: 'Vector 自己的减弱动效规则（* { animation-delay: -0.01ms !important }）：快照一律模拟 prefers-reduced-motion，平时不生效；动画时长仍由作用域的 .01ms 规则统一',
   },
 ];
 
 type Row = [string, number, number, number, string?];
-type HostSnap = { rows: Row[]; table: string[]; sections: string[] };
+type HostSnap = { rows: Row[]; table: string[]; sections: string[]; skipped?: string[] };
+/** 交互态：块里的链接 / 控件逐个强制伪类，拍元素 + 子树（不含伪元素）。悬停真移过去只能一个一个来、且带过渡；:visited 出于隐私 getComputedStyle 永远按未访问算——
+ *  都走 CDP：CSS.forcePseudoState 强制，CSS.getComputedStyleForNode 取值（DevTools「计算样式」面板的路，认强制的 :visited）。 */
+const STATES = ['hover', 'focus-visible', 'visited'];
+const INTERACTIVE = '[data-gallery] :is(a[href], button, input, select, textarea, [tabindex])';
+async function stateRows(page: import('puppeteer-core').Page, origin: string, intern: (s: string) => number): Promise<{ rows: Row[]; skipped: string[] }> {
+  const cdp = await page.createCDPSession();
+  await cdp.send('DOM.enable'); await cdp.send('CSS.enable');
+  const { root: doc } = await cdp.send('DOM.getDocument', { depth: 0 });
+  const n = await page.evaluate(sel => { const els = document.querySelectorAll(sel); els.forEach((el, i) => el.setAttribute('data-ak-st', String(i))); return els.length; }, INTERACTIVE);
+  const nodeOf = async (selector: string) => (await cdp.send('DOM.querySelector', { nodeId: doc.nodeId, selector })).nodeId;
+  const rows: Row[] = []; const skipped: string[] = [];
+  for (const state of STATES) {
+    try { await cdp.send('CSS.forcePseudoState', { nodeId: await nodeOf('[data-ak-st="0"]'), forcedPseudoClasses: [state] }); } catch { skipped.push(state); continue; }
+    for (let i = 0; i < n; i++) {
+      const sel = `[data-ak-st="${i}"]`;
+      const nodeId = await nodeOf(sel);
+      await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: [state] });
+      const meta = await page.evaluate(dump, SKIP, true, sel, state, true);
+      for (let k = 0; k < meta.rows.length; k++) {
+        const { computedStyle } = await cdp.send('CSS.getComputedStyleForNode', { nodeId: await nodeOf(`[data-ak-n="${k}"]`) });
+        const r = meta.rows[k] as Row;
+        r[1] = intern(computedStyle.filter(p => !p.name.startsWith('--')).map(p => `${p.name}:${p.value}`).join('\n').replaceAll(origin, ''));
+        rows.push(r);
+      }
+      await page.evaluate(() => document.querySelectorAll('[data-ak-n]').forEach(el => el.removeAttribute('data-ak-n')));
+      await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: [] });
+    }
+  }
+  await cdp.detach();
+  return { rows, skipped };
+}
 
 async function hostSnap(label: string): Promise<HostName[]> {
   const vectorOk = await readFile(join(root, 'preview/vendor/vector/vector.css')).then(() => true, () => false);
+  if (vectorOk && !(await readFile(join(root, 'preview/vendor/vector/site.css')).then(() => true, () => false))) console.warn('⚠ 夹具里没有 site.css（站点自定义样式，MW 上排在动态加载的组件样式之后）：夹具是旧版，重跑 node scripts/fetch-vector-css.ts');
   const hosts = HOSTS.filter(h => h !== 'vector' || vectorOk);
   if (!vectorOk) console.warn('⚠ 没有 Vector 样式夹具（preview/vendor/vector/vector.css），这次只比 akds ↔ bare；先跑 node scripts/fetch-vector-css.ts');
   const srv = await serve();
@@ -224,8 +264,11 @@ async function hostSnap(label: string): Promise<HostName[]> {
         await new Promise(r => setTimeout(r, 300));
         const data = await page.evaluate(dump, SKIP, true);
         const sections = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-gallery]')].map(s => s.dataset.gallery!));
-        await writeFile(join(dir, `gallery@${host}-${theme}.json`), JSON.stringify({ rows: data.rows, table: data.table, sections }));
-        console.log(`${label}  gallery@${host}-${theme}  ${data.rows.length} 元素 / ${data.table.length} 种样式 / ${sections.length} 块`);
+        const table = [...data.table]; const ids = new Map(table.map((s, i) => [s, i]));
+        const intern = (s: string) => { let id = ids.get(s); if (id === undefined) { id = table.length; table.push(s); ids.set(s, id); } return id; };
+        const states = await stateRows(page, srv.url, intern);
+        await writeFile(join(dir, `gallery@${host}-${theme}.json`), JSON.stringify({ rows: [...data.rows, ...states.rows], table, sections, skipped: states.skipped }));
+        console.log(`${label}  gallery@${host}-${theme}  ${data.rows.length} 元素 / ${data.table.length} 种样式 / ${sections.length} 块；交互态 ${states.rows.length} 行${states.skipped.length ? `（这版 Chrome 不能强制 :${states.skipped.join(' / :')}，跳过）` : ''}`);
         await page.close();
       }
     }
@@ -260,7 +303,7 @@ async function hostDiff(label: string, hosts: HostName[]) {
         for (const [slot, tag] of [[1, ''], [2, '::before'], [3, '::after']] as const) {
           const sa = ra[slot] < 0 ? undefined : base.table[ra[slot]], sb = rb[slot] < 0 ? undefined : other.table[rb[slot]];
           if (sa === sb) continue;
-          const short = `${p.replace(/^.*?(section:\d+)/, '$1')}${tag}${cls.length ? `  .${cls.join('.')}` : ''}`;
+          const short = `${p.replace(/^(\[[\w-]+\] )?.*?(section:\d+)/, '$1$2')}${tag}${cls.length ? `  .${cls.join('.')}` : ''}`;
           if (sa === undefined || sb === undefined) { add(sectionOf(base, p), `  ${short}\n      （伪元素只在 ${sa === undefined ? host : 'akds'}）`); continue; }
           const pa = props(sa), pb = props(sb);
           const d = [...new Set([...pa.keys(), ...pb.keys()])].filter(k => pa.get(k) !== pb.get(k)).filter(k => {

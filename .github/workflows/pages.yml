@@ -33,6 +33,7 @@ jobs:
           pnpm tokens
           git diff --exit-code -- packages/css/src/tokens.css packages/css/src/bridge-codex.css packages/tokens/tokens.css packages/tokens/tokens.json || { echo "::error::tokens.css / bridge-codex.css / tokens.json 与 packages/tokens/src 不一致，本地跑 pnpm tokens 后提交"; exit 1; }
 
+      - run: node scripts/css-order.ts   # skin.json 与 index.css 同序、standalone 是子序列、scope.css 的裸控件副本与 base/forms.css 一致
       - run: pnpm typecheck
 
       - name: Same look on every host (AKDS skin / Vector 2022 / off-wiki)

@@ -16,8 +16,9 @@
 皮肤的 `styles` 是 `skins.akds.base`、`skins.akds.components`、`skins.akds.fonts`、`skins.akds.shell` 四个。这么分是被两条 MediaWiki 的实现细节定下来的（`includes/ResourceLoader/ClientHtml.php` · `FileModule.php`，REL1_43；prts.wiki 现为 1.43.9）：
 
 - **皮肤 `styles` 里的模块在同一个 `load.php` 请求里按模块名字母序输出**——`ClientHtml::makeLoad()` 先 `sort($modules)`，不是 skin.json 里写的顺序。所以字母序就是层叠顺序：`base` < `components` < `fonts` < `shell`。骨架模块因此叫 `shell` 而不是 `chrome`（`chrome` 排在 `components` 前面，页眉就压不住组件了）；`fonts` 与令牌只有 `@font-face` / 自定义属性，排在哪都一样。
-  顺带：拆分之前的 `skins.akds.tokens`（`SkinModule` 特性 + `tokens.css` + `base/root.css`）其实排在 `skins.akds.styles` **之后**加载，核心 normalize / elements 的规则反而压在皮肤样式上面；现在 `base` 排第一，核心特性在最前。
+  顺带：拆分之前只有两个模块，带 `SkinModule` 特性的那个（当时叫 `skins.akds.tokens`，装着 `tokens.css` + `base/root.css`，与现在同名模块的内容无关）其实排在 `skins.akds.styles` **之后**加载，核心 normalize / elements 的规则反而压在皮肤样式上面；现在 `base` 排第一，核心特性在最前。
 - **带 `dependencies` 的模块不是 style-only**（`FileModule::getType()` → `LOAD_GENERAL`），放进皮肤 `styles` 会被跳过（日志里是 "Unexpected general module in styles queue"）。所以 `skins.akds.components` 不靠依赖拿令牌，而是自己带上 `tokens.css` + `scope.css`：别的皮肤 `mw.loader.using` 一个模块就齐；AKDS 皮肤上它已经在 `styles` 里（状态 ready），这行是空操作。
+- **动态加载的样式插在哪**：`mw.loader` 把样式 `<style>` 插在 `<meta name="ResourceLoaderDynamicStyles">` 之前——皮肤样式之后、`site.styles`（`MediaWiki:Common.css` / `Vector.css`，由 `OutputPage::buildExemptModules()` 输出在标记之后）之前。所以别的皮肤上 `skins.akds.components` 压得过 Vector 自己的规则，Common.css 里同特指度的规则却压得过它；对照页 / Storybook 的 Vector 宿主因此把现网 `site.styles` 抓成 `site.css` 排在组件样式之后一起比。
 
 ## 层序
 

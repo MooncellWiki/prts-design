@@ -16,6 +16,7 @@
     "./scope.css": "./src/scope.css",
     "./bridge-codex.css": "./src/bridge-codex.css",
     "./base/*": "./src/base/*",
+    "./base/skin-assets.css": null,
     "./components/*": "./src/components/*",
     "./decor/*": "./src/decor/*",
     "./arknights/*": "./src/arknights/*",

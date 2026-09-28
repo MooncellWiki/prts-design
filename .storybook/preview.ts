@@ -12,11 +12,13 @@ document.head.appendChild(document.createElement("style")).textContent = demoThe
 /**
  * 宿主（工具栏「宿主」）：同一个组件在三种页面上应当一模一样（对照页 preview/gallery.html 与 scripts/verify/styles.ts hosts 同一张表）——
  *   akds    皮肤全套 index.css（= prts.wiki 上的 Skin:Arknights）
- *   vector  Vector 2022 的样式夹具（scripts/fetch-vector-css.ts 抓取，不入库）+ standalone.css + fonts.css（= prts.wiki 上别的皮肤 + mw.loader.using("skins.akds.components")）
+ *   vector  Vector 2022 的样式夹具（scripts/fetch-vector-css.ts 抓取，不入库）+ standalone.css + fonts.css + 站点自定义样式 site.css（= prts.wiki 上别的皮肤 + mw.loader.using("skins.akds.components")；
+ *           MW 上动态加载的样式插在 site.styles 之前，所以 site.css 排在组件样式之后）
  *   bare    只有 standalone.css（= 站外页面 + npm 包）
  */
 type Host = "akds" | "vector" | "bare";
 const VECTOR_CSS = "./preview/vendor/vector/vector.css";
+const SITE_CSS = "./preview/vendor/vector/site.css";
 const WRAPPER: Record<Host, string> = {
   akds: "ak-scope mw-body-content mw-parser-output",
   vector: "vector-body mw-body-content mw-parser-output ak-scope",
@@ -24,6 +26,7 @@ const WRAPPER: Record<Host, string> = {
 };
 const sheet = document.head.appendChild(document.createElement("style"));
 const vectorLink = Object.assign(document.createElement("link"), { rel: "stylesheet", href: VECTOR_CSS });
+const siteLink = Object.assign(document.createElement("link"), { rel: "stylesheet", href: SITE_CSS });
 /** 夹具在不在：null = 还没查；没抓过就在 story 顶上提示一行，不报错 */
 const vectorOk = ref<boolean | null>(null);
 let host: Host | undefined;
@@ -33,12 +36,13 @@ function applyHost(next: Host) {
   host = next;
   sheet.textContent = next === "akds" ? akdsCss : next === "vector" ? fontsCss + standaloneCss : standaloneCss;
   document.documentElement.dataset.akdsHost = next; // preview-head.html：vector 宿主下画布让给 Vector 自己的底色
-  if (next !== "vector") return vectorLink.remove();
+  if (next !== "vector") { vectorLink.remove(); siteLink.remove(); return; }
   if (vectorOk.value === null)
     fetch(VECTOR_CSS, { method: "HEAD" })
       .then(r => (vectorOk.value = r.ok && !!r.headers.get("content-type")?.includes("css")))
       .catch(() => (vectorOk.value = false));
   document.head.insertBefore(vectorLink, sheet); // 宿主样式在前，组件样式在后（MW 上动态加载的模块也插在皮肤样式之后）
+  sheet.after(siteLink); // 站点自定义样式（Common.css …）在组件样式之后（MW 上动态加载的模块插在 site.styles 之前）
 }
 
 /** 同预览页 preview.js：终端（暗）/ 档案（亮）/ 跟随系统，MW 的 clientpref 类 + data-theme 两套一起打 */

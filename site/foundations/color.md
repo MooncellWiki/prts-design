@@ -8,7 +8,7 @@ Semantic   --ak-bg-surface / --ak-fg-muted / --ak-accent / --ak-link …  随主
 Bridge     --background-color-base / --color-progressive …           Codex / MW 令牌映射
 ```
 
-命名一律 `--ak-{group}-{name}`。源文件是 `packages/tokens/src/` 下的 JSON5（W3C DTCG 格式）；`pnpm tokens`（`packages/tokens/build.ts`，Style Dictionary）生成 `packages/css/src/tokens.css`（CSS 自定义属性；同一份复制到 `packages/tokens/tokens.css`，随 `@mooncellwiki/akds-tokens` 发布）、`packages/css/src/bridge-codex.css`（Codex 桥接，见下）与 `packages/tokens/tokens.json`（机器可读，下面的表都读它）——两者都是生成物，改令牌改 JSON5，CI 会检查生成物是否最新。
+命名一律 `--ak-{group}-{name}`。源文件是 `packages/tokens/src/` 下的 JSON5（W3C DTCG 格式）；`pnpm tokens`（`packages/tokens/build.ts`，Style Dictionary）生成 `packages/css/src/tokens.css`（CSS 自定义属性；同一份复制到 `packages/tokens/tokens.css`，随 `@mooncellwiki/akds-tokens` 发布）、`packages/css/src/bridge-codex.css`（Codex 桥接，见下）与 `packages/tokens/tokens.json`（机器可读，下面的表都读它）——这些都是生成物，改令牌改 JSON5，CI 会检查生成物是否最新。
 
 点色块复制 `var(--…)`。
 

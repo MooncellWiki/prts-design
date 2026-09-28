@@ -9,6 +9,7 @@
  *  数量角标同现网 .prts-item-quantity-label：压在右下角、骑在框沿上的粗体数字带描边光晕（亮色黑字白晕、暗色白字黑晕，晕色取 --ak-bg-surface 自动跟主题），不再是自己画的方框角标。
  *  这是整套系统里除单选之外唯一的圆：它不是 UI 盒子而是游戏素材本身（见文档站 /foundations/principles）。尺寸只改 --_s，框 / 图 / 角标字号 / 落点 / 头像全按比例走 */
 .ak-item { --_s: 56px; position: relative; display: inline-grid; place-items: center; width: var(--_s); height: var(--_s); vertical-align: middle; text-decoration: none; color: var(--ak-fg); }
+a.ak-item:is(:visited, :hover, :active) { color: var(--ak-fg); }   /* 链接版：数量角标等继承前景色，不能被宿主 / 正文的 a:visited、a:hover (0,1,1) 换色 */
 .ak-item > img { width: 100%; height: 100%; object-fit: contain; }
 .ak-item--bare { background: var(--ak-item-bg-1, none) center / 100% 100% no-repeat; }
 .ak-item--bare[data-rarity="2"] { background-image: var(--ak-item-bg-2, none); }

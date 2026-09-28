@@ -1,6 +1,8 @@
 /*! AKDS · components/title-reset.css — 组件内标题不继承 MW 章节标题装饰（必须在全部通用组件之后、方舟组件之前） · 依赖：tokens.css */
-/* ═══ Component headings: 组件内标题不继承 MW 章节标题装饰 ═══ */
-:is(.ak-card__title, .ak-panel__title, .ak-dialog__title, .ak-heading__title, .ak-message__title, .ak-toast__title, .ak-empty__title, .ak-timeline__title, .ak-skill__name, .ak-module__name, .ak-dossier__title, .ak-event__title, .ak-talent__name, .ak-stage__name, .ak-enemy__name, .ak-hero__title) { color: inherit; border: 0; padding: 0; }
-:is(.ak-card__title, .ak-panel__title, .ak-dialog__title, .ak-message__title, .ak-toast__title, .ak-empty__title, .ak-timeline__title, .ak-skill__name, .ak-module__name, .ak-dossier__title, .ak-event__title, .ak-talent__name)::after { display: none; }
+/* ═══ Component headings: 组件内标题不继承 MW 章节标题装饰 ═══
+   两条都再带一条标签限定的同义选择器 (0,1,1)：宿主正文（Vector 2022 的 .mw-body h3 …）是 (0,1,1)，单个类压不过；
+   写成 h1–h6 的组件标题（card / panel / dialog / heading / skill / module / hero）各自的规则也是这么写的。 */
+:is(.ak-card__title, .ak-panel__title, .ak-dialog__title, .ak-heading__title, .ak-message__title, .ak-toast__title, .ak-empty__title, .ak-timeline__title, .ak-skill__name, .ak-module__name, .ak-dossier__title, .ak-event__title, .ak-talent__name, .ak-stage__name, .ak-enemy__name, .ak-hero__title), :is(h1, h2, h3, h4, h5, h6):is(.ak-card__title, .ak-panel__title, .ak-dialog__title, .ak-heading__title, .ak-message__title, .ak-toast__title, .ak-empty__title, .ak-timeline__title, .ak-skill__name, .ak-module__name, .ak-dossier__title, .ak-event__title, .ak-talent__name, .ak-stage__name, .ak-enemy__name, .ak-hero__title) { color: inherit; border: 0; padding: 0; }
+:is(.ak-card__title, .ak-panel__title, .ak-dialog__title, .ak-message__title, .ak-toast__title, .ak-empty__title, .ak-timeline__title, .ak-skill__name, .ak-module__name, .ak-dossier__title, .ak-event__title, .ak-talent__name)::after, :is(h1, h2, h3, h4, h5, h6):is(.ak-card__title, .ak-panel__title, .ak-dialog__title, .ak-message__title, .ak-toast__title, .ak-empty__title, .ak-timeline__title, .ak-skill__name, .ak-module__name, .ak-dossier__title, .ak-event__title, .ak-talent__name)::after { display: none; }
 .ak-heading__title { margin: 0; }
 .ak-heading__title::after { display: none; }

@@ -11,7 +11,7 @@
   (function () {
     var HOSTS = {
       akds: ['../src/index.css'],   /* index.css 自己带 fonts.css */
-      vector: ['vendor/vector/vector.css', '../src/fonts.css', '../src/standalone.css'],
+      vector: ['vendor/vector/vector.css', '../src/fonts.css', '../src/standalone.css', 'vendor/vector/site.css'],   /* site.styles 在最后：MW 上 mw.loader 插入的样式排在它之前 */
       bare: ['../src/fonts.css', '../src/standalone.css']
     };
     var host = new URLSearchParams(location.search).get('host');

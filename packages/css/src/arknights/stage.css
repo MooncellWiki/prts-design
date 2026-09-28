@@ -11,11 +11,12 @@
 .ak-stage--hard { --_bar: var(--ak-red-600); }
 .ak-stage--ex { --_bar: var(--ak-red-700); }
 .ak-stage--story { --_bar: var(--ak-fg-muted); }
-.ak-stage-code { display: inline-block; font: 800 1em/1 var(--ak-font-display); letter-spacing: -.02em; padding: 2px 6px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
-.ak-stage-code--hard { background: var(--ak-red-700); color: #fff; }
+.ak-stage-code { --_fg: var(--ak-fg-inverse); display: inline-block; font: 800 1em/1 var(--ak-font-display); letter-spacing: -.02em; padding: 2px 6px; background: var(--ak-bg-inverse); color: var(--_fg); }
+.ak-stage-code--hard { --_fg: #fff; background: var(--ak-red-700); }
 /* 理智 / 消耗 */
 .ak-sanity { display: inline-flex; align-items: center; gap: 4px; font: 800 var(--ak-fs-sm)/1 var(--ak-font-label); }
 .ak-sanity::before { content: ""; width: 12px; height: 14px; background: currentColor; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
 /* 链接版关卡号（Vue AkStageCode）自己标 ak-not-prose 躲开正文 a:visited / a:hover 的链接色——not-prose 基线只管子孙里的 a，标在链接自身时要在这里去掉 UA 默认下划线，悬停再给回 */
 a.ak-stage-code.ak-not-prose { text-decoration: none; }
+a.ak-stage-code:is(:visited, :hover, :active) { color: var(--_fg); }   /* 反白字不能被宿主 / 正文的 a:visited、a:hover (0,1,1) 换成链接色或继承色 */
 a.ak-stage-code.ak-not-prose:hover { text-decoration: underline; text-underline-offset: 2px; }
