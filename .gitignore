@@ -9,4 +9,3 @@ site/.vitepress/cache/
 site/.vitepress/dist/
 *.tsbuildinfo
 packages/*/dist/
-preview/vendor/vector/
