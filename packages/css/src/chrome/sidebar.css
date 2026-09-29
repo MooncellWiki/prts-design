@@ -9,7 +9,7 @@
 .ak-sidebar__panel { display: block; }
 .ak-portlet { margin-bottom: var(--ak-space-5); }
 /* 分组标题：门户 h3 / MW 原生 heading / 原始 p */
-.ak-portlet__title, .ak-sidebar .vector-menu-heading, .ak-sidebar h3, .ak-sidebar p { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 6px; padding: 0 0 6px 10px; border-left: 2px solid var(--ak-theme-accent); display: flex; align-items: center; gap: 6px; }   /* 分组条用活动主色（--ak-theme-accent）：活动主题换色时侧栏跟着换，当前项 / 链接仍是 --ak-accent */
+.ak-portlet__title, .ak-sidebar .vector-menu-heading, .ak-sidebar h3, .ak-sidebar p { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 6px; padding: 3px 0 3px 10px; border-left: 2px solid var(--ak-theme-accent); display: flex; align-items: center; gap: 6px; }   /* 上下内边距对称：标题下没有横线，色条要以文字为中心，不能只往下伸；分组条用活动主色（--ak-theme-accent）：活动主题换色时侧栏跟着换，当前项 / 链接仍是 --ak-accent */
 .ak-sidebar ul + p, .ak-sidebar ul + h3, .ak-sidebar div + p { margin-top: var(--ak-space-5); }
 .ak-sidebar p:empty, .ak-sidebar li.mw-empty-elt, .ak-sidebar li:empty { display: none; }
 .ak-portlet ul, .ak-sidebar ul { list-style: none; margin: 0; padding: 0; }
