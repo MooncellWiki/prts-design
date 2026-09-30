@@ -3804,14 +3804,14 @@ window.PRTS_CHARLIST = {"date":"2026-09-30","filters":[{"title":"筛选","filter
 .ol-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); }   /* 标签列随本组最长的标签（「源石技艺适应性」7 字）定宽，各行对齐 */
 .ol-row { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; }
 .ol-row + .ol-row { border-top: 1px solid var(--ak-border); }
-.ol-row__label { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px var(--ak-space-4) 8px calc(var(--ak-space-3)); border-left: var(--ak-bar-w) solid transparent;
+.ol-row__label { display: grid; grid-template-columns: auto auto; justify-content: start; align-items: baseline; align-content: start; gap: 4px 10px; padding: 12px var(--ak-space-4) 8px calc(var(--ak-space-3)); border-left: var(--ak-bar-w) solid transparent;
   font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1.4; color: var(--ak-fg-secondary); white-space: nowrap; }
 .ol-row.has-active > .ol-row__label { border-left-color: var(--ak-accent); color: var(--ak-fg); }
 .ol-row__clear { all: unset; font-size: var(--ak-fs-xs); font-weight: 500; color: var(--ak-link); cursor: pointer; }
 .ol-row__clear:hover { text-decoration: underline; }
 .ol-row__clear:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
-.ol-row:not(.has-active) .ol-row__clear { display: none; }
-.ol-row__label .ak-switch { font-weight: 500; color: var(--ak-fg-secondary); }
+.ol-row:not(.has-active) .ol-row__clear { visibility: hidden; }   /* 「清除」横在标签右边；没选中时只藏不撤，标签列的宽度不随选中跳动 */
+.ol-row__label .ak-switch { order: 1; grid-column: 1 / -1; font-weight: 500; color: var(--ak-fg-secondary); }   /* 「同时满足」另起一行 */
 .ol-row__opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px var(--ak-space-3) 8px 0; min-width: 0; }
 .ol-filter .ak-chip.is-empty:not([aria-pressed="true"]) { opacity: .38; }
 .ol-filter .ak-chip:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
@@ -3868,7 +3868,8 @@ window.PRTS_CHARLIST = {"date":"2026-09-30","filters":[{"title":"筛选","filter
 .ol-chip--rarity { font-family: var(--ak-font-label); font-weight: 700; gap: 4px; }
 @media (max-width: 639px) {
   .ol-rows { grid-template-columns: minmax(0, 1fr); }
-  .ol-row__label { flex-direction: row; align-items: center; gap: 12px; padding: 8px var(--ak-space-3) 0 8px; white-space: normal; }
+  .ol-row__label { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 8px var(--ak-space-3) 0 8px; white-space: normal; }
+  .ol-row__label .ak-switch { order: 0; }
   .ol-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
   .ol-row.has-active > .ol-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }   /* 标签在上、选项在下：青条接着往下画满一行 */
 }
