@@ -5,6 +5,7 @@ import AkVoice from "./AkVoice.vue";
 import AkVoiceList from "./AkVoiceList.vue";
 import BasicDemo from "./demos/Basic.vue";
 import LanguagesDemo from "./demos/Languages.vue";
+import SplitDemo from "./demos/Split.vue";
 
 const meta = {
   title: "Arknights/Voice",
@@ -32,4 +33,5 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 export const Languages: Story = { name: "语种切换", ...demo(LanguagesDemo) };
+export const Split: Story = { name: "文本与语种分开选", ...demo(SplitDemo) };
 export const Basic: Story = { name: "单一语种", ...demo(BasicDemo) };
