@@ -3209,7 +3209,6 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
 .ak-sidebar li > span:not(.ak-tree__label) { flex-wrap: wrap; cursor: default; }   /* 非链接行（Widget 渲染成 <span>）：里面可以夹行内链接 */
 .ak-sidebar li > span:not(.ak-tree__label) a { color: var(--ak-link); }
 .client-nojs .ak-sidebar li > ul { display: block; }   /* 无 JS：所有层级展开 */
-.ak-sidebar__head { display: none; }   /* 抽屉抬头（标题 + 关闭钮）：只在 <1120 的抽屉里出现，见 responsive.css */
 .ak-overlay--sidebar, .ak-overlay--drawer { animation: ak-fade-in var(--ak-dur-fast) var(--ak-ease); }   /* 抽屉遮罩（.ak-overlay 本体在 components/dialog.css；由 JS 生成） */
 .ak-portlet li a .ak-icon { width: 16px; height: 16px; opacity: .7; }
 .ak-portlet--grid ul { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
@@ -3606,12 +3605,8 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
   .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
   /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截）。
    * 展开时 JS 给 <html> 加 .ak-scroll-lock 锁住页面滚动（VitePress VPSidebar 同）：抽屉自己 overflow-y:auto + overscroll-behavior:contain（沿用导轨态声明），滚到头也不会把页面带着走 */
-  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); border-right: 1px solid var(--ak-border); padding: 0 var(--ak-space-3) var(--ak-space-6); box-sizing: border-box; transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
+  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); border-right: 1px solid var(--ak-border); padding: var(--ak-space-4) var(--ak-space-3) var(--ak-space-6); box-sizing: border-box; transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
   .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
-  /* 抽屉抬头：粘在顶部的一行 = 「导航」小标 + 关闭钮（.ak-btn--icon） */
-  .ak-sidebar__head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; height: var(--ak-header-h); margin: 0 calc(-1 * var(--ak-space-3)) var(--ak-space-3); padding: 0 var(--ak-space-2) 0 var(--ak-space-4); background: var(--ak-bg-surface); border-bottom: 1px solid var(--ak-border); }
-  .ak-sidebar__title { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }
-  .ak-sidebar__close { display: inline-flex; }
   .ak-header__inner { display: flex; gap: var(--ak-space-4); }   /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex */
   .ak-header__logo { margin-right: auto; }   /* 品牌靠左，其余（搜索 / ≡）靠右 */
   .ak-header__search { flex: 1; width: auto; max-width: none; }
@@ -5565,7 +5560,7 @@ $(".stage-btn-img").css("opacity","1"),$(".stage-btn-blue").css("opacity","0"),$
   document.addEventListener('click', e => {
     if (!sidebar) return;
     if (e.target.closest('.ak-local-nav__menu')) setSidebar(!sidebar.classList.contains('is-open'));
-    else if (e.target.closest('.ak-sidebar__close, .ak-overlay--sidebar')) setSidebar(false);
+    else if (e.target.closest('.ak-overlay--sidebar')) setSidebar(false);
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && sidebar && sidebar.classList.contains('is-open')) { setSidebar(false); if (menuBtn) menuBtn.focus(); } });
   const sbMq = window.matchMedia('(max-width: 1119px)');

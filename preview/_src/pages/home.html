@@ -348,6 +348,11 @@ cats: 首页
   .mp-events__item { gap: 10px; padding: 6px 8px 6px 10px; min-height: 40px; }
   .mp-events__time { display: none; }
   .mp-section { margin-top: var(--ak-space-8); }
+  /* 区块标题：手机上「中文 + 英文 + 右侧链接」一行排不下（中文标题会被挤折行）。英文副题叠到中文标题下面，右侧链接占右列、贴底 */
+  .mp-section > .ak-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--ak-space-3); row-gap: 0; align-items: end; }
+  .mp-section .ak-heading__title, .mp-section .ak-heading__en { grid-column: 1; }
+  .mp-section .ak-heading__en { margin-top: 4px; font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); }   /* 字号 / 字距同 .ak-heading--stack 的眉题 */
+  .mp-section .ak-heading__aside { grid-column: 2; grid-row: 1 / span 2; margin-left: 0; white-space: nowrap; }
   .mp-site { grid-template-columns: 1fr; }
   .mp-stages__grid { grid-template-columns: 1fr 1fr; }
   .mp-stages__grid .ak-stage__code { min-width: 52px; }
