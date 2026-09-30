@@ -517,7 +517,7 @@ cats: 首页
       <div class="mp-clock"><span class="mp-clock__time" id="mp-clock">13:49</span><span class="mp-clock__date" id="mp-date">8月23日 · 周日</span><span class="mp-clock__tz">UTC+8</span></div>
       <div class="mp-cd">
         <div class="mp-cd__label"><b>剿灭作战 & 周常任务刷新</b><small>每周一 04:00</small></div>
-        <span class="ak-countdown" id="mp-weekly"><span><b>14</b><small>hrs</small></span><span><b>10</b><small>min</small></span></span>
+        <span class="ak-countdown" id="mp-weekly"><span><b>14</b><small>hrs</small></span><span><b>10</b><small>mins</small></span></span>
         <div class="ak-fs-xs ak-fg-muted ak-mt-2">含特勤任务 · 剿灭合成玉上限同时重置</div>
       </div>
     </div>
@@ -707,13 +707,14 @@ cats: 首页
   /* 1. Hero：Swiper 轮播 + 自动播放（自己计时）+ 候选列表同步 + 进度条 + 暂停 */
   var hero = document.getElementById('mp-hero'), list = document.getElementById('mp-hero-list');
   var pad2 = function (n) { return (n < 10 ? '0' : '') + n; };
+  var cdUnit = function (n, unit) { return n === 1 ? unit : unit + 's'; };   // 同 AkCountdown：缩写 + 复数 s，数值为 1 时用单数
   var cdFormat = function (el) {
     var ms = el.dataset.until ? (new Date(el.dataset.until) - Date.now()) : NaN;
     if (!(ms > 0)) { el.hidden = true; return; }
     el.hidden = false;
     var d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60, parts = [];
-    if (d) parts.push([d, 'days']); parts.push([h, 'hrs']); if (!d) parts.push([m, 'min']);
-    el.innerHTML = parts.map(function (p) { return '<span><b>' + pad2(p[0]) + '</b><small>' + p[1] + '</small></span>'; }).join('');
+    if (d) parts.push([d, 'day']); parts.push([h, 'hr']); if (!d) parts.push([m, 'min']);
+    el.innerHTML = parts.map(function (p) { return '<span><b>' + pad2(p[0]) + '</b><small>' + cdUnit(p[0], p[1]) + '</small></span>'; }).join('');
   };
   var cds = hero ? hero.querySelectorAll('.ak-countdown[data-until]') : [];
   var tickCd = function () { cds.forEach(cdFormat); };
@@ -789,7 +790,7 @@ cats: 首页
       var g = new Date(t); g.setHours(4, 0, 0, 0);
       var add = (8 - g.getDay()) % 7; if (add === 0 && g <= t) add = 7; g.setDate(g.getDate() + add);
       var ms = g - t, d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60;
-      weekly.innerHTML = (d ? '<span><b>' + pad(d) + '</b><small>days</small></span>' : '') + '<span><b>' + pad(h) + '</b><small>hrs</small></span><span><b>' + pad(m) + '</b><small>min</small></span>';
+      weekly.innerHTML = (d ? '<span><b>' + pad(d) + '</b><small>' + cdUnit(d, 'day') + '</small></span>' : '') + '<span><b>' + pad(h) + '</b><small>' + cdUnit(h, 'hr') + '</small></span><span><b>' + pad(m) + '</b><small>' + cdUnit(m, 'min') + '</small></span>';
     }
   };
   tick(); setInterval(tick, 15e3);
