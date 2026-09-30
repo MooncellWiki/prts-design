@@ -11,7 +11,7 @@ const props = withDefaults(
     active?: boolean;
     /** 最小单位：min 到分（默认，每分钟刷新）· sec 到秒 */
     precision?: "min" | "sec";
-    /** 最多显示几格，从最大的单位数起：2 → 「03 days 14 hrs」/ 不足一天时「14 hrs 27 min」（首页幻灯片）；不写则一直显示到 precision */
+    /** 最多显示几格，从最大的单位数起：2 → 「03 days 14 hrs」/ 不足一天时「14 hrs 27 mins」（首页幻灯片）；不写则一直显示到 precision */
     parts?: number;
   }>(),
   { until: undefined, duration: undefined, active: true, precision: "min", parts: undefined },
@@ -65,8 +65,8 @@ watch([() => props.until, () => props.duration], () => {
 });
 
 const UNITS = [
-  { ms: 864e5, mod: Infinity, unit: "days", zh: "天" },
-  { ms: 36e5, mod: 24, unit: "hrs", zh: "小时" },
+  { ms: 864e5, mod: Infinity, unit: "day", zh: "天" },
+  { ms: 36e5, mod: 24, unit: "hr", zh: "小时" },
   { ms: 6e4, mod: 60, unit: "min", zh: "分" },
   { ms: 1e3, mod: 60, unit: "sec", zh: "秒" },
 ] as const;
@@ -80,11 +80,13 @@ const cells = computed(() => {
 });
 const spoken = computed(() => `剩余 ${cells.value.map(c => `${c.value} ${c.zh}`).join(" ")}`);
 const pad2 = (n: number) => String(n).padStart(2, "0");
+/** 单位都是缩写 + 复数 s，数值为 1 时用单数：01 day / 01 hr / 01 min / 01 sec */
+const label = (c: { unit: string; value: number }) => (c.value === 1 ? c.unit : `${c.unit}s`);
 </script>
 
 <template>
   <!-- role="timer"（隐式 aria-live=off，不会每分钟打断读屏）；读数是英文单位，读屏名给中文 -->
   <span v-if="remaining > 0" class="ak-countdown" role="timer" :aria-label="spoken">
-    <span v-for="c in cells" :key="c.unit" aria-hidden="true"><b>{{ pad2(c.value) }}</b><small>{{ c.unit }}</small></span>
+    <span v-for="c in cells" :key="c.unit" aria-hidden="true"><b>{{ pad2(c.value) }}</b><small>{{ label(c) }}</small></span>
   </span>
 </template>
