@@ -47,11 +47,12 @@ cats: 首页
 .mp li::before { display: none !important; }   /* 项目符号是正文的事，首页没有一处是「列表」 */
 
 /* ── 2. Hero：黑色终端块 = Swiper 自动轮播（左）+ 候选列表（右）。
- *  列表就是 7 张的「页签」：当前行 = 左青条 + 淡青底，**自动播放的进度条长在当前行底边**（2px 青线从左到右填满，满了就切下一张）——「现在在哪 / 下一张是谁 / 还有多久」在同一处读完；
+ *  列表就是各张的「页签」（≤ 7 条等分高度；≥ 8 条定高 7.5 行、纵向滚动）：当前行 = 左青条 + 淡青底，**自动播放的进度条长在当前行底边**（2px 青线从左到右填满，满了就切下一张）——「现在在哪 / 下一张是谁 / 还有多久」在同一处读完；
  *  列表底下一条工具栏：‹ 01 / 07 › + 暂停。鼠标在黑块里、键盘焦点在黑块里时暂停；prefers-reduced-motion 下不自动播、切换无动画。无 JS：Swiper CSS 只露第一张，列表每项仍是链接。
  *  两套主题下都是黑的：与页眉同属「黑框」那一层（官网 hero / 游戏主界面的活动面板都是深底）。
  *  配色同页眉的做法：语义令牌在容器上重映射一次，但**只重映射中性色**（走 --ak-chrome-*），里面的 .ak-btn / .ak-tag / .ak-countdown 自动跟随，不逐个改组件的私有变量。
- *  强调色不重映射：**实底**（「进行中」标签）跟正文令牌——亮色蓝底白字（blue-500 + #fff）/ 暗色青底黑字（cyan-500 + #000），与正文里的 .ak-btn--primary / .ak-tag--accent 是同一块；
+ *  状态标只标例外：未开始的标「预告」（数据源会提前 48 小时放进来），进行中是默认状态、不标——整列同一枚标签没有信息量，还挤占名称的宽度。
+ *  强调色不重映射：**实底**（`.ak-tag--accent` / `.ak-btn--primary` 放进来时）跟正文令牌——亮色蓝底白字（blue-500 + #fff）/ 暗色青底黑字（cyan-500 + #000），与正文里的 .ak-btn--primary / .ak-tag--accent 是同一块；
  *  hero 是黑块但不是页眉，不另开一套实底色（曾试过 blue-500 + 黑字：蓝 + 黑 6.5:1 比蓝 + 白 3.2:1 好看得多，但系统里没有「蓝底黑字」这个组合，退回）。
  *  线 / 字 / 焦点仍用官网青 cyan-500 写死（eyebrow、当前行、进度条、焦点环，同页眉当前项）——它们是 hero 的「框」语言，两套主题下都不变。 */
 .mp-hero {
@@ -83,8 +84,9 @@ cats: 首页
 .mp-hero__item:focus-visible, .mp-hero__btn:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的列表项 / 工具栏按钮：焦点环内缩 */
 /* 候选列表 */
 .mp-hero__aside { display: flex; flex-direction: column; min-width: 0; }
-.mp-hero__list { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
-.mp-hero__list > li { position: relative; flex: 1; border-bottom: 1px solid #2f3133; }
+.mp-hero__list { --mp-hero-row: 51px; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }   /* 行高下限 = 缩略图 38 + 上下内边距 12 + 底边线 1 */
+.mp-hero__list > li { position: relative; flex: 1 0 var(--mp-hero-row); box-sizing: border-box; border-bottom: 1px solid #2f3133; }   /* ≤ 7 条：各行等分列表高度（不低于行高下限，不够时黑块跟着长高） */
+.mp-hero__list:has(> li:nth-child(8)) { max-height: calc(var(--mp-hero-row) * 7.5); overflow-y: auto; --ak-scrollbar: rgba(255,255,255,.3); }   /* ≥ 8 条：列表定高 7.5 行、纵向滚动——末尾露半行，滚动条不常显的系统（macOS / 触屏）也看得出下面还有；条数上限由数据源定（活动 6 + 寻访 6）。不认 :has 的浏览器退回「有几条长几行」 */
 .mp-hero__item { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 10px; align-items: center; height: 100%; box-sizing: border-box; padding: 6px 12px 6px 9px; color: var(--ak-fg); text-decoration: none; border-left: 3px solid transparent; transition: background var(--ak-dur-fast); }
 .mp-hero__item:hover { background: var(--ak-bg-hover); color: #fff; text-decoration: none; }
 .mp-hero__list > li.is-active .mp-hero__item { border-left-color: var(--ak-cyan-500); background: rgba(24,209,255,.1); }   /* 选中行 = 左青条 + 淡青底（同搜索面板高亮行） */
@@ -286,7 +288,7 @@ cats: 首页
 @media (max-width: 959px) {
   .mp-hero { grid-template-columns: 1fr; }
   .mp-hero__stage { border-right: 0; border-bottom: 1px solid #2f3133; }
-  .mp-hero__list { flex-direction: row; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }   /* 候选列表横着滚：一行缩略图；选中条 + 进度条合成当前项顶边一条 */
+  .mp-hero__list, .mp-hero__list:has(> li:nth-child(8)) { flex-direction: row; max-height: none; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-behavior: smooth; }   /* 候选列表横着滚：一行缩略图；选中条 + 进度条合成当前项顶边一条 */
   .mp-hero__list::-webkit-scrollbar { display: none; }
   .mp-hero__list > li { flex: 0 0 188px; border-bottom: 0; border-right: 1px solid #2f3133; }
   .mp-hero__item { grid-template-columns: 1fr; gap: 6px; padding: 8px 10px 10px; border-left: 0; border-top: 3px solid transparent; }
@@ -335,7 +337,7 @@ cats: 首页
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-qixiang.jpg" alt=""><img src="assets/mainpage/banner-qixiang.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
-            <div class="mp-hero__eyebrow"><span>限时活动 · Event</span><span class="ak-tag ak-tag--sm ak-tag--accent">进行中</span></div>
+            <div class="mp-hero__eyebrow"><span>限时活动 · Event</span></div>
             <h2 class="mp-hero__title"><a href="#">奇象巡展</a></h2>
             <div class="mp-hero__time"><span>2026.08.08 16:00 — 09.07 03:59</span> <span class="ak-countdown" data-until="2026-09-07T03:59:00+08:00"></span></div>
           </div>
@@ -355,7 +357,7 @@ cats: 首页
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-ra-anchor.jpg" alt=""><img src="assets/mainpage/banner-ra-anchor.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
-            <div class="mp-hero__eyebrow"><span>生息演算 · Reclamation Algorithm</span><span class="ak-tag ak-tag--sm ak-tag--accent">进行中</span></div>
+            <div class="mp-hero__eyebrow"><span>生息演算 · Reclamation Algorithm</span></div>
             <h2 class="mp-hero__title"><a href="#">重启锚点</a></h2>
             <div class="mp-hero__time"><span>七周年庆典 · 2026.05.01 10:00 开放</span></div>
           </div>
@@ -365,7 +367,7 @@ cats: 首页
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-is6.jpg" alt=""><img src="assets/mainpage/banner-is6.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
-            <div class="mp-hero__eyebrow"><span>集成战略 · Integrated Strategies</span><span class="ak-tag ak-tag--sm ">常驻</span></div>
+            <div class="mp-hero__eyebrow"><span>集成战略 · Integrated Strategies</span></div>
             <h2 class="mp-hero__title"><a href="#">沉沦者的黑流树海</a></h2>
             <div class="mp-hero__time"><span>集成战略 #6 · 常驻开放</span></div>
           </div>
@@ -375,7 +377,7 @@ cats: 首页
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-core14.jpg" alt=""><img src="assets/mainpage/banner-gacha-core14.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
-            <div class="mp-hero__eyebrow"><span>寻访 · 中坚甄选</span><span class="ak-tag ak-tag--sm ak-tag--accent">进行中</span></div>
+            <div class="mp-hero__eyebrow"><span>寻访 · 中坚甄选</span></div>
             <h2 class="mp-hero__title"><a href="#">中坚甄选 14</a></h2>
             <div class="mp-hero__time"><span>2026.08.19 10:00 — 09.02 03:59</span> <span class="ak-countdown" data-until="2026-09-02T03:59:00+08:00"></span></div>
           </div>
@@ -385,7 +387,7 @@ cats: 首页
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-joint23.jpg" alt=""><img src="assets/mainpage/banner-gacha-joint23.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
-            <div class="mp-hero__eyebrow"><span>寻访 · 联合行动</span><span class="ak-tag ak-tag--sm ak-tag--accent">进行中</span></div>
+            <div class="mp-hero__eyebrow"><span>寻访 · 联合行动</span></div>
             <h2 class="mp-hero__title"><a href="#">联合行动 23</a></h2>
             <div class="mp-hero__time"><span>2026.08.12 10:00 — 08.26 03:59</span> <span class="ak-countdown" data-until="2026-08-26T03:59:00+08:00"></span></div>
           </div>
@@ -395,7 +397,7 @@ cats: 首页
         <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""><img src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""></a>
         <div class="mp-hero__caption">
           <div>
-            <div class="mp-hero__eyebrow"><span>寻访 · 干员轮换</span><span class="ak-tag ak-tag--sm ">本周</span></div>
+            <div class="mp-hero__eyebrow"><span>寻访 · 干员轮换</span></div>
             <h2 class="mp-hero__title"><a href="#">干员轮换卡池 191</a></h2>
             <div class="mp-hero__time"><span>2026.08.20 04:00 — 08.27 03:59</span> <span class="ak-countdown" data-until="2026-08-27T03:59:00+08:00"></span></div>
           </div>
@@ -406,13 +408,13 @@ cats: 首页
   </div>
   <div class="mp-hero__aside">
     <ol class="mp-hero__list" id="mp-hero-list">
-    <li class="is-active"><a class="mp-hero__item" href="#" aria-current="true"><img class="mp-hero__thumb" src="assets/mainpage/banner-qixiang.jpg" alt=""><span><span class="mp-hero__kind">限时活动</span><span class="mp-hero__name">奇象巡展</span></span><span class="ak-tag ak-tag--sm ak-tag--accent">进行中</span></a></li>
+    <li class="is-active"><a class="mp-hero__item" href="#" aria-current="true"><img class="mp-hero__thumb" src="assets/mainpage/banner-qixiang.jpg" alt=""><span><span class="mp-hero__kind">限时活动</span><span class="mp-hero__name">奇象巡展</span></span></a></li>
     <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-xu2026.jpg" alt=""><span><span class="mp-hero__kind">活动预告</span><span class="mp-hero__name">墟2026</span></span><span class="ak-tag ak-tag--sm ak-tag--new">预告</span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-ra-anchor.jpg" alt=""><span><span class="mp-hero__kind">生息演算</span><span class="mp-hero__name">重启锚点</span></span><span class="ak-tag ak-tag--sm ak-tag--accent">进行中</span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-is6.jpg" alt=""><span><span class="mp-hero__kind">集成战略</span><span class="mp-hero__name">沉沦者的黑流树海</span></span><span class="ak-tag ak-tag--sm ">常驻</span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-core14.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 中坚甄选</span><span class="mp-hero__name">中坚甄选 14</span></span><span class="ak-tag ak-tag--sm ak-tag--accent">进行中</span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-joint23.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 联合行动</span><span class="mp-hero__name">联合行动 23</span></span><span class="ak-tag ak-tag--sm ak-tag--accent">进行中</span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 干员轮换</span><span class="mp-hero__name">干员轮换卡池 191</span></span><span class="ak-tag ak-tag--sm ">本周</span></a></li>
+    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-ra-anchor.jpg" alt=""><span><span class="mp-hero__kind">生息演算</span><span class="mp-hero__name">重启锚点</span></span></a></li>
+    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-is6.jpg" alt=""><span><span class="mp-hero__kind">集成战略</span><span class="mp-hero__name">沉沦者的黑流树海</span></span></a></li>
+    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-core14.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 中坚甄选</span><span class="mp-hero__name">中坚甄选 14</span></span></a></li>
+    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-joint23.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 联合行动</span><span class="mp-hero__name">联合行动 23</span></span></a></li>
+    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 干员轮换</span><span class="mp-hero__name">干员轮换卡池 191</span></span></a></li>
     </ol>
     <div class="mp-hero__bar">
       <span class="mp-hero__count" id="mp-hero-count" aria-live="polite"><b>01</b> / 07</span>
@@ -689,7 +691,7 @@ cats: 首页
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var items = [].slice.call(list.children), total = items.length;
     var count = document.getElementById('mp-hero-count'), pauseBtn = document.getElementById('mp-hero-pause');
-    var stopped = reduce;
+    var stopped = reduce, synced = false;
     var sw = new Swiper('#mp-hero-swiper', {
       loop: true, speed: reduce ? 0 : 500,
       keyboard: { enabled: true, onlyInViewport: true },
@@ -704,9 +706,15 @@ cats: 首页
       });
       elapsed = 0;
       if (count) count.innerHTML = '<b>' + pad2(i + 1) + '</b> / ' + pad2(total);
+      var li = items[i], how = reduce || !synced ? 'auto' : 'smooth';   // 首次同步不带动画
       if (list.scrollWidth > list.clientWidth + 1) {   // 手机：横向缩略条，把当前项滚到可见
-        var li = items[i]; list.scrollTo({ left: li.offsetLeft - (list.clientWidth - li.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' });
+        list.scrollTo({ left: li.offsetLeft - (list.clientWidth - li.offsetWidth) / 2, behavior: how });
+      } else if (list.scrollHeight > list.clientHeight + 1) {   // 桌面 ≥ 8 条：纵向滚动。当前项已整行可见就不动（不抢用户自己滚到的位置），否则滚到露出它和它的下一行的一半
+        var top = li.offsetTop - list.offsetTop, half = li.offsetHeight / 2;
+        if (top < list.scrollTop) list.scrollTo({ top: Math.max(top - half, 0), behavior: how });
+        else if (top + li.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTo({ top: top + li.offsetHeight + half - list.clientHeight, behavior: how });
       }
+      synced = true;
     };
     /* 自动播放不用 Swiper 的 autoplay 模块，自己按帧累计「已播时长」：
        它的 pauseOnMouseEnter 只管 .swiper 本身，列表得另挂一套 pause / resume，两套状态互相打架——
