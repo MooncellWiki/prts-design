@@ -73,9 +73,8 @@ cats: 首页
 .mp-hero__eyebrow { display: flex; align-items: center; gap: 8px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-cyan-500); }
 .mp-hero__title { font: 800 var(--ak-fs-h2)/1.2 var(--ak-font-body); color: #fff; margin: 4px 0 0; border: 0; padding: 0; letter-spacing: .01em; }
 .mp-hero__title::after { display: none; }
-.mp-hero__title a { color: inherit; text-decoration: none; }
+.mp-hero__title a, .mp-hero__title a:hover { color: inherit; text-decoration: none; }   /* 悬停不变色：热区是整张 slide，指针离标题很远时字也跟着变青，读起来像误触 */
 .mp-hero__title a::after { content: ""; position: absolute; inset: 0; }   /* 热区铺满说明栏（定位祖先 = .mp-hero__caption）；图本身是链接，两块合起来 = 整张 slide。文字被盖住所以指针恒为手型——说明栏在 Swiper 里本来就拖不出选区 */
-.mp-hero__slide:hover .mp-hero__title a { color: var(--ak-cyan-500); }
 .mp-hero__title a:focus-visible { outline: 0; }
 .mp-hero__title a:focus-visible::after { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 .mp-hero__time { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: rgba(255,255,255,.62); }
