@@ -41,7 +41,7 @@ li.ak-tree__branch[.is-open][.is-current-path]
 - 当前页所在分支（`a.selflink` / `li.is-active` / `href` 等于当前地址）总是自动展开，并加 `.is-current-path`（标签与导轨变淡青）。
 - 键盘 ← → 收起 / 展开。晚注入的内容由 MutationObserver 接住。
 
-**悬停飞出**：桌面（能悬停的精确指针、≥1120）悬停一个**收起着的**分支，右侧飞出 `.ak-flyout` 预览它的子项（`position: fixed` 挂在 body 下，不受侧栏滚动裁切；左侧 2px 青条 + 细框 + 大阴影）；点击即就地展开并记忆。关闭飞出：`<aside class="ak-sidebar" data-flyout="off">` 或 `<html data-akds-flyout="off">`；触屏自动不启用。
+**悬停飞出**：桌面（能悬停的精确指针、≥1120）悬停一个**收起着的**分支，右侧飞出 `.ak-flyout` 预览它的子项（`position: fixed` 挂在 body 下，不受侧栏滚动裁切；同 `.ak-menu` 的细框 + 大阴影，青条只给悬停 / 当前项）；点击即就地展开并记忆。关闭飞出：`<aside class="ak-sidebar" data-flyout="off">` 或 `<html data-akds-flyout="off">`；触屏自动不启用。
 
 <SkinFrame :height="900" state="flyout" caption="悬停「档案」（收起着）→ 右侧飞出子项预览" />
 

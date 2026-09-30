@@ -58,7 +58,7 @@
 /* 「更多」：⋯ + 文字；卡片 = .ak-menu 里两组门户（操作 #p-cactions · 工具 #p-tb），右对齐贴按钮。工具箱里的 specialpages / upload 不进这里——同 Citizen 进侧栏站点导航 */
 .ak-page-tools__btn { padding: 0 10px 0 8px; }
 .ak-page-tools__more > details[open] > .ak-page-tools__btn { background: var(--ak-bg-hover); color: var(--ak-fg); }
-.ak-page-tools__card { min-width: 240px; top: calc(100% + 6px); padding: 6px 0; }
+.ak-page-tools__card { min-width: 240px; top: calc(100% + 6px); padding: 6px 0 0; }   /* 底部 0：最后一项（浏览属性）悬停贴底 */
 .ak-page-tools__card .ak-menu__label { padding-top: 8px; }
 .ak-page-tools__card a { padding: 7px 14px; }
 .ak-page-tools__card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }

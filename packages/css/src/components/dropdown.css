@@ -3,18 +3,18 @@
 .ak-dropdown { position: relative; display: inline-block; }
 .ak-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; z-index: var(--ak-z-dropdown);
   max-width: min(92vw, 360px); max-height: min(70vh, 560px); overflow-y: auto; overscroll-behavior: contain;   /* 长菜单（MW 工具箱 + Gadget 追加的项）在卡片内滚，不撑出视口 */
-  background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0; margin: 0; list-style: none; }
+  background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; margin: 0; list-style: none; }   /* 底部不留内边距：最后一项的悬停底色要贴到卡片底边（同 .ak-flyout）；顶部 4px 给小标题 / 抬头留呼吸 */
 .ak-menu--right { left: auto; right: 0; }
 .ak-menu li::before { display: none !important; }
 .ak-menu__item, .ak-menu a { display: flex; align-items: center; gap: var(--ak-space-2); padding: 7px 14px; font-size: var(--ak-fs-sm); color: var(--ak-fg); text-decoration: none; cursor: pointer; white-space: nowrap; border-left: 2px solid transparent; }
 .ak-menu__item:hover, .ak-menu a:hover { background: var(--ak-bg-hover); border-left-color: var(--ak-accent); text-decoration: none; color: var(--ak-fg); }
 .ak-menu__item.is-active { color: var(--ak-accent); border-left-color: var(--ak-accent); }
 .ak-menu__item--danger { color: var(--ak-danger); }
-.ak-menu__sep { height: 1px; background: var(--ak-border); margin: 4px 0; }
+.ak-menu__sep { height: 1px; background: var(--ak-border); margin: 0 0 4px; }   /* 线上方不留空：上一项的悬停底色贴到分隔线；线下 4px 给下一项 / 小标题 */
 .ak-menu__label { padding: 6px 14px 2px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-subtle); }
 /* 分组菜单：.ak-menu（此时是 div）里若干 nav.ak-menu__group > .ak-menu__label + ul——MW 门户（#p-cactions / #p-tb …）原样塞进卡片时用；组之间一条分隔线 */
 .ak-menu__group > ul { margin: 0; padding: 0; list-style: none; }
-.ak-menu__group + .ak-menu__group { border-top: 1px solid var(--ak-border); margin-top: 4px; padding-top: 4px; }
+.ak-menu__group + .ak-menu__group { border-top: 1px solid var(--ak-border); margin-top: 0; padding-top: 4px; }   /* 同 .ak-menu__sep：上一组最后一项（刷新）悬停贴到分隔线 */
 /* 卡片抬头（用户菜单的用户名）：粗体一行 + 底线；图标上青 */
 .ak-menu__head { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; font-weight: 700; font-size: var(--ak-fs-sm); border-bottom: 1px solid var(--ak-border); margin-bottom: 4px; }
 .ak-menu__head .ak-icon { width: 20px; height: 20px; flex: none; color: var(--ak-accent); }

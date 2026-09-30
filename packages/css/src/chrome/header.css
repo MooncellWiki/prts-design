@@ -85,7 +85,7 @@
 /* 用户菜单卡片（#p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu.ak-header__user-card——用户名抬头 + 「界面设置」（ULS 语言）+ 「个人工具」两组门户。
  * 颜色不用另写：.ak-header 内 --ak-bg-surface / --ak-border / --ak-fg 已重映射到 --ak-chrome-*，卡片自动是页眉配色 */
 .ak-header__user-menu > details[open] > .ak-header__user { --_fg: var(--ak-theme-accent); background: var(--ak-bg-hover); }
-.ak-header__user-card { min-width: 240px; top: calc(100% + 6px); padding: 0 0 6px; }
+.ak-header__user-card { min-width: 240px; top: calc(100% + 6px); padding: 0; }   /* 顶部由 .ak-menu__head 占位，底部 0：最后一项（退出）悬停贴底 */
 .ak-header__user-card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
 .ak-header__user-card a:hover .ak-icon { color: var(--ak-fg); }
 /* Echo 通知徽标（MW #p-notifications > ul > li#pt-notifications-alert / -notice）：与工具区其它按钮同高并排 */

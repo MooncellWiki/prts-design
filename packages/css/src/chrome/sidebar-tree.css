@@ -18,8 +18,8 @@
 .ak-sidebar li li li > a:hover, .ak-sidebar li li li > b:hover { color: var(--ak-fg); }
 @keyframes ak-tree-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ak-tree__branch.is-open > ul { animation: none; } .ak-tree__toggle::before, .ak-portlet--collapsible > .ak-portlet__title::after { transition: none; } }
-/* 桌面悬停飞出（peek）：由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切 */
-.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: 2px; border-image: linear-gradient(to right, var(--ak-accent) 2px, var(--ak-border) 2px) 1 1 1 2; box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
+/* 桌面悬停飞出（peek）：由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切。卡片同 .ak-menu 只用 1px 灰边：青条只留给条目悬停 / 当前项，卡片自己再画一条会和悬停条叠成两道 */
+.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
 @keyframes ak-flyout-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
 .ak-flyout__title { padding: 6px 14px 4px 16px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-subtle); }
 .ak-flyout ul { list-style: none; margin: 0; padding: 0; }
