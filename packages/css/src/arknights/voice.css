@@ -7,11 +7,13 @@
 .ak-voice__play::before { content: ""; width: 0; height: 0; border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor; margin-left: 2px; }
 .ak-voice__play.is-playing::before { width: 10px; height: 12px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; margin: 0; }
 .ak-voice__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
-.ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; }
+.ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; min-height: 16px; }   /* 最小高度 = 行里最高的可选件（.ak-voice__cond 16px；声波 14px）：带不带解锁条件、放没放都一样高，播放时插进声波不会把下面的行顶下去 */
 .ak-voice__text { font-size: var(--ak-fs-sm); line-height: 1.7; white-space: pre-line; }   /* 同时显示几种文本时一种一行（调用方用换行拼） */
 .ak-voice__wave { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
 .ak-voice__wave > i { width: 2px; background: var(--ak-accent); height: 40%; }
-.is-playing ~ * .ak-voice__wave > i { animation: ak-bars 1s ease-in-out infinite; }
+.is-playing ~ * .ak-voice__wave > i { height: 100%; transform-origin: bottom; animation: ak-bars 1s ease-in-out infinite; }   /* 播放中：条拉满 14px、从底边起伏（ak-bars = scaleY .4 ↔ 1，即 5.6 ↔ 14px），五条错开相位才像声波 */
+.is-playing ~ * .ak-voice__wave > i:nth-child(2) { animation-delay: -.6s; } .is-playing ~ * .ak-voice__wave > i:nth-child(3) { animation-delay: -.2s; }
+.is-playing ~ * .ak-voice__wave > i:nth-child(4) { animation-delay: -.8s; } .is-playing ~ * .ak-voice__wave > i:nth-child(5) { animation-delay: -.4s; }
 .ak-voice__download { all: unset; box-sizing: border-box; width: 32px; height: 32px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; }   /* 下载：<a download>，与播放钮同款黑方块，里面是线稿图标 #i-download */
 .ak-voice__download > .ak-icon { width: 16px; height: 16px; }
 .ak-voice__download:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
