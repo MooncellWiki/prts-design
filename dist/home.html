@@ -1789,6 +1789,14 @@ a.ak-card:is(:visited, :hover, :active) { color: var(--ak-fg); }   /* 整张卡�
 .ak-heading--lg .ak-heading__title { font-size: var(--ak-fs-display); }
 .ak-heading--underline { border-left: 0; padding-left: 0; padding-bottom: var(--ak-space-2); border-bottom: 1px solid var(--ak-border); position: relative; }
 .ak-heading--underline::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 120px; height: 3px; background: var(--ak-accent); }
+/* 手机：带右侧附加的标题一行排不下「中文 + 英文 + 附加」，被挤折行的是中文标题——英文副题叠到标题下面（字号 / 字距同 --stack 的眉题），附加占右列、贴底。
+ * 没有附加的（「技能 SKILLS」）一行排得下，照旧并排；--stack 本来就是叠放，不动 */
+@media (max-width: 639px) {
+  .ak-heading:not(.ak-heading--stack):has(.ak-heading__aside) { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--ak-space-3); row-gap: 0; align-items: end; }
+  .ak-heading:not(.ak-heading--stack):has(.ak-heading__aside) :is(.ak-heading__title, .ak-heading__en) { grid-column: 1; }
+  .ak-heading:not(.ak-heading--stack):has(.ak-heading__aside) .ak-heading__en { margin-top: 4px; font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); }
+  .ak-heading:not(.ak-heading--stack):has(.ak-heading__aside) .ak-heading__aside { grid-column: 2; grid-row: 1 / span 2; margin-left: 0; white-space: nowrap; }
+}
 
 /*! PRTS Design · components/tabs.css — Tabs 标签页 · 依赖：tokens.css */
 /* ═══ Tabs (纯 CSS 结构；TabberNeue 见 base/tabber.css) ═══ */
@@ -4071,11 +4079,9 @@ html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-
   .mp-events__item { gap: 10px; padding: 6px 8px 6px 10px; min-height: 40px; }
   .mp-events__time { display: none; }
   .mp-section { margin-top: var(--ak-space-8); }
-  /* 区块标题：手机上「中文 + 英文 + 右侧链接」一行排不下（中文标题会被挤折行）。英文副题叠到中文标题下面，右侧链接占右列、贴底 */
-  .mp-section > .ak-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--ak-space-3); row-gap: 0; align-items: end; }
-  .mp-section .ak-heading__title, .mp-section .ak-heading__en { grid-column: 1; }
-  .mp-section .ak-heading__en { margin-top: 4px; font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); }   /* 字号 / 字距同 .ak-heading--stack 的眉题 */
-  .mp-section .ak-heading__aside { grid-column: 2; grid-row: 1 / span 2; margin-left: 0; white-space: nowrap; }
+  /* 区块标题：带右侧链接的在手机上由组件自己叠放（components/heading.css）。「网站信息」没有右侧链接，跟着另外三个一起叠，同一页不出两种排法 */
+  .mp-section > .ak-heading:not(:has(.ak-heading__aside)) { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .mp-section > .ak-heading:not(:has(.ak-heading__aside)) .ak-heading__en { font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); }
   .mp-site { grid-template-columns: 1fr; }
   .mp-stages__grid { grid-template-columns: 1fr 1fr; }
   .mp-stages__grid .ak-stage__code { min-width: 52px; }

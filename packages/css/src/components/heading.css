@@ -9,3 +9,11 @@
 .ak-heading--lg .ak-heading__title { font-size: var(--ak-fs-display); }
 .ak-heading--underline { border-left: 0; padding-left: 0; padding-bottom: var(--ak-space-2); border-bottom: 1px solid var(--ak-border); position: relative; }
 .ak-heading--underline::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 120px; height: 3px; background: var(--ak-accent); }
+/* 手机：带右侧附加的标题一行排不下「中文 + 英文 + 附加」，被挤折行的是中文标题——英文副题叠到标题下面（字号 / 字距同 --stack 的眉题），附加占右列、贴底。
+ * 没有附加的（「技能 SKILLS」）一行排得下，照旧并排；--stack 本来就是叠放，不动 */
+@media (max-width: 639px) {
+  .ak-heading:not(.ak-heading--stack):has(.ak-heading__aside) { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--ak-space-3); row-gap: 0; align-items: end; }
+  .ak-heading:not(.ak-heading--stack):has(.ak-heading__aside) :is(.ak-heading__title, .ak-heading__en) { grid-column: 1; }
+  .ak-heading:not(.ak-heading--stack):has(.ak-heading__aside) .ak-heading__en { margin-top: 4px; font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); }
+  .ak-heading:not(.ak-heading--stack):has(.ak-heading__aside) .ak-heading__aside { grid-column: 2; grid-row: 1 / span 2; margin-left: 0; white-space: nowrap; }
+}
