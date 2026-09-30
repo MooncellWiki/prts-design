@@ -3,11 +3,11 @@ title: 语音 Voice
 component: voice
 ---
 
-同现网的语音记录（<code v-pre>{{:干员/语音记录}}</code> 的 VoiceTable）：一条一行——播放钮 + 标题行（语种徽标 / 游戏内解锁条件 / 语音编号）+ 台词。列表外框 + 悬停行底色。
+同现网的语音记录（<code v-pre>{{:干员/语音记录}}</code> 的 VoiceTable）：一条一行——播放钮 + 标题行（游戏内解锁条件 / 语音编号）+ 台词。当前语种只在上方的切换条里标，条目不再重复（「方言」这类也没有靠谱的缩写）。列表外框 + 悬停行底色。
 
 ## 语种切换
 
-`AkVoiceList` 给了 `languages`（`{ value, label, badge?, cv? }`，同 Naive 的 options）就在上方出一排语种（带 CV 名），`v-model` 是当前语种。`AkVoice` 的 `text` / `src` 写成按语种的对象（`{ cn, yue, jp, en, kr }`），跟着列表切换，缺某个语种时退回第一项。切语种只换台词、徽标和音频地址。
+`AkVoiceList` 给了 `languages`（`{ value, label, cv? }`，同 Naive 的 options）就在上方出一排语种（带 CV 名），`v-model` 是当前语种。`AkVoice` 的 `text` / `src` 写成按语种的对象（`{ cn, yue, jp, en, kr }`），跟着列表切换，缺某个语种时退回第一项。切语种只换台词和音频地址。
 
 音频地址由调用方给（示例用的是现网 torappu.prts.wiki 的同源地址）。播放用原生 `Audio`，**全页同时只放一条**：点另一条先停掉正在放的，再点同一条停止；播放中的条目播放钮变成暂停、标题行出现跳动的声波。
 
@@ -15,13 +15,13 @@ component: voice
 
 ## 文本与语种分开选
 
-现网语音记录里「语言」和「语种」是两回事：**文本**是台词的语言（中文 / 日文 / 繁体中文 / 中文-方言 …），可以多选同时看、也可以一个都不选；**语种**是音频的差分（日语 / 中文-普通话 / 中文-方言 …），必须选一个，带 CV 名。`AkVoiceList` 再给 `texts`（`{ value, label }`）就多出「文本」那排多选芯片，`v-model:shown-texts` 是选中的几种（不绑时默认第一个）；`languages` 只管语种（徽标 + 音频）。两排在 `.ak-voice-toolbar` 里排成一行，放不下时语种整组换到第二行。这时 `AkVoice` 的 `text` 按文本键给对象，选中的几种一种一行（`.ak-voice__text` 是 `pre-line`）；`src` 仍按语种给对象。prts-widgets 的 VoiceTable 就是这么接的。
+现网语音记录里「语言」和「语种」是两回事：**文本**是台词的语言（中文 / 日文 / 繁体中文 / 中文-方言 …），可以多选同时看、也可以一个都不选；**语种**是音频的差分（日语 / 中文-普通话 / 中文-方言 …），必须选一个，带 CV 名。`AkVoiceList` 再给 `texts`（`{ value, label }`）就多出「文本」那排多选芯片，`v-model:shown-texts` 是选中的几种（不绑时默认第一个）；`languages` 只管语种（音频）。两排在 `.ak-voice-toolbar` 里排成一行，放不下时语种整组换到第二行。这时 `AkVoice` 的 `text` 按文本键给对象，选中的几种一种一行（`.ak-voice__text` 是 `pre-line`）；`src` 仍按语种给对象。prts-widgets 的 VoiceTable 就是这么接的。
 
 @demo Voice/Split
 
 ## 单一语种
 
-不给 `languages`：没有切换条，`text` / `src` 直接写串，`lang` 只用来出徽标。没有音频地址的条目播放钮压暗、禁用。
+不给 `languages`：没有切换条，`text` / `src` 直接写串，`lang` 只用来标台词的 HTML lang。没有音频地址的条目播放钮压暗、禁用。
 
 @demo Voice/Basic
 

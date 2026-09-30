@@ -15,13 +15,13 @@ const texts: VoiceText[] = [
 ];
 const shown = ref(["cn"]);
 
-/** 语种（音频差分）：单选，带 CV 名；只换徽标与音频 */
+/** 语种（音频差分）：单选，带 CV 名；只换音频 */
 const languages: VoiceLanguage[] = [
-  { value: "jp", label: "日语", badge: "JP", cv: "石上静香" },
-  { value: "cn", label: "中文-普通话", badge: "CN", cv: "虫虫" },
-  { value: "yue", label: "中文-方言", badge: "粤", cv: "包少爷" },
-  { value: "kr", label: "韩语", badge: "KR", cv: "郑侑廷" },
-  { value: "en", label: "英语", badge: "EN", cv: "Amy Lennox" },
+  { value: "jp", label: "日语", cv: "石上静香" },
+  { value: "cn", label: "中文-普通话", cv: "虫虫" },
+  { value: "yue", label: "中文-方言", cv: "包少爷" },
+  { value: "kr", label: "韩语", cv: "郑侑廷" },
+  { value: "en", label: "英语", cv: "Amy Lennox" },
 ];
 const lang = ref("jp");
 const DIR: Record<string, string> = {

@@ -7,15 +7,15 @@ import { voiceListKey, type VoiceLanguage, type VoiceText } from "./context";
  * 语音列表（= 现网 {{:xx/语音记录}} 的 VoiceTable）：若干 AkVoice，外框 + 悬停行底色。
  * 上方最多两排切换条（.ak-voice-toolbar 里排一行，放不下时后一排整组换行）：
  *   - texts：文本（台词的语言），多选、可以一个都不选，v-model:shown-texts；AkVoice 的 text 按文本键给对象，选中的几种一种一行
- *   - languages：语种（音频差分，普通话 / 方言 / 日 / 英 / 韩，带 CV 名），单选，v-model；AkVoice 的 src 按语种键给对象，徽标跟它
- * 只给 languages 时 AkVoice 的 text 也按语种给，切语种同时换台词、徽标和音频地址。
+ *   - languages：语种（音频差分，普通话 / 方言 / 日 / 英 / 韩，带 CV 名），单选，v-model；AkVoice 的 src 按语种键给对象
+ * 只给 languages 时 AkVoice 的 text 也按语种给，切语种同时换台词和音频地址。
  * 当前语种 / 选中的文本经 provide 给子项；播放全页只有一条（见 player.ts）。
  * 切换条标 data-no-toggle：皮肤脚本会在 document 上替模板输出的纯 CSS 芯片翻 is-active / aria-pressed，这里的状态归 Vue 管，
  * 不退出那层委托就会两边各翻一次（点第二下反而取消选中）。
  */
 const props = withDefaults(
   defineProps<{
-    /** 语种选项 { value, label, badge?, cv? }（同 Naive 的 options）；不给就没有语种切换条 */
+    /** 语种选项 { value, label, cv? }（同 Naive 的 options）；不给就没有语种切换条 */
     languages?: VoiceLanguage[];
     /** 文本语言选项 { value, label }；不给就没有文本切换条，台词跟语种走 */
     texts?: VoiceText[];

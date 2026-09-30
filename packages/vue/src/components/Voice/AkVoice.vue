@@ -6,7 +6,8 @@ import { HTML_LANG, voiceListKey } from "./context";
 import { playing, stop, toggle } from "./player";
 
 /**
- * 一条语音：播放钮（+ 下载钮）+ 标题行（语种徽标 / 解锁条件 / 编号）+ 台词。一般放在 AkVoiceList 里，跟列表的语种走。
+ * 一条语音：播放钮（+ 下载钮）+ 标题行（解锁条件 / 编号）+ 台词。一般放在 AkVoiceList 里，跟列表的语种走。
+ * 标题旁不再标语种：当前语种在上面的切换条里，每条再标一遍只是复读，而「方言」这类也没有靠谱的缩写。
  * 播放钮标 data-no-toggle：皮肤脚本会在 document 上替模板输出的纯 CSS 播放钮翻 is-playing（演示用），这里的 is-playing 跟真实播放状态走，
  * 不退出那层委托就会两边各翻一次（点一下在放但图标还是播放，再点停了图标却变成暂停）。
  */
@@ -22,7 +23,7 @@ const props = withDefaults(
     code?: string;
     /** 游戏内解锁条件（提升至精英阶段1以查看），标题行里的灰标 */
     unlock?: string;
-    /** 语种键：不在 AkVoiceList 里时用它取 text / src、显示徽标；在列表里时跟列表的 v-model */
+    /** 语种键：不在 AkVoiceList 里时用它取 text / src、标台词的 HTML lang；在列表里时跟列表的 v-model */
     lang?: string;
     /** 下载地址（现网是 torappu 的 wav）：一个串，或按语种的对象（同 src）；给了就在播放钮旁出一枚同款下载钮 */
     download?: string | Record<string, string>;
@@ -46,10 +47,6 @@ const text = computed(() => {
 });
 const src = computed(() => pick(props.src));
 const download = computed(() => pick(props.download));
-const badge = computed(() => {
-  const k = lang.value;
-  return k && (list?.value.languages.find(l => l.value === k)?.badge ?? k.toUpperCase());
-});
 
 const id = Symbol("AkVoice");
 const isPlaying = computed(() => playing.value === id);
@@ -77,7 +74,6 @@ function onClick() {
     <div>
       <div class="ak-voice__title">
         {{ title }}
-        <span v-if="badge" class="ak-voice__lang">{{ badge }}</span>
         <span v-if="unlock" class="ak-voice__cond">{{ unlock }}</span>
         <span v-if="code" class="ak-code-id">{{ code }}</span>
         <span v-if="isPlaying" class="ak-voice__wave" aria-hidden="true"><i v-for="n in 5" :key="n" /></span>

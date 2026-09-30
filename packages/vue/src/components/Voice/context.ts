@@ -6,8 +6,6 @@ export interface VoiceLanguage {
   value: string;
   /** 切换条上的名字（中文-普通话） */
   label: string;
-  /** 条目标题旁的徽标（CN / 粤 / JP …）；不写时是 value 的大写 */
-  badge?: string;
   /** 配音演员（切换条上名字后的小字） */
   cv?: string;
 }
@@ -20,7 +18,7 @@ export interface VoiceText {
   label: string;
 }
 
-/** AkVoiceList 给 AkVoice 的：当前语种（及其徽标）、文本语言选项与选中的几种 */
+/** AkVoiceList 给 AkVoice 的：当前语种、文本语言选项与选中的几种 */
 export const voiceListKey: InjectionKey<
   ComputedRef<{ lang?: string; languages: readonly VoiceLanguage[]; texts: readonly VoiceText[]; shownTexts: readonly string[] }>
 > = Symbol("AkVoiceList");

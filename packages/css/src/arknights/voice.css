@@ -8,7 +8,6 @@
 .ak-voice__play.is-playing::before { width: 10px; height: 12px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; margin: 0; }
 .ak-voice__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
 .ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; }
-.ak-voice__lang { font: 600 10px/1 var(--ak-font-label); letter-spacing: .1em; padding: 2px 5px; border: 1px solid var(--ak-border-strong); }
 .ak-voice__text { font-size: var(--ak-fs-sm); line-height: 1.7; white-space: pre-line; }   /* 同时显示几种文本时一种一行（调用方用换行拼） */
 .ak-voice__wave { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
 .ak-voice__wave > i { width: 2px; background: var(--ak-accent); height: 40%; }
@@ -22,7 +21,7 @@
 .ak-voice-list > .ak-voice:last-child { border-bottom: 0; }
 .ak-voice-list > .ak-voice:hover { background: var(--ak-bg-hover); }
 .ak-voice__play:disabled { cursor: not-allowed; opacity: .35; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }   /* 没有音频地址：压暗，悬停不反色 */
-/* 切换条（= 干员页的 .op-voice-langs，收进组件）：.ak-overline 标签 + 一排 .ak-chip[aria-pressed]（名字 + <small> CV 名）。
+/* 切换条（= 干员页的 .op-voice-langs，收进组件）：.ak-overline 标签 + 一排 .ak-chip[aria-pressed]（名字 + <small> CV 名）。当前语种只在这里标，条目标题旁不再重复。
  * 文本（台词语言，多选、可一个不选）与语种（音频差分，单选、带 CV）是两条切换条，放进 .ak-voice-toolbar 排成一行，放不下时后一条整组换行 */
 .ak-voice-toolbar { display: flex; flex-wrap: wrap; align-items: flex-start; column-gap: var(--ak-space-4); }
 .ak-voice-toolbar > .ak-voice-langs { flex: 0 0 auto; max-width: 100%; }

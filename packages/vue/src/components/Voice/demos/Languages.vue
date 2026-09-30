@@ -6,11 +6,11 @@ import AkVoice from "../AkVoice.vue";
 import AkVoiceList from "../AkVoiceList.vue";
 
 const languages: VoiceLanguage[] = [
-  { value: "cn", label: "中文-普通话", badge: "CN", cv: "虫虫" },
-  { value: "yue", label: "中文-方言", badge: "粤", cv: "包少爷" },
-  { value: "jp", label: "日文", badge: "JP", cv: "石上静香" },
-  { value: "en", label: "英文", badge: "EN", cv: "Amy Lennox" },
-  { value: "kr", label: "韩文", badge: "KR", cv: "郑侑廷" },
+  { value: "cn", label: "中文-普通话", cv: "虫虫" },
+  { value: "yue", label: "中文-方言", cv: "包少爷" },
+  { value: "jp", label: "日文", cv: "石上静香" },
+  { value: "en", label: "英文", cv: "Amy Lennox" },
+  { value: "kr", label: "韩文", cv: "郑侑廷" },
 ];
 const lang = ref("cn");
 

@@ -9,7 +9,7 @@ const wav = (code: string, name: string) =>
 </script>
 
 <template>
-  <!-- 不给 languages：没有切换条，text / src 直接写串，lang 只用来出徽标；download 出下载图标 -->
+  <!-- 不给 languages：没有切换条，text / src 直接写串，lang 只用来标台词的 HTML lang；download 出下载钮 -->
   <AkVoiceList>
     <AkVoice
       title="任命助理"
