@@ -183,7 +183,7 @@
 .ol-bar .ak-icon { width: 14px; height: 14px; }
 .ol-pager .ak-icon { width: 14px; height: 14px; }
 .ol-foot { display: flex; justify-content: flex-end; margin: var(--ak-space-4) 0 0; }
-@media (max-width: 639px) { .ol-bar__tools { margin-left: 0; width: 100%; justify-content: space-between; } .ol-foot { justify-content: center; } }
+@media (max-width: 639px) { .ol-bar__tools { margin-left: 0; width: 100%; justify-content: space-between; } .ol-bar__tools > .ol-pager { flex: 1 0 100%; justify-content: center; } .ol-pager .ak-pagination__item { min-width: 26px; padding: 0 6px; }   /* 九页时上一页 + 1 2 3 4 … 9 + 下一页要放进一行 */ .ol-foot { justify-content: center; } }
 
 /* ── 5. 结果 · 表格 ──
  *  现网：一行九栏，栏里把四个值叠成一摞（子职业 / 势力 / 出身地 / 种族；生命 / 攻击 / 防御 / 法抗 …），对着表头才知道哪个是哪个，数值也没法上下对齐着比。
@@ -248,9 +248,12 @@
 .ol-grid .ak-op-card__badge.ol-sortinfo { top: auto; right: 0; bottom: 0; }   /* 放右下角（精英化角标那一角，这页不用）：右上角会压住六颗星 */
 .ol-sortinfo { padding: 2px 5px; background: var(--ak-blue-500, #0098dc); color: #fff; font: 700 var(--ak-fs-xs)/1.2 var(--ak-font-label); font-variant-numeric: tabular-nums; }
 .ol-sortinfo small { font-size: .8em; font-weight: 400; }
+/* 名字显示全：放不下就折行，不截成「岳羽由…」（同一行的卡片等高，短名字下面留白） */
+.ol-grid .ak-op-card { display: flex; flex-direction: column; }
+.ol-grid .ak-op-card__name { flex: 1; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
 .ol-grid .ak-op-card__prof { width: 22px; height: 22px; }
 .ol-grid .ak-op-card__prof > .ol-prof-box { width: 18px; height: 18px; }
-@media (max-width: 639px) { .ol-grid--half { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--ak-space-2); } .ol-grid--avatar { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); } }
+@media (max-width: 639px) { .ol-grid--half { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--ak-space-2); } .ol-grid--avatar { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); } }   /* 手机上头像卡放宽到一行四张（原先 72px 一格只放得下四个字），六个字以内一行放完，更长的折行 */
 
 /* ── 8. 术语提示（特性里的 {{术语}}）：气泡挂在 body 上、按视口定位，不被表格裁掉 ── */
 .ol-tip { position: fixed; left: 0; top: 0; max-width: min(340px, calc(100vw - 16px)); white-space: pre-line; line-height: 1.55; pointer-events: none; }
