@@ -1482,7 +1482,8 @@ table.diff td { padding: .3em .5em; }
 .error, .errorbox { color: var(--ak-danger); }
 .warningbox { color: var(--ak-warning); }
 .successbox { color: var(--ak-success); }
-.mw-body-content .mw-tag-markers, .mw-tag-marker { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); padding: 0 6px; }
+.mw-body-content .mw-tag-markers { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+.mw-body-content .mw-tag-marker { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: 0 6px; }
 .mw-body-content .mw-tag-marker-mobile-edit { border-color: var(--ak-accent-muted); }
 /* Echo */
 .mw-echo-ui-notificationItemWidget { background: var(--ak-bg-surface); border-color: var(--ak-border); color: var(--ak-fg); }
@@ -3182,7 +3183,7 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
 .ak-sidebar__panel { display: block; }
 .ak-portlet { margin-bottom: var(--ak-space-5); }
 /* 分组标题：门户 h3 / MW 原生 heading / 原始 p */
-.ak-portlet__title, .ak-sidebar .vector-menu-heading, .ak-sidebar h3, .ak-sidebar p { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 6px; padding: 0 0 6px 10px; border-left: 2px solid var(--ak-theme-accent); display: flex; align-items: center; gap: 6px; }   /* 分组条用活动主色（--ak-theme-accent）：活动主题换色时侧栏跟着换，当前项 / 链接仍是 --ak-accent */
+.ak-portlet__title, .ak-sidebar .vector-menu-heading, .ak-sidebar h3, .ak-sidebar p { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 6px; padding: 3px 0 3px 10px; border-left: 2px solid var(--ak-theme-accent); display: flex; align-items: center; gap: 6px; }   /* 上下内边距对称：标题下没有横线，色条要以文字为中心，不能只往下伸；分组条用活动主色（--ak-theme-accent）：活动主题换色时侧栏跟着换，当前项 / 链接仍是 --ak-accent */
 .ak-sidebar ul + p, .ak-sidebar ul + h3, .ak-sidebar div + p { margin-top: var(--ak-space-5); }
 .ak-sidebar p:empty, .ak-sidebar li.mw-empty-elt, .ak-sidebar li:empty { display: none; }
 .ak-portlet ul, .ak-sidebar ul { list-style: none; margin: 0; padding: 0; }
@@ -3232,9 +3233,9 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
 @keyframes ak-tree-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ak-tree__branch.is-open > ul { animation: none; } .ak-tree__toggle::before, .ak-portlet--collapsible > .ak-portlet__title::after { transition: none; } }
 /* 桌面悬停飞出（peek）：由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切 */
-.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: 2px; border-image: linear-gradient(to right, var(--ak-accent) 2px, var(--ak-border) 2px) 1 1 1 2; box-shadow: var(--ak-shadow-lg); padding: 4px 0 6px; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
+.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: 2px; border-image: linear-gradient(to right, var(--ak-accent) 2px, var(--ak-border) 2px) 1 1 1 2; box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
 @keyframes ak-flyout-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
-.ak-flyout__title { padding: 6px 14px 4px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-subtle); }
+.ak-flyout__title { padding: 6px 14px 4px 16px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-subtle); }
 .ak-flyout ul { list-style: none; margin: 0; padding: 0; }
 .ak-flyout li::before { display: none !important; }
 .ak-flyout li > a, .ak-flyout li > b, .ak-flyout li > .ak-tree__label { display: flex; align-items: center; gap: 8px; padding: 6px 14px; color: var(--ak-fg-secondary); font-weight: 400; text-decoration: none; border-left: 2px solid transparent; white-space: nowrap; cursor: pointer; }
