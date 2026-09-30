@@ -48,10 +48,10 @@ cats: 首页
 
 /* ── 2. Hero：黑色终端块 = Swiper 自动轮播（左）+ 候选列表（右）。
  *  列表就是 7 张的「页签」：当前行 = 左青条 + 淡青底，**自动播放的进度条长在当前行底边**（2px 青线从左到右填满，满了就切下一张）——「现在在哪 / 下一张是谁 / 还有多久」在同一处读完；
- *  列表底下一条工具栏：‹ 01 / 07 › + 暂停。悬停图或列表时暂停；prefers-reduced-motion 下不自动播、切换无动画。无 JS：Swiper CSS 只露第一张，列表每项仍是链接。
+ *  列表底下一条工具栏：‹ 01 / 07 › + 暂停。鼠标在黑块里、键盘焦点在黑块里时暂停；prefers-reduced-motion 下不自动播、切换无动画。无 JS：Swiper CSS 只露第一张，列表每项仍是链接。
  *  两套主题下都是黑的：与页眉同属「黑框」那一层（官网 hero / 游戏主界面的活动面板都是深底）。
  *  配色同页眉的做法：语义令牌在容器上重映射一次，但**只重映射中性色**（走 --ak-chrome-*），里面的 .ak-btn / .ak-tag / .ak-countdown 自动跟随，不逐个改组件的私有变量。
- *  强调色不重映射：**实底**（主按钮、「进行中」标签）跟正文令牌——亮色蓝底白字（blue-500 + #fff）/ 暗色青底黑字（cyan-500 + #000），与正文里的 .ak-btn--primary / .ak-tag--accent 是同一块；
+ *  强调色不重映射：**实底**（「进行中」标签）跟正文令牌——亮色蓝底白字（blue-500 + #fff）/ 暗色青底黑字（cyan-500 + #000），与正文里的 .ak-btn--primary / .ak-tag--accent 是同一块；
  *  hero 是黑块但不是页眉，不另开一套实底色（曾试过 blue-500 + 黑字：蓝 + 黑 6.5:1 比蓝 + 白 3.2:1 好看得多，但系统里没有「蓝底黑字」这个组合，退回）。
  *  线 / 字 / 焦点仍用官网青 cyan-500 写死（eyebrow、当前行、进度条、焦点环，同页眉当前项）——它们是 hero 的「框」语言，两套主题下都不变。 */
 .mp-hero {
@@ -64,22 +64,24 @@ cats: 首页
 .mp-hero__stage { position: relative; display: flex; flex-direction: column; min-width: 0; border-right: 1px solid #2f3133; }
 .mp-hero__swiper { flex: 1 1 auto; min-height: 0; width: 100%; }   /* .swiper 自带 position:relative + overflow:hidden */
 .mp-hero__slide { display: flex; flex-direction: column; }           /* .swiper-slide 自带 height:100%（容器被网格拉高时图跟着长） */
-.mp-hero__pic { display: block; position: relative; flex: 1 1 auto; min-height: 0; aspect-ratio: 3 / 1; background: #1d1f20; overflow: hidden; }   /* 候选列表比「图 + 说明」高时，多出来的高度由图框吃掉（图 contain 居中、余下的是深底），说明栏不悬空 */
+.mp-hero__pic { display: block; position: relative; flex: 1 1 auto; min-height: 0; aspect-ratio: 3 / 1; background: #1d1f20; overflow: hidden; }   /* 候选列表比「图 + 说明」高时，多出来的高度由图框吃掉（图 contain 居中、余下的是模糊铺底），说明栏不悬空 */
 .mp-hero__pic img { position: relative; width: 100%; height: 100%; object-fit: contain; display: block; }   /* 整幅显示不裁：现网横幅两种比例（活动 960×308 ≈ 3.1:1、寻访 960×524 ≈ 1.8:1），cover 会把寻访图的标题 / 干员裁掉 */
 .mp-hero__pic .mp-hero__bg { position: absolute; inset: 0; object-fit: cover; transform: scale(1.12); filter: blur(22px) brightness(.55); }   /* 比例对不上的留白由同一张图放大模糊铺底（cover + 压暗，主图在上层 contain）；放大 12% 把 blur 的透明毛边推出框外。生产环境 = 同一文件再嵌一次、加 class，不能用 style="--bg:url()"（MW 清洗器不放行 url()） */
 .mp-hero__pic::after { content: ""; position: absolute; inset: auto 0 0 0; height: 56px; background: linear-gradient(180deg, transparent, rgba(15,15,16,.85)); pointer-events: none; }
-.mp-hero__caption { position: relative; flex: none; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 24px; align-items: end; padding: 14px 20px 18px; }
+.mp-hero__caption { position: relative; flex: none; padding: 14px 20px 18px; }
 .mp-hero__caption::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: radial-gradient(rgba(255,255,255,.16) 1.2px, transparent 1.3px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(270deg, #000, transparent 45%); mask-image: linear-gradient(270deg, #000, transparent 45%); opacity: .5; pointer-events: none; }   /* 右侧半调网点向左渐隐（游戏 bkg_openserver） */
 .mp-hero__eyebrow { display: flex; align-items: center; gap: 8px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-cyan-500); }
 .mp-hero__title { font: 800 var(--ak-fs-h2)/1.2 var(--ak-font-body); color: #fff; margin: 4px 0 0; border: 0; padding: 0; letter-spacing: .01em; }
 .mp-hero__title::after { display: none; }
 .mp-hero__title a { color: inherit; text-decoration: none; }
-.mp-hero__title a:hover { color: var(--ak-cyan-500); }
+.mp-hero__title a::after { content: ""; position: absolute; inset: 0; }   /* 热区铺满说明栏（定位祖先 = .mp-hero__caption）；图本身是链接，两块合起来 = 整张 slide。文字被盖住所以指针恒为手型——说明栏在 Swiper 里本来就拖不出选区 */
+.mp-hero__slide:hover .mp-hero__title a { color: var(--ak-cyan-500); }
+.mp-hero__title a:focus-visible { outline: 0; }
+.mp-hero__title a:focus-visible::after { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 .mp-hero__time { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: rgba(255,255,255,.62); }
 .mp-hero__time .ak-countdown > span { min-width: 36px; padding: 3px 5px; }   /* 颜色由容器令牌得到，这里只收尺寸 */
 .mp-hero__time .ak-countdown > span > b { font-size: var(--ak-fs-body-lg); }
-.mp-hero__cta { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }   /* 按钮不另写颜色：默认 .ak-btn = 透明底 + 白字 + 细白框（中性色来自容器令牌），--primary = 正文的 --ak-accent / --ak-accent-fg（亮色蓝底白字 / 暗色青底黑字） */
-.mp-hero__item:focus-visible, .mp-hero__btn:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }   /* 只给贴边、会被 overflow 裁掉的列表项 / 工具栏按钮内缩；CTA 按钮走 .ak-btn 默认的外扩 2px（内缩的青环压在亮色的蓝实底上只有 1.8:1） */
+.mp-hero__item:focus-visible, .mp-hero__btn:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的列表项 / 工具栏按钮：焦点环内缩 */
 /* 候选列表 */
 .mp-hero__aside { display: flex; flex-direction: column; min-width: 0; }
 .mp-hero__list { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
@@ -87,7 +89,7 @@ cats: 首页
 .mp-hero__item { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 10px; align-items: center; height: 100%; box-sizing: border-box; padding: 6px 12px 6px 9px; color: var(--ak-fg); text-decoration: none; border-left: 3px solid transparent; transition: background var(--ak-dur-fast); }
 .mp-hero__item:hover { background: var(--ak-bg-hover); color: #fff; text-decoration: none; }
 .mp-hero__list > li.is-active .mp-hero__item { border-left-color: var(--ak-cyan-500); background: rgba(24,209,255,.1); }   /* 选中行 = 左青条 + 淡青底（同搜索面板高亮行） */
-.mp-hero__list > li.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--ak-cyan-500); transform: scaleX(var(--p, 0)); transform-origin: left; z-index: 1; pointer-events: none; }   /* 自动播放进度：Swiper autoplayTimeLeft 每帧写 --p */
+.mp-hero__list > li.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--ak-cyan-500); transform: scaleX(var(--p, 0)); transform-origin: left; z-index: 1; pointer-events: none; }   /* 自动播放进度：脚本每帧写 --p（0–1） */
 .mp-hero__thumb { width: 64px; height: 38px; object-fit: cover; display: block; background: #1d1f20; }
 .mp-hero__kind { display: block; font: 700 10px/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); }
 .mp-hero__name { display: block; font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.3; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -308,13 +310,11 @@ cats: 首页
   .mp-nav__tile img { width: 40px; height: 40px; }
   .mp-nav__zh { font-size: var(--ak-fs-xs); }
   .mp-nav__en { display: none; }
-  .mp-hero__caption { grid-template-columns: 1fr; }
   .mp-hero__events { grid-template-columns: 1fr; }   /* 红标签变顶条，每条活动仍是一行：名称 + 倒计时 + › */
   .mp-events__label { justify-content: flex-start; padding: 4px 10px; }
   .mp-events > li:first-child { border-top: 1px solid #2f3133; }
   .mp-events__item { gap: 10px; padding: 6px 8px 6px 10px; min-height: 40px; }
   .mp-events__time { display: none; }
-  .mp-hero__cta { justify-content: flex-start; }
   .mp-section { margin-top: var(--ak-space-8); }
   .mp-site { grid-template-columns: 1fr; }
   .mp-stages__grid { grid-template-columns: 1fr 1fr; }
@@ -326,7 +326,7 @@ cats: 首页
 <div class="mp ak-not-prose">   <!-- 整个首页是拼出来的 UI 不是文章：标 ak-not-prose，正文排版（标题色条 / 列表符 / 链接色含 :visited）一律不进来；要像正文链接的地方见 .mp-link -->
 
 <!-- ═══ 1. Hero：Swiper 自动轮播（现网轮播的 7 张）+ 候选列表 ═══
-     每张 slide 自带说明栏（类型 / 状态 / 标题 / 时间 + 倒计时 / 两个按钮）；右侧列表是页签，当前行底边长进度条；列表下一条工具栏 ‹ 01 / 07 › + 暂停。
+     每张 slide 自带说明栏（类型 / 状态 / 标题 / 时间 + 倒计时），**整张 slide 是一个热区**（图是链接，标题链接的 ::after 铺满说明栏），不另放按钮；右侧列表是页签，当前行底边长进度条；列表下一条工具栏 ‹ 01 / 07 › + 暂停。
      无 JS：Swiper CSS 只露第一张，列表每项仍是去活动页的链接 -->
 <section class="mp-hero" id="mp-hero" aria-label="当前活动与寻访">
   <div class="mp-hero__stage">
@@ -340,7 +340,6 @@ cats: 首页
             <h2 class="mp-hero__title"><a href="#">奇象巡展</a></h2>
             <div class="mp-hero__time"><span>2026.08.08 16:00 — 09.07 03:59</span> <span class="ak-countdown" data-until="2026-09-07T03:59:00+08:00"></span></div>
           </div>
-          <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">活动页面</a><a class="ak-btn" href="#mp-recent">新增关卡</a></div>
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
@@ -351,7 +350,6 @@ cats: 首页
             <h2 class="mp-hero__title"><a href="#">墟2026</a></h2>
             <div class="mp-hero__time"><span>即将开启 · 详见活动预告</span></div>
           </div>
-          <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">活动预告</a><a class="ak-btn" href="#">游戏内容前瞻</a></div>
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
@@ -362,7 +360,6 @@ cats: 首页
             <h2 class="mp-hero__title"><a href="#">重启锚点</a></h2>
             <div class="mp-hero__time"><span>七周年庆典 · 2026.05.01 10:00 开放</span></div>
           </div>
-          <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">活动页面</a><a class="ak-btn" href="#">生息演算</a></div>
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
@@ -373,7 +370,6 @@ cats: 首页
             <h2 class="mp-hero__title"><a href="#">沉沦者的黑流树海</a></h2>
             <div class="mp-hero__time"><span>集成战略 #6 · 常驻开放</span></div>
           </div>
-          <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">主题页面</a><a class="ak-btn" href="#">集成战略一览</a></div>
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
@@ -384,7 +380,6 @@ cats: 首页
             <h2 class="mp-hero__title"><a href="#">中坚甄选 14</a></h2>
             <div class="mp-hero__time"><span>2026.08.19 10:00 — 09.02 03:59</span> <span class="ak-countdown" data-until="2026-09-02T03:59:00+08:00"></span></div>
           </div>
-          <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">寻访模拟</a><a class="ak-btn" href="#">卡池一览</a></div>
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
@@ -395,7 +390,6 @@ cats: 首页
             <h2 class="mp-hero__title"><a href="#">联合行动 23</a></h2>
             <div class="mp-hero__time"><span>2026.08.12 10:00 — 08.26 03:59</span> <span class="ak-countdown" data-until="2026-08-26T03:59:00+08:00"></span></div>
           </div>
-          <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">寻访模拟</a><a class="ak-btn" href="#">卡池一览</a></div>
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
@@ -406,7 +400,6 @@ cats: 首页
             <h2 class="mp-hero__title"><a href="#">干员轮换卡池 191</a></h2>
             <div class="mp-hero__time"><span>2026.08.20 04:00 — 08.27 03:59</span> <span class="ak-countdown" data-until="2026-08-27T03:59:00+08:00"></span></div>
           </div>
-          <div class="mp-hero__cta"><a class="ak-btn ak-btn--primary" href="#">寻访模拟</a><a class="ak-btn" href="#">卡池一览</a></div>
         </div>
       </div>
       </div>
@@ -679,7 +672,7 @@ cats: 首页
 /* 首页脚本（生产环境归 Gadget：MediaWiki:Gadget-mainpage.js）——全部是增强，没有它页面照样完整 */
 (function () {
   'use strict';
-  /* 1. Hero：Swiper 自动轮播 + 候选列表同步 + 进度条 + 暂停 */
+  /* 1. Hero：Swiper 轮播 + 自动播放（自己计时）+ 候选列表同步 + 进度条 + 暂停 */
   var hero = document.getElementById('mp-hero'), list = document.getElementById('mp-hero-list');
   var pad2 = function (n) { return (n < 10 ? '0' : '') + n; };
   var cdFormat = function (el) {
@@ -697,10 +690,9 @@ cats: 首页
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var items = [].slice.call(list.children), total = items.length;
     var count = document.getElementById('mp-hero-count'), pauseBtn = document.getElementById('mp-hero-pause');
-    var stopped = false;
+    var stopped = reduce;
     var sw = new Swiper('#mp-hero-swiper', {
       loop: true, speed: reduce ? 0 : 500,
-      autoplay: reduce ? false : { delay: 6000, pauseOnMouseEnter: true, disableOnInteraction: false },
       keyboard: { enabled: true, onlyInViewport: true },
       navigation: { prevEl: '#mp-hero-prev', nextEl: '#mp-hero-next' },
       a11y: { prevSlideMessage: '上一张', nextSlideMessage: '下一张', slideLabelMessage: '第 {{' + 'index}} / {{slidesLength}} 张', containerMessage: '活动与寻访轮播' }
@@ -708,26 +700,41 @@ cats: 首页
     var sync = function () {
       var i = sw.realIndex;
       items.forEach(function (li, j) {
-        var on = j === i; li.classList.toggle('is-active', on); li.style.removeProperty('--p');
+        var on = j === i; li.classList.toggle('is-active', on); li.style.removeProperty('--p');   // 换张（自动 / 手动都算）进度归零
         var a = li.firstElementChild; if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
       });
+      elapsed = 0;
       if (count) count.innerHTML = '<b>' + pad2(i + 1) + '</b> / ' + pad2(total);
       if (list.scrollWidth > list.clientWidth + 1) {   // 手机：横向缩略条，把当前项滚到可见
         var li = items[i]; list.scrollTo({ left: li.offsetLeft - (list.clientWidth - li.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' });
       }
     };
+    /* 自动播放不用 Swiper 的 autoplay 模块，自己按帧累计「已播时长」：
+       它的 pauseOnMouseEnter 只管 .swiper 本身，列表得另挂一套 pause / resume，两套状态互相打架——
+       从列表移进图时 pointerenter（图）先于 mouseleave（列表）派发，图那边见「已暂停」直接跳过，随后列表的 resume 把它放开，悬停着照样播；
+       已暂停时再 pause() 会把剩余时间重复扣一次（进度跳变、resume 后立刻切走），定时器迟到时剩余时间为负（进度 > 1，横条长出格）。
+       这里只有一个量 elapsed 和一个判定 held()：停着就不累计，所以进度只会连续地涨，且恒在 0–1 */
+    var DELAY = 6000, elapsed = 0, last = 0, hover = false, drag = false;
+    var held = function () { return stopped || hover || drag || sw.animating || !!hero.querySelector(':focus-visible'); };
+    var frame = function (now) {
+      if (!held()) {
+        elapsed += Math.min(now - last, 100);   // 后台标签页不出帧：回来时那一大段不算
+        if (elapsed >= DELAY) sw.slideNext();   // → slideChange → sync() 归零
+        else items[sw.realIndex].style.setProperty('--p', (elapsed / DELAY).toFixed(4));
+      }
+      last = now; requestAnimationFrame(frame);
+    };
     sw.on('slideChange', sync); sync();
-    sw.on('autoplayTimeLeft', function (s, t, pct) { items[s.realIndex].style.setProperty('--p', (1 - pct).toFixed(4)); });
+    sw.on('touchStart', function () { drag = true; }); sw.on('touchEnd', function () { drag = false; });
+    hero.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hover = true; });   // 挂在整个黑块上：图 / 列表 / 工具栏之间怎么穿都不会有 leave
+    hero.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') hover = false; });
+    requestAnimationFrame(frame);
     list.addEventListener('click', function (e) { var li = e.target.closest('li'); if (!li || !list.contains(li)) return; e.preventDefault(); sw.slideToLoop(items.indexOf(li)); });
-    list.addEventListener('mouseenter', function () { if (sw.autoplay && !stopped) sw.autoplay.pause(); });
-    list.addEventListener('mouseleave', function () { if (sw.autoplay && !stopped) sw.autoplay.resume(); });
     if (pauseBtn) {
-      if (reduce) { stopped = true; pauseBtn.setAttribute('aria-pressed', 'true'); pauseBtn.setAttribute('aria-label', '继续自动轮播'); hero.classList.add('is-stopped'); }
+      if (stopped) { pauseBtn.setAttribute('aria-pressed', 'true'); pauseBtn.setAttribute('aria-label', '继续自动轮播'); hero.classList.add('is-stopped'); }
       pauseBtn.addEventListener('click', function () {
         stopped = !stopped; hero.classList.toggle('is-stopped', stopped);
         pauseBtn.setAttribute('aria-pressed', String(stopped)); pauseBtn.setAttribute('aria-label', stopped ? '继续自动轮播' : '暂停自动轮播');
-        if (!sw.autoplay) return;
-        if (stopped) sw.autoplay.stop(); else sw.autoplay.start();
       });
     }
   }
