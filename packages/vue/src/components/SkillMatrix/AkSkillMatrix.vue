@@ -117,7 +117,8 @@ function onKey(e: KeyboardEvent, level: number) {
         </AkRichText>
       </slot>
     </div>
-    <table class="ak-skill-matrix" :aria-label="label" @mouseover="onOver" @mouseleave="hovered = undefined" @click="onClick">
+    <!-- data-no-toggle：皮肤脚本会给页面里的 .ak-skill-matrix 绑一套列高亮 / .ak-var 换值（wikipage.content 时也会扫），这里自己管 -->
+    <table class="ak-skill-matrix" :aria-label="label" data-no-toggle @mouseover="onOver" @mouseleave="hovered = undefined" @click="onClick">
       <colgroup><col class="label" /></colgroup>
       <thead>
         <tr>

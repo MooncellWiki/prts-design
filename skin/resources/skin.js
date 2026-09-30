@@ -198,7 +198,7 @@
 		const ph = e.target.closest( '.ak-panel--collapsible > .ak-panel__head' ); if ( ph && !ph.closest( '[data-no-toggle]' ) ) { ph.parentElement.classList.toggle( 'is-collapsed' ); }
 		const chip = e.target.closest( '.ak-chip' ); if ( chip && !chip.closest( '[data-no-toggle]' ) ) { chip.classList.toggle( 'is-active' ); chip.setAttribute( 'aria-pressed', chip.classList.contains( 'is-active' ) ); }
 		const grp = e.target.closest( '.ak-btn-group > .ak-btn, .ak-phase-tabs > button, .ak-skill-levels > button' );
-		if ( grp ) { const parent = grp.parentElement; $$( ':scope > *', parent ).forEach( ( b ) => b.classList.toggle( 'is-active', b === grp ) ); parent.dispatchEvent( new CustomEvent( 'akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } } ) ); }
+		if ( grp && !grp.closest( '[data-no-toggle]' ) ) { const parent = grp.parentElement; $$( ':scope > *', parent ).forEach( ( b ) => b.classList.toggle( 'is-active', b === grp ) ); parent.dispatchEvent( new CustomEvent( 'akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } } ) ); }
 		const o = e.target.closest( '[data-dialog-open]' ); if ( o ) { const d = $( o.dataset.dialogOpen ); if ( d && d.showModal ) { d.showModal(); } }
 		const c = e.target.closest( '[data-dialog-close]' ); if ( c ) { const d = c.closest( 'dialog' ); if ( d ) { d.close(); } }
 		const vp = e.target.closest( '.ak-voice__play' ); if ( vp && !vp.closest( '[data-no-toggle]' ) ) { vp.classList.toggle( 'is-playing' ); }
@@ -217,6 +217,7 @@
 
 	/* 技能参数矩阵 .ak-skill-matrix：悬停 / 点某一列 → 整列高亮，描述里的 .ak-var[data-var] 换成该级数值；离开还原区间（无 JS 时是一张静态矩阵；与 preview.js 相同） */
 	$$( '.ak-skill-matrix' ).forEach( ( tb ) => {
+		if ( tb.closest( '[data-no-toggle]' ) ) { return; }   // Vue 版 AkSkillMatrix 自己管高亮与 .ak-var
 		const sheet = tb.closest( '.ak-skill-sheet' ) || tb.parentElement; const vars = $$( '.ak-var[data-var]', sheet );
 		vars.forEach( ( v ) => { v.dataset.range = v.textContent; } );
 		const cols = $$( 'thead th', tb ); let pinned = -1;

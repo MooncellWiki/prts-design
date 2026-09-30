@@ -41,7 +41,8 @@ function onKey(e: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="ak-phase-tabs" role="radiogroup" :aria-label="label" @keydown="onKey">
+  <!-- data-no-toggle：皮肤脚本会替模板输出的 .ak-phase-tabs 翻 is-active 并发 akds:select，这里的选中只看 v-model -->
+  <div class="ak-phase-tabs" role="radiogroup" :aria-label="label" data-no-toggle @keydown="onKey">
     <button
       v-for="p in phases"
       :key="p"

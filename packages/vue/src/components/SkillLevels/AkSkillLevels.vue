@@ -46,7 +46,8 @@ function onKey(e: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="ak-skill-levels" role="radiogroup" :aria-label="label" :aria-disabled="disabled || undefined" @keydown="onKey">
+  <!-- data-no-toggle：皮肤脚本会替模板输出的 .ak-skill-levels 翻 is-active 并发 akds:select，这里的选中只看 v-model -->
+  <div class="ak-skill-levels" role="radiogroup" :aria-label="label" :aria-disabled="disabled || undefined" data-no-toggle @keydown="onKey">
     <button
       v-for="lv in levels"
       :key="lv"

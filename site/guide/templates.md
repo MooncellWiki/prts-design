@@ -44,7 +44,7 @@
 | `[data-ak-tip]` | 补 `aria-describedby`，给不可聚焦的元素补 `tabindex` |
 | `[data-dialog-open="#id"]` / `[data-dialog-close]` | 打开 / 关闭 `<dialog class="ak-dialog">` |
 
-不想被这层委托接管的容器（状态由 Vue 管）标 `data-no-toggle`。
+不想被这层委托接管的容器（状态由 Vue 管）标 `data-no-toggle`：芯片 `.ak-chip`、折叠面板标题栏、分段按钮组 `.ak-btn-group` / 精英阶段 `.ak-phase-tabs` / 技能等级 `.ak-skill-levels`、语音播放钮 `.ak-voice__play`、技能参数矩阵 `.ak-skill-matrix` 的列高亮，这几处委托都认它（`closest`，标在容器或元素上都行）；Vue 实现里对应的组件（AkChip / AkVoiceList / AkPanel / AkButtonGroup / AkRadioGroup / AkPhaseTabs / AkSkillLevels / AkVoice / AkSkillMatrix）都已自带，prts-widgets 里用不着再标。标签页只接管 `.ak-tabs[data-tabs]`、复选开关只接管 `input[data-toggle-class]`，是 opt-in，Vue 版不写这些属性就不会被碰。
 
 ## 现网模板 → 组件
 

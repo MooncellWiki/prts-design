@@ -20,5 +20,6 @@ provide(buttonGroupKey, props);
 </script>
 
 <template>
-  <div class="ak-btn-group" role="group" :aria-label="label"><slot /></div>
+  <!-- data-no-toggle：皮肤脚本会给模板输出的 .ak-btn-group 里被点的 .ak-btn 翻 is-active（分段控件的演示态），这里是一组普通按钮，退出那层委托 -->
+  <div class="ak-btn-group" role="group" :aria-label="label" data-no-toggle><slot /></div>
 </template>

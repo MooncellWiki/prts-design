@@ -95,7 +95,8 @@ const Root = () => {
   const stop = enabled.includes(model.value!) ? model.value : enabled[0];
   return h(
     "div",
-    mergeProps(common, { class: "ak-btn-group", onKeydown: onKey }),
+    // data-no-toggle：皮肤脚本会替模板输出的 .ak-btn-group 翻 is-active，这里的选中只看 v-model
+    mergeProps(common, { class: "ak-btn-group", "data-no-toggle": "", onKeydown: onKey }),
     nodes.map(n => (n.type === AkRadioButton ? cloneVNode(n, { tabindex: n.props?.value === stop ? 0 : -1 }) : n)),
   );
 };

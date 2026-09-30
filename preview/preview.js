@@ -247,7 +247,7 @@
   document.addEventListener('click', e => {
     const chip = e.target.closest('.ak-chip'); if (chip && !chip.closest('[data-no-toggle]')) { chip.classList.toggle('is-active'); chip.setAttribute('aria-pressed', chip.classList.contains('is-active')); }
     const grp = e.target.closest('.ak-btn-group > .ak-btn, .ak-phase-tabs > button, .ak-skill-levels > button');
-    if (grp) { const parent = grp.parentElement; $$(':scope > *', parent).forEach(b => b.classList.toggle('is-active', b === grp)); parent.dispatchEvent(new CustomEvent('akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } })); }
+    if (grp && !grp.closest('[data-no-toggle]')) { const parent = grp.parentElement; $$(':scope > *', parent).forEach(b => b.classList.toggle('is-active', b === grp)); parent.dispatchEvent(new CustomEvent('akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } })); }
   });
   /* data-bind: 元素上 data-values='{"e0":"1684",...}' 根据选择器 change 更新文本 */
   document.addEventListener('akds:select', e => {
@@ -264,7 +264,7 @@
   });
 
   /* 技能参数矩阵 .ak-skill-matrix：悬停 / 点某一列 → 整列高亮，描述里的 .ak-var[data-var] 换成该级数值；离开还原区间（无 JS 时就是一张静态矩阵） */
-  $$('.ak-skill-matrix').forEach(tb => {
+  $$('.ak-skill-matrix').forEach(tb => { if (tb.closest('[data-no-toggle]')) return;
     const sheet = tb.closest('.ak-skill-sheet') || tb.parentElement; const vars = $$('.ak-var[data-var]', sheet); vars.forEach(v => { v.dataset.range = v.textContent; });
     const cols = $$('thead th', tb); let pinned = -1;
     const paint = i => { cols.forEach((th, k) => th.classList.toggle('is-hl', k === i)); $$('tbody tr', tb).forEach(tr => { [...tr.children].forEach((c, k) => c.classList.toggle('is-hl', k === i)); const v = tr.dataset.var; if (v) vars.filter(x => x.dataset.var === v).forEach(x => { x.textContent = i > 0 && tr.children[i] ? tr.children[i].textContent : x.dataset.range; }); }); };
