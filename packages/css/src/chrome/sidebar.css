@@ -25,7 +25,6 @@
 .ak-sidebar li > span:not(.ak-tree__label) { flex-wrap: wrap; cursor: default; }   /* 非链接行（Widget 渲染成 <span>）：里面可以夹行内链接 */
 .ak-sidebar li > span:not(.ak-tree__label) a { color: var(--ak-link); }
 .client-nojs .ak-sidebar li > ul { display: block; }   /* 无 JS：所有层级展开 */
-.ak-sidebar__head { display: none; }   /* 抽屉抬头（标题 + 关闭钮）：只在 <1120 的抽屉里出现，见 responsive.css */
 .ak-overlay--sidebar, .ak-overlay--drawer { animation: ak-fade-in var(--ak-dur-fast) var(--ak-ease); }   /* 抽屉遮罩（.ak-overlay 本体在 components/dialog.css；由 JS 生成） */
 .ak-portlet li a .ak-icon { width: 16px; height: 16px; opacity: .7; }
 .ak-portlet--grid ul { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }

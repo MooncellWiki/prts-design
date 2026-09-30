@@ -87,7 +87,7 @@
 	document.addEventListener( 'click', ( e ) => {
 		if ( !sidebar ) { return; }
 		if ( e.target.closest( '.ak-local-nav__menu' ) ) { setSidebar( !sidebar.classList.contains( 'is-open' ) ); }
-		else if ( e.target.closest( '.ak-sidebar__close, .ak-overlay--sidebar' ) ) { setSidebar( false ); }
+		else if ( e.target.closest( '.ak-overlay--sidebar' ) ) { setSidebar( false ); }
 	} );
 	document.addEventListener( 'keydown', ( e ) => { if ( e.key === 'Escape' && sidebar && sidebar.classList.contains( 'is-open' ) ) { setSidebar( false ); if ( menuBtn ) { menuBtn.focus(); } } } );
 	window.matchMedia( '(max-width: 1119px)' ).addEventListener( 'change', ( e ) => { if ( !e.matches ) { setSidebar( false ); } } );

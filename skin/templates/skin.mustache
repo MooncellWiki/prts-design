@@ -107,7 +107,6 @@
   {{! 侧栏：多层导航由 resources/sidebar-tree.js 增强（li > ul 任意深度 → 树形展开 + 桌面悬停飞出；data-flyout="off" 可关闭飞出）。
       #mw-panel 保留给站点脚本兼容（PRTS 现有内联脚本把 #MenuSidebar 移入 #mw-panel 并读取 #p-tb ul）。 }}
   <aside class="ak-sidebar" id="ak-sidebar" aria-label="{{msg-navigation-heading}}">
-    <button class="ak-btn ak-btn--sm ak-sidebar__close ak-only-mobile" aria-label="close">✕</button>
     <div class="ak-sidebar__panel" id="mw-panel">
     {{#data-portlets-sidebar.data-portlets-first}}
     <div class="ak-portlet ak-portlet--grid" id="{{id}}"><h3 class="ak-portlet__title">{{label}}</h3><ul>{{{html-items}}}</ul></div>

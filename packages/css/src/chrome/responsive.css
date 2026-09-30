@@ -50,12 +50,8 @@
   .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
   /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截）。
    * 展开时 JS 给 <html> 加 .ak-scroll-lock 锁住页面滚动（VitePress VPSidebar 同）：抽屉自己 overflow-y:auto + overscroll-behavior:contain（沿用导轨态声明），滚到头也不会把页面带着走 */
-  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); border-right: 1px solid var(--ak-border); padding: 0 var(--ak-space-3) var(--ak-space-6); box-sizing: border-box; transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
+  .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); border-right: 1px solid var(--ak-border); padding: var(--ak-space-4) var(--ak-space-3) var(--ak-space-6); box-sizing: border-box; transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
   .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
-  /* 抽屉抬头：粘在顶部的一行 = 「导航」小标 + 关闭钮（.ak-btn--icon） */
-  .ak-sidebar__head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; height: var(--ak-header-h); margin: 0 calc(-1 * var(--ak-space-3)) var(--ak-space-3); padding: 0 var(--ak-space-2) 0 var(--ak-space-4); background: var(--ak-bg-surface); border-bottom: 1px solid var(--ak-border); }
-  .ak-sidebar__title { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }
-  .ak-sidebar__close { display: inline-flex; }
   .ak-header__inner { display: flex; gap: var(--ak-space-4); }   /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex */
   .ak-header__logo { margin-right: auto; }   /* 品牌靠左，其余（搜索 / ≡）靠右 */
   .ak-header__search { flex: 1; width: auto; max-width: none; }
