@@ -1,19 +1,43 @@
 name: Release
 
-# 推 v* tag 发布 packages/* 下的三个公开包（@mooncellwiki/prts-design-tokens / prts-design-css / prts-design-vue；prts-design-css 只发代码，files 排除了字体与游戏素材）到 npm，
-# 同 MooncellWiki/sponsorkit：sxzz/workflows 的 release（changelogithub 生成 GitHub Release + pnpm -r publish，OIDC trusted publishing，不存 npm token）。
-# 发版：三个公开包的 version 一起改（同一版本号）→ 提交 → git tag vX.Y.Z → git push --follow-tags
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
 
 jobs:
   release:
-    uses: sxzz/workflows/.github/workflows/release.yml@v1
-    with:
-      publish: true
-      build: pnpm build
-    permissions:
-      contents: write
-      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate GitHub Release
+        run: pnpx changelogithub
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish to npm
+        run: pnpm -r publish --access public --no-git-checks
