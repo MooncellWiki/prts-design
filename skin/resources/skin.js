@@ -201,7 +201,7 @@
 		if ( grp ) { const parent = grp.parentElement; $$( ':scope > *', parent ).forEach( ( b ) => b.classList.toggle( 'is-active', b === grp ) ); parent.dispatchEvent( new CustomEvent( 'akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } } ) ); }
 		const o = e.target.closest( '[data-dialog-open]' ); if ( o ) { const d = $( o.dataset.dialogOpen ); if ( d && d.showModal ) { d.showModal(); } }
 		const c = e.target.closest( '[data-dialog-close]' ); if ( c ) { const d = c.closest( 'dialog' ); if ( d ) { d.close(); } }
-		const vp = e.target.closest( '.ak-voice__play' ); if ( vp ) { vp.classList.toggle( 'is-playing' ); }
+		const vp = e.target.closest( '.ak-voice__play' ); if ( vp && !vp.closest( '[data-no-toggle]' ) ) { vp.classList.toggle( 'is-playing' ); }
 	} );
 	document.addEventListener( 'akds:select', ( e ) => {
 		const scope = e.detail.el.closest( '[data-scope]' ) || document; const key = e.detail.value; const sel = e.target.dataset.bind; if ( !key || !sel ) { return; }

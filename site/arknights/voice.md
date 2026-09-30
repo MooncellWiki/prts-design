@@ -24,6 +24,7 @@ component: voice
 - 播放钮是 `<button>`，读作「播放 + 标题」，`aria-pressed` 表示正在播放。
 - 语种切换是一组 `aria-pressed` 的切换按钮（`role="group"`，以「语种」小标为组名）。
 - 台词带 HTML `lang`（cn → zh-Hans、yue → yue、jp → ja、en → en、kr → ko），读屏按语种发音。
+- 语种切换条与播放钮都带 `data-no-toggle`：皮肤脚本会在 document 上替模板输出的纯 CSS 芯片 / 播放钮翻 `is-active` / `is-playing`（给[CSS 实现](#css-实现)的演示用），Vue 版的状态归自己管，要退出那层委托，否则两边各翻一次。自己用 `.ak-voice` 结构 + 脚本管状态时也照此标。
 
 ## Vue API
 
@@ -37,6 +38,6 @@ component: voice
 
 ## CSS 实现
 
-语种切换条 `.ak-voice-langs`（原是干员页私有的 `.op-voice-langs`）和禁用的播放钮 `.ak-voice__play:disabled` 随 Vue 版一起收进了 voice.css。
+语种切换条 `.ak-voice-langs`（原是干员页私有的 `.op-voice-langs`）和禁用的播放钮 `.ak-voice__play:disabled` 随 Vue 版一起收进了 voice.css。皮肤脚本（document 级委托）会替模板输出的芯片翻 `is-active` / `aria-pressed`、替播放钮翻 `is-playing`（只是演示态，不会真的放音频）；状态自己管的容器标 `data-no-toggle`。
 
 <CssClasses :files="['arknights/voice.css']" />

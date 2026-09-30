@@ -299,7 +299,7 @@
   });
 
   /* ── Voice play mock ───────────────────────────────────────── */
-  document.addEventListener('click', e => { const p = e.target.closest('.ak-voice__play'); if (p) p.classList.toggle('is-playing'); });
+  document.addEventListener('click', e => { const p = e.target.closest('.ak-voice__play'); if (p && !p.closest('[data-no-toggle]')) p.classList.toggle('is-playing'); });
 
   /* ── Back to top ───────────────────────────────────────────── */
   const fab = $('.ak-fab');

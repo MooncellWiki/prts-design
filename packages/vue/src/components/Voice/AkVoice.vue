@@ -4,7 +4,11 @@ import { computed, inject, onBeforeUnmount } from "vue";
 import { HTML_LANG, voiceListKey } from "./context";
 import { playing, stop, toggle } from "./player";
 
-/** 一条语音：播放钮 + 标题行（语种徽标 / 解锁条件 / 编号）+ 台词。一般放在 AkVoiceList 里，跟列表的语种走 */
+/**
+ * 一条语音：播放钮 + 标题行（语种徽标 / 解锁条件 / 编号）+ 台词。一般放在 AkVoiceList 里，跟列表的语种走。
+ * 播放钮标 data-no-toggle：皮肤脚本会在 document 上替模板输出的纯 CSS 播放钮翻 is-playing（演示用），这里的 is-playing 跟真实播放状态走，
+ * 不退出那层委托就会两边各翻一次（点一下在放但图标还是播放，再点停了图标却变成暂停）。
+ */
 const props = withDefaults(
   defineProps<{
     /** 语音标题（任命助理 / 交谈1 …） */
@@ -54,6 +58,7 @@ function onClick() {
       :aria-label="`播放 ${title}`"
       :aria-pressed="isPlaying"
       :disabled="!src"
+      data-no-toggle
       @click="onClick"
     />
     <div>
