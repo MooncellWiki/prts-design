@@ -1,6 +1,8 @@
 /*! PRTS Design · arknights/voice.css — B11 语音条目 Voice · 依赖：tokens.css · decor/ */
 /* B11. 语音条目 */
-.ak-voice { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: start; }
+.ak-voice { display: flex; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: flex-start; }   /* 左边一枚或几枚 32px 动作钮（播放 / 下载），右边文字列吃剩余宽度 */
+.ak-voice > .ak-voice__play, .ak-voice > .ak-voice__download { flex: 0 0 auto; }
+.ak-voice > div { flex: 1 1 auto; min-width: 0; }
 .ak-voice__play { all: unset; width: 32px; height: 32px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; }
 .ak-voice__play::before { content: ""; width: 0; height: 0; border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor; margin-left: 2px; }
 .ak-voice__play.is-playing::before { width: 10px; height: 12px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; margin: 0; }
@@ -11,8 +13,10 @@
 .ak-voice__wave { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
 .ak-voice__wave > i { width: 2px; background: var(--ak-accent); height: 40%; }
 .is-playing ~ * .ak-voice__wave > i { animation: ak-bars 1s ease-in-out infinite; }
-.ak-voice__title .ak-voice__download { margin-left: auto; display: inline-flex; align-items: center; padding: 2px; color: var(--ak-fg-muted); }   /* 下载：标题行右端的线稿图标（<a download>），悬停变青 */
-.ak-voice__title .ak-voice__download:hover, .ak-voice__title .ak-voice__download:focus-visible { color: var(--ak-accent); }
+.ak-voice__download { all: unset; box-sizing: border-box; width: 32px; height: 32px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; }   /* 下载：<a download>，与播放钮同款黑方块，里面是线稿图标 #i-download */
+.ak-voice__download > .ak-icon { width: 16px; height: 16px; }
+.ak-voice__download:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-voice__play:focus-visible, .ak-voice__download:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }   /* all: unset 把作用域的焦点环（:where，零特指度）也压掉了，这里补回 */
 .ak-voice__cond { font: 600 10px/1 var(--ak-font-label); letter-spacing: .06em; padding: 3px 5px; background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); white-space: nowrap; }   /* 解锁条件（提升至精英阶段1以查看 / 提升信赖至40%以查看） */
 .ak-voice-list { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: 0 0 var(--ak-space-4); }
 .ak-voice-list > .ak-voice:last-child { border-bottom: 0; }

@@ -21,7 +21,7 @@ component: voice
 
 ## 下载
 
-`download` 给了地址（同 `src`，一个串或按语种的对象）就在标题行右端出一枚下载图标，是原生 `<a download>`；`download-name` 是存下来的文件名。现网 `/语音记录` 页给的是 torappu 的 wav 地址（`?filename=` 由服务端写进 Content-Disposition），干员页里嵌入的那份不给。
+`download` 给了地址（同 `src`，一个串或按语种的对象）就在播放钮旁出一枚同款的下载钮（黑方块 + 线稿图标 `#i-download`），是原生 `<a download>`；`download-name` 是存下来的文件名。模板里写 `<a class="ak-voice__download" href="…" download="…" aria-label="下载 任命助理"><svg class="ak-icon"><use href="#i-download"/></svg></a>`，紧跟在播放钮后面。现网 `/语音记录` 页给的是 torappu 的 wav 地址（`?filename=` 由服务端写进 Content-Disposition），干员页里嵌入的那份不给。
 
 ## 键盘与可访问性
 
