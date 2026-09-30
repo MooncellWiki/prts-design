@@ -130,7 +130,7 @@ export { default as AkModuleStage } from "./components/Module/AkModuleStage.vue"
 export { default as AkModuleUnlock } from "./components/Module/AkModuleUnlock.vue";
 export { default as AkVoiceList } from "./components/Voice/AkVoiceList.vue";
 export { default as AkVoice } from "./components/Voice/AkVoice.vue";
-export type { VoiceLanguage } from "./components/Voice/context";
+export type { VoiceLanguage, VoiceText } from "./components/Voice/context";
 export { default as AkDossier } from "./components/Dossier/AkDossier.vue";
 export { default as AkRedacted } from "./components/Dossier/AkRedacted.vue";
 export { default as AkArchive } from "./components/Archive/AkArchive.vue";

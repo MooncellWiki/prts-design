@@ -14,7 +14,7 @@ const props = withDefaults(
   defineProps<{
     /** 语音标题（任命助理 / 交谈1 …） */
     title: string;
-    /** 台词：一个串，或按语种的对象 { cn, jp, en, kr, yue }（取当前语种，缺了退回第一项） */
+    /** 台词：一个串；或按语种的对象 { cn, jp, en, kr, yue }（取当前语种，缺了退回第一项）；列表给了 texts 时按文本键的对象（选中的几种一种一行） */
     text: string | Record<string, string>;
     /** 音频地址：一个串，或按语种的对象（同 text）；取不到时播放钮禁用 */
     src?: string | Record<string, string>;
@@ -39,7 +39,11 @@ function pick(v: string | Record<string, string> | undefined) {
   if (v === undefined || typeof v === "string") return v;
   return (lang.value !== undefined ? v[lang.value] : undefined) ?? Object.values(v)[0];
 }
-const text = computed(() => pick(props.text));
+const text = computed(() => {
+  const v = props.text;
+  if (typeof v === "string" || !list?.value.texts.length) return pick(v);
+  return list.value.shownTexts.map(k => v[k]).filter(Boolean).join("\n");
+});
 const src = computed(() => pick(props.src));
 const download = computed(() => pick(props.download));
 const badge = computed(() => {

@@ -15,7 +15,7 @@ component: voice
 
 ## 文本与语种分开选
 
-现网语音记录里「语言」和「语种」是两回事：**文本**是台词的语言（中文 / 日文 / 繁体中文 / 中文-方言 …），可以多选同时看、也可以一个都不选；**语种**是音频的差分（日语 / 中文-普通话 / 中文-方言 …），必须选一个，带 CV 名。这时 `AkVoiceList` 的 `languages` 只管语种（徽标 + 音频），文本那排多选芯片放进 `#toolbar` 插槽：两排在 `.ak-voice-toolbar` 里排成一行，放不下时语种整组换到第二行。`AkVoice` 的 `text` 直接给拼好的字符串（选中的几种一种一行，`.ak-voice__text` 是 `pre-line`），`src` 仍按语种给对象。prts-widgets 的 VoiceTable 就是这么接的。
+现网语音记录里「语言」和「语种」是两回事：**文本**是台词的语言（中文 / 日文 / 繁体中文 / 中文-方言 …），可以多选同时看、也可以一个都不选；**语种**是音频的差分（日语 / 中文-普通话 / 中文-方言 …），必须选一个，带 CV 名。`AkVoiceList` 再给 `texts`（`{ value, label }`）就多出「文本」那排多选芯片，`v-model:shown-texts` 是选中的几种（不绑时默认第一个）；`languages` 只管语种（徽标 + 音频）。两排在 `.ak-voice-toolbar` 里排成一行，放不下时语种整组换到第二行。这时 `AkVoice` 的 `text` 按文本键给对象，选中的几种一种一行（`.ak-voice__text` 是 `pre-line`）；`src` 仍按语种给对象。prts-widgets 的 VoiceTable 就是这么接的。
 
 @demo Voice/Split
 
