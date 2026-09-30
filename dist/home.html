@@ -3763,84 +3763,115 @@ html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-
 
 /* ── 2. Hero：黑色终端块 = Swiper 自动轮播（左）+ 候选列表（右）。
  *  列表就是各张的「页签」（≤ 7 条等分高度；≥ 8 条定高 7.5 行、纵向滚动）：当前行 = 左青条 + 淡青底，**自动播放的进度条长在当前行底边**（2px 青线从左到右填满，满了就切下一张）——「现在在哪 / 下一张是谁 / 还有多久」在同一处读完；
- *  列表底下一条工具栏：‹ 01 / 07 › + 暂停。鼠标在黑块里、键盘焦点在黑块里时暂停；prefers-reduced-motion 下不自动播、切换无动画。无 JS：Swiper CSS 只露第一张，列表每项仍是链接。
- *  两套主题下都是黑的：与页眉同属「黑框」那一层（官网 hero / 游戏主界面的活动面板都是深底）。
- *  配色同页眉的做法：语义令牌在容器上重映射一次，但**只重映射中性色**（走 --ak-chrome-*），里面的 .ak-btn / .ak-tag / .ak-countdown 自动跟随，不逐个改组件的私有变量。
+ *  列表底下一条工具栏：‹ 01 / 07 › + 暂停。鼠标在轮播块里、键盘焦点在轮播块里时暂停；prefers-reduced-motion 下不自动播、切换无动画。无 JS：Swiper CSS 只露第一张，列表每项仍是链接。
+ *  两套主题两张脸：**终端（暗）= 黑块**，与页眉同属「黑框」那一层（官网 hero / 游戏主界面的活动面板都是深底）；**档案（亮）= 白纸**——黑顶栏 · 白正文之间再夹一块黑，
+ *  页面就成了黑 / 白 / 黑三段，轮播读起来像页眉掉下来的一截，所以亮色下它就是正文里的一张面板（同 .ak-panel：白面 + 细灰框），线 / 字 / 强调全走正文令牌（蓝 blue-500 = 亮色的 --ak-accent），
+ *  铺底的模糊图不压暗、半透明压在浅灰上成一层淡淡的同色晕，图与说明栏之间用一条细线接（黑版是渐隐）。
+ *  配色收成一组 --mp-hero-* 变量：默认值是白版（全由正文令牌推导，不写死一个色值）；黑版在 tokens.css 的三种暗色选择器（显式 dark / clientpref-night / 跟随系统且系统为暗）下覆盖，写法同 chrome/demo-theme.css。
+ *  黑版的做法同页眉：语义令牌在容器上重映射一次，但**只重映射中性色**（走 --ak-chrome-*），里面的 .ak-btn / .ak-tag / .ak-countdown 自动跟随，不逐个改组件的私有变量；白版不用重映射，组件本来就是正文那一套。
  *  状态标只标例外：未开始的标「预告」（数据源会提前 48 小时放进来），进行中是默认状态、不标——整列同一枚标签没有信息量，还挤占名称的宽度。
  *  强调色不重映射：**实底**（`.ak-tag--accent` / `.ak-btn--primary` 放进来时）跟正文令牌——亮色蓝底白字（blue-500 + #fff）/ 暗色青底黑字（cyan-500 + #000），与正文里的 .ak-btn--primary / .ak-tag--accent 是同一块；
- *  hero 是黑块但不是页眉，不另开一套实底色（曾试过 blue-500 + 黑字：蓝 + 黑 6.5:1 比蓝 + 白 3.2:1 好看得多，但系统里没有「蓝底黑字」这个组合，退回）。
- *  线 / 字 / 焦点仍用官网青 cyan-500 写死（eyebrow、当前行、进度条、焦点环，同页眉当前项）——它们是 hero 的「框」语言，两套主题下都不变。 */
+ *  黑版是黑块但不是页眉，不另开一套实底色（曾试过 blue-500 + 黑字：蓝 + 黑 6.5:1 比蓝 + 白 3.2:1 好看得多，但系统里没有「蓝底黑字」这个组合，退回）。
+ *  线 / 字 / 焦点（eyebrow、当前行、进度条、焦点环）黑版仍用官网青 cyan-500 写死（同页眉当前项，是「黑框」的语言），白版用亮色的 --ak-accent（游戏内蓝）——同一处只有一种强调色，两版各自与所在的那层一致。 */
 .mp-hero {
-  --ak-fg: var(--ak-chrome-fg); --ak-fg-secondary: var(--ak-chrome-fg-2); --ak-fg-muted: var(--ak-chrome-fg-muted); --ak-fg-subtle: var(--ak-chrome-fg-muted);
+  /* 白版（默认 = 档案模式）：全由正文令牌推导 */
+  --mp-hero-bg: var(--ak-bg-surface); --mp-hero-bg-2: var(--ak-bg-surface-2);   /* 面 / 工具栏底 */
+  --mp-hero-line: var(--ak-border);
+  --mp-hero-fg: var(--ak-fg); --mp-hero-fg-strong: var(--ak-fg); --mp-hero-fg-2: var(--ak-fg-secondary); --mp-hero-fg-muted: var(--ak-fg-muted); --mp-hero-fg-subtle: var(--ak-fg-muted);   /* 正文 / 标题与悬停 / 工具栏按钮 / 时间与计数 / 类别小标与 › */
+  --mp-hero-hover: var(--ak-bg-hover);
+  --mp-hero-accent: var(--ak-accent); --mp-hero-accent-bg: var(--ak-accent-subtle); --mp-hero-accent-track: var(--ak-accent-muted);   /* eyebrow · 当前行 · 进度条 · 焦点环 / 当前行淡底 / 手机端进度条轨道 */
+  --mp-hero-pic-bg: var(--ak-bg-surface-2); --mp-hero-pic-filter: blur(22px) saturate(.8); --mp-hero-pic-opacity: .5;   /* 图框底 + 铺底模糊图：白版不压暗，半透明压在浅灰上 */
+  --mp-hero-fade: transparent; --mp-hero-seam: inset 0 1px 0 var(--ak-border);   /* 图底部→说明栏：白版不渐隐，用一条细线接（说明栏的 box-shadow） */
+  --mp-hero-thumb-bg: var(--ak-bg-surface-3); --mp-hero-scrollbar: var(--ak-scrollbar);   /* ≥ 8 条时列表的滚动条 */
+  display: grid; grid-template-columns: minmax(0, 1fr) 344px; background: var(--mp-hero-bg); color: var(--mp-hero-fg); border: 1px solid var(--mp-hero-line); position: relative; isolation: isolate;
+}
+/* 黑版（终端模式）：三种暗色选择器同 tokens.css / demo-theme.css——显式 dark、MW 的 clientpref-night、跟随系统且系统为暗（那一种没有 data-theme，只按 [data-theme] 分支会漏） */
+:root[data-theme="dark"] .mp-hero, html.skin-theme-clientpref-night .mp-hero {
+  --mp-hero-bg: #0f0f10; --mp-hero-bg-2: rgba(255,255,255,.03); --mp-hero-line: #2f3133;
+  --mp-hero-fg: var(--ak-chrome-fg); --mp-hero-fg-strong: #fff; --mp-hero-fg-2: rgba(255,255,255,.7); --mp-hero-fg-muted: rgba(255,255,255,.6); --mp-hero-fg-subtle: rgba(255,255,255,.5); --mp-hero-hover: var(--ak-chrome-hover);
+  --mp-hero-accent: var(--ak-cyan-500); --mp-hero-accent-bg: rgba(24,209,255,.1); --mp-hero-accent-track: rgba(24,209,255,.32);
+  --mp-hero-pic-bg: #1d1f20; --mp-hero-pic-filter: blur(22px) brightness(.55); --mp-hero-pic-opacity: 1; --mp-hero-fade: rgba(15,15,16,.85); --mp-hero-seam: none; --mp-hero-thumb-bg: #1d1f20; --mp-hero-scrollbar: rgba(255,255,255,.3);
+  --ak-fg: var(--ak-chrome-fg); --ak-fg-secondary: var(--ak-chrome-fg-2); --ak-fg-muted: var(--ak-chrome-fg-muted); --ak-fg-subtle: var(--ak-chrome-fg-muted);   /* 中性色令牌重映射（同页眉）：里面的 .ak-tag / .ak-countdown 跟随 */
   --ak-bg-surface: var(--ak-chrome-bg-solid); --ak-bg-surface-2: transparent; --ak-bg-surface-3: rgba(255,255,255,.1); --ak-bg-hover: var(--ak-chrome-hover);
   --ak-border: #2f3133; --ak-border-strong: var(--ak-chrome-line-strong);
   --ak-focus: var(--ak-cyan-500);   /* 只动焦点环；--ak-accent / --ak-accent-fg 不碰，实底按主题走 */
-  display: grid; grid-template-columns: minmax(0, 1fr) 344px; background: #0f0f10; color: var(--ak-fg); border: 1px solid var(--ak-border); position: relative; isolation: isolate;
 }
-.mp-hero__stage { position: relative; display: flex; flex-direction: column; min-width: 0; border-right: 1px solid #2f3133; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.skin-theme-clientpref-day):not([data-theme="dark"]):not(.skin-theme-clientpref-night) .mp-hero {
+    --mp-hero-bg: #0f0f10; --mp-hero-bg-2: rgba(255,255,255,.03); --mp-hero-line: #2f3133;
+    --mp-hero-fg: var(--ak-chrome-fg); --mp-hero-fg-strong: #fff; --mp-hero-fg-2: rgba(255,255,255,.7); --mp-hero-fg-muted: rgba(255,255,255,.6); --mp-hero-fg-subtle: rgba(255,255,255,.5); --mp-hero-hover: var(--ak-chrome-hover);
+    --mp-hero-accent: var(--ak-cyan-500); --mp-hero-accent-bg: rgba(24,209,255,.1); --mp-hero-accent-track: rgba(24,209,255,.32);
+    --mp-hero-pic-bg: #1d1f20; --mp-hero-pic-filter: blur(22px) brightness(.55); --mp-hero-pic-opacity: 1; --mp-hero-fade: rgba(15,15,16,.85); --mp-hero-seam: none; --mp-hero-thumb-bg: #1d1f20; --mp-hero-scrollbar: rgba(255,255,255,.3);
+    --ak-fg: var(--ak-chrome-fg); --ak-fg-secondary: var(--ak-chrome-fg-2); --ak-fg-muted: var(--ak-chrome-fg-muted); --ak-fg-subtle: var(--ak-chrome-fg-muted);
+    --ak-bg-surface: var(--ak-chrome-bg-solid); --ak-bg-surface-2: transparent; --ak-bg-surface-3: rgba(255,255,255,.1); --ak-bg-hover: var(--ak-chrome-hover);
+    --ak-border: #2f3133; --ak-border-strong: var(--ak-chrome-line-strong);
+    --ak-focus: var(--ak-cyan-500);
+  }
+}
+.mp-hero__stage { position: relative; display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--mp-hero-line); }
 .mp-hero__swiper { flex: 1 1 auto; min-height: 0; width: 100%; }   /* .swiper 自带 position:relative + overflow:hidden */
 .mp-hero__slide { display: flex; flex-direction: column; }           /* .swiper-slide 自带 height:100%（容器被网格拉高时图跟着长） */
-.mp-hero__pic { display: block; position: relative; flex: 1 1 auto; min-height: 0; aspect-ratio: 3 / 1; background: #1d1f20; overflow: hidden; }   /* 候选列表比「图 + 说明」高时，多出来的高度由图框吃掉（图 contain 居中、余下的是模糊铺底），说明栏不悬空 */
+.mp-hero__pic { display: block; position: relative; flex: 1 1 auto; min-height: 0; aspect-ratio: 3 / 1; background: var(--mp-hero-pic-bg); overflow: hidden; }   /* 候选列表比「图 + 说明」高时，多出来的高度由图框吃掉（图 contain 居中、余下的是模糊铺底），说明栏不悬空 */
 .mp-hero__pic img { position: relative; width: 100%; height: 100%; object-fit: contain; display: block; }   /* 整幅显示不裁：现网横幅两种比例（活动 960×308 ≈ 3.1:1、寻访 960×524 ≈ 1.8:1），cover 会把寻访图的标题 / 干员裁掉 */
-.mp-hero__pic .mp-hero__bg { position: absolute; inset: 0; object-fit: cover; transform: scale(1.12); filter: blur(22px) brightness(.55); }   /* 比例对不上的留白由同一张图放大模糊铺底（cover + 压暗，主图在上层 contain）；放大 12% 把 blur 的透明毛边推出框外。生产环境 = 同一文件再嵌一次、加 class，不能用 style="--bg:url()"（MW 清洗器不放行 url()） */
-.mp-hero__pic::after { content: ""; position: absolute; inset: auto 0 0 0; height: 56px; background: linear-gradient(180deg, transparent, rgba(15,15,16,.85)); pointer-events: none; }
-.mp-hero__caption { position: relative; flex: none; padding: 14px 20px 18px; }
-.mp-hero__caption::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: radial-gradient(rgba(255,255,255,.16) 1.2px, transparent 1.3px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(270deg, #000, transparent 45%); mask-image: linear-gradient(270deg, #000, transparent 45%); opacity: .5; pointer-events: none; }   /* 右侧半调网点向左渐隐（游戏 bkg_openserver） */
-.mp-hero__eyebrow { display: flex; align-items: center; gap: 8px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-cyan-500); }
-.mp-hero__title { font: 800 var(--ak-fs-h2)/1.2 var(--ak-font-body); color: #fff; margin: 4px 0 0; border: 0; padding: 0; letter-spacing: .01em; }
+.mp-hero__pic .mp-hero__bg { position: absolute; inset: 0; object-fit: cover; transform: scale(1.12); filter: var(--mp-hero-pic-filter); opacity: var(--mp-hero-pic-opacity); }   /* 比例对不上的留白由同一张图放大模糊铺底（cover，主图在上层 contain；黑版压暗、白版半透明）；放大 12% 把 blur 的透明毛边推出框外。生产环境 = 同一文件再嵌一次、加 class，不能用 style="--bg:url()"（MW 清洗器不放行 url()） */
+.mp-hero__pic::after { content: ""; position: absolute; inset: auto 0 0 0; height: 56px; background: linear-gradient(180deg, transparent, var(--mp-hero-fade)); pointer-events: none; }   /* 黑版：图底部渐隐进说明栏；白版 --mp-hero-fade 透明 = 没有 */
+.mp-hero__caption { position: relative; flex: none; padding: 14px 20px 18px; box-shadow: var(--mp-hero-seam); }   /* 白版：图与说明栏之间一条细线（inset 阴影，不占高度；黑版 none） */
+.mp-hero__caption::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: radial-gradient(var(--ak-halftone-color) 1.2px, transparent 1.3px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(270deg, #000, transparent 45%); mask-image: linear-gradient(270deg, #000, transparent 45%); opacity: .5; pointer-events: none; }   /* 右侧半调网点向左渐隐（游戏 bkg_openserver） */
+.mp-hero__eyebrow { display: flex; align-items: center; gap: 8px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--mp-hero-accent); }
+.mp-hero__title { font: 800 var(--ak-fs-h2)/1.2 var(--ak-font-body); color: var(--mp-hero-fg-strong); margin: 4px 0 0; border: 0; padding: 0; letter-spacing: .01em; }
 .mp-hero__title::after { display: none; }
 .mp-hero__title a, .mp-hero__title a:hover { color: inherit; text-decoration: none; }   /* 悬停不变色：热区是整张 slide，指针离标题很远时字也跟着变青，读起来像误触 */
 .mp-hero__title a::after { content: ""; position: absolute; inset: 0; }   /* 热区铺满说明栏（定位祖先 = .mp-hero__caption）；图本身是链接，两块合起来 = 整张 slide。文字被盖住所以指针恒为手型——说明栏在 Swiper 里本来就拖不出选区 */
 .mp-hero__title a:focus-visible { outline: 0; }
-.mp-hero__title a:focus-visible::after { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
-.mp-hero__time { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: rgba(255,255,255,.62); }
+.mp-hero__title a:focus-visible::after { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }
+.mp-hero__time { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: var(--mp-hero-fg-muted); }
 .mp-hero__time .ak-countdown > span { min-width: 36px; padding: 3px 5px; }   /* 颜色由容器令牌得到，这里只收尺寸 */
 .mp-hero__time .ak-countdown > span > b { font-size: var(--ak-fs-body-lg); }
-.mp-hero__item:focus-visible, .mp-hero__btn:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的列表项 / 工具栏按钮：焦点环内缩 */
+.mp-hero__item:focus-visible, .mp-hero__btn:focus-visible { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的列表项 / 工具栏按钮：焦点环内缩 */
 /* 候选列表 */
 .mp-hero__aside { display: flex; flex-direction: column; min-width: 0; }
 .mp-hero__list { --mp-hero-row: 51px; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }   /* 行高下限 = 缩略图 38 + 上下内边距 12 + 底边线 1 */
-.mp-hero__list > li { position: relative; flex: 1 0 var(--mp-hero-row); box-sizing: border-box; border-bottom: 1px solid #2f3133; }   /* ≤ 7 条：各行等分列表高度（不低于行高下限，不够时黑块跟着长高） */
-.mp-hero__list:has(> li:nth-child(8)) { max-height: calc(var(--mp-hero-row) * 7.5); overflow-y: auto; --ak-scrollbar: rgba(255,255,255,.3); }   /* ≥ 8 条：列表定高 7.5 行、纵向滚动——末尾露半行，滚动条不常显的系统（macOS / 触屏）也看得出下面还有；条数上限由数据源定（活动 6 + 寻访 6）。不认 :has 的浏览器退回「有几条长几行」 */
-.mp-hero__item { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 10px; align-items: center; height: 100%; box-sizing: border-box; padding: 6px 12px 6px 9px; color: var(--ak-fg); text-decoration: none; border-left: 3px solid transparent; transition: background var(--ak-dur-fast); }
-.mp-hero__item:hover { background: var(--ak-bg-hover); color: #fff; text-decoration: none; }
-.mp-hero__list > li.is-active .mp-hero__item { border-left-color: var(--ak-cyan-500); background: rgba(24,209,255,.1); }   /* 选中行 = 左青条 + 淡青底（同搜索面板高亮行） */
-.mp-hero__list > li.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--ak-cyan-500); transform: scaleX(var(--p, 0)); transform-origin: left; z-index: 1; pointer-events: none; }   /* 自动播放进度：脚本每帧写 --p（0–1） */
-.mp-hero__thumb { width: 64px; height: 38px; object-fit: cover; display: block; background: #1d1f20; }
-.mp-hero__kind { display: block; font: 700 10px/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+.mp-hero__list > li { position: relative; flex: 1 0 var(--mp-hero-row); box-sizing: border-box; border-bottom: 1px solid var(--mp-hero-line); }   /* ≤ 7 条：各行等分列表高度（不低于行高下限，不够时整块跟着长高） */
+.mp-hero__list:has(> li:nth-child(8)) { max-height: calc(var(--mp-hero-row) * 7.5); overflow-y: auto; --ak-scrollbar: var(--mp-hero-scrollbar); }   /* ≥ 8 条：列表定高 7.5 行、纵向滚动——末尾露半行，滚动条不常显的系统（macOS / 触屏）也看得出下面还有；条数上限由数据源定（活动 6 + 寻访 6）。不认 :has 的浏览器退回「有几条长几行」 */
+.mp-hero__item { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 10px; align-items: center; height: 100%; box-sizing: border-box; padding: 6px 12px 6px 9px; color: var(--mp-hero-fg); text-decoration: none; border-left: 3px solid transparent; transition: background var(--ak-dur-fast); }
+.mp-hero__item:hover { background: var(--mp-hero-hover); color: var(--mp-hero-fg-strong); text-decoration: none; }
+.mp-hero__list > li.is-active .mp-hero__item { border-left-color: var(--mp-hero-accent); background: var(--mp-hero-accent-bg); }   /* 选中行 = 左青条 + 淡青底（同搜索面板高亮行） */
+.mp-hero__list > li.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--mp-hero-accent); transform: scaleX(var(--p, 0)); transform-origin: left; z-index: 1; pointer-events: none; }   /* 自动播放进度：脚本每帧写 --p（0–1） */
+.mp-hero__thumb { width: 64px; height: 38px; object-fit: cover; display: block; background: var(--mp-hero-thumb-bg); }
+.mp-hero__kind { display: block; font: 700 10px/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; color: var(--mp-hero-fg-subtle); }
 .mp-hero__name { display: block; font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.3; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* 列表下的工具栏：‹ 01 / 07 › + 暂停 */
-.mp-hero__bar { flex: none; display: flex; align-items: center; gap: 2px; height: 36px; padding: 0 6px 0 12px; border-top: 1px solid #2f3133; background: rgba(255,255,255,.03); }
-.mp-hero__count { font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .12em; color: rgba(255,255,255,.6); font-variant-numeric: tabular-nums; margin-right: auto; }
-.mp-hero__count b { color: #fff; }
-.mp-hero__btn { display: inline-grid; place-items: center; width: 30px; height: 28px; padding: 0; border: 1px solid transparent; background: none; color: rgba(255,255,255,.7); cursor: pointer; transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
-.mp-hero__btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+.mp-hero__bar { flex: none; display: flex; align-items: center; gap: 2px; height: 36px; padding: 0 6px 0 12px; border-top: 1px solid var(--mp-hero-line); background: var(--mp-hero-bg-2); }
+.mp-hero__count { font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .12em; color: var(--mp-hero-fg-muted); font-variant-numeric: tabular-nums; margin-right: auto; }
+.mp-hero__count b { color: var(--mp-hero-fg-strong); }
+.mp-hero__btn { display: inline-grid; place-items: center; width: 30px; height: 28px; padding: 0; border: 1px solid transparent; background: none; color: var(--mp-hero-fg-2); cursor: pointer; transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.mp-hero__btn:hover { background: var(--mp-hero-hover); color: var(--mp-hero-fg-strong); }
 .mp-hero__btn .ak-icon { width: 16px; height: 16px; }
-.mp-hero__btn[aria-pressed="true"] { color: var(--ak-cyan-500); }
+.mp-hero__btn[aria-pressed="true"] { color: var(--mp-hero-accent); }
 .mp-hero__btn .on-play, .mp-hero__btn[aria-pressed="true"] .on-pause { display: none; }
 .mp-hero__btn[aria-pressed="true"] .on-play { display: block; }
 .mp-hero.is-stopped .mp-hero__list > li.is-active::after { opacity: .45; }   /* 手动暂停：进度条压暗，表示「停在这里」 */
-/* 进行中的网页活动（现网「尚有正在进行中的网页活动！」折叠块）：Hero 黑块的第三行、跨两列，继承 Hero 的令牌重映射。
+/* 进行中的网页活动（现网「尚有正在进行中的网页活动！」折叠块）：Hero 的第三行、跨两列，继承 Hero 的 --mp-hero-* 配色。
  *  不用 .ak-news——那是游戏主界面的单条滚动横幅，天然只装一条；网页活动经常同时有两三个（周年庆更多），多条要么轮播要么换行。
  *  这里是**列表**：一条一行、整行是链接（名称 / 起止 / 倒计时 / ›），红标签跨所有行；1 条时高度与单行横幅一样，N 条就 N 行，不折叠（现网折叠是段落式噪音的结果，不是信息需要藏）。
  *  行内只放字段、不放句子（「网页活动」「进行中」标签已说、「将于…结束」是套话），所以手机上一行也放得下——去掉的是冗余词，不是换行。
  *  倒计时与幻灯片同一枚 .ak-countdown[data-until]（脚本已在算），同一页同一种时限只用一种表达；绝对起止 <640 隐藏。无活动时模板不输出整块。 */
-.mp-hero__events { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); border-top: 1px solid #2f3133; }
+.mp-hero__events { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); border-top: 1px solid var(--mp-hero-line); }
 .mp-events__label { display: flex; align-items: center; justify-content: center; margin: 0; padding: 6px 14px; border: 0; background: var(--ak-red-700); color: #fff; font: 800 var(--ak-fs-xs)/1.4 var(--ak-font-display); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }   /* 同 .ak-news__label 的矩形红块；h2 只为结构，去掉正文标题样式 */
 .mp-events { display: flex; flex-direction: column; min-width: 0; }
-.mp-events > li + li { border-top: 1px solid #2f3133; }
-.mp-events__item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 16px; align-items: center; box-sizing: border-box; min-height: 36px; padding: 3px 10px 3px 14px; color: var(--ak-fg); text-decoration: none; }
-.mp-events__item:hover { background: var(--ak-bg-hover); color: #fff; text-decoration: none; }
+.mp-events > li + li { border-top: 1px solid var(--mp-hero-line); }
+.mp-events__item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 16px; align-items: center; box-sizing: border-box; min-height: 36px; padding: 3px 10px 3px 14px; color: var(--mp-hero-fg); text-decoration: none; }
+.mp-events__item:hover { background: var(--mp-hero-hover); color: var(--mp-hero-fg-strong); text-decoration: none; }
 .mp-events__item:hover .mp-events__name { text-decoration: underline; text-underline-offset: 3px; }
-.mp-events__item:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }   /* 贴边的行：内缩，同候选列表项 */
+.mp-events__item:focus-visible { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边的行：内缩，同候选列表项 */
 .mp-events__name { font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mp-events__time { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: rgba(255,255,255,.6); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mp-events__time { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: var(--mp-hero-fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .mp-events .ak-countdown { gap: 4px; }
 .mp-events .ak-countdown > span { min-width: 34px; padding: 2px 4px; }   /* 比幻灯片里的小一号：行高 36px 档 */
 .mp-events .ak-countdown > span > b { font-size: var(--ak-fs-sm); }
 .mp-events .ak-countdown > span > small { font-size: 8px; line-height: 1.2; }
-.mp-events__item > .ak-icon { width: 16px; height: 16px; color: rgba(255,255,255,.5); transition: transform var(--ak-dur-fast); }
-.mp-events__item:hover > .ak-icon { transform: translateX(3px); color: #fff; }   /* 同 .ak-chevrons 的悬停右移 */
+.mp-events__item > .ak-icon { width: 16px; height: 16px; color: var(--mp-hero-fg-subtle); transition: transform var(--ak-dur-fast); }
+.mp-events__item:hover > .ak-icon { transform: translateX(3px); color: var(--mp-hero-fg-strong); }   /* 同 .ak-chevrons 的悬停右移 */
 
 /* ── 3. 入口网格：12 个（现网 mpbutton）——主题色面 + 白线稿图标（亮色反相），悬停黑白反转（游戏 btn_on / off）── */
 .mp-nav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: var(--ak-space-6); }
@@ -4002,15 +4033,15 @@ html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-
 }
 @media (max-width: 959px) {
   .mp-hero { grid-template-columns: 1fr; }
-  .mp-hero__stage { border-right: 0; border-bottom: 1px solid #2f3133; }
+  .mp-hero__stage { border-right: 0; border-bottom: 1px solid var(--mp-hero-line); }
   .mp-hero__list, .mp-hero__list:has(> li:nth-child(8)) { flex-direction: row; max-height: none; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-behavior: smooth; }   /* 候选列表横着滚：一行缩略图；选中条 + 进度条合成当前项顶边一条 */
   .mp-hero__list::-webkit-scrollbar { display: none; }
-  .mp-hero__list > li { flex: 0 0 188px; border-bottom: 0; border-right: 1px solid #2f3133; }
+  .mp-hero__list > li { flex: 0 0 188px; border-bottom: 0; border-right: 1px solid var(--mp-hero-line); }
   .mp-hero__item { grid-template-columns: 1fr; gap: 6px; padding: 8px 10px 10px; border-left: 0; border-top: 3px solid transparent; }
   /* 手机上选中条和进度条都是横的，一上一下会像给卡片描了个框；合成一条：顶边选中条压暗当轨道，进度用亮青在同一条上从左往右填 */
-  .mp-hero__list > li.is-active .mp-hero__item { border-left: 0; border-top-color: rgba(24,209,255,.32); }
+  .mp-hero__list > li.is-active .mp-hero__item { border-left: 0; border-top-color: var(--mp-hero-accent-track); }
   .mp-hero__list > li.is-active::after { top: 0; bottom: auto; height: 3px; }
-  .mp-hero.is-stopped .mp-hero__list > li.is-active .mp-hero__item { border-top-color: var(--ak-cyan-500); }   /* 手动暂停：填充收起、轨道变实色 = 纯「当前项」条 */
+  .mp-hero.is-stopped .mp-hero__list > li.is-active .mp-hero__item { border-top-color: var(--mp-hero-accent); }   /* 手动暂停：填充收起、轨道变实色 = 纯「当前项」条 */
   .mp-hero.is-stopped .mp-hero__list > li.is-active::after { display: none; }
   .mp-hero__thumb { width: 100%; height: 54px; }
   .mp-hero__list .ak-tag { position: absolute; right: 8px; top: 12px; }
@@ -4028,7 +4059,7 @@ html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-
   .mp-nav__en { display: none; }
   .mp-hero__events { grid-template-columns: 1fr; }   /* 红标签变顶条，每条活动仍是一行：名称 + 倒计时 + › */
   .mp-events__label { justify-content: flex-start; padding: 4px 10px; }
-  .mp-events > li:first-child { border-top: 1px solid #2f3133; }
+  .mp-events > li:first-child { border-top: 1px solid var(--mp-hero-line); }
   .mp-events__item { gap: 10px; padding: 6px 8px 6px 10px; min-height: 40px; }
   .mp-events__time { display: none; }
   .mp-section { margin-top: var(--ak-space-8); }
@@ -4732,7 +4763,7 @@ var Swiper=function(){"use strict";function e(e){return null!==e&&"object"==type
     };
     sw.on('slideChange', sync); sync();
     sw.on('touchStart', function () { drag = true; }); sw.on('touchEnd', function () { drag = false; });
-    hero.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hover = true; });   // 挂在整个黑块上：图 / 列表 / 工具栏之间怎么穿都不会有 leave
+    hero.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hover = true; });   // 挂在整个轮播块上：图 / 列表 / 工具栏之间怎么穿都不会有 leave
     hero.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') hover = false; });
     requestAnimationFrame(frame);
     list.addEventListener('click', function (e) { var li = e.target.closest('li'); if (!li || !list.contains(li)) return; e.preventDefault(); sw.slideToLoop(items.indexOf(li)); });
