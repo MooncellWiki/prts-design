@@ -183,7 +183,7 @@
 .ol-bar .ak-icon { width: 14px; height: 14px; }
 .ol-pager .ak-icon { width: 14px; height: 14px; }
 .ol-foot { display: flex; justify-content: flex-end; margin: var(--ak-space-4) 0 0; }
-@media (max-width: 639px) { .ol-bar__tools { margin-left: 0; width: 100%; justify-content: space-between; } .ol-bar__tools > .ol-pager { flex: 1 0 100%; justify-content: center; } .ol-pager .ak-pagination__item { min-width: 26px; padding: 0 6px; }   /* 九页时上一页 + 1 2 3 4 … 9 + 下一页要放进一行 */ .ol-foot { justify-content: center; } }
+@media (max-width: 639px) { .ol-bar__tools { margin-left: 0; width: 100%; justify-content: space-between; } .ol-pager { display: flex; flex: 1 0 100%; } .ol-pager > * { flex: 1 1 0; min-width: 0; text-align: center; } .ol-pager .ak-pagination__item { min-width: 26px; padding: 0 6px; }   /* 手机上分页条铺满一行、页码格等分：左右缘与上面的控件、下面的结果对齐（按内容宽居中会短一截） */ .ol-foot { justify-content: center; } }
 
 /* ── 5. 结果 · 表格 ──
  *  现网：一行九栏，栏里把四个值叠成一摞（子职业 / 势力 / 出身地 / 种族；生命 / 攻击 / 防御 / 法抗 …），对着表头才知道哪个是哪个，数值也没法上下对齐着比。
