@@ -1898,18 +1898,18 @@ a.ak-card:is(:visited, :hover, :active) { color: var(--ak-fg); }   /* 整张卡�
 .ak-dropdown { position: relative; display: inline-block; }
 .ak-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; z-index: var(--ak-z-dropdown);
   max-width: min(92vw, 360px); max-height: min(70vh, 560px); overflow-y: auto; overscroll-behavior: contain;   /* 长菜单（MW 工具箱 + Gadget 追加的项）在卡片内滚，不撑出视口 */
-  background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0; margin: 0; list-style: none; }
+  background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; margin: 0; list-style: none; }   /* 底部不留内边距：最后一项的悬停底色要贴到卡片底边（同 .ak-flyout）；顶部 4px 给小标题 / 抬头留呼吸 */
 .ak-menu--right { left: auto; right: 0; }
 .ak-menu li::before { display: none !important; }
 .ak-menu__item, .ak-menu a { display: flex; align-items: center; gap: var(--ak-space-2); padding: 7px 14px; font-size: var(--ak-fs-sm); color: var(--ak-fg); text-decoration: none; cursor: pointer; white-space: nowrap; border-left: 2px solid transparent; }
 .ak-menu__item:hover, .ak-menu a:hover { background: var(--ak-bg-hover); border-left-color: var(--ak-accent); text-decoration: none; color: var(--ak-fg); }
 .ak-menu__item.is-active { color: var(--ak-accent); border-left-color: var(--ak-accent); }
 .ak-menu__item--danger { color: var(--ak-danger); }
-.ak-menu__sep { height: 1px; background: var(--ak-border); margin: 4px 0; }
+.ak-menu__sep { height: 1px; background: var(--ak-border); margin: 0 0 4px; }   /* 线上方不留空：上一项的悬停底色贴到分隔线；线下 4px 给下一项 / 小标题 */
 .ak-menu__label { padding: 6px 14px 2px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-subtle); }
 /* 分组菜单：.ak-menu（此时是 div）里若干 nav.ak-menu__group > .ak-menu__label + ul——MW 门户（#p-cactions / #p-tb …）原样塞进卡片时用；组之间一条分隔线 */
 .ak-menu__group > ul { margin: 0; padding: 0; list-style: none; }
-.ak-menu__group + .ak-menu__group { border-top: 1px solid var(--ak-border); margin-top: 4px; padding-top: 4px; }
+.ak-menu__group + .ak-menu__group { border-top: 1px solid var(--ak-border); margin-top: 0; padding-top: 4px; }   /* 同 .ak-menu__sep：上一组最后一项（刷新）悬停贴到分隔线 */
 /* 卡片抬头（用户菜单的用户名）：粗体一行 + 底线；图标上青 */
 .ak-menu__head { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; font-weight: 700; font-size: var(--ak-fs-sm); border-bottom: 1px solid var(--ak-border); margin-bottom: 4px; }
 .ak-menu__head .ak-icon { width: 20px; height: 20px; flex: none; color: var(--ak-accent); }
@@ -2747,23 +2747,33 @@ a.ak-item:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 2
 
 /*! PRTS Design · arknights/voice.css — B11 语音条目 Voice · 依赖：tokens.css · decor/ */
 /* B11. 语音条目 */
-.ak-voice { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: start; }
+.ak-voice { display: flex; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--ak-border-subtle); align-items: flex-start; }   /* 左边一枚或几枚 32px 动作钮（播放 / 下载），右边文字列吃剩余宽度 */
+.ak-voice > .ak-voice__play, .ak-voice > .ak-voice__download { flex: 0 0 auto; }
+.ak-voice > div { flex: 1 1 auto; min-width: 0; }
 .ak-voice__play { all: unset; width: 32px; height: 32px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; }
 .ak-voice__play::before { content: ""; width: 0; height: 0; border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor; margin-left: 2px; }
 .ak-voice__play.is-playing::before { width: 10px; height: 12px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; margin: 0; }
 .ak-voice__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
-.ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; }
-.ak-voice__lang { font: 600 10px/1 var(--ak-font-label); letter-spacing: .1em; padding: 2px 5px; border: 1px solid var(--ak-border-strong); }
-.ak-voice__text { font-size: var(--ak-fs-sm); line-height: 1.7; }
+.ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; min-height: 16px; }   /* 最小高度 = 行里最高的可选件（.ak-voice__cond 16px；声波 14px）：带不带解锁条件、放没放都一样高，播放时插进声波不会把下面的行顶下去 */
+.ak-voice__text { font-size: var(--ak-fs-sm); line-height: 1.7; white-space: pre-line; }   /* 同时显示几种文本时一种一行（调用方用换行拼） */
 .ak-voice__wave { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
 .ak-voice__wave > i { width: 2px; background: var(--ak-accent); height: 40%; }
-.is-playing ~ * .ak-voice__wave > i { animation: ak-bars 1s ease-in-out infinite; }
+.is-playing ~ * .ak-voice__wave > i { height: 100%; transform-origin: bottom; animation: ak-bars 1s ease-in-out infinite; }   /* 播放中：条拉满 14px、从底边起伏（ak-bars = scaleY .4 ↔ 1，即 5.6 ↔ 14px），五条错开相位才像声波 */
+.is-playing ~ * .ak-voice__wave > i:nth-child(2) { animation-delay: -.6s; } .is-playing ~ * .ak-voice__wave > i:nth-child(3) { animation-delay: -.2s; }
+.is-playing ~ * .ak-voice__wave > i:nth-child(4) { animation-delay: -.8s; } .is-playing ~ * .ak-voice__wave > i:nth-child(5) { animation-delay: -.4s; }
+.ak-voice__download { all: unset; box-sizing: border-box; width: 32px; height: 32px; display: grid; place-items: center; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; }   /* 下载：<a download>，与播放钮同款黑方块，里面是线稿图标 #i-download */
+.ak-voice__download > .ak-icon { width: 16px; height: 16px; }
+.ak-voice__download:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-voice__play:focus-visible, .ak-voice__download:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }   /* all: unset 把作用域的焦点环（:where，零特指度）也压掉了，这里补回 */
 .ak-voice__cond { font: 600 10px/1 var(--ak-font-label); letter-spacing: .06em; padding: 3px 5px; background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); white-space: nowrap; }   /* 解锁条件（提升至精英阶段1以查看 / 提升信赖至40%以查看） */
 .ak-voice-list { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: 0 0 var(--ak-space-4); }
 .ak-voice-list > .ak-voice:last-child { border-bottom: 0; }
 .ak-voice-list > .ak-voice:hover { background: var(--ak-bg-hover); }
 .ak-voice__play:disabled { cursor: not-allowed; opacity: .35; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }   /* 没有音频地址：压暗，悬停不反色 */
-/* 语种切换条（= 干员页的 .op-voice-langs，收进组件）：.ak-overline 标签 + 一排 .ak-chip[aria-pressed]（名字 + <small> CV 名）+ 附注；切语种只换台词 / 徽标 / 音频 */
+/* 切换条（= 干员页的 .op-voice-langs，收进组件）：.ak-overline 标签 + 一排 .ak-chip[aria-pressed]（名字 + <small> CV 名）。当前语种只在这里标，条目标题旁不再重复。
+ * 文本（台词语言，多选、可一个不选）与语种（音频差分，单选、带 CV）是两条切换条，放进 .ak-voice-toolbar 排成一行，放不下时后一条整组换行 */
+.ak-voice-toolbar { display: flex; flex-wrap: wrap; align-items: flex-start; column-gap: var(--ak-space-4); }
+.ak-voice-toolbar > .ak-voice-langs { flex: 0 0 auto; max-width: 100%; }
 .ak-voice-langs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 0 0 var(--ak-space-3); }
 .ak-voice-langs .ak-chip small { font: 600 10px/1 var(--ak-font-label); color: inherit; opacity: .7; }
 
@@ -3104,7 +3114,7 @@ body.skin-arknights { margin: 0; min-height: 100vh; display: flex; flex-directio
 /* 用户菜单卡片（#p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu.ak-header__user-card——用户名抬头 + 「界面设置」（ULS 语言）+ 「个人工具」两组门户。
  * 颜色不用另写：.ak-header 内 --ak-bg-surface / --ak-border / --ak-fg 已重映射到 --ak-chrome-*，卡片自动是页眉配色 */
 .ak-header__user-menu > details[open] > .ak-header__user { --_fg: var(--ak-theme-accent); background: var(--ak-bg-hover); }
-.ak-header__user-card { min-width: 240px; top: calc(100% + 6px); padding: 0 0 6px; }
+.ak-header__user-card { min-width: 240px; top: calc(100% + 6px); padding: 0; }   /* 顶部由 .ak-menu__head 占位，底部 0：最后一项（退出）悬停贴底 */
 .ak-header__user-card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
 .ak-header__user-card a:hover .ak-icon { color: var(--ak-fg); }
 /* Echo 通知徽标（MW #p-notifications > ul > li#pt-notifications-alert / -notice）：与工具区其它按钮同高并排 */
@@ -3232,8 +3242,8 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
 .ak-sidebar li li li > a:hover, .ak-sidebar li li li > b:hover { color: var(--ak-fg); }
 @keyframes ak-tree-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ak-tree__branch.is-open > ul { animation: none; } .ak-tree__toggle::before, .ak-portlet--collapsible > .ak-portlet__title::after { transition: none; } }
-/* 桌面悬停飞出（peek）：由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切 */
-.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-left-width: 2px; border-image: linear-gradient(to right, var(--ak-accent) 2px, var(--ak-border) 2px) 1 1 1 2; box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
+/* 桌面悬停飞出（peek）：由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切。卡片同 .ak-menu 只用 1px 灰边：青条只留给条目悬停 / 当前项，卡片自己再画一条会和悬停条叠成两道 */
+.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
 @keyframes ak-flyout-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
 .ak-flyout__title { padding: 6px 14px 4px 16px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-subtle); }
 .ak-flyout ul { list-style: none; margin: 0; padding: 0; }
@@ -3309,7 +3319,7 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
 /* 「更多」：⋯ + 文字；卡片 = .ak-menu 里两组门户（操作 #p-cactions · 工具 #p-tb），右对齐贴按钮。工具箱里的 specialpages / upload 不进这里——同 Citizen 进侧栏站点导航 */
 .ak-page-tools__btn { padding: 0 10px 0 8px; }
 .ak-page-tools__more > details[open] > .ak-page-tools__btn { background: var(--ak-bg-hover); color: var(--ak-fg); }
-.ak-page-tools__card { min-width: 240px; top: calc(100% + 6px); padding: 6px 0; }
+.ak-page-tools__card { min-width: 240px; top: calc(100% + 6px); padding: 6px 0 0; }   /* 底部 0：最后一项（浏览属性）悬停贴底 */
 .ak-page-tools__card .ak-menu__label { padding-top: 8px; }
 .ak-page-tools__card a { padding: 7px 14px; }
 .ak-page-tools__card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
@@ -4096,6 +4106,7 @@ html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-
   <symbol id="i-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/></symbol>
   <symbol id="i-print" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 8V3h10v5M5 8h14a2 2 0 0 1 2 2v6h-4v-3H7v3H3v-6a2 2 0 0 1 2-2zm2 8v5h10v-5"/></symbol>
   <symbol id="i-upload" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 16V4m-5 5 5-5 5 5M4 20h16"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 4v12m-5-5 5 5 5-5M4 20h16"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
   <symbol id="i-quote" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 16h3l2-4V7H5v5h3zm9 0h3l2-4V7h-6v5h3z"/></symbol>
@@ -4501,7 +4512,7 @@ html.ak-theme-demo[data-theme="dark"], html.ak-theme-demo.skin-theme-clientpref-
       <div class="mp-clock"><span class="mp-clock__time" id="mp-clock">13:49</span><span class="mp-clock__date" id="mp-date">8月23日 · 周日</span><span class="mp-clock__tz">UTC+8</span></div>
       <div class="mp-cd">
         <div class="mp-cd__label"><b>剿灭作战 & 周常任务刷新</b><small>每周一 04:00</small></div>
-        <span class="ak-countdown" id="mp-weekly"><span><b>14</b><small>hrs</small></span><span><b>10</b><small>min</small></span></span>
+        <span class="ak-countdown" id="mp-weekly"><span><b>14</b><small>hrs</small></span><span><b>10</b><small>mins</small></span></span>
         <div class="ak-fs-xs ak-fg-muted ak-mt-2">含特勤任务 · 剿灭合成玉上限同时重置</div>
       </div>
     </div>
@@ -4706,13 +4717,14 @@ var Swiper=function(){"use strict";function e(e){return null!==e&&"object"==type
   /* 1. Hero：Swiper 轮播 + 自动播放（自己计时）+ 候选列表同步 + 进度条 + 暂停 */
   var hero = document.getElementById('mp-hero'), list = document.getElementById('mp-hero-list');
   var pad2 = function (n) { return (n < 10 ? '0' : '') + n; };
+  var cdUnit = function (n, unit) { return n === 1 ? unit : unit + 's'; };   // 同 AkCountdown：缩写 + 复数 s，数值为 1 时用单数
   var cdFormat = function (el) {
     var ms = el.dataset.until ? (new Date(el.dataset.until) - Date.now()) : NaN;
     if (!(ms > 0)) { el.hidden = true; return; }
     el.hidden = false;
     var d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60, parts = [];
-    if (d) parts.push([d, 'days']); parts.push([h, 'hrs']); if (!d) parts.push([m, 'min']);
-    el.innerHTML = parts.map(function (p) { return '<span><b>' + pad2(p[0]) + '</b><small>' + p[1] + '</small></span>'; }).join('');
+    if (d) parts.push([d, 'day']); parts.push([h, 'hr']); if (!d) parts.push([m, 'min']);
+    el.innerHTML = parts.map(function (p) { return '<span><b>' + pad2(p[0]) + '</b><small>' + cdUnit(p[0], p[1]) + '</small></span>'; }).join('');
   };
   var cds = hero ? hero.querySelectorAll('.ak-countdown[data-until]') : [];
   var tickCd = function () { cds.forEach(cdFormat); };
@@ -4788,7 +4800,7 @@ var Swiper=function(){"use strict";function e(e){return null!==e&&"object"==type
       var g = new Date(t); g.setHours(4, 0, 0, 0);
       var add = (8 - g.getDay()) % 7; if (add === 0 && g <= t) add = 7; g.setDate(g.getDate() + add);
       var ms = g - t, d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60;
-      weekly.innerHTML = (d ? '<span><b>' + pad(d) + '</b><small>days</small></span>' : '') + '<span><b>' + pad(h) + '</b><small>hrs</small></span><span><b>' + pad(m) + '</b><small>min</small></span>';
+      weekly.innerHTML = (d ? '<span><b>' + pad(d) + '</b><small>' + cdUnit(d, 'day') + '</small></span>' : '') + '<span><b>' + pad(h) + '</b><small>' + cdUnit(h, 'hr') + '</small></span><span><b>' + pad(m) + '</b><small>' + cdUnit(m, 'min') + '</small></span>';
     }
   };
   tick(); setInterval(tick, 15e3);
@@ -5892,7 +5904,7 @@ var Swiper=function(){"use strict";function e(e){return null!==e&&"object"==type
   document.addEventListener('click', e => {
     const chip = e.target.closest('.ak-chip'); if (chip && !chip.closest('[data-no-toggle]')) { chip.classList.toggle('is-active'); chip.setAttribute('aria-pressed', chip.classList.contains('is-active')); }
     const grp = e.target.closest('.ak-btn-group > .ak-btn, .ak-phase-tabs > button, .ak-skill-levels > button');
-    if (grp) { const parent = grp.parentElement; $$(':scope > *', parent).forEach(b => b.classList.toggle('is-active', b === grp)); parent.dispatchEvent(new CustomEvent('akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } })); }
+    if (grp && !grp.closest('[data-no-toggle]')) { const parent = grp.parentElement; $$(':scope > *', parent).forEach(b => b.classList.toggle('is-active', b === grp)); parent.dispatchEvent(new CustomEvent('akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } })); }
   });
   /* data-bind: 元素上 data-values='{"e0":"1684",...}' 根据选择器 change 更新文本 */
   document.addEventListener('akds:select', e => {
@@ -5909,7 +5921,7 @@ var Swiper=function(){"use strict";function e(e){return null!==e&&"object"==type
   });
 
   /* 技能参数矩阵 .ak-skill-matrix：悬停 / 点某一列 → 整列高亮，描述里的 .ak-var[data-var] 换成该级数值；离开还原区间（无 JS 时就是一张静态矩阵） */
-  $$('.ak-skill-matrix').forEach(tb => {
+  $$('.ak-skill-matrix').forEach(tb => { if (tb.closest('[data-no-toggle]')) return;
     const sheet = tb.closest('.ak-skill-sheet') || tb.parentElement; const vars = $$('.ak-var[data-var]', sheet); vars.forEach(v => { v.dataset.range = v.textContent; });
     const cols = $$('thead th', tb); let pinned = -1;
     const paint = i => { cols.forEach((th, k) => th.classList.toggle('is-hl', k === i)); $$('tbody tr', tb).forEach(tr => { [...tr.children].forEach((c, k) => c.classList.toggle('is-hl', k === i)); const v = tr.dataset.var; if (v) vars.filter(x => x.dataset.var === v).forEach(x => { x.textContent = i > 0 && tr.children[i] ? tr.children[i].textContent : x.dataset.range; }); }); };
@@ -5944,7 +5956,7 @@ var Swiper=function(){"use strict";function e(e){return null!==e&&"object"==type
   });
 
   /* ── Voice play mock ───────────────────────────────────────── */
-  document.addEventListener('click', e => { const p = e.target.closest('.ak-voice__play'); if (p) p.classList.toggle('is-playing'); });
+  document.addEventListener('click', e => { const p = e.target.closest('.ak-voice__play'); if (p && !p.closest('[data-no-toggle]')) p.classList.toggle('is-playing'); });
 
   /* ── Back to top ───────────────────────────────────────────── */
   const fab = $('.ak-fab');
