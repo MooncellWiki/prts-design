@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<!-- 生成物：由 scripts/build-preview.py 从 preview/_src/skeleton.html + _src/pages/operators.html 生成，改源文件再重跑 -->
+<html lang="zh-CN" class="client-nojs skin-theme-clientpref-night" data-default-theme="dark">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；chrome/responsive.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>干员一览 - PRTS · 列表 / 筛选页样例</title>
+<link rel="stylesheet" href="../src/index.css">   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
+<link rel="stylesheet" href="../src/chrome/demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖令牌 §2d 的接口变量 -->
+<script src="vendor/charlist/data.js"></script>   <!-- 现网「干员一览」正文里的两块数据（#filter-filter 筛选项定义 + #filter-data 每位干员一条）的快照，scripts/fetch-charlist.ts 抓取；生产环境 = 模板照旧输出这两块，Widget 自己读 -->
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   干员一览 · Operator list — 信息结构取自 prts.wiki 现网「干员一览」（= prts-widgets 的 CharList Widget）：
+   两条提示（公招计算 / 专属干员）→ 三组筛选（筛选 7 行 / 六维筛选 6 行 / 势力 · 出身地 · 种族 3 行）→ 排序 · 搜索 · 满潜能 / 满信赖 · 三种显示方式 → 复制短链接 · 分页 → 结果。
+   筛选项、干员数据、筛选逻辑、地址栏 # 参数的写法都与现网一致（现网的短链接在这里照样能用），换的是视觉与排布。
+   这里的一切都是「Widget 自己的东西」：生产环境 = prts-widgets 的 CharList 输出下面这些结构（.ak-* 是设计系统组件，.ol-* 是它自己的排布），样式 = Widget 的样式表；
+   页面脚本只是 Widget 的替身。开头「0. 页面级」段是这份静态预览的补丁，别照抄——见该段说明。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. 页面级：预览骨架的补丁 ──
+ *  这页没有章节标题，也就没有目录：右侧导轨让给主列（列表 / 表格密集页要宽度），二级栏不出「本页目录」。写法同首页设计稿的「0. 页面级」，选择器按预览骨架写。
+ *  真皮肤里无目录页是 .ak-layout--no-toc（主列收到阅读列 1240），要吃掉导轨得另给口子——见文档站 /patterns/operators#页面与皮肤的分工。
+ *  现网这页没有分类：MW 这时给 #catlinks 加 .catlinks-allhidden 整条不显示，骨架是静态的，这里按空列表藏掉。 */
+.ak-toc, .ak-local-nav__toc { display: none; }
+.ak-main { padding-right: 0; }
+.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
+@media (min-width: 1120px) and (max-width: 1400px) { .ak-local-nav { display: none; } .ak-keyart { --_over: var(--ak-header-h); } }
+.catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
+@media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }   /* 手机上白纸的左右内边距让给卡片 */
+
+/* ── 1. 提示（= 现网两条 {{Cbox2}}）：两条并排，窄了折行 ── */
+.ol-notes { display: flex; flex-wrap: wrap; gap: var(--ak-space-2); margin: 0 0 var(--ak-space-4); }
+.ol-notes > .ak-cbox { flex: 1 1 320px; margin: 0; }
+.ol-notes a { color: var(--ak-link); }
+
+/* ── 2. 筛选 ──
+ *  现网：三块折叠面板共 16 行，每行 = 标题 + 全选 / 清除 + 一排深色大按钮；第一块一展开就是 72 个分支的一面墙，结果被推到两屏以外。
+ *  这里分两层：
+ *   · 常用（一直在）：职业 / 稀有度 · 位置，三行以内。分支不平铺——选了职业才出那几个职业的分支（游戏的筛选面板同：profession_filter 选中职业后才展开 subProf_view）；
+ *   · 高级筛选（一枚开关钮，默认收起）：其余 12 行按「筛什么」归成五类，左边竖排页签、右边一次只看一类——词缀 · 获取 / 六维 / 势力 / 出身地 / 种族。
+ *     页签上带已选数；选项多的三类（势力 45 / 出身地 26 / 种族 39）带一个「找选项」的输入框；六维六行的选项相同，排成对齐的矩阵。
+ *  不管收起与否，已选条件都在结果栏里列着（可逐个移除），高级筛选钮上也有已选数。
+ *  其余不变：每行 = 标签 + 筛选芯片 .ak-chip；选中后行标签左缘出青条、露出「清除」；再点一下会筛出 0 条的芯片压淡（.is-empty，仍可点）；
+ *  不设「全选」（全选与不选筛出的是同一批）；「同时满足」只有词缀行有（同现网），是一枚小开关。 */
+.ol-filter { margin: 0 0 var(--ak-space-3); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
+.ol-hint { font-size: var(--ak-fs-xs); color: var(--ak-fg-subtle); margin-left: 6px; }
+.ol-row[hidden], .ol-hint[hidden] { display: none; }
+/* 一行里并排的第二项（稀有度行里的「位置」）：小标签 + 芯片，前面一道竖线 */
+.ol-inline { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-left: 10px; padding-left: 16px; border-left: 1px solid var(--ak-border); }
+.ol-inline__label { margin-right: 6px; font-weight: 600; font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); }
+.ol-inline.has-active > .ol-inline__label { color: var(--ak-fg); }
+/* 高级筛选钮：整条是按钮，左缘色条同行标签（里面有已选项时变青） */
+.ol-more { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 0 var(--ak-space-4) 0 var(--ak-space-3); cursor: pointer; user-select: none;
+  background: var(--ak-bg-surface-2); border-top: 1px solid var(--ak-border); border-left: var(--ak-bar-w) solid var(--ak-border-strong); font-weight: 700; font-size: var(--ak-fs-sm); }
+.ol-more:hover { background: var(--ak-bg-hover); }
+.ol-more:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ol-more.has-active { border-left-color: var(--ak-accent); }
+.ol-more .ak-en { font-size: 10px; color: var(--ak-fg-subtle); }
+.ol-more__count:empty { display: none; }
+.ol-more__what { flex: 1; min-width: 0; font-weight: 400; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ol-more::after { content: ""; flex: none; width: 7px; height: 7px; margin: 0 2px 0 0; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); opacity: .6; transition: transform var(--ak-dur-fast); }
+.ol-more[aria-expanded="true"]::after { transform: rotate(45deg); margin-top: -3px; }
+/* 高级筛选面板：左页签、右内容 */
+.ol-adv { display: grid; grid-template-columns: max-content minmax(0, 1fr); border-top: 1px solid var(--ak-border); }
+.ol-adv[hidden] { display: none; }
+.ol-adv__tabs.ak-tabs { border-left: 0; border-right: 1px solid var(--ak-border); padding: 6px 0; gap: 0; min-width: 132px; background: var(--ak-bg-surface-2); }
+.ol-adv__tabs .ak-tab { margin: 0; padding: 8px var(--ak-space-3) 8px calc(var(--ak-space-3) - 3px + var(--ak-bar-w) - 1px); align-items: center; font-family: inherit; }
+.ol-adv__tabs .ak-tab:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ol-adv__tabs .ak-tab small { min-width: 16px; padding: 2px 4px; font-size: 10px; text-align: center; letter-spacing: 0; color: var(--ak-accent-fg); background: var(--ak-accent); }
+.ol-adv__tabs .ak-tab small:empty { display: none; }
+.ol-adv__panel { min-width: 0; min-height: 168px; }
+.ol-adv__panel[hidden] { display: none; }
+.ol-adv__find { display: block; max-width: 280px; margin: 10px var(--ak-space-3) 2px calc(var(--ak-space-3) + var(--ak-bar-w)); }
+.ol-adv__none { margin: 4px var(--ak-space-3) 10px calc(var(--ak-space-3) + var(--ak-bar-w)); font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.ol-adv__none[hidden], .ol-filter .ak-chip[hidden] { display: none; }
+.ol-adv__panel[data-tab="six"] .ak-chip { min-width: 64px; justify-content: center; box-sizing: border-box; }   /* 六行选项相同：等宽，上下对成列 */
+@media (max-width: 639px) {
+  .ol-inline { margin-left: 0; padding-left: 0; border-left: 0; flex-basis: 100%; }
+  .ol-more__what { display: none; } .ol-more::after { margin-left: auto; }
+  .ol-adv { grid-template-columns: minmax(0, 1fr); }
+  .ol-adv__tabs.ak-tabs { flex-direction: row; border-right: 0; border-bottom: 1px solid var(--ak-border); padding: 0 4px; min-width: 0; }
+  .ol-adv__tabs .ak-tab { border-left: 0; border-bottom: 3px solid transparent; padding: 8px 10px; gap: 6px; }
+  .ol-adv__tabs .ak-tab.is-active { border-bottom-color: var(--ak-accent); }
+  .ol-adv__panel { min-height: 0; }
+  .ol-adv__find { max-width: none; margin-left: var(--ak-space-3); }
+}
+.ol-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); }   /* 标签列随本组最长的标签（「源石技艺适应性」7 字）定宽，各行对齐 */
+.ol-row { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; }
+.ol-row + .ol-row { border-top: 1px solid var(--ak-border); }
+.ol-row__label { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px var(--ak-space-4) 8px calc(var(--ak-space-3)); border-left: var(--ak-bar-w) solid transparent;
+  font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1.4; color: var(--ak-fg-secondary); white-space: nowrap; }
+.ol-row.has-active > .ol-row__label { border-left-color: var(--ak-accent); color: var(--ak-fg); }
+.ol-row__clear { all: unset; font-size: var(--ak-fs-xs); font-weight: 500; color: var(--ak-link); cursor: pointer; }
+.ol-row__clear:hover { text-decoration: underline; }
+.ol-row__clear:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.ol-row:not(.has-active) .ol-row__clear { display: none; }
+.ol-row__label .ak-switch { font-weight: 500; color: var(--ak-fg-secondary); }
+.ol-row__opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px var(--ak-space-3) 8px 0; min-width: 0; }
+.ol-filter .ak-chip.is-empty:not([aria-pressed="true"]) { opacity: .38; }
+.ol-filter .ak-chip:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+/* 职业 / 分支图标 = 游戏筛选面板（ui/[uc]charsortfilter 的 prof_item / subprof_item）用的同一套白线稿：职业 arts/ui/[uc]charcommon 的 icon_profession_*，分支 arts/ui/subprofessionicon/sub_*_icon。
+ * 游戏里图标是一张白图、用 Image.color 着色（未选 #858585 / 选中 #00B1FF，与文字同色）；这里同理——白线稿当遮罩、颜色取 currentColor，选中 / 悬停 / 明暗主题都跟文字走，不用切图。
+ * 图标地址写在样式表里（不由脚本拼）：单文件版 dist/ 才内联得到。生产环境 = 文件:图标_职业_*.png / 图标_分支_*.png */
+.ol-ico { flex: none; width: 16px; height: 16px; background: currentColor; mask: center / contain no-repeat; }
+.ol-ico[data-prof="pioneer"] { mask-image: url(assets/profession/line_pioneer.png); }
+.ol-ico[data-prof="warrior"] { mask-image: url(assets/profession/line_warrior.png); }
+.ol-ico[data-prof="tank"] { mask-image: url(assets/profession/line_tank.png); }
+.ol-ico[data-prof="sniper"] { mask-image: url(assets/profession/line_sniper.png); }
+.ol-ico[data-prof="caster"] { mask-image: url(assets/profession/line_caster.png); }
+.ol-ico[data-prof="medic"] { mask-image: url(assets/profession/line_medic.png); }
+.ol-ico[data-prof="support"] { mask-image: url(assets/profession/line_support.png); }
+.ol-ico[data-prof="special"] { mask-image: url(assets/profession/line_special.png); }
+.ol-ico[data-sub="pioneer"] { mask-image: url(assets/subprofession/pioneer.png); } .ol-ico[data-sub="charger"] { mask-image: url(assets/subprofession/charger.png); } .ol-ico[data-sub="tactician"] { mask-image: url(assets/subprofession/tactician.png); } .ol-ico[data-sub="bearer"] { mask-image: url(assets/subprofession/bearer.png); }
+.ol-ico[data-sub="agent"] { mask-image: url(assets/subprofession/agent.png); } .ol-ico[data-sub="counsellor"] { mask-image: url(assets/subprofession/counsellor.png); } .ol-ico[data-sub="centurion"] { mask-image: url(assets/subprofession/centurion.png); } .ol-ico[data-sub="fighter"] { mask-image: url(assets/subprofession/fighter.png); }
+.ol-ico[data-sub="artsfghter"] { mask-image: url(assets/subprofession/artsfghter.png); } .ol-ico[data-sub="instructor"] { mask-image: url(assets/subprofession/instructor.png); } .ol-ico[data-sub="lord"] { mask-image: url(assets/subprofession/lord.png); } .ol-ico[data-sub="sword"] { mask-image: url(assets/subprofession/sword.png); }
+.ol-ico[data-sub="musha"] { mask-image: url(assets/subprofession/musha.png); } .ol-ico[data-sub="fearless"] { mask-image: url(assets/subprofession/fearless.png); } .ol-ico[data-sub="reaper"] { mask-image: url(assets/subprofession/reaper.png); } .ol-ico[data-sub="librator"] { mask-image: url(assets/subprofession/librator.png); }
+.ol-ico[data-sub="crusher"] { mask-image: url(assets/subprofession/crusher.png); } .ol-ico[data-sub="hammer"] { mask-image: url(assets/subprofession/hammer.png); } .ol-ico[data-sub="primguard"] { mask-image: url(assets/subprofession/primguard.png); } .ol-ico[data-sub="mercenary"] { mask-image: url(assets/subprofession/mercenary.png); }
+.ol-ico[data-sub="protector"] { mask-image: url(assets/subprofession/protector.png); } .ol-ico[data-sub="guardian"] { mask-image: url(assets/subprofession/guardian.png); } .ol-ico[data-sub="unyield"] { mask-image: url(assets/subprofession/unyield.png); } .ol-ico[data-sub="artsprotector"] { mask-image: url(assets/subprofession/artsprotector.png); }
+.ol-ico[data-sub="duelist"] { mask-image: url(assets/subprofession/duelist.png); } .ol-ico[data-sub="fortress"] { mask-image: url(assets/subprofession/fortress.png); } .ol-ico[data-sub="shotprotector"] { mask-image: url(assets/subprofession/shotprotector.png); } .ol-ico[data-sub="primprotector"] { mask-image: url(assets/subprofession/primprotector.png); }
+.ol-ico[data-sub="fastshot"] { mask-image: url(assets/subprofession/fastshot.png); } .ol-ico[data-sub="closerange"] { mask-image: url(assets/subprofession/closerange.png); } .ol-ico[data-sub="aoesniper"] { mask-image: url(assets/subprofession/aoesniper.png); } .ol-ico[data-sub="longrange"] { mask-image: url(assets/subprofession/longrange.png); }
+.ol-ico[data-sub="reaperrange"] { mask-image: url(assets/subprofession/reaperrange.png); } .ol-ico[data-sub="siegesniper"] { mask-image: url(assets/subprofession/siegesniper.png); } .ol-ico[data-sub="bombarder"] { mask-image: url(assets/subprofession/bombarder.png); } .ol-ico[data-sub="hunter"] { mask-image: url(assets/subprofession/hunter.png); }
+.ol-ico[data-sub="loopshooter"] { mask-image: url(assets/subprofession/loopshooter.png); } .ol-ico[data-sub="skybreaker"] { mask-image: url(assets/subprofession/skybreaker.png); } .ol-ico[data-sub="corecaster"] { mask-image: url(assets/subprofession/corecaster.png); } .ol-ico[data-sub="splashcaster"] { mask-image: url(assets/subprofession/splashcaster.png); }
+.ol-ico[data-sub="funnel"] { mask-image: url(assets/subprofession/funnel.png); } .ol-ico[data-sub="phalanx"] { mask-image: url(assets/subprofession/phalanx.png); } .ol-ico[data-sub="mystic"] { mask-image: url(assets/subprofession/mystic.png); } .ol-ico[data-sub="chain"] { mask-image: url(assets/subprofession/chain.png); }
+.ol-ico[data-sub="blastcaster"] { mask-image: url(assets/subprofession/blastcaster.png); } .ol-ico[data-sub="primcaster"] { mask-image: url(assets/subprofession/primcaster.png); } .ol-ico[data-sub="soulcaster"] { mask-image: url(assets/subprofession/soulcaster.png); } .ol-ico[data-sub="physician"] { mask-image: url(assets/subprofession/physician.png); }
+.ol-ico[data-sub="ringhealer"] { mask-image: url(assets/subprofession/ringhealer.png); } .ol-ico[data-sub="healer"] { mask-image: url(assets/subprofession/healer.png); } .ol-ico[data-sub="wandermedic"] { mask-image: url(assets/subprofession/wandermedic.png); } .ol-ico[data-sub="incantationmedic"] { mask-image: url(assets/subprofession/incantationmedic.png); }
+.ol-ico[data-sub="chainhealer"] { mask-image: url(assets/subprofession/chainhealer.png); } .ol-ico[data-sub="watchman"] { mask-image: url(assets/subprofession/watchman.png); } .ol-ico[data-sub="slower"] { mask-image: url(assets/subprofession/slower.png); } .ol-ico[data-sub="underminer"] { mask-image: url(assets/subprofession/underminer.png); }
+.ol-ico[data-sub="bard"] { mask-image: url(assets/subprofession/bard.png); } .ol-ico[data-sub="blessing"] { mask-image: url(assets/subprofession/blessing.png); } .ol-ico[data-sub="summoner"] { mask-image: url(assets/subprofession/summoner.png); } .ol-ico[data-sub="craftsman"] { mask-image: url(assets/subprofession/craftsman.png); }
+.ol-ico[data-sub="ritualist"] { mask-image: url(assets/subprofession/ritualist.png); } .ol-ico[data-sub="supportiveranger"] { mask-image: url(assets/subprofession/supportiveranger.png); } .ol-ico[data-sub="executor"] { mask-image: url(assets/subprofession/executor.png); } .ol-ico[data-sub="pusher"] { mask-image: url(assets/subprofession/pusher.png); }
+.ol-ico[data-sub="stalker"] { mask-image: url(assets/subprofession/stalker.png); } .ol-ico[data-sub="hookmaster"] { mask-image: url(assets/subprofession/hookmaster.png); } .ol-ico[data-sub="geek"] { mask-image: url(assets/subprofession/geek.png); } .ol-ico[data-sub="merchant"] { mask-image: url(assets/subprofession/merchant.png); }
+.ol-ico[data-sub="traper"] { mask-image: url(assets/subprofession/traper.png); } .ol-ico[data-sub="dollkeeper"] { mask-image: url(assets/subprofession/dollkeeper.png); } .ol-ico[data-sub="alchemist"] { mask-image: url(assets/subprofession/alchemist.png); } .ol-ico[data-sub="skywalker"] { mask-image: url(assets/subprofession/skywalker.png); }
+/* 头像角上的职业小图标（游戏头像同款，自带深底）：同样写在样式表里 */
+.ol-prof-box { display: block; width: 100%; height: 100%; background: center / contain no-repeat; }
+.ol-prof-box[data-prof="pioneer"] { background-image: url(assets/profession/icon_pioneer.png); }
+.ol-prof-box[data-prof="warrior"] { background-image: url(assets/profession/icon_warrior.png); }
+.ol-prof-box[data-prof="tank"] { background-image: url(assets/profession/icon_tank.png); }
+.ol-prof-box[data-prof="sniper"] { background-image: url(assets/profession/icon_sniper.png); }
+.ol-prof-box[data-prof="caster"] { background-image: url(assets/profession/icon_caster.png); }
+.ol-prof-box[data-prof="medic"] { background-image: url(assets/profession/icon_medic.png); }
+.ol-prof-box[data-prof="support"] { background-image: url(assets/profession/icon_support.png); }
+.ol-prof-box[data-prof="special"] { background-image: url(assets/profession/icon_special.png); }
+/* 分支：一职业一行，行首是职业图标 */
+.ol-branch { display: flex; align-items: flex-start; gap: 8px; flex: 1 1 100%; min-width: 0; }
+.ol-branch[hidden] { display: none; }
+.ol-branch__prof { flex: none; display: grid; place-items: center; width: 28px; height: 28px; color: var(--ak-fg-muted); }
+.ol-branch__prof .ol-ico { width: 20px; height: 20px; }
+.ol-branch__list { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+/* 稀有度：一颗星 + 数字，星取稀有度色（选中后跟文字） */
+.ol-star { width: 11px; height: 11px; background: var(--ak-r-text); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.ak-chip[aria-pressed="true"] .ol-star { background: currentColor; }
+.ol-filter .ak-chip > .ol-ico { margin-left: -2px; }
+.ol-chip--rarity { font-family: var(--ak-font-label); font-weight: 700; gap: 4px; }
+@media (max-width: 639px) {
+  .ol-rows { grid-template-columns: minmax(0, 1fr); }
+  .ol-row__label { flex-direction: row; align-items: center; gap: 12px; padding: 8px var(--ak-space-3) 0 8px; white-space: normal; }
+  .ol-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
+  .ol-row.has-active > .ol-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }   /* 标签在上、选项在下：青条接着往下画满一行 */
+}
+
+/* ── 3. 工具条：搜索 · 排序 · 数值加算 · 显示方式 ── */
+.ol-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 0 0 var(--ak-space-3); padding: 10px var(--ak-space-3); background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
+.ol-toolbar__search { flex: 1 1 240px; min-width: 0; }
+.ol-field { display: inline-flex; align-items: center; gap: 8px; font-size: var(--ak-fs-xs); font-weight: 600; color: var(--ak-fg-muted); white-space: nowrap; }
+.ol-field .ak-select { width: auto; min-height: 36px; color: var(--ak-fg); font-weight: 400; }
+.ol-field .ak-switch { color: var(--ak-fg); font-weight: 500; }
+.ol-field[hidden] { display: none; }
+.ol-sort { gap: 0; } .ol-sort > label { margin-right: 8px; } .ol-sort > .ak-btn { margin-left: -1px; min-width: 76px; padding: 0 var(--ak-space-3); font-weight: 500; }   /* 排序项 + 升降：同游戏的排序钮（一项两个方向） */
+.ol-view .ak-btn { gap: 6px; }
+.ol-view .ak-btn[aria-pressed="true"] { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); z-index: 1; }
+.ol-view .ak-icon { width: 14px; height: 14px; }
+
+/* ── 4. 结果栏：条数 · 已选条件 · 复制短链接 · 每页条数 · 分页 ── */
+.ol-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 var(--ak-space-3); min-height: 32px; }
+.ol-bar__count { flex: none; font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); white-space: nowrap; }
+.ol-bar__count b { font: 700 var(--ak-fs-h3)/1 var(--ak-font-label); color: var(--ak-fg); font-variant-numeric: tabular-nums; margin-right: 2px; }
+.ol-bar__active { flex: 1 1 200px; min-width: 0; align-items: center; }
+.ol-bar__active .ak-tag { height: 24px; }
+.ol-bar__active .ak-tag__remove { font-size: 14px; padding: 0 2px; margin-right: -4px; }
+.ol-bar__active .ak-tag__remove:focus-visible { outline: 2px solid var(--ak-focus); }
+.ol-bar__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.ol-bar__tools .ak-select { width: auto; min-height: 32px; font-size: var(--ak-fs-xs); }
+.ol-bar .ak-icon { width: 14px; height: 14px; }
+.ol-pager .ak-icon { width: 14px; height: 14px; }
+.ol-foot { display: flex; justify-content: flex-end; margin: var(--ak-space-4) 0 0; }
+@media (max-width: 639px) { .ol-bar__tools { margin-left: 0; width: 100%; justify-content: space-between; } .ol-foot { justify-content: center; } }
+
+/* ── 5. 结果 · 表格 ──
+ *  现网：一行九栏，栏里把四个值叠成一摞（子职业 / 势力 / 出身地 / 种族；生命 / 攻击 / 防御 / 法抗 …），对着表头才知道哪个是哪个，数值也没法上下对齐着比。
+ *  这里：一位干员 = 一个 <tbody> 两行。上行是身份 + 八项数值各占一列（Bender 等宽数字右对齐，点表头排序）+ 势力 + 标签；下行是特性全文 + 获取方式。
+ *  表头吸在页眉下。结果区窄于 1000（平板 / 手机）换成卡片，见 6——再窄，八列数值就放不下四位数了。 */
+.ol-table.ak-table { table-layout: fixed; font-size: var(--ak-fs-sm); }
+.ol-table thead th { position: sticky; top: var(--ak-header-h); z-index: 2; padding: 9px 8px; white-space: nowrap; letter-spacing: 0; text-transform: none; }
+.ol-table th.num, .ol-table td.num { text-align: right; }
+.ol-table td { border-bottom: 0; padding: 8px 8px 2px; vertical-align: top; line-height: 1.4; }
+.ol-table tbody.ol-op { border-top: 1px solid var(--ak-border); }
+.ol-table tbody.ol-op > tr:last-child > td { padding-top: 0; padding-bottom: 9px; }
+.ol-table tbody.ol-op > tr:first-child > td[rowspan] { padding-bottom: 9px; }
+.ol-table tbody tr:hover td { background: none; }
+.ol-table tbody.ol-op:hover td { background: var(--ak-bg-hover); }
+.ol-table :is(th, td).ol-sep { border-left: 1px solid var(--ak-border); }   /* 四维 / 部署四项各成一组 */
+.ol-table td.num { white-space: nowrap; font: 600 var(--ak-fs-sm)/1.45 var(--ak-font-label); font-variant-numeric: tabular-nums; color: var(--ak-fg); }
+.ol-table td.num small { font-size: .78em; font-weight: 400; color: var(--ak-fg-muted); margin-left: 1px; }
+.ol-table td.num.is-mod, .ol-card__stats .is-mod { color: var(--ak-accent); }   /* 加算了潜能 / 信赖、与基础值不同的格 */
+.ol-table td.num.is-sorted { background: var(--ak-accent-subtle); }
+.ol-table tbody.ol-op:hover td.num.is-sorted { background: var(--ak-accent-muted); }
+.ol-table th > .ak-table__sort:hover { color: var(--ak-accent); }
+.ol-c-avatar { width: 64px; }
+.ol-table tbody th.ol-c-name { padding: 8px 8px 9px; vertical-align: top; font-weight: 400; text-align: left; border-bottom: 0; line-height: 1.4; }
+.ol-avatar { position: relative; display: block; width: 48px; height: 48px; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); border-bottom: 3px solid var(--ak-r, var(--ak-border-strong)); overflow: hidden; }
+.ol-avatar > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ol-avatar > .ol-avatar__prof { position: absolute; left: 0; top: 0; width: 16px; height: 16px; }
+.ol-avatar:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.ol-name { font-weight: 700; font-size: var(--ak-fs-body); line-height: 1.25; color: var(--ak-fg); text-decoration: none; }
+.ol-name:hover { color: var(--ak-accent); text-decoration: underline; }
+.ol-sub { display: block; font-size: var(--ak-fs-xs); line-height: 1.35; color: var(--ak-fg-muted); overflow-wrap: anywhere; }
+.ol-sub--id { display: flex; align-items: center; gap: 6px; margin-top: 2px; font: 600 var(--ak-fs-overline)/1.2 var(--ak-font-label); letter-spacing: .04em; color: var(--ak-fg-subtle); }
+.ol-sub--id .ak-rarity { font-size: 9px; --_c: var(--ak-r-text); }
+.ol-strong { font-weight: 600; }
+.ol-branchname { display: flex; align-items: center; gap: 5px; }
+.ol-branchname > .ol-ico { color: var(--ak-fg-muted); }
+.ol-c-tags .ak-tags { gap: 4px; }
+.ol-feature { font-size: var(--ak-fs-xs); line-height: 1.55; color: var(--ak-fg-secondary); }
+.ol-feature .ak-term:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
+.ol-obtain { font-size: var(--ak-fs-xs); line-height: 1.55; color: var(--ak-fg-muted); }
+
+/* ── 6. 结果 · 卡片（结果区 < 1000 时表格换成它；现网 ≤ 640 的那种卡片要点开才看得到数值，这里直接摊开） ── */
+.ol-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--ak-space-2); }
+.ol-card { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 10px; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top: 3px solid var(--ak-r, var(--ak-border-strong)); }
+.ol-card__head { display: flex; gap: 10px; min-width: 0; }
+.ol-card__id { flex: 1; min-width: 0; }
+.ol-card__id .ol-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ol-card__stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 0; background: var(--ak-border); border: 1px solid var(--ak-border); }
+.ol-card__stats > div { display: flex; flex-direction: column; gap: 3px; padding: 5px 6px; background: var(--ak-bg-surface); }
+.ol-card__stats > div.is-sorted { background: var(--ak-accent-subtle); }
+.ol-card__stats dt { font-size: 10px; line-height: 1; font-weight: 500; color: var(--ak-fg-muted); }
+.ol-card__stats dd { margin: 0; font: 700 var(--ak-fs-sm)/1 var(--ak-font-label); font-variant-numeric: tabular-nums; }
+.ol-card__stats dd small { font-size: .78em; font-weight: 400; color: var(--ak-fg-muted); }
+.ol-card p { margin: 0; }
+.ol-card .ak-tags { gap: 4px; }
+
+/* ── 7. 结果 · 半身像 / 头像（.ak-op-card 网格） ── */
+.ol-grid--half { grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); }
+.ol-grid--half .ak-op-card__portrait { aspect-ratio: 1 / 2; }
+.ol-grid--half .ak-op-card__portrait > img { object-position: 50% 0; }
+.ol-grid--avatar { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: var(--ak-space-2); }
+/* 按数值排序时卡片右上角带上那项数值（游戏干员列表的 dyn_char_sort_info_item：#0098DC 底白字） */
+.ol-grid .ak-op-card__badge.ol-sortinfo { top: auto; right: 0; bottom: 0; }   /* 放右下角（精英化角标那一角，这页不用）：右上角会压住六颗星 */
+.ol-sortinfo { padding: 2px 5px; background: var(--ak-blue-500, #0098dc); color: #fff; font: 700 var(--ak-fs-xs)/1.2 var(--ak-font-label); font-variant-numeric: tabular-nums; }
+.ol-sortinfo small { font-size: .8em; font-weight: 400; }
+.ol-grid .ak-op-card__prof { width: 22px; height: 22px; }
+.ol-grid .ak-op-card__prof > .ol-prof-box { width: 18px; height: 18px; }
+@media (max-width: 639px) { .ol-grid--half { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--ak-space-2); } .ol-grid--avatar { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); } }
+
+/* ── 8. 术语提示（特性里的 {{术语}}）：气泡挂在 body 上、按视口定位，不被表格裁掉 ── */
+.ol-tip { position: fixed; left: 0; top: 0; max-width: min(340px, calc(100vw - 16px)); white-space: pre-line; line-height: 1.55; pointer-events: none; }
+</style>
+</head>
+<body class="skin-arknights">
+<a class="ak-skip" href="#content">跳到内容</a>
+
+<!-- ═══ SVG sprite ═══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 17V11a6 6 0 1 1 12 0v6l2 2H4l2-2zm4 4h4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9c0-4 3.6-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0-6v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M4.9 19.1 7 17m10-10 2.1-2.1"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 4h18v12H3zm5 16h8m-4-4v4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 20h4l11-11-4-4L4 16v4zM13 7l4 4"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5m4-1v5l3 2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zm16 0h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></symbol>
+  <symbol id="i-talk" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></symbol>
+  <!-- 页面动作簇 / 「更多」菜单用（皮肤里对应 OOUI 图标：star / link / articleRedirect / recentChanges / printer / upload / specialPages / reload / quotes / table / wikiText / move / lock / trash） -->
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 3.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.8l6.1-.7z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.5 1.5M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.5-1.5"/></symbol>
+  <symbol id="i-linkin" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12h12m-4-4 4 4-4 4M18 4h3v16h-3"/></symbol>
+  <symbol id="i-arrow-ne" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M7 17 17 7M9 7h8v8"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM6 11a6 6 0 0 0 12 0M12 17v4m-4 0h8"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 8V3h10v5M5 8h14a2 2 0 0 1 2 2v6h-4v-3H7v3H3v-6a2 2 0 0 1 2-2zm2 8v5h10v-5"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 16V4m-5 5 5-5 5 5M4 20h16"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 4v12m-5-5 5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 16h3l2-4V7H5v5h3zm9 0h3l2-4V7h-6v5h3z"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h18v14H3zm0 5h18M3 14h18M9 5v14"/></symbol>
+  <symbol id="i-source" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M8 4H5v16h3M16 4h3v16h-3M10 8l-2 4 2 4m4-8 2 4-2 4"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 2v20M2 12h20M9 5l3-3 3 3M9 19l3 3 3-3M5 9 2 12l3 3m14-6 3 3-3 3"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 11V8a5 5 0 0 1 10 0v3M4 11h16v10H4z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v6m4-6v6"/></symbol>
+  <!-- 用户菜单（#p-user-interface-preferences / #p-personal）：language / settings / watchlist / userContributions / logOut -->
+  <symbol id="i-lang" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h10M8 3v2m3 0c-1 4-3.5 7-7 9m1-6c1 3 3 5 6 6M13 21l4-10 4 10m-6.5-3h5"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-2-6h4l.6 2.4 2.1 1.2 2.4-.7 2 3.4-1.8 1.7v2.4l1.8 1.7-2 3.4-2.4-.7-2.1 1.2L14 21h-4l-.6-2.4-2.1-1.2-2.4.7-2-3.4 1.8-1.7v-2.4L2.9 8.9l2-3.4 2.4.7 2.1-1.2z"/></symbol>
+  <symbol id="i-watchlist" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h12M3 11h8M3 16h6m8-4 1.3 2.7 3 .4-2.2 2.1.5 3-2.6-1.4-2.6 1.4.5-3-2.2-2.1 3-.4z"/></symbol>
+  <symbol id="i-contribs" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h12M3 11h8M3 16h6m9-5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm-4.5 8c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 4H4v16h6m4-12 5 4-5 4m5-4H9"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 8v5m0-9v1"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3l10 18H2zm0 7v5m0 3v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 15l7-7 7 7"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 4v16l12-8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 4h4v16H6zm8 0h4v16h-4z"/></symbol>
+  <symbol id="i-empty" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10"/></symbol>
+</svg>
+
+<!-- ═══ HEADER ═══ -->
+<header class="ak-header">
+  <div class="ak-header__inner">
+    <a class="ak-header__logo" href="#">
+      <img src="assets/camp/rhodes.png" alt="">
+      <span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span>
+    </a>
+    <form class="ak-header__search ak-search" role="search" onsubmit="return false">
+      <svg class="ak-search__icon"><use href="#i-search"/></svg>
+      <input class="ak-input" type="search" placeholder="搜索 PRTS…" aria-label="搜索">
+      <span class="ak-search__kbd">/</span>
+    </form>
+    <button class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="搜索"><svg><use href="#i-search"/></svg></button>
+    <!-- 页眉不放站点级主导航（与侧栏「通用」组重复，导航只由侧栏承担）。<1120：工具（外观 / 通知 / 用户）收进 ≡ 拉下的右对齐卡片；开合纯 CSS：checkbox 在前，卡片与汉堡在后 -->
+    <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
+    <div class="ak-header__screen" id="ak-nav-screen">
+      <div class="ak-header__tools">
+        <div class="ak-header__tool">
+          <span class="ak-header__tool-label" id="ak-theme-label">外观</span>
+          <div class="ak-theme-toggle" role="group" aria-labelledby="ak-theme-label">
+            <button data-theme="os" title="跟随系统"><svg><use href="#i-monitor"/></svg></button>
+            <button data-theme="light" title="档案模式（亮）"><svg><use href="#i-sun"/></svg></button>
+            <button data-theme="dark" title="终端模式（暗）"><svg><use href="#i-moon"/></svg></button>
+          </div>
+        </div>
+        <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
+        <!-- 用户菜单（MW #p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu 卡片。
+             卡片 = 用户名抬头 + 两组门户：「界面设置」#p-user-interface-preferences（ULS 的语言切换就在这里——侧栏不再有 Languages 组）· 「个人工具」#p-personal。
+             <1120 时这张卡在 ≡ 面板里就地展开（chrome/responsive.css 已写），不再浮出。 -->
+        <div class="ak-dropdown ak-header__user-menu" id="ak-user-menu">
+          <details>
+            <summary class="ak-btn ak-btn--ghost ak-header__user" title="用户菜单"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></summary>
+            <div class="ak-menu ak-menu--right ak-header__user-card">
+              <div class="ak-menu__head"><svg class="ak-icon"><use href="#i-user"/></svg>Doctor</div>
+              <nav class="ak-menu__group" id="p-user-interface-preferences" aria-label="界面设置">
+                <div class="ak-menu__label">界面设置</div>
+                <ul><li id="pt-uls"><a href="#"><svg class="ak-icon"><use href="#i-lang"/></svg><span>中文（中国大陆）</span></a></li></ul>
+              </nav>
+              <nav class="ak-menu__group" id="p-personal" aria-label="个人工具">
+                <div class="ak-menu__label">个人工具</div>
+                <ul>
+                  <li id="pt-userpage"><a href="#"><svg class="ak-icon"><use href="#i-user"/></svg><span>Doctor</span></a></li>
+                  <li id="pt-mytalk"><a href="#"><svg class="ak-icon"><use href="#i-talk"/></svg><span>讨论</span></a></li>
+                  <li id="pt-preferences"><a href="#"><svg class="ak-icon"><use href="#i-gear"/></svg><span>参数设置</span></a></li>
+                  <li id="pt-watchlist"><a href="#"><svg class="ak-icon"><use href="#i-watchlist"/></svg><span>监视列表</span></a></li>
+                  <li id="pt-mycontris"><a href="#"><svg class="ak-icon"><use href="#i-contribs"/></svg><span>贡献</span></a></li>
+                  <li id="pt-logout"><a href="#"><svg class="ak-icon"><use href="#i-logout"/></svg><span>退出</span></a></li>
+                </ul>
+              </nav>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+    <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
+  </div>
+
+  <!-- ═══ LOCAL NAV ═══ 二级吸顶栏：<1400 出现；页眉主行下滑收起后它仍贴顶 -->
+  <div class="ak-local-nav">
+    <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
+    <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
+    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle">本页目录<span class="ak-local-nav__chevron" aria-hidden="true"></span></label>
+  </div>
+</header>
+
+<!-- ═══ KEY ART ═══ 头图带：默认 --ak-keyart-h: 0 不占位；活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起、页眉玻璃压在它上面（chrome/keyart.css 负外边距，DOM 顺序不变） -->
+<div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
+
+<div class="ak-layout">
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="ak-sidebar" id="ak-sidebar" aria-label="导航">
+    <div class="ak-sidebar__panel" id="mw-panel">
+    <div class="ak-portlet ak-portlet--collapsible" id="p-akds">
+      <h3 class="ak-portlet__title">PRTS Design 预览 · DEMO</h3>
+      <ul>
+        <li><a href="home.html">首页设计稿</a></li>
+        <li class="is-active"><a href="operators.html">干员一览（列表 / 筛选页）</a></li>
+        <li><a href="operator.html">干员页样例（陈）</a></li>
+        <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
+      </ul>
+    </div>
+    <!-- ↓ 与 prts.wiki 现网 #MenuSidebar 的原始输出结构一致：段落 = 分组标题；* 列表；'''粗体''' = 有子级的分组项；** 子项。
+         多层展开 / 记忆 / 桌面悬停飞出由 src/sidebar-tree.js 增强（li > ul 任意深度）；li.is-open 为作者默认展开，用户操作后以 localStorage 记忆为准。 -->
+    <div id="MenuSidebar">
+      <ul>
+        <li><a href="#">首页</a></li>
+        <li><a class="copyUrl">复制短链接</a></li>
+        <li><a href="#">支持我们</a></li>
+        <li><a href="#">赞助者一览</a></li>
+        <li><a href="#">反馈与建议</a></li>
+      </ul>
+      <p>热门页面</p>
+      <ul>
+        <li><b>当前活动</b>
+          <ul><li><a href="#">奇象巡展</a></li><li><a href="#">SideStory「直到大地变成一颗酸橙」</a></li><li><a href="#">集成战略「沉沦者的黑流树海」</a></li><li><a href="#">生息演算「重启锚点」</a></li></ul>
+        </li>
+        <li><b>新增干员 <span class="ak-tag ak-tag--sm ak-tag--new">NEW</span></b>
+          <ul><li><a href="#">予愿安洁莉娜</a></li><li><a href="#">珊比</a></li><li><a href="#">嘉辛塔</a></li><li><a href="#">时隙</a></li></ul>
+        </li>
+        <li><a href="operators.html">干员一览</a></li>
+      </ul>
+      <p>菜单</p>
+      <ul>
+        <li class="is-open"><b>通用</b>
+          <ul><li><a href="operators.html">干员一览</a></li><li><a href="#">敌人一览</a></li><li><a href="#">道具一览</a></li><li><a href="#">后勤技能</a></li><li><a href="#">关卡一览</a></li><li><a href="#">剧情记录</a></li><li><a href="#">家具一览</a></li><li><a href="#">时装回廊</a></li><li><a href="#">采购中心</a></li><li><a href="#">卡池一览</a></li><li><a href="#">活动一览</a></li><li><a href="#">公招计算</a></li></ul>
+        </li>
+        <li><b>档案</b>
+          <ul><li><a href="#">画师一览</a></li><li><a href="#">配音一览</a></li><li><a href="#">分支一览</a></li><li><a href="#">干员密录</a></li><li><a href="#">干员模组</a></li><li><a href="#">干员编号</a></li><li><a href="#">角色真名</a></li><li><a href="#">干员预告</a></li><li><a href="#">干员专精</a></li><li><a href="#">干员剧情一览</a></li><li><a href="#">档案信息一览</a></li></ul>
+        </li>
+        <li><b>玩法</b>
+          <ul><li><a href="#">危机合约</a></li><li><a href="#">集成战略</a><ul><li><a href="#">傀影与猩红孤钻</a></li><li><a href="#">水月与深蓝之树</a></li><li><a href="#">探索者的银凇止境</a></li><li><a href="#">萨卡兹的无终奇语</a></li><li><a href="#">岁的界园志异</a></li><li><a href="#">沉沦者的黑流树海</a></li></ul></li><li><a href="#">保全派驻</a></li><li><a href="#">引航者试炼</a></li><li><a href="#">生息演算</a></li><li><a href="#">促融共竞</a></li><li><a href="#">矢量突破</a></li><li><a href="#">卫戍协议</a></li><li><a href="#">争锋频道</a></li><li><a href="#">试验玩法一览</a></li></ul>
+        </li>
+        <li><b>系统</b>
+          <ul><li><a href="#">基建</a></li><li><a href="#">任务列表</a></li><li><a href="#">邮件记录</a></li><li><a href="#">首页场景</a></li><li><a href="#">界面主题</a></li><li><a href="#">头像一览</a></li><li><a href="#">名片一览</a></li><li><a href="#">光荣之路</a></li><li><a href="#">情报处理室</a></li></ul>
+        </li>
+        <li><b>扩展</b>
+          <ul><li><a href="#">基础数据</a></li><li><a href="#">作战机制</a></li><li><a href="#">新人入门</a></li><li><a href="#">贴士一览</a></li><li><a href="#">词汇一览</a></li><li><a href="#">制作组通讯</a></li><li><a href="#">剧情角色一览</a></li><li><a href="#">游戏内容前瞻</a></li><li><a href="#">剧情资源概览</a></li><li><a href="#">各类信息汇总</a></li></ul>
+        </li>
+        <li><b>趣味</b>
+          <ul><li><a href="#">泰拉大典</a></li><li><a href="#">音乐鉴赏</a></li><li><a href="#">寻访模拟</a></li><li><a href="#">衍生作品</a></li></ul>
+        </li>
+        <li><a href="#">随机页面</a></li>
+      </ul>
+      <p>探索</p>
+      <ul class="mooncell-link"><li><a class="external text" href="https://fgo.wiki" target="_blank" rel="noopener">Mooncell主站</a></li></ul>
+      <ul>
+        <li><b>官方网站</b>
+          <ul><li><a href="#">明日方舟简中服官网</a></li><li><a href="#">塞壬唱片</a></li><li><a href="#">泰拉记事社</a></li><li><a href="#">明日方舟日服官网</a></li><li><a href="#">明日方舟美服官网</a></li><li><a href="#">明日方舟台服官网</a></li><li><a href="#">明日方舟韩服官网</a></li></ul>
+        </li>
+        <li><b>友情链接</b>
+          <ul><li><a href="#">少前百科GFwiki</a></li><li><a href="#">企鹅物流数据统计</a></li></ul>
+        </li>
+      </ul>
+      <p>管理与编辑</p>
+      <!-- 「特殊页面 / 上传文件」是工具箱里仅有的两条站点级链接：同 Citizen（moveUploadToSiteTools + addSiteTools）进侧栏站点导航而不是「更多」。
+           皮肤实现：从 TOOLBOX 拆出，在 #MenuSidebar 之后渲染成无标题门户 nav#p-site-tools（紧贴上一组，视觉上就是「管理与编辑」的延续；upload 仍由 MW 按权限决定是否输出）。 -->
+      <ul><li><a href="#">最近更改</a></li><li><a href="#">编辑指南</a></li><li><a href="#">常用代码</a></li><li><a href="#">模板一览</a></li><li><a href="#">贡献分数</a></li><li><a href="#">收支一览</a></li><li><a href="#">特殊贡献</a></li><li id="t-specialpages"><a href="#">特殊页面</a></li><li id="t-upload"><a href="#">上传文件</a></li></ul>
+      <!-- 现网 MenuSidebar 末尾的「Languages」组（三个 onclick 切语言的内联脚本链接）与「工具#vmsTB / #MSToolbox」组在新皮肤下都退役：
+           语言切换统一在页眉用户菜单「界面设置」（ULS，#p-user-interface-preferences）；工具箱整组搬进标题行动作簇的「更多」（#p-tb）。侧栏只剩站点导航。 -->
+    </div>
+    </div>
+    <div class="ak-sidebar__foot">MediaWiki 1.43 · Skin: Arknights 0.1<br>Theme tokens: <code>--ak-*</code><br>侧栏：悬停分组可预览，点击/键盘展开并记忆</div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="ak-main" id="content">
+    <div class="ak-main__inner">
+      <header class="ak-page-header">
+        <div class="ak-page-header__top">
+          <ul class="ak-breadcrumb ak-m-0"><li><a href="#">首页</a></li><li aria-current="page">干员一览</li></ul>
+          <div class="mw-indicators"><span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">现网数据快照</span></div>
+        </div>
+        <!-- ═══ 标题行 ═══ h1 + 页面动作簇同一行（Citizen 式），不再有整条下划线页签。
+             簇 = MW 的菜单按原顺序输出：associated-pages（页面 / 讨论）· views（阅读 / 历史 / 编辑 / ★）· [variants] · 更多（actions + TOOLBOX）；
+             显示顺序由 CSS order 定：讨论 → 历史 → 编辑 → ★ → 更多。
+             li.selected（当前命名空间页签「页面」、「阅读」）只留给读屏器：它们只在不是当前态时才是一个动作——讨论页上显示「页面」当返回、历史 / diff 页上显示「阅读」当返回。
+             「编辑」是簇里唯一的主色实底（#ca-edit / #ca-ve-edit）；不可编辑时这一格是细框「查看源代码」（#ca-viewsource）。
+             「更多」= .ak-menu 卡片里两组门户：操作 #p-cactions · 工具 #p-tb（整个工具箱从侧栏搬来，id 不变，addPortletLink('p-tb') 照常）。
+             工具箱里的「特殊页面 / 上传文件」不进这里——它们是站点级的，同 Citizen 放进侧栏站点导航（见侧栏「管理与编辑」末尾）。
+             桌面带「更多」二字；<640 只留 ⋯，整簇只留图标（文字进 sr-only，title / accesskey 不变）。 -->
+        <div class="ak-page-header__row">
+          <h1 id="firstHeading" class="ak-page-header__title">干员一览<span class="ak-en">Operators</span></h1>
+          <div class="ak-page-tools" id="ak-page-tools">
+            <ul class="ak-page-tabs" id="p-associated-pages">
+              <li class="selected" id="ca-nstab-main"><a href="#" title="查看内容页面"><svg class="ak-icon"><use href="#i-book"/></svg><span>页面</span></a></li>
+              <li id="ca-talk"><a href="#" title="有关内容页面的讨论"><svg class="ak-icon"><use href="#i-talk"/></svg><span>讨论</span></a></li>
+            </ul>
+            <ul class="ak-page-tabs" id="p-views">
+              <li class="selected" id="ca-view"><a href="#"><svg class="ak-icon"><use href="#i-book"/></svg><span>阅读</span></a></li>
+              <li id="ca-history"><a href="#" title="该页面过去的修订"><svg class="ak-icon"><use href="#i-history"/></svg><span>查看历史</span></a></li>
+              <li id="ca-edit"><a href="#" title="编辑本页面"><svg class="ak-icon"><use href="#i-edit"/></svg><span>编辑</span></a></li>
+              <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+            </ul>
+            <div class="ak-dropdown ak-page-tools__more">
+              <details>
+                <summary class="ak-page-tools__btn" title="更多"><svg class="ak-icon"><use href="#i-more"/></svg><span>更多</span></summary>
+                <div class="ak-menu ak-menu--right ak-page-tools__card">
+                  <nav class="ak-menu__group" id="p-cactions" aria-label="操作">
+                    <div class="ak-menu__label">操作</div>
+                    <ul>
+                      <li id="ca-move"><a href="#"><svg class="ak-icon"><use href="#i-move"/></svg><span>移动</span></a></li>
+                      <li id="ca-protect"><a href="#"><svg class="ak-icon"><use href="#i-lock"/></svg><span>保护</span></a></li>
+                      <li id="ca-delete"><a href="#"><svg class="ak-icon"><use href="#i-trash"/></svg><span>删除</span></a></li>
+                      <li id="ca-purge"><a href="#"><svg class="ak-icon"><use href="#i-refresh"/></svg><span>刷新</span></a></li>
+                    </ul>
+                  </nav>
+                  <nav class="ak-menu__group" id="p-tb" aria-label="工具">
+                    <div class="ak-menu__label">工具</div>
+                    <ul>
+                      <li id="t-whatlinkshere"><a href="#"><svg class="ak-icon"><use href="#i-linkin"/></svg><span>链入页面</span></a></li>
+                      <li id="t-recentchangeslinked"><a href="#"><svg class="ak-icon"><use href="#i-list"/></svg><span>相关更改</span></a></li>
+                      <li id="t-permalink"><a href="#"><svg class="ak-icon"><use href="#i-link"/></svg><span>固定链接</span></a></li>
+                      <li id="t-info"><a href="#"><svg class="ak-icon"><use href="#i-info"/></svg><span>页面信息</span></a></li>
+                      <li id="t-cargopagevalueslink"><a href="#"><svg class="ak-icon"><use href="#i-table"/></svg><span>Cargo 数据</span></a></li>
+                      <li id="t-cite"><a href="#"><svg class="ak-icon"><use href="#i-quote"/></svg><span>引用此页</span></a></li>
+                      <li id="t-print"><a href="#"><svg class="ak-icon"><use href="#i-print"/></svg><span>打印版本</span></a></li>
+                    </ul>
+                  </nav>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨，<1400 就地变折叠条 -->
+      <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+        <a class="ak-toc__top" href="#"><svg class="ak-icon"><use href="#i-up"/></svg>回到顶部</a>
+        <div class="ak-toc__inner">
+          <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
+          <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
+          <ul class="ak-toc__list" data-auto-toc></ul>
+        </div>
+      </aside>
+
+      <div class="ak-body" id="bodyContent">
+      <div class="mw-body-content mw-parser-output">
+
+<div class="ol ak-not-prose" id="ol" data-no-toggle>
+
+<div class="ol-notes">
+  <div class="ak-cbox ak-cbox--tip"><div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></div><div class="ak-cbox__body">如需了解<b>公招计算</b>，您也可以查阅<a href="#">公招计算</a>页面。</div></div>
+  <div class="ak-cbox ak-cbox--tip"><div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></div><div class="ak-cbox__body">如需了解<b>仅在特殊模式中可选用的专属干员</b>，您也可以查阅<a href="#">干员一览/专属干员</a>页面。</div></div>
+</div>
+
+<noscript><div class="ak-cbox ak-cbox--warning"><div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-warn"/></svg></div><div class="ak-cbox__body">干员列表由脚本生成，需要启用 JavaScript。</div></div></noscript>
+
+<!-- 以下 = Widget 的输出（生产环境挂在 #root 上）。筛选面板与结果由脚本按数据生成；工具条 / 结果栏结构固定，直接写在这里 -->
+<div id="ol-root" hidden>
+
+  <section class="ol-filter" id="ol-filter" aria-label="筛选"></section>
+
+  <div class="ol-toolbar">
+    <label class="ak-search ol-toolbar__search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input" type="search" id="ol-search" placeholder="搜索干员名称 / 代号 / 特性" aria-label="搜索干员名称、代号或特性" autocomplete="off"></label>
+    <div class="ol-field ol-sort">
+      <label for="ol-sort">排序</label>
+      <select class="ak-select" id="ol-sort">
+        <option value="time">实装时间</option><option value="name">名称</option><option value="rarity">稀有度</option>
+        <optgroup label="数值"><option value="hp">生命值</option><option value="atk">攻击力</option><option value="def">防御力</option><option value="res">法术抗性</option><option value="reDeploy">再部署时间</option><option value="cost">部署费用</option><option value="block">阻挡数</option><option value="interval">攻击间隔</option></optgroup>
+      </select>
+      <button type="button" class="ak-btn" id="ol-dir">降序 ↓</button>
+    </div>
+    <div class="ol-field" id="ol-addons" role="group" aria-label="数值加算">数值
+      <label class="ak-switch ak-switch--sm"><input type="checkbox" id="ol-pot">满潜能</label>
+      <label class="ak-switch ak-switch--sm"><input type="checkbox" id="ol-trust">满信赖</label>
+    </div>
+    <div class="ak-btn-group ol-view" id="ol-view" role="group" aria-label="显示方式">
+      <button type="button" class="ak-btn" data-view="0" aria-pressed="true"><svg class="ak-icon"><use href="#i-table"/></svg>表格</button>
+      <button type="button" class="ak-btn" data-view="1" aria-pressed="false"><svg class="ak-icon"><use href="#i-user"/></svg>半身像</button>
+      <button type="button" class="ak-btn" data-view="2" aria-pressed="false"><svg class="ak-icon"><use href="#i-grid"/></svg>头像</button>
+    </div>
+  </div>
+
+  <div class="ol-bar">
+    <div class="ol-bar__count" id="ol-count" role="status"></div>
+    <div class="ol-bar__active ak-tags" id="ol-active"></div>
+    <div class="ol-bar__tools">
+      <button type="button" class="ak-btn ak-btn--sm ak-btn--ghost" id="ol-copy"><svg class="ak-icon"><use href="#i-link"/></svg>复制短链接</button>
+      <select class="ak-select" id="ol-step" aria-label="每页条数"><option value="50">每页 50</option><option value="100">每页 100</option><option value="200">每页 200</option></select>
+      <nav class="ak-pagination ol-pager" aria-label="分页"></nav>
+    </div>
+  </div>
+
+  <div id="ol-result"></div>
+
+  <div class="ol-foot"><nav class="ak-pagination ol-pager" aria-label="分页（底部）"></nav></div>
+</div>
+
+</div>
+
+<script>
+/* 干员一览脚本——prts-widgets CharList Widget 的替身：数据、筛选逻辑、地址栏 # 参数都照它（src/widgets/CharList/index.vue），只有输出的结构是新的。
+ * 生产环境这段不存在：Widget 用 Vue + @mooncellwiki/prts-design-vue 输出同样的结构。 */
+(function () {
+  'use strict';
+  const D = window.PRTS_CHARLIST, root = document.getElementById('ol-root');
+  if (!D || !root) return;
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const WIKI = 'https://prts.wiki/w/', MEDIA = 'https://media.prts.wiki/';
+  const media = (m, file) => MEDIA + m[0] + '/' + m + '/' + encodeURIComponent(file);   // 同 Widget 的 getImagePath：文件名 md5 的前两位（快照里已算好）
+  const PROF = { 先锋: 'pioneer', 近卫: 'warrior', 重装: 'tank', 狙击: 'sniper', 术师: 'caster', 医疗: 'medic', 辅助: 'support', 特种: 'special' };
+  const SUB = {"尖兵": "pioneer", "冲锋手": "charger", "战术家": "tactician", "执旗手": "bearer", "情报官": "agent", "策士": "counsellor", "强攻手": "centurion", "斗士": "fighter", "术战者": "artsfghter", "教官": "instructor", "领主": "lord", "剑豪": "sword", "武者": "musha", "无畏者": "fearless", "收割者": "reaper", "解放者": "librator", "重剑手": "crusher", "撼地者": "hammer", "本源近卫": "primguard", "佣兵": "mercenary", "铁卫": "protector", "守护者": "guardian", "不屈者": "unyield", "驭法铁卫": "artsprotector", "决战者": "duelist", "要塞": "fortress", "哨戒铁卫": "shotprotector", "本源铁卫": "primprotector", "速射手": "fastshot", "重射手": "closerange", "炮手": "aoesniper", "神射手": "longrange", "散射手": "reaperrange", "攻城手": "siegesniper", "投掷手": "bombarder", "猎手": "hunter", "回环射手": "loopshooter", "裂空炮手": "skybreaker", "中坚术师": "corecaster", "扩散术师": "splashcaster", "驭械术师": "funnel", "阵法术师": "phalanx", "秘术师": "mystic", "链术师": "chain", "轰击术师": "blastcaster", "本源术师": "primcaster", "塑灵术师": "soulcaster", "医师": "physician", "群愈师": "ringhealer", "疗养师": "healer", "行医": "wandermedic", "咒愈师": "incantationmedic", "链愈师": "chainhealer", "守望者": "watchman", "凝滞师": "slower", "削弱者": "underminer", "吟游者": "bard", "护佑者": "blessing", "召唤师": "summoner", "工匠": "craftsman", "巫役": "ritualist", "游击手": "supportiveranger", "处决者": "executor", "推击手": "pusher", "伏击客": "stalker", "钩索师": "hookmaster", "怪杰": "geek", "行商": "merchant", "陷阱师": "traper", "傀儡师": "dollkeeper", "炼金师": "alchemist", "巡空者": "skywalker"};   // 分支 → 游戏里的 subProfessionId（uniequip_table.subProfDict），只用来取图标
+  const LIVE_SORT = { time: 0, name: 2, rarity: 4 };   // 现网 _o 的编号：实装顺序 0 / 倒序 1、名称升 2 / 降 3、稀有度升 4 / 降 5
+  const FIRST_DIR = k => (k === 'name' ? 1 : -1);   // 选中一种排序时先给的方向：名称升序，其余降序（新的 / 高的在前）
+  const COLS = [['hp', '生命', '生命值'], ['atk', '攻击', '攻击力'], ['def', '防御', '防御力'], ['res', '法抗', '法术抗性'], ['reDeploy', '再部署', '再部署时间'], ['cost', '费用', '部署费用'], ['block', '阻挡', '阻挡数'], ['interval', '间隔', '攻击间隔']];
+  /* 筛选项怎么摆（筛选项本身、字段名都来自数据 #filter-filter，这里只管归类）：QUICK 一直在；其余进「高级筛选」，按类分页签。数据里新增了这里没列的字段 → 落到第一个页签 */
+  const QUICK = ['profession', 'subProfession', 'rarity', 'position'];
+  const ADV = [
+    { id: 'trait', title: '词缀 · 获取', fields: ['tag', 'obtainMethod', 'sex'] },
+    { id: 'six', title: '六维', fields: ['phy', 'flex', 'tolerance', 'plan', 'skill', 'adapt'] },
+    { id: 'force', title: '势力', fields: ['force'], find: true },
+    { id: 'birth', title: '出身地', fields: ['birthPlace'], find: true },
+    { id: 'race', title: '种族', fields: ['race'], find: true },
+  ];
+  const ADV_KEY = 'olFilterAdvanced';   // 高级筛选开没开、停在哪个页签
+  const chars = D.chars;
+
+  /* ── 状态 ── */
+  const filters = D.filters.flatMap((g, gi) => g.filter.map(f => ({
+    title: f.title, field: f.field, gi, canAnd: f.both, and: false, sel: new Set(),
+    labels: f.cbt.map(o => (typeof o === 'string' ? o : o.label)),
+    values: new Map(f.cbt.map(o => (typeof o === 'string' ? [o, [o]] : [o.label, o.value]))),
+    hasOther: f.cbt.includes('其他'),
+  })));
+  const byField = Object.fromEntries(filters.map(f => [f.field, f]));
+  const profOrder = byField.profession.labels;
+  const branchProf = new Map(chars.map(c => [c.subProfession, c.profession]));   // 分支 → 职业，从数据里推
+  const state = { q: '', sort: { key: 'time', dir: -1 }, pot: false, trust: false, view: 0, page: 1, step: 50, compact: false };
+  const listed = new Set(QUICK.concat(ADV.flatMap(t => t.fields)));
+  ADV[0].fields.push(...filters.map(f => f.field).filter(k => !listed.has(k)));
+  const adv = { open: false, tab: ADV[0].id };
+  try { const s = JSON.parse(localStorage.getItem(ADV_KEY)); if (s && ADV.some(t => t.id === s.tab)) Object.assign(adv, { open: !!s.open, tab: s.tab }); } catch (e) {}
+
+  /* ── 筛选逻辑（照 Widget 的 predicate）── */
+  function match(f, c, sel, and) {
+    const value = c[f.field], labels = Array.from(sel);
+    const range = labels.flatMap(l => f.values.get(l) || []);
+    if (and) return range.every(k => value.includes(k));
+    if (!range.length) return true;
+    if (f.field === 'rarity') return sel.has('★' + (c.rarity + 1));
+    if (f.field === 'sex') return sel.has(c.sex + '性') || (sel.has('其他') && c.sex !== '男' && c.sex !== '女');
+    const hit = Array.isArray(value) ? range.some(v => value.includes(v)) : range.includes(value);
+    if (hit || !(f.hasOther && sel.has('其他'))) return hit;
+    const known = new Set(Array.from(f.values.values()).flat());   // 「其他」= 值不在本行任何选项里
+    return Array.isArray(value) ? value.some(v => !known.has(v)) : !known.has(value);
+  }
+  const needle = () => state.q.trim().toLowerCase();
+  const matchText = (c, q) => !q || [c.zh, c.en, c.ja, c.id, c.plainFeature].some(t => t.toLowerCase().includes(q));
+  const pass = (c, skip) => filters.every(f => f === skip || match(f, c, f.sel, f.and));
+
+  /* ── 数值：满潜能 / 满信赖加算（照 Widget 的 useChar）── */
+  function stats(c) {
+    const pot = key => (state.pot ? c.potential.reduce((s, p) => s + (p.type === key ? p.value : 0), 0) : 0);
+    const tr = i => (state.trust ? c.trust[i] || 0 : 0);
+    const rd = Number.parseInt(c.reDeploy);
+    const s = { hp: c.hp + tr(0) + pot('hp'), atk: c.atk + tr(1) + pot('atk'), def: c.def + tr(2) + pot('def'), res: c.res + pot('res'), cost: c.cost + pot('cost'),
+      reDeploy: Number.isNaN(rd) ? c.reDeploy : rd + pot('re_deploy') + 's', block: c.block, interval: c.interval };
+    s.mod = { hp: s.hp !== c.hp, atk: s.atk !== c.atk, def: s.def !== c.def, res: s.res !== c.res, cost: s.cost !== c.cost, reDeploy: s.reDeploy !== c.reDeploy };
+    return s;
+  }
+  const num = v => { const n = Number.parseFloat(v); return Number.isNaN(n) ? null : n; };
+  const unit = v => esc(v).replace(/^([\d.]+)s$/, '$1<small>s</small>');
+
+  /* ── 排序 = 排序项 × 升降（state.sort = { key, dir }）──
+   *  现网六种 = 实装时间 / 名称 / 稀有度 × 升降；八项数值是照游戏干员列表加的（CharacterSortType：BY_HP / ATK / DEF / RES / COST / RESPAWN / BLOCKNUM / ATKSPEED 各有 UP / DOWN）。
+   *  同值时的次序也照游戏（CharacterUtil._CompareByChain → COMPARE_PRIORITY）：稀有度高的在前 → 职业（先锋 近卫 重装 狙击 术师 医疗 辅助 特种）→ 名称。 */
+  const isStat = k => COLS.some(c => c[0] === k);
+  const byName = (a, b) => a.zh.localeCompare(b.zh, 'zh');
+  const byProf = (a, b) => profOrder.indexOf(a.profession) - profOrder.indexOf(b.profession);
+  function sorted(list) {
+    const { key, dir } = state.sort, out = list.slice();
+    if (key === 'time') return out.sort((a, b) => (a.sortId - b.sortId) * dir);
+    if (key === 'name') return out.sort((a, b) => byName(a, b) * dir);
+    if (key === 'rarity') return out.sort((a, b) => (a.rarity - b.rarity) * dir || byProf(a, b) || byName(a, b));
+    const val = new Map(out.map(c => [c, num(stats(c)[key])]));
+    return out.sort((a, b) => { const x = val.get(a), y = val.get(b); return (x === null || y === null ? (x === null) - (y === null) : (x - y) * dir) || b.rarity - a.rarity || byProf(a, b) || byName(a, b); });
+  }
+
+  /* ── 地址栏 # 参数（写法同现网：职业=1-近卫;狙击、_s 搜索、_o 排序、_f 加算、_d 显示方式；0- = 同时满足）── */
+  function readHash() {
+    filters.forEach(f => { f.sel.clear(); f.and = false; });
+    Object.assign(state, { q: '', sort: { key: 'time', dir: -1 }, pot: false, trust: false, view: 0 });
+    for (const [k, v] of new URLSearchParams(location.hash.slice(1))) {
+      if (k === '_s') state.q = v;
+      else if (k === '_o') { const m = /^(\w+)-([ad])$/.exec(v), live = Object.keys(LIVE_SORT).find(n => LIVE_SORT[n] === (+v & ~1)); if (m && isStat(m[1])) state.sort = { key: m[1], dir: m[2] === 'a' ? 1 : -1 }; else if (live && +v < 6) state.sort = { key: live, dir: +v & 1 ? -1 : 1 }; }
+      else if (k === '_f') { state.pot = v.includes('p'); state.trust = v.includes('t'); }
+      else if (k === '_d') state.view = [0, 1, 2].includes(+v) ? +v : 0;
+      else if (byField[k]) {
+        const f = byField[k]; f.and = f.canAnd && v[0] === '0';
+        v.slice(2).split(';').forEach(l => { if (k === 'rarity') l = '★' + l; if (f.values.has(l)) f.sel.add(l); });
+      }
+    }
+  }
+  function writeHash() {
+    const p = new URLSearchParams();
+    filters.forEach(f => { if (f.sel.size) p.set(f.field, (f.and ? '0-' : '1-') + f.labels.filter(l => f.sel.has(l)).map(l => l.replace('★', '')).join(';')); });
+    if (state.q) p.set('_s', state.q);
+    const so = state.sort, o = so.key in LIVE_SORT ? String(LIVE_SORT[so.key] + (so.dir < 0 ? 1 : 0)) : so.key + '-' + (so.dir > 0 ? 'a' : 'd');   // 数值列排序是新加的，现网不认（会退回不排序）
+    if (o !== '1') p.set('_o', o);
+    if (state.pot || state.trust) p.set('_f', (state.pot ? 'p' : '') + (state.trust ? 't' : ''));
+    if (state.view) p.set('_d', String(state.view));
+    const h = p.toString();
+    if (h !== location.hash.slice(1)) history.replaceState(null, '', h ? '#' + h : location.pathname + location.search);
+  }
+
+  /* ── 筛选面板 ── */
+  const chip = (fi, label, inner, cls) => `<button type="button" class="ak-chip${cls ? ' ' + cls : ''}" data-f="${fi}" data-o="${esc(label)}" aria-pressed="false">${inner}</button>`;
+  const profIco = p => `<i class="ol-ico" data-prof="${PROF[p] || ''}" aria-hidden="true"></i>`;
+  const subIco = l => (SUB[l] ? `<i class="ol-ico" data-sub="${SUB[l]}" aria-hidden="true"></i>` : '');
+  function optionsHtml(f, fi) {
+    if (f.field === 'profession') return f.labels.map(l => chip(fi, l, profIco(l) + esc(l))).join('');
+    if (f.field === 'rarity') return f.labels.map(l => `<span data-rarity="${l.slice(1)}" style="display:contents">${chip(fi, l, `<i class="ol-star" aria-hidden="true"></i>${l.slice(1)}<span class="ak-sr-only">星</span>`, 'ol-chip--rarity')}</span>`).join('');
+    if (f.field === 'subProfession') return profOrder.map(p => `<div class="ol-branch" data-prof="${esc(p)}" role="group" aria-label="${esc(p)}分支"><span class="ol-branch__prof" title="${esc(p)}">${profIco(p)}</span><div class="ol-branch__list">${f.labels.filter(l => branchProf.get(l) === p).map(l => chip(fi, l, subIco(l) + esc(l))).join('')}</div></div>`).join('')
+      + f.labels.filter(l => !branchProf.has(l)).map(l => chip(fi, l, subIco(l) + esc(l))).join('');   // 数据里还没有干员的分支：不归组，排在最后
+    return f.labels.map(l => chip(fi, l, esc(l))).join('');
+  }
+  const fi = k => filters.indexOf(byField[k]);
+  const rowHtml = (k, extra) => { const f = byField[k], i = fi(k); return !f ? '' : `<div class="ol-row" data-f="${i}" data-box="${i}" role="group" aria-labelledby="ol-row-${i}">
+        <div class="ol-row__label"><span id="ol-row-${i}">${esc(f.title)}</span>${f.canAnd ? `<label class="ak-switch ak-switch--sm"><input type="checkbox" data-and="${i}">同时满足</label>` : ''}<button type="button" class="ol-row__clear" data-clear="${i}" aria-label="清除「${esc(f.title)}」的选择">清除</button></div>
+        <div class="ol-row__opts">${optionsHtml(f, i)}${extra || ''}</div></div>`; };
+  const inlineHtml = k => { const f = byField[k], i = fi(k); return !f ? '' : `<span class="ol-inline" data-box="${i}" role="group" aria-labelledby="ol-row-${i}"><span class="ol-inline__label" id="ol-row-${i}">${esc(f.title)}</span>${optionsHtml(f, i)}</span>`; };
+  function renderFilters() {
+    $('#ol-filter').innerHTML = `<div class="ol-rows">
+        ${rowHtml('profession', '<span class="ol-hint" id="ol-branch-hint">选了职业可再选分支</span>')}${rowHtml('subProfession')}${rowHtml('rarity', inlineHtml('position'))}
+      </div>
+      <button type="button" class="ol-more" id="ol-more" aria-expanded="${adv.open}" aria-controls="ol-adv"><span>高级筛选</span><span class="ak-en">Advanced</span><span class="ol-more__count ak-tag ak-tag--sm ak-tag--accent-soft"></span><span class="ol-more__what">${ADV.map(t => esc(t.id === 'trait' ? t.fields.map(k => byField[k] ? byField[k].title : '').filter(Boolean).join(' · ') : t.title)).join(' · ')}</span></button>
+      <div class="ol-adv" id="ol-adv"${adv.open ? '' : ' hidden'}>
+        <div class="ak-tabs ak-tabs--vertical ol-adv__tabs" role="tablist" aria-label="高级筛选分类" aria-orientation="vertical">${ADV.map(t => `<button type="button" class="ak-tab${t.id === adv.tab ? ' is-active' : ''}" role="tab" id="ol-tab-${t.id}" data-tab="${t.id}" aria-selected="${t.id === adv.tab}" aria-controls="ol-panel-${t.id}" tabindex="${t.id === adv.tab ? 0 : -1}">${esc(t.title)}<small></small></button>`).join('')}</div>
+        ${ADV.map(t => `<div class="ol-adv__panel" role="tabpanel" id="ol-panel-${t.id}" data-tab="${t.id}" aria-labelledby="ol-tab-${t.id}"${t.id === adv.tab ? '' : ' hidden'}>
+          ${t.find ? `<label class="ak-search ol-adv__find"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input ak-input--sm" type="search" data-find placeholder="在 ${byField[t.fields[0]].labels.length} 个${esc(t.title)}里找…" aria-label="在${esc(t.title)}选项里查找" autocomplete="off"></label>` : ''}
+          <div class="ol-rows">${t.fields.map(k => rowHtml(k)).join('')}</div>
+          ${t.find ? '<p class="ol-adv__none" hidden>没有叫这个的选项。</p>' : ''}
+        </div>`).join('')}
+      </div>`;
+  }
+  function setAdv(next) {
+    Object.assign(adv, next);
+    try { localStorage.setItem(ADV_KEY, JSON.stringify(adv)); } catch (e) {}
+    $('#ol-more').setAttribute('aria-expanded', adv.open); $('#ol-adv').hidden = !adv.open;
+    $$('.ol-adv__tabs .ak-tab').forEach(b => { const on = b.dataset.tab === adv.tab; b.classList.toggle('is-active', on); b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
+    $$('.ol-adv__panel').forEach(p => { p.hidden = p.dataset.tab !== adv.tab; });
+  }
+  /* 「找选项」：只留名字里含这几个字的芯片（已选的一直留着） */
+  function findOptions(input) {
+    const panel = input.closest('.ol-adv__panel'), q = input.value.trim().toLowerCase();
+    let shown = 0;
+    $$('.ak-chip', panel).forEach(b => { b.hidden = !!q && b.getAttribute('aria-pressed') !== 'true' && !b.dataset.o.toLowerCase().includes(q); if (!b.hidden) shown++; });
+    $('.ol-adv__none', panel).hidden = shown > 0;
+  }
+  /* 职业与分支是「且」：选了职业，别的职业的分支组收起，里面已选的一并取消 */
+  function normalize() {
+    const prof = byField.profession.sel, br = byField.subProfession;
+    if (prof.size) br.sel.forEach(l => { if (branchProf.has(l) && !prof.has(branchProf.get(l))) br.sel.delete(l); });
+  }
+  function updateFilters() {
+    const q = needle(), prof = byField.profession.sel;
+    filters.forEach((f, i) => {
+      const box = $(`[data-box="${i}"]`); if (!box) return;
+      box.classList.toggle('has-active', f.sel.size > 0);
+      const and = $('[data-and]', box); if (and) and.checked = f.and;
+      const others = chars.filter(c => matchText(c, q) && pass(c, f));   // 其余条件都满足的干员：再点这一项还剩不剩
+      $$(`.ak-chip[data-f="${i}"]`, box).forEach(b => {
+        const l = b.dataset.o, on = f.sel.has(l);
+        b.setAttribute('aria-pressed', on);
+        b.classList.toggle('is-empty', !on && !others.some(c => match(f, c, f.and ? new Set([...f.sel, l]) : new Set([l]), f.and)));
+      });
+    });
+    /* 分支行：选了职业才出现，只列那几个职业的分支。没选职业却带着分支（现网的短链接可以这样）时整行照出，不然那个条件看不见也取消不了 */
+    const br = byField.subProfession, brRow = $(`.ol-row[data-f="${fi('subProfession')}"]`);
+    brRow.hidden = !prof.size && !br.sel.size;
+    $('#ol-branch-hint').hidden = !brRow.hidden;
+    $$('.ol-branch').forEach(g => { g.hidden = prof.size > 0 && !prof.has(g.dataset.prof); });
+    let total = 0;
+    ADV.forEach(t => { const n = t.fields.reduce((s, k) => s + (byField[k] ? byField[k].sel.size : 0), 0); total += n; $(`#ol-tab-${t.id} small`).textContent = n || ''; });
+    $('#ol-more').classList.toggle('has-active', total > 0); $('.ol-more__count').textContent = total ? '已选 ' + total : '';
+    $$('[data-find]').forEach(findOptions);
+  }
+
+  /* ── 结果 ── */
+  const stars = r => `<span class="ak-rarity" role="img" aria-label="${r + 1} 星">${'<i></i>'.repeat(r + 1)}</span>`;
+  const profBox = (c, cls) => (PROF[c.profession] ? `<i class="ol-prof-box${cls ? ' ' + cls : ''}" data-prof="${PROF[c.profession]}" role="img" aria-label="${esc(c.profession)}"></i>` : '');
+  const img = (src, w, h) => `<img src="${src}" alt="" width="${w}" height="${h}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+  const avatar = c => `<a class="ol-avatar" href="${WIKI + encodeURIComponent(c.zh)}" data-rarity="${c.rarity + 1}" tabindex="-1" aria-hidden="true">${img(media(c.am, `头像_${c.zh}.png`), 48, 48)}${profBox(c, 'ol-avatar__prof')}</a>`;
+  const ident = c => `<a class="ol-name" href="${WIKI + encodeURIComponent(c.zh)}">${esc(c.zh)}</a><span class="ol-sub" lang="en">${esc(c.en)}${c.ja && c.ja !== c.en ? ` · <span lang="ja">${esc(c.ja)}</span>` : ''}</span>`;
+  const idLine = c => `<span class="ol-sub ol-sub--id" data-rarity="${c.rarity + 1}">${stars(c.rarity)}${esc(c.id)}</span>`;
+  const tags = c => (c.tag.length ? `<span class="ak-tags">${c.tag.map(t => `<span class="ak-tag ak-tag--sm ak-tag--outline">${esc(t)}</span>`).join('')}</span>` : '');
+  const origin = c => [c.birthPlace, c.race.join(' / ')].filter(Boolean).map(esc).join(' · ');
+  const sortKey = () => (isStat(state.sort.key) ? state.sort.key : null);
+
+  function tableHtml(list) {
+    const sk = sortKey();
+    const th = COLS.map(([key, short, full], i) => `<th scope="col" class="num${i % 4 ? '' : ' ol-sep'}" title="${full}"${sk === key ? ` aria-sort="${state.sort.dir > 0 ? 'ascending' : 'descending'}"` : ''}><button type="button" class="ak-table__sort" data-sort="${key}">${short}</button></th>`).join('');
+    const rows = list.map(c => {
+      const s = stats(c);
+      const td = COLS.map(([key], i) => `<td class="num${i % 4 ? '' : ' ol-sep'}${s.mod[key] ? ' is-mod' : ''}${sk === key ? ' is-sorted' : ''}" rowspan="1">${unit(s[key])}</td>`).join('');
+      return `<tbody class="ol-op"><tr>
+        <td class="ol-c-avatar" rowspan="2">${avatar(c)}</td>
+        <th scope="row" class="ol-c-name" rowspan="2">${ident(c)}${idLine(c)}</th>
+        <td><span class="ol-branchname">${subIco(c.subProfession)}<span class="ol-strong">${esc(c.subProfession)}</span></span><span class="ol-sub">${esc(c.position)}${c.sex ? ' · ' + esc(c.sex) : ''}</span></td>${td}
+        <td class="ol-sep">${esc(c.force.join(' · '))}<span class="ol-sub">${origin(c)}</span></td>
+        <td class="ol-c-tags">${tags(c)}</td>
+      </tr><tr>
+        <td colspan="9" class="ol-feature" aria-label="特性">${c.feature}</td>
+        <td colspan="2" class="ol-obtain ol-sep" aria-label="获取方式">${c.obtainMethod.map(esc).join(' · ')}</td>
+      </tr></tbody>`;
+    }).join('');
+    return `<table class="ak-table ol-table"><colgroup><col style="width:64px"><col style="width:16%"><col style="width:10.5%">${'<col style="width:5.1%">'.repeat(8)}<col style="width:15%"><col></colgroup>
+      <thead><tr><th scope="col"><span class="ak-sr-only">头像</span></th><th scope="col"${state.sort.key === 'name' ? ` aria-sort="${state.sort.dir > 0 ? 'ascending' : 'descending'}"` : ''}><button type="button" class="ak-table__sort" data-sort="name">干员</button></th><th scope="col">分支 / 特性</th>${th}<th scope="col" class="ol-sep">势力 / 获取</th><th scope="col">标签</th></tr></thead>${rows}</table>`;
+  }
+  function cardsHtml(list) {
+    return `<div class="ol-cards">${list.map(c => {
+      const s = stats(c);
+      return `<article class="ol-card" data-rarity="${c.rarity + 1}">
+        <div class="ol-card__head">${avatar(c)}<div class="ol-card__id">${ident(c)}<span class="ol-sub">${esc(c.subProfession)} · ${esc(c.position)}${c.sex ? ' · ' + esc(c.sex) : ''}</span>${idLine(c)}</div></div>
+        ${tags(c)}
+        <dl class="ol-card__stats">${COLS.map(([key, short]) => `<div${sortKey() === key ? ' class="is-sorted"' : ''}><dt>${short}</dt><dd${s.mod[key] ? ' class="is-mod"' : ''}>${unit(s[key])}</dd></div>`).join('')}</dl>
+        <p class="ol-feature">${c.feature}</p>
+        <p class="ol-obtain">${[c.force.join(' · '), origin(c)].filter(Boolean).map(x => (x === origin(c) ? x : esc(x))).join(' · ')}${c.obtainMethod.length ? '<br>' + c.obtainMethod.map(esc).join(' · ') : ''}</p>
+      </article>`;
+    }).join('')}</div>`;
+  }
+  const opCard = (c, half) => `<a class="ak-op-card${half ? '' : ' ak-op-card--sm'}" href="${WIKI + encodeURIComponent(c.zh)}" data-rarity="${c.rarity + 1}"><span class="ak-op-card__portrait">${half ? img(media(c.hm, `半身像_${c.zh}_1.png`), 180, 360) : img(media(c.am, `头像_${c.zh}.png`), 180, 180)}<span class="ak-op-card__rarity">${stars(c.rarity)}</span>${sortKey() ? `<span class="ak-op-card__badge ol-sortinfo">${unit(stats(c)[sortKey()])}</span>` : ''}<span class="ak-op-card__prof">${profBox(c)}</span></span><span class="ak-op-card__name">${esc(c.zh)}${half ? `<span class="ak-op-card__sub" lang="en">${esc(c.en)}</span>` : ''}</span></a>`;
+  const gridHtml = (list, half) => `<div class="ak-op-grid ol-grid ol-grid--${half ? 'half' : 'avatar'}">${list.map(c => opCard(c, half)).join('')}</div>`;
+  const emptyHtml = () => `<div class="ak-empty"><svg class="ak-empty__icon"><use href="#i-empty"/></svg><p class="ak-empty__title">没有符合条件的干员</p><p>放宽几项筛选条件，或者<button type="button" class="ak-btn ak-btn--link" data-reset>清除全部条件</button>。</p></div>`;
+
+  function pagerHtml(pages) {
+    const p = state.page, items = [];
+    const btn = (n, label, extra) => `<button type="button" class="ak-pagination__item${extra || ''}" data-page="${n}"${n === p && !label ? ' aria-current="page"' : ''}${label ? ` aria-label="${label}"` : ''}>${label ? `<svg class="ak-icon"><use href="#i-chevron-${label === '上一页' ? 'left' : 'right'}"/></svg>` : n}</button>`;
+    items.push(btn(Math.max(1, p - 1), '上一页', p === 1 ? ' is-disabled' : ''));
+    let prev = 0;
+    for (let n = 1; n <= pages; n++) {
+      if (n !== 1 && n !== pages && Math.abs(n - p) > 1 && !(p <= 3 && n <= 4) && !(p >= pages - 2 && n >= pages - 3)) continue;
+      if (n - prev > 1) items.push('<span class="ak-pagination__ellipsis">…</span>');
+      items.push(btn(n, '', n === p ? ' is-active' : '')); prev = n;
+    }
+    items.push(btn(Math.min(pages, p + 1), '下一页', p === pages ? ' is-disabled' : ''));
+    return pages > 1 ? items.join('') : '';
+  }
+  function renderActive() {
+    const out = [];
+    if (state.q) out.push(`<span class="ak-tag">搜索：${esc(state.q)}<button type="button" class="ak-tag__remove" data-unq aria-label="清除搜索">×</button></span>`);
+    filters.forEach((f, fi) => f.labels.forEach(l => { if (f.sel.has(l)) out.push(`<span class="ak-tag">${esc(f.title)}${f.and ? '（同时）' : ''}：${esc(l)}<button type="button" class="ak-tag__remove" data-f="${fi}" data-o="${esc(l)}" aria-label="移除「${esc(f.title)}：${esc(l)}」">×</button></span>`); }));
+    if (out.length > 1) out.push('<button type="button" class="ak-btn ak-btn--link ak-btn--xs" data-reset>清除全部</button>');
+    $('#ol-active').innerHTML = out.join('');
+  }
+  function renderResults() {
+    const q = needle();
+    const list = sorted(chars.filter(c => matchText(c, q) && pass(c)));
+    const pages = Math.max(1, Math.ceil(list.length / state.step));
+    state.page = Math.min(Math.max(1, state.page), pages);
+    const slice = list.slice((state.page - 1) * state.step, state.page * state.step);
+    $('#ol-count').innerHTML = list.length === chars.length ? `共 <b>${chars.length}</b> 位干员` : `<b>${list.length}</b> / ${chars.length} 位干员`;
+    $('#ol-result').innerHTML = !list.length ? emptyHtml() : state.view === 1 ? gridHtml(slice, true) : state.view === 2 ? gridHtml(slice, false) : state.compact ? cardsHtml(slice) : tableHtml(slice);
+    $$('.ol-pager').forEach(n => { n.innerHTML = pagerHtml(pages); });
+    renderActive();
+  }
+  function renderControls() {
+    const dir = $('#ol-dir'), down = state.sort.dir < 0;
+    $('#ol-sort').value = state.sort.key;
+    dir.textContent = down ? '降序 ↓' : '升序 ↑'; dir.setAttribute('aria-label', '排序方向：' + (down ? '降序' : '升序') + '，点击切换');
+    $('#ol-search').value = state.q; $('#ol-pot').checked = state.pot; $('#ol-trust').checked = state.trust; $('#ol-step').value = String(state.step);
+    $$('#ol-view > button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.view === state.view));
+    $('#ol-addons').hidden = state.view !== 0 && !sortKey();   // 半身像 / 头像不显示数值，加算开关只在按数值排序时还有用
+  }
+  function update(keepPage) {
+    if (!keepPage) state.page = 1;
+    normalize(); updateFilters(); renderControls(); renderResults(); writeHash();
+  }
+  const reset = () => { filters.forEach(f => { f.sel.clear(); f.and = false; }); state.q = ''; update(); };
+
+  /* ── 事件 ── */
+  root.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t || !root.contains(t)) return;
+    if (t.id === 'ol-more') setAdv({ open: !adv.open });
+    else if (t.matches('.ol-adv__tabs .ak-tab')) setAdv({ tab: t.dataset.tab });
+    else if (t.matches('.ak-chip, .ak-tag__remove[data-f]')) { const f = filters[+t.dataset.f], l = t.dataset.o; f.sel.has(l) ? f.sel.delete(l) : f.sel.add(l); update(); }
+    else if (t.dataset.clear) { const f = filters[+t.dataset.clear]; f.sel.clear(); update(); }
+    else if ('unq' in t.dataset) { state.q = ''; update(); }
+    else if ('reset' in t.dataset) reset();
+    else if (t.dataset.view) { state.view = +t.dataset.view; update(true); }
+    else if (t.dataset.sort) { const k = t.dataset.sort, s = state.sort; state.sort = s.key !== k ? { key: k, dir: FIRST_DIR(k) } : s.dir === FIRST_DIR(k) ? { key: k, dir: -s.dir } : { key: 'time', dir: -1 }; update(); }   // 点表头：先排 → 反向 → 回到默认（实装倒序）
+    else if (t.id === 'ol-dir') { state.sort = { key: state.sort.key, dir: -state.sort.dir }; update(); }
+    else if (t.dataset.page) {
+      state.page = +t.dataset.page; update(true);
+      if (t.closest('.ol-foot')) $('#ol-result').scrollIntoView({ block: 'start' });   // 在底部翻页：回到结果开头
+    }
+    else if (t.id === 'ol-copy') {
+      const url = 'https://prts.wiki/w/CHAR' + location.hash;   // 现网的短链接入口
+      const done = () => window.akdsToast && window.akdsToast(esc(decodeURIComponent(url)), 'success', '链接已复制');
+      navigator.clipboard ? navigator.clipboard.writeText(url).then(done, () => {}) : done();
+    }
+  });
+  root.addEventListener('change', e => {
+    const t = e.target;
+    if (t.dataset.and) { filters[+t.dataset.and].and = t.checked; update(); }
+    else if (t.id === 'ol-sort') { state.sort = { key: t.value, dir: FIRST_DIR(t.value) }; update(); }
+    else if (t.id === 'ol-pot') { state.pot = t.checked; update(true); }
+    else if (t.id === 'ol-trust') { state.trust = t.checked; update(true); }
+    else if (t.id === 'ol-step') { const first = (state.page - 1) * state.step; state.step = +t.value; state.page = Math.floor(first / state.step) + 1; update(true); }   // 换每页条数：停在原来第一条所在的页
+  });
+  $('#ol-search').addEventListener('input', e => { state.q = e.target.value; state.page = 1; updateFilters(); renderResults(); writeHash(); });
+  root.addEventListener('input', e => { if ('find' in e.target.dataset) findOptions(e.target); });
+  root.addEventListener('keydown', e => {   // 页签：上下 / 左右键在页签间移动（WAI-ARIA Tabs）
+    const t = e.target.closest('.ol-adv__tabs .ak-tab'), d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+    if (!t || !d) return;
+    const tabs = $$('.ol-adv__tabs .ak-tab'), next = tabs[(tabs.indexOf(t) + d + tabs.length) % tabs.length];
+    e.preventDefault(); setAdv({ tab: next.dataset.tab }); next.focus();
+  });
+  root.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);   // 头像 / 半身像取不到（离线）：留下深色底框
+  window.addEventListener('hashchange', () => { readHash(); update(); });
+
+  /* 术语提示：.ak-tooltip 挂到 body，贴在术语上方（放不下就放下方），左右不出视口 */
+  let tip = null;
+  const hideTip = () => { if (tip) { tip.remove(); tip = null; } };
+  const showTip = el => {
+    hideTip();
+    tip = document.createElement('div'); tip.className = 'ak-tooltip ol-tip'; tip.setAttribute('role', 'tooltip'); tip.textContent = el.dataset.tip; document.body.appendChild(tip);
+    const r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.round(Math.min(Math.max(8, r.left + r.width / 2 - w / 2), document.documentElement.clientWidth - w - 8)) + 'px';
+    tip.style.top = Math.round(r.top - h - 6 < 8 ? r.bottom + 6 : r.top - h - 6) + 'px';
+  };
+  ['mouseover', 'focusin'].forEach(ev => root.addEventListener(ev, e => { const t = e.target.closest('.ak-term[data-tip]'); if (t) showTip(t); }));
+  ['mouseout', 'focusout'].forEach(ev => root.addEventListener(ev, e => { if (e.target.closest('.ak-term[data-tip]')) hideTip(); }));
+  window.addEventListener('scroll', hideTip, { passive: true });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+
+  /* 表格 ↔ 卡片：看结果区自己的宽度，不看视口（侧栏收起 / 展开都会改变它） */
+  const fit = () => { const c = root.clientWidth < 1000; if (c !== state.compact) { state.compact = c; return true; } return false; };
+
+  root.hidden = false;
+  readHash(); renderFilters(); fit(); update();
+  if (window.ResizeObserver) new ResizeObserver(() => { if (fit() && state.view === 0) renderResults(); }).observe(root);
+})();
+</script>
+
+
+      </div><!-- /.mw-body-content -->
+      <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2025年3月1日 (六) 00:06。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
+      </div><!-- /.ak-body -->
+      <div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="#" title="特殊:页面分类">分类</a>：​<ul></ul></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="ak-footer">
+  <div class="ak-footer__inner">
+    <div class="ak-footer__brand"><span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span><p>玩家自建的明日方舟中文维基。本站与上海鹰角网络科技有限公司无隶属关系。游戏内素材版权归鹰角网络所有。</p></div>
+    <div class="ak-footer__col"><h4>浏览</h4><ul><li><a href="#">干员</a></li><li><a href="#">敌人</a></li><li><a href="#">关卡</a></li><li><a href="#">道具</a></li></ul></div>
+    <div class="ak-footer__col"><h4>参与</h4><ul><li><a href="#">编辑指南</a></li><li><a href="#">模板文档</a></li><li><a href="#">最近更改</a></li><li><a href="#">社区门户</a></li></ul></div>
+    <div class="ak-footer__col"><h4>关于</h4><ul><li><a href="#">关于 PRTS</a></li><li><a href="#">免责声明</a></li><li><a href="#">隐私政策</a></li><li><a href="#">API</a></li></ul></div>
+  </div>
+  <!-- 底栏：左文字 + 右侧 $wgFooterIcons 徽章（结构与 prts.wiki 现网 #footer-icons 完全一致，含 MW 加的 cdx-button 假按钮类与站点配置里的内联 margin） -->
+  <div class="ak-footer__bottom">
+    <div class="ak-footer__bottom-text"><span>© 2019–2026 PRTS.wiki · 文本 CC BY-NC-SA 4.0</span><span class="ak-en">Skin Arknights · MediaWiki 1.43</span></div>
+    <ul class="ak-footer__icons noprint" id="footer-icons">
+      <!-- 顺序 = $wgFooterIcons 的键序：站点徽章（原图）在前，通用徽章用白描版（badge/mono/），许可放最后 -->
+      <li id="footer-sponsorsico"><a href="https://project.mooncell.wiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mooncell.png" alt="a Mooncell project" height="31" width="88" loading="lazy"></a><a href="https://www.horain.net/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/horain.png" alt="horain" style="margin-left: 5px" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-poweredbyico"><a href="https://www.mediawiki.org/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/mediawiki.svg" alt="Powered by MediaWiki" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-poweredbysmwico"><a href="https://www.semantic-mediawiki.org/wiki/Semantic_MediaWiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/smw.svg" alt="Powered by Semantic MediaWiki" class="smw-footer" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-copyrightico"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/cc-by-nc-sa.svg" alt="知识共享署名-非商业性使用-相同方式共享" width="88" height="31" loading="lazy"></a></li>
+    </ul>
+  </div>
+  <span class="ak-watermark">PRTS</span>
+</footer>
+<button class="ak-fab" aria-label="回到顶部"><svg width="18" height="18"><use href="#i-up"/></svg></button>
+<script src="../src/sidebar-tree.js"></script>
+<script src="../src/search-palette.js"></script>
+<script src="preview.js"></script>
+<script src="search-mock.js"></script>
+</body>
+</html>

@@ -101,6 +101,7 @@ const sidebar: DefaultTheme.Sidebar = [
     items: [
       { text: "概述", link: "/patterns/" },
       { text: "首页设计稿", link: "/patterns/home" },
+      { text: "干员一览", link: "/patterns/operators" },
       { text: "干员页（陈）", link: "/patterns/operator" },
     ],
   },

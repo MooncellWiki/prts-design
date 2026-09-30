@@ -20,4 +20,5 @@ const page = (file: string): StoryObj => ({
 export default { title: "Pages/整页样例", tags: ["!autodocs"] } satisfies Meta;
 
 export const Home: StoryObj = { name: "首页设计稿", ...page("home.html") };
+export const Operators: StoryObj = { name: "干员一览（列表 / 筛选页）", ...page("operators.html") };
 export const Operator: StoryObj = { name: "干员页样例（陈）", ...page("operator.html") };
