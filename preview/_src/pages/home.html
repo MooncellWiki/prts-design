@@ -123,7 +123,7 @@ cats: 首页
 .mp-hero__list > li.is-active .mp-hero__item { border-left-color: var(--mp-hero-accent); background: var(--mp-hero-accent-bg); }   /* 选中行 = 左青条 + 淡青底（同搜索面板高亮行） */
 .mp-hero__list > li.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--mp-hero-accent); transform: scaleX(var(--p, 0)); transform-origin: left; z-index: 1; pointer-events: none; }   /* 自动播放进度：脚本每帧写 --p（0–1） */
 .mp-hero__thumb { width: 64px; height: 38px; object-fit: cover; display: block; background: var(--mp-hero-thumb-bg); }
-.mp-hero__kind { display: block; font: 700 10px/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; color: var(--mp-hero-fg-subtle); }
+.mp-hero__kind { display: block; font: 700 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; color: var(--mp-hero-fg-subtle); }
 .mp-hero__name { display: block; font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.3; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* 列表下的工具栏：‹ 01 / 07 › + 暂停 */
 .mp-hero__bar { flex: none; display: flex; align-items: center; gap: 2px; height: 36px; padding: 0 6px 0 12px; border-top: 1px solid var(--mp-hero-line); background: var(--mp-hero-bg-2); }
@@ -192,14 +192,14 @@ cats: 首页
 .mp-res__body { grid-area: body; min-width: 0; align-self: center; }
 .mp-res__name { display: block; font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mp-res__days { grid-area: days; display: flex; gap: 2px; }
-.mp-res__days > i { flex: 1; height: 16px; display: grid; place-items: center; font: 600 9px/1 var(--ak-font-body); font-style: normal; background: var(--ak-bg-surface-3); color: var(--ak-fg-subtle); }
+.mp-res__days > i { flex: 1; height: 16px; display: grid; place-items: center; font: 600 max(9px, var(--ak-fs-cjk-min))/1 var(--ak-font-body); font-style: normal; background: var(--ak-bg-surface-3); color: var(--ak-fg-subtle); }
 .mp-res__days > i.on { background: var(--ak-accent-muted); color: inherit; }            /* 开放日 = 淡青底（同 <mark> / 表格当前行），不是实底 */
 .mp-res__days > i.today.on { background: var(--ak-accent); color: var(--ak-accent-fg); font-weight: 700; }   /* 今天开放 = 这一排唯一的实底（与卡片顶部青条同色）；今天未开放不另标——卡片的斜纹 + 灰度 + 无顶条已经说了，且未开放的卡排在组末 */
 .mp-res__state { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 /* 常时开放（作战记录 = 游戏 weekly_7「战术演习」，zone_table.weeklyAdditionInfo.daysOfWeek 七天全有）：七格条换成一条整宽的「常时开放」。
  *  游戏的做法（WeeklyGroupZoneItem._ParseOpenText）：七天全开就不写「周一、四、五、日开放」而写「常时开放」——七个格子全亮读出来是「日程排满」，不是「没有日程」。
  *  条高同七格条（16px），卡片等高；今天不另标——顶部青条已经说了今日开放。 */
-.mp-res__days--always { display: grid; place-items: center; height: 16px; background: var(--ak-accent-muted); font: 700 9px/1 var(--ak-font-body); letter-spacing: .2em; text-indent: .2em; }
+.mp-res__days--always { display: grid; place-items: center; height: 16px; background: var(--ak-accent-muted); font: 700 max(9px, var(--ak-fs-cjk-min))/1 var(--ak-font-body); letter-spacing: .2em; text-indent: .2em; }
 /* 特别开放（游戏 stage_table.forceOpenTable：一段时间内 9 个资源关全开，通常周年庆 / 大版本；新人 / 回归的 7 天全开是玩家各自的状态，wiki 不管）。
  *  游戏的视觉是一整套「黄 S」：资源收集页顶上的周条、每张区卡的七个小点、区卡上一条黄底 + 斜纹 + S 圆标的「特别开放」横条（zone_group_holder：img_week_force_open / head_bar）——
  *  落进这里 = 次强调黄 --ak-accent-2 把这一块的青全换掉：通知条一条（黄实底 + 左缘斜纹 .ak-stripe-edge + 黑圆 S）、在区间内的卡顶条变黄、开放日条里落在区间内的天变黄（今天 = 唯一实底，仍是黄）。
@@ -227,7 +227,7 @@ cats: 首页
 .mp-cd { padding-top: var(--ak-space-3); margin-top: var(--ak-space-3); border-top: 1px solid var(--ak-border); }
 .mp-cd__label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
 .mp-cd__label b { font-size: var(--ak-fs-sm); }
-.mp-cd__label small { font: 600 10px/1 var(--ak-font-label); letter-spacing: .1em; color: var(--ak-fg-muted); text-transform: uppercase; }
+.mp-cd__label small { font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .1em; color: var(--ak-fg-muted); text-transform: uppercase; }
 .mp-cd .ak-countdown > span { min-width: 44px; }
 /* 小编的补充说明：单独一条通栏面板，跨在两块面板之下（grid-column: 1 / -1）——时钟那列只有 312px，说明一多就又窄又长；通栏里一条一行，带图标与可选倒计时，想写多少都不挤 */
 .mp-notes { display: flex; flex-direction: column; }
@@ -252,7 +252,7 @@ cats: 首页
 .mp-ops__row .ak-op-card__name { font-size: var(--ak-fs-xs); padding: 5px 6px 6px; }
 .mp-ops__row .ak-op-card__rarity { height: 10px; }
 .mp-ops__row .ak-op-card__prof { width: 22px; height: 22px; } .mp-ops__row .ak-op-card__prof img { width: 18px; height: 18px; }   /* 角上用游戏头像同款小职业图标 assets/profession/icon_*.png（= 现网 图标_职业_*.png），不是大号 hub 图标 */
-.mp-ops__row .ak-op-card__sub { font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mp-ops__row .ak-op-card__sub { font-size: max(9px, var(--ak-fs-cjk-min)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mp-ops__badge { position: absolute; right: 4px; top: 4px; z-index: 1; }   /* 「兑」——黄 = 提示 / 次强调（同现网） */
 .mp-mod { position: absolute; right: 4px; top: 4px; z-index: 1; width: 26px; height: 26px; display: grid; place-items: center; background: rgba(0,0,0,.72); overflow: hidden; }   /* 模组型号：游戏里的模组类型小图标（现网 模组类型_*_小图.png；原图带一圈很宽的低透明度光晕，缩小后糊成一团发亮的雾——已剥掉光晕、裁到字形外接框），深底小框压在头像右上 */
 .mp-mod img { max-width: 20px; max-height: 20px; width: auto; height: auto; display: block; }
@@ -261,7 +261,7 @@ cats: 首页
 .mp-ops__cta:hover { background: var(--ak-accent-hover); color: var(--ak-accent-fg); text-decoration: none; }
 .mp-ops__cta .ak-icon { width: 22px; height: 22px; }
 .mp-ops__cta b { font-size: var(--ak-fs-xs); line-height: 1.2; }
-.mp-ops__cta small { font: 700 9px/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+.mp-ops__cta small { font: 700 max(9px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
 
 /* ── 6. 近期新增：关卡（左，紧凑 .ak-stage）+ 家具（右）── */
 .mp-recent { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--ak-space-4); align-items: start; }

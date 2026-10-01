@@ -237,7 +237,7 @@ lastmod: 2025年3月1日 (六) 00:06
 .ol-card__stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 0; background: var(--ak-border); border: 1px solid var(--ak-border); }
 .ol-card__stats > div { display: flex; flex-direction: column; gap: 3px; padding: 5px 6px; background: var(--ak-bg-surface); }
 .ol-card__stats > div.is-sorted { background: var(--ak-accent-subtle); }
-.ol-card__stats dt { font-size: 10px; line-height: 1; font-weight: 500; color: var(--ak-fg-muted); }
+.ol-card__stats dt { font-size: max(10px, var(--ak-fs-cjk-min)); line-height: 1; font-weight: 500; color: var(--ak-fg-muted); }
 .ol-card__stats dd { margin: 0; font: 700 var(--ak-fs-sm)/1 var(--ak-font-label); font-variant-numeric: tabular-nums; }
 .ol-card__stats dd small { font-size: .78em; font-weight: 400; color: var(--ak-fg-muted); }
 .ol-card p { margin: 0; }

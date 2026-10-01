@@ -36,7 +36,7 @@
 .ak-module__lv > i > b.on { background: var(--_bar); }
 .ak-module__stats { display: flex; flex-wrap: wrap; gap: 2px 12px; font-variant-numeric: tabular-nums; }
 .ak-module__stats > span { white-space: nowrap; }   /* 「攻击 +50」是一个整体，换行只在项与项之间 */
-.ak-module__kicker { display: inline-block; margin-right: 6px; padding: 3px 6px; vertical-align: 1px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font: 700 10px/1 var(--ak-font-label); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+.ak-module__kicker { display: inline-block; margin-right: 6px; padding: 3px 6px; vertical-align: 1px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); font: 700 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
 .ak-module__tasks { padding: 8px 12px; background: var(--ak-bg-surface-2); font-size: var(--ak-fs-sm); }
 .ak-module__tasks > ul { margin: 4px 0 0; padding-left: 18px; }
 .ak-module__tasks li { margin: 2px 0; }

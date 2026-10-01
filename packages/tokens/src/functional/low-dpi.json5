@@ -7,5 +7,15 @@
         $value: "\"Source Han Sans SC\", \"Microsoft YaHei\", \"Noto Sans SC\", \"Noto Sans CJK SC\", \"PingFang SC\", \"HarmonyOS Sans SC\", system-ui, -apple-system, sans-serif",
       },
     },
+    "font-size": {
+      $description: "低分屏的 overline：一个汉字只分到 11 个设备像素，粗体中文（目录 / 导航 / 页脚栏目 / 属性名 / 潜能…）笔画挤成一团——抬到 12px（文档「中文最小 12px」），纯拉丁的 overline 一并跟着大 1px。",
+      $type: "dimension",
+      "fs-overline": { $value: "0.75rem", $description: "12（高分屏 11）" },
+    },
+    legibility: {
+      $description: "低分屏的中文小字下限：9–10px 的中文在 1× 屏上只有 9–10 个设备像素，换哪款字都糊（雅黑也救不回来）。",
+      $type: "dimension",
+      "fs-cjk-min": { $value: "12px", $description: "= 文档「中文最小 12px」；写了 max(…, var(--ak-fs-cjk-min)) 的小字抬到这里" },
+    },
   },
 }

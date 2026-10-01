@@ -1,6 +1,6 @@
 # 字体排印
 
-中文永远用思源黑体（行高 1.7）；大写拉丁展示字只做标题旁英文、编号、数值、水印——**Latin as ornament**。全部字体自托管，不论访客装没装，看到的都是同一套——这也就是上线效果。
+中文永远用思源黑体（行高 1.7）；大写拉丁展示字只做标题旁英文、编号、数值、水印——**Latin as ornament**。全部字体自托管，不论访客装没装，看到的都是同一套——这也就是上线效果（例外只有一处：Windows 低分屏的正文换微软雅黑，见[低分屏](#低分屏)）。
 
 ## 字族
 
@@ -8,7 +8,7 @@
 
 | 角色 | 自托管 | 来源 / 说明 |
 |---|---|---|
-| 展示字 | **Novecento Sans Wide** 500 / 600 / 700 / 800 | 官网静态资源原文件（web.hycdn.cn）。商用字（Synthview）；PRTS.wiki 为明日方舟官方赞助站点，按与鹰角同一组织下共用授权使用，不可转授 |
+| 展示字 | **Novecento Sans Wide** 500 / 600 / 700 / 800 | 官网静态资源原文件（web.hycdn.cn），只补了 `gasp` 表（见[低分屏](#低分屏)）。商用字（Synthview）；PRTS.wiki 为明日方舟官方赞助站点，按与鹰角同一组织下共用授权使用，不可转授 |
 | HUD 标签 / 数值 | **Bender** 400 / 700 | 同上；也是展示字链的第二位 |
 | 正文 | Noto Sans SC 可变字重 100–900（= 思源黑体的 Google 构建） | OFL；沿用 Google Fonts 的 101 片 `unicode-range` 切分（共 ≈ 4.5MB），一页只下载用到的几片 |
 | 压缩字 | Oswald 可变字重 200–700 | OFL；官网也自托管 Oswald。同时是展示字链在 Novecento / Bender 之后的接字 |
@@ -17,11 +17,21 @@
 
 `packages/css/src/fonts.css`（121 条 `@font-face`，`font-display: swap`）与 `packages/css/src/fonts/` 由 `python3 scripts/fetch-fonts.py` 生成（官网同源两族抓官网静态资源，OFL 四族取 Fontsource 的 npm 包，版本钉死）；各族目录里的 `NOTICE.md` / `LICENSE` 记着来源与授权。字体链（上表 `--ak-font-*`）的后段——装机备选、系统字——只在字体模块被关掉时起作用：MW 上字体是独立的 `skins.akds.fonts` 模块，可以整体关掉（低带宽 / 用户偏好 / Gadget）。
 
-官网发布的 Novecento / Bender 是 **ASCII 子集**（各 101 字形：A–Z a–z 0–9 与 ASCII 标点）：`·` `»` `—` `–` `…` `×` `°` 这类非 ASCII 字符逐字回退到后一段（展示字落到 Oswald、标签落到 Chakra Petch），两者风格相近，视觉上是间隔号 / 破折号级别的差异；日后拿到全字符集文件，替换 `packages/css/src/fonts/` 里同名 woff2 即可。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
+官网发布的 Novecento / Bender 是 **ASCII 子集**（各 101 字形：A–Z a–z 0–9 与 ASCII 标点）：`·` `»` `—` `–` `…` `×` `°` 这类非 ASCII 字符逐字回退到后一段（展示字落到 Oswald、标签落到 Chakra Petch），两者风格相近，视觉上是间隔号 / 破折号级别的差异；日后拿到全字符集文件，替换 `packages/css/src/fonts/` 里同名 woff2 即可（同样要补 `gasp` 表：放进 `SITE_FONTS` 重跑 `fetch-fonts.py`，或手动过一遍其中的 `with_gasp`）。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
 
 ## 字号
 
 <TokenTable prefix="typography.font-size" sample="size" />
+
+## 低分屏
+
+Windows 100% / 125% 缩放（< 1.5dppx，`@media (max-resolution: 1.49dppx)`）下，一个字只分到「字号」那么多个设备像素：字体有没有 hinting、走哪种渲染模式、中文小字有多小，都会直接露出来。高分屏（macOS、手机、Windows 150% 以上）看不出这些问题，下面三条也都只在低分屏或 Windows 上起作用：
+
+- **正文链换微软雅黑**：Noto Sans SC 的 web 切片没有 hinting，DirectWrite 小字号下发虚；低分屏把 `Microsoft YaHei` 提到 Noto 前面（`--ak-font-body`），没装雅黑的系统照旧落到 Noto。
+- **官网同源两族补了 `gasp` 表**：原文件没有 `gasp`，Bender Bold 的 `maxp` 又残留着「带指令」的标记，Chrome 在 Windows 上就把 ≤ 20px 的 Bender Bold 当成「为 GDI 调过 hinting」的字，只做横向抗锯齿，0 3 5 9 这类数字的曲线顶 / 底出锯齿。`scripts/fetch-fonts.py` 落盘时补一张 version 1 的 `gasp`（全字号含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表不动。
+- **中文小字不小于 12px**：9–11px 的中文在 1× 屏上换哪款字都糊。低分屏下 `--ak-fs-overline` 从 11 抬到 12；组件里可能出现中文的 9–10px 小字（卡片副题、解锁条件、标签、页签计数、属性格名…）写成 `max(设计字号, var(--ak-fs-cjk-min))`——高分屏照设计字号，低分屏抬到 12px。纯拉丁 / 数字的小字（倒计时单位、关卡码副题、键帽、英文副题）不必套。
+
+<TokenTable prefix="typography.legibility" />
 
 ## 行高 · 字距
 

@@ -48,7 +48,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .op-files { display: grid; grid-template-columns: 208px minmax(0, 1fr); gap: 16px; align-items: start; margin: 0 0 var(--ak-space-4); }
 .op-files .ak-tabs--vertical { position: sticky; top: calc(var(--ak-header-h) + 16px); }
 .op-files .ak-tab { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; white-space: normal; text-align: left; }
-.op-files .ak-tab small { font: 600 9px/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-subtle); white-space: nowrap; }
+.op-files .ak-tab small { font: 600 max(9px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-subtle); white-space: nowrap; }
 .op-files .ak-tabpanel { padding-top: 0; }
 .op-files .ak-dossier { margin: 0; }
 @media (max-width: 767px) {
@@ -59,7 +59,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 }
 /* 干员模型（SpineViewer）：黑色 16:9 舞台，网格底纹 + 载入按钮 */
 .op-spine { position: relative; width: 100%; height: 360px; display: grid; place-items: center; background: #0f0f10; border: 1px solid var(--ak-border); --ak-grid-color: rgba(255,255,255,.06); }
-.op-spine__hint { position: absolute; left: 12px; bottom: 10px; font: 600 10px/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.45); }
+.op-spine__hint { position: absolute; left: 12px; bottom: 10px; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.45); }
 /* 修正标记（{{修正}}）：底色 + 虚线 */
 .template-fix-mark { background: var(--ak-warning-bg); border-bottom: 1px dashed var(--ak-warning); cursor: help; }
 </style>

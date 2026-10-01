@@ -193,9 +193,10 @@
 .ol-table.ak-table { table-layout: fixed; font-size: var(--ak-fs-sm); }
 .ol-table thead th { position: sticky; top: var(--ak-header-h); z-index: 2; padding: 9px 8px; white-space: nowrap; letter-spacing: 0; text-transform: none; }
 .ol-table th.num, .ol-table td.num { text-align: right; }
-.ol-table td { border-bottom: 0; padding: 8px 8px 2px; vertical-align: top; line-height: 1.4; }
+.ol-table td { border-bottom: 0; padding: 8px 8px 5px; vertical-align: top; line-height: 1.4; }
 .ol-table tbody.ol-op { border-top: 1px solid var(--ak-border); }
-.ol-table tbody.ol-op > tr:last-child > td { padding-top: 0; padding-bottom: 9px; }
+.ol-table tbody.ol-op > tr:last-child > td { padding-top: 4px; padding-bottom: 9px; }
+.ol-table td.ol-feature { border-top: 1px solid var(--ak-border-subtle); }   /* 特性行顶上一条弱线：比干员之间的线弱一级，只画在特性格上——不然特性紧贴在「近战位 · 男」下面，像分支列的第三行小字 */
 .ol-table tbody.ol-op > tr:first-child > td[rowspan] { padding-bottom: 9px; }
 .ol-table tbody tr:hover td { background: none; }
 .ol-table tbody.ol-op:hover td { background: var(--ak-bg-hover); }
@@ -234,7 +235,7 @@
 .ol-card__stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 0; background: var(--ak-border); border: 1px solid var(--ak-border); }
 .ol-card__stats > div { display: flex; flex-direction: column; gap: 3px; padding: 5px 6px; background: var(--ak-bg-surface); }
 .ol-card__stats > div.is-sorted { background: var(--ak-accent-subtle); }
-.ol-card__stats dt { font-size: 10px; line-height: 1; font-weight: 500; color: var(--ak-fg-muted); }
+.ol-card__stats dt { font-size: max(10px, var(--ak-fs-cjk-min)); line-height: 1; font-weight: 500; color: var(--ak-fg-muted); }
 .ol-card__stats dd { margin: 0; font: 700 var(--ak-fs-sm)/1 var(--ak-font-label); font-variant-numeric: tabular-nums; }
 .ol-card__stats dd small { font-size: .78em; font-weight: 400; color: var(--ak-fg-muted); }
 .ol-card p { margin: 0; }

@@ -36,7 +36,12 @@
       "fs-body": { $value: "1rem", $description: "16" },
       "fs-sm": { $value: "0.875rem", $description: "14" },
       "fs-xs": { $value: "0.75rem", $description: "12" },
-      "fs-overline": { $value: "0.6875rem", $description: "11" },
+      "fs-overline": { $value: "0.6875rem", $description: "11（低分屏 12，见 functional/low-dpi）" },
+    },
+    legibility: {
+      $description: "中文小字的字号下限：可能出现中文的 9–10px 小字（卡片副题、解锁条件、标签、页签计数…）写成 max(设计字号, var(--ak-fs-cjk-min))",
+      $type: "dimension",
+      "fs-cjk-min": { $value: "0px", $description: "高分屏 0 = 不干预、照设计字号；低分屏抬到 12px（functional/low-dpi）" },
     },
     "line-height": {
       $description: "行高",

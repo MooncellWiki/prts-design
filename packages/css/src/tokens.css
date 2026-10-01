@@ -116,7 +116,10 @@
   --ak-fs-body: 1rem;                      /* 16 */
   --ak-fs-sm: 0.875rem;                    /* 14 */
   --ak-fs-xs: 0.75rem;                     /* 12 */
-  --ak-fs-overline: 0.6875rem;             /* 11 */
+  --ak-fs-overline: 0.6875rem;             /* 11（低分屏 12，见 functional/low-dpi） */
+
+  /* ─── typography · legibility · 中文小字的字号下限：可能出现中文的 9–10px 小字（卡片副题、解锁条件、标签、页签计数…）写成 max(设计字号, var(--ak-fs-cjk-min)) */
+  --ak-fs-cjk-min: 0px;                    /* 高分屏 0 = 不干预、照设计字号；低分屏抬到 12px（functional/low-dpi） */
 
   /* ─── typography · line-height · 行高 */
   --ak-lh-body: 1.7;                       /* CJK 正文 */
@@ -650,7 +653,7 @@ html.skin-theme-clientpref-night,
   --ak-canvas-attachment: scroll;
 }
 
-/* ═══ 低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响） ═══ */
+/* ═══ 低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响）；中文小字抬到 12px（1× 屏上 9–11px 的汉字分不到足够像素） ═══ */
 @media (max-resolution: 1.49dppx) {
   :root {
     /* ─── typography */
@@ -660,6 +663,12 @@ html.skin-theme-clientpref-night,
      * 没装雅黑的系统（macOS / Linux / 移动端）照旧落到 Noto，高分屏的 Windows 也仍用 Noto。雅黑只有 Regular / Bold：500 落 Regular，600 / 800 落 Bold。
      * 装机的 Source Han Sans SC 仍排最前（与 :root 的链同序）。 */
     --ak-font-body: "Source Han Sans SC", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "PingFang SC", "HarmonyOS Sans SC", system-ui, -apple-system, sans-serif;
+
+    /* ─── typography · font-size · 低分屏的 overline：一个汉字只分到 11 个设备像素，粗体中文（目录 / 导航 / 页脚栏目 / 属性名 / 潜能…）笔画挤成一团——抬到 12px（文档「中文最小 12px」），纯拉丁的 overline 一并跟着大 1px。 */
+    --ak-fs-overline: 0.75rem;             /* 12（高分屏 11） */
+
+    /* ─── typography · legibility · 低分屏的中文小字下限：9–10px 的中文在 1× 屏上只有 9–10 个设备像素，换哪款字都糊（雅黑也救不回来）。 */
+    --ak-fs-cjk-min: 12px;                 /* = 文档「中文最小 12px」；写了 max(…, var(--ak-fs-cjk-min)) 的小字抬到这里 */
   }
 }
 

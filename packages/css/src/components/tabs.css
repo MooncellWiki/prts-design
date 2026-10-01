@@ -20,7 +20,7 @@
 .ak-tabs--vertical .ak-tab.is-active { border-left-color: var(--ak-accent); }
 .ak-tabs--vertical .ak-tab { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
 /* 页签里的第二行小字：解锁条件「信赖 25%」这类（竖排时右对齐） */
-.ak-tab small { margin-left: .5em; font: 600 9px/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-subtle); white-space: nowrap; }
+.ak-tab small { margin-left: .5em; font: 600 max(9px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-subtle); white-space: nowrap; }
 .ak-tabs--vertical .ak-tab small { margin-left: 0; }
 .ak-tabpanel[hidden] { display: none; }
 .ak-tabpanel { padding-top: var(--ak-space-4); }

@@ -3,7 +3,7 @@
 .ak-dossier { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: 16px 20px; position: relative; font-size: var(--ak-fs-sm); line-height: 1.85; }
 .ak-dossier__title { display: flex; align-items: center; gap: 10px; font-weight: 800; margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--ak-border); }
 .ak-dossier__title .ak-en { color: var(--ak-fg-muted); font-size: .8em; }
-.ak-dossier__unlock { margin-left: auto; font: 600 10px/1 var(--ak-font-label); letter-spacing: .08em; color: var(--ak-fg-muted); text-transform: uppercase; }
+.ak-dossier__unlock { margin-left: auto; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .08em; color: var(--ak-fg-muted); text-transform: uppercase; }
 .ak-dossier p { margin: 0 0 .8em; white-space: pre-line; }
 .ak-dossier p:last-child { margin: 0; }
 .ak-dossier.is-locked > *:not(.ak-dossier__title) { filter: blur(4px); user-select: none; pointer-events: none; }

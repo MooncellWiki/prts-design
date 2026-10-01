@@ -5,7 +5,7 @@
  *
  * 源文件分三层，和 CSS 里的块一一对应：
  *   base/*            原始色板 + 主题无关的尺寸 / 字体 / 动效 / 层级        → :root
- *   functional/*      语义令牌：themes/light · dark（同一套键）、contrast-more、chrome（页眉 / 头图 / 画布主题接口）、control、low-dpi（低分屏的正文字体链）
+ *   functional/*      语义令牌：themes/light · dark（同一套键）、contrast-more、chrome（页眉 / 头图 / 画布主题接口）、control、low-dpi（低分屏的正文字体链与中文小字下限）
  *   bridge/codex      MediaWiki Codex 令牌 → PRTS Design 语义令牌的桥接（变量名不带 --ak- 前缀）
  *
  * 命名：变量名 = 路径最后一段（`color.neutral.gray-50` → --ak-gray-50；bridge/codex 下的不加前缀），分组只管组织和文档。
@@ -57,7 +57,7 @@ const BLOCKS: Block[] = [
   { title: '2a′. 作用域主题：2a 里引用语义令牌的几个，在作用域上按作用域的主题重新解析', selector: '.ak-scope[data-theme]', source: BASE, include: [LIGHT], only: refsTheme },
   { title: '2d. CHROME · 页眉 / 头图 / 画布 的主题接口', selector: ':root', source: [CHROME], include: [...BASE, LIGHT] },
   { title: '3. CODEX / MEDIAWIKI BRIDGE', selector: ':root, html.skin-theme-clientpref-night, :root[data-theme="dark"]', source: [CODEX], include: [...BASE, LIGHT], file: 'bridge' },
-  { title: '低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响）', media: '(max-resolution: 1.49dppx)', selector: ':root', source: [LOW_DPI], include: [...BASE, LIGHT] },
+  { title: '低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响）；中文小字抬到 12px（1× 屏上 9–11px 的汉字分不到足够像素）', media: '(max-resolution: 1.49dppx)', selector: ':root', source: [LOW_DPI], include: [...BASE, LIGHT] },
   { title: '高对比偏好：只有亮色吃得到（暗色块选择器特指度更高，压过这里的 :root——沿用原行为；.ak-scope[data-theme="light"] 与 2b′ 同特指度、本块在后，作用域亮色同样吃得到）', media: '(prefers-contrast: more)', selector: ':root,\n.ak-scope[data-theme="light"]', source: [CONTRAST], include: [...BASE, LIGHT] },
 ];
 

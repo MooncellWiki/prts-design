@@ -6,7 +6,7 @@
   font: 600 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--_fg); background: var(--_bg); border: 1px solid var(--_bd);
   white-space: nowrap; vertical-align: middle; border-radius: var(--ak-radius);
 }
-.ak-tag--sm { height: 18px; padding: 0 5px; font-size: 10px; }
+.ak-tag--sm { height: 18px; padding: 0 5px; font-size: max(10px, var(--ak-fs-cjk-min)); }
 .ak-tag--lg { height: 28px; padding: 0 12px; font-size: var(--ak-fs-sm); }
 .ak-tag--outline { --_bg: transparent; --_bd: var(--ak-border-strong); }
 .ak-tag--accent { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); }

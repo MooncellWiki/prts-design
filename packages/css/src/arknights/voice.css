@@ -18,7 +18,7 @@
 .ak-voice__download > .ak-icon { width: 16px; height: 16px; }
 .ak-voice__download:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
 .ak-voice__play:focus-visible, .ak-voice__download:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }   /* all: unset 把作用域的焦点环（:where，零特指度）也压掉了，这里补回 */
-.ak-voice__cond { font: 600 10px/1 var(--ak-font-label); letter-spacing: .06em; padding: 3px 5px; background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); white-space: nowrap; }   /* 解锁条件（提升至精英阶段1以查看 / 提升信赖至40%以查看） */
+.ak-voice__cond { font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .06em; padding: 3px 5px; background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); white-space: nowrap; }   /* 解锁条件（提升至精英阶段1以查看 / 提升信赖至40%以查看） */
 .ak-voice-list { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: 0 0 var(--ak-space-4); }
 .ak-voice-list > .ak-voice:last-child { border-bottom: 0; }
 .ak-voice-list > .ak-voice:hover { background: var(--ak-bg-hover); }
@@ -28,4 +28,4 @@
 .ak-voice-toolbar { display: flex; flex-wrap: wrap; align-items: flex-start; column-gap: var(--ak-space-4); }
 .ak-voice-toolbar > .ak-voice-langs { flex: 0 0 auto; max-width: 100%; }
 .ak-voice-langs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 0 0 var(--ak-space-3); }
-.ak-voice-langs .ak-chip small { font: 600 10px/1 var(--ak-font-label); color: inherit; opacity: .7; }
+.ak-voice-langs .ak-chip small { font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); color: inherit; opacity: .7; }
