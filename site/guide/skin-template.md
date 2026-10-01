@@ -25,7 +25,7 @@
    label.ak-header__burger[for=ak-nav-toggle]   ← 三条线 → ×，仅 <1120；主行不放侧栏抽屉的入口（那个在二级栏）
    .ak-local-nav                                ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）
       button.ak-local-nav__menu（开侧栏抽屉）| input.ak-toc-cb + label.ak-local-nav__toc[for]（开目录浮层，纯 CSS）
-div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认只露 40px 一小条（--ak-keyart-reveal）；画从页面顶端铺起，垫在页眉玻璃与版面背后（CSS 负外边距，DOM 顺序不变）
+div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认只露 72px 一小条（--ak-keyart-reveal）；画从页面顶端铺起，垫在页眉玻璃与版面背后（CSS 负外边距，DOM 顺序不变）
 <div class="ak-layout">
    aside.ak-sidebar {{#data-portlets-sidebar}} .ak-portlet(.ak-portlet--grid for first) …
    main.ak-main#content                         ← position:relative + 右内边距预留目录导轨（.ak-layout 只有侧栏 / 主列两列）

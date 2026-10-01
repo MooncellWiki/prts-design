@@ -24,7 +24,7 @@ prts.wiki 大活期间会换头图、顶栏底图、站标、侧栏配色（现�
 | `--ak-chrome-image` / `-position` / `-size` / `-repeat` | `none` / `right top` / `auto 100%` / `no-repeat` | **顶栏角饰 / 底纹**：`url(left.png), url(right.png)`（现网 PRTSheadleft 的活动徽章 / Garanheadright 的波纹那种）。画在玻璃之上、不被压暗——只放深色低对比素材，照片请走 `--ak-keyart-image` |
 | `--ak-chrome-texture` | `.55` | 右侧半调网点强度 0–1，有角饰时可设 0 |
 | `--ak-keyart-image` / `-h` / `-position` / `-size` / `-bg` / `-fade` | `none` / `0` / `center 30%` / `cover` / `transparent` / `96px` | **头图** `.ak-keyart`：从页面顶端铺起、垫在页眉与版面背后的通栏画；`-h` 是页眉之下那段画的高度（画有多高，不是占多高）；`-position` / `-size` 相对整块（页眉 + `-h`）算；底部按 `-fade` 渐隐进画布；≤639 限高 40vw |
-| `--ak-keyart-reveal` / `-veil` | `40px` / `60%` | 头图**占多少位**：`-reveal` 是留在版面之上、不被压住的一段高度（不超过 `-h`，没有头图时不占位）——默认只留 40px 一小条，画先露一口气、版面不贴着页眉，其余垫在版面背后；0 = 完全不占位，设成 `-h` 就是一条横幅带。垫在版面背后的那一段蒙一层画布色的纱，`-veil` 是顶端的浓度（往下渐浓到 100%）；画面越花调得越高，别低于 50% |
+| `--ak-keyart-reveal` / `-veil` | `72px` / `60%` | 头图**占多少位**：`-reveal` 是留在版面之上、不被压住的一段高度（不超过 `-h`，没有头图时不占位）——默认只留 72px 一小条，画先露一口气、版面不贴着页眉，其余垫在版面背后；0 = 完全不占位，设成 `-h` 就是一条横幅带；≤639 露出段收到 10vw 以内。垫在版面背后的那一段蒙一层画布色的纱，`-veil` 是顶端的浓度（往下渐浓到 100%）；画面越花调得越高，别低于 50% |
 | `--ak-canvas-image` / `-position` / `-size` / `-repeat` / `-attachment` | `none` … | **画布底纹**：叠在 body 的 `--ak-bg-canvas` 之上（现网 body 的 bkg 位置）；侧栏 / 目录没有底色，宜低对比 |
 | `--ak-logo-image` | （未设） | **站标**：设了就用 `content` 替换 `.ak-header__logo img`（Chromium / WebKit；Firefox 请改 `$wgLogos`） |
 
@@ -40,7 +40,7 @@ prts.wiki 大活期间会换头图、顶栏底图、站标、侧栏配色（现�
 /* MediaWiki:Gadget-eventStyle.css（或直接写进 MediaWiki:Common.css） */
 :root {
   --ak-theme-accent: #72a330;
-  --ak-keyart-image: url(//media.prts.wiki/…/kv.jpg);  --ak-keyart-h: 280px;   /* 头图从页面顶端铺起，垫在页眉与版面背后，只留 40px 一小条 */
+  --ak-keyart-image: url(//media.prts.wiki/…/kv.jpg);  --ak-keyart-h: 280px;   /* 头图从页面顶端铺起，垫在页眉与版面背后，只留 72px 一小条 */
   --ak-chrome-bg:    rgba(8, 9, 10, .8);                                     /* 可选：玻璃调淡让头图多透一点（默认 .9） */
   --ak-chrome-image: url(//media.prts.wiki/…/headleft.png);  --ak-chrome-image-position: left top;   /* 可选：顶栏角饰，只放深色低对比素材 */
   --ak-logo-image:   url(//media.prts.wiki/…/logo.png);                          /* Chromium / WebKit 生效；Firefox 请改 $wgLogos */
@@ -50,17 +50,17 @@ html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/
 ```
 
 - 头图取景：`--ak-keyart-position` / `-size` 相对「页眉 + 画高」整块算（桌面 56 + `--ak-keyart-h`，<1400 再加 48 的二级栏）；头图不必自己压暗 / 洗白——页眉靠玻璃的 alpha，版面靠 `--ak-keyart-veil` 那层纱。
-- 头图默认只占 40px（`--ak-keyart-reveal`）：页眉之下先露一小条画，侧栏 / 页面标题 / 目录从那以下压在画上。想多露一些设 `--ak-keyart-reveal: 96px` 之类，想顶满设 0；要旧的横幅带就设成与 `-h` 相等。
+- 头图默认只占 72px（`--ak-keyart-reveal`）：页眉之下先露一小条画，侧栏 / 页面标题 / 目录从那以下压在画上。想多露一些设 `--ak-keyart-reveal: 96px` 之类，想顶满设 0；要旧的横幅带就设成与 `-h` 相等。
 - **页眉本身在两套主题下都是黑的**，所以角饰 / 站标只需准备一套；头图与画布图要分昼夜，就按 `html.skin-theme-clientpref-day | night` 分写（跟随系统时另加 `@media (prefers-color-scheme: dark)` 分支，`demo-theme.css` 里有写法）。
 - 只换 `--ak-theme-accent` 时正文不动，只有「框」在换——这是有意的：活动皮不该把内容页读起来的对比度也一起赌上。想连正文的链接 / 选中色一起换，再覆盖 `--ak-accent`（亮 / 暗各写一次）。
 
 ## 头图
 
-`.ak-keyart` 是垫在 `.ak-layout` 背后的一幅通栏画，皮肤恒输出、默认 `--ak-keyart-h: 0`。它是「背景」不是「横幅」：盒子的下外边距取负，把自己的高度还给版面，侧栏 / 页面标题 / 目录照常从页眉之下排起、压在画上，头图不把正文往下推（现网是整幅 body 背景 + 内容负 `margin-top` 顶上去，效果相同）；`--ak-keyart-reveal` 是留在版面之上不被压住的一段，默认 40px——顶满的话版面第一行贴着页眉、正好压在画最清楚的地方，留一小条两边都透气。画从**页面顶端**铺起：盒子上移一个页眉高、再用同样的 `padding-top` 把内容压回页眉之下（<1400 连二级栏一起探），于是画的顶端在粘性页眉（更高的 z-index）背后——页眉是压在画上的一块均匀黑玻璃，黑框 + 画是一整块，不是「顶栏一张、头图一张」两段裁切。底部按 `--ak-keyart-fade` 渐隐进画布色（取 `min(-fade, -h)`：高度为 0 时不会往页眉后面画渐隐）；`--ak-keyart-bg` 默认透明。
+`.ak-keyart` 是垫在 `.ak-layout` 背后的一幅通栏画，皮肤恒输出、默认 `--ak-keyart-h: 0`。它是「背景」不是「横幅」：盒子的下外边距取负，把自己的高度还给版面，侧栏 / 页面标题 / 目录照常从页眉之下排起、压在画上，头图不把正文往下推（现网是整幅 body 背景 + 内容负 `margin-top` 顶上去，效果相同）；`--ak-keyart-reveal` 是留在版面之上不被压住的一段，默认 72px——顶满的话版面第一行贴着页眉、正好压在画最清楚的地方，留一小条两边都透气。画从**页面顶端**铺起：盒子上移一个页眉高、再用同样的 `padding-top` 把内容压回页眉之下（<1400 连二级栏一起探），于是画的顶端在粘性页眉（更高的 z-index）背后——页眉是压在画上的一块均匀黑玻璃，黑框 + 画是一整块，不是「顶栏一张、头图一张」两段裁切。底部按 `--ak-keyart-fade` 渐隐进画布色（取 `min(-fade, -h)`：高度为 0 时不会往页眉后面画渐隐）；`--ak-keyart-bg` 默认透明。
 
 可读性不赌画面：被版面压住的那一段蒙一层画布色的纱，从 `--ak-keyart-veil`（默认 60%）起、往下渐浓到画布色——亮色主题下画被洗白、暗色主题下被压暗，侧栏与标题的文字照常读得清。层序不靠 `z-index`：`.ak-keyart`、`.ak-sidebar`（sticky）、`.ak-main`（relative）都是定位盒，后两者在 DOM 里靠后，自然画在头图之上。
 
-- 头图上要放活动标题 / 倒计时，Gadget 往 `.ak-keyart__inner` 里塞内容（它与页眉三列同宽、在页眉之下，高度 = 露出段 `--ak-keyart-reveal`，默认 40px，放内容要调高）；`.ak-keyart` 带 `aria-hidden`，放可读内容时记得去掉。
+- 头图上要放活动标题 / 倒计时，Gadget 往 `.ak-keyart__inner` 里塞内容（它与页眉三列同宽、在页眉之下，高度 = 露出段 `--ak-keyart-reveal`，默认 72px，放内容要调高）；`.ak-keyart` 带 `aria-hidden`，放可读内容时记得去掉。
 - 画布底纹 `--ak-canvas-image` 画在 `body.skin-arknights` 上，叠在 `--ak-bg-canvas` 之上。
 
 ## CSS

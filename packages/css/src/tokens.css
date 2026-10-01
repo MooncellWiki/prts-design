@@ -642,7 +642,7 @@ html.skin-theme-clientpref-night,
   --ak-chrome-texture: .55;                /* 右侧半调网点强度 0–1（游戏顶栏 img_back / 官网左缘网点），0 关闭 */
   --ak-keyart-image: none;                 /* 头图（Key Visual）：从页面顶端铺起、垫在页眉与版面背后的一幅通栏画；--ak-keyart-h 为 0 时只在页眉后面透 */
   --ak-keyart-h: 0px;                      /* 页眉之下那段画的高度（画有多高，不是占多高——占位看 -reveal） */
-  --ak-keyart-reveal: 40px;                /* 留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带 */
+  --ak-keyart-reveal: 72px;                /* 留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带 */
   --ak-keyart-veil: 60%;                   /* 垫在版面背后那一段蒙的画布色纱：顶端的浓度，往下渐浓到 100%。画面越花调得越高；别低于 50%（侧栏 / 标题压在画上要读得清） */
   --ak-keyart-position: center 30%;        /* -position / -size 相对整块（页眉高 + -h）计算 */
   --ak-keyart-size: cover;
