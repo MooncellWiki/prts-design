@@ -650,6 +650,19 @@ html.skin-theme-clientpref-night,
   --ak-canvas-attachment: scroll;
 }
 
+/* ═══ 低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响） ═══ */
+@media (max-resolution: 1.49dppx) {
+  :root {
+    /* ─── typography */
+
+    /* ─── typography · font · 低分屏（< 1.5dppx）的正文链：把微软雅黑提到自托管的 Noto Sans SC 前面。
+     * Noto 的 web 切片没有 hinting——Windows（DirectWrite）在 100% / 125% 缩放下小字号中文发虚；雅黑为 ClearType 做过 hinting。
+     * 没装雅黑的系统（macOS / Linux / 移动端）照旧落到 Noto，高分屏的 Windows 也仍用 Noto。雅黑只有 Regular / Bold：500 落 Regular，600 / 800 落 Bold。
+     * 装机的 Source Han Sans SC 仍排最前（与 :root 的链同序）。 */
+    --ak-font-body: "Source Han Sans SC", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "PingFang SC", "HarmonyOS Sans SC", system-ui, -apple-system, sans-serif;
+  }
+}
+
 /* ═══ 高对比偏好：只有亮色吃得到（暗色块选择器特指度更高，压过这里的 :root——沿用原行为；.ak-scope[data-theme="light"] 与 2b′ 同特指度、本块在后，作用域亮色同样吃得到） ═══ */
 @media (prefers-contrast: more) {
   :root,
