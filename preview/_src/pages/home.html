@@ -37,14 +37,29 @@ cats: 首页
 
 /* ── 1. 通用 ── */
 /* 首页整体标了 ak-not-prose（base/typography.css：正文排版规则不进来，链接 color: inherit）。下面这几处要「像正文链接」，自己取链接令牌 */
-.mp-link, .mp-site__links a, .mp-section .ak-heading__aside a { color: var(--ak-link); }
-.mp-link:hover, .mp-site__links a:hover, .mp-section .ak-heading__aside a:hover { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; }
+.mp-link, .mp-site__links a, .mp-section .ak-heading__aside :is(a, .mp-a) { color: var(--ak-link); }   /* 标题栏右侧的「干员一览 »」是 .mp-a 格子：颜色给容器，里面的链接 color: inherit 接过去，» 也跟着变色 */
+.mp-link:hover, .mp-site__links a:hover, .mp-section .ak-heading__aside :is(a, .mp-a):hover { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; }
 .mp-section { margin-top: var(--ak-space-10); }
 .mp-section > .ak-heading { margin-top: 0; }
-.mp-section .ak-heading__aside a { font-weight: 600; }
+.mp-section .ak-heading__aside :is(a, .mp-a) { font-weight: 600; }
+.mp-section .ak-heading__aside .ak-chevrons.mp-a:hover::after { transform: translateX(3px); }   /* decor/chevrons.css 的悬停右移只认 a.ak-chevrons */
 .mp ul, .mp ol { list-style: none; margin: 0; padding: 0; }
 .mp li { margin: 0; }
 .mp li::before { display: none !important; }   /* 项目符号是正文的事，首页没有一处是「列表」 */
+/* 整块可点的格子（.mp-a）：结构照 wikitext 能写出来的样子写——wikitext 写不出 <a class>，类名挂在容器上，里面是一条不带类名的真链接 [[目标|…]]（模板照此输出）。
+ *  链接得是个**真盒子**：照抄容器的排法（display 与 flex / grid 的轨道、对齐、间距全部 inherit），铺满容器的内容区，子项排出来与直接放在容器里一样；::after 铺满整个容器（含内边距）接点击。
+ *  不能图省事写 display: contents：没有盒子的 <a> 在 Chromium / WebKit 里不算「按住的链接」（它们沿布局树找链接），拖不出去——拖到标签栏开新标签页失效；右键菜单、中键按 DOM 找，照常能用，所以不容易发现。
+ *  焦点环画在容器上（:has），同原来的 :focus-visible：链接自己的盒子只有内容区那么大；也不画在 ::after 上——格子多半 overflow: hidden，外扩的环会被裁掉 */
+:where(.mp-a) { position: relative; }
+.mp.ak-not-prose .mp-a > a {
+  display: inherit; flex-direction: inherit; flex-wrap: inherit;
+  justify-content: inherit; align-content: inherit; align-items: inherit; justify-items: inherit; row-gap: inherit; column-gap: inherit;
+  grid-template-columns: inherit; grid-template-rows: inherit; grid-template-areas: inherit; grid-auto-flow: inherit; grid-auto-columns: inherit; grid-auto-rows: inherit;
+  flex: 1 1 auto; align-self: stretch; justify-self: stretch; grid-area: 1 / 1 / -1 / -1; box-sizing: border-box; height: 100%;   /* 铺满：flex 主轴 / 交叉轴、网格横跨全部显式轨道；块级容器靠 height: 100% 让子项的百分比高度照旧有参照（.mp-hero__pic 的图） */
+  color: inherit; text-decoration: none; outline: 0;   /* (0,3,1)：压过宿主的 a:visited / a.new:visited / a:focus-visible */
+}
+.mp-a > a::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.mp-a:has(> a:focus-visible) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 
 /* ── 2. Hero：黑色终端块 = Swiper 自动轮播（左）+ 候选列表（右）。
  *  列表就是各张的「页签」（≤ 7 条等分高度；≥ 8 条定高 7.5 行、纵向滚动）：当前行 = 左青条 + 淡青底，**自动播放的进度条长在当前行底边**（2px 青线从左到右填满，满了就切下一张）——「现在在哪 / 下一张是谁 / 还有多久」在同一处读完；
@@ -112,7 +127,7 @@ cats: 首页
 .mp-hero__time { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: var(--mp-hero-fg-muted); }
 .mp-hero__time .ak-countdown > span { min-width: 36px; padding: 3px 5px; }   /* 颜色由容器令牌得到，这里只收尺寸 */
 .mp-hero__time .ak-countdown > span > b { font-size: var(--ak-fs-body-lg); }
-.mp-hero__item:focus-visible, .mp-hero__btn:focus-visible { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的列表项 / 工具栏按钮：焦点环内缩 */
+.mp-hero__pic:has(> a:focus-visible), .mp-hero__item:has(> a:focus-visible), .mp-hero__btn:focus-visible { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的大图 / 列表项 / 工具栏按钮：焦点环内缩 */
 /* 候选列表 */
 .mp-hero__aside { display: flex; flex-direction: column; min-width: 0; }
 .mp-hero__list { --mp-hero-row: 51px; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }   /* 行高下限 = 缩略图 38 + 上下内边距 12 + 底边线 1 */
@@ -148,15 +163,15 @@ cats: 首页
 .mp-events__item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 16px; align-items: center; box-sizing: border-box; min-height: 36px; padding: 3px 10px 3px 14px; color: var(--mp-hero-fg); text-decoration: none; }
 .mp-events__item:hover { background: var(--mp-hero-hover); color: var(--mp-hero-fg-strong); text-decoration: none; }
 .mp-events__item:hover .mp-events__name { text-decoration: underline; text-underline-offset: 3px; }
-.mp-events__item:focus-visible { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边的行：内缩，同候选列表项 */
+.mp-events__item:has(> a:focus-visible) { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边的行：内缩，同候选列表项 */
 .mp-events__name { font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mp-events__time { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .04em; color: var(--mp-hero-fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .mp-events .ak-countdown { gap: 4px; }
 .mp-events .ak-countdown > span { min-width: 34px; padding: 2px 4px; }   /* 比幻灯片里的小一号：行高 36px 档 */
 .mp-events .ak-countdown > span > b { font-size: var(--ak-fs-sm); }
 .mp-events .ak-countdown > span > small { font-size: 8px; line-height: 1.2; }
-.mp-events__item > .ak-icon { width: 16px; height: 16px; color: var(--mp-hero-fg-subtle); transition: transform var(--ak-dur-fast); }
-.mp-events__item:hover > .ak-icon { transform: translateX(3px); color: var(--mp-hero-fg-strong); }   /* 同 .ak-chevrons 的悬停右移 */
+.mp-events__item .ak-icon { width: 16px; height: 16px; color: var(--mp-hero-fg-subtle); transition: transform var(--ak-dur-fast); }
+.mp-events__item:hover .ak-icon { transform: translateX(3px); color: var(--mp-hero-fg-strong); }   /* 同 .ak-chevrons 的悬停右移 */
 
 /* ── 3. 入口网格：12 个（现网 mpbutton）——主题色面 + 白线稿图标（亮色反相），悬停黑白反转（游戏 btn_on / off）── */
 .mp-nav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: var(--ak-space-6); }
@@ -169,7 +184,6 @@ cats: 首页
 .mp-nav__tile:hover { background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); border-color: var(--ak-bg-inverse); text-decoration: none; }
 .mp-nav__tile:hover::before { opacity: 1; }
 .mp-nav__tile:hover .mp-nav__en { color: inherit; opacity: .6; }
-.mp-nav__tile:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 
 /* ── 4. 今日信息：资源收集（左）+ 时间面板（右）── */
 /* 今日信息 = 一张卡：左「物资筹备 / 芯片搜索」· 右时钟 + 周常倒计时（竖线隔开）· 底部补充说明通栏（横线隔开）；三块不各自成面板——同一时刻的信息没必要拆成三个框 */
@@ -368,7 +382,7 @@ cats: 首页
     <div class="swiper mp-hero__swiper" id="mp-hero-swiper">
       <div class="swiper-wrapper">
       <div class="swiper-slide mp-hero__slide">
-        <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-qixiang.jpg" alt=""><img src="assets/mainpage/banner-qixiang.jpg" alt=""></a>
+        <div class="mp-hero__pic mp-a"><a href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-qixiang.jpg" alt=""><img src="assets/mainpage/banner-qixiang.jpg" alt=""></a></div>
         <div class="mp-hero__caption">
           <div>
             <div class="mp-hero__eyebrow"><span>限时活动 · Event</span></div>
@@ -378,7 +392,7 @@ cats: 首页
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
-        <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-xu2026.jpg" alt=""><img src="assets/mainpage/banner-xu2026.jpg" alt=""></a>
+        <div class="mp-hero__pic mp-a"><a href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-xu2026.jpg" alt=""><img src="assets/mainpage/banner-xu2026.jpg" alt=""></a></div>
         <div class="mp-hero__caption">
           <div>
             <div class="mp-hero__eyebrow"><span>活动预告 · Preview</span><span class="ak-tag ak-tag--sm ak-tag--new">预告</span></div>
@@ -388,7 +402,7 @@ cats: 首页
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
-        <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-ra-anchor.jpg" alt=""><img src="assets/mainpage/banner-ra-anchor.jpg" alt=""></a>
+        <div class="mp-hero__pic mp-a"><a href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-ra-anchor.jpg" alt=""><img src="assets/mainpage/banner-ra-anchor.jpg" alt=""></a></div>
         <div class="mp-hero__caption">
           <div>
             <div class="mp-hero__eyebrow"><span>生息演算 · Reclamation Algorithm</span></div>
@@ -398,7 +412,7 @@ cats: 首页
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
-        <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-is6.jpg" alt=""><img src="assets/mainpage/banner-is6.jpg" alt=""></a>
+        <div class="mp-hero__pic mp-a"><a href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-is6.jpg" alt=""><img src="assets/mainpage/banner-is6.jpg" alt=""></a></div>
         <div class="mp-hero__caption">
           <div>
             <div class="mp-hero__eyebrow"><span>集成战略 · Integrated Strategies</span></div>
@@ -408,7 +422,7 @@ cats: 首页
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
-        <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-core14.jpg" alt=""><img src="assets/mainpage/banner-gacha-core14.jpg" alt=""></a>
+        <div class="mp-hero__pic mp-a"><a href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-core14.jpg" alt=""><img src="assets/mainpage/banner-gacha-core14.jpg" alt=""></a></div>
         <div class="mp-hero__caption">
           <div>
             <div class="mp-hero__eyebrow"><span>寻访 · 中坚甄选</span></div>
@@ -418,7 +432,7 @@ cats: 首页
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
-        <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-joint23.jpg" alt=""><img src="assets/mainpage/banner-gacha-joint23.jpg" alt=""></a>
+        <div class="mp-hero__pic mp-a"><a href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-joint23.jpg" alt=""><img src="assets/mainpage/banner-gacha-joint23.jpg" alt=""></a></div>
         <div class="mp-hero__caption">
           <div>
             <div class="mp-hero__eyebrow"><span>寻访 · 联合行动</span></div>
@@ -428,7 +442,7 @@ cats: 首页
         </div>
       </div>
       <div class="swiper-slide mp-hero__slide">
-        <a class="mp-hero__pic" href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""><img src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""></a>
+        <div class="mp-hero__pic mp-a"><a href="#"><img class="mp-hero__bg" src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""><img src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""></a></div>
         <div class="mp-hero__caption">
           <div>
             <div class="mp-hero__eyebrow"><span>寻访 · 干员轮换</span></div>
@@ -442,13 +456,13 @@ cats: 首页
   </div>
   <div class="mp-hero__aside">
     <ol class="mp-hero__list" id="mp-hero-list">
-    <li class="is-active"><a class="mp-hero__item" href="#" aria-current="true"><img class="mp-hero__thumb" src="assets/mainpage/banner-qixiang.jpg" alt=""><span><span class="mp-hero__kind">限时活动</span><span class="mp-hero__name">奇象巡展</span></span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-xu2026.jpg" alt=""><span><span class="mp-hero__kind">活动预告</span><span class="mp-hero__name">墟2026</span></span><span class="ak-tag ak-tag--sm ak-tag--new">预告</span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-ra-anchor.jpg" alt=""><span><span class="mp-hero__kind">生息演算</span><span class="mp-hero__name">重启锚点</span></span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-is6.jpg" alt=""><span><span class="mp-hero__kind">集成战略</span><span class="mp-hero__name">沉沦者的黑流树海</span></span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-core14.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 中坚甄选</span><span class="mp-hero__name">中坚甄选 14</span></span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-joint23.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 联合行动</span><span class="mp-hero__name">联合行动 23</span></span></a></li>
-    <li><a class="mp-hero__item" href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 干员轮换</span><span class="mp-hero__name">干员轮换卡池 191</span></span></a></li>
+    <li class="is-active"><div class="mp-hero__item mp-a"><a href="#" aria-current="true"><img class="mp-hero__thumb" src="assets/mainpage/banner-qixiang.jpg" alt=""><span><span class="mp-hero__kind">限时活动</span><span class="mp-hero__name">奇象巡展</span></span></a></div></li>
+    <li><div class="mp-hero__item mp-a"><a href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-xu2026.jpg" alt=""><span><span class="mp-hero__kind">活动预告</span><span class="mp-hero__name">墟2026</span></span><span class="ak-tag ak-tag--sm ak-tag--new">预告</span></a></div></li>
+    <li><div class="mp-hero__item mp-a"><a href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-ra-anchor.jpg" alt=""><span><span class="mp-hero__kind">生息演算</span><span class="mp-hero__name">重启锚点</span></span></a></div></li>
+    <li><div class="mp-hero__item mp-a"><a href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-is6.jpg" alt=""><span><span class="mp-hero__kind">集成战略</span><span class="mp-hero__name">沉沦者的黑流树海</span></span></a></div></li>
+    <li><div class="mp-hero__item mp-a"><a href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-core14.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 中坚甄选</span><span class="mp-hero__name">中坚甄选 14</span></span></a></div></li>
+    <li><div class="mp-hero__item mp-a"><a href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-joint23.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 联合行动</span><span class="mp-hero__name">联合行动 23</span></span></a></div></li>
+    <li><div class="mp-hero__item mp-a"><a href="#"><img class="mp-hero__thumb" src="assets/mainpage/banner-gacha-rotate191.jpg" alt=""><span><span class="mp-hero__kind">寻访 · 干员轮换</span><span class="mp-hero__name">干员轮换卡池 191</span></span></a></div></li>
     </ol>
     <div class="mp-hero__bar">
       <span class="mp-hero__count" id="mp-hero-count" aria-live="polite"><b>01</b> / 07</span>
@@ -462,27 +476,27 @@ cats: 首页
   <div class="mp-hero__events">
     <h2 class="mp-events__label"><span class="ak-sr-only">进行中的网页活动</span><span aria-hidden="true">Web Event</span></h2>
     <ul class="mp-events">
-      <li><a class="mp-events__item" href="#"><span class="mp-events__name">信使的工作</span><span class="mp-events__time">08.12 10:00 — 08.25 03:59</span><span class="ak-countdown" data-until="2026-08-25T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></li>
-      <li><a class="mp-events__item" href="#"><span class="mp-events__name">罗德岛录像带</span><span class="mp-events__time">08.20 10:00 — 08.30 03:59</span><span class="ak-countdown" data-until="2026-08-30T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></li>
-      <li><a class="mp-events__item" href="#"><span class="mp-events__name">博士的周年答卷</span><span class="mp-events__time">08.08 16:00 — 09.07 03:59</span><span class="ak-countdown" data-until="2026-09-07T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></li>
+      <li><div class="mp-events__item mp-a"><a href="#"><span class="mp-events__name">信使的工作</span><span class="mp-events__time">08.12 10:00 — 08.25 03:59</span><span class="ak-countdown" data-until="2026-08-25T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></div></li>
+      <li><div class="mp-events__item mp-a"><a href="#"><span class="mp-events__name">罗德岛录像带</span><span class="mp-events__time">08.20 10:00 — 08.30 03:59</span><span class="ak-countdown" data-until="2026-08-30T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></div></li>
+      <li><div class="mp-events__item mp-a"><a href="#"><span class="mp-events__name">博士的周年答卷</span><span class="mp-events__time">08.08 16:00 — 09.07 03:59</span><span class="ak-countdown" data-until="2026-09-07T03:59:00+08:00"></span><svg class="ak-icon" aria-hidden="true"><use href="#i-chev-r"/></svg></a></div></li>
     </ul>
   </div>
 </section>
 
 <!-- ═══ 2. 入口网格（现网 12 个 mpbutton，图标同一套）═══ -->
 <nav class="mp-nav" aria-label="主要入口">
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/operators.png" alt=""><span class="mp-nav__zh">干员档案</span><span class="mp-nav__en">Operators</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/enemies.png" alt=""><span class="mp-nav__zh">敌人档案</span><span class="mp-nav__en">Enemies</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/depot.png" alt=""><span class="mp-nav__zh">道具资料</span><span class="mp-nav__en">Depot</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/logistics.png" alt=""><span class="mp-nav__zh">后勤技能</span><span class="mp-nav__en">Logistics</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/operations.png" alt=""><span class="mp-nav__zh">关卡一览</span><span class="mp-nav__en">Operations</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/stories.png" alt=""><span class="mp-nav__zh">剧情记录</span><span class="mp-nav__en">Stories</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/furniture.png" alt=""><span class="mp-nav__zh">家具一览</span><span class="mp-nav__en">Furniture</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/outfits.png" alt=""><span class="mp-nav__zh">时装回廊</span><span class="mp-nav__en">Outfits</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/store.png" alt=""><span class="mp-nav__zh">采购中心</span><span class="mp-nav__en">Store</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/headhunts.png" alt=""><span class="mp-nav__zh">卡池一览</span><span class="mp-nav__en">Headhunts</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/events.png" alt=""><span class="mp-nav__zh">活动一览</span><span class="mp-nav__en">Events</span></a>
-  <a class="mp-nav__tile" href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/recruit.png" alt=""><span class="mp-nav__zh">公招计算</span><span class="mp-nav__en">Recruit</span></a>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/operators.png" alt=""><span class="mp-nav__zh">干员档案</span><span class="mp-nav__en">Operators</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/enemies.png" alt=""><span class="mp-nav__zh">敌人档案</span><span class="mp-nav__en">Enemies</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/depot.png" alt=""><span class="mp-nav__zh">道具资料</span><span class="mp-nav__en">Depot</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/logistics.png" alt=""><span class="mp-nav__zh">后勤技能</span><span class="mp-nav__en">Logistics</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/operations.png" alt=""><span class="mp-nav__zh">关卡一览</span><span class="mp-nav__en">Operations</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/stories.png" alt=""><span class="mp-nav__zh">剧情记录</span><span class="mp-nav__en">Stories</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/furniture.png" alt=""><span class="mp-nav__zh">家具一览</span><span class="mp-nav__en">Furniture</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/outfits.png" alt=""><span class="mp-nav__zh">时装回廊</span><span class="mp-nav__en">Outfits</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/store.png" alt=""><span class="mp-nav__zh">采购中心</span><span class="mp-nav__en">Store</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/headhunts.png" alt=""><span class="mp-nav__zh">卡池一览</span><span class="mp-nav__en">Headhunts</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/events.png" alt=""><span class="mp-nav__zh">活动一览</span><span class="mp-nav__en">Events</span></a></div>
+  <div class="mp-nav__tile mp-a"><a href="#"><img class="mp-nav__icon" src="assets/mainpage/nav/recruit.png" alt=""><span class="mp-nav__zh">公招计算</span><span class="mp-nav__en">Recruit</span></a></div>
 </nav>
 
 <!-- ═══ 3. 今日信息 ═══ -->
@@ -498,20 +512,20 @@ cats: 首页
       <div class="mp-res-group">
         <span class="ak-overline mp-label">物资筹备</span>
         <div class="mp-res-grid mp-res-grid--5">
-          <a class="mp-res is-open" href="#" data-days="1234567"><span class="mp-res__icon"><img src="assets/item/2004.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">作战记录</span></span><span class="mp-res__days mp-res__days--always" aria-hidden="true">常时开放</span><span class="mp-res__state">常时开放</span></a>
-          <a class="mp-res is-open" href="#" data-days="2357"><span class="mp-res__icon"><img src="assets/item/3303.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">技巧概要</span></span><span class="mp-res__days" aria-hidden="true"><i>一</i><i class="on">二</i><i class="on">三</i><i>四</i><i class="on">五</i><i>六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a>
-          <a class="mp-res is-open" href="#" data-days="2467"><span class="mp-res__icon"><img src="assets/item/4001.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">龙门币</span></span><span class="mp-res__days" aria-hidden="true"><i>一</i><i class="on">二</i><i>三</i><i class="on">四</i><i>五</i><i class="on">六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a>
-          <a class="mp-res is-open" href="#" data-days="1467"><span class="mp-res__icon"><img src="assets/item/4006.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">采购凭证</span></span><span class="mp-res__days" aria-hidden="true"><i class="on">一</i><i>二</i><i>三</i><i class="on">四</i><i>五</i><i class="on">六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a>
-          <a class="mp-res" href="#" data-days="1356"><span class="mp-res__icon"><img src="assets/mainpage/item-3113.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">碳</span></span><span class="mp-res__days" aria-hidden="true"><i class="on">一</i><i>二</i><i class="on">三</i><i>四</i><i class="on">五</i><i class="on">六</i><i class="today">日</i></span><span class="mp-res__state">今日未开放</span></a>
+          <div class="mp-res is-open mp-a" data-days="1234567"><a href="#"><span class="mp-res__icon"><img src="assets/item/2004.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">作战记录</span></span><span class="mp-res__days mp-res__days--always" aria-hidden="true">常时开放</span><span class="mp-res__state">常时开放</span></a></div>
+          <div class="mp-res is-open mp-a" data-days="2357"><a href="#"><span class="mp-res__icon"><img src="assets/item/3303.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">技巧概要</span></span><span class="mp-res__days" aria-hidden="true"><i>一</i><i class="on">二</i><i class="on">三</i><i>四</i><i class="on">五</i><i>六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a></div>
+          <div class="mp-res is-open mp-a" data-days="2467"><a href="#"><span class="mp-res__icon"><img src="assets/item/4001.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">龙门币</span></span><span class="mp-res__days" aria-hidden="true"><i>一</i><i class="on">二</i><i>三</i><i class="on">四</i><i>五</i><i class="on">六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a></div>
+          <div class="mp-res is-open mp-a" data-days="1467"><a href="#"><span class="mp-res__icon"><img src="assets/item/4006.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">采购凭证</span></span><span class="mp-res__days" aria-hidden="true"><i class="on">一</i><i>二</i><i>三</i><i class="on">四</i><i>五</i><i class="on">六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a></div>
+          <div class="mp-res mp-a" data-days="1356"><a href="#"><span class="mp-res__icon"><img src="assets/mainpage/item-3113.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">碳</span></span><span class="mp-res__days" aria-hidden="true"><i class="on">一</i><i>二</i><i class="on">三</i><i>四</i><i class="on">五</i><i class="on">六</i><i class="today">日</i></span><span class="mp-res__state">今日未开放</span></a></div>
         </div>
       </div>
       <div class="mp-res-group">
         <span class="ak-overline mp-label">芯片搜索</span>
         <div class="mp-res-grid mp-res-grid--4">
-          <a class="mp-res is-open" href="#" data-days="2367"><span class="mp-res__icon"><img src="assets/item/3223.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">近卫 & 特种</span></span><span class="mp-res__days" aria-hidden="true"><i>一</i><i class="on">二</i><i class="on">三</i><i>四</i><i>五</i><i class="on">六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a>
-          <a class="mp-res is-open" href="#" data-days="1457"><span class="mp-res__icon"><img src="assets/item/3233.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">重装 & 医疗</span></span><span class="mp-res__days" aria-hidden="true"><i class="on">一</i><i>二</i><i>三</i><i class="on">四</i><i class="on">五</i><i>六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a>
-          <a class="mp-res is-open" href="#" data-days="3467"><span class="mp-res__icon"><img src="assets/item/3213.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">先锋 & 辅助</span></span><span class="mp-res__days" aria-hidden="true"><i>一</i><i>二</i><i class="on">三</i><i class="on">四</i><i>五</i><i class="on">六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a>
-          <a class="mp-res" href="#" data-days="1256"><span class="mp-res__icon"><img src="assets/item/3243.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">狙击 & 术师</span></span><span class="mp-res__days" aria-hidden="true"><i class="on">一</i><i class="on">二</i><i>三</i><i>四</i><i class="on">五</i><i class="on">六</i><i class="today">日</i></span><span class="mp-res__state">今日未开放</span></a>
+          <div class="mp-res is-open mp-a" data-days="2367"><a href="#"><span class="mp-res__icon"><img src="assets/item/3223.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">近卫 & 特种</span></span><span class="mp-res__days" aria-hidden="true"><i>一</i><i class="on">二</i><i class="on">三</i><i>四</i><i>五</i><i class="on">六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a></div>
+          <div class="mp-res is-open mp-a" data-days="1457"><a href="#"><span class="mp-res__icon"><img src="assets/item/3233.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">重装 & 医疗</span></span><span class="mp-res__days" aria-hidden="true"><i class="on">一</i><i>二</i><i>三</i><i class="on">四</i><i class="on">五</i><i>六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a></div>
+          <div class="mp-res is-open mp-a" data-days="3467"><a href="#"><span class="mp-res__icon"><img src="assets/item/3213.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">先锋 & 辅助</span></span><span class="mp-res__days" aria-hidden="true"><i>一</i><i>二</i><i class="on">三</i><i class="on">四</i><i>五</i><i class="on">六</i><i class="on today">日</i></span><span class="mp-res__state">今日开放</span></a></div>
+          <div class="mp-res mp-a" data-days="1256"><a href="#"><span class="mp-res__icon"><img src="assets/item/3243.png" alt=""></span><span class="mp-res__body"><span class="mp-res__name">狙击 & 术师</span></span><span class="mp-res__days" aria-hidden="true"><i class="on">一</i><i class="on">二</i><i>三</i><i>四</i><i class="on">五</i><i class="on">六</i><i class="today">日</i></span><span class="mp-res__state">今日未开放</span></a></div>
         </div>
       </div>
     </div>
@@ -536,46 +550,46 @@ cats: 首页
 
 <!-- ═══ 4. 亮点干员 ═══ -->
 <section class="mp-section" id="mp-ops" aria-labelledby="mp-ops-h">
-  <div class="ak-heading"><h2 class="ak-heading__title" id="mp-ops-h">亮点干员</h2><span class="ak-heading__en">Operators</span><span class="ak-heading__aside"><a class="ak-chevrons" href="operators.html">干员一览</a></span></div>
+  <div class="ak-heading"><h2 class="ak-heading__title" id="mp-ops-h">亮点干员</h2><span class="ak-heading__en">Operators</span><span class="ak-heading__aside"><span class="ak-chevrons mp-a"><a href="operators.html">干员一览</a></span></span></div>
   <div class="mp-ops">
     <div class="mp-ops__group">
       <div class="mp-ops__title"><svg class="ak-icon"><use href="#i-cake"/></svg><span class="cn">今天生日</span>Birthday</div>
       <div class="mp-ops__row">
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="4"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/haimo.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_warrior.png" alt="近卫"></span></span><span class="ak-op-card__name">海沫<span class="ak-op-card__sub">8 · 23</span></span></a>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/haimo.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_warrior.png" alt="近卫"></span></span><span class="ak-op-card__name">海沫<span class="ak-op-card__sub">8 · 23</span></span></a></div>
       </div>
     </div>
     <div class="mp-ops__group">
       <div class="mp-ops__title"><svg class="ak-icon"><use href="#i-plus-user"/></svg><span class="cn">近期新增</span>New</div>
       <div class="mp-ops__row">
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="5"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/shanbi.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_tank.png" alt="重装"></span></span><span class="ak-op-card__name">珊比<span class="ak-op-card__sub">重装 · 五星</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="5"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/angelina-wish.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_special.png" alt="特种"></span></span><span class="ak-op-card__name">予愿安洁莉娜<span class="ak-op-card__sub">特种 · 五星</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="4"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/shixi.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_caster.png" alt="术师"></span></span><span class="ak-op-card__name">时隙<span class="ak-op-card__sub">术师 · 四星</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="4"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/jiaxinta.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span></span><span class="ak-op-card__name">嘉辛塔<span class="ak-op-card__sub">先锋 · 四星</span></span></a>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="5"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/shanbi.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_tank.png" alt="重装"></span></span><span class="ak-op-card__name">珊比<span class="ak-op-card__sub">重装 · 五星</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="5"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/angelina-wish.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_special.png" alt="特种"></span></span><span class="ak-op-card__name">予愿安洁莉娜<span class="ak-op-card__sub">特种 · 五星</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/shixi.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_caster.png" alt="术师"></span></span><span class="ak-op-card__name">时隙<span class="ak-op-card__sub">术师 · 四星</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/jiaxinta.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span></span><span class="ak-op-card__name">嘉辛塔<span class="ak-op-card__sub">先锋 · 四星</span></span></a></div>
       </div>
     </div>
     <div class="mp-ops__group">
       <div class="mp-ops__title"><svg class="ak-icon"><use href="#i-ticket"/></svg><span class="cn">凭证兑换</span>Exchange</div>
       <div class="mp-ops__row">
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="5"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/logos.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_caster.png" alt="术师"></span><span class="ak-tag ak-tag--sm ak-tag--yellow mp-ops__badge">兑</span></span><span class="ak-op-card__name">逻各斯<span class="ak-op-card__sub">黄票兑换</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="4"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/xiaoge.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span><span class="ak-tag ak-tag--sm ak-tag--yellow mp-ops__badge">兑</span></span><span class="ak-op-card__name">晓歌<span class="ak-op-card__sub">黄票兑换</span></span></a>
-        <a class="mp-ops__cta" href="#"><svg class="ak-icon"><use href="#i-target"/></svg><b>中坚甄选</b><small>进行中</small></a>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="5"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/logos.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_caster.png" alt="术师"></span><span class="ak-tag ak-tag--sm ak-tag--yellow mp-ops__badge">兑</span></span><span class="ak-op-card__name">逻各斯<span class="ak-op-card__sub">黄票兑换</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/xiaoge.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span><span class="ak-tag ak-tag--sm ak-tag--yellow mp-ops__badge">兑</span></span><span class="ak-op-card__name">晓歌<span class="ak-op-card__sub">黄票兑换</span></span></a></div>
+        <div class="mp-ops__cta mp-a"><a href="#"><svg class="ak-icon"><use href="#i-target"/></svg><b>中坚甄选</b><small>进行中</small></a></div>
       </div>
     </div>
     <div class="mp-ops__group">
       <div class="mp-ops__title"><svg class="ak-icon"><use href="#i-outfit"/></svg><span class="cn">新增时装</span>Outfits</div>
       <div class="mp-ops__row">
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="4"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/songtong-skin1.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span></span><span class="ak-op-card__name">松桐<span class="ak-op-card__sub">时装 · 新</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="3"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/yunji-skin1.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_2.png" alt="三星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_special.png" alt="特种"></span></span><span class="ak-op-card__name">云迹<span class="ak-op-card__sub">时装 · 新</span></span></a>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/songtong-skin1.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span></span><span class="ak-op-card__name">松桐<span class="ak-op-card__sub">时装 · 新</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="3"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/yunji-skin1.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_2.png" alt="三星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_special.png" alt="特种"></span></span><span class="ak-op-card__name">云迹<span class="ak-op-card__sub">时装 · 新</span></span></a></div>
       </div>
     </div>
     <div class="mp-ops__group">
       <div class="mp-ops__title"><svg class="ak-icon"><use href="#i-chip"/></svg><span class="cn">新增模组</span>Modules</div>
       <div class="mp-ops__row">
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="5"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/shanbi-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_tank.png" alt="重装"></span><span class="mp-mod"><img src="assets/mainpage/module/prp-x.png" alt="PRP-X"></span></span><span class="ak-op-card__name">珊比<span class="ak-op-card__sub">出发的勇气</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="4"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/jiaxinta-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span><span class="mp-mod"><img src="assets/mainpage/module/bea-x.png" alt="BEA-X"></span></span><span class="ak-op-card__name">嘉辛塔<span class="ak-op-card__sub">弹射起步</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="4"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/shixi-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_caster.png" alt="术师"></span><span class="mp-mod"><img src="assets/mainpage/module/fun-x.png" alt="FUN-X"></span></span><span class="ak-op-card__name">时隙<span class="ak-op-card__sub">突发性创造思维</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="6"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/fiammetta-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt="六星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_sniper.png" alt="狙击"></span><span class="mp-mod"><img src="assets/mainpage/module/isw-a.png" alt="ISW-A"></span></span><span class="ak-op-card__name">菲亚梅塔<span class="ak-op-card__sub">特限证章</span></span></a>
-        <a class="ak-op-card ak-op-card--sm" href="#" data-rarity="6"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/gavial-alter-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt="六星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_warrior.png" alt="近卫"></span><span class="mp-mod"><img src="assets/mainpage/module/ra-a.png" alt="RA-A"></span></span><span class="ak-op-card__name">百炼嘉维尔<span class="ak-op-card__sub">特限证章</span></span></a>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="5"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/shanbi-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_tank.png" alt="重装"></span><span class="mp-mod"><img src="assets/mainpage/module/prp-x.png" alt="PRP-X"></span></span><span class="ak-op-card__name">珊比<span class="ak-op-card__sub">出发的勇气</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/jiaxinta-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span><span class="mp-mod"><img src="assets/mainpage/module/bea-x.png" alt="BEA-X"></span></span><span class="ak-op-card__name">嘉辛塔<span class="ak-op-card__sub">弹射起步</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/shixi-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_caster.png" alt="术师"></span><span class="mp-mod"><img src="assets/mainpage/module/fun-x.png" alt="FUN-X"></span></span><span class="ak-op-card__name">时隙<span class="ak-op-card__sub">突发性创造思维</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="6"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/fiammetta-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt="六星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_sniper.png" alt="狙击"></span><span class="mp-mod"><img src="assets/mainpage/module/isw-a.png" alt="ISW-A"></span></span><span class="ak-op-card__name">菲亚梅塔<span class="ak-op-card__sub">特限证章</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="6"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/gavial-alter-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt="六星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_warrior.png" alt="近卫"></span><span class="mp-mod"><img src="assets/mainpage/module/ra-a.png" alt="RA-A"></span></span><span class="ak-op-card__name">百炼嘉维尔<span class="ak-op-card__sub">特限证章</span></span></a></div>
       </div>
     </div>
   </div>
@@ -583,7 +597,7 @@ cats: 首页
 
 <!-- ═══ 5. 近期新增 ═══ -->
 <section class="mp-section" id="mp-recent" aria-labelledby="mp-recent-h">
-  <div class="ak-heading"><h2 class="ak-heading__title" id="mp-recent-h">近期新增</h2><span class="ak-heading__en">Recently added</span><span class="ak-heading__aside"><a class="ak-chevrons" href="#">最近更改</a></span></div>
+  <div class="ak-heading"><h2 class="ak-heading__title" id="mp-recent-h">近期新增</h2><span class="ak-heading__en">Recently added</span><span class="ak-heading__aside"><span class="ak-chevrons mp-a"><a href="#">最近更改</a></span></span></div>
   <div class="mp-recent">
     <div class="ak-panel">
       <div class="ak-panel__head"><h3 class="ak-panel__title">新增关卡<span class="ak-en">Operations</span></h3></div>
@@ -592,49 +606,49 @@ cats: 首页
           <h4>SideStory「直到大地变成一颗酸橙」<span class="ak-en">TO</span></h4>
           <div class="mp-stages__chapter">踏上归家长途</div>
           <div class="mp-stages__grid">
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-EX-1</span><span class="ak-stage__name">电影防沉迷</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-EX-2</span><span class="ak-stage__name">邮包流水线</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-EX-3</span><span class="ak-stage__name">地下捉迷藏</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-EX-4</span><span class="ak-stage__name">处处是一撮毛</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-EX-5</span><span class="ak-stage__name">“勒柄嘘混”</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-EX-6</span><span class="ak-stage__name">信使？术师！</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-EX-7</span><span class="ak-stage__name">卡特斯三个窝</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-EX-8</span><span class="ak-stage__name">有袋鼷兽奇遇</span></a>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-EX-1</span><span class="ak-stage__name">电影防沉迷</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-EX-2</span><span class="ak-stage__name">邮包流水线</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-EX-3</span><span class="ak-stage__name">地下捉迷藏</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-EX-4</span><span class="ak-stage__name">处处是一撮毛</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-EX-5</span><span class="ak-stage__name">“勒柄嘘混”</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-EX-6</span><span class="ak-stage__name">信使？术师！</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-EX-7</span><span class="ak-stage__name">卡特斯三个窝</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-EX-8</span><span class="ak-stage__name">有袋鼷兽奇遇</span></a></div>
           </div>
           <div class="mp-stages__chapter">眺望待行之路</div>
           <div class="mp-stages__grid">
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-S-1</span><span class="ak-stage__name">邮箱保卫战</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-S-2</span><span class="ak-stage__name">通行新选择</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-S-3</span><span class="ak-stage__name">交通管理员</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-S-4</span><span class="ak-stage__name">“家族聚会”</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">TO-MO-1</span><span class="ak-stage__name">大涌泉镇盛宴</span></a>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-S-1</span><span class="ak-stage__name">邮箱保卫战</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-S-2</span><span class="ak-stage__name">通行新选择</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-S-3</span><span class="ak-stage__name">交通管理员</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-S-4</span><span class="ak-stage__name">“家族聚会”</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">TO-MO-1</span><span class="ak-stage__name">大涌泉镇盛宴</span></a></div>
           </div>
         </div>
         <div class="mp-stages__event">
           <h4>奇象巡展<span class="ak-en">EE · ECB</span></h4>
           <div class="mp-stages__grid">
-            <a class="ak-stage" href="#"><span class="ak-stage__code">EE-01</span><span class="ak-stage__name">奇象收录时间！</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">EE-02</span><span class="ak-stage__name">奇象收录时间！</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">EE-03</span><span class="ak-stage__name">奇象收录时间！</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">EE-04</span><span class="ak-stage__name">奇象收录时间！</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">EE-05</span><span class="ak-stage__name">奇象收录时间！</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">ECB-S01</span><span class="ak-stage__name">奇象拟合对战场</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">ECB-S02</span><span class="ak-stage__name">奇象拟合对战场</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">ECB-S03</span><span class="ak-stage__name">奇象拟合对战场</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">ECB-M01</span><span class="ak-stage__name">奇象拟合对战场</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">ECB-M02</span><span class="ak-stage__name">奇象拟合对战场</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">ECB-M03</span><span class="ak-stage__name">奇象拟合对战场</span></a>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">EE-01</span><span class="ak-stage__name">奇象收录时间！</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">EE-02</span><span class="ak-stage__name">奇象收录时间！</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">EE-03</span><span class="ak-stage__name">奇象收录时间！</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">EE-04</span><span class="ak-stage__name">奇象收录时间！</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">EE-05</span><span class="ak-stage__name">奇象收录时间！</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">ECB-S01</span><span class="ak-stage__name">奇象拟合对战场</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">ECB-S02</span><span class="ak-stage__name">奇象拟合对战场</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">ECB-S03</span><span class="ak-stage__name">奇象拟合对战场</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">ECB-M01</span><span class="ak-stage__name">奇象拟合对战场</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">ECB-M02</span><span class="ak-stage__name">奇象拟合对战场</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">ECB-M03</span><span class="ak-stage__name">奇象拟合对战场</span></a></div>
           </div>
         </div>
         <div class="mp-stages__event">
           <h4>保全派驻 #12「废都安保派驻」<span class="ak-en">LT</span></h4>
           <div class="mp-stages__grid">
-            <a class="ak-stage" href="#"><span class="ak-stage__code">LT-1</span><span class="ak-stage__name">铁锈闸口</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">LT-2</span><span class="ak-stage__name">崩塌通道</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">LT-3</span><span class="ak-stage__name">躁动阶梯</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">LT-4</span><span class="ak-stage__name">扭曲图腾</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">LT-5</span><span class="ak-stage__name">刺耳供礼</span></a>
-            <a class="ak-stage" href="#"><span class="ak-stage__code">LT-6</span><span class="ak-stage__name">罪恶终局</span></a>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">LT-1</span><span class="ak-stage__name">铁锈闸口</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">LT-2</span><span class="ak-stage__name">崩塌通道</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">LT-3</span><span class="ak-stage__name">躁动阶梯</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">LT-4</span><span class="ak-stage__name">扭曲图腾</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">LT-5</span><span class="ak-stage__name">刺耳供礼</span></a></div>
+            <div class="ak-stage mp-a"><a href="#"><span class="ak-stage__code">LT-6</span><span class="ak-stage__name">罪恶终局</span></a></div>
           </div>
         </div>
       </div>
@@ -643,11 +657,11 @@ cats: 首页
       <div class="ak-panel__head"><h3 class="ak-panel__title">新增家具<span class="ak-en">Furniture</span></h3></div>
       <div class="ak-panel__body">
         <span class="ak-overline mp-label">主题</span>
-        <a class="mp-furn mp-furn--theme" href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/theme-darkforest.png" alt=""></span><span><span class="mp-furn__name">黑流印象<span class="ak-tag ak-tag--sm ak-tag--outline">主题</span></span><span class="mp-furn__desc">集成战略「沉沦者的黑流树海」主题家具套装。</span></span></a>
+        <div class="mp-furn mp-furn--theme mp-a"><a href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/theme-darkforest.png" alt=""></span><span><span class="mp-furn__name">黑流印象<span class="ak-tag ak-tag--sm ak-tag--outline">主题</span></span><span class="mp-furn__desc">集成战略「沉沦者的黑流树海」主题家具套装。</span></span></a></div>
         <span class="ak-overline mp-label ak-mt-4">单件</span>
-        <a class="mp-furn" href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/messagetree.png" alt=""></span><span><span class="mp-furn__name">“一撮毛”的树状小窝</span><span class="mp-furn__desc ak-clamp-2">根据在南境的见闻，塔妮为“一撮毛”制作的树状小窝。嘉辛塔在上面添了一些彩带装饰，阿梅利亚缠了一个胡萝卜毛线球，不知道它会不会喜欢。</span></span></a>
-        <a class="mp-furn" href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/fruitmedley.png" alt=""></span><span><span class="mp-furn__name">饰牌《百果》</span><span class="mp-furn__desc">只需一口，便可遍尝千种缤纷。</span></span></a>
-        <a class="mp-furn" href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/vanillasoda.png" alt=""></span><span><span class="mp-furn__name">饰牌《清甜》</span><span class="mp-furn__desc">气泡之间，清爽涌现。</span></span></a>
+        <div class="mp-furn mp-a"><a href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/messagetree.png" alt=""></span><span><span class="mp-furn__name">“一撮毛”的树状小窝</span><span class="mp-furn__desc ak-clamp-2">根据在南境的见闻，塔妮为“一撮毛”制作的树状小窝。嘉辛塔在上面添了一些彩带装饰，阿梅利亚缠了一个胡萝卜毛线球，不知道它会不会喜欢。</span></span></a></div>
+        <div class="mp-furn mp-a"><a href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/fruitmedley.png" alt=""></span><span><span class="mp-furn__name">饰牌《百果》</span><span class="mp-furn__desc">只需一口，便可遍尝千种缤纷。</span></span></a></div>
+        <div class="mp-furn mp-a"><a href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/vanillasoda.png" alt=""></span><span><span class="mp-furn__name">饰牌《清甜》</span><span class="mp-furn__desc">气泡之间，清爽涌现。</span></span></a></div>
       </div>
     </div>
   </div>
@@ -662,9 +676,10 @@ cats: 首页
         <div class="mp-site__domains"><span><code>prts.wiki</code><span class="ak-tag ak-tag--sm ak-tag--accent-soft">主要</span></span><span><code>ak.mooncell.wiki</code><span class="ak-tag ak-tag--sm ak-tag--outline">备用</span></span></div>
       </div>
     </div>
-    <div class="ak-card">
+    <!-- skland-hidden：在森空岛 App 里打开时藏掉这张卡（充电 / 打赏入口）。App 侧按这个类名藏，站内没有对应样式 -->
+    <div class="ak-card skland-hidden">
       <div class="ak-card__body"><span class="ak-card__eyebrow">关注 &amp; 支持 · Support</span>
-        <div class="mp-support"><a class="ak-btn ak-btn--sm mp-brand mp-brand--bilibili" href="#"><svg class="ak-icon"><use href="#i-bilibili"/></svg>B站充电</a><a class="ak-btn ak-btn--sm mp-brand mp-brand--wechat" href="#"><svg class="ak-icon"><use href="#i-wechat"/></svg>微信打赏</a><a class="ak-btn ak-btn--sm mp-brand mp-brand--alipay" href="#"><svg class="ak-icon"><use href="#i-alipay"/></svg>支付宝打赏</a></div>
+        <div class="mp-support"><span class="ak-btn ak-btn--sm mp-brand mp-brand--bilibili mp-a"><a href="#"><svg class="ak-icon"><use href="#i-bilibili"/></svg>B站充电</a></span><span class="ak-btn ak-btn--sm mp-brand mp-brand--wechat mp-a"><a href="#"><svg class="ak-icon"><use href="#i-wechat"/></svg>微信打赏</a></span><span class="ak-btn ak-btn--sm mp-brand mp-brand--alipay mp-a"><a href="#"><svg class="ak-icon"><use href="#i-alipay"/></svg>支付宝打赏</a></span></div>
       </div>
     </div>
     <div class="ak-card">
@@ -737,7 +752,7 @@ cats: 首页
       var i = sw.realIndex;
       items.forEach(function (li, j) {
         var on = j === i; li.classList.toggle('is-active', on); li.style.removeProperty('--p');   // 换张（自动 / 手动都算）进度归零
-        var a = li.firstElementChild; if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+        var a = li.querySelector('a'); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
       });
       elapsed = 0;
       if (count) count.innerHTML = '<b>' + pad2(i + 1) + '</b> / ' + pad2(total);

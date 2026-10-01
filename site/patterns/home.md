@@ -27,6 +27,10 @@ title: 首页设计稿
 
 **页面这半**：结构 = `MediaWiki:首页` / `Template:首页` 输出的 `.mp-*`，**最外层标 `ak-not-prose`**（见[设计理念 · prose / not-prose](/foundations/principles#prose-not-prose)）；区块样式 = `Template:首页/styles.css`（TemplateStyles）；Hero 轮播（Swiper）与时钟 / 周常倒计时 / 资源开放状态由 Gadget 按页加载——皮肤不依赖它们，`.ak-countdown` `.ak-panel` `.ak-op-card` 等组件样式已在设计系统层。
 
+**整块可点的格子照 wikitext 能写出来的样子写**：wikitext 写不出 `<a class>`，所以入口格、资源卡、候选列表、干员卡、关卡卡这些「整块是链接」的东西都是「类名在容器上 + 里面一条不带类名的真链接」——`<div class="mp-nav__tile mp-a"><a href>…</a></div>`，模板照此输出 `<div class="mp-nav__tile mp-a">[[干员一览|…]]</div>`。`.mp-a` 让里面的链接照抄容器的排法（display 与 flex / grid 的轨道、对齐、间距全部 `inherit`）、铺满容器，`::after` 铺满整格接点击，焦点环画在容器上（`:has(> a:focus-visible)`）。设计系统组件（`.ak-op-card` `.ak-stage` `.ak-btn` `.ak-chevrons`）也这样放进容器，外观不变。
+
+**链接必须是真盒子，不能用 `display: contents` 偷懒**：没有盒子的 `<a>` 在 Chromium / WebKit 里不算「按住的链接」（它们沿布局树找链接），整格拖不出去——拖到标签栏开新标签页失效；右键菜单和中键按 DOM 找链接，照常能用，所以不容易发现。现网首页第一版就踩了这个坑。轮播大图例外：它在 Swiper 里，按住拖动是滑动切换，本来就拖不出链接，要拖用右侧候选列表。
+
 设计稿里「0. 页面级」那段 CSS 是**静态骨架的补丁**（预览没有「当前是首页」这个状态），选择器按预览骨架写（`.ak-main__inner` / `.ak-page-header__title`），与真皮肤的 DOM 不一致，不要照抄。
 
 ## Hero 轮播
