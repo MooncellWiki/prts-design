@@ -810,6 +810,19 @@ html.skin-theme-clientpref-night,
   --ak-canvas-attachment: scroll;
 }
 
+/* ═══ 低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响） ═══ */
+@media (max-resolution: 1.49dppx) {
+  :root {
+    /* ─── typography */
+
+    /* ─── typography · font · 低分屏（< 1.5dppx）的正文链：把微软雅黑提到自托管的 Noto Sans SC 前面。
+     * Noto 的 web 切片没有 hinting——Windows（DirectWrite）在 100% / 125% 缩放下小字号中文发虚；雅黑为 ClearType 做过 hinting。
+     * 没装雅黑的系统（macOS / Linux / 移动端）照旧落到 Noto，高分屏的 Windows 也仍用 Noto。雅黑只有 Regular / Bold：500 落 Regular，600 / 800 落 Bold。
+     * 装机的 Source Han Sans SC 仍排最前（与 :root 的链同序）。 */
+    --ak-font-body: "Source Han Sans SC", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "PingFang SC", "HarmonyOS Sans SC", system-ui, -apple-system, sans-serif;
+  }
+}
+
 /* ═══ 高对比偏好：只有亮色吃得到（暗色块选择器特指度更高，压过这里的 :root——沿用原行为；.ak-scope[data-theme="light"] 与 2b′ 同特指度、本块在后，作用域亮色同样吃得到） ═══ */
 @media (prefers-contrast: more) {
   :root,
@@ -1774,8 +1787,9 @@ a.ak-card:is(:visited, :hover, :active) { color: var(--ak-fg); }   /* 整张卡�
 .ak-panel__body { padding: var(--ak-space-4); }
 .ak-panel__body > :last-child { margin-bottom: 0; }
 .ak-panel--collapsible > .ak-panel__head { cursor: pointer; }
-.ak-panel--collapsible > .ak-panel__head::after { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform var(--ak-dur-fast); margin-left: auto; opacity: .6; }
-.ak-panel--collapsible.is-collapsed > .ak-panel__head::after { transform: rotate(-45deg); }
+/* 开合记号：收起 ＋ / 展开 −（游戏里的折叠条同）——两条渐变拼成，展开时竖的一条缩没。干员一览的高级筛选钮同一枚；侧栏 / 目录的层级展开仍用 V 形箭头，弹出菜单用 ▾ */
+.ak-panel--collapsible > .ak-panel__head::after { content: ""; flex: none; width: 10px; height: 10px; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 0 no-repeat; transition: background-size var(--ak-dur-fast); margin-left: auto; opacity: .6; }
+.ak-panel--collapsible.is-collapsed > .ak-panel__head::after { background-size: 100% 2px, 2px 100%; }
 .ak-panel--collapsible.is-collapsed > .ak-panel__body { display: none; }
 
 /*! PRTS Design · components/heading.css — Section heading 区块标题 · 依赖：tokens.css */
@@ -3786,13 +3800,9 @@ window.PRTS_CHARLIST = {"date":"2026-09-30","filters":[{"title":"筛选","filter
 .ol-more .ak-en { font-size: 10px; color: var(--ak-fg-subtle); }
 .ol-more__count:empty { display: none; }
 .ol-more__what { flex: 1; min-width: 0; font-weight: 400; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* 右端的开合提示：「展开 / 收起」+ 朝下 / 朝上的箭头（同页内目录钮 .ak-local-nav__chevron）。不用朝右的箭头——整行右端一个 › 读起来像「进下一页」 */
-.ol-more__toggle { flex: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 400; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
-.ol-more:hover .ol-more__toggle { color: var(--ak-fg); }
-.ol-more__toggle::before { content: "展开"; }
-.ol-more[aria-expanded="true"] .ol-more__toggle::before { content: "收起"; }
-.ol-more__toggle::after { content: ""; width: 7px; height: 7px; margin-right: 2px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform var(--ak-dur-fast) var(--ak-ease); }
-.ol-more[aria-expanded="true"] .ol-more__toggle::after { transform: translateY(2px) rotate(-135deg); }
+/* 右端的开合记号：收起 ＋ / 展开 −，同 .ak-panel--collapsible（不用朝右的箭头——整行右端一个 › 读起来像「进下一页」） */
+.ol-more::after { content: ""; flex: none; width: 10px; height: 10px; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat; opacity: .6; transition: background-size var(--ak-dur-fast); }
+.ol-more[aria-expanded="true"]::after { background-size: 100% 2px, 2px 0; }
 /* 高级筛选面板：左页签、右内容 */
 .ol-adv { display: grid; grid-template-columns: max-content minmax(0, 1fr); border-top: 1px solid var(--ak-border); }
 .ol-adv[hidden] { display: none; }
@@ -3809,7 +3819,7 @@ window.PRTS_CHARLIST = {"date":"2026-09-30","filters":[{"title":"筛选","filter
 .ol-adv__panel[data-tab="six"] .ak-chip { min-width: 64px; justify-content: center; box-sizing: border-box; }   /* 六行选项相同：等宽，上下对成列 */
 @media (max-width: 639px) {
   .ol-inline { margin-left: 0; padding-left: 0; border-left: 0; flex-basis: 100%; }
-  .ol-more__what { display: none; } .ol-more__toggle { margin-left: auto; }
+  .ol-more__what { display: none; } .ol-more::after { margin-left: auto; }
   .ol-adv { grid-template-columns: minmax(0, 1fr); }
   .ol-adv__tabs.ak-tabs { flex-direction: row; border-right: 0; border-bottom: 1px solid var(--ak-border); padding: 0 4px; min-width: 0; }
   .ol-adv__tabs .ak-tab { border-left: 0; border-bottom: 3px solid transparent; padding: 8px 10px; gap: 6px; }
@@ -4450,7 +4460,7 @@ window.PRTS_CHARLIST = {"date":"2026-09-30","filters":[{"title":"筛选","filter
     $('#ol-filter').innerHTML = `<div class="ol-rows">
         ${rowHtml('profession', '<span class="ol-hint" id="ol-branch-hint">选了职业可再选分支</span>')}${rowHtml('subProfession')}${rowHtml('rarity', inlineHtml('position'))}
       </div>
-      <button type="button" class="ol-more" id="ol-more" aria-expanded="${adv.open}" aria-controls="ol-adv"><span>高级筛选</span><span class="ak-en">Advanced</span><span class="ol-more__count ak-tag ak-tag--sm ak-tag--accent-soft"></span><span class="ol-more__what">${ADV.map(t => esc(t.id === 'trait' ? t.fields.map(k => byField[k] ? byField[k].title : '').filter(Boolean).join(' · ') : t.title)).join(' · ')}</span><span class="ol-more__toggle" aria-hidden="true"></span></button>
+      <button type="button" class="ol-more" id="ol-more" aria-expanded="${adv.open}" aria-controls="ol-adv"><span>高级筛选</span><span class="ak-en">Advanced</span><span class="ol-more__count ak-tag ak-tag--sm ak-tag--accent-soft"></span><span class="ol-more__what">${ADV.map(t => esc(t.id === 'trait' ? t.fields.map(k => byField[k] ? byField[k].title : '').filter(Boolean).join(' · ') : t.title)).join(' · ')}</span></button>
       <div class="ol-adv" id="ol-adv"${adv.open ? '' : ' hidden'}>
         <div class="ak-tabs ak-tabs--vertical ol-adv__tabs" role="tablist" aria-label="高级筛选分类" aria-orientation="vertical">${ADV.map(t => `<button type="button" class="ak-tab${t.id === adv.tab ? ' is-active' : ''}" role="tab" id="ol-tab-${t.id}" data-tab="${t.id}" aria-selected="${t.id === adv.tab}" aria-controls="ol-panel-${t.id}" tabindex="${t.id === adv.tab ? 0 : -1}">${esc(t.title)}<small></small></button>`).join('')}</div>
         ${ADV.map(t => `<div class="ol-adv__panel" role="tabpanel" id="ol-panel-${t.id}" data-tab="${t.id}" aria-labelledby="ol-tab-${t.id}"${t.id === adv.tab ? '' : ' hidden'}>
