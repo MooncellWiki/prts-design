@@ -195,9 +195,10 @@ lastmod: 2025年3月1日 (六) 00:06
 .ol-table.ak-table { table-layout: fixed; font-size: var(--ak-fs-sm); }
 .ol-table thead th { position: sticky; top: var(--ak-header-h); z-index: 2; padding: 9px 8px; white-space: nowrap; letter-spacing: 0; text-transform: none; }
 .ol-table th.num, .ol-table td.num { text-align: right; }
-.ol-table td { border-bottom: 0; padding: 8px 8px 2px; vertical-align: top; line-height: 1.4; }
+.ol-table td { border-bottom: 0; padding: 8px 8px 5px; vertical-align: top; line-height: 1.4; }
 .ol-table tbody.ol-op { border-top: 1px solid var(--ak-border); }
-.ol-table tbody.ol-op > tr:last-child > td { padding-top: 0; padding-bottom: 9px; }
+.ol-table tbody.ol-op > tr:last-child > td { padding-top: 4px; padding-bottom: 9px; }
+.ol-table td.ol-feature { border-top: 1px solid var(--ak-border-subtle); }   /* 特性行顶上一条弱线：比干员之间的线弱一级，只画在特性格上——不然特性紧贴在「近战位 · 男」下面，像分支列的第三行小字 */
 .ol-table tbody.ol-op > tr:first-child > td[rowspan] { padding-bottom: 9px; }
 .ol-table tbody tr:hover td { background: none; }
 .ol-table tbody.ol-op:hover td { background: var(--ak-bg-hover); }
