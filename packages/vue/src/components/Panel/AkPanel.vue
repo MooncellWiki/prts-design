@@ -19,7 +19,7 @@ const props = withDefaults(
     titleTag?: TitleTag;
     /** 标题栏反转（亮色下黑底白字、暗色下白底黑字，同 .ak-inverse）：公告这类要跳出来的区域 */
     inverse?: boolean;
-    /** 可折叠：点标题栏收起 / 展开正文（右端出现 V 形箭头）；需要有标题 */
+    /** 可折叠：点标题栏收起 / 展开正文（右端出现开合记号：收起 ＋ / 展开 −）；需要有标题 */
     collapsible?: boolean;
   }>(),
   { title: undefined, en: undefined, titleTag: "div" },

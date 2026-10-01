@@ -10,6 +10,7 @@
 .ak-panel__body { padding: var(--ak-space-4); }
 .ak-panel__body > :last-child { margin-bottom: 0; }
 .ak-panel--collapsible > .ak-panel__head { cursor: pointer; }
-.ak-panel--collapsible > .ak-panel__head::after { content: ""; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform var(--ak-dur-fast); margin-left: auto; opacity: .6; }
-.ak-panel--collapsible.is-collapsed > .ak-panel__head::after { transform: rotate(-45deg); }
+/* 开合记号：收起 ＋ / 展开 −（游戏里的折叠条同）——两条渐变拼成，展开时竖的一条缩没。干员一览的高级筛选钮同一枚；侧栏 / 目录的层级展开仍用 V 形箭头，弹出菜单用 ▾ */
+.ak-panel--collapsible > .ak-panel__head::after { content: ""; flex: none; width: 10px; height: 10px; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 0 no-repeat; transition: background-size var(--ak-dur-fast); margin-left: auto; opacity: .6; }
+.ak-panel--collapsible.is-collapsed > .ak-panel__head::after { background-size: 100% 2px, 2px 100%; }
 .ak-panel--collapsible.is-collapsed > .ak-panel__body { display: none; }
