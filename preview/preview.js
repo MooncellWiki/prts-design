@@ -304,6 +304,6 @@
   /* ── Back to top ───────────────────────────────────────────── */
   const fab = $('.ak-fab');
   if (fab) { window.addEventListener('scroll', () => fab.classList.toggle('is-visible', window.scrollY > 600), { passive: true }); fab.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' })); }
-  // 目录浮层里的「回到顶部」（<1400 时替代 .ak-fab）：同样平滑滚动，且不往 URL 里塞 #
+  // 目录浮层里的「回到顶部」（<1400 出现，<1120 时替代 .ak-fab）：同样平滑滚动，且不往 URL 里塞 #
   document.addEventListener('click', e => { if (e.target.closest('.ak-toc__top')) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
 })();

@@ -38,7 +38,7 @@ div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认�
             .ak-page-tools__more > details > summary.ak-page-tools__btn「⋯ 更多」+ .ak-menu.ak-page-tools__card(
                nav.ak-menu__group#p-cactions{{data-actions}}  nav.ak-menu__group#p-tb{{data-toolbox}} )
       aside.ak-toc#ak-toc                       ← 目录：DOM 上属于页面、紧跟标题（≥1400 抬进右侧导轨，<1400 变成二级栏拉下的浮层）
-         a.ak-toc__top「回到顶部」（仅 <1400，届时 .ak-fab 隐藏）
+         a.ak-toc__top「回到顶部」（仅 <1400；<1120 时 .ak-fab 隐藏）
          .ak-toc__inner  .ak-toc__title#ak-toc-label + .ak-toc__progress > i + ul.ak-toc__list[data-toc]   ← 由 data-toc 或 skin.js 生成
       div.ak-body#bodyContent  {{{html-site-notice}}} {{{html-user-message}}} .mw-body-content{{{html-body-content}}}
          ul.ak-body-foot#footer-info {{#data-footer.data-info}}{{#array-items}} li#footer-info-lastmod / -copyright
@@ -46,7 +46,7 @@ div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认�
 <footer class="ak-footer">
    .ak-footer__inner   .ak-footer__brand | .ak-footer__col > h4{{msg-akds-footer-about}} + ul#footer-places {{#data-footer.data-places}}{{#array-items}}
    .ak-footer__bottom  .ak-footer__bottom-text | ul.ak-footer__icons#footer-icons {{#data-footer.data-icons}}{{#array-items}} li#footer-copyrightico / -poweredbyico / …
-button.ak-fab                                   ← 回到顶部（≥1400）
+button.ak-fab                                   ← 回到顶部（≥1120）
 ```
 
 ## 门户与动作簇

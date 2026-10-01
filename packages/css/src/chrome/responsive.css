@@ -4,7 +4,10 @@
 @media (max-width: 1400px) {
   .ak-local-nav { display: flex; }
   .ak-keyart { --_over: calc(var(--ak-header-h) + var(--ak-local-nav-h)); }   /* 头图探到两行页眉的背后，两行玻璃底下是同一幅画 */
-  .ak-fab { display: none; }   /* 回到顶部收进目录浮层，不再浮在内容上 */
+  /* 回到顶部在这一档照常浮在右下（侧栏变抽屉的 < 1120 才收起）；只在目录浮层开着时让位——它的层级（sticky）高于浮层（dropdown），不收会压在浮层上，而浮层首项本来就是「回到顶部」。
+   * :not(.ak-fab--absolute)：滚动区域自己的那枚不归这里管；两条选择器分开写的理由同下面浮层的开合 */
+  :root.ak-toc-open .ak-fab:not(.ak-fab--absolute) { display: none; }
+  body:has(.ak-toc-cb:checked) .ak-fab:not(.ak-fab--absolute) { display: none; }
   .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
   /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
   :root.ak-condensed .ak-header { transform: translateY(calc(-1 * var(--ak-header-h))); }
@@ -47,6 +50,7 @@
 }
 @media (max-width: 1119px) {
   .ak-local-nav__menu { display: inline-flex; }   /* 侧栏变抽屉后才需要这个入口 */
+  .ak-fab { display: none; }   /* 回到顶部只留目录浮层首项那一个，不再浮在内容上（手机 / 平板上浮动按钮太挡视野） */
   .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
   /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截）。
    * 展开时 JS 给 <html> 加 .ak-scroll-lock 锁住页面滚动（VitePress VPSidebar 同）：抽屉自己 overflow-y:auto + overscroll-behavior:contain（沿用导轨态声明），滚到头也不会把页面带着走 */

@@ -8,9 +8,11 @@
  *  无 JS 时用 body:has() 桥接；既无 JS 又不支持 :has() 才退回正文流内的静态卡片。
  *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、收起页眉、点击外部关闭与开着时锁住页面滚动。 */
 .ak-toc { position: absolute; top: 0; right: 0; bottom: 0; width: var(--ak-toc-w); font-size: var(--ak-fs-xs); }
-.ak-toc__inner { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-8)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+/* 限高在底部让出 --ak-toc-clear：默认 = 整页那枚 .ak-fab 占的角落（下边距 space-5 + 44px 按钮 + space-3 间隙）。
+ * 导轨贴着视口右缘时，目录一长（出内滚）末几项就会被回到顶部按钮盖住；让出之后导轨止于按钮上方，短目录不受影响。页面没有 .ak-fab 时可设回 var(--ak-space-2) */
+.ak-toc__inner { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-6) - var(--ak-toc-clear, calc(var(--ak-space-5) + 44px + var(--ak-space-3)))); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .ak-toc__title { display: block; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-theme-accent); }
-.ak-toc__top { display: none; }   /* 浮层首项「回到顶部」：仅 <1400 出现，届时 .ak-fab 隐藏（手机上浮动按钮太挡视野） */
+.ak-toc__top { display: none; }   /* 浮层首项「回到顶部」：仅 <1400 出现；<1120 时 .ak-fab 隐藏、只剩它（手机上浮动按钮太挡视野） */
 .ak-toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--ak-border); }
 .ak-toc ul ul { border-left: 0; }   /* 竖线只画在最外层：子 ul 没有内边距、左缘紧贴父 ul 的边框，再各画 1px 就会在二级条目旁叠成 2px（粗细忽大忽小），二级项的高亮条也跟着右偏 1px；层级靠 a 的 padding-left（22 / 34）表达 */
 .ak-toc li::before { display: none !important; }

@@ -33,7 +33,7 @@ body.skin-arknights
           .ak-body-foot                      最后编辑 · 版权
         #catlinks                            分类栏
   footer.ak-footer                           页脚
-  button.ak-fab                              回到顶部（≥1400）
+  button.ak-fab                              回到顶部（≥1120）
 ```
 
 | 部分 | 文件 | 页面 |

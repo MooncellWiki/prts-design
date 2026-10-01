@@ -5,5 +5,5 @@
 .ak-fab.is-visible { opacity: 1; transform: none; }
 .ak-fab:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
 /* 贴最近的定位祖先右下（Vue 版 AkBackTop position="absolute"：页面里某个滚动区域自己的回到顶部）。
- * 它不是整页那枚，不随 chrome/responsive.css 在 < 1400 收起（那条只为把整页的回到顶部让给目录浮层）；打印照样隐藏 */
+ * 它不是整页那枚，不随 chrome/responsive.css 在 < 1120 收起（那条只为把整页的回到顶部让给目录浮层）；打印照样隐藏 */
 .ak-fab.ak-fab--absolute { position: absolute; display: grid; }

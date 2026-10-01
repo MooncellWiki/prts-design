@@ -6,7 +6,7 @@ import AkIcon from "../Icon/AkIcon.vue";
 
 /**
  * 回到顶部（= Naive 的 NBackTop；CSS 叫 FAB / .ak-fab）：右下角 44px 反色方块，滚过 visibility-height 淡入，点了平滑滚回顶部。
- * 整页那枚由皮肤输出（skin.js 同样 600px 出现），而且 < 1400 时皮肤把它收进目录浮层——Vue 版主要给「页面里某个滚动区域」用：
+ * 整页那枚由皮肤输出（skin.js 同样 600px 出现），而且 < 1120 时皮肤把它收进目录浮层——Vue 版主要给「页面里某个滚动区域」用：
  * position="absolute" + listen-to 指向那个容器。隐藏时 inert：不可点、不进 Tab 顺序、读屏读不到。
  */
 const props = withDefaults(
