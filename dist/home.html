@@ -3400,8 +3400,13 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
 .ak-footer__col ul { list-style: none; margin: 0; padding: 0; }
 .ak-footer__col li { margin: 0 0 8px; }
 .ak-footer__col li::before { display: none !important; }
-.ak-footer a { color: inherit; opacity: .8; font-size: var(--ak-fs-sm); text-decoration: none; }
+/* 链接：字号跟所在区块走——只有链接列是 sm；描述段 / 底栏是 xs 的行文，里面的链接（MW 皮肤里这两处是解析过的 wikitext，可以带 <a>）继承字号。
+ * 此前 font-size 写在 .ak-footer a 上，行文里的链接就比周围文字大一号 */
+.ak-footer a { color: inherit; opacity: .8; text-decoration: none; }
 .ak-footer a:hover { opacity: 1; color: var(--ak-theme-accent); text-decoration: none; }
+.ak-footer__col a { font-size: var(--ak-fs-sm); }
+.ak-footer__brand a, .ak-footer__bottom-text a { opacity: 1; text-decoration: underline; text-underline-offset: 2px; }   /* 容器已降过透明度，链接不再叠一层（.6 × .8 会比正文还淡）；颜色与正文相同，靠下划线区分 */
+.ak-footer__brand a:hover, .ak-footer__bottom-text a:hover { text-decoration: underline; }
 .ak-footer__bottom { border-top: 1px solid rgba(127,127,127,.25); padding: var(--ak-space-4) calc(var(--ak-gutter) + 60px) var(--ak-space-4) var(--ak-gutter); font-size: var(--ak-fs-xs); display: flex; align-items: center; gap: var(--ak-space-3) var(--ak-space-6); flex-wrap: wrap; justify-content: space-between; max-width: 1680px; margin: 0 auto; box-sizing: border-box; }   /* 右内边距为 .ak-fab（44px + 20px 边距）让位，滚到底时不压住徽章 */
 .ak-footer__bottom-text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--ak-space-4); opacity: .6; }
 .ak-footer__bottom-text .ak-en { opacity: .8; }

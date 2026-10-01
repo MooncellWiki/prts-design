@@ -34,6 +34,21 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 </footer>
 ```
 
+## 链接
+
+链接的字号跟所在区块走：链接列是 `--ak-fs-sm`；品牌描述段和底栏文字是 `--ak-fs-xs` 的行文，里面的链接**继承字号**，不再叠透明度（容器已经降到 .6），靠下划线与正文区分。生产皮肤里这两处是解析过的 wikitext（`MediaWiki:Arknights-footer-desc` / `-footer-tagline`），可以直接写链接。
+
+```html demo bare
+<footer class="ak-footer">
+  <div class="ak-footer__inner">
+    <div class="ak-footer__brand"><span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span><p>玩家自建的明日方舟中文维基，<a href="#">a Mooncell project</a>。</p></div>
+  </div>
+  <div class="ak-footer__bottom">
+    <div class="ak-footer__bottom-text"><span>© 2019–2026 PRTS.wiki · 文本 <a href="#">CC BY-NC-SA 4.0</a></span><span class="ak-en">Skin Arknights · MediaWiki 1.43</span></div>
+  </div>
+</footer>
+```
+
 ## 徽章
 
 `$wgFooterIcons` 的输出结构原样保留（`ul#footer-icons > li#footer-*ico > a.cdx-button.cdx-button--fake-button > img`，一个 `li` 里可以有好几枚）：徽章**原样显示**——26px 高、无底板、不灰度、不降透明、无悬停效果（只保留键盘焦点描边）；`cdx-button` 假按钮的圆角 / 最小高度 / 内边距归零，站点配置里的内联 `margin-left` 用 `!important` 压掉。顺序 = `$wgFooterIcons` 的键序。

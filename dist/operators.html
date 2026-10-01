@@ -3400,8 +3400,13 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
 .ak-footer__col ul { list-style: none; margin: 0; padding: 0; }
 .ak-footer__col li { margin: 0 0 8px; }
 .ak-footer__col li::before { display: none !important; }
-.ak-footer a { color: inherit; opacity: .8; font-size: var(--ak-fs-sm); text-decoration: none; }
+/* 链接：字号跟所在区块走——只有链接列是 sm；描述段 / 底栏是 xs 的行文，里面的链接（MW 皮肤里这两处是解析过的 wikitext，可以带 <a>）继承字号。
+ * 此前 font-size 写在 .ak-footer a 上，行文里的链接就比周围文字大一号 */
+.ak-footer a { color: inherit; opacity: .8; text-decoration: none; }
 .ak-footer a:hover { opacity: 1; color: var(--ak-theme-accent); text-decoration: none; }
+.ak-footer__col a { font-size: var(--ak-fs-sm); }
+.ak-footer__brand a, .ak-footer__bottom-text a { opacity: 1; text-decoration: underline; text-underline-offset: 2px; }   /* 容器已降过透明度，链接不再叠一层（.6 × .8 会比正文还淡）；颜色与正文相同，靠下划线区分 */
+.ak-footer__brand a:hover, .ak-footer__bottom-text a:hover { text-decoration: underline; }
 .ak-footer__bottom { border-top: 1px solid rgba(127,127,127,.25); padding: var(--ak-space-4) calc(var(--ak-gutter) + 60px) var(--ak-space-4) var(--ak-gutter); font-size: var(--ak-fs-xs); display: flex; align-items: center; gap: var(--ak-space-3) var(--ak-space-6); flex-wrap: wrap; justify-content: space-between; max-width: 1680px; margin: 0 auto; box-sizing: border-box; }   /* 右内边距为 .ak-fab（44px + 20px 边距）让位，滚到底时不压住徽章 */
 .ak-footer__bottom-text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--ak-space-4); opacity: .6; }
 .ak-footer__bottom-text .ak-en { opacity: .8; }
@@ -3781,8 +3786,13 @@ window.PRTS_CHARLIST = {"date":"2026-09-30","filters":[{"title":"筛选","filter
 .ol-more .ak-en { font-size: 10px; color: var(--ak-fg-subtle); }
 .ol-more__count:empty { display: none; }
 .ol-more__what { flex: 1; min-width: 0; font-weight: 400; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ol-more::after { content: ""; flex: none; width: 7px; height: 7px; margin: 0 2px 0 0; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); opacity: .6; transition: transform var(--ak-dur-fast); }
-.ol-more[aria-expanded="true"]::after { transform: rotate(45deg); margin-top: -3px; }
+/* 右端的开合提示：「展开 / 收起」+ 朝下 / 朝上的箭头（同页内目录钮 .ak-local-nav__chevron）。不用朝右的箭头——整行右端一个 › 读起来像「进下一页」 */
+.ol-more__toggle { flex: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 400; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.ol-more:hover .ol-more__toggle { color: var(--ak-fg); }
+.ol-more__toggle::before { content: "展开"; }
+.ol-more[aria-expanded="true"] .ol-more__toggle::before { content: "收起"; }
+.ol-more__toggle::after { content: ""; width: 7px; height: 7px; margin-right: 2px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform var(--ak-dur-fast) var(--ak-ease); }
+.ol-more[aria-expanded="true"] .ol-more__toggle::after { transform: translateY(2px) rotate(-135deg); }
 /* 高级筛选面板：左页签、右内容 */
 .ol-adv { display: grid; grid-template-columns: max-content minmax(0, 1fr); border-top: 1px solid var(--ak-border); }
 .ol-adv[hidden] { display: none; }
@@ -3799,7 +3809,7 @@ window.PRTS_CHARLIST = {"date":"2026-09-30","filters":[{"title":"筛选","filter
 .ol-adv__panel[data-tab="six"] .ak-chip { min-width: 64px; justify-content: center; box-sizing: border-box; }   /* 六行选项相同：等宽，上下对成列 */
 @media (max-width: 639px) {
   .ol-inline { margin-left: 0; padding-left: 0; border-left: 0; flex-basis: 100%; }
-  .ol-more__what { display: none; } .ol-more::after { margin-left: auto; }
+  .ol-more__what { display: none; } .ol-more__toggle { margin-left: auto; }
   .ol-adv { grid-template-columns: minmax(0, 1fr); }
   .ol-adv__tabs.ak-tabs { flex-direction: row; border-right: 0; border-bottom: 1px solid var(--ak-border); padding: 0 4px; min-width: 0; }
   .ol-adv__tabs .ak-tab { border-left: 0; border-bottom: 3px solid transparent; padding: 8px 10px; gap: 6px; }
@@ -4440,7 +4450,7 @@ window.PRTS_CHARLIST = {"date":"2026-09-30","filters":[{"title":"筛选","filter
     $('#ol-filter').innerHTML = `<div class="ol-rows">
         ${rowHtml('profession', '<span class="ol-hint" id="ol-branch-hint">选了职业可再选分支</span>')}${rowHtml('subProfession')}${rowHtml('rarity', inlineHtml('position'))}
       </div>
-      <button type="button" class="ol-more" id="ol-more" aria-expanded="${adv.open}" aria-controls="ol-adv"><span>高级筛选</span><span class="ak-en">Advanced</span><span class="ol-more__count ak-tag ak-tag--sm ak-tag--accent-soft"></span><span class="ol-more__what">${ADV.map(t => esc(t.id === 'trait' ? t.fields.map(k => byField[k] ? byField[k].title : '').filter(Boolean).join(' · ') : t.title)).join(' · ')}</span></button>
+      <button type="button" class="ol-more" id="ol-more" aria-expanded="${adv.open}" aria-controls="ol-adv"><span>高级筛选</span><span class="ak-en">Advanced</span><span class="ol-more__count ak-tag ak-tag--sm ak-tag--accent-soft"></span><span class="ol-more__what">${ADV.map(t => esc(t.id === 'trait' ? t.fields.map(k => byField[k] ? byField[k].title : '').filter(Boolean).join(' · ') : t.title)).join(' · ')}</span><span class="ol-more__toggle" aria-hidden="true"></span></button>
       <div class="ol-adv" id="ol-adv"${adv.open ? '' : ' hidden'}>
         <div class="ak-tabs ak-tabs--vertical ol-adv__tabs" role="tablist" aria-label="高级筛选分类" aria-orientation="vertical">${ADV.map(t => `<button type="button" class="ak-tab${t.id === adv.tab ? ' is-active' : ''}" role="tab" id="ol-tab-${t.id}" data-tab="${t.id}" aria-selected="${t.id === adv.tab}" aria-controls="ol-panel-${t.id}" tabindex="${t.id === adv.tab ? 0 : -1}">${esc(t.title)}<small></small></button>`).join('')}</div>
         ${ADV.map(t => `<div class="ol-adv__panel" role="tabpanel" id="ol-panel-${t.id}" data-tab="${t.id}" aria-labelledby="ol-tab-${t.id}"${t.id === adv.tab ? '' : ' hidden'}>
