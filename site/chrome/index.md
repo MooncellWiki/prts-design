@@ -21,7 +21,7 @@ body.skin-arknights
   header.ak-header                           页眉：黑色「终端」顶栏
     .ak-header__inner                        品牌 · 搜索 · 工具（外观 / 通知 / 用户菜单）· ≡
     .ak-local-nav                            二级吸顶栏（<1400）：菜单 · 本页目录
-  div.ak-keyart > .ak-keyart__inner          头图（活动主题设了才出现；垫在版面背后，默认不占位）
+  div.ak-keyart > .ak-keyart__inner          头图（活动主题设了才出现；垫在版面背后，只露一小条）
   .ak-layout                                 两列：侧栏 + 主列
     aside.ak-sidebar#ak-sidebar              侧栏（门户 / #MenuSidebar 多层树）
     main.ak-main#content

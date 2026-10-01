@@ -28,7 +28,7 @@
     "chrome-texture": { $value: ".55", $description: "右侧半调网点强度 0–1（游戏顶栏 img_back / 官网左缘网点），0 关闭" },
     "keyart-image": { $value: "none", $description: "头图（Key Visual）：从页面顶端铺起、垫在页眉与版面背后的一幅通栏画；--ak-keyart-h 为 0 时只在页眉后面透" },
     "keyart-h": { $value: "0px", $description: "页眉之下那段画的高度（画有多高，不是占多高——占位看 -reveal）" },
-    "keyart-reveal": { $value: "0px", $description: "留在版面之上、不被压住的一段高度：0 = 头图完全垫在版面背后、不把正文往下推；= --ak-keyart-h 即一条横幅带" },
+    "keyart-reveal": { $value: "40px", $description: "留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带" },
     "keyart-veil": { $value: "60%", $description: "垫在版面背后那一段蒙的画布色纱：顶端的浓度，往下渐浓到 100%。画面越花调得越高；别低于 50%（侧栏 / 标题压在画上要读得清）" },
     "keyart-position": { $value: "center 30%", $description: "-position / -size 相对整块（页眉高 + -h）计算" },
     "keyart-size": { $value: "cover" },

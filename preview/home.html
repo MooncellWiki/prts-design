@@ -266,7 +266,8 @@
 .mp-ops__row .ak-op-card__rarity { height: 10px; }
 .mp-ops__row .ak-op-card__prof { width: 22px; height: 22px; } .mp-ops__row .ak-op-card__prof img { width: 18px; height: 18px; }   /* 角上用游戏头像同款小职业图标 assets/profession/icon_*.png（= 现网 图标_职业_*.png），不是大号 hub 图标 */
 .mp-ops__row .ak-op-card__sub { font-size: max(9px, var(--ak-fs-cjk-min)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mp-ops__badge { position: absolute; right: 4px; top: 4px; z-index: 1; }   /* 「兑」——黄 = 提示 / 次强调（同现网） */
+.mp-ops__badge { position: absolute; right: 4px; top: 4px; z-index: 1; }   /* 「兑」——黄 = 高级凭证兑换（提示 / 次强调，同现网） */
+.mp-ops__badge--kernel { --_bg: #06587f; --_fg: #fff; }   /* 中坚兑换：中坚蓝，和黄的高级凭证兑换区分开 */
 .mp-mod { position: absolute; right: 4px; top: 4px; z-index: 1; width: 26px; height: 26px; display: grid; place-items: center; background: rgba(0,0,0,.72); overflow: hidden; }   /* 模组型号：游戏里的模组类型小图标（现网 模组类型_*_小图.png；原图带一圈很宽的低透明度光晕，缩小后糊成一团发亮的雾——已剥掉光晕、裁到字形外接框），深底小框压在头像右上 */
 .mp-mod img { max-width: 20px; max-height: 20px; width: auto; height: auto; display: block; }
 .mp-ops__cta { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 88px; box-sizing: border-box; padding: 8px; background: var(--ak-accent); color: var(--ak-accent-fg); text-decoration: none; text-align: center; position: relative; overflow: hidden; isolation: isolate; }
@@ -489,7 +490,7 @@
   </div>
 </header>
 
-<!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后、默认不占位（--ak-keyart-reveal: 0；chrome/keyart.css 负外边距，DOM 顺序不变） -->
+<!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 40px；chrome/keyart.css 负外边距，DOM 顺序不变） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout">
@@ -840,8 +841,10 @@
     <div class="mp-ops__group">
       <div class="mp-ops__title"><svg class="ak-icon"><use href="#i-ticket"/></svg><span class="cn">凭证兑换</span>Exchange</div>
       <div class="mp-ops__row">
-        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="5"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/logos.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_caster.png" alt="术师"></span><span class="ak-tag ak-tag--sm ak-tag--yellow mp-ops__badge">兑</span></span><span class="ak-op-card__name">逻各斯<span class="ak-op-card__sub">黄票兑换</span></span></a></div>
-        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/xiaoge.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span><span class="ak-tag ak-tag--sm ak-tag--yellow mp-ops__badge">兑</span></span><span class="ak-op-card__name">晓歌<span class="ak-op-card__sub">黄票兑换</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="5"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/logos.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_4.png" alt="五星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_caster.png" alt="术师"></span><span class="ak-tag ak-tag--sm ak-tag--yellow mp-ops__badge">兑</span></span><span class="ak-op-card__name">逻各斯<span class="ak-op-card__sub">高级凭证兑换</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="4"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/xiaoge.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_3.png" alt="四星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_pioneer.png" alt="先锋"></span><span class="ak-tag ak-tag--sm ak-tag--yellow mp-ops__badge">兑</span></span><span class="ak-op-card__name">晓歌<span class="ak-op-card__sub">高级凭证兑换</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="6"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/fiammetta-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt="六星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_sniper.png" alt="狙击"></span><span class="ak-tag ak-tag--sm mp-ops__badge mp-ops__badge--kernel">兑</span></span><span class="ak-op-card__name">菲亚梅塔<span class="ak-op-card__sub">中坚兑换</span></span></a></div>
+        <div class="ak-op-card ak-op-card--sm mp-a" data-rarity="6"><a href="#"><span class="ak-op-card__portrait"><img src="assets/mainpage/avatar/gavial-alter-2.png" alt=""><span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_5.png" alt="六星"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_warrior.png" alt="近卫"></span><span class="ak-tag ak-tag--sm mp-ops__badge mp-ops__badge--kernel">兑</span></span><span class="ak-op-card__name">百炼嘉维尔<span class="ak-op-card__sub">中坚兑换</span></span></a></div>
         <div class="mp-ops__cta mp-a"><a href="#"><svg class="ak-icon"><use href="#i-target"/></svg><b>中坚甄选</b><small>进行中</small></a></div>
       </div>
     </div>
