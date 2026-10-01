@@ -1,6 +1,6 @@
 {
   "name": "@mooncellwiki/prts-design-css",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "PRTS Design 的 CSS 实现：令牌 · 作用域根 · 通用 / 方舟组件 · 工具类（默认入口 standalone.css，任何页面可用）；MediaWiki 内容样式（base/）也在包里。不含字体与游戏素材——prts.wiki 皮肤 Skin:Arknights 的全套见仓库",
   "license": "MIT",
   "type": "module",
