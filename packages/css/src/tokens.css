@@ -640,12 +640,14 @@ html.skin-theme-clientpref-night,
   --ak-chrome-image-size: auto 100%;
   --ak-chrome-image-repeat: no-repeat;
   --ak-chrome-texture: .55;                /* 右侧半调网点强度 0–1（游戏顶栏 img_back / 官网左缘网点），0 关闭 */
-  --ak-keyart-image: none;                 /* 头图（Key Visual）：从页面顶端铺起、页眉压在它上面的一条通栏画；--ak-keyart-h 为 0 时不占位（只在页眉后面透） */
-  --ak-keyart-h: 0px;                      /* 页眉之下可见的那段高度 */
+  --ak-keyart-image: none;                 /* 头图（Key Visual）：从页面顶端铺起、垫在页眉与版面背后的一幅通栏画；--ak-keyart-h 为 0 时只在页眉后面透 */
+  --ak-keyart-h: 0px;                      /* 页眉之下那段画的高度（画有多高，不是占多高——占位看 -reveal） */
+  --ak-keyart-reveal: 0px;                 /* 留在版面之上、不被压住的一段高度：0 = 头图完全垫在版面背后、不把正文往下推；= --ak-keyart-h 即一条横幅带 */
+  --ak-keyart-veil: 60%;                   /* 垫在版面背后那一段蒙的画布色纱：顶端的浓度，往下渐浓到 100%。画面越花调得越高；别低于 50%（侧栏 / 标题压在画上要读得清） */
   --ak-keyart-position: center 30%;        /* -position / -size 相对整块（页眉高 + -h）计算 */
   --ak-keyart-size: cover;
   --ak-keyart-bg: transparent;             /* 画未铺满 / 未加载时的底色；默认透明，没有头图时页眉背后什么也不多画 */
-  --ak-keyart-fade: 96px;                  /* 底部渐隐进画布的高度，0 关闭 */
+  --ak-keyart-fade: 96px;                  /* 底部渐隐进画布的高度，0 关闭（垫底段另有 -veil 的纱） */
   --ak-canvas-image: none;                 /* 页面画布底纹 / 底图（body 背景，叠在 --ak-bg-canvas 之上；现网 body 的 bkg 图位置） */
   --ak-canvas-position: center top;
   --ak-canvas-size: auto;

@@ -1,15 +1,22 @@
-/*! PRTS Design · chrome/keyart.css — Key art 头图带 · 画布底图 · 依赖：tokens.css · components/ */
-/* ═══ Key art（头图带）＋ 画布底图 ═══
- *  .ak-keyart 是 .ak-layout 之上的一条通栏画，默认 --ak-keyart-h: 0 不占位、无 DOM 副作用；活动主题设 --ak-keyart-image + --ak-keyart-h 即出现
- *  （现网 body 背景里那幅头图的位置）。画从页面顶端铺起：盒子上移一个页眉高、再用同样的 padding-top 把内容压回页眉之下，于是画的顶端在
- *  粘性页眉（更高的 z-index）背后 —— 页眉是压在画上的一块黑玻璃，画在玻璃后面均匀地透出来（多少由 --ak-chrome-bg 的 alpha 决定），
- *  黑框 + 画是一整块，不再有「顶栏一张、头图一张」两段裁切。--ak-keyart-h 是页眉之下可见的那段高度；-position / -size 相对整块（页眉 + 可见段）算。
- *  底部按 --ak-keyart-fade 渐隐进画布色（min() 兜住 -h: 0 时不往页眉后面画一道）；-bg 默认透明，所以没有头图时页眉背后什么也不多画。
+/*! PRTS Design · chrome/keyart.css — Key art 头图 · 画布底图 · 依赖：tokens.css · components/ */
+/* ═══ Key art（头图）＋ 画布底图 ═══
+ *  .ak-keyart 是垫在 .ak-layout 背后的一幅通栏画，默认 --ak-keyart-h: 0、无 DOM 副作用；活动主题设 --ak-keyart-image + --ak-keyart-h 即出现
+ *  （现网 body 背景里那幅头图的位置）。它是「背景」不是「横幅」：版面（侧栏 / 页面标题 / 目录）照常从页眉之下排起、压在画上，头图不把正文往下推——
+ *  盒子的下外边距取负，把自己占的高度还给版面；--ak-keyart-reveal 是留在版面之上、不被压住的那一段（默认 0 = 完全不占位；= --ak-keyart-h 即旧的横幅带）。
+ *  画从页面顶端铺起：盒子上移一个页眉高、再用同样的 padding-top 把内容压回页眉之下，于是画的顶端在粘性页眉（更高的 z-index）背后 ——
+ *  页眉是压在画上的一块黑玻璃，画在玻璃后面均匀地透出来（多少由 --ak-chrome-bg 的 alpha 决定），黑框 + 画是一整块。
+ *  --ak-keyart-h 是页眉之下那段画的高度；-position / -size 相对整块（页眉 + 这一段）算。
+ *  可读性不赌画面：被版面压住的那一段蒙一层画布色的纱（::after），从 --ak-keyart-veil 起、往下渐浓到画布色——页眉靠黑玻璃，版面靠这层纱；
+ *  露出段（-reveal）不蒙纱，只在底部按 --ak-keyart-fade 渐隐。-bg 默认透明，所以没有头图时页眉背后什么也不多画。
+ *  层序：.ak-keyart 是定位盒（z-index: auto），.ak-sidebar（sticky）与 .ak-main（relative）也是、且在 DOM 里靠后，所以版面画在头图之上，不需要 z-index。
  *  --ak-canvas-image 叠在 body 的 --ak-bg-canvas 之上（现网 body 的 bkg 底纹 / 大图位置）；侧栏与目录没有底色，所以画布图应当是低对比的底纹。 */
 .ak-keyart { --_over: var(--ak-header-h);   /* 往上探进页眉背后的高度；<1400 页眉多一行二级栏，见 responsive.css */
-  position: relative; flex: none; box-sizing: content-box; height: var(--ak-keyart-h); padding-top: var(--_over); margin: calc(-1 * var(--_over)) 0 0; overflow: hidden;
+  --_h: var(--ak-keyart-h); --_reveal: min(var(--ak-keyart-reveal), var(--_h)); --_under: calc(var(--_h) - var(--_reveal));   /* 画高 = 露出段 + 垫在版面背后的一段 */
+  position: relative; flex: none; box-sizing: content-box; height: var(--_h); padding-top: var(--_over); margin: calc(-1 * var(--_over)) 0 calc(-1 * var(--_under)); overflow: hidden; pointer-events: none;
   background: var(--ak-keyart-bg) var(--ak-keyart-image) var(--ak-keyart-position) / var(--ak-keyart-size) no-repeat; }
-.ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: min(var(--ak-keyart-fade), var(--ak-keyart-h)); background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)); pointer-events: none; }
-.ak-keyart__inner { position: relative; height: 100%; max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽，且在页眉之下（padding-top 之内不算） */
-@media (max-width: 639px) { .ak-keyart { height: min(var(--ak-keyart-h), 40vw); } .ak-keyart::after { height: min(var(--ak-keyart-fade), var(--ak-keyart-h), 40vw); } }
+.ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: max(var(--_under), min(var(--ak-keyart-fade), var(--_h))); pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)) bottom / 100% min(var(--ak-keyart-fade), var(--_h)) no-repeat,   /* 底部渐隐（没有垫底段时只有它） */
+    linear-gradient(to bottom, transparent, color-mix(in srgb, var(--ak-bg-canvas) var(--ak-keyart-veil), transparent) min(var(--ak-space-6), var(--_reveal)), var(--ak-bg-canvas)) bottom / 100% var(--_under) no-repeat; }   /* 垫底段的纱：有露出段时，头 24px（= .ak-layout 的上内边距，还没有内容）从无到 -veil，免得两段之间一道硬边；没有露出段时顶边藏在页眉底下，直接从 -veil 起 */
+.ak-keyart__inner { position: relative; height: var(--_reveal); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; pointer-events: auto; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽，在页眉之下、版面之上——只有露出段那么高，-reveal 为 0 时放不了东西 */
+@media (max-width: 639px) { .ak-keyart { --_h: min(var(--ak-keyart-h), 40vw); } }
 body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak-canvas-position) / var(--ak-canvas-size) var(--ak-canvas-repeat); background-attachment: var(--ak-canvas-attachment); }

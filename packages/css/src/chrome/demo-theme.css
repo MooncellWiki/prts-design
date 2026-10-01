@@ -13,9 +13,9 @@
 html.ak-theme-demo {
   --ak-theme-accent: #ffd800;                                   /* 罗德岛甲板的警示黄（游戏 go_to_shop / 稀有度黄）；页眉标语 / 悬停 / 开关选中项 / 搜索图标框、侧栏与目录分组条、页脚斜纹一起换 */
   --ak-theme-accent-fg: #000;
-  --ak-keyart-image: url("../../preview/assets/keyart/rhodes_day.jpg");       /* 头图：从页面顶端铺起，页眉之下露 220px，底部渐隐进画布 */
-  --ak-keyart-h: 220px;
-  --ak-keyart-position: center 40%;                             /* 相对整块（56px 页眉 + 220px）取景 */
+  --ak-keyart-image: url("../../preview/assets/keyart/rhodes_day.jpg");       /* 头图：从页面顶端铺起，垫在页眉与版面背后——不占位（--ak-keyart-reveal 默认 0），往下 280px 渐隐进画布 */
+  --ak-keyart-h: 280px;
+  --ak-keyart-position: center 40%;                             /* 相对整块（56px 页眉 + 280px）取景 */
   --ak-chrome-bg: rgba(8, 9, 10, .8);                           /* 页眉玻璃调淡一点（默认 .9），让画在页眉后面多透一些；仍是均匀一层，可读性不赌画面 */
   --ak-logo-image: url("../../preview/assets/keyart/rhodes_tri.png");         /* 站标换成罗德岛三角章（Chromium / WebKit 生效；Firefox 请用 $wgLogos） */
   --ak-canvas-image: radial-gradient(var(--ak-grid-color) 1px, transparent 1.3px);   /* 画布底纹：淡点阵（也可以是 url() 大图，注意侧栏 / 目录没有底色） */
