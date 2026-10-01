@@ -112,7 +112,7 @@
   .mw-halign-right, .tright, figure.mw-halign-right, .mw-halign-left, .tleft, figure.mw-halign-left { float: none; margin-left: 0; margin-right: 0; }
 }
 @media (min-width: 1680px) {
-  :root { --ak-sidebar-w: 268px; --ak-toc-w: 268px; }   /* 写在 :root：页眉网格与 .ak-layout 共用这两个宽度 */
+  :root { --ak-sidebar-w: 228px; --ak-toc-w: 228px; }   /* 写在 :root：页眉网格与 .ak-layout 共用这两个宽度 */
 }
 /* 页面滚动锁（侧栏抽屉 / 目录浮层开着时；参考 VitePress useBodyScrollLock）：JS 给 <html> 加 .ak-scroll-lock。
  * overflow:hidden 不改滚动位置（不像 body position:fixed 那套会跳回顶部）；有实体滚动条（Windows / 「总是显示滚动条」）时 JS 同时写 scrollbar-gutter:stable
