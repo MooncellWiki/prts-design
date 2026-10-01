@@ -1,6 +1,6 @@
 /*! PRTS Design — 自托管 Web 字体（scripts/fetch-fonts.py 生成，勿手改；重跑：python3 scripts/fetch-fonts.py）
  *  各族链见 tokens.css「Typography」。url() 相对本文件（src/）；MW 皮肤侧 resources/fonts.css + resources/fonts/ 是指向 src/ 的符号链接，ResourceLoader 按 resources/ 重写路径。
- *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集；PRTS 为官方赞助站点，与鹰角同一组织下共用授权）：
+ *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集，落盘时补了 gasp 表；PRTS 为官方赞助站点，与鹰角同一组织下共用授权）：
  *      Novecento Sans Wide      → fonts/novecento-sans-wide/  · 拉丁展示字（--ak-font-display）
  *      Bender                   → fonts/bender/  · HUD 标签 / 数值（--ak-font-label），也是 --ak-font-display 的第二位
  *  · Fontsource npm 包（= Google Fonts 同批 woff2 切片 + unicode-range，OFL-1.1，版本钉死）：

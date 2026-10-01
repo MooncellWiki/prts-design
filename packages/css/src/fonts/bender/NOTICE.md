@@ -1,6 +1,7 @@
 # Bender
 
-来源：明日方舟官网（https://ak.hypergryph.com/）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源），未做任何修改。
+来源：明日方舟官网（https://ak.hypergryph.com/）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源）。
+改动：只补了一张 gasp 表（version 1，全字号 0x000F = 含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表未动——原文件没有 gasp，Windows 上的 Chrome 对 ≤ 20px 的 Bender Bold 只做横向抗锯齿，曲线出锯齿（scripts/fetch-fonts.py · with_gasp）。
 授权：Jovanny Lemonad · 官网同源文件。PRTS.wiki 为明日方舟官方赞助站点，按与鹰角网络同一组织下共用授权使用（项目方决定，见文档站 /foundations/typography#字族）。
 注意：官网发布的是 ASCII 子集（各 101 字形），非 ASCII 字符由 tokens.css 字体链后段接住。
 

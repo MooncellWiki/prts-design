@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Fetch the self-hosted web fonts into src/fonts/ and generate src/fonts.css.
 
-两类来源，都只用标准库、不需要 npm：
+两类来源，都不需要 npm：
   · 官网静态资源（SITE_FONTS）：Novecento Sans Wide / Bender —— 明日方舟官网（ak.hypergryph.com）自托管的 woff2 原文件，
     PRTS.wiki 为官方赞助站点，按与鹰角同一组织下共用授权使用（项目方决定）。URL 钉住当前 hash；官网重新部署后 hash 会变，
     脚本会自动从首页 CSS 里重新发现；再失败就保留已落盘的文件并告警。注意官网给的是 ASCII 子集（各 101 字形），
     非 ASCII 字符（· » — × ° 等）由 tokens.css 链里后面的自托管 OFL 字体逐字接住。
+    原文件没有 gasp 表，落盘前补一张（见 with_gasp）——这一步要 fontTools：pip install fonttools brotli（--offline 不需要）。
   · Fontsource npm 包（PKG_FONTS）：Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono —— = Google Fonts 同一批 woff2 切片 +
     unicode-range，随包带 OFL 全文，版本钉死。
 
@@ -95,6 +96,25 @@ def parse_faces(css):
         })
     return out
 
+GASP_SYMMETRIC = {0xFFFF: 0x000F}   # 全字号 gridfit | dogray | symmetric gridfit | symmetric smoothing（= Fontsource 各族自带的 gasp）
+def with_gasp(data, name):
+    """官网同源 woff2 → 补上 version 1 的 gasp 表（已有就原样返回）。只加这一张表：字形、度量、其它表都不动。
+    原文件没有 gasp；Bender-Bold 的 maxp.maxSizeOfInstructions 又残留成 1（实际没有一个字形带指令），
+    Chrome（Skia 的 DirectWrite 后端）把它当成「有 hinting、没 gasp」，≤ 20px 就落到 DWRITE_RENDERING_MODE_NATURAL：
+    ClearType 只做横向抗锯齿、纵向不平滑，0 3 5 9 这类曲线的顶 / 底出锯齿（Windows 低分屏最明显）。
+    gasp v1 带 symmetric smoothing → Skia 走 NATURAL_SYMMETRIC，纵向也平滑；DirectWrite 自己的推荐渲染模式同样看这张表。"""
+    try:
+        from fontTools.ttLib import TTFont, newTable
+    except ImportError:
+        raise SystemExit('   ✗ 给 %s 补 gasp 表需要 fontTools：pip install fonttools brotli（只重新生成 fonts.css 用 --offline，不需要）' % name)
+    font = TTFont(io.BytesIO(data), recalcBBoxes=False, recalcTimestamp=False)
+    if 'gasp' in font and font['gasp'].version >= 1 and all(f & 0x0008 for f in font['gasp'].gaspRange.values()):
+        return data
+    gasp = newTable('gasp'); gasp.version = 1; gasp.gaspRange = dict(GASP_SYMMETRIC)
+    font['gasp'] = gasp
+    out = io.BytesIO(); font.flavor = 'woff2'; font.save(out)
+    return out.getvalue()
+
 _site_index = None
 def site_font_urls():
     """官网首页 → 其 CSS → 所有 @font-face 里的 woff2 地址，按去 hash 的文件名索引：{'Bender-Bold.woff2': 'https://…/Bender-Bold.<hash>.woff2'}"""
@@ -129,7 +149,7 @@ def main():
 
     css = ['/*! PRTS Design — 自托管 Web 字体（scripts/fetch-fonts.py 生成，勿手改；重跑：python3 scripts/fetch-fonts.py）',
            ' *  各族链见 tokens.css「Typography」。url() 相对本文件（src/）；MW 皮肤侧 resources/fonts.css + resources/fonts/ 是指向 src/ 的符号链接，ResourceLoader 按 resources/ 重写路径。',
-           ' *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集；PRTS 为官方赞助站点，与鹰角同一组织下共用授权）：']
+           ' *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集，落盘时补了 gasp 表；PRTS 为官方赞助站点，与鹰角同一组织下共用授权）：']
     for s in SITE_FONTS:
         css.append(' *      %-24s → fonts/%s/  · %s' % (s['family'], s['dir'], s['role']))
     css.append(' *  · Fontsource npm 包（= Google Fonts 同批 woff2 切片 + unicode-range，OFL-1.1，版本钉死）：')
@@ -163,10 +183,11 @@ def main():
                         raise SystemExit('   ✗ %s 下载失败且本地没有：%s' % (face['file'], e))
                 if data is not None:
                     assert data[:4] == b'wOF2', face['file'] + ' 不是 woff2'
-                    target.write_bytes(data)
+                    target.write_bytes(with_gasp(data, face['file']))
                 faces.append(face)
             (d / 'NOTICE.md').write_text(
-                '# %s\n\n来源：明日方舟官网（%s）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源），未做任何修改。\n'
+                '# %s\n\n来源：明日方舟官网（%s）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源）。\n'
+                '改动：只补了一张 gasp 表（version 1，全字号 0x000F = 含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表未动——原文件没有 gasp，Windows 上的 Chrome 对 ≤ 20px 的 Bender Bold 只做横向抗锯齿，曲线出锯齿（scripts/fetch-fonts.py · with_gasp）。\n'
                 '授权：%s。PRTS.wiki 为明日方舟官方赞助站点，按与鹰角网络同一组织下共用授权使用（项目方决定，见文档站 /foundations/typography#字族）。\n'
                 '注意：官网发布的是 ASCII 子集（各 101 字形），非 ASCII 字符由 tokens.css 字体链后段接住。\n\n'
                 '| 文件 | 字重 | 抓取地址 |\n|---|---|---|\n%s\n'
