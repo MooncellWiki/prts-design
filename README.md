@@ -105,7 +105,7 @@ python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度�
 python3 scripts/fetch-charinfo.py                      # 现网 Widget:CharinfoV2 的 CSS / JS / 字体 / HUD 图标 + jQuery → preview/vendor/{charinfo,jquery}/（版本号钉在脚本里；charVoice 只留 --chars 指定的干员）
 node scripts/fetch-charlist.ts                         # 现网「干员一览」正文里的筛选项定义 + 每位干员一条数据 → preview/vendor/charlist/data.js（干员一览样例的数据快照；同样用本机的 Google Chrome 取）
 python3 scripts/build-preview.py                       # preview/_src/{skeleton.html, gallery-skeleton.html, pages/*.html} → preview/*.html（改了骨架或任一页都要跑；页面 front matter 的 skeleton: 选骨架）
-python3 scripts/build-dist.py                          # preview/*.html → dist（需要 Pillow；跟随 @import 内联）
+uv run scripts/build-dist.py                           # preview/*.html → dist（跟随 @import 内联；需要 Pillow——pyproject.toml + uv.lock 管着，uv run 会自动建 .venv 装好）
 pnpm build:site                                        # = bash scripts/build-site.sh _site：构建文档站 + Storybook 并组装 Pages 站点（本地自查：PRTS_DESIGN_BASE=/ pnpm build:site，python3 -m http.server -d _site）
 ```
 
