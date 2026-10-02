@@ -63,6 +63,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .sv__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 10px 14px; background: var(--ak-bg-surface-2); border-bottom: 1px solid var(--ak-border); }
 .sv__field { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .sv__field:last-child { margin-left: auto; }
+.sv__field > .ak-select { width: auto; min-width: 0; }   /* 模型多于 5 个时的下拉选择：宽度随最长的名字，不撑满 */
 .sv__chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .sv__main { display: grid; grid-template-columns: minmax(0, 1fr) 272px; height: var(--sv-h); }
 /* 舞台：底色是「背景」那一格选的（默认深色，不随明暗主题——模型在深底上轮廓最清楚），canvas 透明叠在上面；HUD 字色 --sv-ink 由脚本按底色明度给黑 / 白 */
@@ -1057,6 +1058,18 @@ var back_list = {
   const GLOSS = { Start: '入场', Idle: '待机', Attack: '攻击', Die: '倒下', Stun: '晕眩', Default: '默认姿态', Relax: '闲置', Move: '移动', Interact: '交互', Sit: '坐下', Sleep: '睡眠', Special: '特殊动作' };
   const FAMILY = [['入场', /^Start/], ['待机', /^(Idle|Default|Relax)/], ['攻击', /^(Attack|Combat|Reload)/], ['技能', /^Skill/], ['其它', /./]];
   const MODEL_ORDER = ['正面', '背面', '战斗', '基建'];
+  /* 模型多于这个数就收进下拉选择（Select 的用法：≤ 5 个、立即生效的视图切换用按钮组）——干员只有 正面 / 背面 / 基建，敌人一套骨骼可以装几十个 skin */
+  const MODEL_MENU = 5;
+  /* 敌人没有 meta.json，模型表内联在页面的 #SPINEDATA 里；样例页留一份「自走车」（一套骨骼 31 个 skin）：?spine=enemy_1265_durcar */
+  const ENEMY = {
+    enemy_1265_durcar: ['自走车', '默认 Color/Green|“无尽之拳” Color/White|“矛盾的爆发” Color/Purple|“赛事简化方案” Color/Orange|' +
+      '防撞保险杠 Head/G_Prick|突击保险杠 Head/O_Prick|退役阶梯钻 Head/G_Drill|高速阶梯钻 Head/O_Drill|摩托弹簧座 Head/G_Spring|双人弹簧座 Head/O_Spring|跷跷板弹射座椅 Head/P_Spring|' +
+      '底噪扩音器 Top/G_Trumpet|啸叫扩音器 Top/O_Trumpet|工业电磁铁 Top/G_Radiation|新型电磁铁 Top/O_Radiation|外置制冷机 Top/G_AC|超强制冷机 Top/O_AC|' +
+      '清凉薄荷油(前) Pack_I/G_Hormone|清凉薄荷油(后) Pack_II/G_Hormone|提纯薄荷油(前) Pack_I/O_Hormone|提纯薄荷油(后) Pack_II/O_Hormone|' +
+      '优级蘑菇精(前) Pack_I/G_Medical|优级蘑菇精(后) Pack_II/G_Medical|浓缩蘑菇精(前) Pack_I/O_Medical|浓缩蘑菇精(后) Pack_II/O_Medical|' +
+      '精煮咖啡液(前) Pack_I/G_Energy|精煮咖啡液(后) Pack_II/G_Energy|过萃咖啡液(前) Pack_I/O_Energy|过萃咖啡液(后) Pack_II/O_Energy|' +
+      '复方醒酒口服液(前) Pack_I/P_Energy|复方醒酒口服液(后) Pack_II/P_Energy'],
+  };
   const EVENT_LABEL = { OnAttack: '攻击判定', OnAttackFinished: '攻击结束', OnStart: '入场完成', OnPlayAudio: '音效' };
   const BG = [['dark', '#0f0f10', '深色'], ['light', '#f2f2f2', '浅色'], ['none', '', '透明'], ['custom', '', '自定义']];
   const SPEEDS = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2];
@@ -1148,9 +1161,8 @@ var back_list = {
     root.classList.add('is-ready');
     const bar = h('div', { class: 'sv__bar' });
     const skinBox = h('div', { class: 'sv__chips', role: 'group', 'aria-label': '时装' });
-    const modelBox = h('div', { class: 'ak-btn-group', role: 'group', 'aria-label': '模型' });
     const f1 = h('div', { class: 'sv__field' }, '<span class="ak-overline">时装</span>'), f2 = h('div', { class: 'sv__field' }, '<span class="ak-overline">模型</span>');
-    f1.append(skinBox); f2.append(modelBox); bar.append(f1, f2);
+    f1.append(skinBox); bar.append(f1, f2);
     const main = h('div', { class: 'sv__main' });
     const stageEl = h('div', { class: 'sv__stage ak-bg-grid', tabindex: '0', 'data-bg': 'dark', 'aria-label': conf.name + ' 的 Spine 模型：空格 播放 / 暂停，← → 逐帧，F 翻转朝向，0 复位视图' });
     const canvas = h('canvas', { class: 'sv__canvas' });
@@ -1284,10 +1296,24 @@ var back_list = {
 
     /* ── 载入一个「时装 × 模型」──切换时沿用同名动作（没有就回到待机），速度 / 循环 / 朝向 / 背景不变 */
     const showVeil = html => { veil.hidden = html == null; if (html != null) veil.innerHTML = html; };
+    /* 模型：一组按钮，多于 MODEL_MENU 个换成下拉选择。只在时装换了、模型表变了时重建，其余就地改选中态（不丢焦点：下拉里按方向键就会换模型） */
+    let modelList = '';
+    const renderModels = () => {
+      const ms = models(st.skin), key = ms.join('\n');
+      if (key !== modelList) {
+        modelList = key;
+        f2.querySelector('.ak-btn-group, select')?.remove();
+        f2.insertAdjacentHTML('beforeend', ms.length > MODEL_MENU
+          ? `<select class="ak-select ak-select--sm" data-act="model" aria-label="模型">${ms.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join('')}</select>`
+          : `<div class="ak-btn-group" role="group" aria-label="模型">${ms.map(m => `<button type="button" class="ak-btn ak-btn--sm" data-model="${esc(m)}">${esc(m)}</button>`).join('')}</div>`);
+      }
+      const sel = f2.querySelector('select'); if (sel) sel.value = st.model;
+      f2.querySelectorAll('[data-model]').forEach(b => { const on = b.dataset.model === st.model; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on); });
+    };
     const load = async () => {
       const seq = ++loadSeq, item = conf.skin[st.skin][st.model];
       skinBox.querySelectorAll('.ak-chip').forEach(b => { const on = b.dataset.skin === st.skin; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on); });
-      modelBox.innerHTML = models(st.skin).map(m => `<button type="button" class="ak-btn ak-btn--sm${m === st.model ? ' is-active' : ''}" data-model="${esc(m)}" aria-pressed="${m === st.model}">${esc(m)}</button>`).join('');
+      renderModels();
       showVeil('<span class="ak-spinner"></span><span>正在载入 ' + esc(st.skin + ' · ' + st.model) + '</span>');
       cancelAnimationFrame(raf); raf = 0; cur = null;
       try {
@@ -1361,7 +1387,7 @@ var back_list = {
         case 'webm': exportWebm(); break;
       }
     });
-    root.addEventListener('change', e => { const t = e.target; if (t.dataset.act === 'loop') st.loop = t.checked; else if (t.dataset.act === 'chain') st.chain = t.checked; else if (t.dataset.act === 'speed') st.speed = +t.value; });
+    root.addEventListener('change', e => { const t = e.target; if (t.dataset.act === 'loop') st.loop = t.checked; else if (t.dataset.act === 'chain') st.chain = t.checked; else if (t.dataset.act === 'speed') st.speed = +t.value; else if (t.dataset.act === 'model') { st.model = t.value; load(); } });
 
     /* ── 自定义背景的取色面板：饱和度 / 明度平面 + 色相条 + 十六进制 + 预设。内部按 HSV 存（灰 / 黑没有色相，拖到角上色相条不跳）；
           平面 / 色相条按下捕获指针（拖出框也跟手）、方向键微调（Shift 大步）；十六进制打满 6 位就生效，失焦 / 回车也认 3 位简写；点面板外面 / Esc 关 ── */
@@ -1463,8 +1489,9 @@ var back_list = {
     loadBtn.classList.add('is-loading');
     try {
       let conf;
-      const id = new URLSearchParams(location.search).get('spine') || root.dataset.id;   // ?spine=char_1028_texas2：样例页换一位干员看（动作多的 / JSON 骨骼的 / 只有「战斗」一面的）
-      if (id) { const r = await fetch(`${ENDPOINT}/assets/char_spine/${id}/meta.json`); if (!r.ok) throw new Error('HTTP ' + r.status); conf = await r.json(); }
+      const id = new URLSearchParams(location.search).get('spine') || root.dataset.id;   // ?spine=char_1028_texas2：样例页换一位干员看（动作多的 / JSON 骨骼的 / 只有「战斗」一面的）；?spine=enemy_1265_durcar 看模型多的（见上 ENEMY）
+      if (ENEMY[id]) { const [name, list] = ENEMY[id]; conf = { prefix: `${ENDPOINT}/assets/enemy_spine/${id}/`, name, skin: { 默认: Object.fromEntries(list.split('|').map(s => { const [m, skin] = s.split(' '); return [m, { file: id, skin }]; })) } }; }
+      else if (id) { const r = await fetch(`${ENDPOINT}/assets/char_spine/${id}/meta.json`); if (!r.ok) throw new Error('HTTP ' + r.status); conf = await r.json(); }
       else conf = JSON.parse(document.getElementById('SPINEDATA').textContent);
       if (!window.spine) throw new Error('Spine 运行时没有加载');
       mount(conf);
