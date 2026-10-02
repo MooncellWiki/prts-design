@@ -15,7 +15,7 @@
  *  （MW 的 data-portlets-first 也只在侧栏渲染一次）。1680 容器与 .ak-layout 同为 border-box，超宽时左右缘才对得齐。
  *  <1400 向下滚动时整个页眉上移一个 __inner 的高度 —— 主行滑出视口，二级栏贴顶。
  *  <1120 主行回到 flex，只留 品牌 / 搜索 / ≡；工具（外观 / 通知 / 用户菜单）都在 .ak-header__screen 里 —— 桌面 display:contents
- *  （子项直接参与主行网格），窄屏变成 ≡ 拉下、贴在主行右下沿的 320px 卡片（不再是全屏面板：里面只有三行）。开合是纯 CSS：
+ *  （子项直接参与主行网格），窄屏变成 ≡ 拉下、贴在主行右下沿的卡片（宽度随内容，最窄 240px）（不再是全屏面板：里面只有一行图标控件 + 用户菜单）。开合是纯 CSS：
  *  input.ak-nav-cb + label.ak-header__burger（同目录浮层的 .ak-toc-cb 做法），DOM 顺序固定为
  *  logo · search · search-toggle · nav-cb · screen[tools] · burger（checkbox 在前才能用 ~ 联动）。
  *  卡片 position:absolute 于 .ak-header__inner（position:relative），top:100% 即贴主行下沿、盖住二级栏；JS 补 Esc / 点卡片外 / 回到桌面宽度收起。 */
@@ -42,7 +42,7 @@
 .ak-header__inner { height: var(--ak-header-h); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; position: relative;
   display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr) auto; gap: var(--ak-gutter); align-items: center; }   /* 三列 = 侧栏 / 正文 / 工具，列宽与 .ak-layout 相同 */
 .ak-header__screen, .ak-header__tool { display: contents; }   /* 桌面：只是分组，不产生盒子；窄屏见 responsive.css */
-.ak-header__tool-label { display: none; }   /* 「外观」「通知」这类行标签只在窄屏面板里出现（桌面是图标） */
+.ak-header__tool-label { display: none; }   /* 「外观」「通知」这类标签不显示（桌面、窄屏面板里都是图标控件），只留给 aria-labelledby */
 .ak-nav-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 窄屏 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
 .ak-header__burger { display: none; flex: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; color: var(--ak-fg-secondary); cursor: pointer; }
 .ak-header__burger:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
@@ -82,12 +82,14 @@
 .ak-header__user:hover { --_fg: var(--ak-theme-accent); }   /* 走 .ak-btn 的 --_fg（下面 :visited 也读它），悬停变活动主色 */
 .ak-header__user .ak-avatar { --_s: 28px; border-color: var(--ak-chrome-line-strong); }
 .ak-header__user > span:not(.ak-avatar, .ak-icon) { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }   /* 用户名过长截断 */
-/* 用户菜单卡片（#p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu.ak-header__user-card——用户名抬头 + 「界面设置」（ULS 语言）+ 「个人工具」两组门户。
+/* 用户菜单卡片（#p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu.ak-header__user-card——a.ak-menu__head 身份抬头（头像 + 用户名，整块就是去用户页的链接）+ 「界面设置」（ULS 语言）+ 「个人工具」两组门户；
+ * 「个人工具」里不再有 #pt-userpage 那条同名的项（模板把它提成抬头），用户名在卡片里只出现一次。
  * 颜色不用另写：.ak-header 内 --ak-bg-surface / --ak-border / --ak-fg 已重映射到 --ak-chrome-*，卡片自动是页眉配色 */
 .ak-header__user-menu > details[open] > .ak-header__user { --_fg: var(--ak-theme-accent); background: var(--ak-bg-hover); }
 .ak-header__user-card { min-width: 240px; top: calc(100% + 6px); padding: 0; }   /* 顶部由 .ak-menu__head 占位，底部 0：最后一项（退出）悬停贴底 */
 .ak-header__user-card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
 .ak-header__user-card a:hover .ak-icon { color: var(--ak-fg); }
+.ak-header__user-card .ak-avatar { border-color: var(--ak-chrome-line-strong); }
 /* Echo 通知徽标（MW #p-notifications > ul > li#pt-notifications-alert / -notice）：与工具区其它按钮同高并排 */
 .ak-header__notifications { display: flex; align-items: center; height: 100%; }
 .ak-header__notifications ul { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }

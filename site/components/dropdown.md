@@ -44,7 +44,7 @@ component: dropdown
 
 ## CSS 实现
 
-无 JS 的写法：`.ak-dropdown > details > summary + .ak-menu`（原生 `<details>` 开合，皮肤的用户菜单 / 「更多」就是这样）；有 JS 时在 `.ak-dropdown` 上切 `.is-open`（Vue 版就是这样）。菜单可以是 `ul.ak-menu > li > a`，也可以是 `div.ak-menu > nav.ak-menu__group( .ak-menu__label + ul )` 分组卡片，`.ak-menu__head` 是卡片抬头（用户名）。放在正文里时外层标 `ak-not-prose`，免得吃正文的列表符与链接色。
+无 JS 的写法：`.ak-dropdown > details > summary + .ak-menu`（原生 `<details>` 开合，皮肤的用户菜单 / 「更多」就是这样）；有 JS 时在 `.ak-dropdown` 上切 `.is-open`（Vue 版就是这样）。菜单可以是 `ul.ak-menu > li > a`，也可以是 `div.ak-menu > nav.ak-menu__group( .ak-menu__label + ul )` 分组卡片，`.ak-menu__head` 是卡片抬头（用户名）；抬头本身是入口时写成 `a.ak-menu__head( .ak-avatar + .ak-menu__head-name )`，右端带箭头（皮肤的用户菜单：点抬头去用户页）。放在正文里时外层标 `ak-not-prose`，免得吃正文的列表符与链接色。
 
 ```html demo
 <div class="ak-dropdown ak-not-prose"><details><summary class="ak-btn">下拉菜单 ▾</summary><ul class="ak-menu"><li class="ak-menu__label">页面操作</li><li><a href="#">移动</a></li><li><a href="#">保护</a></li><li class="ak-menu__sep"></li><li><a href="#" class="ak-menu__item--danger">删除</a></li></ul></details></div>

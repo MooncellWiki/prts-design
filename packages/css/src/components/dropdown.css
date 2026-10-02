@@ -18,6 +18,13 @@
 /* 卡片抬头（用户菜单的用户名）：粗体一行 + 底线；图标上青 */
 .ak-menu__head { display: flex; align-items: center; gap: 10px; padding: 10px 14px 8px; font-weight: 700; font-size: var(--ak-fs-sm); border-bottom: 1px solid var(--ak-border); margin-bottom: 4px; }
 .ak-menu__head .ak-icon { width: 20px; height: 20px; flex: none; color: var(--ak-accent); }
+/* 抬头是链接时（a.ak-menu__head，用户菜单 = 去用户页）：头像 / 占位图标 + .ak-menu__head-name 名字 + 右端箭头（箭头已经说明「点它过去」，不再另写去向）。
+ * 名字在卡片里只出现这一次、并且就是入口——下面的门户不必再放一条同名的项。左内边距与普通项对齐（.ak-menu a 的 14px + 2px 左线） */
+.ak-menu a.ak-menu__head { gap: 10px; padding: 10px 14px; }
+.ak-menu__head .ak-avatar { --_s: 32px; }
+.ak-menu__head-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+a.ak-menu__head::after { content: ""; flex: none; width: 6px; height: 6px; margin-right: 2px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); color: var(--ak-fg-subtle); }
+a.ak-menu__head:hover::after { color: var(--ak-accent); }
 .ak-dropdown:not(.is-open) > .ak-menu { display: none; }
 .ak-dropdown > details > summary { list-style: none; cursor: pointer; }
 .ak-dropdown > details > summary::-webkit-details-marker { display: none; }

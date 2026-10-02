@@ -175,7 +175,10 @@
 			if ( !e.target.closest( '.ak-header__screen, .ak-header__burger, .ak-nav-cb' ) ) { closeNav(); }
 		} );
 		const mq = window.matchMedia( '(min-width: 1120px)' );
-		mq.addEventListener( 'change', ( e ) => { if ( e.matches ) { closeNav(); } } );
+		// 用户菜单在这张卡片里是平铺的（不折叠）：<1120 把它的 <details> 置 open，回到桌面宽度再合上（桌面是点开的下拉）
+		const flat = document.querySelectorAll( '.ak-header__tools .ak-dropdown > details' );
+		mq.addEventListener( 'change', ( e ) => { if ( e.matches ) { closeNav(); } flat.forEach( ( d ) => { d.open = !e.matches; } ); } );
+		if ( !mq.matches ) { flat.forEach( ( d ) => { d.open = true; } ); }
 	}
 
 	/* 页眉收起：向下滚动只留二级吸顶栏，向上滚 / 回到顶部再展开（无 JS 则始终两行） */
