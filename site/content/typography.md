@@ -45,7 +45,7 @@ h2 = 官网式标题：左侧 4px 青色色条 + 1px 细底线 + 底线上 96px 
 
 整套系统只有青这一种链接色，不出现紫：已访问就是同一个青「褪一层」。令牌与算法见[色彩 · 链接](/foundations/color#链接)。
 
-`hr` 是 1px 分隔线；`hr.ak-hr-accent` 在左端加 96px 青色短横，与 h2 的短横条同一个语汇。
+`hr` 是 1px 分隔线，上下各留 32px；表格单元格里是格内分隔，收到 8px。`hr.ak-hr-accent` 在左端加 96px 青色短横，与 h2 的短横条同一个语汇。
 
 ```html demo
 <p>上一段。</p>
@@ -67,7 +67,7 @@ h2 = 官网式标题：左侧 4px 青色色条 + 1px 细底线 + 底线上 96px 
 
 ## 引用与代码
 
-`blockquote`：左侧 4px 青条 + 浅一档的底、次要文字色；`<poem>` 只有一道 1px 左线。`pre`（含 SyntaxHighlight 的 `.mw-highlight`）是下沉底 + 3px 青色色条 + 1px 细框——色条和细框用 `border-image` 直角拼接，不让不同宽度的 border 在角上斜接出一道小斜边（见[装饰语言 · 色条 + 细框](/foundations/decoration#色条-细框)）。行内 `code` 是浅底细框的小块。
+`blockquote`：左侧 4px 青条 + 浅一档的底、次要文字色；`<poem>` 只有一道 1px 左线（表格单元格里不画：模板把描述包进 poem 只为保留换行）。`pre`（含 SyntaxHighlight 的 `.mw-highlight`）是下沉底 + 3px 青色色条 + 1px 细框——色条和细框用 `border-image` 直角拼接，不让不同宽度的 border 在角上斜接出一道小斜边（见[装饰语言 · 色条 + 细框](/foundations/decoration#色条-细框)）。行内 `code` 是浅底细框的小块。
 
 ```html demo
 <blockquote><p>「博士，现在起由我担任你的护卫。」</p><p class="ak-fs-xs ak-fg-muted">—— 陈 · 任命助理</p></blockquote>
