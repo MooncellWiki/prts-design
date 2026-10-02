@@ -57,9 +57,110 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
   .op-files .ak-tab { border-left: 0; border-bottom: 3px solid transparent; margin: 0 0 -1px; }
   .op-files .ak-tab.is-active { border-bottom-color: var(--ak-accent); }
 }
-/* 干员模型（SpineViewer）：黑色 16:9 舞台，网格底纹 + 载入按钮 */
-.op-spine { position: relative; width: 100%; height: 360px; display: grid; place-items: center; background: #0f0f10; border: 1px solid var(--ak-border); --ak-grid-color: rgba(255,255,255,.06); }
-.op-spine__hint { position: absolute; left: 12px; bottom: 10px; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.45); }
+/* ═══ 干员模型（Widget:SpineViewer = prts-widgets 的 SpineViewer）——.sv-* 是 Widget 自己的排布（放 Widget 的样式表），里面的按钮 / 芯片 / 开关 / 下拉是设计系统组件。
+   选择条（时装 · 模型）→ 舞台 + 动作列表 → 时间轴 + 播放条。取舍见文档站 /patterns/operator#干员模型 ═══ */
+.sv { --sv-h: clamp(320px, 44vw, 440px); --sv-ink: 255, 255, 255; position: relative; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+.sv__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 10px 14px; background: var(--ak-bg-surface-2); border-bottom: 1px solid var(--ak-border); }
+.sv__field { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.sv__field:last-child { margin-left: auto; }
+.sv__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.sv__main { display: grid; grid-template-columns: minmax(0, 1fr) 272px; height: var(--sv-h); }
+/* 舞台：底色是「背景」那一格选的（默认深色，不随明暗主题——模型在深底上轮廓最清楚），canvas 透明叠在上面；HUD 字色 --sv-ink 由脚本按底色明度给黑 / 白 */
+.sv__stage { position: relative; min-width: 0; overflow: hidden; background-color: var(--sv-bg, #0f0f10); --ak-grid-color: rgba(var(--sv-ink), .06); color: rgba(var(--sv-ink), .9); outline: 0; }
+.sv__stage[data-bg="none"] { background: repeating-conic-gradient(#27282b 0 25%, #1b1c1e 0 50%) 0 0 / 20px 20px; --ak-grid-color: transparent; }   /* 透明：棋盘格（两套主题同一副深色格，HUD 仍是白字），导出的 PNG / WebM 是透明底 */
+.sv__stage:focus-visible { box-shadow: inset 0 0 0 2px var(--ak-focus); }
+.sv__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; }   /* 手机上竖向滑动留给页面滚动；放大模式里才整块接管 */
+.sv__canvas.is-dragging { cursor: grabbing; }
+/* 地面：脚底原点处一条线 + 一枚椭圆影子（游戏里战斗 / 基建小人脚下都有一枚 Shadow）。DOM 画的，不进导出 */
+.sv__ground { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; }
+.sv__ground::before { content: ""; position: absolute; left: -100vw; right: -100vw; top: 0; border-top: 1px solid rgba(var(--sv-ink), .16); }
+.sv__ground::after { content: ""; position: absolute; left: calc(var(--sv-z, 1) * -70px); top: calc(var(--sv-z, 1) * -12px); width: calc(var(--sv-z, 1) * 140px); height: calc(var(--sv-z, 1) * 24px); border-radius: 50%; background: radial-gradient(closest-side, rgba(var(--sv-shadow, 255, 255, 255), .13) 60%, rgba(var(--sv-shadow, 255, 255, 255), 0)); }   /* 深底上是一枚淡亮的落脚点，浅底上是影子（--sv-shadow 由脚本随底色给） */
+.sv__stage[data-bg="none"] .sv__ground { display: none; }
+.sv__hud { position: absolute; left: 12px; top: 10px; display: flex; flex-direction: column; gap: 5px; pointer-events: none; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .1em; text-transform: uppercase; color: rgba(var(--sv-ink), .5); }
+.sv__hud b { font: 700 11px/1 var(--ak-font-mono); letter-spacing: 0; text-transform: none; color: rgba(var(--sv-ink), .78); }
+.sv__hit { align-self: flex-start; padding: 3px 6px; background: var(--ak-accent-2); color: var(--ak-accent-2-fg); opacity: 0; }   /* 播放头扫过判定帧时闪一下 */
+.sv__hit.is-on { animation: sv-hit .45s var(--ak-ease-out); }
+@keyframes sv-hit { from { opacity: 1; } to { opacity: 0; } }
+.sv__tools { position: absolute; right: 10px; top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.sv__tool { all: unset; box-sizing: border-box; width: 32px; height: 32px; display: grid; place-items: center; cursor: pointer; color: rgba(var(--sv-ink), .75); background: rgba(var(--sv-ink), .08); border: 1px solid rgba(var(--sv-ink), .14); }
+.sv__tool:hover { color: rgb(var(--sv-ink)); background: rgba(var(--sv-ink), .16); }
+.sv__tool[aria-pressed="true"] { background: var(--ak-accent); border-color: var(--ak-accent); color: var(--ak-accent-fg); }
+.sv__tool:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.sv__tool > svg, .sv__transport .ak-btn > svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+.sv__tool[data-ak-tip]::after { left: auto; right: calc(100% + 6px); bottom: auto; top: 50%; transform: translate(4px, -50%); }   /* 提示朝左出：按钮贴着舞台右缘 */
+.sv__tool[data-ak-tip]:hover::after, .sv__tool[data-ak-tip]:focus-visible::after { transform: translate(0, -50%); }
+.sv__zoom { text-align: center; font: 700 10px/1 var(--ak-font-label); color: rgba(var(--sv-ink), .5); padding-top: 2px; font-variant-numeric: tabular-nums; }
+.sv__bg { position: absolute; right: 10px; bottom: 10px; display: flex; align-items: center; gap: 5px; }
+.sv__swatch { all: unset; box-sizing: border-box; width: 20px; height: 20px; cursor: pointer; background: var(--_c); border: 1px solid rgba(var(--sv-ink), .35); position: relative; overflow: hidden; }
+.sv__swatch[data-bg="none"] { background: repeating-conic-gradient(#bbb 0 25%, #fff 0 50%) 0 0 / 10px 10px; }
+.sv__swatch[data-bg="custom"] { background: conic-gradient(#f33, #fc0, #3c3, #0cf, #63f, #f33); }
+.sv__swatch > input { position: absolute; inset: -4px; width: 200%; height: 200%; opacity: 0; cursor: pointer; }
+.sv__swatch[aria-pressed="true"], .sv__swatch.is-active { outline: 2px solid var(--ak-accent); outline-offset: 1px; }
+.sv__swatch:focus-visible, .sv__swatch:focus-within { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
+.sv__hint { position: absolute; left: 12px; bottom: 10px; pointer-events: none; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .08em; color: rgba(var(--sv-ink), .42); transition: color var(--ak-dur-fast); }
+.sv__hint.is-nudge { color: var(--ak-accent-2); }   /* 没按 Ctrl 就滚轮：提示亮一下，页面照常滚动 */
+.sv__veil { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 12px; text-align: center; background: var(--sv-bg, #0f0f10); color: rgba(255, 255, 255, .7); font-size: var(--ak-fs-sm); }
+.sv__veil[hidden] { display: none; }
+/* 动作列表：一行一个动作，点了就播（游戏的时装预览也是一排直达按钮 btn_play_enter / special / interact，不是下拉）。右边是帧数（30 帧 / 秒）与判定帧个数 */
+.sv__list { display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--ak-border); }
+.sv__list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 10px 12px 8px 14px; border-bottom: 1px solid var(--ak-border-subtle); }
+.sv__list-head b { font: 700 var(--ak-fs-sm)/1 var(--ak-font-body); }
+.sv__anims { position: relative; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 0; scrollbar-width: thin; }
+.sv__group { display: flex; align-items: center; gap: 8px; padding: 10px 12px 4px 14px; }
+.sv__group::after { content: ""; flex: 1; border-top: 1px solid var(--ak-border-subtle); }
+.sv__anim { all: unset; box-sizing: border-box; display: flex; align-items: baseline; gap: 8px; width: 100%; padding: 6px 12px 6px 11px; border-left: 3px solid transparent; cursor: pointer; font: 700 13px/1.3 var(--ak-font-label); color: var(--ak-fg-secondary); }
+.sv__anim:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
+.sv__anim:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.sv__anim.is-active { border-left-color: var(--ak-accent); background: var(--ak-mark-bg); color: var(--ak-accent); }
+.sv__anim > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sv__anim small { flex: none; font: 500 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-subtle); }
+.sv__anim i { flex: none; margin-left: auto; font: 500 11px/1 var(--ak-font-mono); font-style: normal; color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sv__anim i > em { font-style: normal; margin-right: 8px; color: var(--ak-fg); }
+.sv__anim i > em::before, .sv__mark--hit { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--ak-accent-2); transform: rotate(45deg); }
+.sv__anim i > em::before { margin-right: 5px; box-shadow: 0 0 0 1px var(--ak-bg-surface); }
+/* 时间轴 + 播放条 */
+.sv__transport { border-top: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); }
+.sv__timerow { display: flex; align-items: center; gap: 14px; padding: 8px 14px 0; }
+.sv__timeline { position: relative; flex: 1; min-width: 0; height: 28px; cursor: pointer; touch-action: none; }
+.sv__timeline.is-disabled { opacity: .4; pointer-events: none; }
+.sv__track { position: absolute; left: 0; right: 0; top: 50%; height: 6px; margin-top: -3px; background: var(--ak-bg-surface-3); }
+.sv__fill { position: absolute; left: 0; top: 0; bottom: 0; width: var(--sv-p, 0%); background: var(--ak-accent); }
+.sv__playhead { position: absolute; left: var(--sv-p, 0%); top: 3px; bottom: 3px; width: 2px; margin-left: -1px; background: var(--ak-fg); }
+.sv__mark { position: absolute; top: 50%; width: 2px; height: 12px; margin: -6px 0 0 -1px; background: var(--ak-fg-muted); }
+.sv__mark--hit { position: absolute; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; box-shadow: 0 0 0 1.5px var(--ak-bg-surface-2); }
+.sv__seek { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; pointer-events: none; }   /* 只管键盘与读屏；指针由时间轴自己接（原生滑杆的滑块有半个身位的内缩，点不准帧） */
+.sv__timeline:has(.sv__seek:focus-visible) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.sv__frame { flex: none; min-width: 132px; text-align: right; font: 500 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sv__frame b { font-size: var(--ak-fs-body); color: var(--ak-fg); }
+.sv__ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 8px 14px 10px; }
+.sv__ctrl > .ak-btn-group { flex: none; }
+.sv__ctrl .ak-select { width: auto; }
+.sv__ctrl label.sv__speed { display: inline-flex; align-items: center; gap: 8px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); white-space: nowrap; }
+.sv__export { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.sv__rec { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: rgba(0, 0, 0, .55); color: #fff; font-size: var(--ak-fs-sm); }
+.sv__rec[hidden] { display: none; }
+/* 未载入：只有一块矮舞台 + 载入钮（模型与运行时都等点了再取） */
+.sv:not(.is-ready) > .sv__stage { height: 220px; display: grid; place-items: center; }
+/* 放大：整块铺满视口（不用 Fullscreen API——iOS 的 Safari 不给普通元素全屏），舞台吃掉剩余高度；Esc 退出 */
+.sv.is-max { position: fixed; inset: 0; z-index: calc(var(--ak-z-modal) + 1); margin: 0 !important; display: flex; flex-direction: column; border: 0; }
+.sv.is-max > .sv__main { flex: 1; height: auto; min-height: 0; }
+.sv.is-max .sv__canvas { touch-action: none; }
+@media (max-width: 767px) {
+  .sv { --sv-h: auto; display: flex; flex-direction: column; }
+  .sv__field:last-child { margin-left: 0; }
+  .sv__main { display: contents; }   /* 手机上顺序改成 选择条 → 舞台 → 时间轴 / 播放条 → 动作列表：播放条贴着舞台 */
+  .sv__list { order: 1; }
+  .sv__stage { height: min(86vw, 360px); }
+  .sv__list { border-left: 0; border-top: 1px solid var(--ak-border); }
+  .sv__export > .ak-overline { display: none; }
+  .sv__anims { max-height: 232px; }
+  .sv__hint { display: none; }
+  .sv__timerow { flex-wrap: wrap; gap: 2px 14px; }
+  .sv__timeline { flex-basis: 100%; }
+  .sv__frame { min-width: 0; margin-left: auto; }
+  .sv.is-max .sv__stage { flex: 1; height: auto; min-height: 0; }
+  .sv.is-max .sv__anims { max-height: 26vh; }
+}
 /* 修正标记（{{修正}}）：底色 + 虚线 */
 .template-fix-mark { background: var(--ak-warning-bg); border-bottom: 1px dashed var(--ak-warning); cursor: help; }
 </style>
@@ -850,7 +951,9 @@ var back_list = {
 </table>
 <p class="ak-mb-4"><a class="ak-chevrons" href="#">跳转到 假日威龙陈 的异格任务</a></p>
 <div class="mw-heading mw-heading2"><h2 id="model">干员模型 <span class="ak-en ak-fs-sm ak-fg-muted">Spine model</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
-<div class="op-spine ak-bg-grid ak-mb-4" id="spine-root"><button type="button" class="ak-btn ak-btn--primary ak-btn--lg" id="spine-load">点此载入模型</button><span class="op-spine__hint">SpineViewer · 载入后可切换 动作 / 皮肤 / 朝向，拖拽移动、滚轮缩放</span></div>
+<div class="sv ak-not-prose ak-mb-4" id="spine-root" data-id="char_010_chen" data-no-toggle>
+  <div class="sv__stage ak-bg-grid"><button type="button" class="ak-btn ak-btn--primary ak-btn--lg" id="spine-load">载入模型</button><span class="sv__hint">SpineViewer · 战斗正面 / 背面 · 基建 · 全部时装</span></div>
+</div>
 <div class="mw-references-wrap"><ol class="references"><li id="cite_note-1"><span class="mw-cite-backlink"><a href="#cite_ref-1">↑</a></span> <span class="reference-text">此处游戏内原文是<b>认识她警员</b>，因<b>存在明显笔误</b>，我们对其进行了修正。</span></li></ol></div>
 <div class="navbox" style="width:100%"><table style="width:100%"><tr><th class="navbox-title" colspan="2">干员一览 · Operators</th></tr>
 <tr><th class="navbox-group" style="width:120px">近卫 · 剑豪</th><td class="navbox-list hlist"><ul><li><b>陈</b></li><li><a href="#">艾丽妮</a></li><li><a href="#">锏</a></li><li><a href="#">柏喙</a></li><li><a href="#">战车</a></li><li><a href="#">刻刀</a></li></ul></td></tr>
@@ -916,7 +1019,367 @@ var back_list = {
   };
   if (vtexts) vtexts.addEventListener('click', e => { const b = e.target.closest('[data-voice-text]'); if (!b) return; b.classList.toggle('is-active'); b.setAttribute('aria-pressed', b.classList.contains('is-active')); paintVoice(); });
   if (vlangs) vlangs.addEventListener('click', e => { const b = e.target.closest('[data-voice-lang]'); if (!b) return; $$('[data-voice-lang]', vlangs).forEach(x => { x.classList.toggle('is-active', x === b); x.setAttribute('aria-pressed', x === b); }); });
-  const spine = $('#spine-load'); if (spine) spine.addEventListener('click', () => { spine.classList.add('is-loading'); setTimeout(() => { spine.classList.remove('is-loading'); spine.replaceWith(Object.assign(document.createElement('p'), { className: 'ak-fg-muted ak-fs-sm', textContent: '（演示：生产环境这里由 SpineViewer 载入 char_010_chen 的 Spine 模型）' })); }, 1200); });
+})();
+</script>
+<script src="vendor/spine/spine-webgl.js"></script>
+<script>
+/* ═══ 干员模型：Widget:SpineViewer 的替身（生产环境 = prts-widgets src/widgets/Spine/，运行时与模型地址都与现网相同）。
+   与现网的差别都在「怎么看」上：舞台随容器宽度（不再是 1000×1000 画布缩到 300）、按设备像素比出图、载入后自动取景；
+   动作一行一个直接点；时间轴能拖、能逐帧，标出骨骼数据里的事件帧（OnAttack = 攻击判定）；滚轮要按住 Ctrl 才缩放，不劫持页面滚动 ═══ */
+(function () {
+  'use strict';
+  const root = document.getElementById('spine-root'), loadBtn = document.getElementById('spine-load');
+  if (!root || !loadBtn) return;
+  const ENDPOINT = 'https://torappu.prts.wiki';
+  const FPS = 30;   // 游戏的动画与逻辑帧率；帧数 = 时长 × 30
+  /* 动作名的中文注：只注游戏代码里有名有姓的那几个键（战斗 Torappu.Battle.AnimationConsts 的 Idle / Die / Stun / Default…，基建 VCharacter 状态机的 Relax / Move / Interact / Sit / Sleep / Special）；
+     Skill_2_Loop 这类按干员各取各的名字不猜 */
+  const GLOSS = { Start: '入场', Idle: '待机', Attack: '攻击', Die: '倒下', Stun: '晕眩', Default: '默认姿态', Relax: '闲置', Move: '移动', Interact: '交互', Sit: '坐下', Sleep: '睡眠', Special: '特殊动作' };
+  const FAMILY = [['入场', /^Start/], ['待机', /^(Idle|Default|Relax)/], ['攻击', /^(Attack|Combat|Reload)/], ['技能', /^Skill/], ['其它', /./]];
+  const MODEL_ORDER = ['正面', '背面', '战斗', '基建'];
+  const EVENT_LABEL = { OnAttack: '攻击判定', OnAttackFinished: '攻击结束', OnStart: '入场完成', OnPlayAudio: '音效' };
+  const BG = [['dark', '#0f0f10', '深色'], ['light', '#f2f2f2', '浅色'], ['none', '', '透明'], ['custom', '', '自定义']];
+  const SPEEDS = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2];
+  const ICON = {
+    play: '<svg viewBox="0 0 24 24"><path stroke-linejoin="round" d="M7 4v16l12-8z"/></svg>',
+    pause: '<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>',
+    prev: '<svg viewBox="0 0 24 24"><path stroke-linejoin="round" d="M19 5v14l-10-7zM6 5v14"/></svg>',
+    next: '<svg viewBox="0 0 24 24"><path stroke-linejoin="round" d="M5 5v14l10-7zM18 5v14"/></svg>',
+    flip: '<svg viewBox="0 0 24 24"><path d="M12 3v18M8 7l-5 5 5 5zM16 7l5 5-5 5z"/></svg>',
+    reset: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5M12 9v6M9 12h6"/></svg>',
+    max: '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>',
+    min: '<svg viewBox="0 0 24 24"><path d="M20 10h-6V4M4 14h6v6M14 10l6-6M10 14l-6 6"/></svg>',
+    download: '<svg viewBox="0 0 24 24"><path d="M12 4v12m-5-5 5 5 5-5M4 20h16"/></svg>',
+  };
+  const h = (tag, attrs, html) => { const el = document.createElement(tag); for (const k in attrs) el.setAttribute(k, attrs[k]); if (html != null) el.innerHTML = html; return el; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+  /* ── 渲染：一块 canvas、一套 shader，骨骼按「时装-模型」缓存。不用 AnimationState——每帧从初始姿态起把当前动作在 t 时刻的姿态直接套上去
+        （Animation.apply + MixBlend.setup）：同一个 t 永远是同一个姿态，拖时间轴 / 逐帧 / 倒退都准，也没有多圈累加的旋转问题 ── */
+  function Stage(canvas) {
+    const S = window.spine, ctx = new S.webgl.ManagedWebGLRenderingContext(canvas, { alpha: true }), gl = ctx.gl;
+    const shader = S.webgl.Shader.newTwoColoredTextured(ctx), batcher = new S.webgl.PolygonBatcher(ctx), renderer = new S.webgl.SkeletonRenderer(ctx);
+    const mvp = new S.webgl.Matrix4(), assets = new S.webgl.AssetManager(ctx), cache = {};
+    renderer.premultipliedAlpha = true;
+    const fetchAll = (skel, atlas) => Promise.all([
+      new Promise((ok, no) => assets.loadBinary(skel, ok, (p, m) => no(new Error(m || p)))),
+      new Promise((ok, no) => assets.loadTextureAtlas(atlas, ok, (p, m) => no(new Error(m || p)))),
+    ]);
+    this.view = { x: 0, y: 0, z: 1 };   // 原点（脚底）在舞台里的位置（CSS 像素，自左上角）与缩放（CSS 像素 / 骨骼单位）
+    this.clear = [0, 0, 0, 0];
+    this.cur = null;
+    this.load = async (key, path, skin) => {
+      if (!cache[key]) {
+        await fetchAll(path + '.skel', path + '.atlas');
+        const loader = new S.AtlasAttachmentLoader(assets.get(path + '.atlas')), raw = assets.get(path + '.skel');
+        // '{' 开头是 JSON 骨骼（缄默德克萨斯「幽兰秘辛」的基建 / 正面）；二进制的首字节是 hash 长度，不会是 0x7b
+        const data = raw[0] === 0x7b ? new S.SkeletonJson(loader).readSkeletonData(new TextDecoder().decode(raw)) : new S.SkeletonBinary(loader).readSkeletonData(raw);
+        const skeleton = new S.Skeleton(data);
+        if (skin) skeleton.setSkinByName(skin);
+        cache[key] = { skeleton, data, anims: data.animations.map(a => ({
+          name: a.name, anim: a, duration: a.duration, frames: Math.round(a.duration * FPS),
+          events: a.timelines.filter(t => t instanceof S.EventTimeline).flatMap(t => t.events.map(e => ({ name: e.data.name, time: e.time }))).sort((p, q) => p.time - q.time),
+        })) };
+      }
+      return (this.cur = cache[key]);
+    };
+    this.pose = (anim, t) => {   // 把当前骨骼摆到 anim 的 t 时刻
+      const sk = this.cur.skeleton;
+      sk.setToSetupPose();
+      if (anim) anim.apply(sk, -1, t, false, null, 1, S.MixBlend.setup, S.MixDirection.mixIn);
+      sk.updateWorldTransform();
+    };
+    this.bounds = anim => {   // 取景用：动作全程里采 6 个时刻的包围盒并起来（setup pose 常常是摊开的，data.width / height 有的模型是 0）
+      const off = new S.Vector2(), size = new S.Vector2(); let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (let i = 0; i < 6; i++) {
+        this.pose(anim, anim ? anim.duration * i / 6 : 0); this.cur.skeleton.getBounds(off, size, []);
+        if (!isFinite(off.x) || !size.x) continue;
+        x0 = Math.min(x0, off.x); y0 = Math.min(y0, off.y); x1 = Math.max(x1, off.x + size.x); y1 = Math.max(y1, off.y + size.y);
+      }
+      return isFinite(x0) ? { x0, y0, x1, y1 } : { x0: -200, y0: 0, x1: 200, y1: 400 };
+    };
+    this.resize = (w, hgt, dpr) => { canvas.width = Math.max(1, Math.round(w * dpr)); canvas.height = Math.max(1, Math.round(hgt * dpr)); this.w = w; this.h = hgt; };
+    this.draw = () => {
+      const v = this.view;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.clearColor(...this.clear); gl.clear(gl.COLOR_BUFFER_BIT);
+      if (!this.cur) return;
+      mvp.ortho2d(-v.x / v.z, -(this.h - v.y) / v.z, this.w / v.z, this.h / v.z);
+      shader.bind(); shader.setUniformi(S.webgl.Shader.SAMPLER, 0); shader.setUniform4x4f(S.webgl.Shader.MVP_MATRIX, mvp.values);
+      batcher.begin(shader); renderer.draw(batcher, this.cur.skeleton); batcher.end(); shader.unbind();
+    };
+  }
+
+  function mount(conf) {
+    const skins = Object.keys(conf.skin).sort((a, b) => (b === '默认') - (a === '默认'));   // meta.json 里时装的次序不固定，「默认」提到最前
+    const st = { skin: skins[0], model: null, anim: null, t: 0, playing: true, loop: true, chain: false, speed: 1, flip: false, bg: 'dark', color: '#18d1ff', max: false, recording: false };
+    const models = sk => Object.keys(conf.skin[sk]).sort((a, b) => (MODEL_ORDER.indexOf(a) + 1 || 99) - (MODEL_ORDER.indexOf(b) + 1 || 99));
+    st.model = models(st.skin)[0];
+
+    /* ── 结构 ── */
+    root.textContent = '';
+    root.classList.add('is-ready');
+    const bar = h('div', { class: 'sv__bar' });
+    const skinBox = h('div', { class: 'sv__chips', role: 'group', 'aria-label': '时装' });
+    const modelBox = h('div', { class: 'ak-btn-group', role: 'group', 'aria-label': '模型' });
+    const f1 = h('div', { class: 'sv__field' }, '<span class="ak-overline">时装</span>'), f2 = h('div', { class: 'sv__field' }, '<span class="ak-overline">模型</span>');
+    f1.append(skinBox); f2.append(modelBox); bar.append(f1, f2);
+    const main = h('div', { class: 'sv__main' });
+    const stageEl = h('div', { class: 'sv__stage ak-bg-grid', tabindex: '0', 'data-bg': 'dark', 'aria-label': conf.name + ' 的 Spine 模型：空格 播放 / 暂停，← → 逐帧，F 翻转朝向，0 复位视图' });
+    const canvas = h('canvas', { class: 'sv__canvas' });
+    const ground = h('div', { class: 'sv__ground' });
+    const hud = h('div', { class: 'sv__hud' }, '<b></b><span></span><span class="sv__hit">OnAttack</span>');
+    const tools = h('div', { class: 'sv__tools' },
+      `<button type="button" class="sv__tool" data-act="flip" aria-pressed="false" data-ak-tip="翻转朝向 (F)" aria-label="翻转朝向">${ICON.flip}</button>` +
+      `<button type="button" class="sv__tool" data-act="reset" data-ak-tip="复位视图 (0)" aria-label="复位视图">${ICON.reset}</button>` +
+      `<button type="button" class="sv__tool" data-act="max" aria-pressed="false" data-ak-tip="放大查看" aria-label="放大查看">${ICON.max}</button>` +
+      '<div class="sv__zoom"></div>');
+    const bgBox = h('div', { class: 'sv__bg', role: 'group', 'aria-label': '背景' }, BG.map(([k, c, label]) =>
+      k === 'custom' ? `<label class="sv__swatch" data-bg="custom" title="背景：${label}"><input type="color" value="#18d1ff" aria-label="背景：自定义颜色"></label>`
+      : `<button type="button" class="sv__swatch" data-bg="${k}" style="--_c:${c}" aria-pressed="${k === 'dark'}" title="背景：${label}" aria-label="背景：${label}"></button>`).join(''));
+    const hint = h('span', { class: 'sv__hint' }, '拖拽移动 · Ctrl + 滚轮缩放 · 双击复位');
+    const veil = h('div', { class: 'sv__veil' });
+    stageEl.append(canvas, ground, hud, tools, bgBox, hint, veil);
+    const list = h('div', { class: 'sv__list' }, '<div class="sv__list-head"><b>动作</b><span class="ak-overline"></span></div><div class="sv__anims" role="group" aria-label="动作"></div>');
+    const animBox = list.lastChild, animCount = list.querySelector('.ak-overline');
+    main.append(stageEl, list);
+    const transport = h('div', { class: 'sv__transport' },
+      '<div class="sv__timerow"><div class="sv__timeline"><div class="sv__track"><div class="sv__fill"></div></div><div class="sv__marks"></div><div class="sv__playhead"></div><input class="sv__seek" type="range" min="0" max="1" step="1" value="0" aria-label="帧"></div><div class="sv__frame"></div></div>' +
+      '<div class="sv__ctrl">' +
+        `<div class="ak-btn-group"><button type="button" class="ak-btn ak-btn--contrast ak-btn--icon" data-act="play" aria-label="暂停">${ICON.pause}</button><button type="button" class="ak-btn ak-btn--icon" data-act="prev" data-ak-tip="上一帧 (←)" aria-label="上一帧">${ICON.prev}</button><button type="button" class="ak-btn ak-btn--icon" data-act="next" data-ak-tip="下一帧 (→)" aria-label="下一帧">${ICON.next}</button></div>` +
+        '<label class="ak-switch ak-switch--sm"><input type="checkbox" data-act="loop" checked>循环</label>' +
+        '<label class="ak-switch ak-switch--sm" data-ak-tip="一招的几段接着播：Begin → Loop → End"><input type="checkbox" data-act="chain">连播</label>' +
+        `<label class="sv__speed">速度<select class="ak-select ak-select--sm" data-act="speed">${SPEEDS.map(v => `<option value="${v}"${v === 1 ? ' selected' : ''}>×${v}</option>`).join('')}</select></label>` +
+        `<div class="sv__export"><span class="ak-overline">导出</span><div class="ak-btn-group"><button type="button" class="ak-btn ak-btn--sm" data-act="png" data-ak-tip="当前帧，透明底或所选背景">${ICON.download}PNG</button><button type="button" class="ak-btn ak-btn--sm" data-act="webm" data-ak-tip="当前动作播一遍，按所选速度">${ICON.download}WebM</button></div></div>` +
+      '</div>');
+    const rec = h('div', { class: 'sv__rec', hidden: '' });
+    root.append(bar, main, transport, rec);
+    const $ = s => transport.querySelector(s);
+    const timeline = $('.sv__timeline'), marks = $('.sv__marks'), seek = $('.sv__seek'), frameOut = $('.sv__frame'), playBtn = $('[data-act="play"]'), webmBtn = $('[data-act="webm"]');
+    const hit = hud.querySelector('.sv__hit'), zoomOut = tools.querySelector('.sv__zoom');
+    if (!(window.MediaRecorder && canvas.captureStream && MediaRecorder.isTypeSupported('video/webm'))) webmBtn.remove();
+
+    const stage = new Stage(canvas);
+    let cur = null, anim = null, home = null, raf = 0, last = 0, visible = true, loadSeq = 0;
+
+    /* ── 取景：原点（脚底）落在舞台横向正中、纵向 80% 处，同一把尺（560 单位 = 舞台高）下各时装 / 模型大小可比；待机姿态装不下才缩 ── */
+    const frame = () => {
+      const b = stage.bounds(cur.anims.find(a => a.name === defaultAnim()).anim), w = stage.w, hgt = stage.h, pad = 16;
+      const x = w / 2, y = hgt * (st.model === '基建' ? .78 : .8);
+      const z = Math.min(hgt / 560, (x - pad) / Math.max(1, -b.x0, b.x1), (y - pad) / Math.max(1, b.y1), (hgt - y - pad) / Math.max(1, -b.y0));
+      home = { x, y, z }; Object.assign(stage.view, home);
+    };
+    const defaultAnim = () => (['Idle', 'Relax', 'Default'].find(n => cur.anims.some(a => a.name === n)) || cur.anims[0].name);
+
+    /* ── 画一帧 + 同步界面 ── */
+    const paint = () => {
+      if (!cur) return;
+      cur.skeleton.scaleX = st.flip ? -1 : 1;
+      stage.pose(anim.anim, st.t); stage.draw();
+      const v = stage.view;
+      ground.style.transform = `translate(${v.x}px, ${v.y}px)`; stageEl.style.setProperty('--sv-z', v.z.toFixed(3));
+      zoomOut.textContent = Math.round(v.z / home.z * 100) + '%';
+      const f = Math.round(st.t * FPS);
+      transport.style.setProperty('--sv-p', (anim.duration ? st.t / anim.duration * 100 : 0).toFixed(2) + '%');
+      if (seek.value !== String(f)) seek.value = f;
+      frameOut.innerHTML = `<b>${f}</b> / ${anim.frames} F · ${st.t.toFixed(2)} / ${anim.duration.toFixed(2)} s`;
+    };
+    const flash = (from, to) => { if (anim.events.some(e => e.name === 'OnAttack' && e.time > from && e.time <= to)) { hit.classList.remove('is-on'); void hit.offsetWidth; hit.classList.add('is-on'); } };
+    const tick = now => {
+      raf = 0;
+      const dt = Math.min(.1, (now - last) / 1000); last = now;
+      if (st.playing && anim.duration) {
+        const from = st.t; st.t += dt * st.speed;
+        if (st.t >= anim.duration) {
+          flash(from, anim.duration);
+          const nxt = st.chain && !st.recording && nextInChain();
+          if (nxt) { const over = st.t - anim.duration; setAnim(nxt.name, true); st.t = Math.min(over, anim.duration); flash(-1, st.t); }
+          else if (st.recording) { st.t = anim.duration; setPlaying(false); st.onEnd && st.onEnd(); }
+          else if (st.loop) { st.t %= anim.duration; flash(-1, st.t); }
+          else { st.t = anim.duration; setPlaying(false); }
+        } else flash(from, st.t);
+      }
+      paint();
+      schedule();
+    };
+    /* 只在播放中且看得见时跑 rAF；暂停后改动（拖动 / 缩放 / 逐帧）各自 paint 一次 */
+    const schedule = () => { if (!raf && cur && st.playing && (visible || st.recording) && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(t => { last = Math.min(last, t); tick(t); }); } };
+    const setPlaying = on => {
+      st.playing = on; playBtn.innerHTML = on ? ICON.pause : ICON.play; playBtn.setAttribute('aria-label', on ? '暂停' : '播放');
+      if (on) { if (anim && st.t >= anim.duration) st.t = 0; schedule(); }
+    };
+    const seekTo = t => { setPlaying(false); st.t = clamp(t, 0, anim.duration); paint(); };
+    const step = d => seekTo((clamp(Math.round(st.t * FPS) + d, 0, anim.frames)) / FPS);
+
+    /* ── 动作 ── */
+    const setAnim = (name, keepTime) => {
+      anim = cur.anims.find(a => a.name === name) || cur.anims.find(a => a.name === defaultAnim()); st.anim = anim.name;
+      if (!keepTime) st.t = 0;
+      animBox.querySelectorAll('.sv__anim').forEach(b => { const on = b.dataset.anim === anim.name; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on); });
+      if (keepTime) { const on = animBox.querySelector('.sv__anim.is-active'); if (on) animBox.scrollTop = clamp(animBox.scrollTop, on.offsetTop + on.offsetHeight - animBox.clientHeight, on.offsetTop - 28); }   // 连播换段：当前行留在列表视野里（只滚列表，不动页面）
+      seek.max = anim.frames; timeline.classList.toggle('is-disabled', !anim.duration);
+      marks.innerHTML = anim.duration ? anim.events.map(e => `<i class="${e.name === 'OnAttack' ? 'sv__mark--hit' : 'sv__mark'}" style="left:${(e.time / anim.duration * 100).toFixed(2)}%" title="${esc(e.name)}${EVENT_LABEL[e.name] ? '（' + EVENT_LABEL[e.name] + '）' : ''} · 第 ${Math.round(e.time * FPS)} 帧"></i>`).join('') : '';
+      if (!keepTime) setPlaying(true);
+      paint();
+    };
+    /* 一招拆成几段是游戏的惯例：X_Begin（或 _Start / _Pre）→ X / X_Loop / X_Idle → X_End（Consts.Animation 的 BEGIN_ANIM_KEY / END_ANIM_KEY）。
+       骨骼文件里是字母序（Attack_Begin · Attack_Down_Begin · Attack_Down_End …），这里把段名摘出来当次序、剩下的当招式名，同一招的几段挨在一起按出招顺序排 */
+    const PHASE = { Pre: 0, Begin: 0, Start: 0, Loop: 2, Idle: 3, Break: 5, End: 6 };
+    const chainOf = name => { const ts = name.split('_'), i = ts.findLastIndex((t, j) => j > 0 && t in PHASE); return i < 0 ? [name, 1] : [ts.filter((_, j) => j !== i).join('_'), PHASE[ts[i]]]; };
+    const chainKey = name => chainOf(name).join(' ');
+    /* 连播：播完一段接同一招的下一段（Skill_2_Begin → Skill_2_Loop → Skill_2_End），最后一段播完按「循环」回到第一段或停住；只有一段的动作不受影响 */
+    const nextInChain = () => {
+      const stem = chainOf(anim.name)[0], chain = cur.anims.filter(a => a.duration && chainOf(a.name)[0] === stem).sort((a, b) => chainOf(a.name)[1] - chainOf(b.name)[1]), i = chain.indexOf(anim);
+      return chain.length < 2 || i < 0 ? null : chain[i + 1] || (st.loop ? chain[0] : null);
+    };
+    const renderAnims = () => {
+      const grouped = cur.anims.length > 8, rows = [];
+      FAMILY.forEach(([title, re], i) => {
+        const items = cur.anims.filter(a => FAMILY.findIndex(f => f[1].test(a.name)) === i).sort((a, b) => !a.duration - !b.duration || chainKey(a.name).localeCompare(chainKey(b.name), 'en', { numeric: true }));   // 0 帧的定格姿态（Default）排到本组最后；其余按「起手 → 本体 / 循环 → 收招」排
+        if (!items.length) return;
+        if (grouped) rows.push(`<div class="sv__group ak-overline">${title}</div>`);
+        items.forEach(a => {
+          const hits = a.events.filter(e => e.name === 'OnAttack');
+          rows.push(`<button type="button" class="sv__anim" data-anim="${esc(a.name)}" aria-pressed="false"${hits.length ? ` title="攻击判定：第 ${hits.map(e => Math.round(e.time * FPS)).join('、')} 帧"` : ''}><span>${esc(a.name)}</span>${GLOSS[a.name] ? `<small>${GLOSS[a.name]}</small>` : ''}<i>${hits.length ? `<em>${hits.length}</em>` : ''}${a.frames} F</i></button>`);
+        });
+      });
+      animBox.innerHTML = rows.join(''); animCount.textContent = cur.anims.length;
+    };
+
+    /* ── 载入一个「时装 × 模型」──切换时沿用同名动作（没有就回到待机），速度 / 循环 / 朝向 / 背景不变 */
+    const showVeil = html => { veil.hidden = html == null; if (html != null) veil.innerHTML = html; };
+    const load = async () => {
+      const seq = ++loadSeq, item = conf.skin[st.skin][st.model];
+      skinBox.querySelectorAll('.ak-chip').forEach(b => { const on = b.dataset.skin === st.skin; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on); });
+      modelBox.innerHTML = models(st.skin).map(m => `<button type="button" class="ak-btn ak-btn--sm${m === st.model ? ' is-active' : ''}" data-model="${esc(m)}" aria-pressed="${m === st.model}">${esc(m)}</button>`).join('');
+      showVeil('<span class="ak-spinner"></span><span>正在载入 ' + esc(st.skin + ' · ' + st.model) + '</span>');
+      cancelAnimationFrame(raf); raf = 0; cur = null;
+      try {
+        const loaded = await stage.load(st.skin + '/' + st.model, conf.prefix + item.file, item.skin);
+        if (seq !== loadSeq) return;
+        cur = loaded;
+      } catch (err) {
+        if (seq !== loadSeq) return;
+        showVeil('<span>模型载入失败：' + esc(err.message || err) + '</span><button type="button" class="ak-btn ak-btn--sm" data-act="retry">重试</button>');
+        return;
+      }
+      hud.firstChild.textContent = item.file.split('/').pop() + '.skel';
+      hud.children[1].textContent = `Spine ${cur.data.version} · ${cur.data.bones.length} bones`;
+      renderAnims(); fit(); frame(); setAnim(st.anim); showVeil(null);
+    };
+
+    /* ── 尺寸：画布跟着舞台走，按设备像素比出图（上限 2） ── */
+    const fit = () => { const r = stageEl.getBoundingClientRect(); stage.resize(r.width, r.height, Math.min(2, window.devicePixelRatio || 1)); };
+    new ResizeObserver(() => { if (!cur) return; const was = stage.w ? { fx: stage.view.x / stage.w, fy: stage.view.y / stage.h, k: stage.view.z / home.z } : null; fit(); frame(); if (was) Object.assign(stage.view, { x: was.fx * stage.w, y: was.fy * stage.h, z: was.k * home.z }); paint(); }).observe(stageEl);
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; schedule(); }).observe(stageEl);
+    document.addEventListener('visibilitychange', schedule);
+
+    /* ── 背景 ── */
+    const setBg = (k, color) => {
+      st.bg = k; if (color) st.color = color;
+      const c = k === 'custom' ? st.color : (BG.find(b => b[0] === k) || [])[1];
+      stageEl.dataset.bg = k; stageEl.style.setProperty('--sv-bg', c || 'transparent');
+      if (c) { const n = parseInt(c.slice(1), 16), lum = (.299 * (n >> 16) + .587 * (n >> 8 & 255) + .114 * (n & 255)) / 255; stageEl.style.setProperty('--sv-ink', lum > .55 ? '0, 0, 0' : '255, 255, 255'); stageEl.style.setProperty('--sv-shadow', lum > .3 ? '0, 0, 0' : '255, 255, 255'); } else stageEl.style.removeProperty('--sv-ink');
+      bgBox.querySelectorAll('.sv__swatch').forEach(b => b.tagName === 'BUTTON' ? b.setAttribute('aria-pressed', b.dataset.bg === k) : b.classList.toggle('is-active', b.dataset.bg === k));
+    };
+    const exportClear = () => { const c = st.bg === 'custom' ? st.color : (BG.find(b => b[0] === st.bg) || [])[1]; if (!c) return [0, 0, 0, 0]; const n = parseInt(c.slice(1), 16); return [(n >> 16) / 255, (n >> 8 & 255) / 255, (n & 255) / 255, 1]; };
+
+    /* ── 导出：PNG = 当前帧；WebM = 当前动作从头播一遍（MediaRecorder 录画布）。背景选了颜色就带上，透明就是透明底 ── */
+    const fileName = ext => [conf.name, st.skin, st.model, anim.name].join('-') + ext;
+    const save = (blob, name) => { const a = h('a', { href: URL.createObjectURL(blob), download: name }); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
+    const exportPng = () => { stage.clear = exportClear(); paint(); canvas.toBlob(b => save(b, fileName(`-f${Math.round(st.t * FPS)}.png`))); stage.clear = [0, 0, 0, 0]; paint(); };
+    const exportWebm = () => {
+      if (st.recording || !anim.duration) return;
+      const chunks = [], mr = new MediaRecorder(canvas.captureStream(60), { mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm', videoBitsPerSecond: 8e6 });
+      const name = fileName(`-x${st.speed}.webm`);
+      mr.ondataavailable = e => chunks.push(e.data);
+      mr.onstop = () => { save(new Blob(chunks, { type: 'video/webm' }), name); st.recording = false; stage.clear = [0, 0, 0, 0]; rec.hidden = true; st.t = 0; setPlaying(true); };
+      st.recording = true; stage.clear = exportClear(); rec.hidden = false; rec.textContent = '正在导出 ' + name;
+      st.onEnd = () => setTimeout(() => mr.stop(), 120);   // 多留几帧，别把最后一帧截掉
+      st.t = 0; paint(); mr.start(); setPlaying(true);
+    };
+
+    /* ── 放大 ── */
+    const setMax = on => { st.max = on; root.classList.toggle('is-max', on); const b = tools.querySelector('[data-act="max"]'); b.innerHTML = on ? ICON.min : ICON.max; b.setAttribute('aria-pressed', on); b.dataset.akTip = on ? '退出放大 (Esc)' : '放大查看'; document.documentElement.style.overflow = on ? 'hidden' : ''; hint.textContent = on ? '拖拽移动 · 滚轮缩放 · 双击复位 · Esc 退出' : '拖拽移动 · Ctrl + 滚轮缩放 · 双击复位'; };
+    const setFlip = on => { st.flip = on; tools.querySelector('[data-act="flip"]').setAttribute('aria-pressed', on); paint(); };
+    const resetView = () => { Object.assign(stage.view, home); paint(); };
+    const zoomAt = (cx, cy, k) => { const v = stage.view, z = clamp(v.z * k, home.z * .2, home.z * 8); v.x = cx - (cx - v.x) * z / v.z; v.y = cy - (cy - v.y) * z / v.z; v.z = z; paint(); };
+
+    /* ── 事件 ── */
+    root.addEventListener('click', e => {
+      const t = e.target.closest('[data-skin], [data-model], [data-anim], [data-act], .sv__swatch'); if (!t || !root.contains(t)) return;
+      if (t.dataset.skin) { st.skin = t.dataset.skin; if (!conf.skin[st.skin][st.model]) st.model = models(st.skin)[0]; load(); }
+      else if (t.dataset.model) { st.model = t.dataset.model; load(); }
+      else if (t.dataset.anim) setAnim(t.dataset.anim);
+      else if (t.classList.contains('sv__swatch')) { if (t.dataset.bg !== 'custom') setBg(t.dataset.bg); }   // 自定义那格是 <label> 包着的取色器，走下面的 input 事件
+      else if (!cur && t.dataset.act !== 'retry') return;
+      else switch (t.dataset.act) {
+        case 'retry': load(); break;
+        case 'play': setPlaying(!st.playing); break;
+        case 'prev': step(-1); break;
+        case 'next': step(1); break;
+        case 'flip': setFlip(!st.flip); break;
+        case 'reset': resetView(); break;
+        case 'max': setMax(!st.max); break;
+        case 'png': exportPng(); break;
+        case 'webm': exportWebm(); break;
+      }
+    });
+    root.addEventListener('change', e => { const t = e.target; if (t.dataset.act === 'loop') st.loop = t.checked; else if (t.dataset.act === 'chain') st.chain = t.checked; else if (t.dataset.act === 'speed') st.speed = +t.value; });
+    bgBox.addEventListener('input', e => { if (e.target.type === 'color') setBg('custom', e.target.value); });
+    seek.addEventListener('input', () => { if (cur) seekTo(+seek.value / FPS); });
+    const scrub = e => { const r = timeline.getBoundingClientRect(); seekTo(Math.round(clamp((e.clientX - r.left) / r.width, 0, 1) * anim.duration * FPS) / FPS); };   // 吸到整帧
+    timeline.addEventListener('pointerdown', e => { if (!cur) return; timeline.setPointerCapture(e.pointerId); scrub(e); seek.focus({ preventScroll: true }); });
+    timeline.addEventListener('pointermove', e => { if (timeline.hasPointerCapture(e.pointerId)) scrub(e); });
+    /* 舞台：单指 / 鼠标拖拽平移，双指捏合缩放，Ctrl / ⌘ + 滚轮（触控板捏合也是它）缩放；放大模式下滚轮直接缩放 */
+    const pts = new Map(); let pinch = 0;
+    const local = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    canvas.addEventListener('pointerdown', e => { if (!cur) return; canvas.setPointerCapture(e.pointerId); pts.set(e.pointerId, local(e)); canvas.classList.add('is-dragging'); pinch = 0; });
+    canvas.addEventListener('pointermove', e => {
+      const p = pts.get(e.pointerId); if (!p) return; const q = local(e);
+      if (pts.size === 1) { stage.view.x += q[0] - p[0]; stage.view.y += q[1] - p[1]; pts.set(e.pointerId, q); paint(); return; }
+      pts.set(e.pointerId, q);
+      const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      if (pinch) zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / pinch);
+      pinch = d;
+    });
+    const up = e => { pts.delete(e.pointerId); pinch = 0; if (!pts.size) canvas.classList.remove('is-dragging'); };
+    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+    let nudge = 0;
+    canvas.addEventListener('wheel', e => {
+      if (!cur) return;
+      if (!(e.ctrlKey || e.metaKey || st.max)) { hint.classList.add('is-nudge'); clearTimeout(nudge); nudge = setTimeout(() => hint.classList.remove('is-nudge'), 900); return; }
+      e.preventDefault(); const [x, y] = local(e); zoomAt(x, y, Math.exp(-e.deltaY * (e.deltaMode ? .05 : .0025)));
+    }, { passive: false });
+    canvas.addEventListener('dblclick', resetView);
+    stageEl.addEventListener('keydown', e => {
+      if (!cur || e.target !== stageEl || e.ctrlKey || e.metaKey || e.altKey) return;
+      const k = e.key;
+      if (k === ' ') setPlaying(!st.playing); else if (k === 'ArrowLeft') step(-1); else if (k === 'ArrowRight') step(1); else if (k === 'f' || k === 'F') setFlip(!st.flip); else if (k === '0') resetView(); else return;
+      e.preventDefault();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && st.max) setMax(false); });
+
+    skinBox.innerHTML = skins.map(s => `<button type="button" class="ak-chip" data-skin="${esc(s)}" aria-pressed="false">${esc(s)}</button>`).join('');
+    setBg('dark');
+    load();
+  }
+
+  loadBtn.addEventListener('click', async () => {
+    loadBtn.classList.add('is-loading');
+    try {
+      let conf;
+      const id = new URLSearchParams(location.search).get('spine') || root.dataset.id;   // ?spine=char_1028_texas2：样例页换一位干员看（动作多的 / JSON 骨骼的 / 只有「战斗」一面的）
+      if (id) { const r = await fetch(`${ENDPOINT}/assets/char_spine/${id}/meta.json`); if (!r.ok) throw new Error('HTTP ' + r.status); conf = await r.json(); }
+      else conf = JSON.parse(document.getElementById('SPINEDATA').textContent);
+      if (!window.spine) throw new Error('Spine 运行时没有加载');
+      mount(conf);
+    } catch (err) {
+      loadBtn.classList.remove('is-loading');
+      const hintEl = root.querySelector('.sv__hint'); if (hintEl) hintEl.textContent = '载入失败（' + (err.message || err) + '），点按钮重试';
+    }
+  });
 })();
 </script>
 

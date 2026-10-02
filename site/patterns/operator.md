@@ -14,7 +14,7 @@ title: 干员页样例（陈）
 
 现网「陈」页面的 wikitext 是 19 节模板调用。新皮肤下**干员页的 wikitext 一字不改，章节一节不少**：改的是各模板输出的 HTML（换成设计系统组件）；<code v-pre>{{CharinfoV2}}</code> 这块连样式表都先不动——原样跑现网 Widget，皮肤只补接缝。
 
-异格一览 `.op-alter` → **干员信息**（现网 Widget 原样）→ 特性 `.ak-kv--boxed` → 获得方式 `.ak-kv--inline` → 属性（`.op-calc` 属性计算器 + 模组选择 + `.ak-attrs` / 四档 wikitable）→ 攻击范围 ×3 → 天赋（条件表 + 潜能 · 算法开关）→ 潜能提升 `.ak-pot-list` → 技能 ×3（全等级表 + 日 / 英名 + 提示 + 范围 + 备注）→ 后勤技能 → 精英化材料 → 技能升级材料（+ 专精三技能表）→ 模组 ×3 `.ak-module`（原型证章 + X + Y）→ 相关道具 → 干员档案（竖排页签 9 段 + 未获得时档案 `.ak-archive`）→ 语音记录（语种切换 + 38 条 `.ak-voice`）→ 干员密录 → 悖论模拟 → 干员异格任务（已删除存档）→ 干员模型 `.op-spine` → 引用 + navbox。
+异格一览 `.op-alter` → **干员信息**（现网 Widget 原样）→ 特性 `.ak-kv--boxed` → 获得方式 `.ak-kv--inline` → 属性（`.op-calc` 属性计算器 + 模组选择 + `.ak-attrs` / 四档 wikitable）→ 攻击范围 ×3 → 天赋（条件表 + 潜能 · 算法开关）→ 潜能提升 `.ak-pot-list` → 技能 ×3（全等级表 + 日 / 英名 + 提示 + 范围 + 备注）→ 后勤技能 → 精英化材料 → 技能升级材料（+ 专精三技能表）→ 模组 ×3 `.ak-module`（原型证章 + X + Y）→ 相关道具 → 干员档案（竖排页签 9 段 + 未获得时档案 `.ak-archive`）→ 语音记录（语种切换 + 38 条 `.ak-voice`）→ 干员密录 → 悖论模拟 → 干员异格任务（已删除存档）→ 干员模型 `.sv`（[SpineViewer](#干员模型)）→ 引用 + navbox。
 
 - 舞台之下**不设身份栏 / 题注**：代号 / 星级 / 职业 · 分支 · 位置 / 标签 / 画师 / CV / 时装舞台 HUD 上都有（手机版样式表只藏按钮，这些字段照留），所属在「属性」节的所属势力行；HUD 之外只剩情报编号 / 干员序号 / 游戏内 ID / 日文名——前三者不是关键信息，日文名属多语言名称数据，都不值得在门面外显。先前的身份栏键值表 8 行里 6 行与 HUD 复读，已整块删掉。舞台文字全由 JS 填入，无 JS / 爬虫看到的舞台是空的——生产环境若在意，让模板另出一份 `visually-hidden` 的键值，不做可见复读。
 - 属性表四维之下再四行：部署费用 / 阻挡 / 攻击间隔 / 再部署——这四项游戏数据里就是按精英阶段存的，和四维同一个轴，不另起键值表（现网附加属性表里 colspan 横跨的那几项，「19 → 21 → 23」是在一格里手搓列轴）；势力两项 `.ak-kv--inline` 一行做表脚。
@@ -39,7 +39,7 @@ title: 干员页样例（陈）
 | <code v-pre>{{:xx/语音记录}}</code>（`#voice-table-root` VoiceTable + `#voice-data-root` 多语种数据） | `.ak-voice-toolbar` 里两排 `.ak-voice-langs`：**文本**（台词语言 `.ak-chip` 多选，可一个不选）+ **语种**（音频差分单选，带 CV 名）+ [`.ak-voice-list > .ak-voice`](/arknights/voice)（标题 / `__cond` 解锁条件 / 文件名 `.ak-code-id` / 文本 `data-cn data-jp data-en data-kr data-yue`） | 38 条全部列出；文本选几种就显示几行，语种只换音频；独立的 `/语音记录` 页每条多一枚下载钮 `.ak-voice__download`，干员页里不给 |
 | <code v-pre>{{干员密录}}</code> <code v-pre>{{悖论模拟}}</code> → 折叠 wikitable | [`.ak-archive`](/arknights/archive)：头（kicker + 标题 + 解锁条件 `.ak-elite` / `.ak-trust`）+ 体（文案）+ 脚（阅读密录 / 关卡 `.ak-stage` / 首通奖励 `.ak-item`） | |
 | <code v-pre>{{干员异格任务}}</code> → cbox + wikitable | `.ak-cbox--warning`（已删除、仅存档；图标 `i-trash` = 现网 delete-empty）+ `wikitable.ak-compact` + `.ak-item-list` + `.ak-chevrons` | |
-| <code v-pre>{{spineId}}</code>（SpineViewer） | `.op-spine`：黑色 16:9 网格舞台 + `.ak-btn--primary` 载入 | |
+| <code v-pre>{{spineId}}</code>（SpineViewer） | `.sv`：选择条（时装 `.ak-chip` · 模型 `.ak-btn-group`）+ 舞台 + 动作列表 + 时间轴 / 播放条 | 见下「[干员模型](#干员模型)」；未载入时只是一块矮舞台 + `.ak-btn--primary` |
 | <code v-pre>{{干员导航}}</code> | `.navbox`（见[分类栏与杂项](/content/catlinks#工具类)） | |
 
 ## CharinfoV2 怎么接
@@ -58,8 +58,31 @@ title: 干员页样例（陈）
 
 `packages/css/src/charinfo.css` 是对同一套 DOM 的皮肤化草案：黑玻璃 HUD（同页眉）、直角、选中 = 青条 + 青字、名字牌 = 思源 900 + 6px 青条（不再要 `charname` 字体）、时装 / 场景抽屉从右缘滑入、整块按容器宽度 `transform: scale(var(--charinfo-scale))`、≤639 藏 HUD 只留页签与名字牌。它不在 `index.css` / `skin.json` 里。真要接入得连 JS 一起改三处：resize 只设 `--charinfo-scale`；选中态从换蓝图标 + 内联 color 改成加类 `.is-active`；面板 / 抽屉开合从内联 height / right / opacity 改成加类 `.is-open` `.is-show` `.is-watch`。先把现网的动效 / 文本排布 / 试听语音 / BGM 原样看全，再定换皮范围。
 
+## 干员模型
+
+页面最后一节 = 现网的 SpineViewer（prts-widgets `src/widgets/Spine/`）。**运行时、模型地址、`meta.json` 的结构都与现网相同**（样例页真的从 `torappu.prts.wiki` 取模型来播；运行时是 prts-widgets 那一份的快照 `preview/vendor/spine/`，`node scripts/fetch-spine.ts`），换的是「怎么看」。样例页那段脚本是 Widget 的替身，地址栏加 `?spine=char_4104_coldst` 可以换一位干员看（动作多的 / JSON 骨骼的 / 只有「战斗」一面的）。
+
+现网是一张卡片：左边三个下拉（时装组 / 模型组 / 动画）、循环开关、背景取色器、速度滑杆、四个圆按钮，右边一块 300×300 的画布（1000×1000 的画布缩到 0.3）。这里拆成四块，从上到下是「选哪个 → 看 → 控制」：
+
+- **选择条**：时装是一排[筛选芯片](/components/chip)，模型是一组按钮（正面 / 背面 / 基建，顺序固定）。游戏里小人只有两类：战斗（`CharacterAnimator` 的 `front` / `back` 两张脸）与基建（`VCharacter`），`UICharSpineHolder.SpineType` 也只分 `BATTLE` / `BUILDING`——所以是一组三个键而不是下拉。换时装 / 模型时沿用同名动作（没有就回到待机），速度、循环、朝向、背景不变。
+- **舞台**：宽度随正文列，高 320–440，按设备像素比出图。载入后自动取景——脚底原点落在横向正中、纵向 80% 处，同一把尺下各时装大小可比，待机姿态装不下才缩；脚下一条地面线 + 一枚落脚点（游戏里战斗 / 基建小人脚下都有一枚 `Shadow`）。底色默认深色、不随明暗主题（模型在深底上轮廓最清楚），右下角四格换：深 / 浅 / 透明 / 自定义。右上角三个工具：翻转朝向（游戏的 `faceSign`）、复位视图、放大（整块铺满视口，Esc 退出）。
+  - **拖拽平移；缩放要按住 Ctrl / ⌘ 再滚轮**（触控板捏合、双指捏合同效）。现网在画布上直接吃掉滚轮，长页面滚到这里会被卡住；这里不按 Ctrl 的滚轮照常滚页面，左下角的提示亮一下。放大模式里滚轮直接缩放。手机上竖向滑动留给页面，放大后才整块接管。
+  - 键盘（舞台获得焦点后）：空格 播放 / 暂停，← → 逐帧，F 翻转，0 复位。
+  - 只在播放中且舞台在视口内时才逐帧重绘。
+- **动作列表**：一行一个动作，点了就播——游戏自己的时装预览（`ui/skinselect/skin_preview_panel`）底部也是一排直达按钮（`btn_play_enter` / `btn_play_special` / `btn_play_interact`），不是下拉。
+  - 超过 8 个时按 入场 / 待机 / 攻击 / 技能 / 其它 分组；组内把一招的几段按出招顺序排（`Skill_2_Begin` → `Skill_2_Loop` → `Skill_2_End`，段名同游戏的 `BEGIN_ANIM_KEY` / `END_ANIM_KEY`），骨骼文件里是字母序。
+  - 只给游戏代码里有名有姓的键加中文注：战斗 `AnimationConsts` 的 Idle / Die / Stun / Default…，基建 `VCharacter` 状态机的 Relax / Move / Interact / Sit / Sleep / Special。`Skill_2_Loop` 这类各干员自取的名字不猜。
+  - 每行右边是帧数（30 帧 / 秒，游戏的逻辑帧）；带黄色菱形的数字 = 这个动作里 `OnAttack` 事件的个数，即判定次数（陈的「赤霄·绝影」是 11）。现网藏在 ⓘ 气泡里的「模型动画数据」表就是这一列，不再另设。
+  - 默认播待机（战斗 `Idle`、基建 `Relax`）并循环；现网默认播字母序第一个动作（多半是 `Attack`）一遍就停。
+- **时间轴 + 播放条**：时间轴可拖、吸附到整帧，右边读数「当前帧 / 总帧数 · 秒」；**骨骼数据里的事件帧标在轴上**——`OnAttack`（攻击判定）是黄色菱形，其余（`OnStart` / `OnPlayAudio` / `OnAttackFinished`）是细竖线，悬停看帧号；播放头扫过判定帧时舞台左上角闪一下。前摇几帧、第几帧出伤害，不用再数。
+  - 播放 / 暂停、上一帧 / 下一帧；「循环」；「连播」= 播完一段接同一招的下一段，最后一段播完回到第一段；速度 ×0.1–×2。对应游戏 UI 小人的三种播法 `PlayAnimOption.LOOP` / `PLAY_ONCE` / `STOP`（定格在某一帧，`framePercent`）。
+  - 导出：PNG（当前帧）与 WebM（当前动作播一遍）。背景选了颜色就带上，选透明就是透明底。
+- **未载入**：只有一块矮舞台 + 「载入模型」——运行时与模型都等点了再取，同现网。
+
+实现上的一处不同：现网用 `AnimationState` 推进时间，循环靠每圈重新入队来绕开多圈累加的旋转问题；这里每帧从初始姿态起把动作在 `t` 时刻的姿态直接套上（`Animation.apply` + `MixBlend.setup`），同一个 `t` 永远是同一个姿态，所以能拖、能逐帧、能倒退，也没有累加问题。运行时里 prts-widgets 的修补（旋转 ±180° 处的 `Math.fround`）在 `RotateTimeline` 里，这条路径照样经过。
+
 ## 皮肤与页面的分工
 
 **皮肤这半**：无——干员页不需要皮肤层的特殊处理，标题 / 目录 / 动作簇照常（目录自动收 19 个 h2 + 技能 / 模组的 h3）。
 
-**页面这半**：`.op-*` 的几条排布规则归各模板的 TemplateStyles（`Template:异格干员/styles.css`、`Template:属性/styles.css`、`Template:人员档案/styles.css`、语音记录 / SpineViewer 各自的），样例页把它们合在页面的一个 `<style>` 里；属性计算器 / 语音语种切换与播放的脚本，生产环境分别是 `Widget:PropertyCalc`、VoiceTable——样例页脚本只是演示这些交互在新结构上怎么接（语音记录的播放钮走的是与现网同一套 torappu.prts.wiki 音频地址）；舞台的交互就是现网 charinfo JS 本身，样例页只算一个 zoom 系数。
+**页面这半**：`.op-*` 的几条排布规则归各模板的 TemplateStyles（`Template:异格干员/styles.css`、`Template:属性/styles.css`、`Template:人员档案/styles.css`、语音记录的），样例页把它们合在页面的一个 `<style>` 里（`.sv-*` 是 SpineViewer 这个 Widget 自己的样式表，也合在里面）；属性计算器 / 语音语种切换与播放的脚本，生产环境分别是 `Widget:PropertyCalc`、VoiceTable——样例页脚本只是演示这些交互在新结构上怎么接（语音记录的播放钮走的是与现网同一套 torappu.prts.wiki 音频地址）；舞台的交互就是现网 charinfo JS 本身，样例页只算一个 zoom 系数。

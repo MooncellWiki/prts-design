@@ -73,7 +73,7 @@ for name in sorted(f.name for f in prev.glob('*.html') if f.name != 'gallery.htm
             amap = {r: img_uri('assets/' + r) for r in sorted(rels) if (prev / 'assets' / r).exists()}
             js = 'window.AKDS_ASSET_MAP = %s;\n%s' % (json.dumps(amap), js)
         return '<script>\n%s\n</script>' % js
-    html = re.sub(r'<script src="((?:\.\./src/|vendor/[\w./-]+/|)[\w.-]+\.js)"></script>', repl_js, html)   # vendor/：首页的 Swiper（preview/vendor/swiper/）、干员页的 jQuery + 现网 charinfo 脚本（preview/vendor/jquery/ charinfo/）也内联
+    html = re.sub(r'<script src="((?:\.\./src/|vendor/[\w./-]+/|)[\w.-]+\.js)"></script>', repl_js, html)   # vendor/：首页的 Swiper（preview/vendor/swiper/）、干员页的 jQuery + 现网 charinfo 脚本 + Spine 运行时（preview/vendor/jquery/ charinfo/ spine/）也内联
     html = re.sub(r"url\('(vendor/[^']+\.(?:TTF|ttf))'\)", lambda m: "url('data:font/ttf;base64,%s')" % base64.b64encode((prev / m.group(1)).read_bytes()).decode(), html)   # 干员页舞台 Widget 自带的 @font-face 'charname'（vendor/charinfo/Charname_min_*.TTF，200KB）
     # images
     html = re.sub(r'(src|href|data-img)="((?:assets|vendor)/[^"]+\.(?:png|jpg|jpeg|svg))"', lambda m: '%s="%s"' % (m.group(1), img_uri(m.group(2))), html)   # data-img：首页 Hero 候选列表里给脚本换图用的横幅；vendor/：干员页舞台的 HUD 图标
