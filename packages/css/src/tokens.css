@@ -644,6 +644,7 @@ html.skin-theme-clientpref-night,
   --ak-keyart-h: 0px;                      /* 页眉之下那段画的高度（画有多高，不是占多高——占位看 -reveal） */
   --ak-keyart-reveal: 72px;                /* 留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带 */
   --ak-keyart-veil: 60%;                   /* 垫在版面背后那一段蒙的画布色纱：顶端的浓度，往下渐浓到 100%。画面越花调得越高；别低于 50%（侧栏 / 标题压在画上要读得清） */
+  --ak-keyart-veil-filter: blur(8px);      /* 纱底下先给画加的 backdrop-filter：细节先糊开、再被纱盖住，亮色主题下读起来是雾 / 景深而不是隔着磨砂膜；none 关闭。画面鲜艳的主题可以再加 saturate(.6) 之类 */
   --ak-keyart-position: center 30%;        /* -position / -size 相对整块（页眉高 + -h）计算 */
   --ak-keyart-size: cover;
   --ak-keyart-bg: transparent;             /* 画未铺满 / 未加载时的底色；默认透明，没有头图时页眉背后什么也不多画 */
