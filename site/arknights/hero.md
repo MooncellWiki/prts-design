@@ -17,7 +17,7 @@ component: hero
 
 ## 和首页轮播的关系
 
-[首页设计稿](/patterns/home)顶部的活动轮播（暗色黑块 / 亮色白面板 = 幻灯片 + 候选列表 + 进度条 + 暂停）不是这个组件。它是首页自己的结构：类名是 `.mp-hero*`，样式写在页面的 TemplateStyles 里，只有 `MediaWiki:首页` 这一处用，所以没有进 `src/`，也就没有对应的 Vue 组件。幻灯片里用到的倒计时、标签、按钮都是现成的组件（[倒计时](/arknights/event)、[标签](/components/tag)、[按钮](/components/button/)）。
+[首页设计稿](/patterns/home)顶部的活动轮播（暗色黑块 / 亮色白面板 = 幻灯片 + 左右箭头 + 指示条 / 进度 + 暂停）不是这个组件。它是首页自己的结构：类名是 `.mp-hero*`，样式写在页面的 TemplateStyles 里，只有 `MediaWiki:首页` 这一处用，所以没有进 `src/`，也就没有对应的 Vue 组件。幻灯片里用到的倒计时、标签、按钮都是现成的组件（[倒计时](/arknights/event)、[标签](/components/tag)、[按钮](/components/button/)）。
 
 ## Vue API
 
