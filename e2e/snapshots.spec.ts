@@ -15,7 +15,7 @@ import { dirname, resolve } from 'node:path';
 import { normToken, props, settle, snapshot, styleAt, SLOTS, type Row, type Snap } from './support/computed.ts';
 import { test, expect } from './support/test.ts';
 
-const PAGES = ['home', 'operators', 'operator'];
+const PAGES = ['home', 'operators', 'operator', 'recruit'];
 const DIR = process.env.PAGES_DIR ?? 'preview';   // PAGES_DIR=dist 拍单文件版（须是仓库顶层目录：单文件版里的思源黑体按 ../src/fonts/ 引，静态服务把 /src/ 映射到 packages/css/src/）
 const NOW = Date.parse('2026-09-27T12:00:00+08:00');   // 首页时钟 / 倒计时 / 今日开放状态才可复现
 const BASELINE = resolve(import.meta.dirname, '../_verify/snapshots', DIR);

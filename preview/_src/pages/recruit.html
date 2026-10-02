@@ -1,0 +1,504 @@
+<!--page
+order: 6
+nav: 公招计算（工具页）
+title: 公招计算 - PRTS · 工具页样例
+crumb: 首页 > 公开招募 > 公招计算
+h1: 公招计算
+h1en: Recruitment
+indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">现网数据快照</span>
+actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+lastmod: 2023年12月11日 (一) 21:46
+-->
+<!--head
+<script src="vendor/recruit/data.js"></script>   <!-- 现网 Widget 运行时发的那条 cargoquery（可公开招募的干员：职业 / 位置 / 稀有度 / 词缀 / 名称 / 获得方式）的快照，scripts/fetch-recruit.ts 抓取；生产环境 = Widget 照旧自己查 -->
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   公招计算 · Recruitment calculator — 现网「公招计算」（= prts-widgets 的 HrCalculator Widget）的重新设计。
+   现网：四行筛选（资历 / 职业 / 位置 / 词缀，可以无上限地选）→ 一张「Tags | 可能出现」的表，把选中标签的所有子集各列一行，按平均星级排。
+   这里照游戏的招募流程排：招募位上出现 5 个标签 → 至多选 3 个 → 定招募时限。页面回答的是「这 5 个里选哪几个」：
+   标签面板（最多 5 个，= 招募位上的 5 格）→ 招募时限（三档，决定稀有度范围）→ 结论 → 按「保底几星」分层的组合（每组至多 3 个标签）。
+   一个标签都没选时，结果区是「保底速查」——全部能保底 4★ 以上的最小组合。
+   干员数据、词缀、「6★ 只在选了高级资深干员时出现」的规则、地址栏 ?filter= 的写法都与现网一致（现网的分享链接在这里照样能用）。
+   这里的一切都是「Widget 自己的东西」：生产环境 = prts-widgets 的 HrCalculator 输出下面这些结构（.ak-* 是设计系统组件，.hr-* 是它自己的排布），样式 = Widget 的样式表；
+   页面脚本只是 Widget 的替身。开头「0. 页面级」段是这份静态预览的补丁，别照抄——同干员一览样例。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. 页面级：预览骨架的补丁（同 operators.html 的「0. 页面级」：无目录页把目录导轨让给主列） ── */
+.ak-toc, .ak-local-nav__toc { display: none; }
+.ak-main { padding-right: 0; }
+.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
+@media (min-width: 1120px) and (max-width: 1400px) { .ak-local-nav { display: none; } .ak-keyart { --_over: var(--ak-header-h); } }
+.catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
+@media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }
+
+.hr [hidden] { display: none !important; }
+.hr-notes { margin: 0 0 var(--ak-space-4); }
+.hr-notes > .ak-cbox { margin: 0; }
+.hr-notes a { color: var(--ak-link); }
+
+/* ── 1. 标签面板 ──
+ *  面板头 = 招募位上的 5 格：选中的标签依次落进格子（点格子取消），空格是虚框——一眼看得到还差几个。
+ *  游戏里的标签钮（recruit_page 预制件的 btn_tag_item，图集 tag）：未选 btn_request 深灰 #313131 白字、选中 btn_request_choose 蓝 #0098DC；
+ *  两个稀有标签（specialTagRarityTable 的键：资深干员 / 高级资深干员）另一套皮——未选 btn_request_r 深灰底 + 右侧黄色半调网点、黄字 #FFEB04，选中 btn_request_r_on 黄 #FFD800 底黑字。
+ *  这里的格子与结果里的组合标签用同一枚深灰钮 .hr-tagbtn（稀有标签带网点、黄字）；面板里的芯片选中时普通标签青、稀有标签黄。
+ *  下面四行是社区通行的归类：资质 / 位置 / 职业 / 词缀（游戏数据 gachaTags 自己不分组，招募位上按服务器给的次序摆；现网把「支援机械」放在词缀里、「新手」放在资历里，这里两个都归资质）。
+ *  选满 5 个后其余芯片压淡（仍可聚焦，点了给一句提示）——游戏一次只给 5 个标签，多选只会让结果里混进这次招募选不出的组合。 */
+.hr-pick { margin: 0 0 var(--ak-space-3); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
+.hr-pick__head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px var(--ak-space-4); padding: 10px var(--ak-space-3); background: var(--ak-bg-surface-2); border-bottom: 1px solid var(--ak-border); border-left: var(--ak-bar-w) solid var(--ak-accent); }
+.hr-pick__title { flex: none; display: flex; flex-direction: column; gap: 3px; font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.1; }
+.hr-pick__title .ak-en { font-size: 10px; color: var(--ak-fg-subtle); }
+.hr-slots { flex: 1 1 420px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; min-width: 0; margin: 0; padding: 0; list-style: none; }
+.hr-slots > li { display: flex; min-width: 0; margin: 0; }
+.hr-slot { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; height: 34px; padding: 0 8px; font-weight: 600; font-size: var(--ak-fs-sm); white-space: nowrap; }
+.hr-slot--empty { border: 1px dashed var(--ak-border-strong); color: var(--ak-fg-subtle); font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .08em; }
+button.hr-slot { cursor: pointer; background: var(--ak-gray-800); color: #fff; box-shadow: 0 2px 0 rgba(0, 0, 0, .28); }
+button.hr-slot > span { overflow: hidden; text-overflow: ellipsis; }
+button.hr-slot::after { content: "×"; flex: none; font-size: 15px; line-height: 1; opacity: .5; }
+button.hr-slot:hover { background: var(--ak-gray-700); } button.hr-slot:hover::after { opacity: 1; }
+button.hr-slot:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.hr-slot.is-senior, .hr-tagbtn.is-senior { color: #ffeb04; background-image: linear-gradient(100deg, var(--ak-gray-800) 25%, transparent 80%), radial-gradient(rgba(255, 216, 0, .5) 1.1px, transparent 1.3px); background-size: auto, 5px 5px; }
+button.hr-slot.is-senior:hover { background-color: var(--ak-gray-800); }
+.hr-pick__tools { flex: none; display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.hr-count { font: 700 var(--ak-fs-body)/1 var(--ak-font-label); font-variant-numeric: tabular-nums; color: var(--ak-fg); white-space: nowrap; }
+.hr-count small { font-weight: 600; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin-left: 2px; }
+.hr-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); }
+.hr-row { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; }
+.hr-row + .hr-row { border-top: 1px solid var(--ak-border); }
+.hr-row__label { padding: 12px var(--ak-space-4) 8px var(--ak-space-3); border-left: var(--ak-bar-w) solid transparent; font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1.4; color: var(--ak-fg-secondary); white-space: nowrap; }
+.hr-row.has-active > .hr-row__label { border-left-color: var(--ak-accent); color: var(--ak-fg); }
+.hr-row__opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px var(--ak-space-3) 8px 0; min-width: 0; }
+.hr-pick .ak-chip { height: 30px; }
+.hr-pick .ak-chip:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.hr-pick .ak-chip[aria-disabled="true"] { opacity: .38; cursor: not-allowed; }
+.hr-pick .ak-chip[aria-disabled="true"]:hover { border-color: var(--ak-border-strong); color: var(--ak-fg-secondary); }
+.hr-pick .ak-chip.is-senior:not([aria-pressed="true"]) { color: var(--ak-rarity-5-text); border-color: color-mix(in srgb, var(--ak-rarity-5-text) 55%, transparent); font-weight: 700; }
+.hr-pick .ak-chip.is-senior[aria-pressed="true"] { background: var(--ak-yellow-500); border-color: var(--ak-yellow-500); color: #1d1f20; }
+.hr-pick .ak-chip > .hr-ico { margin-left: -2px; }
+/* 单选这一个标签就能保底 4★ 以上（9:00）的芯片：右上角一枚稀有度色的小方块 */
+.hr-pick .ak-chip[data-solo]::after { content: ""; position: absolute; top: -1px; right: -1px; width: 7px; height: 7px; background: var(--ak-r); }
+.hr-pick .ak-chip[data-solo][aria-pressed="true"]::after { top: 2px; right: 2px; width: 5px; height: 5px; }
+/* 职业图标 = 游戏筛选面板的白线稿（arts/ui/[uc]charcommon 的 icon_profession_*）当遮罩、颜色取 currentColor，同干员一览 */
+.hr-ico { flex: none; width: 16px; height: 16px; background: currentColor; mask: center / contain no-repeat; }
+.hr-ico[data-prof="pioneer"] { mask-image: url(assets/profession/line_pioneer.png); }
+.hr-ico[data-prof="warrior"] { mask-image: url(assets/profession/line_warrior.png); }
+.hr-ico[data-prof="tank"] { mask-image: url(assets/profession/line_tank.png); }
+.hr-ico[data-prof="sniper"] { mask-image: url(assets/profession/line_sniper.png); }
+.hr-ico[data-prof="caster"] { mask-image: url(assets/profession/line_caster.png); }
+.hr-ico[data-prof="medic"] { mask-image: url(assets/profession/line_medic.png); }
+.hr-ico[data-prof="support"] { mask-image: url(assets/profession/line_support.png); }
+.hr-ico[data-prof="special"] { mask-image: url(assets/profession/line_special.png); }
+
+/* ── 2. 招募时限（面板底栏）──
+ *  游戏：1:00–9:00、小时 / 分钟各一对上下钮、每 10 分钟一档；稀有度范围查 gacha_table.recruitRarityTable，只有三段——所以这里只给三档，每档写明范围。
+ *  默认最长一档：两个稀有标签只在 9:00 锁定（游戏的招募说明与开始招募时的确认框）。
+ *  「可获得的干员」= 游戏时限下面那排稀有度块（recruit_rarity_obj）：范围内的蓝 #0098DC 白字；选了稀有标签，它对应的那一星变黄 #FBD501 深字、范围上限跟着抬到那一星。 */
+.hr-time { display: flex; flex-wrap: wrap; align-items: center; gap: 8px var(--ak-space-4); padding: 10px var(--ak-space-3) 10px calc(var(--ak-space-3) + var(--ak-bar-w)); background: var(--ak-bg-surface-2); border-top: 1px solid var(--ak-border); }
+.hr-time__label { font-weight: 600; font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); white-space: nowrap; }
+.hr-time .ak-btn-group { flex-wrap: nowrap; }
+.hr-time .ak-btn { flex-direction: column; gap: 3px; min-height: 44px; padding: 0 var(--ak-space-4); font: 700 var(--ak-fs-body)/1 var(--ak-font-label); font-variant-numeric: tabular-nums; }
+.hr-time .ak-btn small { font: 500 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-body); color: var(--ak-fg-muted); }
+.hr-time .ak-btn[aria-pressed="true"] { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); z-index: 1; }
+.hr-time .ak-btn[aria-pressed="true"] small { color: inherit; opacity: .8; }
+.hr-rar { display: inline-flex; align-items: center; gap: 8px; }
+.hr-rar__list { display: inline-flex; gap: 4px; }
+.hr-rar__list > span { display: grid; place-items: center; min-width: 34px; height: 24px; padding: 0 4px; box-sizing: border-box; background: var(--ak-blue-500); color: #fff; font: 700 var(--ak-fs-sm)/1 var(--ak-font-label); }
+.hr-rar__list > span.is-up { background: #fbd501; color: #313131; }
+.hr-time__note { flex: 1 1 220px; min-width: 0; font-size: var(--ak-fs-xs); line-height: 1.5; color: var(--ak-fg-muted); }
+
+/* ── 3. 提示 + 结论 ── */
+.hr-tips { display: flex; flex-direction: column; gap: 6px; margin: 0 0 var(--ak-space-3); }
+.hr-tips:empty { display: none; }
+.hr-tips > .ak-message { margin: 0; align-items: center; padding: 8px var(--ak-space-3); }
+.hr-tips .ak-btn { margin-left: auto; flex: none; }
+.hr-bar { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: var(--ak-space-4) 0 var(--ak-space-3); min-height: 32px; }
+.hr-verdict { flex: 1 1 320px; min-width: 0; margin: 0; font-size: var(--ak-fs-sm); line-height: 1.5; color: var(--ak-fg-secondary); }
+.hr-verdict b { font-weight: 700; color: var(--ak-fg); }
+.hr-verdict .hr-star { font: 700 var(--ak-fs-h3)/1 var(--ak-font-label); color: var(--ak-r-text); margin: 0 2px; }
+.hr-bar__tools { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.hr-bar .ak-icon, .hr-pick__tools .ak-icon { width: 14px; height: 14px; }
+
+/* ── 4. 结果：按「保底几星」分层 ──
+ *  现网：选中标签的每个子集一行（不限个数——游戏里最多只能选 3 个），按平均星级排；一行保底几星要自己看头像底色里最低的那个。
+ *  这里：每组至多 3 个标签；先算出这组在当前时限下保底几星，按它分层（层标题带稀有度色）；层内标签少的在前、干员少的在前。
+ *  多加一个标签却圈不出更小范围的组合不列（与它的子组合是同一批干员）。保底 3★ 及以下的组合收在最后一层，有保底层时默认收起。 */
+.hr-tier { margin: 0 0 var(--ak-space-4); }
+.hr-tier__head { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 36px; padding: 0 var(--ak-space-3) 0 0; background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); }
+.hr-tier__badge { align-self: stretch; display: inline-flex; align-items: center; gap: 4px; padding: 0 12px; background: var(--ak-r, var(--ak-gray-500)); color: #1d1f20; font: 700 var(--ak-fs-body)/1 var(--ak-font-label); white-space: nowrap; }
+.hr-tier__badge i { width: 12px; height: 12px; background: currentColor; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.hr-tier__title { font-weight: 700; }
+.hr-tier__count { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+button.hr-tier__head { cursor: pointer; }
+button.hr-tier__head:hover { background: var(--ak-bg-hover); }
+button.hr-tier__head:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+button.hr-tier__head::after { content: ""; flex: none; margin-left: auto; width: 10px; height: 10px; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat; opacity: .6; }
+button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2px 0; }
+.hr-combos { margin: 0; padding: 0; list-style: none; border: 1px solid var(--ak-border); border-top: 0; background: var(--ak-bg-surface); }
+.hr-combo { display: grid; grid-template-columns: 232px minmax(0, 1fr); margin: 0; }
+.hr-combo + .hr-combo { border-top: 1px solid var(--ak-border); }
+.hr-combo__tags { display: flex; flex-wrap: wrap; align-content: flex-start; align-items: center; gap: 6px; padding: 12px var(--ak-space-3); border-left: var(--ak-bar-w) solid var(--ak-r, var(--ak-border-strong)); border-right: 1px solid var(--ak-border-subtle); }
+.hr-tagbtn { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; background: var(--ak-gray-800); color: #fff; font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1; white-space: nowrap; box-shadow: 0 2px 0 rgba(0, 0, 0, .28); }
+.hr-combo__meta { flex: 1 0 100%; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.hr-combo__meta b { font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-r-text); }
+.hr-combo__ops { display: flex; flex-wrap: wrap; gap: 8px 6px; padding: 10px var(--ak-space-3); min-width: 0; }
+/* 保底速查：组合多、每组干员少（多数只有一两位）——排成多列的格子，标签在上、干员在下 */
+.hr-combos--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); overflow: hidden; }
+.hr-combos--grid > .hr-combo { display: flex; flex-direction: column; border-top: 0; border-left: var(--ak-bar-w) solid var(--ak-r, var(--ak-border-strong)); box-shadow: 1px 0 0 var(--ak-border), 0 1px 0 var(--ak-border); }
+.hr-combos--grid .hr-combo__tags { padding: 10px var(--ak-space-3) 0; border: 0; }
+.hr-combos--grid .hr-combo__meta { flex: none; margin-left: auto; }
+.hr-combos--grid .hr-combo__ops { border: 0; }
+/* 干员：头像 + 稀有度色条 + 名字；只能靠公开招募获得的（现网的绿色「限」字）右上角一枚「限」 */
+.hr-op { position: relative; display: flex; flex-direction: column; width: 56px; text-decoration: none; color: var(--ak-fg); }
+.hr-op:is(:visited, :active, :hover) { color: var(--ak-fg); text-decoration: none; }
+.hr-op__img { display: block; width: 56px; height: 56px; box-sizing: border-box; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); border-bottom: 3px solid var(--ak-r, var(--ak-border-strong)); overflow: hidden; }
+.hr-op__img > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hr-op__name { padding-top: 3px; font-size: max(11px, var(--ak-fs-cjk-min)); line-height: 1.25; text-align: center; overflow-wrap: anywhere; color: var(--ak-fg-secondary); }
+.hr-op:hover .hr-op__img { outline: 2px solid var(--ak-accent); outline-offset: -2px; }
+.hr-op:hover .hr-op__name { color: var(--ak-accent); }
+.hr-op:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.hr-op__only { position: absolute; right: 0; top: 0; padding: 2px 3px; background: var(--ak-success); color: #fff; font-size: 10px; font-weight: 700; line-height: 1; }
+/* 一组里干员多（单选【资深干员】是全部 5★）：先出两行左右，其余收在「+N」后面 */
+.hr-more { all: unset; box-sizing: border-box; display: grid; place-items: center; width: 56px; height: 56px; border: 1px dashed var(--ak-border-strong); color: var(--ak-fg-secondary); font: 700 var(--ak-fs-sm)/1 var(--ak-font-label); cursor: pointer; }
+.hr-more:hover { border-color: var(--ak-accent); color: var(--ak-accent); }
+.hr-more:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.hr-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 0 0 var(--ak-space-3); font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.hr-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+.hr-legend .hr-op__only { position: static; }
+.hr-legend i { width: 7px; height: 7px; background: var(--ak-r); }
+.hr-ref-head { margin-bottom: var(--ak-space-3); }
+.hr-tip { position: fixed; left: 0; top: 0; max-width: min(300px, calc(100vw - 16px)); white-space: pre-line; line-height: 1.55; pointer-events: none; }
+
+@media (max-width: 760px) {
+  .hr-combo { grid-template-columns: minmax(0, 1fr); }
+  .hr-combo__tags { padding: 10px var(--ak-space-3) 0; border-right: 0; }
+  .hr-combo__meta { flex: none; margin-left: auto; }
+  .hr-combo__ops { border-left: var(--ak-bar-w) solid var(--ak-r, var(--ak-border-strong)); }
+}
+@media (max-width: 639px) {
+  .hr-rows { grid-template-columns: minmax(0, 1fr); }
+  .hr-row__label { padding: 8px var(--ak-space-3) 0 8px; }
+  .hr-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
+  .hr-row.has-active > .hr-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }
+  .hr-pick__title { flex-direction: row; align-items: baseline; gap: 8px; }
+  .hr-slots { order: 1; flex-basis: 100%; display: flex; flex-wrap: wrap; }   /* 手机上 5 格放不下「高级资深干员」：格子随内容宽、折行 */
+  .hr-slots > li { flex: 1 1 auto; }
+  .hr-slot--empty { min-width: 44px; }
+  .hr-time { padding-left: var(--ak-space-3); }
+  .hr-time .ak-btn-group { display: flex; width: 100%; } .hr-time .ak-btn { flex: 1 1 0; min-width: 0; padding: 0 4px; }
+  .hr-op { width: 52px; } .hr-op__img, .hr-more { width: 52px; height: 52px; }
+  .hr-bar__tools { margin-left: 0; }
+}
+</style>
+-->
+<div class="hr ak-not-prose" id="hr" data-no-toggle>
+
+<div class="hr-notes">
+  <div class="ak-cbox ak-cbox--tip"><div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></div><div class="ak-cbox__body">公开招募的规则、招募位与联络次数、全部保底标签组合的说明见<a href="#">公开招募</a>页面。</div></div>
+</div>
+
+<noscript><div class="ak-cbox ak-cbox--warning"><div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-warn"/></svg></div><div class="ak-cbox__body">公招计算由脚本生成，需要启用 JavaScript。</div></div></noscript>
+
+<!-- 以下 = Widget 的输出（生产环境挂在 #root 上）。标签面板的芯片与结果由脚本按数据生成；其余结构固定，直接写在这里 -->
+<div id="hr-root" hidden>
+
+  <section class="hr-pick" aria-label="职业需求">
+    <div class="hr-pick__head">
+      <div class="hr-pick__title"><span>职业需求</span><span class="ak-en">Job Tags</span></div>
+      <ol class="hr-slots" id="hr-slots" aria-label="已选标签（最多 5 个）"></ol>
+      <div class="hr-pick__tools">
+        <span class="hr-count" id="hr-count" role="status"></span>
+        <button type="button" class="ak-btn ak-btn--sm" id="hr-clear"><svg class="ak-icon"><use href="#i-refresh"/></svg>清空</button>
+      </div>
+    </div>
+    <div class="hr-rows" id="hr-rows"></div>
+    <div class="hr-time">
+      <span class="hr-time__label" id="hr-time-label">招募时限</span>
+      <div class="ak-btn-group" id="hr-time" role="group" aria-labelledby="hr-time-label">
+        <button type="button" class="ak-btn" data-dur="0" aria-pressed="false">1:00 – 3:50<small>1 – 4★</small></button>
+        <button type="button" class="ak-btn" data-dur="1" aria-pressed="false">4:00 – 7:30<small>2 – 5★</small></button>
+        <button type="button" class="ak-btn" data-dur="2" aria-pressed="true">7:40 – 9:00<small>3 – 5★</small></button>
+      </div>
+      <span class="hr-rar"><span class="hr-time__label">可获得的干员</span><span class="hr-rar__list" id="hr-rar" role="status"></span></span>
+      <span class="hr-time__note">点上招募位出现的 5 个标签；每次招募至多选 3 项，下面按 1–3 项的组合算。</span>
+    </div>
+  </section>
+
+  <div class="hr-tips" id="hr-tips"></div>
+
+  <div class="hr-bar">
+    <p class="hr-verdict" id="hr-verdict" role="status"></p>
+    <div class="hr-bar__tools">
+      <button type="button" class="ak-btn ak-btn--sm ak-btn--ghost" id="hr-copy"><svg class="ak-icon"><use href="#i-link"/></svg>复制分享链接</button>
+    </div>
+  </div>
+
+  <div class="hr-legend" id="hr-legend">
+    <span><span class="hr-op__only">限</span>只能通过公开招募获得</span>
+    <span data-rarity="4"><i></i>单选这一个标签即可保底（方块颜色 = 保底的稀有度）</span>
+  </div>
+
+  <div id="hr-result"></div>
+</div>
+
+</div>
+
+<script>
+/* 公招计算脚本——prts-widgets HrCalculator Widget 的替身：数据、标签、地址栏 ?filter= 的写法都照它（src/widgets/HrCalculator/{index.vue, utils.ts}），输出的结构与算法的口径是新的。
+ * 生产环境这段不存在：Widget 用 Vue + @mooncellwiki/prts-design-vue 输出同样的结构。 */
+(function () {
+  'use strict';
+  const D = window.PRTS_RECRUIT, root = document.getElementById('hr-root');
+  if (!D || !root) return;
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const WIKI = 'https://prts.wiki/w/', MEDIA = 'https://media.prts.wiki/';
+  const media = (m, file) => MEDIA + m[0] + '/' + m + '/' + encodeURIComponent(file);
+  const PROF = { 先锋: 'pioneer', 近卫: 'warrior', 重装: 'tank', 狙击: 'sniper', 术师: 'caster', 医疗: 'medic', 辅助: 'support', 特种: 'special' };
+
+  /* ── 标签 ──
+   *  LIVE = 现网 Widget 的四组及组内次序（utils.ts）：?filter= 按它编码，一个字都不能动。
+   *  GROUPS = 这里怎么摆（社区通行的四类；游戏数据不分组）。 */
+  const LIVE = {
+    profession: ['近卫', '狙击', '重装', '医疗', '辅助', '术师', '特种', '先锋'],
+    position: ['近战位', '远程位'],
+    rarity: ['高级资深干员', '资深干员', '新手'],
+    tag: ['支援机械', '控场', '爆发', '治疗', '支援', '费用回复', '输出', '生存', '群攻', '防护', '减速', '削弱', '快速复活', '位移', '召唤', '元素'],
+  };
+  const GROUPS = [
+    { title: '资质', tags: ['高级资深干员', '资深干员', '新手', '支援机械'] },
+    { title: '位置', tags: ['近战位', '远程位'] },
+    { title: '职业', tags: ['先锋', '近卫', '重装', '狙击', '术师', '医疗', '辅助', '特种'] },
+    { title: '词缀', tags: ['治疗', '支援', '输出', '群攻', '减速', '生存', '防护', '削弱', '位移', '控场', '爆发', '召唤', '快速复活', '费用回复', '元素'] },
+  ];
+  const TOP = '高级资深干员', SENIOR = '资深干员', ROBOT = '支援机械';
+  const ALL = GROUPS.flatMap(g => g.tags), BIT = new Map(ALL.map((t, i) => [t, 1 << i]));
+  const MAX_TAGS = 5, MAX_PICK = 3;   // 游戏：招募位上 5 个标签（服务器给的）；至多选 3 个（RecruitBuildConfigStateBean.MAX_TAG_SELECT_NUM）
+  /* 招募时限三档 → 可能出现的星级（gacha_table.recruitRarityTable：≤230 分 0–3、240–450 分 1–4、460–540 分 2–4，0 起算）。两个稀有标签另算，见 combosOf */
+  const DUR = [{ label: '1:00 – 3:50', lo: 1, hi: 4 }, { label: '4:00 – 7:30', lo: 2, hi: 5 }, { label: '7:40 – 9:00', lo: 3, hi: 5 }];
+
+  /* ── 干员：每位算一个标签位图（职业 + 位置 + 词缀 + 按星级补的资深 / 高级资深，同 Widget 的 Char.fromSource）── */
+  const chars = D.chars.map(c => {
+    const star = c.rarity + 1, tags = [c.profession, c.position, ...c.tag];
+    if (star === 5) tags.push(SENIOR); else if (star === 6) tags.push(TOP);
+    return { zh: c.zh, star, tags, am: c.am, mask: tags.reduce((m, t) => m | (BIT.get(t) || 0), 0), only: c.obtainMethod.every(v => !v.includes('寻访')) };   // 寻访出不了的都算只能公招出（同 Widget 的 isOnly）
+  }).sort((a, b) => b.star - a.star);
+
+  const state = { sel: new Set(), dur: 2, lowOpen: false };
+
+  /* ── 组合 ──
+   *  从 tags 里取 1–3 个；一组的干员 = 带齐这几个标签、星级落在当前时限范围里的（recruitRarityTable）。
+   *  两个稀有标签把上限抬到自己那一星（specialTagRarityTable，同游戏稀有度块的算法）：5★ 在范围内或组合含【资深干员】时算，6★ 只在组合含【高级资深干员】时算。
+   *  保底 = 这组干员里最低的星级。稀有标签只在 9:00 锁定：时限不在最长一档时，含稀有标签的组合记 unsure（标签可能被划掉），保底按这一档的下限算。 */
+  function combosOf(tags, dur) {
+    const { lo, hi } = DUR[dur], out = [];
+    const walk = (start, picked, mask) => {
+      if (picked.length) {
+        const top = (mask & BIT.get(TOP)) !== 0, senior = (mask & BIT.get(SENIOR)) !== 0, unsure = (top || senior) && dur !== 2;
+        const ops = chars.filter(c => (c.mask & mask) === mask && (c.star === 6 ? top : c.star >= lo && (c.star <= hi || senior)));
+        if (ops.length) out.push({ tags: picked, mask, ops, unsure, min: unsure ? lo : ops[ops.length - 1].star });
+      }
+      if (picked.length < MAX_PICK) for (let i = start; i < tags.length; i++) walk(i + 1, picked.concat(tags[i]), mask | BIT.get(tags[i]));
+    };
+    walk(0, [], 0);
+    return out;
+  }
+  const subOf = (a, b) => a.mask !== b.mask && (a.mask & b.mask) === a.mask;   // a 是 b 的真子组合
+  /* 多加一个标签却没圈出更小范围的不列（干员与某个子组合相同） */
+  const prune = list => list.filter(c => !list.some(s => subOf(s, c) && s.ops.length === c.ops.length));
+  const order = (a, b) => b.min - a.min || a.tags.length - b.tags.length || a.ops.length - b.ops.length || a.mask - b.mask;
+  /* 保底速查：全部标签里能保底 4★ 以上的最小组合（9:00；不含三个资质标签——它们各自就是保底 / 只出低星）。多加标签没把保底抬高的不列 */
+  let refCache = null;
+  function reference() {
+    if (refCache) return refCache;
+    const skip = new Set([TOP, SENIOR, '新手', ROBOT]);
+    const good = combosOf(ALL.filter(t => !skip.has(t)), 2).filter(c => c.min >= 4);
+    return (refCache = good.filter(c => !good.some(s => subOf(s, c) && s.min >= c.min)).sort(order));
+  }
+  const solo = new Map(combosOf(ALL, 2).filter(c => c.tags.length === 1 && c.min >= 4).map(c => [c.tags[0], c.min]));
+
+  /* ── 地址栏 ?filter=（写法同现网：@urlpack/json = MessagePack → Base58；{ profession, position, rarity, tag } 四个位图，组内第 i 项是从高位数的第 i 位）
+   *  时限是新加的，另用 ?t=0|1（默认最长一档不写）——塞进 filter 里现网会读坏。 */
+  const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  function b58enc(bytes) {
+    let n = 0n, s = '';
+    for (const b of bytes) n = n * 256n + BigInt(b);
+    while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; }
+    for (const b of bytes) { if (b) break; s = '1' + s; }
+    return s;
+  }
+  function b58dec(str) {
+    let n = 0n;
+    for (const ch of str) { const i = B58.indexOf(ch); if (i < 0) throw new Error('bad base58'); n = n * 58n + BigInt(i); }
+    const out = [];
+    while (n > 0n) { out.unshift(Number(n % 256n)); n /= 256n; }
+    for (const ch of str) { if (ch !== '1') break; out.unshift(0); }
+    return out;
+  }
+  function packInt(v) { return v < 0x80 ? [v] : v < 0x100 ? [0xcc, v] : v < 0x10000 ? [0xcd, v >> 8, v & 255] : [0xce, v >>> 24, (v >> 16) & 255, (v >> 8) & 255, v & 255]; }
+  function pack(obj) {
+    const keys = Object.keys(obj), out = [0x80 | keys.length];
+    for (const k of keys) { out.push(0xa0 | k.length, ...Array.from(k, ch => ch.charCodeAt(0)), ...packInt(obj[k])); }
+    return out;
+  }
+  function unpack(b) {   // 只认这份数据用得到的类型：map / 短字符串 / 非负整数 / float64
+    let p = 0;
+    const int = n => { let v = 0; while (n--) v = v * 256 + b[p++]; return v; };
+    const str = n => { let s = ''; while (n--) s += String.fromCharCode(b[p++]); return s; };
+    const val = () => {
+      const t = b[p++];
+      if (t < 0x80) return t;
+      if (t >= 0xa0 && t < 0xc0) return str(t & 31);
+      if (t === 0xd9) return str(b[p++]);
+      if (t === 0xcc) return int(1); if (t === 0xcd) return int(2); if (t === 0xce) return int(4);
+      if (t === 0xcb) { const v = new DataView(new Uint8Array(b.slice(p, p + 8)).buffer).getFloat64(0); p += 8; return v; }
+      throw new Error('bad msgpack');
+    };
+    const head = b[p++], n = head === 0xde ? int(2) : (head & 0xf0) === 0x80 ? head & 15 : -1, o = {};
+    if (n < 0) throw new Error('bad msgpack');
+    for (let i = 0; i < n; i++) { const k = val(); o[k] = val(); }
+    return o;
+  }
+  const dump = () => b58enc(pack(Object.fromEntries(Object.entries(LIVE).map(([k, list]) => [k, list.reduce((v, t, i) => v + (state.sel.has(t) ? 2 ** (list.length - 1 - i) : 0), 0)]))));
+  function readUrl() {
+    const q = new URLSearchParams(location.search), f = q.get('filter'), t = q.get('t');
+    state.sel.clear(); state.dur = t === '0' || t === '1' ? +t : 2;
+    if (!f) return;
+    try {
+      const o = unpack(b58dec(f));
+      for (const [k, list] of Object.entries(LIVE)) list.forEach((tag, i) => { if (Math.floor((o[k] || 0) / 2 ** (list.length - 1 - i)) % 2) state.sel.add(tag); });   // 现网不限个数：链接里超过 5 个的照收，面板上只是不能再加
+    } catch (e) { state.sel.clear(); }
+  }
+  function search() {
+    const q = new URLSearchParams(location.search);
+    state.sel.size ? q.set('filter', dump()) : q.delete('filter');
+    state.dur === 2 ? q.delete('t') : q.set('t', String(state.dur));
+    const s = q.toString();
+    return s ? '?' + s : '';
+  }
+  const writeUrl = () => { const s = search(); if (s !== location.search) history.replaceState(null, '', location.pathname + s + location.hash); };
+
+  /* ── 标签面板 ── */
+  const isSenior = t => t === TOP || t === SENIOR;
+  function renderPicker() {
+    $('#hr-rows').innerHTML = GROUPS.map((g, gi) => `<div class="hr-row" data-g="${gi}" role="group" aria-labelledby="hr-row-${gi}">
+        <div class="hr-row__label" id="hr-row-${gi}">${esc(g.title)}</div>
+        <div class="hr-row__opts">${g.tags.map(t => `<button type="button" class="ak-chip${isSenior(t) ? ' is-senior' : ''}" data-o="${esc(t)}"${solo.has(t) && !isSenior(t) ? ` data-solo data-rarity="${solo.get(t)}" title="单选即可保底 ${solo.get(t)}★"` : ''} aria-pressed="false">${PROF[t] ? `<i class="hr-ico" data-prof="${PROF[t]}" aria-hidden="true"></i>` : ''}${esc(t)}</button>`).join('')}</div>
+      </div>`).join('');
+  }
+  function updatePicker() {
+    const full = state.sel.size >= MAX_TAGS, picked = ALL.filter(t => state.sel.has(t));
+    $$('#hr-rows .ak-chip').forEach(b => { const on = state.sel.has(b.dataset.o); b.setAttribute('aria-pressed', on); b.setAttribute('aria-disabled', !on && full); });
+    $$('#hr-rows .hr-row').forEach(r => r.classList.toggle('has-active', GROUPS[+r.dataset.g].tags.some(t => state.sel.has(t))));
+    $('#hr-slots').innerHTML = picked.map(t => `<li><button type="button" class="hr-slot${isSenior(t) ? ' is-senior' : ''}" data-o="${esc(t)}" aria-label="取消「${esc(t)}」"><span>${esc(t)}</span></button></li>`).join('')
+      + Array.from({ length: Math.max(0, MAX_TAGS - picked.length) }, (_, i) => `<li><span class="hr-slot hr-slot--empty" aria-hidden="true">${String(picked.length + i + 1).padStart(2, '0')}</span></li>`).join('');
+    $('#hr-count').innerHTML = `${state.sel.size}<small>/ ${MAX_TAGS}</small>`;
+    $('#hr-clear').disabled = !state.sel.size;
+    $$('#hr-time > button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.dur === state.dur));
+    const d = DUR[state.dur], up = [state.sel.has(SENIOR) && 5, state.sel.has(TOP) && 6].filter(Boolean);
+    $('#hr-rar').innerHTML = Array.from({ length: Math.max(d.hi, ...up) - d.lo + 1 }, (_, i) => d.lo + i).map(n => `<span${up.includes(n) ? ' class="is-up" title="选上对应的稀有标签才出"' : ''}>${n}★</span>`).join('');
+  }
+
+  /* ── 结果 ── */
+  const img = (src, s) => `<img src="${src}" alt="" width="${s}" height="${s}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+  const opHtml = c => `<a class="hr-op" href="${WIKI + encodeURIComponent(c.zh)}" data-rarity="${c.star}" data-tip="${esc(`${c.star}★ ${c.zh}${c.only ? '（只能通过公开招募获得）' : ''}\n${c.tags.join(' · ')}`)}"><span class="hr-op__img">${img(media(c.am, `头像_${c.zh}.png`), 56)}</span>${c.only ? '<span class="hr-op__only" aria-label="只能通过公开招募获得">限</span>' : ''}<span class="hr-op__name">${esc(c.zh)}</span></a>`;
+  const tagBtn = t => `<span class="hr-tagbtn${isSenior(t) ? ' is-senior' : ''}">${esc(t)}</span>`;
+  const comboHtml = c => `<li class="hr-combo" data-rarity="${c.min}">
+      <div class="hr-combo__tags">${c.tags.map(tagBtn).join('')}<span class="hr-combo__meta">${c.unsure ? '未拉满 9:00，标签可能被划掉' : `${c.ops.length} 位 · <b>${c.ops[0].star > c.min ? `${c.min}–${c.ops[0].star}` : c.min}★</b>`}</span></div>
+      <div class="hr-combo__ops">${opsHtml(c)}</div>
+    </li>`;
+  const FOLD = 24, open = new Set();   // 展开过的组合（按位图记），重画后保持
+  const opsHtml = c => (c.ops.length <= FOLD + 4 || open.has(c.mask) ? c.ops.map(opHtml).join('') : c.ops.slice(0, FOLD).map(opHtml).join('') + `<button type="button" class="hr-more" data-more="${c.mask}" aria-label="展开其余 ${c.ops.length - FOLD} 位干员">+${c.ops.length - FOLD}</button>`);
+  const badge = n => `<span class="hr-tier__badge">${n}<i aria-hidden="true"></i></span>`;
+  function tierHtml(min, list, robots, grid) {
+    const title = robots ? '必得支援机械' : min >= 4 ? `保底 ${min}★` : '不保底';
+    return `<section class="hr-tier" data-rarity="${min}"><div class="hr-tier__head" role="heading" aria-level="2">${badge(min)}<span class="hr-tier__title">${title}</span><span class="hr-tier__count">${list.length} 组</span></div><ol class="hr-combos${grid ? ' hr-combos--grid' : ''}">${list.map(comboHtml).join('')}</ol></section>`;
+  }
+  function lowHtml(list, collapsible) {
+    const lo = Math.min(...list.map(c => c.min)), body = `<ol class="hr-combos" id="hr-low"${collapsible && !state.lowOpen ? ' hidden' : ''}>${list.map(comboHtml).join('')}</ol>`;
+    const inner = `${badge(lo)}<span class="hr-tier__title">不保底</span><span class="hr-tier__count">${list.length} 组 · 最低可能出 ${lo}★</span>`;
+    return `<section class="hr-tier" data-rarity="${lo}">${collapsible ? `<button type="button" class="hr-tier__head" id="hr-low-toggle" aria-expanded="${state.lowOpen}" aria-controls="hr-low">${inner}</button>` : `<div class="hr-tier__head" role="heading" aria-level="2">${inner}</div>`}${body}</section>`;
+  }
+  const star = n => `<span class="hr-star" data-rarity="${n}">${n}★</span>`;
+
+  function renderTips() {
+    const out = [], has = t => state.sel.has(t);
+    const tip = (kind, text, dur) => `<div class="ak-message ak-message--${kind}"><svg class="ak-message__icon"><use href="#i-${kind === 'warning' ? 'warn' : 'info'}"/></svg><div>${text}</div>${dur === undefined ? '' : `<button type="button" class="ak-btn ak-btn--sm" data-dur="${dur}">改成 ${DUR[dur].label}</button>`}</div>`;
+    if (has(TOP) || has(SENIOR)) {
+      const names = [TOP, SENIOR].filter(has).map(t => `【${t}】`).join('');
+      const sure = has(TOP) ? '必得 6★' : '必得 5★';   // 游戏的招募说明：含高级资深干员 + 9 小时必得 6★；含资深干员、不含高级资深干员 + 9 小时必得 5★
+      out.push(state.dur === 2 ? tip('info', `${names}：招募时限拉满 <b>9:00</b> 才锁定稀有职业需求——选上它${sure}。`) : tip('warning', `招募时限小于 9 小时，<b>未锁定稀有职业需求</b>——${names}可能被划掉。`, 2));
+    }
+    if (has(ROBOT)) out.push(state.dur === 0 ? tip('info', `【${ROBOT}】：时限不要超过 <b>3:50</b>，才可能出 1★ 支援机械。`) : tip('warning', `想要 1★ 支援机械：时限不要超过 <b>3:50</b>——当前这一档不出 1★。`, 0));
+    if (state.sel.size > MAX_TAGS) out.push(tip('warning', `这条链接带了 ${state.sel.size} 个标签；游戏里一个招募位只出现 ${MAX_TAGS} 个，下面的组合有些在同一次招募里选不出来。`));
+    $('#hr-tips').innerHTML = out.join('');
+  }
+  function renderResults() {
+    const res = $('#hr-result'), verdict = $('#hr-verdict'), d = DUR[state.dur];
+    if (!state.sel.size) {
+      const ref = reference();
+      verdict.innerHTML = `还没选标签。把招募位上出现的 <b>5 个标签</b>点上，就能看到哪几个组合有保底；下面是全部保底组合的速查。`;
+      res.innerHTML = `<div class="ak-heading ak-heading--underline hr-ref-head"><h2 class="ak-heading__title">保底速查</h2><span class="ak-heading__en">Guarantees</span><span class="ak-heading__aside">时限 9:00 · 共 ${ref.length} 组</span></div>`
+        + [5, 4].map(m => [m, ref.filter(c => c.min === m)]).filter(([, l]) => l.length).map(([m, l]) => tierHtml(m, l, false, true)).join('');
+      return;
+    }
+    const list = prune(combosOf(ALL.filter(t => state.sel.has(t)), state.dur)).sort(order);
+    if (!list.length) {
+      verdict.innerHTML = `时限 <b>${d.label}</b>（${d.lo}–${d.hi}★）下，这几个标签圈不出任何干员。`;
+      res.innerHTML = `<div class="ak-empty"><svg class="ak-empty__icon"><use href="#i-empty"/></svg><p class="ak-empty__title">没有可能出现的干员</p><p>换一档招募时限，或者<button type="button" class="ak-btn ak-btn--link" id="hr-reset">清空标签</button>。</p></div>`;
+      return;
+    }
+    const robots = list.filter(c => c.ops[0].star === 1), rest = list.filter(c => c.ops[0].star !== 1);   // 整组都是 1★：必得支援机械，单列一层
+    const good = rest.filter(c => c.min >= 4 && !c.unsure), low = rest.filter(c => c.min < 4 || c.unsure), best = good.length ? good[0].min : 0;
+    const left = MAX_TAGS - state.sel.size;
+    verdict.innerHTML = (best
+      ? `<b>${good.length}</b> 组能保底 4★ 以上，最高${star(best)}（${good[0].tags.map(t => `【${esc(t)}】`).join(' + ')}${good.filter(c => c.min === best).length > 1 ? ' 等' : ''}）。`
+      : robots.length ? `没有保底 4★ 以上的组合；选【${ROBOT}】必得 1★ 支援机械。` : `没有保底 4★ 以上的组合${state.dur === 2 ? '——不选标签也一样，按想要的干员挑即可' : ''}。`)
+      + (left > 0 ? ` <span>还可以再选 ${left} 个标签。</span>` : '');
+    const tiers = [6, 5, 4].map(m => [m, good.filter(c => c.min === m)]).filter(([, l]) => l.length);
+    res.innerHTML = tiers.map(([m, l]) => tierHtml(m, l)).join('') + (robots.length ? tierHtml(1, robots, true) : '') + (low.length ? lowHtml(low, tiers.length > 0 || robots.length > 0) : '');
+  }
+  function update() { updatePicker(); renderTips(); renderResults(); writeUrl(); }
+
+  /* ── 事件 ── */
+  const toast = (msg, kind, title) => window.akdsToast && window.akdsToast(msg, kind, title);
+  root.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t || !root.contains(t)) return;
+    if (t.matches('.ak-chip, button.hr-slot')) {
+      const tag = t.dataset.o;
+      if (state.sel.has(tag)) state.sel.delete(tag);
+      else if (state.sel.size >= MAX_TAGS) return toast(`一个招募位只出现 ${MAX_TAGS} 个标签，先取消一个再选。`, 'warning', '已选满');
+      else state.sel.add(tag);
+      update();
+      if (t.matches('button.hr-slot')) { const next = $('#hr-slots button') || $('#hr-rows .ak-chip'); if (next) next.focus(); }   // 格子重画了：焦点落到剩下的第一格
+    }
+    else if (t.id === 'hr-clear' || t.id === 'hr-reset') { state.sel.clear(); open.clear(); update(); }
+    else if (t.dataset.dur) { state.dur = +t.dataset.dur; update(); }
+    else if (t.dataset.more) { open.add(+t.dataset.more); renderResults(); }
+    else if (t.id === 'hr-low-toggle') { state.lowOpen = !state.lowOpen; t.setAttribute('aria-expanded', state.lowOpen); $('#hr-low').hidden = !state.lowOpen; }
+    else if (t.id === 'hr-copy') {
+      const url = WIKI + encodeURIComponent('公招计算') + search().replace(/([?&])(theme|demo)=[^&]*&?/g, '$1').replace(/[?&]$/, '');   // 预览自己的 ?theme / ?demo 不带出去
+      const done = () => toast(esc(decodeURIComponent(url)), 'success', '链接已复制');
+      navigator.clipboard ? navigator.clipboard.writeText(url).then(done, () => {}) : done();
+    }
+  });
+  root.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);   // 头像取不到（离线）：留下深色底框
+  window.addEventListener('popstate', () => { readUrl(); update(); });
+
+  /* 干员提示（星级 / 是否公招限定 / 全部标签）：.ak-tooltip 挂到 body，贴在头像上方（放不下就放下方），左右不出视口 */
+  let tip = null;
+  const hideTip = () => { if (tip) { tip.remove(); tip = null; } };
+  const showTip = el => {
+    hideTip();
+    tip = document.createElement('div'); tip.className = 'ak-tooltip hr-tip'; tip.setAttribute('role', 'tooltip'); tip.textContent = el.dataset.tip; document.body.appendChild(tip);
+    const r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.round(Math.min(Math.max(8, r.left + r.width / 2 - w / 2), document.documentElement.clientWidth - w - 8)) + 'px';
+    tip.style.top = Math.round(r.top - h - 6 < 8 ? r.bottom + 6 : r.top - h - 6) + 'px';
+  };
+  ['mouseover', 'focusin'].forEach(ev => root.addEventListener(ev, e => { const t = e.target.closest('.hr-op[data-tip]'); if (t) showTip(t); }));
+  ['mouseout', 'focusout'].forEach(ev => root.addEventListener(ev, e => { if (e.target.closest('.hr-op[data-tip]')) hideTip(); }));
+  window.addEventListener('scroll', hideTip, { passive: true });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+
+  root.hidden = false;
+  readUrl(); renderPicker(); update();
+})();
+</script>
