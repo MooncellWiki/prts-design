@@ -13,6 +13,7 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    首页 · Main page — 信息结构取自 prts.wiki 现网首页（2026-08-23 抓取）：
    轮播（7 张：活动 4 + 寻访 3）+ 进行中的网页活动列表 → 12 个入口 → 今日信息（资源收集 9 关 + 时钟 / 倒计时 / 补充说明）→ 亮点干员（生日 / 新增 / 凭证兑换 / 时装 / 模组）→ 近期新增（关卡 / 家具）→ 网站信息。
+   手机（≤639）上亮点干员 / 近期新增排到今日信息前面（只换视觉顺序，见「8. 响应式」）。
    这里的一切都是「页面自己的东西」：结构 = MediaWiki:首页 的 wikitext（模板输出下面这些 .mp-* 结构），样式 = 本 <style>（生产环境放 Template:首页/styles.css，TemplateStyles）；
    页面不碰皮肤。够不到正文的那几条——去标题 / 去目录 / 去白纸——是皮肤该在首页收敛的行为，Skin:Arknights 已经内置（.ak-layout--mainpage），站点不用往 MediaWiki:Common.css 里粘任何东西；
    开头「0. 页面级」段只是这份静态预览的补丁（骨架没有「当前是首页」这个状态），别照抄——见该段说明。
@@ -208,11 +209,11 @@
   .mp-hero__nav .ak-icon { width: 20px; height: 20px; }
 }
 /* 折叠线预算的窄屏档（按视口断点，值量自预览骨架；<1120 时 Hero 内容宽 = 视口 − 50，与上面的容器断点对齐）：
- *  <1120 页眉两行；<850 Hero 窄于 800、说明栏上下排；<690 Hero 窄于 640、说明栏 + 下方控制条；<640 手机（网页活动带红标签条、入口格三列） */
+ *  <1120 页眉两行；<850 Hero 窄于 800、说明栏上下排；<690 Hero 窄于 640、说明栏 + 下方控制条；<640 手机（网页活动带红标签条、入口格四列 64px 高：间距 16 + 一排 64 + 留白 12） */
 @media (max-width: 1119px) { .mp-hero { --mp-fold-above: 167px; } }
 @media (max-width: 849px) { .mp-hero { --mp-fold-caption: 112px; } }
 @media (max-width: 689px) { .mp-hero { --mp-fold-caption: 128px; } }
-@media (max-width: 639px) { .mp-hero { --mp-fold-above: 163px; --mp-fold-caption: 128px; --mp-fold-event: 40px; --mp-fold-events-label: 29px; --mp-fold-below: 121px; --mp-hero-pic-min: 80px; } }
+@media (max-width: 639px) { .mp-hero { --mp-fold-above: 163px; --mp-fold-caption: 128px; --mp-fold-event: 40px; --mp-fold-events-label: 29px; --mp-fold-below: 92px; --mp-hero-pic-min: 80px; } }
 /* 进行中的网页活动（现网「尚有正在进行中的网页活动！」折叠块）：Hero 的第二行、通栏，继承 Hero 的 --mp-hero-* 配色。
  *  不用 .ak-news——那是游戏主界面的单条滚动横幅，天然只装一条；网页活动经常同时有两三个（周年庆更多），多条要么轮播要么换行。
  *  这里是**列表**：一条一行、整行是链接（名称 / 起止 / 倒计时 / ›），红标签跨所有行；1 条时高度与单行横幅一样，N 条就 N 行，不折叠（现网折叠是段落式噪音的结果，不是信息需要藏）。
@@ -410,11 +411,23 @@
 @media (max-width: 639px) {
   .mp-today__time { grid-template-columns: 1fr; gap: 0; }
   .mp-today__time .mp-cd { margin-top: var(--ak-space-3); padding-top: var(--ak-space-3); border-top: 1px solid var(--ak-border); border-left: 0; padding-left: 0; }
-  .mp-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: var(--ak-space-4); }
-  .mp-nav__tile { padding: 14px 4px 12px; }
-  .mp-nav__tile img { width: 40px; height: 40px; }
-  .mp-nav__zh { font-size: var(--ak-fs-sm); }   /* 手机三列、格子 ~115px：14px 仍放得下四个字 */
+  /* 入口网格：一行 4 格（原 3 格），格高 96 → 64px——图标退成格子正中的淡水印，字压在上面、竖向居中。
+   *  图标 63px：12 个图形里最高的（敌人档案 / 活动一览）在 96 格里不透明部分 78px，63 × 78/96 ≈ 51px = 格高的 80%；其余同倍率放大，相对大小不变。
+   *  top 多 3px 是居中补偿：各图形在 96 格里都偏上 3–7px（按 63px 折算平均 −3.3px），补完 12 个图形的中心离格子中心 −1.6 ~ +1px。
+   *  z-index: -1 落在格子自己的层叠上下文里（isolation: isolate）：格底之上、字之下；与格底做差照旧，亮暗 / 悬停反转不用另写。透明度两套主题同一个 .22。
+   *  min-height 而不是 height：极窄屏四个字折成两行、或读者调大字号时格子跟着长，不裁字；上下内边距对称，字盒才落在格子正中 */
+  .mp-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: var(--ak-space-4); }
+  .mp-nav__tile { box-sizing: border-box; min-height: 64px; padding: 13px 4px; justify-content: center; }   /* justify-content 由 .mp-a > a 的 inherit 接走，字在链接盒里同样居中 */
+  .mp-nav__icon { position: absolute; top: calc(50% + 3px); left: 50%; z-index: -1; width: 63px; height: 63px; margin: 0; transform: translate(-50%, -50%); opacity: .22; }
+  .mp-nav__zh { font-size: var(--ak-fs-sm); }   /* 手机四列、360 宽时格子 ~77px：14px 四个字放得下；视口 <332 折成两行 */
   .mp-nav__en { display: none; }
+  /* 区块顺序：亮点干员 / 近期新增排到今日信息前面——同 m.fgo.wiki 单栏首页（新增英灵图鉴 / 从者强化 → 今日信息）。
+   *  桌面不动：宽屏下今日信息是紧挨入口网格的一张宽卡（fgo.wiki 桌面版也把它放在侧栏顶上）。
+   *  只换视觉顺序、不动 DOM（模板只出一份结构）：读屏 / Tab 仍按 DOM 走今日信息在前，区块各自独立、整块读完再到下一块，错位的代价小 */
+  .mp { display: flex; flex-direction: column; }
+  .mp-hero { margin-inline: 0; }   /* 弹性列里 auto 边距会让 Hero 收成内容宽；手机上它本来就铺满（最窄 800 > 视口），去掉居中让它拉伸 */
+  .mp-hero, .mp-nav { order: -2; }
+  #mp-ops, #mp-recent { order: -1; }   /* 其余（今日信息 / 网站信息 / 设计稿说明）保持 0，按 DOM 顺序跟在后面 */
   .mp-hero__events { grid-template-columns: 1fr; }   /* 红标签变顶条，每条活动仍是一行：名称 + 倒计时 + › */
   .mp-events__label { justify-content: flex-start; padding: 4px 10px; }
   .mp-events > li:first-child { border-top: 1px solid var(--mp-hero-line); }
