@@ -24,6 +24,10 @@ small, .ak-text-sm { font-size: var(--ak-fs-sm); }
   scroll-margin-top: calc(var(--ak-header-h) + 16px);
   border: 0;
 }
+/* 标题以外的锚点目标同样给固定页眉让位：引用角标 #cite_ref-* / 参考文献条目 #cite_note-*、标题里的旧式编码锚点 <span id=".E5…">、{{anchor}}。
+ * 只在被跳到时（:target）带上偏移，不写成 [id]：Codex 菜单项这类带 id 的元素在自己的滚动盒里 scrollIntoView({ block: 'nearest' }) 也会吃到这段 margin。
+ * 标题仍由上一条常驻：目录 scrollspy 拿它当基准线（<1400 的两行页眉见 chrome/responsive.css） */
+:where(.mw-body-content) :target { scroll-margin-top: calc(var(--ak-header-h) + 16px); }
 :where(.mw-body-content) h2:not(:where(.ak-not-prose, .ak-not-prose *)) {
   font-size: var(--ak-fs-h2);
   padding: 0 0 var(--ak-space-2) var(--ak-space-3);

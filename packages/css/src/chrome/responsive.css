@@ -11,7 +11,7 @@
   .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
   /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
   :root.ak-condensed .ak-header { transform: translateY(calc(-1 * var(--ak-header-h))); }
-  :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标 */
+  :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6, :target) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标（:target = 引用角标 / 参考文献条目等，见 base/typography.css） */
 
   /* 目录浮层：顶边跟着吸顶栏下沿走，右对齐于二级栏。宽、高都锁死（参考 VitePress LocalNavOutlineDropdown 的 .items）：
    *  · 宽 = 360px 定宽（≤639 改为拉满可用宽度，见下），border-box，不随条目长短变；

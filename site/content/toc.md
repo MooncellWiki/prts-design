@@ -16,7 +16,7 @@ jquery.makeCollapsible 的 `mw-collapsible`：开关 `[展开]` / `[折叠]` 靠
 
 ## 引用
 
-`<sup class="reference">` 缩小；参考文献列表 14px 次要文字色，`.reflist.ak-cols-2` 分两栏。点角标跳到的那条（`:target`）是淡青底 + 细描边——与 `<mark>`、表格当前行同一套高亮语言。
+`<sup class="reference">` 缩小；参考文献列表 14px 次要文字色，`.reflist.ak-cols-2` 分两栏。点角标跳到的那条（`:target`）是淡青底 + 细描边——与 `<mark>`、表格当前行同一套高亮语言；它和点「↑」跳回的角标都同标题一样停在固定页眉下方，不会被盖住（`base/typography.css` 给正文里的 `:target` 加了 `scroll-margin-top`）。
 
 ```html demo
 <div class="toc" id="toc"><div class="toctitle"><h2>目录</h2><span class="toctogglespan">[<a class="toctogglelabel">隐藏</a>]</span></div><ul><li><a href="#"><span class="tocnumber">1</span> 干员信息</a><ul><li><a href="#"><span class="tocnumber">1.1</span> 属性</a></li><li><a href="#"><span class="tocnumber">1.2</span> 天赋</a></li></ul></li><li><a href="#"><span class="tocnumber">2</span> 技能</a></li><li><a href="#"><span class="tocnumber">3</span> 模组</a></li></ul></div>
