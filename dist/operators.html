@@ -1014,6 +1014,10 @@ small, .ak-text-sm { font-size: var(--ak-fs-sm); }
   scroll-margin-top: calc(var(--ak-header-h) + 16px);
   border: 0;
 }
+/* 标题以外的锚点目标同样给固定页眉让位：引用角标 #cite_ref-* / 参考文献条目 #cite_note-*、标题里的旧式编码锚点 <span id=".E5…">、{{anchor}}。
+ * 只在被跳到时（:target）带上偏移，不写成 [id]：Codex 菜单项这类带 id 的元素在自己的滚动盒里 scrollIntoView({ block: 'nearest' }) 也会吃到这段 margin。
+ * 标题仍由上一条常驻：目录 scrollspy 拿它当基准线（<1400 的两行页眉见 chrome/responsive.css） */
+:where(.mw-body-content) :target { scroll-margin-top: calc(var(--ak-header-h) + 16px); }
 :where(.mw-body-content) h2:not(:where(.ak-not-prose, .ak-not-prose *)) {
   font-size: var(--ak-fs-h2);
   padding: 0 0 var(--ak-space-2) var(--ak-space-3);
@@ -3637,7 +3641,7 @@ body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var
   .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
   /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
   :root.ak-condensed .ak-header { transform: translateY(calc(-1 * var(--ak-header-h))); }
-  :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标 */
+  :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6, :target) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标（:target = 引用角标 / 参考文献条目等，见 base/typography.css） */
 
   /* 目录浮层：顶边跟着吸顶栏下沿走，右对齐于二级栏。宽、高都锁死（参考 VitePress LocalNavOutlineDropdown 的 .items）：
    *  · 宽 = 360px 定宽（≤639 改为拉满可用宽度，见下），border-box，不随条目长短变；
