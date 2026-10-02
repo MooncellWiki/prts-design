@@ -58,7 +58,7 @@ button.hr-slot:hover { background: var(--ak-gray-700); } button.hr-slot:hover::a
 button.hr-slot:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 .hr-slot.is-senior, .hr-tagbtn.is-senior { color: #ffeb04; background-image: linear-gradient(100deg, var(--ak-gray-800) 25%, transparent 80%), radial-gradient(rgba(255, 216, 0, .5) 1.1px, transparent 1.3px); background-size: auto, 5px 5px; }
 button.hr-slot.is-senior:hover { background-color: var(--ak-gray-800); }
-.hr-pick__tools { flex: none; display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.hr-pick__tools { flex: none; display: flex; align-items: center; gap: 10px; }   /* 紧跟标题：选完一个招募位、清空再选下一个，按钮就在面板起手的位置，不用横穿整行去右端找 */
 .hr-count { font: 700 var(--ak-fs-body)/1 var(--ak-font-label); font-variant-numeric: tabular-nums; color: var(--ak-fg); white-space: nowrap; }
 .hr-count small { font-weight: 600; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin-left: 2px; }
 .hr-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); }
@@ -103,7 +103,6 @@ button.hr-slot.is-senior:hover { background-color: var(--ak-gray-800); }
 .hr-rar__list { display: inline-flex; gap: 4px; }
 .hr-rar__list > span { display: grid; place-items: center; min-width: 34px; height: 24px; padding: 0 4px; box-sizing: border-box; background: var(--ak-blue-500); color: #fff; font: 700 var(--ak-fs-sm)/1 var(--ak-font-label); }
 .hr-rar__list > span.is-up { background: #fbd501; color: #313131; }
-.hr-time__note { flex: 1 1 220px; min-width: 0; font-size: var(--ak-fs-xs); line-height: 1.5; color: var(--ak-fg-muted); }
 
 /* ── 3. 提示 + 结论 ── */
 .hr-tips { display: flex; flex-direction: column; gap: 6px; margin: 0 0 var(--ak-space-3); }
@@ -142,7 +141,7 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
 .hr-combo__ops { display: flex; flex-wrap: wrap; gap: 8px 6px; padding: 10px var(--ak-space-3); min-width: 0; }
 /* 保底速查：组合多、每组干员少（多数只有一两位）——排成多列的格子，标签在上、干员在下 */
 .hr-combos--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); overflow: hidden; }
-.hr-combos--grid > .hr-combo { display: flex; flex-direction: column; border-top: 0; border-left: var(--ak-bar-w) solid var(--ak-r, var(--ak-border-strong)); box-shadow: 1px 0 0 var(--ak-border), 0 1px 0 var(--ak-border); }
+.hr-combos--grid > .hr-combo { display: flex; flex-direction: column; border-top: 0; box-shadow: 1px 0 0 var(--ak-border), 0 1px 0 var(--ak-border); }
 .hr-combos--grid .hr-combo__tags { padding: 10px var(--ak-space-3) 0; border: 0; }
 .hr-combos--grid .hr-combo__meta { flex: none; margin-left: auto; }
 .hr-combos--grid .hr-combo__ops { border: 0; }
@@ -179,6 +178,7 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
   .hr-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
   .hr-row.has-active > .hr-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }
   .hr-pick__title { flex-direction: row; align-items: baseline; gap: 8px; }
+  .hr-pick__tools { margin-left: auto; }
   .hr-slots { order: 1; flex-basis: 100%; display: flex; flex-wrap: wrap; }   /* 手机上 5 格放不下「高级资深干员」：格子随内容宽、折行 */
   .hr-slots > li { flex: 1 1 auto; }
   .hr-slot--empty { min-width: 44px; }
@@ -203,11 +203,11 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
   <section class="hr-pick" aria-label="职业需求">
     <div class="hr-pick__head">
       <div class="hr-pick__title"><span>职业需求</span><span class="ak-en">Job Tags</span></div>
-      <ol class="hr-slots" id="hr-slots" aria-label="已选标签（最多 5 个）"></ol>
       <div class="hr-pick__tools">
         <span class="hr-count" id="hr-count" role="status"></span>
         <button type="button" class="ak-btn ak-btn--sm" id="hr-clear"><svg class="ak-icon"><use href="#i-refresh"/></svg>清空</button>
       </div>
+      <ol class="hr-slots" id="hr-slots" aria-label="已选标签（最多 5 个）"></ol>
     </div>
     <div class="hr-rows" id="hr-rows"></div>
     <div class="hr-time">
@@ -218,7 +218,6 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
         <button type="button" class="ak-btn" data-dur="2" aria-pressed="true">7:40 – 9:00<small>3 – 5★</small></button>
       </div>
       <span class="hr-rar"><span class="hr-time__label">可获得的干员</span><span class="hr-rar__list" id="hr-rar" role="status"></span></span>
-      <span class="hr-time__note">点上招募位出现的 5 个标签；每次招募至多选 3 项，下面按 1–3 项的组合算。</span>
     </div>
   </section>
 
