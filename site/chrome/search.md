@@ -11,7 +11,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 <SkinFrame :height="640" state="palette" caption="空查询：最近访问 + 快捷入口（取侧栏「通用」组前几项）" />
 
-<SkinFrame :height="640" state="palette" query="yh" caption="输入 yh：本地即时索引按拼音首字母命中「银灰」，结果带头像 / 职业 / 稀有度；末尾固定一行「全文搜索」" />
+<SkinFrame :height="640" state="palette" query="yh" caption="输入 yh：本地即时索引按拼音首字母整词命中「银灰」（精确命中 → 预先高亮），结果带头像 / 职业 / 稀有度；末尾固定一行「全文搜索」" />
 
 ## 渐进增强
 
@@ -27,10 +27,12 @@ mustache 先渲染真表单 `form.ak-header__search#searchform > #searchInput`�
 |---|---|
 | `/` · Ctrl / ⌘ K | 打开 |
 | `↑` / `↓` | 循环高亮；高亮行 = 左 2px 青条 + 淡青底（同侧栏当前项） |
-| `↵` | 打开高亮项；结果还没到时 → Go |
+| `↵` | 有高亮项 → 打开它；没有 → Go（精确标题直达，否则全文结果页） |
 | `⇧` `↵` | 全文搜索 |
 | `Esc` | 有字先清空，再按关闭 |
 | `/` 开头 · `>` `#` `@` `~` | 命令列表 · 进入模式（动作 / 分类 / 用户 / 文件），模式标签是主色实底的矩形 chip |
+
+**标题搜索不默认高亮第一条**——和旧 Vector 的建议下拉一样，回车去哪只取决于输入的字，而不是建议怎么排序、到没到：打「陈」回车不会因为第一条建议是「陈晖洁」就被带走，也不会在新结果到达前打开旧列表里的某一行（继续输入会立刻清掉高亮）。只有**精确命中**才预先高亮：某一行的标题（或命中的重定向 `matched`）与输入相同，或数据源给它标了 `exact: true`（本地索引的别名 / 拼音首字母整词命中，如 `yh` → 银灰）——这时回车打开的就是 Go 会去的那一页，高亮只是把去向提前亮出来。页脚的 `↵` 提示随之在「打开」与「前往」之间切换。命令列表与模式（动作 / 分类 / 用户 / 文件）是选择器、没有「前往」可言，仍默认高亮第一条。
 
 `⌘` / `Ctrl` `↵` 在新标签打开；模式里退格清空输入 / `←` / 返回键退出模式。打开的途径还有手机上页眉的图标按钮 `.ak-header__search-toggle` 与 accesskey F；关闭还有点遮罩、关闭按钮、选中结果。空查询时是最近访问（`localStorage['akds-recent']`，最多 8 条，只存标题 / 地址 / 描述 / 缩略图）+ 提示 + 快捷入口（取侧栏首个门户 `#p-navigation`）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时才显形，右侧元数据不跳）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。
 
@@ -50,12 +52,12 @@ MW 侧的数据源是 `skin/resources/search-providers.js`（与核心同在 `sk
 
 | 层 | 来源 | 说明 |
 |---|---|---|
-| 标题搜索 | `GET /rest.php/v1/search/title?q=&limit=10` | 与 Vector 2022 / Citizen 相同；缩略图要 PageImages、描述要 ShortDescription / Description2（PRTS 可用 <code v-pre>{{SHORTDESC:…}}</code> 补）；`matched_title` 只在「别名式重定向」时显示 |
+| 标题搜索 | `GET /rest.php/v1/search/title?q=&limit=10` | 与 Vector 2022 / Citizen 相同；缩略图要 PageImages、描述要 ShortDescription / Description2（PRTS 可用 <code v-pre>{{SHORTDESC:…}}</code> 补）；`matched_title` 只在「别名式重定向」时显示，同时作为 `matched` 交给核心判断精确命中 |
 | 本地即时索引（可选） | `mw.hook('akds.search.local').fire(fn)` 注入 `fn(q) → Group[]`（Skin:Arknights：`mw.hook('skin.arknights.search')`） | 干员 / 道具 / 关卡 JSON（Cargo 定时导出到 `MediaWiki:*.json`，或 API 缓存到 IndexedDB），支持拼音首字母 / 别名、0 网络等待，还能给结构化元数据（职业图标、稀有度）——预览里 `yh` → 银灰、`nts` → 能天使演示的就是这一层 |
 | `>` 动作 | 本页菜单 `#p-views #p-cactions #p-tb #p-personal` + 常用特殊页面 | 同 Citizen「从页面菜单拉动作」 |
 | `#` 分类 | 空查询：本页所属分类（`prop=categories`）；有字：`list=prefixsearch&psnamespace=14` | |
 | `@` 用户 · `~` 文件 | `list=allusers&auprefix=` · `generator=prefixsearch&gpsnamespace=6&prop=pageimages` | |
-| 兜底 | `Special:Search?search=q&go=Go` / `…&fulltext=1` | 结果未到就回车 → Go；`⇧` `↵` 与末尾固定行 → 全文 |
+| 兜底 | `Special:Search?search=q&go=Go` / `…&fulltext=1` | 没有高亮项时回车 → Go；`⇧` `↵` 与末尾固定行 → 全文 |
 
 ::: warning 核心的 searchSuggest 要关掉
 核心的 `mediawiki.page.ready` 会在搜索框**聚焦时**懒加载 `mediawiki.searchSuggest`，它在 `#searchInput` 上挂旧式建议下拉——面板把这个输入框搬进了自己里面，不关掉就会在面板里再画一份列表。和 Vector 2022 一样，在 `SkinPageReadyConfig` 钩子里把 `search` 开关置 `false`（Skin:Arknights 的 `SkinHooks::onSkinPageReadyConfig()`，只在面板开启时）。**不是** `Skin::getDefaultModules()`：1.43 里那里的 `search` 组本来就是空的，覆盖它没有效果。退而求其次可以在 `search-providers.js` 里检测到 `mediawiki.searchSuggest` 时把 `#searchInput` 的 `id` 换掉，但那样依赖 `#searchInput` 的 Gadget 就不兼容了。

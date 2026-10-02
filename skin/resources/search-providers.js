@@ -27,7 +27,7 @@
 		return fetch( url, { headers: { accept: 'application/json' }, signal: signal } ).then( ( r ) => { if ( !r.ok ) { throw new Error( 'HTTP ' + r.status ); } return r.json(); } ).then( ( data ) => ( data.pages || [] ).map( ( p ) => {
 			const redirect = p.matched_title && isRedirectUseful( p.title, p.matched_title ) ? mw.msg( 'akds-search-redirect', p.matched_title ) : null;
 			// 不放「编辑」等行内动作（Citizen 有）：面板里唯一的主动作是「打开」，编辑离页面本身只差一步；只有最近访问保留「移除 ×」
-			return { type: 'page', label: p.title, url: pageUrl( p.matched_title || p.title ), desc: p.description || '', thumb: p.thumbnail && p.thumbnail.url ? p.thumbnail.url : '', redirect: redirect };
+			return { type: 'page', label: p.title, url: pageUrl( p.matched_title || p.title ), desc: p.description || '', thumb: p.thumbnail && p.thumbnail.url ? p.thumbnail.url : '', redirect: redirect, matched: p.matched_title || '' };
 		} ) );
 	}
 	function search( q, signal ) {
@@ -88,7 +88,7 @@
 		emptyTitle: mw.msg( 'akds-search-empty-title' ), emptyDesc: mw.msg( 'akds-search-empty-desc' ),
 		shortcuts: mw.msg( 'akds-search-shortcuts' ), noResults: mw.msg( 'akds-search-noresults' ), noResultsDesc: mw.msg( 'akds-search-noresults-desc' ),
 		error: mw.msg( 'akds-search-error' ), results: mw.msg( 'akds-search-results' ),
-		hintNavigate: mw.msg( 'akds-search-hint-navigate' ), hintOpen: mw.msg( 'akds-search-hint-open' ), hintFulltext: mw.msg( 'akds-search-hint-fulltext' ), hintClose: mw.msg( 'akds-search-hint-close' ), hintClear: mw.msg( 'akds-search-hint-clear' ), hintBack: mw.msg( 'akds-search-hint-back' ), hintCommands: mw.msg( 'akds-search-hint-commands' ),
+		hintNavigate: mw.msg( 'akds-search-hint-navigate' ), hintOpen: mw.msg( 'akds-search-hint-open' ), hintGo: mw.msg( 'akds-search-hint-go' ), hintFulltext: mw.msg( 'akds-search-hint-fulltext' ), hintClose: mw.msg( 'akds-search-hint-close' ), hintClear: mw.msg( 'akds-search-hint-clear' ), hintBack: mw.msg( 'akds-search-hint-back' ), hintCommands: mw.msg( 'akds-search-hint-commands' ),
 		close: mw.msg( 'akds-search-close' ), clear: mw.msg( 'akds-search-clear' ), back: mw.msg( 'akds-search-back' ), remove: mw.msg( 'akds-search-remove' ), edit: mw.msg( 'akds-search-edit' ),
 		brand: mw.config.get( 'wgSiteName' ) + ' · Search'
 	};

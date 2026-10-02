@@ -10,7 +10,10 @@
  *      关：Esc（有字先清空，再按退出模式，再按关闭）/ 点遮罩 / 关闭按钮 / 选中结果。
  *    · 空查询：最近访问（localStorage）+ 提示 + 快捷入口；有字：providers.search() 分组结果 + 末尾固定「全文搜索」行；
  *      "/" 开头：命令列表；命中触发符（>、#、@、~）或选中命令：进入模式（斜切 chip），退格空输入 / ← 退出。
- *    · ↑↓ 循环高亮，回车打开（⌘/Ctrl 回车新标签），⇧回车全文搜索；结果还没到就回车 → urls.go(q)（MW 原生 Go：精确跳转，无则全文）。
+ *    · 标题搜索不默认高亮第一条（同旧 Vector 的建议下拉）：没有高亮项时回车 → urls.go(q)（MW 原生 Go：精确跳转，无则全文），
+ *      回车去哪只取决于输入的字，不取决于建议怎么排序 / 到没到。只有「精确命中」才预先高亮：标题（或 matched）与输入相同，
+ *      或数据源标了 exact（本地索引的别名 / 拼音整词命中）。命令列表与模式（动作 / 分类 / 用户 / 文件）是选择器，仍默认高亮第一条。
+ *    · ↑↓ 循环高亮，回车打开高亮项（⌘/Ctrl 回车新标签），⇧回车全文搜索；继续输入会清掉旧列表上的高亮。
  *    · 输入框始终持有焦点（列表 mousedown 阻止夺焦），aria-activedescendant 播报高亮项；Tab 在面板内循环。
  *
  *  API：window.akdsSearchPalette.init( options ) → { open, close, toggle, refresh, isOpen }
@@ -30,7 +33,8 @@
  *      onSelect(item, event) → false 阻止默认导航
  *    }
  *    Item = { id?, type: 'page'|'operator'|'item'|'category'|'action'|…, label, url?, desc?, thumb?(url), icon?(svg id: 'page'|'search'|'category'|'user'|'file'|'action'|'clock'),
- *             glyph?(单字，深底), meta?: [{ text?, html?, kbd? }], match?: boolean(默认 true：高亮已输入部分), en?, keepOpen?, noRecent?, onSelect?() ,
+ *             glyph?(单字，深底), meta?: [{ text?, html?, kbd? }], match?: boolean(默认 true：高亮已输入部分), en?,
+ *             exact?: boolean(精确命中 → 预先高亮；缺省时按 label / matched 与输入是否相同判断), matched?(命中的重定向标题), keepOpen?, noRecent?, onSelect?() ,
  *             actions?: [{ id, label, icon: 'edit'|'close'|'external', url?, onClick?(item) }] }   ← 行内动作始终占位、高亮时可见；设计上只给最近访问用「移除」，搜索结果不放额外点击动作
  * ═══════════════════════════════════════════════════════════════════════════ */
 ( function () {
@@ -68,7 +72,7 @@
 		noResultsDesc: '检查拼写，或试试全文搜索',
 		error: '搜索服务暂时不可用，回车执行全文搜索',
 		results: '$1 条结果',
-		hintNavigate: '选择', hintOpen: '打开', hintFulltext: '全文', hintClose: '关闭', hintClear: '清空', hintBack: '返回', hintCommands: '命令',
+		hintNavigate: '选择', hintOpen: '打开', hintGo: '前往', hintFulltext: '全文', hintClose: '关闭', hintClear: '清空', hintBack: '返回', hintCommands: '命令',
 		close: '取消', clear: '清空', back: '返回', remove: '从最近访问中移除', edit: '编辑', newTab: '在新标签页打开',
 		brand: 'PRTS · Search'
 	};
@@ -86,6 +90,7 @@
 	}
 	function fmt( s, a ) { return String( s ).replace( /\$1/g, a == null ? '' : a ); }
 	function isMac() { return /Mac|iPhone|iPad/.test( navigator.platform || '' ); }
+	function norm( s ) { return String( s == null ? '' : s ).trim().toLowerCase().replace( /[_\s]+/g, ' ' ); }
 	function isFormField( el ) {
 		if ( !el || el.nodeType !== 1 ) { return false; }
 		const n = el.nodeName.toLowerCase(), t = ( el.getAttribute( 'type' ) || '' ).toLowerCase();
@@ -225,7 +230,7 @@
 			} );
 			if ( opts.notice ) { const n = h( 'div', 'ak-palette__notice' + ( opts.error ? ' ak-palette__notice--error' : '' ) ); n.textContent = opts.notice; list.append( n ); }
 			input.setAttribute( 'aria-expanded', items.length ? 'true' : 'false' );
-			setActive( opts.highlight != null ? opts.highlight : ( q ? 0 : -1 ), false );
+			setActive( opts.highlight === 'exact' ? exactIndex( q ) : ( opts.highlight != null ? opts.highlight : ( q ? 0 : -1 ) ), false );
 			live.textContent = items.length ? fmt( M.results, items.length ) : '';
 			syncHeight();
 		}
@@ -277,9 +282,15 @@
 			}
 			return row;
 		}
+		/* 精确命中的那一行（没有则 -1）：回车打开它与 Go 去的是同一页，所以可以放心预先高亮 */
+		function exactIndex( q ) {
+			const n = norm( q ); if ( !n ) { return -1; }
+			return items.findIndex( ( it ) => it.type !== 'search' && it.exact !== false && ( it.exact === true || norm( it.label ) === n || ( it.matched && norm( it.matched ) === n ) ) );
+		}
 		function setActive( i, scroll ) {
 			const rows = list.querySelectorAll( '.ak-palette__item' );
-			if ( !rows.length ) { active = -1; input.removeAttribute( 'aria-activedescendant' ); return; }
+			const was = active;
+			if ( !rows.length ) { active = -1; input.removeAttribute( 'aria-activedescendant' ); if ( was !== active ) { updateHints(); } return; }
 			if ( i < 0 ) { i = -1; } else { i = ( ( i % rows.length ) + rows.length ) % rows.length; }
 			rows.forEach( ( r, k ) => { r.classList.toggle( 'is-active', k === i ); r.setAttribute( 'aria-selected', k === i ? 'true' : 'false' ); } );
 			active = i;
@@ -287,18 +298,20 @@
 				input.setAttribute( 'aria-activedescendant', rows[ i ].id );
 				if ( scroll !== false ) { rows[ i ].scrollIntoView( { block: 'nearest' } ); }
 			} else { input.removeAttribute( 'aria-activedescendant' ); }
+			if ( ( was < 0 ) !== ( active < 0 ) ) { updateHints(); }
 		}
 		function renderHints( arr ) {
 			hints.textContent = '';
 			arr.forEach( ( x ) => { const s = h( 'span' ); const k = h( 'kbd', 'ak-kbd' ); k.textContent = x[ 0 ]; s.append( k, document.createTextNode( x[ 1 ] ) ); hints.append( s ); } );
 		}
-		/* 页脚提示随状态变：Esc 的含义 = 有字「清空」→ 模式中「返回」→ 否则「关闭」 */
+		/* 页脚提示随状态变：Esc 的含义 = 有字「清空」→ 模式中「返回」→ 否则「关闭」；↵ = 有高亮项「打开」，标题搜索里没有高亮项「前往」（Go） */
 		function updateHints() {
 			const q = query.trim();
 			const esc = q ? M.hintClear : ( mode ? M.hintBack : M.hintClose );
 			const arr = [];
-			if ( q && !mode && q[ 0 ] !== '/' ) { arr.push( [ '⇧↵', M.hintFulltext ] ); }
-			arr.push( [ '↑↓', M.hintNavigate ], [ '↵', M.hintOpen ], [ 'Esc', esc ] );
+			const plain = q && !mode && q[ 0 ] !== '/';
+			if ( plain ) { arr.push( [ '⇧↵', M.hintFulltext ] ); }
+			arr.push( [ '↑↓', M.hintNavigate ], [ '↵', plain && active < 0 ? M.hintGo : M.hintOpen ], [ 'Esc', esc ] );
 			renderHints( arr );
 		}
 
@@ -361,7 +374,7 @@
 				lastGroups = groups;
 				const withFt = ( !mode || mode.fulltext !== false ) && q ? groups.concat( [ { id: 'ft', tail: true, items: [ fulltextItem( q ) ] } ] ) : groups;
 				const none = !groups.length;
-				renderGroups( withFt, q, { highlight: 0, notice: none ? fmt( M.noResults, q ) + ( mode ? '' : ' · ' + M.noResultsDesc ) : null } );
+				renderGroups( withFt, q, { highlight: mode ? 0 : 'exact', notice: none ? fmt( M.noResults, q ) + ( mode ? '' : ' · ' + M.noResultsDesc ) : null } );
 				updateHints();
 			}, ( err ) => {
 				if ( my !== seq || ( err && err.name === 'AbortError' ) ) { return; }
@@ -484,6 +497,7 @@
 			const v = input.value;
 			query = v; root.classList.toggle( 'has-query', !!v );
 			if ( detectTrigger( v ) ) { return; }
+			if ( !mode ) { setActive( -1, false ); }   // 旧列表上的高亮不属于新输入：结果到之前回车 = Go
 			updateHints();
 			refresh( false );
 		} );

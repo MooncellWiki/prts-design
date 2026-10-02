@@ -260,6 +260,7 @@
         "akds-search-edit",
         "akds-search-hint-navigate",
         "akds-search-hint-open",
+        "akds-search-hint-go",
         "akds-search-hint-fulltext",
         "akds-search-hint-close",
         "akds-search-hint-clear",

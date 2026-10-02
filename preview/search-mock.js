@@ -93,8 +93,8 @@
 
 	function search( q, signal ) {
 		const ql = q.toLowerCase();
-		const ops = OPS.map( ( o ) => [ score( ql, [ o.name, o.en, o.py, o.alias ] ), o ] ).filter( ( x ) => x[ 0 ] > 0 ).sort( ( a, b ) => b[ 0 ] - a[ 0 ] || b[ 1 ].rarity - a[ 1 ].rarity ).slice( 0, 5 ).map( ( x ) => opItem( x[ 1 ] ) );
-		const its = ITEMS.map( ( it ) => [ score( ql, [ it.name, it.id, it.py ] ), it ] ).filter( ( x ) => x[ 0 ] > 0 ).sort( ( a, b ) => b[ 0 ] - a[ 0 ] ).slice( 0, 4 ).map( ( x ) => itemItem( x[ 1 ] ) );
+		const ops = OPS.map( ( o ) => [ score( ql, [ o.name, o.en, o.py, o.alias ] ), o ] ).filter( ( x ) => x[ 0 ] > 0 ).sort( ( a, b ) => b[ 0 ] - a[ 0 ] || b[ 1 ].rarity - a[ 1 ].rarity ).slice( 0, 5 ).map( ( x ) => Object.assign( opItem( x[ 1 ] ), x[ 0 ] > 90 ? { exact: true } : null ) );   // 名字 / 英文名 / 拼音首字母 / 别名整词命中 → 预先高亮
+		const its = ITEMS.map( ( it ) => [ score( ql, [ it.name, it.id, it.py ] ), it ] ).filter( ( x ) => x[ 0 ] > 0 ).sort( ( a, b ) => b[ 0 ] - a[ 0 ] ).slice( 0, 4 ).map( ( x ) => Object.assign( itemItem( x[ 1 ] ), x[ 0 ] > 90 ? { exact: true } : null ) );
 		const groups = [];
 		if ( ops.length ) { groups.push( { id: 'ops', label: '干员', en: 'Operators', items: ops } ); }
 		if ( its.length ) { groups.push( { id: 'items', label: '道具', en: 'Items', items: its } ); }
