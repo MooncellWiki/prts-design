@@ -102,7 +102,7 @@
 .ol-filter .ak-chip:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 /* 职业 / 分支图标 = 游戏筛选面板（ui/[uc]charsortfilter 的 prof_item / subprof_item）用的同一套白线稿：职业 arts/ui/[uc]charcommon 的 icon_profession_*，分支 arts/ui/subprofessionicon/sub_*_icon。
  * 游戏里图标是一张白图、用 Image.color 着色（未选 #858585 / 选中 #00B1FF，与文字同色）；这里同理——白线稿当遮罩、颜色取 currentColor，选中 / 悬停 / 明暗主题都跟文字走，不用切图。
- * 图标地址写在样式表里（不由脚本拼）：单文件版 dist/ 才内联得到。生产环境 = 文件:图标_职业_*.png / 图标_分支_*.png */
+ * 生产环境 = 文件:图标_职业_*.png / 图标_分支_*.png */
 .ol-ico { flex: none; width: 16px; height: 16px; background: currentColor; mask: center / contain no-repeat; }
 .ol-ico[data-prof="pioneer"] { mask-image: url(assets/profession/line_pioneer.png); }
 .ol-ico[data-prof="warrior"] { mask-image: url(assets/profession/line_warrior.png); }

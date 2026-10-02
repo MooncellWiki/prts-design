@@ -9,7 +9,7 @@
  *  MW 上：Gadget 直接写 :root { … } 即全站生效；想按主题分昼夜就像下面那样按 html.skin-theme-clientpref-* 分写。
  *  ⚠ 接口变量里的 url() 请写绝对地址（//media.prts.wiki/…）：Chromium 把自定义属性里的相对 url() 按「使用处」（src/chrome/header.css
  *    · keyart.css）的路径解析，Firefox / WebKit 按「声明处」解析 —— 所以本文件和使用处放在同一目录 src/chrome/，两边的基准一致；
- *    站点上 /src/ 与 /preview/ 的相对位置不变、无需改写，build-dist.py 则内联成 data URI。本文件不进 index.css，也不进 skin.json。 */
+ *    站点上 /src/ 与 /preview/ 的相对位置不变、无需改写。本文件不进 index.css，也不进 skin.json。 */
 html.ak-theme-demo {
   --ak-theme-accent: #ffd800;                                   /* 罗德岛甲板的警示黄（游戏 go_to_shop / 稀有度黄）；页眉标语 / 悬停 / 开关选中项 / 搜索图标框、侧栏与目录分组条、页脚斜纹一起换 */
   --ak-theme-accent-fg: #000;

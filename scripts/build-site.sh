@@ -4,8 +4,8 @@
 #   /preview/     预览站：整页样例 home / operator + 跨宿主对照页 gallery（按 ../src/ 引样式 → /src/，素材在 /preview/assets/）
 #   /src/         CSS / 字体 / 皮肤共用脚本
 #   /storybook/   Storybook
-#   /dist/        单文件打包版（按 ../src/fonts/ 引思源黑体 → /src/fonts/）
-# 旧地址留跳转页：预览站原来在站点根目录（/components.html …），后来在 /preview/；5 张展示页（index / chrome / mediawiki / components / arknights）已退役，内容在文档站。
+# 旧地址留跳转页：预览站原来在站点根目录（/components.html …），后来在 /preview/；5 张展示页（index / chrome / mediawiki / components / arknights）已退役，内容在文档站；
+# 单文件打包版 /dist/*.html 已删，跳到 /preview/ 同名页。
 # 用法：bash scripts/build-site.sh [输出目录]   （默认 _site；站点 base 默认 /prts-design/，本地根目录自查用 PRTS_DESIGN_BASE=/）
 set -euo pipefail
 
@@ -26,7 +26,6 @@ cp -R site/.vitepress/dist/. "$out/"
 rm -rf "$out/preview/_src"                      # 页面源（scripts/build-preview.py 的输入），不上站
 cp -R _build/storybook "$out/storybook"
 rm -rf "$out/preview/vendor/vector" "$out/storybook/preview/vendor/vector"   # Vector 样式夹具（GPL / 站点样式，入库只作回归测试）不上站；站上的对照页 / Storybook 选 Vector 宿主时只提示一行
-cp -R dist "$out/dist"
 
 # 跳转页：redirect <输出文件> <目标> <站点首页>（目标、首页都相对输出文件）
 redirect() {
@@ -34,6 +33,8 @@ redirect() {
     "$2" "$2" "$2" "$2" "$2" "$3" > "$1"
 }
 for p in home operator; do redirect "$out/$p.html" "preview/$p.html" "./"; done
+mkdir -p "$out/dist"
+for p in home operators operator recruit; do redirect "$out/dist/$p.html" "../preview/$p.html" "../"; done
 # 退役的展示页 → 文档站（根目录旧地址与 /preview/ 下的地址都留；根目录的 index.html 就是文档站首页，不覆盖）
 for pair in index: chrome:chrome/ mediawiki:content/ components:components/ arknights:components/; do
   p="${pair%%:*}"; to="${pair#*:}"

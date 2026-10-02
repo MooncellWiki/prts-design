@@ -1,7 +1,7 @@
 /**
  * PRTS Design 文档站（≈ primer.style）：VitePress。
  *   pnpm dev:docs          开发
- *   pnpm build:docs    → site/.vitepress/dist（Pages 站点根目录；scripts/build-site.sh 再并上 /storybook/ 与 /dist/）
+ *   pnpm build:docs    → site/.vitepress/dist（Pages 站点根目录；scripts/build-site.sh 再并上 /storybook/）
  * 组件示例在 iframe 里跑 PRTS Design 全套样式（见 theme/components/Demo.vue），文档站自己的外观只借令牌。
  */
 import { existsSync } from "node:fs";

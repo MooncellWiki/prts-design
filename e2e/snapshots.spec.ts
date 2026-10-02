@@ -2,9 +2,8 @@
  * 整页样式回归：预览页每个元素（含 ::before / ::after）的计算样式 + <html> 上全部 --ak-* 令牌的计算值，和基准逐项比对。
  * 用来保证「令牌改由 JSON 生成」「CSS 按组件拆文件」这类重构视觉零变化：
  *
- *   pnpm e2e --project=snapshots -u     改之前：拍基准 → _verify/snapshots/<目录>/<页面>@<模式>.json（不入库）
+ *   pnpm e2e --project=snapshots -u     改之前：拍基准 → _verify/snapshots/preview/<页面>@<模式>.json（不入库）
  *   pnpm e2e --project=snapshots        改之后：逐项比对（没有基准就跳过）
- *   PAGES_DIR=dist …                    拍 dist/ 单文件版（默认 preview/；基准按目录分开放）
  *
  * 模式 = 主题（?theme=）× 视口 × 配色偏好；一律 prefers-reduced-motion: reduce（动画直接落到终态、首页轮播不自动播）。
  * 页面里的时间冻结在 NOW；不出网（support/test.ts，快照不随现网抖动）；干员页的「干员信息」舞台整棵子树跳过（见 support/computed.ts 的 SKIP）。
@@ -16,7 +15,7 @@ import { normToken, props, settle, snapshot, styleAt, SLOTS, type Row, type Snap
 import { test, expect } from './support/test.ts';
 
 const PAGES = ['home', 'operators', 'operator', 'recruit'];
-const DIR = process.env.PAGES_DIR ?? 'preview';   // PAGES_DIR=dist 拍单文件版（须是仓库顶层目录：单文件版里的思源黑体按 ../src/fonts/ 引，静态服务把 /src/ 映射到 packages/css/src/）
+const DIR = 'preview';
 const NOW = Date.parse('2026-09-27T12:00:00+08:00');   // 首页时钟 / 倒计时 / 今日开放状态才可复现
 const BASELINE = resolve(import.meta.dirname, '../_verify/snapshots', DIR);
 

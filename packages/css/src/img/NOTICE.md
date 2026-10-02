@@ -1,6 +1,6 @@
 # src/img/ · CSS 直接引用的游戏素材
 
-与 `src/fonts/` 一样跟着样式表走（`arknights/item.css` 里 `url("../img/…")` 相对样式表自身；皮肤的 `skin/resources/img` 是这里的符号链接，ResourceLoader 按模块文件位置改写 url；`scripts/build-dist.py` 打包时内联成 data URI）。页面级素材（图标、头像、立绘 …）仍在 `preview/assets/`。
+与 `src/fonts/` 一样跟着样式表走（`arknights/item.css` 里 `url("../img/…")` 相对样式表自身；皮肤的 `skin/resources/img` 是这里的符号链接，ResourceLoader 按模块文件位置改写 url）。页面级素材（图标、头像、立绘 …）仍在 `preview/assets/`。
 
 | 文件 | 来源 | 用途 |
 |---|---|---|

@@ -73,7 +73,7 @@ preview/
   assets/                     游戏图标 / 现网道具图 / 头图 / 首页素材 / 页脚徽章 …
 site/                         本文档站（VitePress）
 .storybook/                   Storybook（整页样例 story 在 pages/）
-scripts/                      fetch-*.py · fetch-vector-css.ts · build-preview.py · build-dist.py · build-site.sh · css-order.ts · sprite-sync.ts
+scripts/                      fetch-*.py · fetch-vector-css.ts · build-preview.py · build-site.sh · css-order.ts · sprite-sync.ts
 e2e/                          Playwright Test：hosts / snapshots / stories 三组（配置在 playwright.config.ts；support/ 是静态服务与计算样式快照）
 ```
 

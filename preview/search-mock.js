@@ -4,8 +4,7 @@
 ( function () {
 	'use strict';
 	if ( !window.akdsSearchPalette ) { return; }
-	// 图片路径：dist 单文件打包时 build-dist.py 会注入 window.AKDS_ASSET_MAP = { 'avatar/x.png': 'data:…' }
-	const asset = ( rel ) => ( window.AKDS_ASSET_MAP && window.AKDS_ASSET_MAP[ rel ] ) || ( 'assets/' + rel );
+	const asset = ( rel ) => 'assets/' + rel;
 	const PROF = { warrior: '近卫', sniper: '狙击', caster: '术师', medic: '医疗', pioneer: '先锋', tank: '重装', support: '辅助', special: '特种' };
 	// name, en, class, rarity, avatar, sub-branch, faction, pinyin-initials, aliases
 	const OPS = [

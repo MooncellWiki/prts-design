@@ -8,7 +8,7 @@
  * 所以取这一份而不是 npm 上的原版；提交号钉死，上游改了运行时再改这里的 COMMIT 重跑。
  *
  * 只做一处改动：文件结尾的 `export default spine` 换成 `window.spine = spine`——样例页可以直接从 file:// 打开，
- * 那里 ES 模块加载不了（跨源），只能用普通 <script>；build-dist.py 也只会内联普通 <script src>。
+ * 那里 ES 模块加载不了（跨源），只能用普通 <script>。
  * 模型本身（.skel / .atlas / .png）不入库：页面运行时从 torappu.prts.wiki 取（CORS 是 *）。
  */
 import { mkdir, writeFile } from 'node:fs/promises';

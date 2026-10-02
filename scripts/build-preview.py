@@ -23,7 +23,7 @@
 front matter 写了 `skeleton: gallery-skeleton.html` 的页面换用那份骨架（跨宿主对照页 gallery.html：不是皮肤骨架，?host= 切 akds / vector / bare），
 只填 title / head / content 三个占位，也不进侧栏「PRTS Design 预览 · DEMO」的页面列表。
 
-用法：python3 scripts/build-preview.py   （之后 build-dist.py / build-site.sh 照旧处理 preview/*.html）
+用法：python3 scripts/build-preview.py   （之后 build-site.sh 照旧处理 preview/*.html）
 """
 import re, pathlib, html
 root = pathlib.Path(__file__).resolve().parent.parent

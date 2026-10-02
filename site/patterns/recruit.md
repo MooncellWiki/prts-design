@@ -6,7 +6,7 @@ title: 公招计算
 
 工具页的样例：现网[公招计算](https://prts.wiki/w/%E5%85%AC%E6%8B%9B%E8%AE%A1%E7%AE%97)（= prts-widgets 的 `HrCalculator` Widget）的重新设计。和[干员一览](/patterns/operators)不同，这页不只换视觉——**算法的口径也照游戏改了**：现网把选中标签的所有子集各列一行，这里按游戏的招募流程来（招募位上 5 个标签 → 至多选 3 个 → 定招募时限），回答的是「这 5 个里选哪几个」。干员数据、词缀、地址栏 `?filter=` 的写法与现网一致，现网的分享链接在这里照样能用。
 
-源文件 `preview/_src/pages/recruit.html`，`python3 scripts/build-preview.py` 生成；单文件离线版在 `dist/recruit.html`。数据是现网 Widget 运行时那条 cargoquery 的快照 `preview/vendor/recruit/data.js`（160 位可公开招募的干员，`node scripts/fetch-recruit.ts` 重抓）；头像不入库，运行时从 `media.prts.wiki` 取，取不到时留深色底框。
+源文件 `preview/_src/pages/recruit.html`，`python3 scripts/build-preview.py` 生成。数据是现网 Widget 运行时那条 cargoquery 的快照 `preview/vendor/recruit/data.js`（160 位可公开招募的干员，`node scripts/fetch-recruit.ts` 重抓）；头像不入库，运行时从 `media.prts.wiki` 取，取不到时留深色底框。
 
 <PageFrame page="recruit.html" />
 

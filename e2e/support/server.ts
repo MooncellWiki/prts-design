@@ -1,6 +1,6 @@
 /**
  * e2e 的静态服务（playwright.config.ts 的 webServer 起它，端口读 PORT）：
- *   /…            仓库根目录原样（预览页 preview/*.html、单文件版 dist/*.html）
+ *   /…            仓库根目录原样（预览页 preview/*.html）
  *   /src/…        → packages/css/src/（预览页按站点布局引 ../src/…，Pages 上 /src/ = CSS 包）
  *   /storybook/…  → _build/storybook/（pnpm build:storybook；同 Pages 的布局：整页样例 story 按 ../preview/ 引预览页）
  */
