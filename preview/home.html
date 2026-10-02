@@ -263,13 +263,13 @@
 .mp-ops__row { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
 .mp-ops__row .ak-op-card { --_w: 88px; }
 .mp-ops__row .ak-op-card__name { font-size: var(--ak-fs-xs); padding: 5px 6px 6px; }
-.mp-ops__row .ak-op-card__rarity { height: 10px; }
+.mp-ops__row .ak-op-card__rarity { height: 14px; left: 3px; top: 3px; }   /* 星级原图上下左右各留 16% 透明边，14px 高时星形约 9.5px；往角上让 1px，可见的星仍离边 ~5px，六星右端与 30px 模组框之间还留 ~3px */
 .mp-ops__row .ak-op-card__prof { width: 22px; height: 22px; } .mp-ops__row .ak-op-card__prof img { width: 18px; height: 18px; }   /* 角上用游戏头像同款小职业图标 assets/profession/icon_*.png（= 现网 图标_职业_*.png），不是大号 hub 图标 */
 .mp-ops__row .ak-op-card__sub { font-size: max(9px, var(--ak-fs-cjk-min)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: none; }   /* 副标题是内容（分支 / 时装名 / 模组名），不是 HUD 标签：不转大写，「悠然假日 HDm25」不能变成 HDM25 */
 .mp-ops__badge { position: absolute; right: 4px; top: 4px; z-index: 1; }   /* 「兑」——黄 = 高级凭证兑换（提示 / 次强调，同现网） */
 .mp-ops__badge--kernel { --_bg: #06587f; --_fg: #fff; }   /* 中坚兑换：中坚蓝，和黄的高级凭证兑换区分开 */
-.mp-mod { position: absolute; right: 4px; top: 4px; z-index: 1; width: 26px; height: 26px; display: grid; place-items: center; background: rgba(0,0,0,.72); overflow: hidden; }   /* 模组型号：游戏里的模组类型小图标（现网 模组类型_*_小图.png；原图带一圈很宽的低透明度光晕，缩小后糊成一团发亮的雾——已剥掉光晕、裁到字形外接框），深底小框压在头像右上 */
-.mp-mod img { max-width: 20px; max-height: 20px; width: auto; height: auto; display: block; }
+.mp-mod { position: absolute; right: 4px; top: 4px; z-index: 1; width: 30px; height: 30px; display: grid; place-items: center; background: rgba(0,0,0,.72); overflow: hidden; }   /* 模组型号：游戏里的模组类型小图标（现网 模组类型_*_小图.png；原图带一圈很宽的低透明度光晕，缩小后糊成一团发亮的雾——已剥掉光晕、裁到字形外接框），深底小框压在头像右上 */
+.mp-mod img { max-width: 24px; max-height: 24px; width: auto; height: auto; display: block; }
 .mp-ops__cta { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 88px; box-sizing: border-box; padding: 8px; background: var(--ak-accent); color: var(--ak-accent-fg); text-decoration: none; text-align: center; position: relative; overflow: hidden; isolation: isolate; }
 .mp-ops__cta::after { content: ""; position: absolute; inset: 0; z-index: -1; background-image: radial-gradient(rgba(0,0,0,.35) 1.2px, transparent 1.4px); background-size: 6px 6px; -webkit-mask-image: linear-gradient(0deg, #000, transparent 60%); mask-image: linear-gradient(0deg, #000, transparent 60%); }
 .mp-ops__cta:hover { background: var(--ak-accent-hover); color: var(--ak-accent-fg); text-decoration: none; }
