@@ -804,6 +804,7 @@ html.skin-theme-clientpref-night,
   --ak-keyart-h: 0px;                      /* 页眉之下那段画的高度（画有多高，不是占多高——占位看 -reveal） */
   --ak-keyart-reveal: 72px;                /* 留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带 */
   --ak-keyart-veil: 60%;                   /* 垫在版面背后那一段蒙的画布色纱：顶端的浓度，往下渐浓到 100%。画面越花调得越高；别低于 50%（侧栏 / 标题压在画上要读得清） */
+  --ak-keyart-veil-filter: blur(8px);      /* 纱底下先给画加的 backdrop-filter：细节先糊开、再被纱盖住，亮色主题下读起来是雾 / 景深而不是隔着磨砂膜；none 关闭。画面鲜艳的主题可以再加 saturate(.6) 之类 */
   --ak-keyart-position: center 30%;        /* -position / -size 相对整块（页眉高 + -h）计算 */
   --ak-keyart-size: cover;
   --ak-keyart-bg: transparent;             /* 画未铺满 / 未加载时的底色；默认透明，没有头图时页眉背后什么也不多画 */
@@ -3200,17 +3201,29 @@ body.skin-arknights { margin: 0; min-height: 100vh; display: flex; flex-directio
  *  画从页面顶端铺起：盒子上移一个页眉高、再用同样的 padding-top 把内容压回页眉之下，于是画的顶端在粘性页眉（更高的 z-index）背后 ——
  *  页眉是压在画上的一块黑玻璃，画在玻璃后面均匀地透出来（多少由 --ak-chrome-bg 的 alpha 决定），黑框 + 画是一整块。
  *  --ak-keyart-h 是页眉之下那段画的高度；-position / -size 相对整块（页眉 + 这一段）算。
- *  可读性不赌画面：被版面压住的那一段蒙一层画布色的纱（::after），从 --ak-keyart-veil 起、往下渐浓到画布色——页眉靠黑玻璃，版面靠这层纱；
- *  露出段（-reveal）不蒙纱，只在底部按 --ak-keyart-fade 渐隐。-bg 默认透明，所以没有头图时页眉背后什么也不多画。
+ *  可读性不赌画面：被版面压住的那一段先糊、再蒙纱——::before 按 --ak-keyart-veil-filter（默认 blur(8px)）把画糊开，::after 蒙一层画布色的纱，从 --ak-keyart-veil 起、往下渐浓到画布色；页眉靠黑玻璃，版面靠这层纱。
+ *  只蒙纱不糊时，画里的锐边（钢梁 / 斑马纹）在 60% 的纱下照样清楚，亮色主题像隔着一层磨砂膜看照片；细节先没、再被纱盖住，读起来才是雾 / 景深。
+ *  （纱的浓度不能靠「画自己 mask 淡出」代替：画布是纯色时两者算出来是同一张图，饱和度对这类灰调的画也几乎不起作用——要动的是细节。）
+ *  纱和模糊都从露出段的下半截渐入，浓度先走一段缓入的曲线再匀速浓到底、接缝处斜率连续：折线式的浓度在斜率突变处有一道马赫带，压在画上就是雾的一条上沿。
+ *  纱拆成两层、不用 color-mix()（Chrome 111 / Safari 16.2 才有）：上半（0 → -veil）是 ::after 的画布色实色块 + 字面量 alpha 的 mask，再整体 opacity: -veil
+ *  （百分比 opacity：Chrome 78 / Firefox 70 / Safari 13.1）；下半（→ 画布色）与底部渐隐是 transparent → 画布色的两色标渐变，画在 .ak-keyart 自己的背景里、头图之上。
+ *  两层叠起来的浓度 = -veil + (1 − -veil)·t，与一条渐变写到底是同一回事。
+ *  露出段上半截不蒙纱。-bg 默认透明，所以没有头图时页眉背后什么也不多画。
  *  层序：.ak-keyart 是定位盒（z-index: auto），.ak-sidebar（sticky）与 .ak-main（relative）也是、且在 DOM 里靠后，所以版面画在头图之上，不需要 z-index。
  *  --ak-canvas-image 叠在 body 的 --ak-bg-canvas 之上（现网 body 的 bkg 底纹 / 大图位置）；侧栏与目录没有底色，所以画布图应当是低对比的底纹。 */
 .ak-keyart { --_over: var(--ak-header-h);   /* 往上探进页眉背后的高度；<1400 页眉多一行二级栏，见 responsive.css */
   --_h: var(--ak-keyart-h); --_reveal: min(var(--ak-keyart-reveal), var(--_h)); --_under: calc(var(--_h) - var(--_reveal));   /* 画高 = 露出段 + 垫在版面背后的一段 */
+  --_lead: min(var(--_reveal) / 2, var(--_under)); --_ramp: calc(var(--_lead) + min(var(--ak-space-6), var(--_reveal)));   /* 纱 / 模糊往上探进露出段下半截的长度（没有垫底段 = 横幅带时为 0，整段不蒙）；从起点浓到 -veil 的长度 = 探进的这段 + .ak-layout 的上内边距 24px（还没有内容）；没有露出段时两者都是 0，顶边藏在页眉底下、直接从 -veil 起 */
   position: relative; flex: none; box-sizing: content-box; height: var(--_h); padding-top: var(--_over); margin: calc(-1 * var(--_over)) 0 calc(-1 * var(--_under)); overflow: hidden; pointer-events: none;
-  background: var(--ak-keyart-bg) var(--ak-keyart-image) var(--ak-keyart-position) / var(--ak-keyart-size) no-repeat; }
-.ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: max(var(--_under), min(var(--ak-keyart-fade), var(--_h))); pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)) bottom / 100% min(var(--ak-keyart-fade), var(--_h)) no-repeat,   /* 底部渐隐（没有垫底段时只有它） */
-    linear-gradient(to bottom, transparent, color-mix(in srgb, var(--ak-bg-canvas) var(--ak-keyart-veil), transparent) min(var(--ak-space-6), var(--_reveal)), var(--ak-bg-canvas)) bottom / 100% var(--_under) no-repeat; }   /* 垫底段的纱：有露出段时，头 24px（= .ak-layout 的上内边距，还没有内容）从无到 -veil，免得两段之间一道硬边；没有露出段时顶边藏在页眉底下，直接从 -veil 起 */
+  background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)) bottom / 100% max(0px, var(--_under) - min(var(--ak-space-6), var(--_reveal))) no-repeat,   /* 纱的下半：从版面内容起点匀速浓到画布色，叠在 ::after 的 -veil 之下 */
+    linear-gradient(to bottom, transparent, var(--ak-bg-canvas)) bottom / 100% min(var(--ak-keyart-fade), var(--_h)) no-repeat,   /* 底部渐隐（没有垫底段时只有它） */
+    var(--ak-keyart-bg) var(--ak-keyart-image) var(--ak-keyart-position) / var(--ak-keyart-size) no-repeat; }
+.ak-keyart::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--_under) + var(--_lead)); pointer-events: none;
+  -webkit-backdrop-filter: var(--ak-keyart-veil-filter); backdrop-filter: var(--ak-keyart-veil-filter);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--_ramp)); mask-image: linear-gradient(to bottom, transparent, #000 var(--_ramp)); }   /* 垫底段先糊：在纱底下、与纱同起同满；只糊头图（版面在 DOM 里靠后，不在它的背景里） */
+.ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--_under) + var(--_lead)); pointer-events: none; background: var(--ak-bg-canvas); opacity: var(--ak-keyart-veil);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .146) calc(var(--_ramp) * .25), rgba(0, 0, 0, .473) calc(var(--_ramp) * .5), rgba(0, 0, 0, .813) calc(var(--_ramp) * .75), #000 var(--_ramp));
+  mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .146) calc(var(--_ramp) * .25), rgba(0, 0, 0, .473) calc(var(--_ramp) * .5), rgba(0, 0, 0, .813) calc(var(--_ramp) * .75), #000 var(--_ramp)); }   /* 纱的上半：三次 Hermite 缓入（起点斜率 0），到版面内容起点浓到 -veil，再往下保持；终点斜率按默认几何（72 露出 / 280 画高 / 60%）对上背景里那层匀速的下半，接缝不折 */
 .ak-keyart__inner { position: relative; height: var(--_reveal); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; pointer-events: auto; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽，在页眉之下、版面之上——只有露出段那么高，默认只有 72px，要放东西就调高 -reveal */
 @media (max-width: 639px) { .ak-keyart { --_h: min(var(--ak-keyart-h), 40vw); --_reveal: min(var(--ak-keyart-reveal), var(--_h), 10vw); } }   /* 窄屏画只有 40vw 高，露出段也跟着收到 10vw 以内 */
 body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak-canvas-position) / var(--ak-canvas-size) var(--ak-canvas-repeat); background-attachment: var(--ak-canvas-attachment); }
@@ -3840,7 +3853,7 @@ button.hr-slot:hover { background: var(--ak-gray-700); } button.hr-slot:hover::a
 button.hr-slot:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 .hr-slot.is-senior, .hr-tagbtn.is-senior { color: #ffeb04; background-image: linear-gradient(100deg, var(--ak-gray-800) 25%, transparent 80%), radial-gradient(rgba(255, 216, 0, .5) 1.1px, transparent 1.3px); background-size: auto, 5px 5px; }
 button.hr-slot.is-senior:hover { background-color: var(--ak-gray-800); }
-.hr-pick__tools { flex: none; display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.hr-pick__tools { flex: none; display: flex; align-items: center; gap: 10px; }   /* 紧跟标题：选完一个招募位、清空再选下一个，按钮就在面板起手的位置，不用横穿整行去右端找 */
 .hr-count { font: 700 var(--ak-fs-body)/1 var(--ak-font-label); font-variant-numeric: tabular-nums; color: var(--ak-fg); white-space: nowrap; }
 .hr-count small { font-weight: 600; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin-left: 2px; }
 .hr-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); }
@@ -3885,7 +3898,6 @@ button.hr-slot.is-senior:hover { background-color: var(--ak-gray-800); }
 .hr-rar__list { display: inline-flex; gap: 4px; }
 .hr-rar__list > span { display: grid; place-items: center; min-width: 34px; height: 24px; padding: 0 4px; box-sizing: border-box; background: var(--ak-blue-500); color: #fff; font: 700 var(--ak-fs-sm)/1 var(--ak-font-label); }
 .hr-rar__list > span.is-up { background: #fbd501; color: #313131; }
-.hr-time__note { flex: 1 1 220px; min-width: 0; font-size: var(--ak-fs-xs); line-height: 1.5; color: var(--ak-fg-muted); }
 
 /* ── 3. 提示 + 结论 ── */
 .hr-tips { display: flex; flex-direction: column; gap: 6px; margin: 0 0 var(--ak-space-3); }
@@ -3924,7 +3936,7 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
 .hr-combo__ops { display: flex; flex-wrap: wrap; gap: 8px 6px; padding: 10px var(--ak-space-3); min-width: 0; }
 /* 保底速查：组合多、每组干员少（多数只有一两位）——排成多列的格子，标签在上、干员在下 */
 .hr-combos--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); overflow: hidden; }
-.hr-combos--grid > .hr-combo { display: flex; flex-direction: column; border-top: 0; border-left: var(--ak-bar-w) solid var(--ak-r, var(--ak-border-strong)); box-shadow: 1px 0 0 var(--ak-border), 0 1px 0 var(--ak-border); }
+.hr-combos--grid > .hr-combo { display: flex; flex-direction: column; border-top: 0; box-shadow: 1px 0 0 var(--ak-border), 0 1px 0 var(--ak-border); }
 .hr-combos--grid .hr-combo__tags { padding: 10px var(--ak-space-3) 0; border: 0; }
 .hr-combos--grid .hr-combo__meta { flex: none; margin-left: auto; }
 .hr-combos--grid .hr-combo__ops { border: 0; }
@@ -3961,6 +3973,7 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
   .hr-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
   .hr-row.has-active > .hr-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }
   .hr-pick__title { flex-direction: row; align-items: baseline; gap: 8px; }
+  .hr-pick__tools { margin-left: auto; }
   .hr-slots { order: 1; flex-basis: 100%; display: flex; flex-wrap: wrap; }   /* 手机上 5 格放不下「高级资深干员」：格子随内容宽、折行 */
   .hr-slots > li { flex: 1 1 auto; }
   .hr-slot--empty { min-width: 44px; }
@@ -4256,11 +4269,11 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
   <section class="hr-pick" aria-label="职业需求">
     <div class="hr-pick__head">
       <div class="hr-pick__title"><span>职业需求</span><span class="ak-en">Job Tags</span></div>
-      <ol class="hr-slots" id="hr-slots" aria-label="已选标签（最多 5 个）"></ol>
       <div class="hr-pick__tools">
         <span class="hr-count" id="hr-count" role="status"></span>
         <button type="button" class="ak-btn ak-btn--sm" id="hr-clear"><svg class="ak-icon"><use href="#i-refresh"/></svg>清空</button>
       </div>
+      <ol class="hr-slots" id="hr-slots" aria-label="已选标签（最多 5 个）"></ol>
     </div>
     <div class="hr-rows" id="hr-rows"></div>
     <div class="hr-time">
@@ -4271,7 +4284,6 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
         <button type="button" class="ak-btn" data-dur="2" aria-pressed="true">7:40 – 9:00<small>3 – 5★</small></button>
       </div>
       <span class="hr-rar"><span class="hr-time__label">可获得的干员</span><span class="hr-rar__list" id="hr-rar" role="status"></span></span>
-      <span class="hr-time__note">点上招募位出现的 5 个标签；每次招募至多选 3 项，下面按 1–3 项的组合算。</span>
     </div>
   </section>
 
@@ -4355,8 +4367,10 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
     return out;
   }
   const subOf = (a, b) => a.mask !== b.mask && (a.mask & b.mask) === a.mask;   // a 是 b 的真子组合
-  /* 多加一个标签却没圈出更小范围的不列（干员与某个子组合相同） */
-  const prune = list => list.filter(c => !list.some(s => subOf(s, c) && s.ops.length === c.ops.length));
+  const sameOps = (a, b) => a.ops.length === b.ops.length && a.ops.every((o, i) => o === b.ops[i]);   // 同一批干员（都是从 chars 按序筛出来的，逐个比即可）
+  /* 多加一个标签却没圈出更小范围的不列（干员与某个子组合相同）。
+   * 要比是不是同一批人，不能只比人数：稀有标签会改星级范围，【高级资深干员】+ 近卫 + 支援（帕拉斯、银灰）与 近卫 + 支援（杜宾、诗怀雅）人数一样，却是另一批干员 */
+  const prune = list => list.filter(c => !list.some(s => subOf(s, c) && sameOps(s, c)));
   const order = (a, b) => b.min - a.min || a.tags.length - b.tags.length || a.ops.length - b.ops.length || a.mask - b.mask;
   /* 保底速查：全部标签里能保底 4★ 以上的最小组合（9:00；不含三个资质标签——它们各自就是保底 / 只出低星）。多加标签没把保底抬高的不列 */
   let refCache = null;
