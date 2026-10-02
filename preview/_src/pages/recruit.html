@@ -301,8 +301,10 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
     return out;
   }
   const subOf = (a, b) => a.mask !== b.mask && (a.mask & b.mask) === a.mask;   // a 是 b 的真子组合
-  /* 多加一个标签却没圈出更小范围的不列（干员与某个子组合相同） */
-  const prune = list => list.filter(c => !list.some(s => subOf(s, c) && s.ops.length === c.ops.length));
+  const sameOps = (a, b) => a.ops.length === b.ops.length && a.ops.every((o, i) => o === b.ops[i]);   // 同一批干员（都是从 chars 按序筛出来的，逐个比即可）
+  /* 多加一个标签却没圈出更小范围的不列（干员与某个子组合相同）。
+   * 要比是不是同一批人，不能只比人数：稀有标签会改星级范围，【高级资深干员】+ 近卫 + 支援（帕拉斯、银灰）与 近卫 + 支援（杜宾、诗怀雅）人数一样，却是另一批干员 */
+  const prune = list => list.filter(c => !list.some(s => subOf(s, c) && sameOps(s, c)));
   const order = (a, b) => b.min - a.min || a.tags.length - b.tags.length || a.ops.length - b.ops.length || a.mask - b.mask;
   /* 保底速查：全部标签里能保底 4★ 以上的最小组合（9:00；不含三个资质标签——它们各自就是保底 / 只出低星）。多加标签没把保底抬高的不列 */
   let refCache = null;
