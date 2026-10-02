@@ -1,6 +1,6 @@
 /*! PRTS Design · components/heading.css — Section heading 区块标题 · 依赖：tokens.css */
 /* ═══ Section heading (通用标题组件；用于模板/首页) ═══ */
-.ak-heading { display: flex; align-items: flex-end; gap: var(--ak-space-4); margin: var(--ak-space-8) 0 var(--ak-space-4); padding-left: var(--ak-space-4); border-left: var(--ak-bar-w-lg) solid var(--ak-accent); line-height: 1.1; }
+.ak-heading { display: flex; align-items: flex-end; gap: var(--ak-space-4); margin: var(--ak-space-section) 0 var(--ak-space-4); padding-left: var(--ak-space-4); border-left: var(--ak-bar-w-lg) solid var(--ak-accent); line-height: 1.1; }
 .ak-heading__title, :is(h1, h2, h3, h4, h5, h6).ak-heading__title { font-size: var(--ak-fs-h2); font-weight: 800; margin: 0; letter-spacing: .01em; }
 .ak-heading__en { font-family: var(--ak-font-display); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-weight: 700; color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); }
 .ak-heading__aside { margin-left: auto; font-size: var(--ak-fs-sm); }

@@ -11,7 +11,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 ## 标题
 
-h1 思源 32px 800，左侧 8px 青色粗条（比正文 h2 的 4px 粗一档）；英文 / 日文副名放在 `<span class="ak-en">` 里，另起一行、半号、灰色大写。命名空间前缀 `.mw-page-title-namespace` 变灰。手机上降到 h2 字号。
+h1 思源 32px 800，左侧 8px 青色粗条（比正文 h2 的 4px 粗一档）；英文 / 日文副名放在 `<span class="ak-en">` 里，另起一行、半号、灰色大写。命名空间前缀 `.mw-page-title-namespace` 变灰。手机上随 `--ak-fs-h1` 的窄屏值降到 26px（见[字号 · 窄屏](/foundations/typography#窄屏)）。
 
 命名空间小标 `.ak-page-header__ns` 与卡片 eyebrow 同一种 overline：不可点的装饰文字，用 `--ak-fg-muted`，不上青（见[设计理念 · DO / DON'T](/foundations/principles#do-don-t)）。
 

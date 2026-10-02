@@ -1,0 +1,22 @@
+{
+  typography: {
+    "font-size": {
+      $description: "窄屏（≤ 639）的标题档：只压缩 h3 以上，整档收一级（同 Primer f1–f3 的窄屏值）。原先手机上页面标题临时降到 h2 字号，和章节 h2 一样大（都 24），两级标题分不出来；整档一起收，层级在窄屏上照样成立。\nh4 / body 及以下不动：手机正文仍是 16（iOS 输入框小于 16 聚焦时会放大页面），表格 / 卡片里的 14 / 12 再缩就掉到「中文最小 12px」以下。\nfs-h2 / fs-h3 也给 HUD 数字用（.ak-stat__value / .ak-attr__value / .ak-stage__code / 倒计时），这些数字在手机上跟着小一档。",
+      $type: "dimension",
+      "fs-display-xl": { $value: "2.5rem", $description: "40（宽屏 56）" },
+      "fs-display": { $value: "2rem", $description: "32（宽屏 40）" },
+      "fs-h1": { $value: "1.625rem", $description: "26（宽屏 32）" },
+      "fs-h2": { $value: "1.375rem", $description: "22（宽屏 24）" },
+      "fs-h3": { $value: "1.125rem", $description: "18（宽屏 20）" },
+    },
+  },
+  size: {
+    layout: {
+      $description: "窄屏的版面间距：只改版面这一层（两侧 gutter、页眉高、大区块间隔）。原始的 --ak-space-* 阶梯不动——它同时管按钮内边距、列表缩进和点按面积，整档缩小会连触控区一起缩。",
+      $type: "dimension",
+      "header-h": { $value: "52px", $description: "宽屏 56" },
+      gutter: { $value: "{size.layout.gutter-sm}", $description: "16（宽屏 24）" },
+      "space-section": { $value: "{size.space.space-6}", $description: "24（宽屏 32）" },
+    },
+  },
+}

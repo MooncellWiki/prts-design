@@ -4,6 +4,7 @@
  *   <TokenTable prefix="color.brand" />            原始色：色块网格
  *   <TokenTable prefix="theme.background" themed />  语义色：亮 / 暗两列并排（色块直接用解析值，不跟文档站当前主题）
  *   <TokenTable prefix="typography.font-size" sample="size" />   其它：名称 · 值 · 说明（可带字号 / 字体样张）
+ * 组里有令牌带窄屏值（functional/compact → tokens.json 的 compact）时，多出一列「手机」（视口 ≤ 639）：写解析值（16px 而不是 var(--ak-gutter-sm)，表才放得下），CSS 写法在悬停提示里；没有窄屏值的写「同左」。
  */
 import { computed } from "vue";
 
@@ -13,6 +14,8 @@ const props = defineProps<{ prefix: string; themed?: boolean; sample?: "size" | 
 type Token = (typeof data.tokens)[number];
 const tokens = computed(() => data.tokens.filter(t => t.path.join(".").startsWith(props.prefix + ".")));
 const isColor = (t: Token) => t.type === "color";
+const compactOf = (t: Token) => ("compact" in t ? t.compact : undefined);
+const hasCompact = computed(() => tokens.value.some(t => compactOf(t)));
 const css = (t: Token, mode: "light" | "dark") => (typeof t.css === "string" ? t.css : t.css[mode]);
 const copy = (s: string) => navigator.clipboard?.writeText(s);
 </script>
@@ -43,12 +46,16 @@ const copy = (s: string) => navigator.clipboard?.writeText(s);
   </table>
   <table v-else class="akd-tokens">
     <thead>
-      <tr><th>令牌</th><th>值</th><th v-if="sample">样张</th><th>说明</th></tr>
+      <tr><th>令牌</th><th>值</th><th v-if="hasCompact" title="视口 ≤ 639px（functional/compact）">手机</th><th v-if="sample">样张</th><th>说明</th></tr>
     </thead>
     <tbody>
       <tr v-for="t in tokens" :key="t.name">
         <td><code>{{ t.name }}</code></td>
         <td><code>{{ css(t, "light") }}</code></td>
+        <td v-if="hasCompact">
+          <code v-if="compactOf(t)" :title="compactOf(t)!.css">{{ compactOf(t)!.resolved }}</code>
+          <span v-else class="akd-props__none">同左</span>
+        </td>
         <td v-if="sample">
           <span v-if="sample === 'size'" :style="{ fontSize: `var(${t.name})`, lineHeight: 1.2 }">罗德岛 Rhodes</span>
           <span v-else-if="sample === 'font'" :style="{ fontFamily: `var(${t.name})` }">罗德岛 RHODES ISLAND 0123</span>

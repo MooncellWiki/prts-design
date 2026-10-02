@@ -2,7 +2,7 @@
 
 PRTS Design（明日方舟网页设计系统，prts.wiki 皮肤）的设计令牌，≈ primer/primitives。
 
-- `src/**/*.json5`：W3C DTCG 格式的源——`base/` 原始色板 · 字体 · 尺寸 · 动效 · 层级，`functional/` 亮 / 暗 / 高对比语义令牌与页眉头图画布主题接口，`bridge/` MediaWiki Codex 桥接
+- `src/**/*.json5`：W3C DTCG 格式的源——`base/` 原始色板 · 字体 · 尺寸 · 动效 · 层级，`functional/` 亮 / 暗 / 高对比语义令牌、页眉头图画布主题接口，以及窄屏（≤ 639）与低分屏的覆盖，`bridge/` MediaWiki Codex 桥接
 - `tokens.css`：CSS 变量版——亮 `:root` / 暗 `data-theme="dark"` · `html.skin-theme-clientpref-night` / 跟随系统 / 局部主题 `.ak-scope[data-theme]` / 高对比；只要令牌时 `import "@mooncellwiki/prts-design-tokens/tokens.css"`
 - `tokens.json`：每个令牌的 CSS 写法与亮 / 暗解析值
 

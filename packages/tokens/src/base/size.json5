@@ -28,14 +28,15 @@
     layout: {
       $description: "Layout · 与 Codex 断点一致: 320 / 640 / 1120 / 1680",
       $type: "dimension",
-      "header-h": { $value: "56px" },
+      "header-h": { $value: "56px", $description: "≤639 为 52（functional/compact）" },
       "local-nav-h": { $value: "48px", $description: "二级吸顶栏（<1400 出现：菜单 / 本页目录）" },
       "sidebar-w": { $value: "208px" },
       "toc-w": { $value: "200px" },
       "content-max": { $value: "1240px", $description: "阅读区最大宽度；表格密集页可加 .ak-wide" },
       "content-narrow": { $value: "760px" },
-      gutter: { $value: "24px" },
+      gutter: { $value: "24px", $description: "版面两侧留白 / 栏间距；≤639 换成 gutter-sm" },
       "gutter-sm": { $value: "16px" },
+      "space-section": { $value: "{size.space.space-8}", $description: "大区块之间的竖向间隔：带色条的章节标题 .ak-heading 的上边距、正文 hr 的上下；≤639 收到 space-6（24）" },
     },
     icon: {
       $description: "Icon sizes",

@@ -106,11 +106,11 @@
   --ak-font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;   /* 自托管 JetBrains Mono 100–800 正 / 斜 */
 
   /* ─── typography · font-size · 字号（rem；注释为 px） */
-  --ak-fs-display-xl: 3.5rem;              /* 56 */
-  --ak-fs-display: 2.5rem;                 /* 40 */
-  --ak-fs-h1: 2rem;                        /* 32 */
-  --ak-fs-h2: 1.5rem;                      /* 24 */
-  --ak-fs-h3: 1.25rem;                     /* 20 */
+  --ak-fs-display-xl: 3.5rem;              /* 56（≤639 为 40，见 functional/compact） */
+  --ak-fs-display: 2.5rem;                 /* 40（≤639 为 32） */
+  --ak-fs-h1: 2rem;                        /* 32（≤639 为 26） */
+  --ak-fs-h2: 1.5rem;                      /* 24（≤639 为 22） */
+  --ak-fs-h3: 1.25rem;                     /* 20（≤639 为 18） */
   --ak-fs-h4: 1.0625rem;                   /* 17 */
   --ak-fs-body-lg: 1.125rem;               /* 18 */
   --ak-fs-body: 1rem;                      /* 16 */
@@ -160,14 +160,15 @@
   --ak-bar-w-lg: 8px;
 
   /* ─── size · layout · Layout · 与 Codex 断点一致: 320 / 640 / 1120 / 1680 */
-  --ak-header-h: 56px;
+  --ak-header-h: 56px;                     /* ≤639 为 52（functional/compact） */
   --ak-local-nav-h: 48px;                  /* 二级吸顶栏（<1400 出现：菜单 / 本页目录） */
   --ak-sidebar-w: 208px;
   --ak-toc-w: 200px;
   --ak-content-max: 1240px;                /* 阅读区最大宽度；表格密集页可加 .ak-wide */
   --ak-content-narrow: 760px;
-  --ak-gutter: 24px;
+  --ak-gutter: 24px;                       /* 版面两侧留白 / 栏间距；≤639 换成 gutter-sm */
   --ak-gutter-sm: 16px;
+  --ak-space-section: var(--ak-space-8);   /* 大区块之间的竖向间隔：带色条的章节标题 .ak-heading 的上边距、正文 hr 的上下；≤639 收到 space-6（24） */
 
   /* ─── size · icon · Icon sizes */
   --ak-icon-xs: 14px;
@@ -655,6 +656,29 @@ html.skin-theme-clientpref-night,
   --ak-canvas-size: auto;
   --ak-canvas-repeat: repeat;
   --ak-canvas-attachment: scroll;
+}
+
+/* ═══ 窄屏（≤ 639，与 Codex 的 640 断点一致）：标题档整档收一级（h4 / 正文及以下不动），版面 gutter / 页眉高 / 大区块间隔收紧；原始的 --ak-space-* 阶梯不动 ═══ */
+@media (max-width: 639px) {
+  :root {
+    /* ─── typography */
+
+    /* ─── typography · font-size · 窄屏（≤ 639）的标题档：只压缩 h3 以上，整档收一级（同 Primer f1–f3 的窄屏值）。原先手机上页面标题临时降到 h2 字号，和章节 h2 一样大（都 24），两级标题分不出来；整档一起收，层级在窄屏上照样成立。
+     * h4 / body 及以下不动：手机正文仍是 16（iOS 输入框小于 16 聚焦时会放大页面），表格 / 卡片里的 14 / 12 再缩就掉到「中文最小 12px」以下。
+     * fs-h2 / fs-h3 也给 HUD 数字用（.ak-stat__value / .ak-attr__value / .ak-stage__code / 倒计时），这些数字在手机上跟着小一档。 */
+    --ak-fs-display-xl: 2.5rem;            /* 40（宽屏 56） */
+    --ak-fs-display: 2rem;                 /* 32（宽屏 40） */
+    --ak-fs-h1: 1.625rem;                  /* 26（宽屏 32） */
+    --ak-fs-h2: 1.375rem;                  /* 22（宽屏 24） */
+    --ak-fs-h3: 1.125rem;                  /* 18（宽屏 20） */
+
+    /* ─── size */
+
+    /* ─── size · layout · 窄屏的版面间距：只改版面这一层（两侧 gutter、页眉高、大区块间隔）。原始的 --ak-space-* 阶梯不动——它同时管按钮内边距、列表缩进和点按面积，整档缩小会连触控区一起缩。 */
+    --ak-header-h: 52px;                   /* 宽屏 56 */
+    --ak-gutter: var(--ak-gutter-sm);      /* 16（宽屏 24） */
+    --ak-space-section: var(--ak-space-6);   /* 24（宽屏 32） */
+  }
 }
 
 /* ═══ 低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响）；中文小字抬到 12px（1× 屏上 9–11px 的汉字分不到足够像素） ═══ */

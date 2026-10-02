@@ -5,7 +5,7 @@
  *
  * 源文件分三层，和 CSS 里的块一一对应：
  *   base/*            原始色板 + 主题无关的尺寸 / 字体 / 动效 / 层级        → :root
- *   functional/*      语义令牌：themes/light · dark（同一套键）、contrast-more、chrome（页眉 / 头图 / 画布主题接口）、control、low-dpi（低分屏的正文字体链与中文小字下限）
+ *   functional/*      语义令牌：themes/light · dark（同一套键）、contrast-more、chrome（页眉 / 头图 / 画布主题接口）、control、compact（窄屏 ≤ 639 的标题档与版面间距）、low-dpi（低分屏的正文字体链与中文小字下限）
  *   bridge/codex      MediaWiki Codex 令牌 → PRTS Design 语义令牌的桥接（变量名不带 --ak- 前缀）
  *
  * 命名：变量名 = 路径最后一段（`color.neutral.gray-50` → --ak-gray-50；bridge/codex 下的不加前缀），分组只管组织和文档。
@@ -28,6 +28,7 @@ const LIGHT = src('functional/themes/light.json5');
 const DARK = src('functional/themes/dark.json5');
 const CONTRAST = src('functional/themes/contrast-more.json5');
 const CHROME = src('functional/chrome.json5');
+const COMPACT = src('functional/compact.json5');
 const LOW_DPI = src('functional/low-dpi.json5');
 const CODEX = src('bridge/codex.json5');
 
@@ -57,6 +58,7 @@ const BLOCKS: Block[] = [
   { title: '2a′. 作用域主题：2a 里引用语义令牌的几个，在作用域上按作用域的主题重新解析', selector: '.ak-scope[data-theme]', source: BASE, include: [LIGHT], only: refsTheme },
   { title: '2d. CHROME · 页眉 / 头图 / 画布 的主题接口', selector: ':root', source: [CHROME], include: [...BASE, LIGHT] },
   { title: '3. CODEX / MEDIAWIKI BRIDGE', selector: ':root, html.skin-theme-clientpref-night, :root[data-theme="dark"]', source: [CODEX], include: [...BASE, LIGHT], file: 'bridge' },
+  { title: '窄屏（≤ 639，与 Codex 的 640 断点一致）：标题档整档收一级（h4 / 正文及以下不动），版面 gutter / 页眉高 / 大区块间隔收紧；原始的 --ak-space-* 阶梯不动', media: '(max-width: 639px)', selector: ':root', source: [COMPACT], include: [...BASE, LIGHT] },
   { title: '低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响）；中文小字抬到 12px（1× 屏上 9–11px 的汉字分不到足够像素）', media: '(max-resolution: 1.49dppx)', selector: ':root', source: [LOW_DPI], include: [...BASE, LIGHT] },
   { title: '高对比偏好：只有亮色吃得到（暗色块选择器特指度更高，压过这里的 :root——沿用原行为；.ak-scope[data-theme="light"] 与 2b′ 同特指度、本块在后，作用域亮色同样吃得到）', media: '(prefers-contrast: more)', selector: ':root,\n.ak-scope[data-theme="light"]', source: [CONTRAST], include: [...BASE, LIGHT] },
 ];
@@ -157,13 +159,15 @@ await writeFile(resolve(import.meta.dirname, 'tokens.css'), tokensCss);   // 同
 await writeFile(resolve(root, 'packages/css/src/bridge-codex.css'), bridge.join('\n') + '\n');
 
 /* ── tokens.json：给文档站 / 其它平台用——每个令牌带 CSS 写法与亮 / 暗两套解析值 ── */
-const [L, D, C] = await Promise.all([
+const [L, D, C, N] = await Promise.all([
   load([...BASE, LIGHT, CHROME, CODEX]),
   load([...BASE, DARK, CHROME, CODEX]),
   load([CONTRAST], [...BASE, LIGHT]),
+  load([COMPACT], [...BASE, LIGHT]),
 ]);
 const dark = new Map(D.allTokens.map(t => [t.name, t]));
 const contrast = new Map(C.allTokens.filter(t => t.isSource).map(t => [t.name, t]));
+const compact = new Map(N.allTokens.filter(t => t.isSource).map(t => [t.name, t]));
 const groups = Object.fromEntries(await groupDescriptions([...BASE, LIGHT, CHROME, CODEX]));
 const json = {
   $name: 'PRTS Design tokens',
@@ -186,6 +190,7 @@ const json = {
       ...(d.$description !== t.$description ? { descriptionDark: d.$description } : {}),
       css: themed ? { light: cssValue(t.original.$value), dark: cssValue(d.original.$value) } : cssValue(t.original.$value),
       resolved: { light: t.$value, dark: d.$value, ...(contrast.has(t.name) ? { 'contrast-more': contrast.get(t.name)!.$value } : {}) },
+      ...(compact.has(t.name) ? { compact: { css: cssValue(compact.get(t.name)!.original.$value), resolved: compact.get(t.name)!.$value, description: compact.get(t.name)!.$description } } : {}),   // 窄屏（≤ 639）的值，文档站令牌表多出一列
     };
   }),
 };

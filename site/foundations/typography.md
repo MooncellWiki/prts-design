@@ -23,6 +23,14 @@
 
 <TokenTable prefix="typography.font-size" sample="size" />
 
+## 窄屏
+
+手机上（≤ 639，与 Codex 的 640 断点一致）只把标题档整档收一级：display-xl 40 · display 32 · h1 26 · h2 22 · h3 18，同 Primer f1–f3 的窄屏值，见上表「手机」一列。h4、正文及以下不变。这些是令牌自己的窄屏值，源文件是 `packages/tokens/src/functional/compact.json5`，生成到 `tokens.css` 的 `@media (max-width: 639px)` 块里。组件照常写 `var(--ak-fs-h1)`，不用各自补断点规则。
+
+- **正文不缩**：手机离眼睛比桌面屏近，16px 正文在手机上并不大，主流设计系统也都不在移动端缩正文。输入框小于 16px 时 iOS 聚焦会放大页面，所以 `base/forms.css` 在手机上把输入框钉在 16px。
+- **小字不缩**：表格 / 卡片里的 14 / 12 是页面上字数最多的两档，再缩就掉到「中文最小 12px」以下。
+- **只收标题**：原先手机上页面标题临时降到 h2 字号，和章节 h2 一样大，两级分不出来；整档一起收，层级照旧。`--ak-fs-h2` / `--ak-fs-h3` 也给 HUD 数字用（统计值、属性读数、关卡码、倒计时），它们在手机上也跟着小一档。
+
 ## 低分屏
 
 Windows 100% / 125% 缩放（< 1.5dppx，`@media (max-resolution: 1.49dppx)`）下，一个字只分到「字号」那么多个设备像素：字体有没有 hinting、走哪种渲染模式、中文小字有多小，都会直接露出来。高分屏（macOS、手机、Windows 150% 以上）看不出这些问题，下面三条也都只在低分屏或 Windows 上起作用：

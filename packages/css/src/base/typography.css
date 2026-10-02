@@ -108,7 +108,7 @@ a.external:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-ex
 .mw-parser-output li > ul:not(:where(.ak-not-prose, .ak-not-prose *)), .mw-parser-output li > ol:not(:where(.ak-not-prose, .ak-not-prose *)) { margin-bottom: 0; }
 
 /* Emphasis / misc inline */
-hr { border: 0; height: 1px; background: var(--ak-border); margin: var(--ak-space-8) 0; }
+hr { border: 0; height: 1px; background: var(--ak-border); margin: var(--ak-space-section) 0; }
 /* 单元格里的 hr 是格内分隔（肉鸽深入探索「初始钱盒」把通宝与「查看钱盒」按钮隔开、干员页技能格），32px 会在线的上下各空出一行；
  * 旧皮肤是 .2em，这里收到 8px */
 .mw-parser-output :where(td, th) hr { margin: var(--ak-space-2) 0; }
