@@ -82,11 +82,12 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .sv__hit.is-on { animation: sv-hit .45s var(--ak-ease-out); }
 @keyframes sv-hit { from { opacity: 1; } to { opacity: 0; } }
 .sv__tools { position: absolute; right: 10px; top: 10px; display: flex; flex-direction: column; gap: 4px; }
-.sv__tool { all: unset; box-sizing: border-box; width: 32px; height: 32px; display: grid; place-items: center; cursor: pointer; color: rgba(var(--sv-ink), .75); background: rgba(var(--sv-ink), .08); border: 1px solid rgba(var(--sv-ink), .14); }
+.sv__tool { all: unset; position: relative; box-sizing: border-box; width: 32px; height: 32px; display: grid; place-items: center; cursor: pointer; color: rgba(var(--sv-ink), .75); background: rgba(var(--sv-ink), .08); border: 1px solid rgba(var(--sv-ink), .14); }
 .sv__tool:hover { color: rgb(var(--sv-ink)); background: rgba(var(--sv-ink), .16); }
 .sv__tool[aria-pressed="true"] { background: var(--ak-accent); border-color: var(--ak-accent); color: var(--ak-accent-fg); }
 .sv__tool:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 .sv__tool > svg, .sv__transport .ak-btn > svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+/* all: unset 会把 [data-ak-tip] 的 position: relative 一起抹掉（上面补回了），否则三枚按钮的提示都挂到整列工具的正中 */
 .sv__tool[data-ak-tip]::after { left: auto; right: calc(100% + 6px); bottom: auto; top: 50%; transform: translate(4px, -50%); }   /* 提示朝左出：按钮贴着舞台右缘 */
 .sv__tool[data-ak-tip]:hover::after, .sv__tool[data-ak-tip]:focus-visible::after { transform: translate(0, -50%); }
 .sv__zoom { text-align: center; font: 700 10px/1 var(--ak-font-label); color: rgba(var(--sv-ink), .5); padding-top: 2px; font-variant-numeric: tabular-nums; }
@@ -94,9 +95,25 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .sv__swatch { all: unset; box-sizing: border-box; width: 20px; height: 20px; cursor: pointer; background: var(--_c); border: 1px solid rgba(var(--sv-ink), .35); position: relative; overflow: hidden; }
 .sv__swatch[data-bg="none"] { background: repeating-conic-gradient(#bbb 0 25%, #fff 0 50%) 0 0 / 10px 10px; }
 .sv__swatch[data-bg="custom"] { background: conic-gradient(#f33, #fc0, #3c3, #0cf, #63f, #f33); }
-.sv__swatch > input { position: absolute; inset: -4px; width: 200%; height: 200%; opacity: 0; cursor: pointer; }
-.sv__swatch[aria-pressed="true"], .sv__swatch.is-active { outline: 2px solid var(--ak-accent); outline-offset: 1px; }
-.sv__swatch:focus-visible, .sv__swatch:focus-within { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
+.sv__swatch[aria-pressed="true"] { outline: 2px solid var(--ak-accent); outline-offset: 1px; }
+.sv__swatch:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
+/* 自定义背景的取色面板：外框是 .ak-popover（--top-end：贴着色块那一排的右缘往上出），里面自己画——
+   不用 <input type="color">，那个弹的是浏览器 / 系统的取色面板（Chrome 的小窗、macOS 的系统色板、Windows 的对话框…），各家长得不一样 */
+.sv__picker.ak-popover { display: grid; gap: 10px; width: 232px; min-width: 0; box-sizing: border-box; padding: 10px; cursor: default; }
+.sv__picker[hidden] { display: none; }
+.sv__picker-plane, .sv__picker-hue { position: relative; touch-action: none; }
+.sv__picker-plane:focus-visible, .sv__picker-hue:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.sv__picker-plane { height: 128px; cursor: crosshair; background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent), hsl(var(--_h, 0), 100%, 50%); }   /* 饱和度（横）× 明度（纵）：底色是当前色相 */
+.sv__picker-hue { height: 12px; cursor: pointer; background: linear-gradient(to right, #f00, #ff0 16.67%, #0f0 33.33%, #0ff 50%, #00f 66.67%, #f0f 83.33%, #f00); }
+.sv__picker-thumb { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; box-sizing: border-box; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(0, 0, 0, .55); pointer-events: none; }   /* 直角指示框：白边 + 内外各一圈半透明黑，深浅底上都看得见 */
+.sv__picker-hue > .sv__picker-thumb { top: 50%; width: 6px; height: 18px; margin: -9px 0 0 -3px; }
+.sv__picker-row { display: flex; align-items: center; gap: 8px; }
+.sv__picker-preview { flex: none; width: 30px; height: 30px; box-sizing: border-box; background: var(--_c); border: 1px solid var(--ak-border-strong); }
+.sv__picker-hex.ak-input { flex: 1; min-width: 0; font-family: var(--ak-font-mono); }
+.sv__picker-presets { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+.sv__picker-preset { all: unset; box-sizing: border-box; height: 20px; cursor: pointer; background: var(--_c); border: 1px solid var(--ak-border-strong); }
+.sv__picker-preset[aria-pressed="true"] { outline: 2px solid var(--ak-accent); outline-offset: 1px; }
+.sv__picker-preset:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
 .sv__hint { position: absolute; left: 12px; bottom: 10px; pointer-events: none; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .08em; color: rgba(var(--sv-ink), .42); transition: color var(--ak-dur-fast); }
 .sv__hint.is-nudge { color: var(--ak-accent-2); }   /* 没按 Ctrl 就滚轮：提示亮一下，页面照常滚动 */
 .sv__veil { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 12px; text-align: center; background: var(--sv-bg, #0f0f10); color: rgba(255, 255, 255, .7); font-size: var(--ak-fs-sm); }
@@ -115,9 +132,11 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .sv__anim > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sv__anim small { flex: none; font: 500 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-subtle); }
 .sv__anim i { flex: none; margin-left: auto; font: 500 11px/1 var(--ak-font-mono); font-style: normal; color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.sv__anim i > em { font-style: normal; margin-right: 8px; color: var(--ak-fg); }
+.sv__anim i > em { font-style: normal; margin-right: 8px; color: var(--ak-fg); border-bottom: 1px dashed currentColor; cursor: help; }   /* 判定次数：悬停（或键盘聚焦到这一行）出判定帧提示 .sv__tip；虚线下划线同术语提示 .ak-term */
 .sv__anim i > em::before, .sv__mark--hit { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--ak-accent-2); transform: rotate(45deg); }
 .sv__anim i > em::before { margin-right: 5px; box-shadow: 0 0 0 1px var(--ak-bg-surface); }
+/* 判定帧提示：列表是滚动容器，CSS 版 [data-ak-tip] 会被裁掉，改按视口定位（同干员一览的 .ol-tip） */
+.sv__tip.ak-tooltip { position: fixed; left: 0; top: 0; max-width: min(340px, calc(100vw - 16px)); white-space: pre-line; line-height: 1.55; pointer-events: none; }
 /* 时间轴 + 播放条 */
 .sv__transport { border-top: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); }
 .sv__timerow { display: flex; align-items: center; gap: 14px; padding: 8px 14px 0; }
@@ -1023,9 +1042,10 @@ var back_list = {
 </script>
 <script src="vendor/spine/spine-webgl.js"></script>
 <script>
-/* ═══ 干员模型：Widget:SpineViewer 的替身（生产环境 = prts-widgets src/widgets/Spine/，运行时与模型地址都与现网相同）。
+/* ═══ 干员模型：Widget:SpineViewer 的替身（生产环境 = prts-widgets src/widgets/SpineViewer/，运行时与模型地址都与现网相同）。
    与现网的差别都在「怎么看」上：舞台随容器宽度（不再是 1000×1000 画布缩到 300）、按设备像素比出图、载入后自动取景；
-   动作一行一个直接点；时间轴能拖、能逐帧，标出骨骼数据里的事件帧（OnAttack = 攻击判定）；滚轮要按住 Ctrl 才缩放，不劫持页面滚动 ═══ */
+   动作一行一个直接点；时间轴能拖、能逐帧，标出骨骼数据里的事件帧（OnAttack = 攻击判定）；滚轮要按住 Ctrl 才缩放，不劫持页面滚动；
+   自定义背景是自己画的取色面板（不用 <input type="color">：那个弹的是浏览器 / 系统的取色面板，各家长得不一样） ═══ */
 (function () {
   'use strict';
   const root = document.getElementById('spine-root'), loadBtn = document.getElementById('spine-load');
@@ -1040,6 +1060,8 @@ var back_list = {
   const EVENT_LABEL = { OnAttack: '攻击判定', OnAttackFinished: '攻击结束', OnStart: '入场完成', OnPlayAudio: '音效' };
   const BG = [['dark', '#0f0f10', '深色'], ['light', '#f2f2f2', '浅色'], ['none', '', '透明'], ['custom', '', '自定义']];
   const SPEEDS = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2];
+  /* 自定义背景的预设：两个主色 + 次强调黄、两档灰、白，再加绿幕 / 品红（导出 WebM 后好抠像） */
+  const PRESETS = [['#18d1ff', '官网青'], ['#0098dc', '游戏内蓝'], ['#ffd800', '强调黄'], ['#313131', '按钮灰'], ['#8d8d8d', '中灰'], ['#ffffff', '白'], ['#00ff00', '绿幕'], ['#ff00ff', '品红']];
   const ICON = {
     play: '<svg viewBox="0 0 24 24"><path stroke-linejoin="round" d="M7 4v16l12-8z"/></svg>',
     pause: '<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>',
@@ -1054,6 +1076,10 @@ var back_list = {
   const h = (tag, attrs, html) => { const el = document.createElement(tag); for (const k in attrs) el.setAttribute(k, attrs[k]); if (html != null) el.innerHTML = html; return el; };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  /* 取色面板的 HSV ↔ #rrggbb；灰（s = 0）/ 黑（v = 0）没有色相，沿用传进来的 fh，拖到角上时色相条不跳回红色 */
+  const hsvToHex = ({ h, s, v }) => '#' + [5, 3, 1].map(n => { const k = (n + h / 60) % 6; return Math.round((v - v * s * Math.max(0, Math.min(k, 4 - k, 1))) * 255).toString(16).padStart(2, '0'); }).join('');
+  const hexToHsv = (hex, fh = 0) => { const n = parseInt(hex.slice(1), 16), r = (n >> 16) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255, mx = Math.max(r, g, b), d = mx - Math.min(r, g, b); let hue = fh; if (d && mx) hue = mx === r ? 60 * (((g - b) / d + 6) % 6) : mx === g ? 60 * ((b - r) / d + 2) : 60 * ((r - g) / d + 4); return { h: hue, s: mx ? d / mx : 0, v: mx }; };
+  const normHex = t => { const m = /^#?([\da-f]{3}|[\da-f]{6})$/i.exec(String(t).trim()); if (!m) return null; const b = m[1].toLowerCase(); return '#' + (b.length === 3 ? b.replace(/./g, c => c + c) : b); };
 
   /* ── 渲染：一块 canvas、一套 shader，骨骼按「时装-模型」缓存。不用 AnimationState——每帧从初始姿态起把当前动作在 t 时刻的姿态直接套上去
         （Animation.apply + MixBlend.setup）：同一个 t 永远是同一个姿态，拖时间轴 / 逐帧 / 倒退都准，也没有多圈累加的旋转问题 ── */
@@ -1069,7 +1095,7 @@ var back_list = {
     this.view = { x: 0, y: 0, z: 1 };   // 原点（脚底）在舞台里的位置（CSS 像素，自左上角）与缩放（CSS 像素 / 骨骼单位）
     this.clear = [0, 0, 0, 0];
     this.cur = null;
-    this.load = async (key, path, skin) => {
+    this.load = async (key, path, skin) => {   // 取骨骼（有缓存直接给）；不设 this.cur——调用方确认这次载入没被后来的覆盖，再自己设（不然先发后到的那次会把骨骼盖掉）
       if (!cache[key]) {
         await fetchAll(path + '.skel', path + '.atlas');
         const loader = new S.AtlasAttachmentLoader(assets.get(path + '.atlas')), raw = assets.get(path + '.skel');
@@ -1082,7 +1108,7 @@ var back_list = {
           events: a.timelines.filter(t => t instanceof S.EventTimeline).flatMap(t => t.events.map(e => ({ name: e.data.name, time: e.time }))).sort((p, q) => p.time - q.time),
         })) };
       }
-      return (this.cur = cache[key]);
+      return cache[key];
     };
     this.pose = (anim, t) => {   // 把当前骨骼摆到 anim 的 t 时刻
       const sk = this.cur.skeleton;
@@ -1136,8 +1162,14 @@ var back_list = {
       `<button type="button" class="sv__tool" data-act="max" aria-pressed="false" data-ak-tip="放大查看" aria-label="放大查看">${ICON.max}</button>` +
       '<div class="sv__zoom"></div>');
     const bgBox = h('div', { class: 'sv__bg', role: 'group', 'aria-label': '背景' }, BG.map(([k, c, label]) =>
-      k === 'custom' ? `<label class="sv__swatch" data-bg="custom" title="背景：${label}"><input type="color" value="#18d1ff" aria-label="背景：自定义颜色"></label>`
-      : `<button type="button" class="sv__swatch" data-bg="${k}" style="--_c:${c}" aria-pressed="${k === 'dark'}" title="背景：${label}" aria-label="背景：${label}"></button>`).join(''));
+      k === 'custom' ? `<button type="button" class="sv__swatch" data-bg="custom" aria-pressed="false" aria-haspopup="dialog" aria-expanded="false" aria-controls="sv-picker" title="背景：${label}" aria-label="背景：${label}"></button>`
+      : `<button type="button" class="sv__swatch" data-bg="${k}" style="--_c:${c}" aria-pressed="${k === 'dark'}" title="背景：${label}" aria-label="背景：${label}"></button>`).join('') +
+      '<div class="ak-popover ak-popover--top-end sv__picker" id="sv-picker" role="dialog" aria-label="自定义背景色" hidden>' +
+        '<div class="sv__picker-plane" role="slider" tabindex="0" aria-label="饱和度与明度（← → 饱和度，↑ ↓ 明度）"><i class="sv__picker-thumb"></i></div>' +
+        '<div class="sv__picker-hue" role="slider" tabindex="0" aria-label="色相" aria-valuemin="0" aria-valuemax="360"><i class="sv__picker-thumb"></i></div>' +
+        '<div class="sv__picker-row"><span class="sv__picker-preview"></span><input class="ak-input ak-input--sm sv__picker-hex" maxlength="7" spellcheck="false" autocomplete="off" aria-label="十六进制颜色"></div>' +
+        `<div class="sv__picker-presets" role="group" aria-label="预设颜色">${PRESETS.map(([c, n]) => `<button type="button" class="sv__picker-preset" data-color="${c}" style="--_c:${c}" aria-pressed="false" title="${n} ${c.toUpperCase()}" aria-label="${n} ${c.toUpperCase()}"></button>`).join('')}</div>` +
+      '</div>');
     const hint = h('span', { class: 'sv__hint' }, '拖拽移动 · Ctrl + 滚轮缩放 · 双击复位');
     const veil = h('div', { class: 'sv__veil' });
     stageEl.append(canvas, ground, hud, tools, bgBox, hint, veil);
@@ -1234,14 +1266,17 @@ var back_list = {
       return chain.length < 2 || i < 0 ? null : chain[i + 1] || (st.loop ? chain[0] : null);
     };
     const renderAnims = () => {
+      hideTip();
       const grouped = cur.anims.length > 8, rows = [];
+      let n = 0;
       FAMILY.forEach(([title, re], i) => {
         const items = cur.anims.filter(a => FAMILY.findIndex(f => f[1].test(a.name)) === i).sort((a, b) => !a.duration - !b.duration || chainKey(a.name).localeCompare(chainKey(b.name), 'en', { numeric: true }));   // 0 帧的定格姿态（Default）排到本组最后；其余按「起手 → 本体 / 循环 → 收招」排
         if (!items.length) return;
         if (grouped) rows.push(`<div class="sv__group ak-overline">${title}</div>`);
         items.forEach(a => {
           const hits = a.events.filter(e => e.name === 'OnAttack');
-          rows.push(`<button type="button" class="sv__anim" data-anim="${esc(a.name)}" aria-pressed="false"${hits.length ? ` title="攻击判定：第 ${hits.map(e => Math.round(e.time * FPS)).join('、')} 帧"` : ''}><span>${esc(a.name)}</span>${GLOSS[a.name] ? `<small>${GLOSS[a.name]}</small>` : ''}<i>${hits.length ? `<em>${hits.length}</em>` : ''}${a.frames} F</i></button>`);
+          const text = hits.length ? `攻击判定：第 ${hits.map(e => Math.round(e.time * FPS)).join('、')} 帧` : '', id = hits.length ? 'sv-hit-' + (++n) : '';
+          rows.push(`<button type="button" class="sv__anim" data-anim="${esc(a.name)}" aria-pressed="false"${id ? ` aria-describedby="${id}"` : ''}><span>${esc(a.name)}</span>${GLOSS[a.name] ? `<small>${GLOSS[a.name]}</small>` : ''}<i>${hits.length ? `<em data-tip="${text}">${hits.length}</em>` : ''}${a.frames} F</i>${id ? `<span id="${id}" hidden>${text}</span>` : ''}</button>`);
         });
       });
       animBox.innerHTML = rows.join(''); animCount.textContent = cur.anims.length;
@@ -1258,7 +1293,7 @@ var back_list = {
       try {
         const loaded = await stage.load(st.skin + '/' + st.model, conf.prefix + item.file, item.skin);
         if (seq !== loadSeq) return;
-        cur = loaded;
+        cur = stage.cur = loaded;
       } catch (err) {
         if (seq !== loadSeq) return;
         showVeil('<span>模型载入失败：' + esc(err.message || err) + '</span><button type="button" class="ak-btn ak-btn--sm" data-act="retry">重试</button>');
@@ -1281,7 +1316,7 @@ var back_list = {
       const c = k === 'custom' ? st.color : (BG.find(b => b[0] === k) || [])[1];
       stageEl.dataset.bg = k; stageEl.style.setProperty('--sv-bg', c || 'transparent');
       if (c) { const n = parseInt(c.slice(1), 16), lum = (.299 * (n >> 16) + .587 * (n >> 8 & 255) + .114 * (n & 255)) / 255; stageEl.style.setProperty('--sv-ink', lum > .55 ? '0, 0, 0' : '255, 255, 255'); stageEl.style.setProperty('--sv-shadow', lum > .3 ? '0, 0, 0' : '255, 255, 255'); } else stageEl.style.removeProperty('--sv-ink');
-      bgBox.querySelectorAll('.sv__swatch').forEach(b => b.tagName === 'BUTTON' ? b.setAttribute('aria-pressed', b.dataset.bg === k) : b.classList.toggle('is-active', b.dataset.bg === k));
+      bgBox.querySelectorAll('.sv__swatch').forEach(b => b.setAttribute('aria-pressed', b.dataset.bg === k));
     };
     const exportClear = () => { const c = st.bg === 'custom' ? st.color : (BG.find(b => b[0] === st.bg) || [])[1]; if (!c) return [0, 0, 0, 0]; const n = parseInt(c.slice(1), 16); return [(n >> 16) / 255, (n >> 8 & 255) / 255, (n & 255) / 255, 1]; };
 
@@ -1311,8 +1346,8 @@ var back_list = {
       const t = e.target.closest('[data-skin], [data-model], [data-anim], [data-act], .sv__swatch'); if (!t || !root.contains(t)) return;
       if (t.dataset.skin) { st.skin = t.dataset.skin; if (!conf.skin[st.skin][st.model]) st.model = models(st.skin)[0]; load(); }
       else if (t.dataset.model) { st.model = t.dataset.model; load(); }
-      else if (t.dataset.anim) setAnim(t.dataset.anim);
-      else if (t.classList.contains('sv__swatch')) { if (t.dataset.bg !== 'custom') setBg(t.dataset.bg); }   // 自定义那格是 <label> 包着的取色器，走下面的 input 事件
+      else if (t.dataset.anim) { if (cur) setAnim(t.dataset.anim); }   // 载入中 cur 是空的，先不理
+      else if (t.classList.contains('sv__swatch')) { setBg(t.dataset.bg); if (t.dataset.bg === 'custom') setPicker(!picking); }   // 自定义：先换回上次的自定义色，再开合取色面板
       else if (!cur && t.dataset.act !== 'retry') return;
       else switch (t.dataset.act) {
         case 'retry': load(); break;
@@ -1327,7 +1362,60 @@ var back_list = {
       }
     });
     root.addEventListener('change', e => { const t = e.target; if (t.dataset.act === 'loop') st.loop = t.checked; else if (t.dataset.act === 'chain') st.chain = t.checked; else if (t.dataset.act === 'speed') st.speed = +t.value; });
-    bgBox.addEventListener('input', e => { if (e.target.type === 'color') setBg('custom', e.target.value); });
+
+    /* ── 自定义背景的取色面板：饱和度 / 明度平面 + 色相条 + 十六进制 + 预设。内部按 HSV 存（灰 / 黑没有色相，拖到角上色相条不跳）；
+          平面 / 色相条按下捕获指针（拖出框也跟手）、方向键微调（Shift 大步）；十六进制打满 6 位就生效，失焦 / 回车也认 3 位简写；点面板外面 / Esc 关 ── */
+    const picker = bgBox.querySelector('.sv__picker'), customBtn = bgBox.querySelector('[data-bg="custom"]');
+    const plane = picker.querySelector('.sv__picker-plane'), hue = picker.querySelector('.sv__picker-hue'), hexIn = picker.querySelector('.sv__picker-hex');
+    let picking = false, hsv = hexToHsv(st.color);
+    const paintPicker = () => {
+      plane.style.setProperty('--_h', hsv.h.toFixed(1));
+      plane.firstChild.style.cssText = `left:${hsv.s * 100}%;top:${(1 - hsv.v) * 100}%`;
+      plane.setAttribute('aria-valuetext', `饱和度 ${Math.round(hsv.s * 100)}%，明度 ${Math.round(hsv.v * 100)}%`);
+      hue.firstChild.style.left = hsv.h / 3.6 + '%'; hue.setAttribute('aria-valuenow', Math.round(hsv.h));
+      picker.querySelector('.sv__picker-preview').style.setProperty('--_c', st.color);
+      if (normHex(hexIn.value) !== st.color) hexIn.value = st.color;
+      picker.querySelectorAll('.sv__picker-preset').forEach(b => b.setAttribute('aria-pressed', b.dataset.color === st.color));
+    };
+    const pick = next => { hsv = Object.assign({}, hsv, next); setBg('custom', hsvToHex(hsv)); paintPicker(); };
+    const pickHex = hex => { hsv = hexToHsv(hex, hsv.h); setBg('custom', hex); paintPicker(); };
+    const setPicker = on => { picking = on; picker.hidden = !on; customBtn.setAttribute('aria-expanded', on); if (on) paintPicker(); };
+    const track = (el, fn) => {
+      const at = e => { const r = el.getBoundingClientRect(); fn(clamp((e.clientX - r.left) / r.width, 0, 1), clamp((e.clientY - r.top) / r.height, 0, 1)); };
+      el.addEventListener('pointerdown', e => { el.setPointerCapture(e.pointerId); el.focus({ preventScroll: true }); at(e); });
+      el.addEventListener('pointermove', e => { if (el.hasPointerCapture(e.pointerId)) at(e); });
+    };
+    track(plane, (x, y) => pick({ s: x, v: 1 - y }));
+    track(hue, x => pick({ h: x * 360 }));
+    const STEP = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
+    plane.addEventListener('keydown', e => { const d = STEP[e.key]; if (!d) return; e.preventDefault(); const k = e.shiftKey ? .1 : .01; pick({ s: clamp(hsv.s + d[0] * k, 0, 1), v: clamp(hsv.v + d[1] * k, 0, 1) }); });
+    hue.addEventListener('keydown', e => { const d = STEP[e.key]; if (!d) return; e.preventDefault(); pick({ h: clamp(hsv.h + (d[0] || d[1]) * (e.shiftKey ? 10 : 1), 0, 360) }); });
+    hexIn.addEventListener('input', () => { if (/^#?[\da-f]{6}$/i.test(hexIn.value.trim())) pickHex(normHex(hexIn.value)); });
+    const commitHex = () => { const c = normHex(hexIn.value); if (c) pickHex(c); hexIn.value = st.color; };
+    hexIn.addEventListener('change', commitHex);
+    hexIn.addEventListener('keydown', e => { if (e.key === 'Enter') commitHex(); });
+    picker.addEventListener('click', e => { const b = e.target.closest('.sv__picker-preset'); if (b) pickHex(b.dataset.color); });
+    document.addEventListener('pointerdown', e => { if (picking && !bgBox.contains(e.target)) setPicker(false); }, true);
+
+    /* ── 判定帧提示：悬停 ◆ 次数（或键盘聚焦到这一行）时出 .ak-tooltip。列表是滚动容器，CSS 版 [data-ak-tip] 会被裁掉，
+          所以同干员一览的术语提示：按视口定位，贴在 ◆ 上方，放不下就放下方，左右不出视口。
+          悬停出的一滚就收；键盘聚焦出的跟着行走（Tab 到列表外沿的一行时列表会自己滚过去，那一下不能把刚弹出的提示收掉） ── */
+    let tip = null, tipAt = null, tipFocus = false;
+    function hideTip() { if (tip) { tip.remove(); tip = tipAt = null; } }
+    const showTip = (el, focus) => {
+      hideTip(); tipAt = el; tipFocus = focus;
+      tip = h('div', { class: 'ak-tooltip sv__tip', role: 'tooltip' }); tip.textContent = el.dataset.tip; root.append(tip);   // 挂在 .sv 里：放大模式下也在最上层
+      const r = el.getBoundingClientRect(), w = tip.offsetWidth, th = tip.offsetHeight;
+      tip.style.left = Math.round(Math.min(Math.max(8, r.left + r.width / 2 - w / 2), document.documentElement.clientWidth - w - 8)) + 'px';
+      tip.style.top = Math.round(r.top - th - 6 < 8 ? r.bottom + 6 : r.top - th - 6) + 'px';
+    };
+    animBox.addEventListener('mouseover', e => { const t = e.target.closest('em[data-tip]'); if (t) showTip(t, false); });
+    animBox.addEventListener('mouseout', e => { if (e.target.closest('em[data-tip]')) hideTip(); });
+    animBox.addEventListener('focusin', e => { const t = e.target.querySelector('em[data-tip]'); let kb = true; try { kb = e.target.matches(':focus-visible'); } catch (_) {} if (t && kb) showTip(t, true); });   // 只认键盘聚焦：鼠标点一行不弹
+    animBox.addEventListener('focusout', hideTip);
+    const onTipScroll = () => { if (tipAt && tipFocus) showTip(tipAt, true); else hideTip(); };
+    animBox.addEventListener('scroll', onTipScroll, { passive: true });
+    window.addEventListener('scroll', onTipScroll, { passive: true });
     seek.addEventListener('input', () => { if (cur) seekTo(+seek.value / FPS); });
     const scrub = e => { const r = timeline.getBoundingClientRect(); seekTo(Math.round(clamp((e.clientX - r.left) / r.width, 0, 1) * anim.duration * FPS) / FPS); };   // 吸到整帧
     timeline.addEventListener('pointerdown', e => { if (!cur) return; timeline.setPointerCapture(e.pointerId); scrub(e); seek.focus({ preventScroll: true }); });
@@ -1359,7 +1447,12 @@ var back_list = {
       if (k === ' ') setPlaying(!st.playing); else if (k === 'ArrowLeft') step(-1); else if (k === 'ArrowRight') step(1); else if (k === 'f' || k === 'F') setFlip(!st.flip); else if (k === '0') resetView(); else return;
       e.preventDefault();
     });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && st.max) setMax(false); });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      hideTip();
+      if (picking) { if (bgBox.contains(document.activeElement)) customBtn.focus(); setPicker(false); }
+      else if (st.max) setMax(false);
+    });
 
     skinBox.innerHTML = skins.map(s => `<button type="button" class="ak-chip" data-skin="${esc(s)}" aria-pressed="false">${esc(s)}</button>`).join('');
     setBg('dark');
