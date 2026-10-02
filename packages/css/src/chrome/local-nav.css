@@ -2,6 +2,7 @@
 /* ═══ Local nav（二级吸顶栏）═══
  *  页眉第二行，只在 <1400（导轨/侧栏收起时）出现：左「菜单」拉出侧栏抽屉、右「本页目录」拉下目录浮层。
  *  它是收起页眉后仍然贴顶的那一条 —— 所以两个入口在任何滚动位置都够得着，不需要角落里的浮动按钮。
+ *  「菜单」的图标是侧栏面板 ◧（i-menu：外框 + 实心左栏，画的就是拉出来的那一栏），不是 ☰ 三条线——☰ 与「本页目录」的列表图标都是三行横排，手机上两者同在一行，扫一眼分不清哪个是导航。
  *  ≤639 不再单独成行：它 display:contents，「菜单」与「本页目录」都只留图标、并进页眉那一行，那一行始终贴顶（见 responsive.css）。 */
 .ak-local-nav { display: none; height: var(--ak-local-nav-h); max-width: 1680px; margin: 0 auto; padding: 0 calc(var(--ak-gutter) - 10px); box-sizing: border-box; align-items: center; border-top: 1px solid var(--ak-border); }
 .ak-local-nav__btn { display: inline-flex; align-items: center; gap: 8px; height: var(--ak-local-nav-h); padding: 0 10px; border: 0; background: transparent; color: var(--ak-fg-secondary); font-family: inherit; font-size: var(--ak-fs-sm); font-weight: 600; line-height: 1; cursor: pointer; }

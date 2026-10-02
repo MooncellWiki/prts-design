@@ -47,7 +47,7 @@
 .ak-nav-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 窄屏 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
 .ak-header__burger { display: none; flex: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; color: var(--ak-fg-secondary); cursor: pointer; }
 .ak-header__burger:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
-/* ⋮（三个方点）→ ×：不画三条线——同一视口里还有侧栏抽屉的 ☰（二级栏「菜单」，手机上与它同在一行），两个 ≡ 分不清哪个是导航 */
+/* ⋮（三个方点）→ ×：不画三条线——三条线一眼读成汉堡菜单（= 导航），这里只是外观 / 账户；导航入口是二级栏的「菜单」◧（侧栏抽屉，手机上与它同在一行） */
 .ak-header__burger-icon { position: relative; display: block; width: 18px; height: 18px; }
 .ak-header__burger-icon i { position: absolute; left: 7px; width: 4px; height: 4px; background: currentColor;
   transition: transform var(--ak-dur-fast) var(--ak-ease), opacity var(--ak-dur-fast), top var(--ak-dur-fast) var(--ak-ease), left var(--ak-dur-fast) var(--ak-ease), width var(--ak-dur-fast) var(--ak-ease), height var(--ak-dur-fast) var(--ak-ease); }

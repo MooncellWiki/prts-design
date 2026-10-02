@@ -99,7 +99,7 @@
 @media (max-width: 1119px) and (prefers-reduced-motion: reduce) { .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
 @media (max-width: 639px) {
   /* gutter 16、页眉高 52、标题档收一级、大区块间隔 24：都是令牌的窄屏值（tokens.css 的「窄屏」块，源 = packages/tokens/src/functional/compact.json5），这里不再覆盖 */
-  /* 页眉合成一行（全是图标）：☰ 菜单 · 品牌 ……… 目录 · 搜索 · ⋮ 工具。主行 .ak-header__inner 与二级栏 .ak-local-nav 都 display:contents，两行的子项直接排进 .ak-header 这一个 flex 行——
+  /* 页眉合成一行（全是图标）：◧ 菜单 · 品牌 ……… 目录 · 搜索 · ⋮ 工具。主行 .ak-header__inner 与二级栏 .ak-local-nav 都 display:contents，两行的子项直接排进 .ak-header 这一个 flex 行——
    * DOM 不动（皮肤模板不用改），checkbox 的 ~ 联动照旧（按 DOM 兄弟关系，不看盒子）；.ak-header 是 sticky（已定位），工具卡片的 top:100% 改为相对它，照样贴在这一行下沿。
    * 这一行 52px 始终贴顶，不再向下滚动收起（.ak-condensed 在这一档不位移）：头图只探一行、目录浮层贴这一行下沿、锚点只让一行。
    * 「菜单」用 order 排到最左（抽屉从左边出来）、「本页目录」排到搜索之前；Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单 → 目录，与视觉不一致——换来模板不用动 */
@@ -113,7 +113,7 @@
   .ak-local-nav__menu .ak-icon { width: 20px; height: 20px; }   /* 与搜索、⋮ 同一档 */
   .ak-header__logo { order: -1; }
   .ak-local-nav__toc { order: -1; width: 40px; height: 40px; margin-left: 0; padding: 0; gap: 0; justify-content: center; font-size: 0; }   /* 同 order 按 DOM 先后，排在品牌之后；同「菜单」只留图标，「本页目录」四个字仍是 checkbox 的标签（无障碍名）；开着时照旧变活动主色（local-nav.css） */
-  /* 方点列表：三个 4px 方点（同 ⋮ 的方点、同一节奏）+ 横线。不用 i-list（三条线，与左边的 ☰ 分不清），也不用缩进的大纲图形（20px 下像「右对齐」） */
+  /* 方点列表：三个 4px 方点（同 ⋮ 的方点、同一节奏）+ 横线。不用 i-list（三条线，一眼读成汉堡菜单），也不用缩进的大纲图形（20px 下像「右对齐」） */
   .ak-local-nav__toc::before { content: ""; flex: none; width: 20px; height: 20px; background: currentColor;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat;
             mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat; }
