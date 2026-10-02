@@ -626,6 +626,7 @@ html.skin-theme-clientpref-night,
    * --ak-logo-image（不设默认值）：站标，设置后 .ak-header__logo img 用 content 替换（Chromium / WebKit；Firefox 请改 $wgLogos）。 */
   --ak-theme-accent: var(--ak-cyan-500);   /* 活动主色：页眉标语 / 悬停、侧栏与目录分组条、页脚斜纹、窄屏卡片顶条 …（正文里的链接 / 选中仍是 --ak-accent；想一起换就连 --ak-accent 也覆盖） */
   --ak-theme-accent-fg: #000;
+  --ak-theme-accent-subtle: rgba(24, 209, 255, .14);   /* 活动主色的淡底（页眉里的悬停 / 选中底、聚焦光圈）= --ak-theme-accent 的 14%；换主色时一起写——不用 color-mix() 推导，老浏览器也认 */
   --ak-chrome-bg: rgba(8, 9, 10, .9);      /* 页眉玻璃：半透明 + 毛玻璃，头图 / 滚过来的正文在下面均匀透出。活动主题想让头图多透一点可调 alpha 到 .78–.85；别低于 .72（白色画面之下 #F2F2F2 仍 ≥7:1） */
   --ak-chrome-bg-solid: #0e0f10;           /* 不透明处：窄屏工具卡片、飞出菜单 */
   --ak-chrome-fg: #f2f2f2;

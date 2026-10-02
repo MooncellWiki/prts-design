@@ -71,7 +71,10 @@ button.hr-slot.is-senior:hover { background-color: var(--ak-gray-800); }
 .hr-pick .ak-chip:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 .hr-pick .ak-chip[aria-disabled="true"] { opacity: .38; cursor: not-allowed; }
 .hr-pick .ak-chip[aria-disabled="true"]:hover { border-color: var(--ak-border-strong); color: var(--ak-fg-secondary); }
-.hr-pick .ak-chip.is-senior:not([aria-pressed="true"]) { color: var(--ak-rarity-5-text); border-color: color-mix(in srgb, var(--ak-rarity-5-text) 55%, transparent); font-weight: 700; }
+.hr-pick { --hr-senior-line: rgba(168, 122, 0, .55); }   /* 5★ 字色（--ak-rarity-5-text）的 55%，作未选中【高级资深干员】芯片的边；写死两档而不用 color-mix()（Chrome 111 / Safari 16.2 才有），暗色在下面三种选择器里换 */
+:root[data-theme="dark"] .hr-pick, html.skin-theme-clientpref-night .hr-pick { --hr-senior-line: rgba(239, 214, 145, .55); }   /* 暗色 --ak-rarity-5-text = --ak-rarity-5 #efd691 */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]):not(.skin-theme-clientpref-day):not([data-theme="dark"]):not(.skin-theme-clientpref-night) .hr-pick { --hr-senior-line: rgba(239, 214, 145, .55); } }
+.hr-pick .ak-chip.is-senior:not([aria-pressed="true"]) { color: var(--ak-rarity-5-text); border-color: var(--hr-senior-line); font-weight: 700; }
 .hr-pick .ak-chip.is-senior[aria-pressed="true"] { background: var(--ak-yellow-500); border-color: var(--ak-yellow-500); color: #1d1f20; }
 .hr-pick .ak-chip > .hr-ico { margin-left: -2px; }
 /* 单选这一个标签就能保底 4★ 以上（9:00）的芯片：右上角一枚稀有度色的小方块 */

@@ -11,7 +11,8 @@
 .ak-cbox--danger { --_c: var(--ak-danger); --_bg: var(--ak-danger-bg); }
 .ak-cbox--neutral { --_c: var(--ak-fg-muted); --_bg: var(--ak-bg-surface-2); }
 .ak-cbox--narrow { max-width: 640px; }   /* = 模板 narrow= */
-.ak-cbox__icon { flex: none; width: 40px; display: flex; justify-content: center; padding-top: 10px; background: color-mix(in srgb, var(--_c) 24%, transparent); color: var(--_c); }
+.ak-cbox__icon { flex: none; width: 40px; display: flex; justify-content: center; padding-top: 10px; position: relative; isolation: isolate; color: var(--_c); }
+.ak-cbox__icon::before { content: ""; position: absolute; inset: 0; z-index: -1; background: currentColor; opacity: .24; }   /* 等级色 24% 淡底：实色 + opacity，不用 color-mix()（Chrome 111 / Safari 16.2 才有）；isolation 让它垫在图标之下、仍在框底色之上 */
 .ak-cbox__icon > svg { width: 20px; height: 20px; }
 .ak-cbox__body { flex: 1; min-width: 0; padding: 9px 12px; }
 .ak-cbox__title { font-weight: 700; color: var(--_c); margin: 0 0 2px; }

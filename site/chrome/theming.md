@@ -17,7 +17,7 @@ prts.wiki 大活期间会换头图、顶栏底图、站标、侧栏配色（现�
 
 | 接口变量 | 默认 | 作用 |
 |---|---|---|
-| `--ak-theme-accent` / `-fg` | `#18D1FF` / `#000` | 活动主色：页眉标语与悬停、搜索图标框、开关选中项、侧栏 / 目录分组条、页脚斜纹、窄屏工具卡片顶条（正文链接 / 选中仍是 `--ak-accent`，想一起换就连它也覆盖） |
+| `--ak-theme-accent` / `-fg` / `-subtle` | `#18D1FF` / `#000` / `rgba(24,209,255,.14)` | 活动主色：页眉标语与悬停、搜索图标框、开关选中项、侧栏 / 目录分组条、页脚斜纹、窄屏工具卡片顶条（正文链接 / 选中仍是 `--ak-accent`，想一起换就连它也覆盖）；`-subtle` 是主色的 14% 淡底（页眉里的悬停 / 选中底），换主色时一起写——不用 `color-mix()` 推导，老浏览器也认 |
 | `--ak-chrome-bg` / `-bg-solid` | `rgba(8,9,10,.9)` / `#0E0F10` | 页眉玻璃（半透明 + 毛玻璃，头图 / 滚过来的正文在下面均匀透出；想让头图多透一点调 alpha 到 .78–.85，别低于 .72——白色画面之下 `#F2F2F2` 仍 ≥7:1）/ 不透明处（窄屏工具卡片） |
 | `--ak-chrome-fg` / `-fg-2` / `-fg-muted` | `#F2F2F2` … | 页眉前景三级 |
 | `--ak-chrome-line` / `-line-strong` · `-hover` · `-field` | 白 `.14` / `.32` / `.08` / `.07` | 底线与分隔线 · 悬停底 · 搜索触发器底 |
@@ -39,7 +39,7 @@ prts.wiki 大活期间会换头图、顶栏底图、站标、侧栏配色（现�
 ```css
 /* MediaWiki:Gadget-eventStyle.css（或直接写进 MediaWiki:Common.css） */
 :root {
-  --ak-theme-accent: #72a330;
+  --ak-theme-accent: #72a330;  --ak-theme-accent-subtle: rgba(114, 163, 48, .14);   /* 淡底 = 主色的 14% */
   --ak-keyart-image: url(//media.prts.wiki/…/kv.jpg);  --ak-keyart-h: 280px;   /* 头图从页面顶端铺起，垫在页眉与版面背后，只留 72px 一小条 */
   --ak-chrome-bg:    rgba(8, 9, 10, .8);                                     /* 可选：玻璃调淡让头图多透一点（默认 .9） */
   --ak-chrome-image: url(//media.prts.wiki/…/headleft.png);  --ak-chrome-image-position: left top;   /* 可选：顶栏角饰，只放深色低对比素材 */

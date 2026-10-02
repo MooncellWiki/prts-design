@@ -27,7 +27,7 @@
   --ak-border: var(--ak-chrome-line); --ak-border-subtle: var(--ak-chrome-line); --ak-border-strong: var(--ak-chrome-line-strong);
   --ak-bg-inverse: #fff; --ak-fg-inverse: #000;
   --ak-accent: var(--ak-theme-accent); --ak-accent-fg: var(--ak-theme-accent-fg); --ak-accent-hover: var(--ak-theme-accent); --ak-focus: var(--ak-theme-accent);
-  --ak-accent-subtle: color-mix(in srgb, var(--ak-theme-accent) 14%, transparent);
+  --ak-accent-subtle: var(--ak-theme-accent-subtle);
   --ak-glyph-filter: none;   /* 游戏白色线稿站标在黑页眉上不反相 */
   --ak-shadow-lg: 0 16px 40px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
   color-scheme: dark;        /* 页眉内的原生控件（无 JS 时的真搜索框）也走深色 */
