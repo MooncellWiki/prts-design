@@ -2,6 +2,7 @@
 /* ═══ Header（黑色「终端」顶栏）═══
  *  两行结构：.ak-header__inner（品牌 · 搜索 · 工具，56px）
  *          + .ak-local-nav（二级吸顶栏，仅 <1400 出现，48px）
+ *  ≤639 两行合成一行（52px，始终贴顶）：两个容器都 display:contents，子项排进 .ak-header 这一个 flex 行，见 responsive.css。
  *  页眉在两套主题下都是黑的：官网导航栏（#000 底 + 青色当前项 + 白线稿图标）、游戏主界面顶栏（深底 + 半调网点 + 青色选中块）、
  *  干员档案页顶部那道黑边——"黑框白纸 / 黑框黑纸"是方舟本体的框架语言。颜色不读明暗主题，只读 tokens.css §2d 的 --ak-chrome-*，
  *  并在这里把语义令牌重映射过去（--ak-fg → --ak-chrome-fg …），页眉里的按钮 / 搜索触发器 / 头像 / 徽标 / 菜单 / 开关就自动是页眉配色，
@@ -14,8 +15,8 @@
  *  工具靠右 —— 页眉是三列各自的「列头」，不是游离的一条。页眉里不放站点级主导航：那 8 项与侧栏「通用」组 1:1 重复，导航只由侧栏承担
  *  （MW 的 data-portlets-first 也只在侧栏渲染一次）。1680 容器与 .ak-layout 同为 border-box，超宽时左右缘才对得齐。
  *  <1400 向下滚动时整个页眉上移一个 __inner 的高度 —— 主行滑出视口，二级栏贴顶。
- *  <1120 主行回到 flex，只留 品牌 / 搜索 / ≡；工具（外观 / 通知 / 用户菜单）都在 .ak-header__screen 里 —— 桌面 display:contents
- *  （子项直接参与主行网格），窄屏变成 ≡ 拉下、贴在主行右下沿的卡片（宽度随内容，最窄 240px）（不再是全屏面板：里面只有一行图标控件 + 用户菜单）。开合是纯 CSS：
+ *  <1120 主行回到 flex，只留 品牌 / 搜索 / ⋮；工具（外观 / 通知 / 用户菜单）都在 .ak-header__screen 里 —— 桌面 display:contents
+ *  （子项直接参与主行网格），窄屏变成 ⋮ 拉下、贴在主行右下沿的卡片（宽度随内容，最窄 240px）（不再是全屏面板：里面只有一行图标控件 + 用户菜单）。开合是纯 CSS：
  *  input.ak-nav-cb + label.ak-header__burger（同目录浮层的 .ak-toc-cb 做法），DOM 顺序固定为
  *  logo · search · search-toggle · nav-cb · screen[tools] · burger（checkbox 在前才能用 ~ 联动）。
  *  卡片 position:absolute 于 .ak-header__inner（position:relative），top:100% 即贴主行下沿、盖住二级栏；JS 补 Esc / 点卡片外 / 回到桌面宽度收起。 */
@@ -46,13 +47,17 @@
 .ak-nav-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 窄屏 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
 .ak-header__burger { display: none; flex: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; color: var(--ak-fg-secondary); cursor: pointer; }
 .ak-header__burger:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
-.ak-header__burger-icon { position: relative; display: block; width: 18px; height: 14px; }
-.ak-header__burger-icon i { position: absolute; left: 0; width: 18px; height: 2px; background: currentColor; transition: transform var(--ak-dur-fast) var(--ak-ease), opacity var(--ak-dur-fast); }
-.ak-header__burger-icon i:nth-child(1) { top: 0; } .ak-header__burger-icon i:nth-child(2) { top: 6px; } .ak-header__burger-icon i:nth-child(3) { top: 12px; }
+/* ⋮（三个方点）→ ×：不画三条线——同一视口里还有侧栏抽屉的 ☰（二级栏「菜单」，手机上与它同在一行），两个 ≡ 分不清哪个是导航 */
+.ak-header__burger-icon { position: relative; display: block; width: 18px; height: 18px; }
+.ak-header__burger-icon i { position: absolute; left: 7px; width: 4px; height: 4px; background: currentColor;
+  transition: transform var(--ak-dur-fast) var(--ak-ease), opacity var(--ak-dur-fast), top var(--ak-dur-fast) var(--ak-ease), left var(--ak-dur-fast) var(--ak-ease), width var(--ak-dur-fast) var(--ak-ease), height var(--ak-dur-fast) var(--ak-ease); }
+.ak-header__burger-icon i:nth-child(1) { top: 1px; } .ak-header__burger-icon i:nth-child(2) { top: 7px; } .ak-header__burger-icon i:nth-child(3) { top: 13px; }
 .ak-nav-cb:checked ~ .ak-header__burger { color: var(--ak-fg); }
-.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.ak-nav-cb:checked ~ .ak-header__burger i { top: 8px; left: 0; width: 18px; height: 2px; }   /* 三点拉成三条横线叠在中线，再转成 × */
+.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(1) { transform: rotate(45deg); }
 .ak-nav-cb:checked ~ .ak-header__burger i:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.ak-nav-cb:checked ~ .ak-header__burger i:nth-child(3) { transform: rotate(-45deg); }
+@media (forced-colors: active) { .ak-header__burger-icon i { forced-color-adjust: none; background: CanvasText; } }   /* 方点 / × 是 background 画的，强制色下底色会被抹成 Canvas；写在这里而不是 forced-colors.css：骨架在它之后加载，同特指度会被上面的 currentColor 盖回去 */
 .ak-nav-cb:focus-visible ~ .ak-header__burger { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 .ak-header__logo { grid-column: 1; justify-self: start; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; }   /* 品牌盖着侧栏列；不带任何分隔线 / 底线（右侧竖线是「品牌 | 导航」的分界，导航没了它就是悬着的；品牌列底下的主色横线也试过——意味不明，去掉） */
 .ak-header__logo:hover { text-decoration: none; color: inherit; }

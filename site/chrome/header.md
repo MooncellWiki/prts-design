@@ -30,21 +30,23 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 `#p-personal` = `.ak-dropdown > details > summary.ak-header__user + .ak-menu.ak-header__user-card`：身份抬头 + 两组门户——「界面设置」`#p-user-interface-preferences`（ULS 的语言切换在这里，侧栏不再有 Languages 组）与「个人工具」。颜色不用另写，卡片在页眉子树里，自动是页眉配色。
 
-抬头 `a.ak-menu__head#pt-userpage` 整块就是去用户页的链接：`.ak-avatar`（没有头像时里面放 `#i-user` 图标）+ `.ak-menu__head-name`（用户名），右端箭头由 CSS 画——箭头已经说明点它过去，不另写「用户页」。用户页这一项从「个人工具」里提出来当抬头，下面不再有一条同名的项——用户名在卡片里只出现一次。<1120 这张卡片在 ≡ 面板里平铺、恒展开——不折叠（面板高度不紧张，放不下时面板自己滚），用户行（`summary`）隐藏，身份抬头直接当这一段的开头。展开靠 JS 在这一档把 `<details>` 置 `open`（回到桌面宽度再合上）；无 JS 时由 `::details-content` 纯 CSS 桥接，两样都没有的旧内核退回「点用户行展开」。
+抬头 `a.ak-menu__head#pt-userpage` 整块就是去用户页的链接：`.ak-avatar`（没有头像时里面放 `#i-user` 图标）+ `.ak-menu__head-name`（用户名），右端箭头由 CSS 画——箭头已经说明点它过去，不另写「用户页」。用户页这一项从「个人工具」里提出来当抬头，下面不再有一条同名的项——用户名在卡片里只出现一次。<1120 这张卡片在 ⋮ 面板里平铺、恒展开——不折叠（面板高度不紧张，放不下时面板自己滚），用户行（`summary`）隐藏，身份抬头直接当这一段的开头。展开靠 JS 在这一档把 `<details>` 置 `open`（回到桌面宽度再合上）；无 JS 时由 `::details-content` 纯 CSS 桥接，两样都没有的旧内核退回「点用户行展开」。
 
 <SkinFrame :height="420" state="user" />
 
 ## 窄屏
 
 - **<1400**：页眉长出第二行 `.ak-local-nav`「二级吸顶栏」——左「菜单」拉出侧栏抽屉（<1120 才出现）、右「本页目录」拉下目录浮层。向下滚动时页眉主行上移收起、只留这条 48px 的二级栏贴顶，向上滚或回到顶部再展开（JS 在 `<html>` 上切 `.ak-condensed`；无 JS 则始终两行，同样可用）。
-- **<1120**：主行回到 flex，只留 品牌 / 搜索 / ≡；外观、通知、用户菜单收进 ≡ 拉下、贴主行右下沿的卡片（宽度随内容：最窄 240px，内容长就撑开，最宽到视口两侧各留一个 gutter）（`position: absolute` 于 `.ak-header__inner`、`top: 100%`，盖住二级栏；不是全屏面板——里面只有一行图标控件加用户菜单，卡片自己可滚、不锁页面滚动）：第一行左边是通知图标（徽标照旧压在铃铛右上角）、右边是外观开关（三个按钮加大到 40×32 方便点按），两样并排不各占一行，用户菜单平铺在下面（不折叠、不浮出）。DOM 只有一份：桌面上 `.ak-header__screen` 是 `display: contents`，子项直接参与主行网格；窄屏它变成卡片——Echo 徽标、`#p-personal`、外观开关都不复制，id 不重复。
-- **≤639**：搜索收成图标按钮（同样打开悬浮面板），标语隐藏，页眉 52px。
+- **<1120**：主行回到 flex，只留 品牌 / 搜索 / ⋮；外观、通知、用户菜单收进 ⋮ 拉下、贴主行右下沿的卡片（宽度随内容：最窄 240px，内容长就撑开，最宽到视口两侧各留一个 gutter）（`position: absolute` 于 `.ak-header__inner`、`top: 100%`，盖住二级栏；不是全屏面板——里面只有一行图标控件加用户菜单，卡片自己可滚、不锁页面滚动）：第一行左边是通知图标（徽标照旧压在铃铛右上角）、右边是外观开关（三个按钮加大到 40×32 方便点按），两样并排不各占一行，用户菜单平铺在下面（不折叠、不浮出）。DOM 只有一份：桌面上 `.ak-header__screen` 是 `display: contents`，子项直接参与主行网格；窄屏它变成卡片——Echo 徽标、`#p-personal`、外观开关都不复制，id 不重复。
+- **≤639**：两行合成**一行** 52px——☰ 菜单 · 品牌 ……… 本页目录 · 搜索 · ⋮。`.ak-header__inner` 与 `.ak-local-nav` 都 `display: contents`，两行的子项直接排进 `.ak-header` 这一个 flex 行，DOM 与模板不变；「菜单」与「本页目录」都只留图标（`font-size: 0` 藏起文字，文字仍是按钮 / checkbox 的无障碍名）：目录是 CSS 画的方点列表（`::before` + `mask`，模板不用加图标），三个 4px 方点与 ⋮ 同一种方点——不用三条线的 `i-list`（与左边的 ☰ 分不清），也不用缩进的大纲图形（20px 下像「右对齐」）；开着时同其它宽度变活动主色，不再有下拉箭头；强制色模式下改用系统文字色 / Highlight；搜索收成图标按钮（同样打开悬浮面板），标语隐藏。这一行始终贴顶、不随向下滚动收起（`.ak-condensed` 在这一档不位移）——顶部只占这 52px（两行是 100px，滚下去也还剩 48px 的二级栏），四个入口在任何滚动位置都够得着。工具卡片与目录浮层都贴在这一行下沿，标题锚点只让这一行。320px 宽也排得下。
 
-开合是**纯 CSS**：`input.ak-nav-cb` + `label.ak-header__burger`（三条线 → ×），checkbox 在 DOM 上必须排在卡片与汉堡之前才能用 `~` 联动，所以主行 DOM 顺序固定为 logo · search · search-toggle · nav-cb · screen · burger（Tab 顺序与视觉一致）。JS 只补 Esc / 点卡片外（放行 `.ak-nav-cb`，同[目录浮层](/chrome/toc#没有-js-也能开合)）/ 选了页内链接 / 回到桌面宽度时收起，以及卡片开着时页眉收起逻辑不动。二级栏的「菜单」（侧栏抽屉 = 本站唯一的导航）与主行 ≡（外观 / 账户）分工明确，互不重复。
+开合是**纯 CSS**：`input.ak-nav-cb` + `label.ak-header__burger`（⋮ 三个方点 → ×；不画三条线——同一视口里还有侧栏抽屉的 ☰，手机上两者在同一行，两个 ≡ 分不清哪个是导航），checkbox 在 DOM 上必须排在卡片与汉堡之前才能用 `~` 联动，所以主行 DOM 顺序固定为 logo · search · search-toggle · nav-cb · screen · burger（Tab 顺序与视觉一致；≤639 合成一行时「菜单」用 `order` 排到最左、「本页目录」排到搜索之前，Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单 → 目录，与视觉不一致——换来模板不用动）。JS 只补 Esc / 点卡片外（放行 `.ak-nav-cb`，同[目录浮层](/chrome/toc#没有-js-也能开合)）/ 选了页内链接 / 回到桌面宽度时收起，以及卡片开着时页眉收起逻辑不动。二级栏的「菜单」☰（侧栏抽屉 = 本站唯一的导航）与主行 ⋮（外观 / 账户）分工明确，互不重复。
 
-<SkinFrame :width="1024" :height="560" state="nav" caption="1024：≡ 拉下的工具卡片（外观 / 通知 / 用户）" />
+<SkinFrame :width="1024" :height="560" state="nav" caption="1024：⋮ 拉下的工具卡片（外观 / 通知 / 用户）" />
 
 <SkinFrame :width="1024" :height="560" state="condensed" caption="1024：向下滚过之后，主行收起，只留二级吸顶栏" />
+
+<SkinFrame :width="390" :height="560" state="toc" caption="390：手机上页眉只有一行、全是图标，目录（方点列表）拉下的浮层贴在这一行下沿" />
 
 ## 外观开关
 

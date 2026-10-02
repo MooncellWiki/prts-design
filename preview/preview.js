@@ -188,7 +188,7 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeToc(); });
   }
 
-  /* ── 工具卡片（<1120 页眉 ≡ 拉下的 外观 / 通知 / 用户 卡片；开合本身是纯 CSS 的 .ak-nav-cb）：Esc / 选了链接 / 点卡片外 / 回到桌面宽度时收起 ── */
+  /* ── 工具卡片（<1120 页眉 ⋮ 拉下的 外观 / 通知 / 用户 卡片；开合本身是纯 CSS 的 .ak-nav-cb）：Esc / 选了链接 / 点卡片外 / 回到桌面宽度时收起 ── */
   const navCb = $('.ak-nav-cb');
   if (navCb) {
     const closeNav = () => { if (navCb.checked) navCb.checked = false; };
@@ -208,7 +208,7 @@
     if (!mq.matches) flat.forEach(d => { d.open = true; });
   }
 
-  /* ── 页眉收起：向下滚动只留二级吸顶栏，向上滚 / 回到顶部再展开 ── */
+  /* ── 页眉收起：向下滚动只留二级吸顶栏，向上滚 / 回到顶部再展开（≤639 页眉只有一行，CSS 不让它收起） ── */
   let lastY = window.scrollY, ticking = false;
   function onScroll() {
     const y = Math.max(0, window.scrollY), root = document.documentElement;

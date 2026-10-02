@@ -80,7 +80,7 @@
       <span class="ak-search__kbd">/</span>
     </form>
     <button class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="搜索"><svg><use href="#i-search"/></svg></button>
-    <!-- 页眉不放站点级主导航（与侧栏「通用」组重复，导航只由侧栏承担）。<1120：工具（外观 / 通知 / 用户）收进 ≡ 拉下的右对齐卡片；开合纯 CSS：checkbox 在前，卡片与汉堡在后 -->
+    <!-- 页眉不放站点级主导航（与侧栏「通用」组重复，导航只由侧栏承担）。<1120：工具（外观 / 通知 / 用户）收进 ⋮ 拉下的右对齐卡片；开合纯 CSS：checkbox 在前，卡片与汉堡在后 -->
     <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
     <div class="ak-header__screen" id="ak-nav-screen">
       <div class="ak-header__tools">
@@ -95,7 +95,7 @@
         <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
         <!-- 用户菜单（MW #p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu 卡片。
              卡片 = 身份抬头（a.ak-menu__head#pt-userpage：头像 + 用户名，整块链到用户页；没有头像时 .ak-avatar 里放 #i-user 图标）+ 两组门户（「个人工具」里不再重复用户页那一项）：「界面设置」#p-user-interface-preferences（ULS 的语言切换就在这里——侧栏不再有 Languages 组）· 「个人工具」#p-personal。
-             <1120 时这张卡在 ≡ 面板里就地展开（chrome/responsive.css 已写），不再浮出。 -->
+             <1120 时这张卡在 ⋮ 面板里就地展开（chrome/responsive.css 已写），不再浮出。 -->
         <div class="ak-dropdown ak-header__user-menu" id="ak-user-menu">
           <details>
             <summary class="ak-btn ak-btn--ghost ak-header__user" title="用户菜单"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></summary>
@@ -123,7 +123,7 @@
     <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
   </div>
 
-  <!-- ═══ LOCAL NAV ═══ 二级吸顶栏：<1400 出现；页眉主行下滑收起后它仍贴顶 -->
+  <!-- ═══ LOCAL NAV ═══ 二级吸顶栏：<1400 出现；页眉主行下滑收起后它仍贴顶。≤639 不单独成行：两个按钮并进主行（CSS display:contents，DOM 不变） -->
   <div class="ak-local-nav">
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
     <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">

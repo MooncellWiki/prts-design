@@ -16,14 +16,14 @@
    form.ak-header__search{{data-search-box}}   ← 无 JS 的真表单；有 JS 时被 search-palette.js 换成 button.ak-search-trigger，表单本身搬进悬浮面板
    button.ak-header__search-toggle（≤639 图标）
    input.ak-nav-cb#ak-nav-toggle                ← <1120 工具卡片开关（纯 CSS）；必须排在下面两个之前
-   .ak-header__screen#ak-nav-screen             ← 桌面 display:contents；<1120 = ≡ 拉下、贴主行右下沿的卡片
+   .ak-header__screen#ak-nav-screen             ← 桌面 display:contents；<1120 = ⋮ 拉下、贴主行右下沿的卡片
       .ak-header__tools [.ak-header__tool > .ak-header__tool-label + .ak-theme-toggle][{{data-portlets.data-notifications}}]
          .ak-dropdown.ak-header__user-menu > details > summary.ak-header__user + .ak-menu.ak-header__user-card(
             a.ak-menu__head#pt-userpage[href=用户页]( .ak-avatar + .ak-menu__head-name{{username}} )   ← 从 data-user-menu 里把 userpage 提出来当抬头
             nav.ak-menu__group#p-user-interface-preferences{{data-user-interface-preferences}}「界面设置」← 语言切换（ULS）在这里
             nav.ak-menu__group#p-personal{{data-user-menu}}「个人工具」（不含 userpage） )
-   label.ak-header__burger[for=ak-nav-toggle]   ← 三条线 → ×，仅 <1120；主行不放侧栏抽屉的入口（那个在二级栏）
-   .ak-local-nav                                ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）
+   label.ak-header__burger[for=ak-nav-toggle]   ← ⋮ → ×，仅 <1120；主行不放侧栏抽屉的入口（那个在二级栏）
+   .ak-local-nav                                ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）；≤639 由 CSS 并进主行，同一份 DOM
       button.ak-local-nav__menu（开侧栏抽屉）| input.ak-toc-cb + label.ak-local-nav__toc[for]（开目录浮层，纯 CSS）
 div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认只露 72px 一小条（--ak-keyart-reveal）；画从页面顶端铺起，垫在页眉玻璃与版面背后（CSS 负外边距，DOM 顺序不变）
 <div class="ak-layout">
