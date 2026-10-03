@@ -24,7 +24,7 @@ div#MenuSidebar
   …任意深度
 ```
 
-`.ak-sidebar p` 与 `.ak-portlet__title` 是同一套分组标题；`li > b` 与 `li > a` 是同一套行；`li > ul` 缩进 + 左侧导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页。现网末尾的「Languages」组（语言切换改在页眉用户菜单「界面设置」）与「工具」组（工具箱整组搬进标题行的「更多」）在新皮肤下退役，建议从 MenuSidebar 里删掉。现网 `<span style="…">NEW</span>` 角标建议换成 `.ak-tag.ak-tag--sm.ak-tag--new`。现网把 `#MenuSidebar` 移进侧栏的内联脚本在新皮肤里照样工作（`#mw-panel`、`#p-tb` 的 id 都保留），皮肤侧的处理见[skin.mustache 结构 · 侧栏](/guide/skin-template#侧栏与-menusidebar)。
+`.ak-sidebar p` 与 `.ak-portlet__title` 是同一套分组标题；`li > b` 与 `li > a` 是同一套行；`li > ul` 缩进 + 左侧导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页。现网末尾的「Languages」组（语言切换改在页眉用户菜单「界面设置」）与「工具」组（工具箱整组搬进标题行的「更多」）在新皮肤下退役，建议从 MenuSidebar 里删掉。现网 `<span style="…">NEW</span>` 角标建议换成 `.ak-tag.ak-tag--sm.ak-tag--new`（放进侧栏行里实测与文字中线差 0.4px）。MenuSidebar 是旧皮肤与新皮肤共用的一页，换成类名后旧皮肤下没有样式，所以旧皮肤退役前现网先留着内联样式，只补了一句 `vertical-align:.1em`：10px 的角标按基线对齐，比 14px 的中文字中线低约 1.7px，`vertical-align: middle` 对的是 x-height 的一半、不管用。现网把 `#MenuSidebar` 移进侧栏的内联脚本在新皮肤里照样工作（`#mw-panel`、`#p-tb` 的 id 都保留），皮肤侧的处理见[skin.mustache 结构 · 侧栏](/guide/skin-template#侧栏与-menusidebar)。
 
 ## 多层树
 
