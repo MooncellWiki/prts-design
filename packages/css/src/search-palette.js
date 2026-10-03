@@ -15,6 +15,7 @@
  *      或数据源标了 exact（本地索引的别名 / 拼音整词命中）。命令列表与模式（动作 / 分类 / 用户 / 文件）是选择器，仍默认高亮第一条。
  *    · ↑↓ 循环高亮，回车打开高亮项（⌘/Ctrl 回车新标签），⇧回车全文搜索；继续输入会清掉旧列表上的高亮。
  *    · 输入框始终持有焦点（列表 mousedown 阻止夺焦），aria-activedescendant 播报高亮项；Tab 在面板内循环。
+ *    · 输入法组字中的按键（回车上屏、Esc、↑↓ 选字）全部交给输入法，组字结束后才按上面的规则处理。
  *
  *  API：window.akdsSearchPalette.init( options ) → { open, close, toggle, refresh, isOpen }
  *    options = {
@@ -510,6 +511,9 @@
 			selectIndex( +row.dataset.index, e );
 		} );
 		root.addEventListener( 'keydown', ( e ) => {
+			// 输入法组字中的按键（选字 / 直接上屏的回车、撤销组字的 Esc、翻候选的 ↑↓）归输入法：否则回车会当成 Go 跳走、关面板，
+			// 失焦又让组字再上屏一遍（输入框里出现两份）。Safari 的上屏回车在 compositionend 之后才到、isComposing 已是 false，只剩 keyCode 229
+			if ( e.isComposing || e.keyCode === 229 ) { return; }
 			if ( e.key === 'ArrowDown' ) { e.preventDefault(); setActive( active + 1 ); return; }
 			if ( e.key === 'ArrowUp' ) { e.preventDefault(); setActive( active < 0 ? -1 : active - 1 ); return; }
 			if ( e.key === 'Home' && e.target === input && !query ) { e.preventDefault(); setActive( 0 ); return; }
