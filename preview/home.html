@@ -64,9 +64,9 @@
  *  原来是「轮播（左）+ 候选列表（右）」：铺满正文列，列表 7 行把整块撑到 430–520px 高，宽屏下图框跟着 3:1 一起长，首屏一大半是它。
  *  现在整块**收窄到活动横幅的宽度、在正文列里居中**：最宽 960px（= 现网活动横幅原图 960×308 的宽，旧轮播是它缩到 936×300），图框比例就是横幅的 960:308——活动横幅正好铺满、不留边；
  *  寻访横幅（960×524 ≈ 1.8:1）照旧 contain 居中，两侧由模糊铺底填。正文列比 960 窄时整块跟着收、比例不变。宽屏下整块约 960 × 376（图 308 + 说明栏 66）。
- *  **不把下面的入口网格挤出第一屏**（导航第一排整排露出来）：图框还受视口高度管——能用的高 = 100svh − Hero 上方 − 说明栏 − 网页活动 − Hero 下方到导航第一排底，
- *  框宽跟着这个高按横幅比例收（最窄 800px：再窄说明栏排不成一行、反而更高），收到 800 还不够时只压图框高度（横幅 contain，两侧模糊铺底），图框最矮 120px（手机 80px），再矮横幅上的字就看不清了。
- *  各项是预览骨架上量出来的定值，按视口断点分档（见下面「折叠线预算」）；真皮肤的页眉 / 动作行高度不同时改 --mp-fold-above 一项即可。
+ *  **尺寸只看宽度**：整块按正文列宽等比缩放，视口高度不参与——窗口拉高拉矮、手机地址栏收放时轮播不变形、不跳宽。
+ *  （曾按 100svh 扣掉页眉 / 说明栏 / 网页活动 / 入口格一排算「折叠线预算」，视口矮时收框宽、压图框高，保证入口网格第一排露在首屏；
+ *  代价是同一宽度下窗口一变高矮轮播就跟着缩、矮屏上图框被压扁，退回只按宽度。）
  *  左右箭头压在图的两侧、竖向居中：鼠标移进轮播才浮出（同旧轮播，平时不挡画面），键盘聚焦时也出；触屏（hover: none）常显——手指也能直接滑。
  *  说明栏一行：类别 / 标题 | 起止 + 倒计时 | 右端控制区（「06 / 07」计数 · 指示条 · 暂停）。指示条一张一格，点哪格跳到哪张；**自动播放进度长在当前格里**（青色从左到右填满就切下一张），
  *  「在哪 / 还有几张 / 还有多久」在同一处读完。控制区字号比原来的工具栏大一档（计数 16px、当前张 18px，按钮 36px 带框、图标 18px）——它是这块唯一的读数，不能小到要凑近看。
@@ -93,18 +93,10 @@
   --mp-hero-pic-bg: var(--ak-bg-surface-2); --mp-hero-pic-filter: blur(22px) saturate(.8); --mp-hero-pic-opacity: .5;   /* 图框底 + 铺底模糊图：白版不压暗，半透明压在浅灰上 */
   --mp-hero-fade: transparent; --mp-hero-seam: inset 0 1px 0 var(--ak-border);   /* 图底部→说明栏：白版不渐隐，用一条细线接（说明栏的 box-shadow） */
   --mp-hero-w: 960px; --mp-hero-ctrl-w: 280px;   /* 图框最宽（= 活动横幅原图宽）/ 说明栏右端给控制区让出的宽（控制区按内容收窄，最宽到这里，指示条在里面压缩） */
-  /* 折叠线预算（桌面 ≥ 1120 的值，窄屏见本节末尾）：svh = 浏览器工具栏展开时的视口高，手机上地址栏不会盖住导航 */
-  --mp-fold-above: 127px;   /* Hero 上方：页眉 56 + 页面动作行 71 */
-  --mp-fold-caption: 84px;   /* 说明栏 66（框收到 800 时倒计时折行，82）+ 上下框线 */
-  --mp-fold-event: 37px; --mp-fold-events-label: 0px;   /* 网页活动每条 / 手机上单独一条的红标签 */
-  --mp-fold-below: 173px;   /* Hero 下方到导航第一排底：间距 24 + 入口格一排 137 + 留白 12 */
-  --mp-fold-n: 0;   /* 网页活动条数：下面按 :has 数，5 条封顶 */
-  --mp-hero-fit: calc(100svh - var(--mp-fold-above) - var(--mp-fold-caption) - var(--mp-fold-n) * var(--mp-fold-event) - min(var(--mp-fold-n), 1) * var(--mp-fold-events-label) - var(--mp-fold-below));   /* 图框能用的高 */
-  --mp-hero-pic-min: 120px;
-  --mp-hero-pic-h: min(100cqw * 308 / 960, max(var(--mp-hero-pic-min), var(--mp-hero-fit)));   /* 图框实际的高：箭头 / 控制区按它定位（100cqw 在使用处解析 = 图框宽） */
+  --mp-hero-pic-h: calc(100cqw * 308 / 960);   /* 图框的高：箭头 / 控制区按它定位（100cqw 在使用处解析 = 图框宽） */
   container: mp-hero / inline-size;   /* 说明栏的排法、箭头 / 控制区的竖向位置都按 Hero 自己的宽度算（100cqw = 图框宽） */
   display: grid; grid-template-columns: minmax(0, 1fr); box-sizing: content-box; margin-inline: auto;   /* 内容区 = 图框宽（框线在外）；正文列里居中 */
-  max-width: min(var(--mp-hero-w), max(800px, var(--mp-hero-fit) * 960 / 308));   /* 视口矮时框宽跟着能用的高按横幅比例收，最窄 800 */
+  max-width: var(--mp-hero-w);
   background: var(--mp-hero-bg); color: var(--mp-hero-fg); border: 1px solid var(--mp-hero-line); position: relative; isolation: isolate;
 }
 /* 黑版（终端模式）：三种暗色选择器同 tokens.css / demo-theme.css——显式 dark、MW 的 clientpref-night、跟随系统且系统为暗（那一种没有 data-theme，只按 [data-theme] 分支会漏） */
@@ -130,15 +122,10 @@
     --ak-focus: var(--ak-cyan-500);
   }
 }
-.mp-hero:has(.mp-events > li) { --mp-fold-n: 1; }
-.mp-hero:has(.mp-events > li + li) { --mp-fold-n: 2; }
-.mp-hero:has(.mp-events > li + li + li) { --mp-fold-n: 3; }
-.mp-hero:has(.mp-events > li + li + li + li) { --mp-fold-n: 4; }
-.mp-hero:has(.mp-events > li + li + li + li + li) { --mp-fold-n: 5; }
 .mp-hero__stage { position: relative; min-width: 0; }   /* 箭头 / 控制区的定位祖先 */
 .mp-hero__swiper { width: 100%; }   /* .swiper 自带 position:relative + overflow:hidden */
 .mp-hero__swiper .mp-hero__slide { display: flex; flex-direction: column; height: auto; }   /* 各张等高：.swiper-slide 自带的 height:100% 在高度不定的 wrapper 里不生效、还会挡掉 flex 的 stretch，改回 auto 让 wrapper 把各张拉到最高那张——说明栏最高的那张定高，其余的说明栏跟着长，与右端控制区对得齐。写两个类：Swiper 的 .swiper-slide 同样是单类（display:block · height:100%），现网它的 <link> 由 Gadget 插在正文里、排在这段样式之后，单类按先后会被它盖掉——各张不等高，短的那张说明栏下面空出一截、网点铺不到底 */
-.mp-hero__pic { display: block; position: relative; flex: none; aspect-ratio: 960 / 308; max-height: max(var(--mp-hero-pic-min), var(--mp-hero-fit)); background: var(--mp-hero-pic-bg); overflow: hidden; }   /* = 活动横幅的比例：活动图正好铺满，寻访图 contain 居中；视口矮、框宽已收到 800 时再压高度（max-height 不会经比例反过来压窄宽度） */
+.mp-hero__pic { display: block; position: relative; flex: none; aspect-ratio: 960 / 308; background: var(--mp-hero-pic-bg); overflow: hidden; }   /* = 活动横幅的比例：活动图正好铺满，寻访图 contain 居中 */
 .mp-hero__pic img { position: relative; width: 100%; height: 100%; object-fit: contain; display: block; }   /* 整幅显示不裁：现网横幅两种比例（活动 960×308 ≈ 3.1:1、寻访 960×524 ≈ 1.8:1），cover 会把寻访图的标题 / 干员裁掉 */
 .mp-hero__pic .mp-hero__bg { position: absolute; inset: 0; object-fit: cover; transform: scale(1.12); filter: var(--mp-hero-pic-filter); opacity: var(--mp-hero-pic-opacity); }   /* 比例对不上的留白由同一张图放大模糊铺底（cover，主图在上层 contain；黑版压暗、白版半透明）；放大 12% 把 blur 的透明毛边推出框外。生产环境 = 同一文件再嵌一次、加 class，不能用 style="--bg:url()"（MW 清洗器不放行 url()） */
 .mp-hero__pic::after { content: ""; position: absolute; inset: auto 0 0 0; height: 56px; background: linear-gradient(180deg, transparent, var(--mp-hero-fade)); pointer-events: none; }   /* 黑版：图底部渐隐进说明栏；白版 --mp-hero-fade 透明 = 没有 */
@@ -210,12 +197,6 @@
   .mp-hero__nav { width: 32px; height: 52px; margin-top: -26px; }
   .mp-hero__nav .ak-icon { width: 20px; height: 20px; }
 }
-/* 折叠线预算的窄屏档（按视口断点，值量自预览骨架；<1120 时 Hero 内容宽 = 视口 − 50，与上面的容器断点对齐）：
- *  <1120 版面上间距 24 → 16；<850 Hero 窄于 800、说明栏上下排；<690 Hero 窄于 640、说明栏 + 下方控制条；<640 手机（Hero 上方只有页眉 53 + 间距 16——动作簇不显示；网页活动带红标签条、入口格四列 64px 高：间距 16 + 一排 64 + 留白 12） */
-@media (max-width: 1119px) { .mp-hero { --mp-fold-above: 119px; } }
-@media (max-width: 849px) { .mp-hero { --mp-fold-caption: 112px; } }
-@media (max-width: 689px) { .mp-hero { --mp-fold-caption: 128px; } }
-@media (max-width: 639px) { .mp-hero { --mp-fold-above: 69px; --mp-fold-caption: 128px; --mp-fold-event: 40px; --mp-fold-events-label: 29px; --mp-fold-below: 92px; --mp-hero-pic-min: 80px; } }
 /* 进行中的网页活动（现网「尚有正在进行中的网页活动！」折叠块）：Hero 的第二行、通栏，继承 Hero 的 --mp-hero-* 配色。
  *  不用 .ak-news——那是游戏主界面的单条滚动横幅，天然只装一条；网页活动经常同时有两三个（周年庆更多），多条要么轮播要么换行。
  *  这里是**列表**：一条一行、整行是链接（名称 / 起止 / 倒计时 / ›），红标签跨所有行；1 条时高度与单行横幅一样，N 条就 N 行，不折叠（现网折叠是段落式噪音的结果，不是信息需要藏）。
