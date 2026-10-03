@@ -1,6 +1,6 @@
 {
   chrome: {
-    $description: "2d. CHROME · 页眉 / 头图 / 画布 的主题接口（活动主题只改这里）\n皮肤的「框」（页眉 + 窄屏工具卡片）在两套主题下都是黑的：官网导航栏、游戏主界面顶栏、\n干员档案页的顶部黑边都是\"黑框白纸 / 黑框黑纸\"——所以 chrome 令牌不随明暗主题变，只跟着活动主题变。\nprts.wiki 大活期间会换头图 / 顶栏角饰 / 站标 / 侧栏配色（现网 ext.gadget.seventhStyle 就是改这些）：\n新皮肤把这些位置抽成下面这组变量，Gadget / MediaWiki:Common.css 只需在 :root（或 html.ak-theme-xxx）上覆盖，\n不必碰选择器。skin.css 里的 .ak-header 把语义令牌重映射到 --ak-chrome-*，页眉内的按钮 / 输入 / 头像 / 菜单自动跟随。\n页眉与头图的关系：头图 .ak-keyart 从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃（--ak-chrome-bg + 毛玻璃）——\n玻璃保证页眉可读，画从玻璃后面透出来；照片一律走 --ak-keyart-image，--ak-chrome-image 只放画在玻璃之上的深色角饰 / 底纹。\n--ak-logo-image（不设默认值）：站标，设置后 .ak-header__logo img 用 content 替换（Chromium / WebKit；Firefox 请改 $wgLogos）。",
+    $description: "2d. CHROME · 页眉 / 头图 / 画布 的主题接口（活动主题只改这里）\n皮肤的「框」（页眉 + 窄屏工具卡片）在两套主题下都是黑的：官网导航栏、游戏主界面顶栏、\n干员档案页的顶部黑边都是\"黑框白纸 / 黑框黑纸\"——所以 chrome 令牌不随明暗主题变，只跟着活动主题变。\nprts.wiki 大活期间会换头图 / 顶栏角饰 / 站标 / 侧栏配色（现网 ext.gadget.seventhStyle 就是改这些）：\n新皮肤把这些位置抽成下面这组变量，Gadget / MediaWiki:Common.css 只需在 :root（或 html.ak-theme-xxx）上覆盖，\n不必碰选择器。skin.css 里的 .ak-header 把语义令牌重映射到 --ak-chrome-*，页眉内的按钮 / 输入 / 头像 / 菜单自动跟随。\n页眉与头图的关系：头图 .ak-keyart 从页面顶端铺起，页眉是压在它上面的一块均匀黑玻璃（--ak-chrome-bg，毛玻璃默认不开）——\n玻璃保证页眉可读，画从玻璃后面透出来；照片一律走 --ak-keyart-image，--ak-chrome-image 只放画在玻璃之上的深色角饰 / 底纹。\n--ak-logo-image（不设默认值）：站标，设置后 .ak-header__logo img 用 content 替换（Chromium / WebKit；Firefox 请改 $wgLogos）。",
     "theme-accent": {
       $value: "{color.brand.cyan-500}",
       $description: "活动主色：页眉标语 / 悬停、侧栏与目录分组条、页脚斜纹、窄屏卡片顶条 …（正文里的链接 / 选中仍是 --ak-accent；想一起换就连 --ak-accent 也覆盖）",
@@ -9,7 +9,11 @@
     "theme-accent-subtle": { $value: "rgba(24, 209, 255, .14)", $description: "活动主色的淡底（页眉里的悬停 / 选中底、聚焦光圈）= --ak-theme-accent 的 14%；换主色时一起写——不用 color-mix() 推导，老浏览器也认" },
     "chrome-bg": {
       $value: "rgba(8, 9, 10, .9)",
-      $description: "页眉玻璃：半透明 + 毛玻璃，头图 / 滚过来的正文在下面均匀透出。活动主题想让头图多透一点可调 alpha 到 .78–.85；别低于 .72（白色画面之下 #F2F2F2 仍 ≥7:1）",
+      $description: "页眉玻璃：半透明，头图 / 滚过来的正文在下面均匀透出。活动主题想让头图多透一点可调 alpha 到 .78–.85；别低于 .72（白色画面之下 #F2F2F2 仍 ≥7:1）",
+    },
+    "chrome-backdrop": {
+      $value: "none",
+      $description: "页眉玻璃底下的 backdrop-filter（毛玻璃），默认不开：玻璃 .9 不透明时模糊只透出一成，开不开截图逐像素平均只差 1.4/255，却是滚动时 GPU 上最重的一项——粘性页眉每帧都要把底下重糊一遍。玻璃调淡、确实要毛玻璃的活动主题再设 saturate(1.4) blur(10px) 之类",
     },
     "chrome-bg-solid": { $value: "#0e0f10", $description: "不透明处：窄屏工具卡片、飞出菜单" },
     "chrome-fg": { $value: "#f2f2f2" },

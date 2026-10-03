@@ -7,9 +7,11 @@
  *  并在这里把语义令牌重映射过去（--ak-fg → --ak-chrome-fg …），页眉里的按钮 / 搜索触发器 / 头像 / 徽标 / 菜单 / 开关就自动是页眉配色，
  *  不必逐个写；活动主题（Gadget / Common.css）覆盖 --ak-chrome-* / --ak-theme-accent / --ak-keyart-* 即可换皮，不碰选择器。
  *  装饰：右侧半调网点场（::before，--ak-chrome-texture 调强弱 / 关闭）· 底部 1px 亮线 · 标语 / 悬停 / 开关选中项 / 搜索图标框都用活动主色（游戏 selected_back / toggle_on 的那块青），亮暗主题下页眉配色完全一致。
- *  页眉是一块均匀的黑玻璃（--ak-chrome-bg 半透明 + 毛玻璃），压在头图 .ak-keyart 的顶端之上（头图从 y=0 铺起，见 keyart.css）：可读性由这层玻璃保证，
+ *  页眉是一块均匀的黑玻璃（--ak-chrome-bg 半透明），压在头图 .ak-keyart 的顶端之上（头图从 y=0 铺起，见 keyart.css）：可读性由这层玻璃保证，
  *  与底下是什么画无关；活动主题想让画多透一点，只把 --ak-chrome-bg 的 alpha 调到 .78–.85（≥.72 时白色画面之下仍 ≥7:1）。不做横向渐隐、不做纵向渐变
  *  —— 那种「右半张照片从左缘渐入」的顶栏底图既压不住白色图标又像贴上去的（试过，作罢）。--ak-chrome-image 只用于画在玻璃之上的深色角饰 / 底纹。
+ *  毛玻璃（--ak-chrome-backdrop）默认不开：玻璃 .9 不透明时模糊只透出一成，肉眼看不出（截图逐像素平均差 1.4/255），代价却在每一帧——
+ *  粘性页眉底下的东西一动，合成器就要把那一条重糊一遍，首页顶部还叠着头图那层；PRTS 现网反馈「首页顶部滚动卡顿」，它是 GPU 上最重的一项。
  *  主行是三列网格，与 .ak-layout 的 侧栏 / 正文 两列对齐：品牌在侧栏列上方，搜索从正文列左缘起（≤560px，与面包屑 / 标题同一条线），
  *  工具靠右 —— 页眉是三列各自的「列头」，不是游离的一条。页眉里不放站点级主导航：那 8 项与侧栏「通用」组 1:1 重复，导航只由侧栏承担
  *  （MW 的 data-portlets-first 也只在侧栏渲染一次）。1680 容器与 .ak-layout 同为 border-box，超宽时左右缘才对得齐。
@@ -33,7 +35,7 @@
   color-scheme: dark;        /* 页眉内的原生控件（无 JS 时的真搜索框）也走深色 */
   position: sticky; top: 0; z-index: var(--ak-z-header); color: var(--ak-fg);
   background: var(--ak-chrome-image) var(--ak-chrome-image-position) / var(--ak-chrome-image-size) var(--ak-chrome-image-repeat), var(--ak-chrome-bg);   /* 角饰在玻璃色之上（不被压暗，所以只放深色低对比素材）；玻璃色之下才是头图 / 滚过来的正文 */
-  backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: var(--ak-chrome-backdrop); backdrop-filter: var(--ak-chrome-backdrop);   /* 默认 none，见上 */
   border-bottom: 1px solid var(--ak-chrome-line); }
 /* 右侧半调网点场：游戏顶栏 img_back / bkg_openserver、官网页面左缘那片网点。从右缘向左渐隐，只铺到工具区背后，不碰品牌 */
 .ak-header::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--ak-chrome-texture);
