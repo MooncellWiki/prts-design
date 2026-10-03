@@ -28,9 +28,9 @@ GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 构建部署�
 ```
 packages/tokens/    @mooncellwiki/prts-design-tokens 令牌源（≈ primer/primitives）：src/**/*.json5（W3C DTCG 格式；base/ 原始色板 · 字体 · 尺寸 · 动效 · 层级，functional/ themes/light · dark · contrast-more 语义令牌 + chrome 页眉 / 头图 / 画布主题接口 + control，bridge/codex MediaWiki Codex 桥接）
                     build.ts（Style Dictionary）→ packages/css/src/tokens.css（按原选择器结构输出：亮 :root / 暗 data-theme · clientpref-night / 跟随系统 @media 同一份源 / 局部主题 .ak-scope[data-theme] / 高对比；同一份复制到 packages/tokens/tokens.css 随令牌包发布）+ bridge-codex.css（Codex 桥接）+ tokens.json（每个令牌带 CSS 写法与亮 / 暗解析值，文档站读它）
-packages/css/src/   CSS 实现（≈ primer/css；npm 包 @mooncellwiki/prts-design-css 只发代码——字体 fonts/ 与素材 img/ 不可转授，不在包里），每个组件一份样式表；index.css 与各层 index.css 的 @import 顺序 = 唯一的加载顺序
+packages/css/src/   CSS 实现（≈ primer/css；npm 包 @mooncellwiki/prts-design-css 只发代码——字体 fonts/ 与素材 img/ 不在包里），每个组件一份样式表；index.css 与各层 index.css 的 @import 顺序 = 唯一的加载顺序
   fonts.css         自托管 web 字体的 @font-face（scripts/fetch-fonts.py 生成；最先加载）
-  fonts/            woff2 + 各族 LICENSE / NOTICE：官网同源 Novecento Sans Wide 500–800 · Bender 400/700（ASCII 子集，来源见 NOTICE.md）；OFL 的 Noto Sans SC 可变字重（101 片）· Oswald VF · Chakra Petch 400–700 · JetBrains Mono VF（合计 ≈4.9MB）
+  fonts/            woff2 + 各族 LICENSE / NOTICE：Novecento Sans Wide 500–800（500–700 为完整字形，800 为官网同源 ASCII 子集）· 官网同源 Bender 400/700（ASCII 子集）——来源见 NOTICE.md；OFL 的 Noto Sans SC 可变字重（101 片）· Oswald VF · Chakra Petch 400–700 · JetBrains Mono VF（合计 ≈4.9MB）
   img/              CSS 引用的游戏素材（item/bg_1–6.png 道具稀有度底框 = prts.wiki 文件:道具_背景_N.png，即游戏 sprite_item_r1–r6，给 .ak-item--bare 裸图标叠框用，经 base/skin-assets.css 的变量引；scripts/fetch-item-bg.py 抓取；NOTICE.md）
   tokens.css        生成物（pnpm tokens）：令牌 + 双主题 + 局部主题 + 页眉/头图/画布主题接口（§2d）；任何宿主都能加载
   bridge-codex.css  生成物（pnpm tokens）：Codex/MW 令牌桥接——只属于皮肤（加载到别的皮肤上会改掉宿主的 Codex 配色）
@@ -98,7 +98,7 @@ pnpm e2e --project=hosts                               # 跨宿主：对照页 p
 pnpm e2e --project=snapshots [-u]                      # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照：重构 CSS 前 -u 拍基准（_verify/snapshots/），改完再跑一遍比对，保证视觉零变化
 pnpm e2e --project=stories                             # Storybook 每个 story 渲染成功、控制台干净（测构建好的 _build/storybook，先 pnpm build:storybook；-g 按 story id 挑）
 pnpm exec playwright show-report                       # e2e 的 HTML 报告：失败的差异列表、截图、trace 都在附件里
-python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento / Bender）+ npm 上的 Fontsource 包 → packages/css/src/fonts/ + fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；--registry https://registry.npmmirror.com 走镜像）
+python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento 800 / Bender）+ npm 上的 Fontsource 包 → packages/css/src/fonts/ + fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；Novecento 500–700 没有下载地址，用已落盘的；--registry https://registry.npmmirror.com 走镜像）
 python3 scripts/fetch-item-framed.py                   # 现网拼好的道具图 道具_带框_<名>.png → preview/assets/item/framed/<id>.png（扫各页用到的 id，manifest 查名，按文件名 md5 算 media 路径；已有的跳过，--force 重抓）
 python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度底框（prts.wiki 文件:道具_背景_1–6.png，钉 media 路径）→ packages/css/src/img/item/bg_1–6.png（.ak-item--bare 用）
 python3 scripts/fetch-charinfo.py                      # 现网 Widget:CharinfoV2 的 CSS / JS / 字体 / HUD 图标 + jQuery → preview/vendor/{charinfo,jquery}/（版本号钉在脚本里；charVoice 只留 --chars 指定的干员）
@@ -116,5 +116,5 @@ pnpm build:site                                        # = bash scripts/build-si
 
 ## 说明
 
-- 字体：预览与皮肤自托管全部 web 字体（`packages/css/src/fonts.css`），人人看到一致——展示字 **Novecento Sans Wide**、HUD 标签 / 数值 **Bender** 取自官网静态资源（PRTS 为官方赞助站点，与鹰角同一组织下共用授权；官网发布的是 ASCII 子集，非 ASCII 字符逐字落到后一段）；正文 Noto Sans SC（= 思源黑体，Google 的 101 片切分、页面只下用到的片）、压缩字 Oswald、Chakra Petch（接 Bender 缺字）、等宽 JetBrains Mono 为 OFL。
-- **许可**：代码（令牌源与构建脚本、CSS、Vue 组件、文档站 / Storybook / 预览站的程序部分、scripts/）以 [MIT](LICENSE) 授权。其余内容不在 MIT 范围内、不对外授权：游戏素材（`preview/assets/`、`packages/css/src/img/` 等）版权归鹰角网络所有；字体按各自目录里的 NOTICE / LICENSE（Novecento Sans Wide、Bender 为官网同源文件，按与鹰角同一组织下的共用授权使用，不可转授）；现网 Widget 快照（`preview/vendor/charinfo/`）归 PRTS；现网干员一览 / 公招计算数据快照（`preview/vendor/charlist/`、`preview/vendor/recruit/`）文本按 CC BY-NC-SA 4.0、游戏数据归鹰角网络；Spine 运行时（`preview/vendor/spine/`）归 Esoteric Software、按 Spine Runtimes License；GIF 编码器（`preview/vendor/gifenc/`）是 gifenc，归 Matt DesLauriers、按其 MIT 许可；Vector 2022 样式夹具（`preview/vendor/vector/`，Vector 与 MW 核心样式 GPL-2.0-or-later，站点自定义样式版权归 prts.wiki 编者）入库只作回归测试，不随站点发布；本仓库仅作 PRTS 皮肤设计用途。npm 包 `@mooncellwiki/prts-design-css` 只含 MIT 的代码部分。
+- 字体：预览与皮肤自托管全部 web 字体（`packages/css/src/fonts.css`），人人看到一致——展示字 **Novecento Sans Wide** 800、HUD 标签 / 数值 **Bender** 取自官网静态资源（官网发布的是 ASCII 子集，非 ASCII 字符逐字落到后一段），Novecento 500–700 是完整字形的文件（带 `lnum`：数字用大写高度的那一套）；正文 Noto Sans SC（= 思源黑体，Google 的 101 片切分、页面只下用到的片）、压缩字 Oswald、Chakra Petch（接 Bender 缺字）、等宽 JetBrains Mono 为 OFL。
+- **许可**：代码（令牌源与构建脚本、CSS、Vue 组件、文档站 / Storybook / 预览站的程序部分、scripts/）以 [MIT](LICENSE) 授权。其余内容不在 MIT 范围内、不对外授权：游戏素材（`preview/assets/`、`packages/css/src/img/` 等）版权归鹰角网络所有；字体按各自目录里的 NOTICE / LICENSE；现网 Widget 快照（`preview/vendor/charinfo/`）归 PRTS；现网干员一览 / 公招计算数据快照（`preview/vendor/charlist/`、`preview/vendor/recruit/`）文本按 CC BY-NC-SA 4.0、游戏数据归鹰角网络；Spine 运行时（`preview/vendor/spine/`）归 Esoteric Software、按 Spine Runtimes License；GIF 编码器（`preview/vendor/gifenc/`）是 gifenc，归 Matt DesLauriers、按其 MIT 许可；Vector 2022 样式夹具（`preview/vendor/vector/`，Vector 与 MW 核心样式 GPL-2.0-or-later，站点自定义样式版权归 prts.wiki 编者）入库只作回归测试，不随站点发布；本仓库仅作 PRTS 皮肤设计用途。npm 包 `@mooncellwiki/prts-design-css` 只含 MIT 的代码部分。

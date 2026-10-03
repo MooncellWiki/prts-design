@@ -1,10 +1,10 @@
 /*! PRTS Design · decor/type.css — A8 拉丁展示字 / 标签字 / 数值 / 编号 / 水印 · 依赖：tokens.css */
 /* A8. 拉丁展示字 / 标签字（Novecento / Bender 语言） */
-.ak-en, .ak-display { font-family: var(--ak-font-display); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-weight: 700; }
+.ak-en, .ak-display { font-family: var(--ak-font-display); font-variant-numeric: lining-nums; text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-weight: 700; }
 .ak-display { font-size: var(--ak-fs-display); line-height: var(--ak-lh-display); letter-spacing: var(--ak-tracking-display); }
 .ak-display--xl { font-size: var(--ak-fs-display-xl); }
 .ak-overline { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); text-transform: uppercase; letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-muted); }
 .ak-label { font-family: var(--ak-font-label); }
 .ak-num { font-family: var(--ak-font-label); font-variant-numeric: tabular-nums; font-weight: 700; }   /* 面板级 HUD 数字；不进表格——进了 td / th / 键值表 dd 会被文末 B99 兜底回正文字体 */
 .ak-code-id { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .1em; color: var(--ak-fg-muted); text-transform: uppercase; }   /* LM04 / R001 类编号 */
-.ak-watermark { position: absolute; right: 8px; bottom: -6px; font: 800 4rem/1 var(--ak-font-display); letter-spacing: -.02em; color: var(--ak-fg); opacity: .05; pointer-events: none; user-select: none; text-transform: uppercase; white-space: nowrap; }
+.ak-watermark { position: absolute; right: 8px; bottom: -6px; font: 800 4rem/1 var(--ak-font-display); font-variant-numeric: lining-nums; letter-spacing: -.02em; color: var(--ak-fg); opacity: .05; pointer-events: none; user-select: none; text-transform: uppercase; white-space: nowrap; }

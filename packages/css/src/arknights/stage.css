@@ -2,7 +2,7 @@
 /* B13. 关卡卡 / 关卡编号 */
 .ak-stage { --_bd: var(--ak-border); display: grid; grid-template-columns: max-content 1fr; gap: 12px; align-items: center; padding: 10px 14px; background: var(--ak-bg-surface); border: 1px solid var(--_bd); text-decoration: none; color: inherit; position: relative; }
 .ak-stage:hover { --_bd: var(--ak-accent); text-decoration: none; color: inherit; }
-.ak-stage__code { font: 800 var(--ak-fs-h3)/1 var(--ak-font-display); letter-spacing: -.02em; min-width: 72px; }
+.ak-stage__code { font: 800 var(--ak-fs-h3)/1 var(--ak-font-display); font-variant-numeric: lining-nums; letter-spacing: -.02em; min-width: 72px; }
 .ak-stage__code small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .12em; color: var(--ak-fg-muted); margin-top: 3px; }
 .ak-stage__name { font-weight: 700; }
 .ak-stage__meta { display: flex; gap: 10px; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); margin-top: 4px; }
@@ -11,7 +11,7 @@
 .ak-stage--hard { --_bar: var(--ak-red-600); }
 .ak-stage--ex { --_bar: var(--ak-red-700); }
 .ak-stage--story { --_bar: var(--ak-fg-muted); }
-.ak-stage-code { --_fg: var(--ak-fg-inverse); display: inline-block; font: 800 1em/1 var(--ak-font-display); letter-spacing: -.02em; padding: 2px 6px; background: var(--ak-bg-inverse); color: var(--_fg); }
+.ak-stage-code { --_fg: var(--ak-fg-inverse); display: inline-block; font: 800 1em/1 var(--ak-font-display); font-variant-numeric: lining-nums; letter-spacing: -.02em; padding: 2px 6px; background: var(--ak-bg-inverse); color: var(--_fg); }
 .ak-stage-code--hard { --_fg: #fff; background: var(--ak-red-700); }
 /* 理智 / 消耗 */
 .ak-sanity { display: inline-flex; align-items: center; gap: 4px; font: 800 var(--ak-fs-sm)/1 var(--ak-font-label); }

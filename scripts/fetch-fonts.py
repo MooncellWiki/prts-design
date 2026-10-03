@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Fetch the self-hosted web fonts into src/fonts/ and generate src/fonts.css.
 
-两类来源，都不需要 npm：
-  · 官网静态资源（SITE_FONTS）：Novecento Sans Wide / Bender —— 明日方舟官网（ak.hypergryph.com）自托管的 woff2 原文件，
-    PRTS.wiki 为官方赞助站点，按与鹰角同一组织下共用授权使用（项目方决定）。URL 钉住当前 hash；官网重新部署后 hash 会变，
+三类来源，都不需要 npm：
+  · 官网静态资源（SITE_FONTS）：Novecento Sans Wide UltraBold / Bender —— 明日方舟官网（ak.hypergryph.com）自托管的 woff2 原文件。
+    URL 钉住当前 hash；官网重新部署后 hash 会变，
     脚本会自动从首页 CSS 里重新发现；再失败就保留已落盘的文件并告警。注意官网给的是 ASCII 子集（各 101 字形），
     非 ASCII 字符（· » — × ° 等）由 tokens.css 链里后面的自托管 OFL 字体逐字接住。
     原文件没有 gasp 表，落盘前补一张（见 with_gasp）——这一步要 fontTools：pip install fonttools brotli（--offline 不需要）。
+  · 已落盘的文件（SITE_FONTS 里没有 'url' 的面）：Novecento Sans Wide Medium / DemiBold / Bold —— 完整字形（590 字形，带 lnum / case：
+    大写高度的数字与标点）。没有下载地址：脚本不动这些 woff2，只把它们写进 fonts.css。
   · Fontsource npm 包（PKG_FONTS）：Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono —— = Google Fonts 同一批 woff2 切片 +
     unicode-range，随包带 OFL 全文，版本钉死。
 
@@ -29,17 +31,25 @@ SITE_CDN = 'https://web.hycdn.cn/arknights/official/_next/static/media/'
 # ── 官网静态资源：文件名（去 hash）→ 字重 / 字形；url 为抓取时钉住的完整地址（hash 变了会自动重新发现）
 SITE_FONTS = [
     {
-        'dir': 'novecento-sans-wide', 'family': 'Novecento Sans Wide', 'license': '商用（Synthview）· 官网同源文件',
+        'dir': 'novecento-sans-wide', 'family': 'Novecento Sans Wide',
         'role': '拉丁展示字（--ak-font-display）',
+        # 500–700 是完整字形的文件（没有 'url'，用已落盘的）：带 lnum，font-variant-numeric: lining-nums 就把数字和 - ( ) : # 这些标点换成大写高度的那一套。
+        # 800 只有官网的 ASCII 子集：数字只有一套 560 高的（大写 700），没有 GSUB。
+        # 'caps_from'：同字重再出一条只管 CAPS_RANGE 的面，取 Bold 的完整文件——800 里这些字符由 Bold 的大写高度字形顶上（笔画细 12%）。
+        'label': '500–700 完整字形 · 800 官网同源',
+        'source': '来源：UltraBold 是明日方舟官网（%(home)s）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源）。\n'
+                  '改动：UltraBold 只补了一张 gasp 表（version 1，全字号 0x000F = 含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表未动（scripts/fetch-fonts.py · with_gasp）。\n',
+        'coverage': '注意：UltraBold 是官网发布的 ASCII 子集（101 字形），非 ASCII 字符由 tokens.css 字体链后段接住；Medium / DemiBold / Bold 是完整的 590 字形（带 lnum）。\n',
         'faces': [
-            {'file': 'Novecentosanswide-Medium.woff2',    'weight': '500', 'style': 'normal', 'url': SITE_CDN + 'Novecentosanswide-Medium.7a5c757a.woff2'},
-            {'file': 'Novecentosanswide-DemiBold.woff2',  'weight': '600', 'style': 'normal', 'url': SITE_CDN + 'Novecentosanswide-DemiBold.e7b6abe4.woff2'},
-            {'file': 'Novecentosanswide-Bold.woff2',      'weight': '700', 'style': 'normal', 'url': SITE_CDN + 'Novecentosanswide-Bold.9c78a9fd.woff2'},
-            {'file': 'Novecentosanswide-UltraBold.woff2', 'weight': '800', 'style': 'normal', 'url': SITE_CDN + 'Novecentosanswide-UltraBold.e5e00ac9.woff2'},
+            {'file': 'Novecentosanswide-Medium.woff2',    'weight': '500', 'style': 'normal'},
+            {'file': 'Novecentosanswide-DemiBold.woff2',  'weight': '600', 'style': 'normal'},
+            {'file': 'Novecentosanswide-Bold.woff2',      'weight': '700', 'style': 'normal'},
+            {'file': 'Novecentosanswide-UltraBold.woff2', 'weight': '800', 'style': 'normal', 'url': SITE_CDN + 'Novecentosanswide-UltraBold.e5e00ac9.woff2',
+             'caps_from': 'Novecentosanswide-Bold.woff2'},
         ],
     },
     {
-        'dir': 'bender', 'family': 'Bender', 'license': 'Jovanny Lemonad · 官网同源文件',
+        'dir': 'bender', 'family': 'Bender',
         'role': 'HUD 标签 / 数值（--ak-font-label），也是 --ak-font-display 的第二位',
         'faces': [
             {'file': 'Bender-Regular.woff2', 'weight': '400', 'style': 'normal', 'url': SITE_CDN + 'Bender-Regular.6950ba72.woff2'},
@@ -47,6 +57,9 @@ SITE_FONTS = [
         ],
     },
 ]
+
+# lnum 会换掉的字符里落在 ASCII 的那些：# ( ) - 0–9 : ; [ ] { }（caps_from 用）
+CAPS_RANGE = 'U+23, U+28-29, U+2D, U+30-3B, U+5B, U+5D, U+7B, U+7D'
 
 # ── Fontsource：npm 包、版本、包内 css（决定 unicode-range 与文件清单）、落盘目录、对外 font-family 名（= tokens.css 链里的名字）、挑选规则
 PKG_FONTS = [
@@ -149,7 +162,8 @@ def main():
 
     css = ['/*! PRTS Design — 自托管 Web 字体（scripts/fetch-fonts.py 生成，勿手改；重跑：python3 scripts/fetch-fonts.py）',
            ' *  各族链见 tokens.css「Typography」。url() 相对本文件（src/）；MW 皮肤侧 resources/fonts.css + resources/fonts/ 是指向 src/ 的符号链接，ResourceLoader 按 resources/ 重写路径。',
-           ' *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集，落盘时补了 gasp 表；PRTS 为官方赞助站点，与鹰角同一组织下共用授权）：']
+           ' *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集，落盘时补了 gasp 表）；',
+           ' *    Novecento 的 500–700 是完整字形的文件（590 字形，带 lnum）：']
     for s in SITE_FONTS:
         css.append(' *      %-24s → fonts/%s/  · %s' % (s['family'], s['dir'], s['role']))
     css.append(' *  · Fontsource npm 包（= Google Fonts 同批 woff2 切片 + unicode-range，OFL-1.1，版本钉死）：')
@@ -170,6 +184,10 @@ def main():
             faces = []
             for face in spec['faces']:
                 face = dict(face); target = d / face['file']
+                if not face.get('url'):   # 没有下载地址：用已落盘的
+                    if not target.exists():
+                        raise SystemExit('   ✗ %s 不在本地，也没有下载地址' % face['file'])
+                    faces.append(face); continue
                 try:
                     data = fetch(face['url'])
                 except urllib.error.URLError as e:
@@ -186,18 +204,23 @@ def main():
                     target.write_bytes(with_gasp(data, face['file']))
                 faces.append(face)
             (d / 'NOTICE.md').write_text(
-                '# %s\n\n来源：明日方舟官网（%s）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源）。\n'
-                '改动：只补了一张 gasp 表（version 1，全字号 0x000F = 含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表未动——原文件没有 gasp，Windows 上的 Chrome 对 ≤ 20px 的 Bender Bold 只做横向抗锯齿，曲线出锯齿（scripts/fetch-fonts.py · with_gasp）。\n'
-                '授权：%s。PRTS.wiki 为明日方舟官方赞助站点，按与鹰角网络同一组织下共用授权使用（项目方决定，见文档站 /foundations/typography#字族）。\n'
-                '注意：官网发布的是 ASCII 子集（各 101 字形），非 ASCII 字符由 tokens.css 字体链后段接住。\n\n'
+                '# %s\n\n%s%s\n'
                 '| 文件 | 字重 | 抓取地址 |\n|---|---|---|\n%s\n'
-                % (spec['family'], SITE_HOME, spec['license'], '\n'.join('| %s | %s | %s |' % (f['file'], f['weight'], f['url']) for f in faces)),
+                % (spec['family'],
+                   spec.get('source', '来源：明日方舟官网（%(home)s）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源）。\n'
+                                      '改动：只补了一张 gasp 表（version 1，全字号 0x000F = 含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表未动——原文件没有 gasp，Windows 上的 Chrome 对 ≤ 20px 的 Bender Bold 只做横向抗锯齿，曲线出锯齿（scripts/fetch-fonts.py · with_gasp）。\n') % {'home': SITE_HOME},
+                   spec.get('coverage', '注意：官网发布的是 ASCII 子集（各 101 字形），非 ASCII 字符由 tokens.css 字体链后段接住。\n'),
+                   '\n'.join('| %s | %s | %s |' % (f['file'], f['weight'], f.get('url') or '—') for f in faces)),
                 encoding='utf-8')
             meta_path.write_text(json.dumps(faces, ensure_ascii=False, indent=0), encoding='utf-8')
         size = sum((d / f['file']).stat().st_size for f in faces); total += size
         print('   %d faces · %.0f KB · family "%s"' % (len(faces), size / 1024, spec['family']))
-        css += ['', '/* ── %s · 官网同源 · %s */' % (spec['family'], spec['role'])]
+        css += ['', '/* ── %s · %s · %s */' % (spec['family'], spec.get('label', '官网同源'), spec['role'])]
         css += [face_css(spec['family'], f, spec['dir']) for f in faces]
+        caps = [f for f in faces if f.get('caps_from')]
+        if caps:
+            css.append('/* 大写高度的数字 / 标点（lnum）：这个字重只有官网的 ASCII 子集、没有 lnum，这些字符取 %s 的完整文件（scripts/fetch-fonts.py · caps_from） */' % ' / '.join(sorted({f['caps_from'] for f in caps})))
+            css += [face_css(spec['family'], {'file': f['caps_from'], 'weight': f['weight'], 'style': f['style'], 'range': CAPS_RANGE}, spec['dir']) for f in caps]
 
     # 2. Fontsource npm 包
     for spec in PKG_FONTS:

@@ -2,7 +2,7 @@
 
 PRTS Design（明日方舟网页设计系统）的 CSS 实现，≈ primer/css——prts.wiki 皮肤 Skin:Arknights 加载的就是这份样式表（`skin/resources/` 下是指向这里的链接）。
 
-npm 包只含**代码部分**（MIT）：令牌、作用域根、通用 / 方舟组件、工具类、强制色模式，以及 MediaWiki 内容样式 `base/`、Codex 桥接与皮肤骨架 `chrome/`（后三样不在默认入口里，别的 MediaWiki 站想用可以单独 import）。**字体与游戏素材不在包里**——Novecento Sans Wide、Bender 按与鹰角同一组织下的共用授权使用、不可转授，`img/` 的游戏素材版权归鹰角网络；两者只随仓库里的皮肤走，见各自目录的 NOTICE / LICENSE。皮肤全套（`src/index.css`：字体 → 令牌 → Codex 桥接 → 素材接口 → `base/` → 作用域 → 组件 → 工具类 → 强制色 → 皮肤骨架 `chrome/`）在仓库里。
+npm 包只含**代码部分**（MIT）：令牌、作用域根、通用 / 方舟组件、工具类、强制色模式，以及 MediaWiki 内容样式 `base/`、Codex 桥接与皮肤骨架 `chrome/`（后三样不在默认入口里，别的 MediaWiki 站想用可以单独 import）。**字体与游戏素材不在包里**——`img/` 的游戏素材版权归鹰角网络；两者只随仓库里的皮肤走，见各自目录的 NOTICE / LICENSE。皮肤全套（`src/index.css`：字体 → 令牌 → Codex 桥接 → 素材接口 → `base/` → 作用域 → 组件 → 工具类 → 强制色 → 皮肤骨架 `chrome/`）在仓库里。
 
 ## 接入方式
 

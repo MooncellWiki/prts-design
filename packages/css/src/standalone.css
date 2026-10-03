@@ -1,6 +1,6 @@
 /*! PRTS Design — 明日方舟网页设计系统 · 组件入口（npm 包 @mooncellwiki/prts-design-css 的默认入口；prts.wiki 上别的皮肤、站外页面用）
  *  只有随组件走的部分：令牌 + 作用域根 + 组件 / 装饰 / 方舟组件 + 工具类 + 强制色模式。组件放在 .ak-scope 里（Vue：<AkScope>）才有排版基线。
- *  不含：字体（fonts.css，不可转授；退到令牌里的 Oswald / Chakra Petch / 系统字链）· Codex 桥接（bridge-codex.css，会改掉宿主的 Codex 配色）·
+ *  不含：字体（fonts.css；退到令牌里的 Oswald / Chakra Petch / 系统字链）· Codex 桥接（bridge-codex.css，会改掉宿主的 Codex 配色）·
  *        游戏素材（base/skin-assets.css + img/；.ak-item--bare 无底框，自己覆盖 --ak-item-bg-* 可补）· MW 正文排版（base/）· 皮肤骨架（chrome/）。
  *  顺序是 index.css 的子序列（scripts/css-order.ts 检查），层叠结果与皮肤全套一致。 */
 @import url("tokens.css");

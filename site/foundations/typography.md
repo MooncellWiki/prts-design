@@ -8,16 +8,18 @@
 
 | 角色 | 自托管 | 来源 / 说明 |
 |---|---|---|
-| 展示字 | **Novecento Sans Wide** 500 / 600 / 700 / 800 | 官网静态资源原文件（web.hycdn.cn），只补了 `gasp` 表（见[低分屏](#低分屏)）。商用字（Synthview）；PRTS.wiki 为明日方舟官方赞助站点，按与鹰角同一组织下共用授权使用，不可转授 |
-| HUD 标签 / 数值 | **Bender** 400 / 700 | 同上；也是展示字链的第二位 |
+| 展示字 | **Novecento Sans Wide** 500 / 600 / 700 / 800 | 800：官网静态资源原文件（web.hycdn.cn，ASCII 子集），只补了 `gasp` 表（见[低分屏](#低分屏)）；500–700：完整字形的文件（590 字形，带 `lnum`） |
+| HUD 标签 / 数值 | **Bender** 400 / 700 | 同 Novecento 800；也是展示字链的第二位 |
 | 正文 | Noto Sans SC 可变字重 100–900（= 思源黑体的 Google 构建） | OFL；沿用 Google Fonts 的 101 片 `unicode-range` 切分（共 ≈ 4.5MB），一页只下载用到的几片 |
 | 压缩字 | Oswald 可变字重 200–700 | OFL；官网也自托管 Oswald。同时是展示字链在 Novecento / Bender 之后的接字 |
 | 标签缺字 | Chakra Petch 400 / 500 / 600 / 700 | OFL；同为方形 HUD 字，只在 Bender 缺字时逐字顶上 |
 | 等宽 | JetBrains Mono 可变字重 100–800，正体 + 斜体 | OFL；语法高亮的注释用斜体 |
 
-`packages/css/src/fonts.css`（121 条 `@font-face`，`font-display: swap`）与 `packages/css/src/fonts/` 由 `python3 scripts/fetch-fonts.py` 生成（官网同源两族抓官网静态资源，OFL 四族取 Fontsource 的 npm 包，版本钉死）；各族目录里的 `NOTICE.md` / `LICENSE` 记着来源与授权。字体链（上表 `--ak-font-*`）的后段——装机备选、系统字——只在字体模块被关掉时起作用：MW 上字体是独立的 `skins.akds.fonts` 模块，可以整体关掉（低带宽 / 用户偏好 / Gadget）。
+`packages/css/src/fonts.css`（122 条 `@font-face`，`font-display: swap`）与 `packages/css/src/fonts/` 由 `python3 scripts/fetch-fonts.py` 生成（官网同源的抓官网静态资源，Novecento 500–700 没有下载地址，用已落盘的文件；OFL 四族取 Fontsource 的 npm 包，版本钉死）；各族目录里的 `NOTICE.md` / `LICENSE` 记着来源。字体链（上表 `--ak-font-*`）的后段——装机备选、系统字——只在字体模块被关掉时起作用：MW 上字体是独立的 `skins.akds.fonts` 模块，可以整体关掉（低带宽 / 用户偏好 / Gadget）。
 
-官网发布的 Novecento / Bender 是 **ASCII 子集**（各 101 字形：A–Z a–z 0–9 与 ASCII 标点）：`·` `»` `—` `–` `…` `×` `°` 这类非 ASCII 字符逐字回退到后一段（展示字落到 Oswald、标签落到 Chakra Petch），两者风格相近，视觉上是间隔号 / 破折号级别的差异；日后拿到全字符集文件，替换 `packages/css/src/fonts/` 里同名 woff2 即可（同样要补 `gasp` 表：放进 `SITE_FONTS` 重跑 `fetch-fonts.py`，或手动过一遍其中的 `with_gasp`）。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
+官网发布的 Novecento（现在只剩 800 用它）/ Bender 是 **ASCII 子集**（各 101 字形：A–Z a–z 0–9 与 ASCII 标点）：`·` `»` `—` `–` `…` `×` `°` 这类非 ASCII 字符逐字回退到后一段（展示字落到 Oswald、标签落到 Chakra Petch），两者风格相近，视觉上是间隔号 / 破折号级别的差异；日后拿到全字符集文件，替换 `packages/css/src/fonts/` 里同名 woff2 即可（同样要补 `gasp` 表：放进 `SITE_FONTS` 重跑 `fetch-fonts.py`，或手动过一遍其中的 `with_gasp`）。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
+
+**展示字的数字用大写高度的那一套。** Novecento 默认的数字高 560（大写 700），`TO-EX-8` 的 8 会比字母矮一截；完整版用 `lnum` 换成 700 高的数字，同时把 `-` `(` `)` `:` `#` 这些标点抬到大写中线——游戏里的关卡代号就是这一套。所以**凡是用 `--ak-font-display` 的规则都带 `font-variant-numeric: lining-nums`**（`.ak-en` / `.ak-display` / 关卡码 / 标题英文等都已带；自己写规则时，`font:` 简写会把它重置，要写在简写后面）。500–700 是带 `lnum` 的完整文件，直接生效；800 只有官网的 ASCII 子集、没有 `lnum`，`fonts.css` 给 800 多写一条只管这些字符（`unicode-range`）的 `@font-face`、取 Bold 的完整文件：800 的字里，数字和这几个标点是 Bold 的大写高度字形（笔画比 UltraBold 细约 12%）。日后拿到 UltraBold 的完整文件，替换同名 woff2、删掉 `scripts/fetch-fonts.py` 里的 `caps_from` 即可。
 
 ## 字号
 
@@ -36,7 +38,7 @@
 Windows 100% / 125% 缩放（< 1.5dppx，`@media (max-resolution: 1.49dppx)`）下，一个字只分到「字号」那么多个设备像素：字体有没有 hinting、走哪种渲染模式、中文小字有多小，都会直接露出来。高分屏（macOS、手机、Windows 150% 以上）看不出这些问题，下面三条也都只在低分屏或 Windows 上起作用：
 
 - **正文链换微软雅黑**：Noto Sans SC 的 web 切片没有 hinting，DirectWrite 小字号下发虚；低分屏把 `Microsoft YaHei` 提到 Noto 前面（`--ak-font-body`），没装雅黑的系统照旧落到 Noto。
-- **官网同源两族补了 `gasp` 表**：原文件没有 `gasp`，Bender Bold 的 `maxp` 又残留着「带指令」的标记，Chrome 在 Windows 上就把 ≤ 20px 的 Bender Bold 当成「为 GDI 调过 hinting」的字，只做横向抗锯齿，0 3 5 9 这类数字的曲线顶 / 底出锯齿。`scripts/fetch-fonts.py` 落盘时补一张 version 1 的 `gasp`（全字号含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表不动。
+- **官网同源的文件（Novecento 800、Bender）补了 `gasp` 表**（Novecento 500–700 是 CFF 轮廓，没有 TrueType 指令那套标记，没有补；Windows 低分屏未实测）：原文件没有 `gasp`，Bender Bold 的 `maxp` 又残留着「带指令」的标记，Chrome 在 Windows 上就把 ≤ 20px 的 Bender Bold 当成「为 GDI 调过 hinting」的字，只做横向抗锯齿，0 3 5 9 这类数字的曲线顶 / 底出锯齿。`scripts/fetch-fonts.py` 落盘时补一张 version 1 的 `gasp`（全字号含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表不动。
 - **中文小字不小于 12px**：9–11px 的中文在 1× 屏上换哪款字都糊。低分屏下 `--ak-fs-overline` 从 11 抬到 12；组件里可能出现中文的 9–10px 小字（卡片副题、解锁条件、标签、页签计数、属性格名…）写成 `max(设计字号, var(--ak-fs-cjk-min))`——高分屏照设计字号，低分屏抬到 12px。纯拉丁 / 数字的小字（倒计时单位、关卡码副题、键帽、英文副题）不必套。
 
 <TokenTable prefix="typography.legibility" />

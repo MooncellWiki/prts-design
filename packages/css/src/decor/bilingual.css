@@ -2,5 +2,5 @@
 /* A11. 双语标题（CJK + EN） */
 .ak-bilingual { display: flex; flex-direction: column; line-height: 1.1; }
 .ak-bilingual__cn { font-weight: 800; }
-.ak-bilingual__en { font-family: var(--ak-font-display); text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-size: .55em; color: var(--ak-fg-muted); font-weight: 700; }
+.ak-bilingual__en { font-family: var(--ak-font-display); font-variant-numeric: lining-nums; text-transform: uppercase; letter-spacing: var(--ak-tracking-caps); font-size: .55em; color: var(--ak-fg-muted); font-weight: 700; }
 .ak-bilingual--row { flex-direction: row; align-items: baseline; gap: .5em; }

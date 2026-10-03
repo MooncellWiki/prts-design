@@ -118,7 +118,7 @@
 .charinfo-wrapper .charname-wrapper { position: absolute; left: 16px; bottom: 96px; z-index: 5; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; max-width: 460px; padding: 8px 16px 8px 14px; border-left: 6px solid var(--ak-cyan-500); }
 .charinfo-wrapper .charstar { order: 1; height: 14px; display: flex; }
 .charinfo-wrapper .charstar img { height: 14px; width: auto; }
-.charinfo-wrapper .charname-en { order: 2; font: 700 15px/1.1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; color: var(--_fg-2); }
+.charinfo-wrapper .charname-en { order: 2; font: 700 15px/1.1 var(--ak-font-display); font-variant-numeric: lining-nums; letter-spacing: .06em; text-transform: uppercase; color: var(--_fg-2); }
 .charinfo-wrapper .charname { order: 3; font: 900 40px/1.15 var(--ak-font-body); letter-spacing: .02em; color: #fff; }
 
 /* ═══ 8. 左侧：画师 / CV 折叠面板（阶段页签之下、名字牌之上；从上往下长，一次只展开一块——两块都展开会压到名字牌） ═══ */

@@ -10,7 +10,7 @@
 .ak-module__img img { max-width: 92%; max-height: 92%; }
 .ak-module__main { min-width: 0; }
 .ak-module__head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 8px; }
-.ak-module__type { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; background: var(--_bar); color: #fff; font: 800 var(--ak-fs-sm)/1 var(--ak-font-display); letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; }
+.ak-module__type { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; background: var(--_bar); color: #fff; font: 800 var(--ak-fs-sm)/1 var(--ak-font-display); font-variant-numeric: lining-nums; letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; }
 .ak-module__type img { height: 16px; width: auto; }
 .ak-module__type small { font-family: var(--ak-font-label); font-size: .72em; font-weight: 600; letter-spacing: .1em; opacity: .85; }
 .ak-module__name, :is(h1, h2, h3, h4, h5, h6).ak-module__name { font-weight: 800; font-size: var(--ak-fs-body-lg); margin: 0; }

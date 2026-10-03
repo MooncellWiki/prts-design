@@ -2,7 +2,7 @@
 /* B18. 大标题横幅（页面 Hero，官网风：黑底 + 大拉丁字 + 青色横条） */
 .ak-hero { position: relative; overflow: hidden; background: #0f0f10; color: #fff; padding: 40px 32px; }
 .ak-hero__eyebrow { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-cyan-500); }
-.ak-hero__title, :is(h1, h2, h3, h4, h5, h6).ak-hero__title { border: 0; padding: 0; color: #fff; font: 800 clamp(2rem, 6vw, 4rem)/1 var(--ak-font-display); letter-spacing: -.02em; text-transform: uppercase; margin: 8px 0 12px; }
+.ak-hero__title, :is(h1, h2, h3, h4, h5, h6).ak-hero__title { border: 0; padding: 0; color: #fff; font: 800 clamp(2rem, 6vw, 4rem)/1 var(--ak-font-display); font-variant-numeric: lining-nums; letter-spacing: -.02em; text-transform: uppercase; margin: 8px 0 12px; }
 .ak-hero__title .cn { display: block; font-family: var(--ak-font-body); font-size: .5em; letter-spacing: .1em; font-weight: 700; margin-top: 4px; }
 .ak-hero__bar { width: 220px; height: 8px; background: var(--ak-cyan-500); margin: 16px 0; }
 .ak-hero__title::after { display: none; }

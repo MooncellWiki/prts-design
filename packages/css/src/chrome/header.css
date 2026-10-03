@@ -63,7 +63,7 @@
 .ak-header__logo { grid-column: 1; justify-self: start; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: none; height: 100%; }   /* 品牌盖着侧栏列；不带任何分隔线 / 底线（右侧竖线是「品牌 | 导航」的分界，导航没了它就是悬着的；品牌列底下的主色横线也试过——意味不明，去掉） */
 .ak-header__logo:hover { text-decoration: none; color: inherit; }
 .ak-header__logo > img { height: 28px; width: auto; max-width: 48px; object-fit: contain; filter: var(--ak-glyph-filter); content: var(--ak-logo-image, normal); }   /* 站标：--ak-logo-image 设了就换（Chromium / WebKit 支持 content 替换 <img>；Firefox 忽略，请改 $wgLogos） */
-.ak-header__wordmark { font: 800 20px/1 var(--ak-font-display); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.ak-header__wordmark { font: 800 20px/1 var(--ak-font-display); font-variant-numeric: lining-nums; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
 .ak-header__wordmark img { display: block; max-height: 30px; width: auto; }   /* MW $wgLogos.wordmark：站名是一张图时 */
 .ak-header__wordmark small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .18em; color: var(--ak-theme-accent); margin-top: 3px; }   /* 标语用活动主色：官网导航当前项那一点青 */
 .ak-header__search { grid-column: 2; justify-self: start; width: 100%; max-width: 560px; min-width: 0; }   /* 从正文列左缘起，与面包屑 / 标题左缘同线；有 JS 时这是 button.ak-search-trigger（保留此类名，它自带 width:100%，所以上限用 max-width 写） */

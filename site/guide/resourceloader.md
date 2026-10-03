@@ -8,7 +8,7 @@
 |---|---|---|
 | `skins.akds.base` | `bridge-codex.css`（Codex / MW 令牌桥接）+ `base/skin-assets.css`（皮肤持有的素材接口 `--ak-item-bg-*`）+ `base/`（`root.css` html / body 底色、选区、焦点环、滚动条、减弱动效 → 正文排版 / 表格 / 表单 …）；`SkinModule`，同时开启核心的 normalize / elements / content-media / message-box / category / logo 特性 | 只有 Arknights 皮肤 |
 | `skins.akds.components` | `tokens.css` + `scope.css`（作用域根）→ `components/` → `decor/` → `arknights/` → `utilities.css` → `forced-colors.css`，**逐文件列出**（80 个）；不写 `dependencies`，令牌自带 | Arknights 皮肤；**别的皮肤上 widget / 模板的入口**：`mw.loader.using("skins.akds.components")`，一个模块就齐 |
-| `skins.akds.fonts` | `fonts.css`（121 条 `@font-face`：Novecento Sans Wide + Bender（官网同源）+ Noto Sans SC 101 片 + Oswald + Chakra Petch + JetBrains Mono，`font-display: swap`） | Arknights 皮肤；别的皮肤想要官网字体时再加它。独立成模块是为了能整体关掉（用户偏好 / Gadget / 低带宽），关掉后字体链自然退到装机 / 系统字。RL 只重写 `url()` 路径、不内联（没写 `@embed`），浏览器按 `unicode-range` 只取用到的片；上线时确认 CSSMin 没有改动 `unicode-range` |
+| `skins.akds.fonts` | `fonts.css`（122 条 `@font-face`：Novecento Sans Wide（含 1 条给 800 接大写高度数字的面，见[字体排印](/foundations/typography#字族)）+ Bender+ Noto Sans SC 101 片 + Oswald + Chakra Petch + JetBrains Mono，`font-display: swap`） | Arknights 皮肤；别的皮肤想要官网字体时再加它。独立成模块是为了能整体关掉（用户偏好 / Gadget / 低带宽），关掉后字体链自然退到装机 / 系统字。RL 只重写 `url()` 路径、不内联（没写 `@embed`），浏览器按 `unicode-range` 只取用到的片；上线时确认 CSSMin 没有改动 `unicode-range` |
 | `skins.akds.shell` | `chrome/`（L2 皮肤骨架：页眉 / 头图 / 侧栏 / 页面头 / 目录 / 页脚 / 搜索面板 / 响应式），逐文件列出（15 个） | 只有 Arknights 皮肤 |
 | `skins.akds.tokens` | `tokens.css` + `scope.css`（= `skins.akds.components` 的开头两个文件） | **不进皮肤的 `styles`**；别的皮肤上只要令牌（Gadget / 自写样式）时加载。Arknights 皮肤上令牌已随 components 到位，再加载它只是重复一份 |
 | `skins.akds.js` | `skin.js` + `sidebar-tree.js` + `search-palette.js` + `search-providers.js`（`packageFiles`）；依赖 `mediawiki.user` / `mediawiki.util` / `mediawiki.cookie` / `mediawiki.api` | 所有页面 |
@@ -56,8 +56,8 @@ node scripts/css-order.ts --write   # 同步进 skin/skin.json（五个模块的
 | `skins.akds.shell`（15 个文件：`chrome/`） | 71 KB | 20 KB |
 | **皮肤加载的 CSS 合计**（上三项） | **≈ 321 KB** | **≈ 84 KB** |
 | 同上，去掉注释与多余空白后（≈ ResourceLoader 压缩后） | ≈ 198 KB | ≈ 35 KB |
-| 字体：`fonts.css`（121 条 `@font-face`，另计） | 111 KB | 32 KB |
-| 字体文件 `fonts/`（另计，按需下载） | ≈ 5.0 MB 落盘 | — |
+| 字体：`fonts.css`（122 条 `@font-face`，另计） | 112 KB | 32 KB |
+| 字体文件 `fonts/`（另计，按需下载） | ≈ 5.1 MB 落盘 | — |
 | 别的皮肤上：`skins.akds.components`（去注释空白后） | ≈ 118 KB | ≈ 21 KB |
 
 按文件 / 层（未压缩 / gzip）：tokens 33 / 9 KB · bridge-codex 5.5 / 1.5 KB · scope 13 / 4 KB · base 54 / 15 KB · components 62 / 17 KB · decor 8 / 2.5 KB · arknights 64 / 17 KB · chrome 71 / 20 KB · utilities 7 / 2 KB · forced-colors 4 / 1.5 KB。源码注释很多，未压缩的数字大约三成是注释；线上经 RL 压缩后才是实际传输量。`packages/css/src` 下全部 CSS（含各层 `index.css`、`standalone.css`、不进皮肤的 `charinfo.css` / `demo-theme.css`，不含 `fonts.css`）是 361 KB / 93 KB。

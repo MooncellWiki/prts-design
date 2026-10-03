@@ -1,13 +1,12 @@
 # Novecento Sans Wide
 
-来源：明日方舟官网（https://ak.hypergryph.com/）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源）。
-改动：只补了一张 gasp 表（version 1，全字号 0x000F = 含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表未动——原文件没有 gasp，Windows 上的 Chrome 对 ≤ 20px 的 Bender Bold 只做横向抗锯齿，曲线出锯齿（scripts/fetch-fonts.py · with_gasp）。
-授权：商用（Synthview）· 官网同源文件。PRTS.wiki 为明日方舟官方赞助站点，按与鹰角网络同一组织下共用授权使用（项目方决定，见文档站 /foundations/typography#字族）。
-注意：官网发布的是 ASCII 子集（各 101 字形），非 ASCII 字符由 tokens.css 字体链后段接住。
+来源：UltraBold 是明日方舟官网（https://ak.hypergryph.com/）自托管的 woff2 原文件（web.hycdn.cn，Next.js 静态资源）。
+改动：UltraBold 只补了一张 gasp 表（version 1，全字号 0x000F = 含 symmetric smoothing，同 Fontsource 各族），字形 / 度量 / 其它表未动（scripts/fetch-fonts.py · with_gasp）。
+注意：UltraBold 是官网发布的 ASCII 子集（101 字形），非 ASCII 字符由 tokens.css 字体链后段接住；Medium / DemiBold / Bold 是完整的 590 字形（带 lnum）。
 
 | 文件 | 字重 | 抓取地址 |
 |---|---|---|
-| Novecentosanswide-Medium.woff2 | 500 | https://web.hycdn.cn/arknights/official/_next/static/media/Novecentosanswide-Medium.7a5c757a.woff2 |
-| Novecentosanswide-DemiBold.woff2 | 600 | https://web.hycdn.cn/arknights/official/_next/static/media/Novecentosanswide-DemiBold.e7b6abe4.woff2 |
-| Novecentosanswide-Bold.woff2 | 700 | https://web.hycdn.cn/arknights/official/_next/static/media/Novecentosanswide-Bold.9c78a9fd.woff2 |
+| Novecentosanswide-Medium.woff2 | 500 | — |
+| Novecentosanswide-DemiBold.woff2 | 600 | — |
+| Novecentosanswide-Bold.woff2 | 700 | — |
 | Novecentosanswide-UltraBold.woff2 | 800 | https://web.hycdn.cn/arknights/official/_next/static/media/Novecentosanswide-UltraBold.e5e00ac9.woff2 |

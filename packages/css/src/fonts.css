@@ -1,6 +1,7 @@
 /*! PRTS Design — 自托管 Web 字体（scripts/fetch-fonts.py 生成，勿手改；重跑：python3 scripts/fetch-fonts.py）
  *  各族链见 tokens.css「Typography」。url() 相对本文件（src/）；MW 皮肤侧 resources/fonts.css + resources/fonts/ 是指向 src/ 的符号链接，ResourceLoader 按 resources/ 重写路径。
- *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集，落盘时补了 gasp 表；PRTS 为官方赞助站点，与鹰角同一组织下共用授权）：
+ *  · 官网同源（ak.hypergryph.com 静态资源，ASCII 子集，落盘时补了 gasp 表）；
+ *    Novecento 的 500–700 是完整字形的文件（590 字形，带 lnum）：
  *      Novecento Sans Wide      → fonts/novecento-sans-wide/  · 拉丁展示字（--ak-font-display）
  *      Bender                   → fonts/bender/  · HUD 标签 / 数值（--ak-font-label），也是 --ak-font-display 的第二位
  *  · Fontsource npm 包（= Google Fonts 同批 woff2 切片 + unicode-range，OFL-1.1，版本钉死）：
@@ -10,11 +11,13 @@
  *      @fontsource-variable/jetbrains-mono@5.3.0     → fonts/jetbrains-mono/  · 等宽（--ak-font-mono）
  */
 
-/* ── Novecento Sans Wide · 官网同源 · 拉丁展示字（--ak-font-display） */
+/* ── Novecento Sans Wide · 500–700 完整字形 · 800 官网同源 · 拉丁展示字（--ak-font-display） */
 @font-face { font-family: "Novecento Sans Wide"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/novecento-sans-wide/Novecentosanswide-Medium.woff2") format("woff2"); }
 @font-face { font-family: "Novecento Sans Wide"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/novecento-sans-wide/Novecentosanswide-DemiBold.woff2") format("woff2"); }
 @font-face { font-family: "Novecento Sans Wide"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/novecento-sans-wide/Novecentosanswide-Bold.woff2") format("woff2"); }
 @font-face { font-family: "Novecento Sans Wide"; font-style: normal; font-weight: 800; font-display: swap; src: url("fonts/novecento-sans-wide/Novecentosanswide-UltraBold.woff2") format("woff2"); }
+/* 大写高度的数字 / 标点（lnum）：这个字重只有官网的 ASCII 子集、没有 lnum，这些字符取 Novecentosanswide-Bold.woff2 的完整文件（scripts/fetch-fonts.py · caps_from） */
+@font-face { font-family: "Novecento Sans Wide"; font-style: normal; font-weight: 800; font-display: swap; src: url("fonts/novecento-sans-wide/Novecentosanswide-Bold.woff2") format("woff2"); unicode-range: U+23, U+28-29, U+2D, U+30-3B, U+5B, U+5D, U+7B, U+7D; }
 
 /* ── Bender · 官网同源 · HUD 标签 / 数值（--ak-font-label），也是 --ak-font-display 的第二位 */
 @font-face { font-family: "Bender"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/bender/Bender-Regular.woff2") format("woff2"); }

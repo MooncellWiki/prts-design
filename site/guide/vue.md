@@ -33,7 +33,7 @@ import { AkButton, AkScope } from "@mooncellwiki/prts-design-vue";
 - 作用域在别的宿主上还会把宿主的页面环境换成 Arknights 皮肤上组件看到的那一套：宿主往下传的文字属性回到初始值；宿主对 `h1`–`h6` / `p` / 列表 / `img` / `code` 等元素的规则在组件元素和 `ak-not-prose` 子树里退回浏览器默认；裸 `<button>` / `<input>` / 勾选框的外观与皮肤一致；整块是链接的组件不被染成链接色。`e2e/hosts.spec.ts` 逐元素核过三种宿主一致（见[贡献一个组件 · 改 CSS 之后](/guide/contributing#改-css-之后)）。
 - 组件里夹的**正文内容**（不带 `ak-` 类、不在 not-prose 里的段落 / 列表 / 链接）跟着宿主自己的正文排版走——MW 正文排版（`base/`）不随包走。
 
-**哪些东西不随包走**：字体（`fonts.css` + `fonts/`，Novecento / Bender 不可转授；站外退到令牌里 Oswald / Chakra Petch / 系统字的回退链）· 游戏素材 `img/`（`.ak-item--bare` 的稀有度底框经 `base/skin-assets.css` 的 `--ak-item-bg-1…6` 取，站外没有底框）· Codex 桥接 `bridge-codex.css`（加载到别的皮肤上会改掉宿主自己的 Codex 配色）· `base/`（MW 正文排版；在 npm 包里，别的 MediaWiki 站想用可以自己 import）· `chrome/`（皮肤骨架）。
+**哪些东西不随包走**：字体（`fonts.css` + `fonts/`；站外退到令牌里 Oswald / Chakra Petch / 系统字的回退链）· 游戏素材 `img/`（`.ak-item--bare` 的稀有度底框经 `base/skin-assets.css` 的 `--ak-item-bg-1…6` 取，站外没有底框）· Codex 桥接 `bridge-codex.css`（加载到别的皮肤上会改掉宿主自己的 Codex 配色）· `base/`（MW 正文排版；在 npm 包里，别的 MediaWiki 站想用可以自己 import）· `chrome/`（皮肤骨架）。
 
 仓库内的 Storybook / 文档站引的是皮肤全套 `packages/css/src/index.css`；Storybook 工具栏的「宿主」可以切到 Vector 2022 / 站外，看同一个组件在别的宿主上的样子。
 
