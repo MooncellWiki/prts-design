@@ -69,19 +69,21 @@
  *  代价是同一宽度下窗口一变高矮轮播就跟着缩、矮屏上图框被压扁，退回只按宽度。）
  *  **图下不再放说明栏**：曾有一条「类别 / 标题 | 起止 + 倒计时 | 06 / 07 · 指示条 · 暂停」，宽屏多占 66px、手机上叠成三四行，
  *  而它说的横幅自己都写着（活动图上有标题和开放时间，寻访图上有卡池名和干员），去掉。标题改作主图的 alt，读屏和指示条的悬停提示照旧有名字。
- *  左右箭头压在图的两侧、竖向居中，指示条压在图底边正中：鼠标移进轮播才浮出（同旧轮播，平时不挡画面），键盘聚焦时也出；触屏（hover: none）常显——手指也能直接滑。
- *  指示条一张一格，点哪格跳到哪张；**自动播放进度长在当前格里**（青色从左到右填满就切下一张）。
+ *  左右箭头压在图的两侧、竖向居中：鼠标移进轮播才浮出（同旧轮播，平时不挡画面），键盘聚焦时也出；触屏不出——手指直接滑。
+ *  指示条压在图的右下角、常显、没有底（同旧轮播：一排白条 + 投影，当前格实白），一张一格，点哪格跳到哪张；**自动播放进度长在当前格里**（青色从左到右填满就切下一张）。
+ *  （箭头和指示条曾在触屏上常显、指示条在底边正中垫一块半透明黑：手机上图框只有 110–125px 高，两个箭头 + 一条黑底盖掉画面的 16%，
+ *  现网反馈「挡住活动的图片」，退回旧轮播的做法。）
  *  不放暂停键：鼠标在轮播上、键盘焦点在轮播里时停住，轮播滚出视口 / 标签页在后台时也停；prefers-reduced-motion 下不自动播、切换无动画。无 JS：Swiper CSS 只露第一张。
- *  两套主题只差在框线、铺底和焦点环：**终端（暗）**框线 #2f3133、模糊铺底压暗、焦点环官网青 cyan-500（同页眉，「黑框」的语言）；
- *  **档案（亮）**框线 / 焦点环走正文令牌（蓝 blue-500 = 亮色的 --ak-accent），铺底不压暗、半透明压在浅灰上成一层淡淡的同色晕——亮色下它就是正文里的一张图，不夹一块黑。
- *  箭头和指示条两版一样：它们压在画面上，跟画走、不跟主题走（半透明黑底，箭头白、悬停黑白反转；指示条白格、当前格青）。
+ *  两套主题只差在框线和焦点环：**终端（暗）**框线 #2f3133、焦点环官网青 cyan-500（同页眉，「黑框」的语言）；
+ *  **档案（亮）**框线 / 焦点环走正文令牌（蓝 blue-500 = 亮色的 --ak-accent）。
+ *  画面上的东西两版一样，跟画走、不跟主题走：寻访图两侧的模糊铺底（同旧轮播，不压暗、不透明）、箭头（半透明黑底白箭头、悬停黑白反转）、指示条（白条、当前格实白 + 青色进度）。
  *  （图下曾有说明栏和「Web Event」网页活动列表，暗色下整块是黑面板，得在容器上重映射一遍中性色令牌给里面的标签 / 倒计时用；两块都去掉了——
  *  说明栏的信息横幅上都有，网页活动并进「今日信息」的补充说明——只剩上面几个变量。） */
 .mp-hero {
   /* 白版（默认 = 档案模式）：全由正文令牌推导 */
   --mp-hero-line: var(--ak-border);
   --mp-hero-accent: var(--ak-accent);   /* 焦点环 */
-  --mp-hero-pic-bg: var(--ak-bg-surface-2); --mp-hero-pic-filter: blur(22px) saturate(.8); --mp-hero-pic-opacity: .5;   /* 图框底 + 铺底模糊图：白版不压暗，半透明压在浅灰上 */
+  --mp-hero-pic-bg: var(--ak-bg-surface-2);   /* 图框底（图没载入时看得见） */
   --mp-hero-w: 960px;   /* 图框最宽（= 活动横幅原图宽） */
   container: mp-hero / inline-size;   /* 箭头的尺寸按 Hero 自己的宽度切 */
   box-sizing: content-box; max-width: var(--mp-hero-w); margin-inline: auto;   /* 内容区 = 图框宽（框线在外）；正文列里居中 */
@@ -89,48 +91,52 @@
 }
 /* 黑版（终端模式）：三种暗色选择器同 tokens.css / demo-theme.css——显式 dark、MW 的 clientpref-night、跟随系统且系统为暗（那一种没有 data-theme，只按 [data-theme] 分支会漏） */
 :root[data-theme="dark"] .mp-hero, html.skin-theme-clientpref-night .mp-hero {
-  --mp-hero-line: #2f3133; --mp-hero-accent: var(--ak-cyan-500);
-  --mp-hero-pic-bg: #1d1f20; --mp-hero-pic-filter: blur(22px) brightness(.55); --mp-hero-pic-opacity: 1;
+  --mp-hero-line: #2f3133; --mp-hero-accent: var(--ak-cyan-500); --mp-hero-pic-bg: #1d1f20;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not(.skin-theme-clientpref-day):not([data-theme="dark"]):not(.skin-theme-clientpref-night) .mp-hero {
-    --mp-hero-line: #2f3133; --mp-hero-accent: var(--ak-cyan-500);
-    --mp-hero-pic-bg: #1d1f20; --mp-hero-pic-filter: blur(22px) brightness(.55); --mp-hero-pic-opacity: 1;
+    --mp-hero-line: #2f3133; --mp-hero-accent: var(--ak-cyan-500); --mp-hero-pic-bg: #1d1f20;
   }
 }
 .mp-hero__stage { position: relative; min-width: 0; }   /* 箭头 / 指示条的定位祖先（高 = 图框高） */
 .mp-hero__swiper { width: 100%; }   /* .swiper 自带 position:relative + overflow:hidden */
 .mp-hero__pic { display: block; position: relative; aspect-ratio: 960 / 308; background: var(--mp-hero-pic-bg); overflow: hidden; }   /* = 活动横幅的比例：活动图正好铺满，寻访图 contain 居中 */
-.mp-hero__pic img { position: relative; width: 100%; height: 100%; object-fit: contain; display: block; }   /* 整幅显示不裁：现网横幅两种比例（活动 960×308 ≈ 3.1:1、寻访 960×524 ≈ 1.8:1），cover 会把寻访图的标题 / 干员裁掉 */
-.mp-hero__pic .mp-hero__bg { position: absolute; inset: 0; object-fit: cover; transform: scale(1.12); filter: var(--mp-hero-pic-filter); opacity: var(--mp-hero-pic-opacity); }   /* 比例对不上的留白由同一张图放大模糊铺底（cover，主图在上层 contain；黑版压暗、白版半透明）；放大 12% 把 blur 的透明毛边推出框外。生产环境 = 同一文件再嵌一次、加 class，不能用 style="--bg:url()"（MW 清洗器不放行 url()） */
-/* 箭头与指示条压在图上，同一种出法：鼠标移进轮播才浮出（平时不挡画面），键盘聚焦时也出；触屏（hover: none）常显。
- *  它们跟画走、不跟主题走：半透明黑底，两版一样（箭头白字、悬停黑白反转；指示条白格、当前格青） */
+.mp-hero__pic img { position: relative; width: 100%; height: 100%; object-fit: contain; display: block; filter: drop-shadow(0 0 10px #000); filter: drop-shadow(0 0 clamp(4px, 1.07cqw, 10px) #000); }   /* 整幅显示不裁：现网横幅两种比例（活动 960×308 ≈ 3.1:1、寻访 960×524 ≈ 1.8:1），cover 会把寻访图的标题 / 干员裁掉。主图四周一圈黑投影（drop-shadow 跟着画出来的那块走，不是整个 img 盒子），把它从铺底上托起来；活动图铺满，投影落在框外被裁掉 */
+.mp-hero__pic .mp-hero__bg { position: absolute; inset: 0; object-fit: cover; object-position: top; transform: scale(1.12); filter: blur(20px); filter: blur(clamp(8px, 2.14cqw, 20px)); }   /* 比例对不上的留白由同一张图铺底，做法同旧轮播（Widget:mp-carousel-div）：铺满宽、顶对齐、blur(20px)，原亮度不压暗、不透明，两版一样；上层主图 contain + 黑投影。
+   旧轮播是 936×300 整块 transform 缩放，模糊和投影跟着图一起缩；这里图框按宽度收，半径写成 cqw（20 / 936、10 / 936），手机上不会糊成一片色块。不认 cqw 的浏览器用前一条的定值。
+   比旧轮播多放大 12%：把 blur 的透明毛边推出框外（旧轮播左右两端发白就是这道毛边）。生产环境 = 同一文件再嵌一次、加 class，不能用 style="--bg:url()"（MW 清洗器不放行 url()） */
+/* 箭头压在图的两侧：鼠标移进轮播才浮出（平时不挡画面），键盘聚焦时也出；触屏不出。跟画走、不跟主题走：半透明黑底白箭头，悬停黑白反转，两版一样 */
 .mp-hero__nav { position: absolute; z-index: 2; top: 50%; display: grid; place-items: center; width: 40px; height: 72px; margin-top: -36px; padding: 0; border: 0; background: rgba(0,0,0,.5); color: #fff; cursor: pointer; opacity: 0; transition: opacity var(--ak-dur-fast), background var(--ak-dur-fast), color var(--ak-dur-fast); }
 .mp-hero__nav[hidden], .mp-hero__pager[hidden] { display: none; }   /* 只有一张时脚本收起 */
 .mp-hero__nav--prev { left: 0; }
 .mp-hero__nav--next { right: 0; }
 .mp-hero__nav .ak-icon { width: 24px; height: 24px; }
 .mp-hero__nav:hover { background: #fff; color: #000; }   /* 悬停黑白反转（游戏 btn_on / off） */
-.mp-hero__pager { position: absolute; z-index: 2; bottom: 0; left: 0; right: 0; box-sizing: border-box; width: fit-content; max-width: calc(100% - 24px); margin-inline: auto; display: flex; gap: 4px; padding: 0 8px; background: rgba(0,0,0,.5); opacity: 0; transition: opacity var(--ak-dur-fast); }   /* 贴图底边正中，同箭头贴左右边 */
-.mp-hero__stage:hover :is(.mp-hero__nav, .mp-hero__pager), .mp-hero__nav:focus-visible, .mp-hero__pager:has(:focus-visible) { opacity: 1; }
-@media (hover: none) { .mp-hero__nav, .mp-hero__pager { opacity: 1; } }   /* 触屏没有「移进来」：常显 */
-.mp-hero__dot { position: relative; flex: 0 1 auto; width: 24px; min-width: 8px; height: 20px; padding: 0; border: 0; background: none; cursor: pointer; }   /* 点按区 20px 高，看得见的只有中间 4px 一条（同旧轮播的指示条）。宽写在 width 上而不是 flex-basis：指示条按内容收窄，空按钮的固有宽度只认 width；张数多、图又窄时往下压（到 8px 下限） */
-.mp-hero__dot::before, .mp-hero__dot::after { content: ""; position: absolute; left: 0; right: 0; top: 8px; height: 4px; background: rgba(255,255,255,.3); transition: background var(--ak-dur-fast); }
+.mp-hero__stage:hover .mp-hero__nav, .mp-hero__nav:focus-visible { opacity: 1; }
+@media (hover: none), (pointer: coarse) { .mp-hero__nav { display: none; } }   /* 触屏不出箭头：手指直接滑，要跳到某一张点指示条。整个收掉而不是留一块透明的——透明的照样接点按，点在图两侧会翻页而不是进链接 */
+/* 指示条：同旧轮播（Gadget-carousel.css 的 .carousel-indicator）——压在图的右下角、常显、没有底，一排白条 + 投影；鼠标移进轮播时白条长高一倍。
+ *  旧轮播是 50 × 5 的白条、间隔 10、距右 40 距底 20，随整块一起缩；这里每格宽写成 cqw（60 / 936），其余在下面的容器查询里分两档 */
+.mp-hero__pager { position: absolute; z-index: 2; right: 35px; bottom: 15px; max-width: calc(100% - 70px); display: flex; }
+.mp-hero__dot { position: relative; flex: 0 1 auto; width: 60px; width: clamp(20px, 6.41cqw, 60px); min-width: 8px; height: 20px; padding: 0; border: 0; background: none; cursor: pointer; }   /* 点按区整格 20px 高、格与格相接（间隔画在格内两侧，点在两条之间不会漏到下面的链接上），看得见的只有贴底的一条。宽写在 width 上而不是 flex-basis：指示条按内容收窄，空按钮的固有宽度只认 width；张数多、图又窄时往下压（到 8px 下限） */
+.mp-hero__dot::before, .mp-hero__dot::after { content: ""; position: absolute; left: 5px; right: 5px; bottom: 5px; height: 5px; background: rgba(255,255,255,.5); transition: height var(--ak-dur-fast), background var(--ak-dur-fast); }
+.mp-hero__dot::before { box-shadow: 0 5px 10px #000; }   /* 没有底，靠投影从画面上分出来：浅色横幅上白条也看得见 */
 .mp-hero__dot::after { display: none; }
-.mp-hero__dot:hover::before { background: rgba(255,255,255,.6); }
-.mp-hero__dot[aria-current="true"]::before { background: rgba(24,209,255,.35); }   /* 当前格 = 压暗的青当轨道（cyan-500）；底是固定的半透明黑，亮色主题下也用青，蓝 blue-500 压在黑上看不清 */
-.mp-hero__dot[aria-current="true"]::after { display: block; background: var(--ak-cyan-500); transform-origin: left; transition: none; animation: mp-hero-progress 6s linear both; }   /* 自动播放进度 = 一段 6 秒的 CSS 动画（只动 transform，在合成器上跑）；当前格一换就从头播，播完脚本切下一张 */
+.mp-hero__stage:hover .mp-hero__dot::before, .mp-hero__stage:hover .mp-hero__dot::after { height: 10px; }
+.mp-hero__dot:hover::before, .mp-hero__dot[aria-current="true"]::before { background: #fff; }   /* 当前格 = 实白当轨道（同旧轮播的 .slick-active），随时看得出在第几张——鼠标移进来时进度是停着的 */
+.mp-hero__dot[aria-current="true"]::after { display: block; background: var(--ak-cyan-500); transform-origin: left; transition: height var(--ak-dur-fast); animation: mp-hero-progress 6s linear both; }   /* 自动播放进度 = 一段 6 秒的 CSS 动画（只动 transform，在合成器上跑）；当前格一换就从头播，播完脚本切下一张。亮色主题下同样用官网青：它压在画面上，不跟主题走 */
 .mp-hero.is-held .mp-hero__dot[aria-current="true"]::after { animation-play-state: paused; }   /* 停住 = 动画停住：停着进度不走、继续时接着走（is-held 由脚本按 鼠标在块里 / 拖动 / 不在视口 / 后台标签页 合成） */
 .mp-hero:has(:focus-visible) .mp-hero__dot[aria-current="true"]::after { animation-play-state: paused; }   /* 键盘焦点在块里也停；单写一条，不认 :has() 的浏览器只丢这一条 */
-.mp-hero.is-stopped .mp-hero__dot[aria-current="true"]::before { background: var(--ak-cyan-500); }   /* 不自动播（prefers-reduced-motion）：没有填充，轨道变实色 = 纯「当前格」 */
-.mp-hero.is-stopped .mp-hero__dot[aria-current="true"]::after { visibility: hidden; }
+.mp-hero.is-stopped .mp-hero__dot[aria-current="true"]::after { visibility: hidden; }   /* 不自动播（prefers-reduced-motion）：没有填充，只剩实白的轨道 = 纯「当前格」 */
 @keyframes mp-hero-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .mp-hero__pic:has(> a:focus-visible), .mp-hero__nav:focus-visible, .mp-hero__dot:focus-visible { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的大图 / 箭头 / 指示条：焦点环内缩 */
-/* Hero 窄于 640px（手机）：箭头小一号，指示条每格收窄（图只有 110–200px 高，触屏上它又常显，少挡一点画面） */
+/* Hero 窄于 640px（手机 / 窄窗口）：箭头小一号；指示条的白条、间隔、边距、投影按旧轮播缩到这个宽度时的样子收（图只有 110–200px 高） */
 @container mp-hero (max-width: 639px) {
   .mp-hero__nav { width: 32px; height: 52px; margin-top: -26px; }
   .mp-hero__nav .ak-icon { width: 20px; height: 20px; }
-  .mp-hero__dot { width: 16px; }
+  .mp-hero__pager { right: 10px; bottom: 2px; max-width: calc(100% - 20px); }
+  .mp-hero__dot::before, .mp-hero__dot::after { left: 2px; right: 2px; height: 3px; }
+  .mp-hero__dot::before { box-shadow: 0 2px 4px #000; }
+  .mp-hero__stage:hover .mp-hero__dot::before, .mp-hero__stage:hover .mp-hero__dot::after { height: 6px; }
 }
 
 /* ── 3. 入口网格：12 个（现网 mpbutton）——主题色面 + 白线稿图标（亮色反相），悬停黑白反转（游戏 btn_on / off）。
@@ -632,7 +638,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
 
 <div class="mp ak-not-prose">   <!-- 整个首页是拼出来的 UI 不是文章：标 ak-not-prose，正文排版（标题色条 / 列表符 / 链接色含 :visited）一律不进来；要像正文链接的地方见 .mp-link -->
 
-<!-- ═══ 1. Hero：Swiper 自动轮播（现网轮播的 7 张）+ 左右箭头 + 图底边的指示条 ═══
+<!-- ═══ 1. Hero：Swiper 自动轮播（现网轮播的 7 张）+ 左右箭头 + 图右下角的指示条 ═══
      每张 slide 只有一张横幅，整张是链接；标题写在主图的 alt 上（铺底那张 alt 留空，不读两遍）。
      箭头与指示条在 Swiper 外、所有张共用，指示条一张一格，由脚本按张数生成（模板不用知道有几张）。无 JS：Swiper CSS 只露第一张 -->
 <section class="mp-hero" id="mp-hero" aria-label="当前活动与寻访">
