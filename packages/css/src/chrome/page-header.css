@@ -37,19 +37,19 @@
  * 它们只在不是当前态时才是一个动作：讨论页上出现「页面」、历史 / diff 页上出现「阅读」（diff 页 body 仍是 action-view，皮肤要用 :has(.diff) 把 #ca-view 放回来）。 */
 .ak-page-tabs li.selected { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .action-view:has(.diff, .mw-revision) .ak-page-tabs li#ca-view { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: nowrap; }   /* diff / oldid 页 body 仍是 action-view，核心把「阅读」标成 selected：这里把回到文章的那一个放回来（同 Citizen） */
-/* 32px 幽灵按钮：1px 透明框（实底 / 细框变体只换颜色，不改尺寸） */
+/* 32px 幽灵按钮：1px 透明框（「编辑」的实底变体只换颜色，不改尺寸） */
 .ak-page-tabs li a, .ak-page-tools__btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border: 1px solid transparent; box-sizing: border-box; font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1; color: var(--ak-fg-secondary); text-decoration: none; white-space: nowrap; cursor: pointer; transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
 .ak-page-tabs li a:hover, .ak-page-tools__btn:hover { color: var(--ak-fg); background: var(--ak-bg-hover); text-decoration: none; }
 .ak-page-tabs li a:focus-visible, .ak-page-tools__btn:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 .ak-page-tabs .ak-icon, .ak-page-tools__btn .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
 .ak-page-tabs li a:hover .ak-icon, .ak-page-tools__btn:hover .ak-icon { color: var(--ak-fg); }
 .ak-page-tabs li.new a { color: var(--ak-link-new); }
-/* 主动作：「编辑」是簇里唯一的实底（#ca-edit / #ca-ve-edit）；不可编辑时这一格是细框「查看源代码」——不上色，它不是一个「鼓励你做」的动作 */
+/* 主动作：「编辑」是簇里唯一的实底（#ca-edit / #ca-ve-edit）；不可编辑时这一格是「查看源代码」#ca-viewsource——跟讨论 / 查看历史同一种幽灵按钮，不加框也不提亮：
+ * 它不是一个「鼓励你做」的动作，单独一格细框在未登录读者眼里只像是样式没对齐 */
 #ca-edit > a, #ca-ve-edit > a { background: var(--ak-accent); color: var(--ak-accent-fg); border-color: var(--ak-accent); }
 #ca-edit > a .ak-icon, #ca-ve-edit > a .ak-icon { color: inherit; }
 #ca-edit > a:hover, #ca-ve-edit > a:hover { background: var(--ak-accent-hover); border-color: var(--ak-accent-hover); color: var(--ak-accent-fg); }
 #ca-edit > a:hover .ak-icon, #ca-ve-edit > a:hover .ak-icon { color: inherit; }
-#ca-viewsource > a { border-color: var(--ak-border); color: var(--ak-fg); }
 /* ★ 监视 / 取消监视：纯图标，已监视黄（--ak-accent-2） */
 #ca-watch > a, #ca-unwatch > a { padding: 0 6px; }
 #ca-watch > a > span:not(.ak-icon), #ca-unwatch > a > span:not(.ak-icon) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
