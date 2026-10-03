@@ -5,7 +5,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 # 页面头
 
-`header.ak-page-header`：正文白纸上方的两行——上行是面包屑（或命名空间小标）与页面状态指示器，下行是页面标题 `h1#firstHeading` 与**页面动作簇**（Citizen 式）。
+`header.ak-page-header`：正文白纸上方的两行——上行是面包屑（或命名空间小标）与页面状态指示器，下行是页面标题 `h1#firstHeading` 与**页面动作簇**（Citizen 式）。上行没有内容时整行收起、不占高度：主名字空间的页面没有命名空间小标，没有指示器、或只有扩展先放着的空指示器（SMW 的实体检查查到问题前是空的）都算没有内容；脚本事后把指示器填上，这一行会自己出来（`:has()`）。
 
 <SkinFrame :height="360" highlight=".ak-page-header" />
 

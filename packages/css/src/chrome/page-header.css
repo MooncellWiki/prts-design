@@ -3,9 +3,13 @@
 .ak-page-header { margin-bottom: var(--ak-space-5); }
 .ak-page-header__top { display: flex; align-items: center; gap: var(--ak-space-3); min-height: 24px; margin-bottom: 4px; }
 .ak-page-header__top:empty { display: none; }
+/* 只剩空的指示器也算空：扩展会先放一枚空的占位、查到问题才由脚本填进来（SMW 的实体检查；皮肤把只有空白的指示器 trim 成真正的 :empty）。
+ * 没有命名空间小标、也没有一枚非空的指示器就收起，不留 24px 的空行；脚本事后填进来，:has 会重新匹配、这一行再出来。不认 :has 的浏览器只走上一条 */
+.ak-page-header__top:not(:has(> :not(.mw-indicators), > .mw-indicators > :not(:empty))) { display: none; }
 .ak-page-header__top .mw-indicators { display: flex; flex-wrap: wrap; gap: var(--ak-space-2); margin-left: auto; float: none; font-size: var(--ak-fs-xs); }   /* MW 页面状态指示器（<indicator>）：靠右一排 */
 .ak-page-header__top .mw-indicators:empty { display: none; }
 .ak-page-header__top .mw-indicator { display: inline-flex; align-items: center; }
+.ak-page-header__top .mw-indicator:empty { display: none; }   /* 空占位不吃 gap */
 .ak-page-header__ns { font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); }   /* 同 .ak-card__eyebrow：命名空间是不可点的装饰小标签，不上青 */
 .ak-page-header__title, .skin-arknights .mw-body h1#firstHeading, .skin-arknights #firstHeading {
   font-family: var(--ak-font-body); font-size: var(--ak-fs-h1); font-weight: 800; line-height: 1.2; margin: 0;
