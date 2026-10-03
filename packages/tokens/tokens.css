@@ -644,7 +644,7 @@ html.skin-theme-clientpref-night,
   --ak-chrome-texture: .55;                /* 右侧半调网点强度 0–1（游戏顶栏 img_back / 官网左缘网点），0 关闭 */
   --ak-keyart-image: none;                 /* 头图（Key Visual）：从页面顶端铺起、垫在页眉与版面背后的一幅通栏画；--ak-keyart-h 为 0 时只在页眉后面透 */
   --ak-keyart-h: 0px;                      /* 页眉之下那段画的高度（画有多高，不是占多高——占位看 -reveal） */
-  --ak-keyart-reveal: 72px;                /* 留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带 */
+  --ak-keyart-reveal: 72px;                /* 留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带。≤639 为 0（functional/compact） */
   --ak-keyart-veil: 60%;                   /* 垫在版面背后那一段蒙的画布色纱：顶端的浓度，往下渐浓到 100%。画面越花调得越高；别低于 50%（侧栏 / 标题压在画上要读得清） */
   --ak-keyart-veil-filter: blur(8px);      /* 纱底下先给画加的 backdrop-filter：细节先糊开、再被纱盖住，亮色主题下读起来是雾 / 景深而不是隔着磨砂膜；none 关闭。画面鲜艳的主题可以再加 saturate(.6) 之类 */
   --ak-keyart-position: center 30%;        /* -position / -size 相对整块（页眉高 + -h）计算 */
@@ -658,7 +658,7 @@ html.skin-theme-clientpref-night,
   --ak-canvas-attachment: scroll;
 }
 
-/* ═══ 窄屏（≤ 639，与 Codex 的 640 断点一致）：标题档整档收一级（h4 / 正文及以下不动），版面 gutter / 页眉高 / 大区块间隔收紧；原始的 --ak-space-* 阶梯不动 ═══ */
+/* ═══ 窄屏（≤ 639，与 Codex 的 640 断点一致）：标题档整档收一级（h4 / 正文及以下不动），版面 gutter / 页眉高 / 大区块间隔收紧，头图不留露出段；原始的 --ak-space-* 阶梯不动 ═══ */
 @media (max-width: 639px) {
   :root {
     /* ─── typography */
@@ -678,6 +678,9 @@ html.skin-theme-clientpref-night,
     --ak-header-h: 52px;                   /* 宽屏 56 */
     --ak-gutter: var(--ak-gutter-sm);      /* 16（宽屏 24） */
     --ak-space-section: var(--ak-space-6);   /* 24（宽屏 32） */
+
+    /* ─── chrome · 窄屏的头图：不留露出段，版面（页面标题 / 动作行）直接从页眉之下排起、压在画上——手机首屏寸土寸金，画仍垫在页眉玻璃与版面背后透出来。主题显式设了 --ak-keyart-reveal 的照它的（chrome/keyart.css 在窄屏再收到 10vw 以内）。 */
+    --ak-keyart-reveal: 0px;               /* 宽屏 72 */
   }
 }
 

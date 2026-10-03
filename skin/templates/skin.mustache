@@ -100,7 +100,7 @@
   </div>
 </header>
 
-{{! 头图（Key Visual）：活动主题（Gadget / MediaWiki:Common.css）设 --ak-keyart-image / --ak-keyart-h 即出现，见 tokens.css §2d。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 72px；chrome/keyart.css 用负外边距实现，DOM 顺序不变） }}
+{{! 头图（Key Visual）：活动主题（Gadget / MediaWiki:Common.css）设 --ak-keyart-image / --ak-keyart-h 即出现，见 tokens.css §2d。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 72px、≤639 为 0；chrome/keyart.css 用负外边距实现，DOM 顺序不变） }}
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout{{^data-toc}} ak-layout--no-toc{{/data-toc}}">
