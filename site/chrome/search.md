@@ -26,7 +26,7 @@ mustache 先渲染真表单 `form.ak-header__search#searchform > #searchInput`�
 | 键 | 行为 |
 |---|---|
 | `/` · Ctrl / ⌘ K | 打开 |
-| `↑` / `↓` | 循环高亮；高亮行 = 左 2px 青条 + 淡青底（同侧栏当前项） |
+| `↑` / `↓` | 循环高亮，「没有高亮项」（回到输入框）也是循环里的一站，同 Google 的建议列表：最后一条 `↓` → 输入框 `↓` → 第一条，第一条 `↑` → 输入框 `↑` → 最后一条；命令列表与模式是选择器，首尾直接相接。高亮行 = 左 2px 青条 + 淡青底（同侧栏当前项） |
 | `↵` | 有高亮项 → 打开它；没有 → Go（精确标题直达，否则全文结果页） |
 | `⇧` `↵` | 全文搜索 |
 | `Esc` | 有字先清空，再按关闭 |
@@ -34,13 +34,17 @@ mustache 先渲染真表单 `form.ak-header__search#searchform > #searchInput`�
 
 **标题搜索不默认高亮第一条**——和旧 Vector 的建议下拉一样，回车去哪只取决于输入的字，而不是建议怎么排序、到没到：打「陈」回车不会因为第一条建议是「陈晖洁」就被带走，也不会在新结果到达前打开旧列表里的某一行（继续输入会立刻清掉高亮）。只有**精确命中**才预先高亮：某一行的标题（或命中的重定向 `matched`）与输入相同，或数据源给它标了 `exact: true`（本地索引的别名 / 拼音首字母整词命中，如 `yh` → 银灰）——这时回车打开的就是 Go 会去的那一页，高亮只是把去向提前亮出来。页脚的 `↵` 提示随之在「打开」与「前往」之间切换。命令列表与模式（动作 / 分类 / 用户 / 文件）是选择器、没有「前往」可言，仍默认高亮第一条。
 
-`⌘` / `Ctrl` `↵` 在新标签打开；模式里退格清空输入 / `←` / 返回键退出模式。打开的途径还有手机上页眉的图标按钮 `.ak-header__search-toggle` 与 accesskey F；关闭还有点遮罩、关闭按钮、选中结果。空查询时是最近访问（`localStorage['akds-recent']`，最多 8 条，只存标题 / 地址 / 描述 / 缩略图）+ 提示 + 快捷入口（取侧栏首个门户 `#p-navigation`）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时才显形，右侧元数据不跳）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。
+`⌘` / `Ctrl` `↵` 在新标签打开；模式里退格清空输入 / `←` / 返回键退出模式。打开的途径还有手机上页眉的图标按钮 `.ak-header__search-toggle` 与 accesskey F；关闭还有点遮罩、关闭按钮、选中结果。空查询时是最近访问（`localStorage['akds-recent']`，最多 8 条，只存标题 / 地址 / 描述 / 缩略图）+ 提示 + 快捷入口（取侧栏首个门户 `#p-navigation`）。行内动作只给最近访问一个「移除 ×」（始终占位、高亮时才显形，右侧元数据不跳；触屏上常显）；**不放** Citizen 那种每行「编辑」——面板里唯一的主动作是「打开」。
+
+鼠标 / 触控笔悬停会高亮所在行，手指点按不会——点按时浏览器先补发一次 move，行一高亮「移除 ×」就在指尖下显形，紧跟着的 click 正好点中它。触屏（`hover: none` + `pointer: coarse`）因此改成 × 常显、36px 见方：点得到的就是看得到的。
+
+模式里还没输入字、数据源也没有可列的东西时（`~` 文件；`#` 分类遇到没有分类的页面），列表位置显示该模式的说明 `desc`，不是「没有标题匹配」。
 
 触屏不显示键位提示；≤639 面板贴边 8px、「Esc」换成文字「取消」、结果行省掉类型标签与英文副标。
 
 ### 可访问性
 
-- 面板 `role="dialog"` + `aria-modal`；输入框 `role="combobox"`，焦点始终留在输入框里，高亮项经 `aria-activedescendant` 播报；结果条数由 `aria-live` 区域念出。
+- 面板 `role="dialog"` + `aria-modal`；输入框 `role="combobox"`，焦点始终留在输入框里，高亮项经 `aria-activedescendant` 播报；结果条数由 `aria-live` 区域念出。在面板里点结果行或非控件的地方（分组标题、快捷入口旁的空白、页脚）不夺焦；焦点万一落到面板外，按键仍归面板并把焦点拉回输入框。
 - `Tab` 在面板内循环；关闭后焦点回到触发器。
 - 触发器是 `<button>`，带 `aria-haspopup="dialog"` 与 `aria-keyshortcuts`。
 
@@ -56,7 +60,7 @@ MW 侧的数据源是 `skin/resources/search-providers.js`（与核心同在 `sk
 | 本地即时索引（可选） | `mw.hook('akds.search.local').fire(fn)` 注入 `fn(q) → Group[]`（Skin:Arknights：`mw.hook('skin.arknights.search')`） | 干员 / 道具 / 关卡 JSON（Cargo 定时导出到 `MediaWiki:*.json`，或 API 缓存到 IndexedDB），支持拼音首字母 / 别名、0 网络等待，还能给结构化元数据（职业图标、稀有度）——预览里 `yh` → 银灰、`nts` → 能天使演示的就是这一层 |
 | `>` 动作 | 本页菜单 `#p-views #p-cactions #p-tb #p-personal` + 常用特殊页面 | 同 Citizen「从页面菜单拉动作」 |
 | `#` 分类 | 空查询：本页所属分类（`prop=categories`）；有字：`list=prefixsearch&psnamespace=14` | |
-| `@` 用户 · `~` 文件 | `list=allusers&auprefix=` · `generator=prefixsearch&gpsnamespace=6&prop=pageimages` | |
+| `@` 用户 · `~` 文件 | `list=allusers&auprefix=` · `generator=prefixsearch&gpsnamespace=6&prop=pageimages` | 文件模式空查询不发请求：`gpssearch` 是必填参数，空串会被 API 以 `missingparam` 拒掉 |
 | 兜底 | `Special:Search?search=q&go=Go` / `…&fulltext=1` | 没有高亮项时回车 → Go；`⇧` `↵` 与末尾固定行 → 全文 |
 
 ::: warning 核心的 searchSuggest 要关掉

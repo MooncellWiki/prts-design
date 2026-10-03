@@ -81,7 +81,7 @@
 .ak-palette__meta .ak-prof { --_s: 22px; }
 .ak-palette__meta .ak-rarity { font-size: 11px; }
 .ak-palette__meta .ak-kbd { color: var(--ak-fg-muted); }
-/* 行内动作（目前只有最近访问的「移除 ×」）：始终占位、非高亮时不可见 —— 同组每行宽度一致，高亮时右侧元数据不会跳 */
+/* 行内动作（目前只有最近访问的「移除 ×」）：始终占位、非高亮时不可见 —— 同组每行宽度一致，高亮时右侧元数据不会跳；触屏没有悬停高亮，常显（见文件末尾） */
 .ak-palette__actions { flex: none; display: flex; align-items: center; gap: 2px; padding-right: 8px; visibility: hidden; }
 .ak-palette__item.is-active > .ak-palette__actions, .ak-palette__item:focus-within > .ak-palette__actions { visibility: visible; }
 .ak-palette__action { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 1px solid transparent; background: transparent; color: var(--ak-fg-muted); cursor: pointer; }
@@ -108,7 +108,11 @@
 .ak-palette__hints > span { display: inline-flex; align-items: center; gap: 4px; }
 .ak-palette__hints .ak-kbd { color: var(--ak-fg-muted); }
 .ak-palette__live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-@media (hover: none) and (pointer: coarse) { .ak-palette__hints { display: none; } }   /* 触屏不显示键盘提示 */
+@media (hover: none) and (pointer: coarse) {
+  .ak-palette__hints { display: none; }   /* 触屏不显示键盘提示 */
+  .ak-palette__actions { visibility: visible; padding-right: 4px; }   /* 触屏没有悬停高亮：行内动作常显，点得到的就是看得到的 */
+  .ak-palette__action { width: 36px; height: 36px; }
+}
 @media (max-width: 639px) {
   .ak-palette { --_top: 8px; left: 8px; right: 8px; width: auto; max-height: calc(100dvh - 16px); }
   .ak-palette__list { max-height: calc(100dvh - 16px - var(--_head-h) - var(--_foot-h) - 4px); }

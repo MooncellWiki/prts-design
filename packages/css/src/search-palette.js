@@ -13,8 +13,10 @@
  *    · 标题搜索不默认高亮第一条（同旧 Vector 的建议下拉）：没有高亮项时回车 → urls.go(q)（MW 原生 Go：精确跳转，无则全文），
  *      回车去哪只取决于输入的字，不取决于建议怎么排序 / 到没到。只有「精确命中」才预先高亮：标题（或 matched）与输入相同，
  *      或数据源标了 exact（本地索引的别名 / 拼音整词命中）。命令列表与模式（动作 / 分类 / 用户 / 文件）是选择器，仍默认高亮第一条。
- *    · ↑↓ 循环高亮，回车打开高亮项（⌘/Ctrl 回车新标签），⇧回车全文搜索；继续输入会清掉旧列表上的高亮。
- *    · 输入框始终持有焦点（列表 mousedown 阻止夺焦），aria-activedescendant 播报高亮项；Tab 在面板内循环。
+ *    · ↑↓ 循环高亮，「没有高亮项」（= 回到输入框）也是循环里的一站（同 Google 的建议列表）：最后一条 ↓ → 输入框 ↓ → 第一条；第一条 ↑ → 输入框 ↑ → 最后一条。
+ *      命令列表与模式是选择器、没有「前往」可回，首尾直接相接。回车打开高亮项（⌘/Ctrl 回车新标签），⇧回车全文搜索；继续输入会清掉旧列表上的高亮。
+ *    · 输入框始终持有焦点（面板里点非控件的地方不夺焦；焦点万一落到面板外，按键仍归面板并把焦点拉回输入框），aria-activedescendant 播报高亮项；Tab 在面板内循环。
+ *    · 鼠标 / 触控笔悬停会高亮所在行，手指点按不会（否则点一下就让行内动作显形并点中它）；触屏上行内动作常显（search-palette.css）。
  *    · 输入法组字中的按键（回车上屏、Esc、↑↓ 选字）全部交给输入法，组字结束后才按上面的规则处理。
  *
  *  API：window.akdsSearchPalette.init( options ) → { open, close, toggle, refresh, isOpen }
@@ -36,7 +38,7 @@
  *    Item = { id?, type: 'page'|'operator'|'item'|'category'|'action'|…, label, url?, desc?, thumb?(url), icon?(svg id: 'page'|'search'|'category'|'user'|'file'|'action'|'clock'),
  *             glyph?(单字，深底), meta?: [{ text?, html?, kbd? }], match?: boolean(默认 true：高亮已输入部分), en?,
  *             exact?: boolean(精确命中 → 预先高亮；缺省时按 label / matched 与输入是否相同判断), matched?(命中的重定向标题), keepOpen?, noRecent?, onSelect?() ,
- *             actions?: [{ id, label, icon: 'edit'|'close'|'external', url?, onClick?(item) }] }   ← 行内动作始终占位、高亮时可见；设计上只给最近访问用「移除」，搜索结果不放额外点击动作
+ *             actions?: [{ id, label, icon: 'edit'|'close'|'external', url?, onClick?(item) }] }   ← 行内动作始终占位、高亮时可见（触屏常显）；设计上只给最近访问用「移除」，搜索结果不放额外点击动作
  * ═══════════════════════════════════════════════════════════════════════════ */
 ( function () {
 	'use strict';
@@ -375,7 +377,9 @@
 				lastGroups = groups;
 				const withFt = ( !mode || mode.fulltext !== false ) && q ? groups.concat( [ { id: 'ft', tail: true, items: [ fulltextItem( q ) ] } ] ) : groups;
 				const none = !groups.length;
-				renderGroups( withFt, q, { highlight: mode ? 0 : 'exact', notice: none ? fmt( M.noResults, q ) + ( mode ? '' : ' · ' + M.noResultsDesc ) : null } );
+				// 模式里还没输入字、数据源也没有可列的东西：显示模式说明，而不是「没有标题匹配 “”」
+				const notice = !none ? null : ( q ? fmt( M.noResults, q ) + ( mode ? '' : ' · ' + M.noResultsDesc ) : ( mode && mode.desc ) || null );
+				renderGroups( withFt, q, { highlight: mode ? 0 : 'exact', notice: notice } );
 				updateHints();
 			}, ( err ) => {
 				if ( my !== seq || ( err && err.name === 'AbortError' ) ) { return; }
@@ -502,20 +506,24 @@
 			updateHints();
 			refresh( false );
 		} );
-		list.addEventListener( 'mousedown', ( e ) => { if ( !e.target.closest( '.ak-palette__action' ) ) { e.preventDefault(); } } );   // 保住输入框焦点
-		list.addEventListener( 'mousemove', ( e ) => { const row = e.target.closest( '.ak-palette__item' ); if ( row ) { const i = +row.dataset.index; if ( i !== active ) { setActive( i, false ); } } } );
+		// 保住输入框焦点：面板里点结果行或非控件的地方（分组标题、快捷入口旁 / 列表下方的空白、页脚）都不夺焦，否则焦点落到 body、按键就到不了面板
+		root.addEventListener( 'mousedown', ( e ) => { const ctl = e.target.closest( 'input, button, a' ); if ( !ctl || ctl.classList.contains( 'ak-palette__link' ) ) { e.preventDefault(); } } );
+		// 悬停高亮只认鼠标 / 触控笔：手指点按时浏览器会先补发一次 move，行一高亮「移除 ×」就显形，紧跟着的 click 正好落在它上面
+		list.addEventListener( 'pointermove', ( e ) => { if ( e.pointerType === 'touch' ) { return; } const row = e.target.closest( '.ak-palette__item' ); if ( row ) { const i = +row.dataset.index; if ( i !== active ) { setActive( i, false ); } } } );
 		list.addEventListener( 'click', ( e ) => {
 			if ( e.target.closest( '.ak-palette__action' ) ) { return; }
 			const row = e.target.closest( '.ak-palette__item' ); if ( !row ) { return; }
 			e.preventDefault();
 			selectIndex( +row.dataset.index, e );
 		} );
-		root.addEventListener( 'keydown', ( e ) => {
+		function onKeydown( e ) {
 			// 输入法组字中的按键（选字 / 直接上屏的回车、撤销组字的 Esc、翻候选的 ↑↓）归输入法：否则回车会当成 Go 跳走、关面板，
 			// 失焦又让组字再上屏一遍（输入框里出现两份）。Safari 的上屏回车在 compositionend 之后才到、isComposing 已是 false，只剩 keyCode 229
 			if ( e.isComposing || e.keyCode === 229 ) { return; }
-			if ( e.key === 'ArrowDown' ) { e.preventDefault(); setActive( active + 1 ); return; }
-			if ( e.key === 'ArrowUp' ) { e.preventDefault(); setActive( active < 0 ? -1 : active - 1 ); return; }
+			// ↑↓：标题搜索 / 空态里「没有高亮项」（回到输入框，回车 = Go）是循环里的一站；选择器（命令列表、模式）首尾直接相接
+			const picker = !!mode || query.trim()[ 0 ] === '/';
+			if ( e.key === 'ArrowDown' ) { e.preventDefault(); setActive( !picker && active === items.length - 1 ? -1 : active + 1 ); return; }
+			if ( e.key === 'ArrowUp' ) { e.preventDefault(); setActive( active < 0 || ( picker && active === 0 ) ? items.length - 1 : active - 1 ); return; }
 			if ( e.key === 'Home' && e.target === input && !query ) { e.preventDefault(); setActive( 0 ); return; }
 			if ( e.key === 'End' && e.target === input && !query ) { e.preventDefault(); setActive( items.length - 1 ); return; }
 			if ( e.key === 'Enter' ) {
@@ -544,10 +552,15 @@
 				i = ( i + ( e.shiftKey ? -1 : 1 ) + f.length ) % f.length;
 				e.preventDefault(); f[ i ].focus();
 			}
-		} );
+		}
+		root.addEventListener( 'keydown', onKeydown );
 		// 全局快捷键："/"（非表单焦点）、Ctrl/⌘K、accesskey F（Alt(+Shift)+F / Ctrl+Alt+F）
 		window.addEventListener( 'keydown', ( e ) => {
-			if ( isOpen ) { return; }
+			if ( isOpen ) {
+				// 面板开着而焦点在它外面（被别的脚本拿走、或落在 body 上）：面板是模态的，按键仍归它，焦点拉回输入框（接着打的字也进输入框）
+				if ( !root.contains( e.target ) && !e.isComposing && e.keyCode !== 229 ) { input.focus(); onKeydown( e ); }
+				return;
+			}
 			const mac = isMac();
 			const slash = e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey;
 			const ctrlK = ( e.ctrlKey || e.metaKey ) && !e.altKey && !e.shiftKey && ( e.key === 'k' || e.key === 'K' );
