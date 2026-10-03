@@ -59,24 +59,26 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 }
 /* ═══ 干员模型（Widget:SpineViewer = prts-widgets 的 SpineViewer）——.sv-* 是 Widget 自己的排布（放 Widget 的样式表），里面的按钮 / 芯片 / 开关 / 下拉是设计系统组件。
    选择条（时装 · 模型）→ 舞台 + 动作列表 → 时间轴 + 播放条。取舍见文档站 /patterns/operator#干员模型 ═══ */
-.sv { --sv-h: clamp(320px, 44vw, 440px); --sv-ink: 255, 255, 255; position: relative; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+.sv { --sv-ink: 255, 255, 255; position: relative; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
 .sv__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 10px 14px; background: var(--ak-bg-surface-2); border-bottom: 1px solid var(--ak-border); }
 .sv__field { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .sv__field:last-child { margin-left: auto; }
 .sv__field > .ak-select { width: auto; min-width: 0; }   /* 模型多于 5 个时的下拉选择：宽度随最长的名字，不撑满 */
 .sv__chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.sv__main { display: grid; grid-template-columns: minmax(0, 1fr) 272px; height: var(--sv-h); }
-/* 舞台：底色是「背景」那一格选的（默认深色，不随明暗主题——模型在深底上轮廓最清楚），canvas 透明叠在上面；HUD 字色 --sv-ink 由脚本按底色明度给黑 / 白 */
-.sv__stage { position: relative; min-width: 0; overflow: hidden; background-color: var(--sv-bg, #0f0f10); --ak-grid-color: rgba(var(--sv-ink), .06); color: rgba(var(--sv-ink), .9); outline: 0; }
+.sv__main { display: grid; grid-template-columns: minmax(0, 560px) minmax(272px, 1fr); }   /* 舞台是正方形（导出也是这个画幅），边长随正文列宽、最大 560；动作列表吃掉剩下的宽度，高度跟舞台齐 */
+.sv__main > .sv__list { contain: size; }   /* 列表不参与撑高：行高只由舞台定，列表拉伸到同高、自己滚动 */
+/* 舞台：底色是「背景」那一格选的（没选过就跟页面：Arknights 皮肤白天浅色、夜间深色，别的皮肤浅色），canvas 透明叠在上面；HUD 字色 --sv-ink 由脚本按底色明度给黑 / 白 */
+.sv__stage { position: relative; min-width: 0; aspect-ratio: 1; overflow: hidden; background-color: var(--sv-bg, #0f0f10); --ak-grid-color: rgba(var(--sv-ink), .06); color: rgba(var(--sv-ink), .9); outline: 0; }
 .sv__stage[data-bg="none"] { background: repeating-conic-gradient(#27282b 0 25%, #1b1c1e 0 50%) 0 0 / 20px 20px; --ak-grid-color: transparent; }   /* 透明：棋盘格（两套主题同一副深色格，HUD 仍是白字），导出的 PNG / WebM 是透明底 */
 .sv__stage:focus-visible { box-shadow: inset 0 0 0 2px var(--ak-focus); }
 .sv__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; }   /* 手机上竖向滑动留给页面滚动；放大模式里才整块接管 */
 .sv__canvas.is-dragging { cursor: grabbing; }
-/* 地面：脚底原点处一条线 + 一枚椭圆影子（游戏里战斗 / 基建小人脚下都有一枚 Shadow）。DOM 画的，不进导出 */
+/* 地面：一枚椭圆影子（游戏里战斗 / 基建小人脚下都有一枚 Shadow），开着网格线时脚底原点处再加一条线。DOM 画的，不进导出 */
 .sv__ground { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; }
-.sv__ground::before { content: ""; position: absolute; left: -100vw; right: -100vw; top: 0; border-top: 1px solid rgba(var(--sv-ink), .16); }
+.sv__ground.has-line::before { content: ""; position: absolute; left: -100vw; right: -100vw; top: 0; border-top: 1px solid rgba(var(--sv-ink), .16); }
 .sv__ground::after { content: ""; position: absolute; left: calc(var(--sv-z, 1) * -70px); top: calc(var(--sv-z, 1) * -12px); width: calc(var(--sv-z, 1) * 140px); height: calc(var(--sv-z, 1) * 24px); border-radius: 50%; background: radial-gradient(closest-side, rgba(var(--sv-shadow, 255, 255, 255), .13) 60%, rgba(var(--sv-shadow, 255, 255, 255), 0)); }   /* 深底上是一枚淡亮的落脚点，浅底上是影子（--sv-shadow 由脚本随底色给） */
 .sv__stage[data-bg="none"] .sv__ground { display: none; }
+.sv__crop { position: absolute; pointer-events: none; box-shadow: 0 0 0 1px rgba(var(--sv-ink), .28), 0 0 0 100vmax rgba(0, 0, 0, .28); }   /* 取景框：舞台不是正方形时才有（放大 / 手机横屏），框外压暗 */
 .sv__hud { position: absolute; left: 12px; top: 10px; display: flex; flex-direction: column; gap: 5px; pointer-events: none; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .1em; text-transform: uppercase; color: rgba(var(--sv-ink), .5); }
 .sv__hud b { font: 700 11px/1 var(--ak-font-mono); letter-spacing: 0; text-transform: none; color: rgba(var(--sv-ink), .78); }
 .sv__hit { align-self: flex-start; padding: 3px 6px; background: var(--ak-accent-2); color: var(--ak-accent-2-fg); opacity: 0; }   /* 播放头扫过判定帧时闪一下 */
@@ -115,8 +117,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .sv__picker-preset { all: unset; box-sizing: border-box; height: 20px; cursor: pointer; background: var(--_c); border: 1px solid var(--ak-border-strong); }
 .sv__picker-preset[aria-pressed="true"] { outline: 2px solid var(--ak-accent); outline-offset: 1px; }
 .sv__picker-preset:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
-.sv__hint { position: absolute; left: 12px; bottom: 10px; pointer-events: none; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .08em; color: rgba(var(--sv-ink), .42); transition: color var(--ak-dur-fast); }
-.sv__hint.is-nudge { color: var(--ak-accent-2); }   /* 没按 Ctrl 就滚轮：提示亮一下，页面照常滚动 */
+.sv__hint { position: absolute; left: 12px; bottom: 10px; pointer-events: none; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .08em; color: rgba(var(--sv-ink), .42); }
 .sv__veil { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 12px; text-align: center; background: var(--sv-bg, #0f0f10); color: rgba(255, 255, 255, .7); font-size: var(--ak-fs-sm); }
 .sv__veil[hidden] { display: none; }
 /* 动作列表：一行一个动作，点了就播（游戏的时装预览也是一排直达按钮 btn_play_enter / special / interact，不是下拉）。右边是帧数（30 帧 / 秒）与判定帧个数 */
@@ -157,28 +158,35 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .sv__ctrl .ak-select { width: auto; }
 .sv__ctrl label.sv__speed { display: inline-flex; align-items: center; gap: 8px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); white-space: nowrap; }
 .sv__export { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.sv__note { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin: -2px 0 0; padding: 0 14px 10px; font-size: var(--ak-fs-xs); color: var(--ak-warning); }   /* 背景选了透明时的 GIF 提示：贴在导出按钮下面，警示色 */
+.sv__note[hidden] { display: none; }
+.sv__note > .ak-icon { flex: none; width: 14px; height: 14px; }
 .sv__rec { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: rgba(0, 0, 0, .55); color: #fff; font-size: var(--ak-fs-sm); }
 .sv__rec[hidden] { display: none; }
-/* 未载入：只有一块矮舞台 + 载入钮（模型与运行时都等点了再取） */
-.sv:not(.is-ready) > .sv__stage { height: 220px; display: grid; place-items: center; }
+/* 未载入：只有一个「载入模型」按钮（同旧版；模型与运行时都等点了再取），载入失败时旁边一行红字 */
+.sv-load { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.sv-load__error { font-size: var(--ak-fs-sm); color: var(--ak-danger); }
 /* 放大：整块铺满视口（不用 Fullscreen API——iOS 的 Safari 不给普通元素全屏），舞台吃掉剩余高度；Esc 退出 */
-.sv.is-max { position: fixed; inset: 0; z-index: calc(var(--ak-z-modal) + 1); margin: 0 !important; display: flex; flex-direction: column; border: 0; }
-.sv.is-max > .sv__main { flex: 1; height: auto; min-height: 0; }
+.sv.is-max { position: fixed; inset: 0; z-index: calc(var(--ak-z-modal) + 1); margin: 0 !important; display: flex; flex-direction: column; border: 0; width: auto; height: auto; padding: 0; overflow: visible; color: inherit; }   /* 顶层里是 [popover]：盖掉浏览器给它的 fit-content 尺寸、内边距、滚动和 CanvasText 字色 */
+.sv.is-max > .sv__main { flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr) 272px; }
+.sv.is-max .sv__stage { aspect-ratio: auto; }
 .sv.is-max .sv__canvas { touch-action: none; }
 @media (max-width: 767px) {
-  .sv { --sv-h: auto; display: flex; flex-direction: column; }
+  .sv { display: flex; flex-direction: column; }
   .sv__field:last-child { margin-left: 0; }
   .sv__main { display: contents; }   /* 手机上顺序改成 选择条 → 舞台 → 时间轴 / 播放条 → 动作列表：播放条贴着舞台 */
+  .sv__main > .sv__list { contain: none; }
   .sv__list { order: 1; }
-  .sv__stage { height: min(86vw, 360px); }
+  .sv__stage { max-height: 75vh; }   /* 正方形，横屏时高度封顶（这时取景框比舞台窄，会框出来） */
   .sv__list { border-left: 0; border-top: 1px solid var(--ak-border); }
   .sv__export > .ak-overline { display: none; }
+  .sv__note { justify-content: flex-start; }
   .sv__anims { max-height: 232px; }
   .sv__hint { display: none; }
   .sv__timerow { flex-wrap: wrap; gap: 2px 14px; }
   .sv__timeline { flex-basis: 100%; }
   .sv__frame { min-width: 0; margin-left: auto; }
-  .sv.is-max .sv__stage { flex: 1; height: auto; min-height: 0; }
+  .sv.is-max .sv__stage { flex: 1; min-height: 0; max-height: none; }
   .sv.is-max .sv__anims { max-height: 26vh; }
 }
 /* 修正标记（{{修正}}）：底色 + 虚线 */
@@ -971,8 +979,8 @@ var back_list = {
 </table>
 <p class="ak-mb-4"><a class="ak-chevrons" href="#">跳转到 假日威龙陈 的异格任务</a></p>
 <div class="mw-heading mw-heading2"><h2 id="model">干员模型 <span class="ak-en ak-fs-sm ak-fg-muted">Spine model</span></h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
-<div class="sv ak-not-prose ak-mb-4" id="spine-root" data-id="char_010_chen" data-no-toggle>
-  <div class="sv__stage ak-bg-grid"><button type="button" class="ak-btn ak-btn--primary ak-btn--lg" id="spine-load">载入模型</button><span class="sv__hint">SpineViewer · 战斗正面 / 背面 · 基建 · 全部时装</span></div>
+<div class="ak-not-prose ak-mb-4" id="spine-root" data-id="char_010_chen" data-no-toggle>
+  <div class="sv-load"><button type="button" class="ak-btn ak-btn--primary" id="spine-load">载入模型</button></div>
 </div>
 <div class="mw-references-wrap"><ol class="references"><li id="cite_note-1"><span class="mw-cite-backlink"><a href="#cite_ref-1">↑</a></span> <span class="reference-text">此处游戏内原文是<b>认识她警员</b>，因<b>存在明显笔误</b>，我们对其进行了修正。</span></li></ol></div>
 <div class="navbox" style="width:100%"><table style="width:100%"><tr><th class="navbox-title" colspan="2">干员一览 · Operators</th></tr>
@@ -1044,15 +1052,18 @@ var back_list = {
 <script src="vendor/spine/spine-webgl.js"></script>
 <script>
 /* ═══ 干员模型：Widget:SpineViewer 的替身（生产环境 = prts-widgets src/widgets/SpineViewer/，运行时与模型地址都与现网相同）。
-   与现网的差别都在「怎么看」上：舞台随容器宽度（不再是 1000×1000 画布缩到 300）、按设备像素比出图、载入后自动取景；
+   与现网的差别都在「怎么看」上：舞台是随正文列宽的正方形（= 导出画幅；取景框 1000 骨骼单位见方，同现网 1000×1000 画布那把尺）、按设备像素比出图、载入后自动取景；
    动作一行一个直接点；时间轴能拖、能逐帧，标出骨骼数据里的事件帧（OnAttack = 攻击判定）；滚轮要按住 Ctrl 才缩放，不劫持页面滚动；
-   自定义背景是自己画的取色面板（不用 <input type="color">：那个弹的是浏览器 / 系统的取色面板，各家长得不一样） ═══ */
+   自定义背景是自己画的取色面板（不用 <input type="color">：那个弹的是浏览器 / 系统的取色面板，各家长得不一样）；导出 PNG / WebM / GIF ═══ */
 (function () {
   'use strict';
   const root = document.getElementById('spine-root'), loadBtn = document.getElementById('spine-load');
   if (!root || !loadBtn) return;
   const ENDPOINT = 'https://torappu.prts.wiki';
   const FPS = 30;   // 游戏的动画与逻辑帧率；帧数 = 时长 × 30
+  const RULER = 1000;   // 取景框边长 = 这么多骨骼单位，同现网 1000 × 1000 的画布：贴图差不多 1 : 1，各时装 / 模型大小可比
+  const EXPORT = 1000;   // 导出的边长（像素）：取景框原样出图，默认取景下正好 1 像素 / 单位，不随屏幕尺寸和像素比变
+  const GIF_SCALE = { gif: .5, gif2x: 1 };   // GIF 两档边长（× EXPORT）：GIF 是 PNG / WebM 的一半（256 色、逐帧整幅存），GIF 2x 与它们同尺寸
   /* 动作名的中文注：只注游戏代码里有名有姓的那几个键（战斗 Torappu.Battle.AnimationConsts 的 Idle / Die / Stun / Default…，基建 VCharacter 状态机的 Relax / Move / Interact / Sit / Sleep / Special）；
      Skill_2_Loop 这类按干员各取各的名字不猜 */
   const GLOSS = { Start: '入场', Idle: '待机', Attack: '攻击', Die: '倒下', Stun: '晕眩', Default: '默认姿态', Relax: '闲置', Move: '移动', Interact: '交互', Sit: '坐下', Sleep: '睡眠', Special: '特殊动作' };
@@ -1072,6 +1083,8 @@ var back_list = {
   };
   const EVENT_LABEL = { OnAttack: '攻击判定', OnAttackFinished: '攻击结束', OnStart: '入场完成', OnPlayAudio: '音效' };
   const BG = [['dark', '#0f0f10', '深色'], ['light', '#f2f2f2', '浅色'], ['none', '', '透明'], ['custom', '', '自定义']];
+  /* 背景没手动选过就跟页面：Arknights 皮肤上白天浅色、夜间深色——看令牌解析出来的 color-scheme，夜间模式的几种开法（clientpref 类、data-theme、跟随系统）都认；别的皮肤（旧版）固定浅色 */
+  const autoBg = () => document.body.classList.contains('skin-arknights') && getComputedStyle(document.documentElement).colorScheme === 'dark' ? 'dark' : 'light';
   const SPEEDS = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2];
   /* 自定义背景的预设：两个主色 + 次强调黄、两档灰、白，再加绿幕 / 品红（导出 WebM 后好抠像） */
   const PRESETS = [['#18d1ff', '官网青'], ['#0098dc', '游戏内蓝'], ['#ffd800', '强调黄'], ['#313131', '按钮灰'], ['#8d8d8d', '中灰'], ['#ffffff', '白'], ['#00ff00', '绿幕'], ['#ff00ff', '品红']];
@@ -1081,6 +1094,7 @@ var back_list = {
     prev: '<svg viewBox="0 0 24 24"><path stroke-linejoin="round" d="M19 5v14l-10-7zM6 5v14"/></svg>',
     next: '<svg viewBox="0 0 24 24"><path stroke-linejoin="round" d="M5 5v14l10-7zM18 5v14"/></svg>',
     flip: '<svg viewBox="0 0 24 24"><path d="M12 3v18M8 7l-5 5 5 5zM16 7l5 5-5 5z"/></svg>',
+    grid: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9.33h16M4 14.67h16M9.33 4v16M14.67 4v16"/></svg>',
     reset: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5M12 9v6M9 12h6"/></svg>',
     max: '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>',
     min: '<svg viewBox="0 0 24 24"><path d="M20 10h-6V4M4 14h6v6M14 10l6-6M10 14l-6 6"/></svg>',
@@ -1093,6 +1107,53 @@ var back_list = {
   const hsvToHex = ({ h, s, v }) => '#' + [5, 3, 1].map(n => { const k = (n + h / 60) % 6; return Math.round((v - v * s * Math.max(0, Math.min(k, 4 - k, 1))) * 255).toString(16).padStart(2, '0'); }).join('');
   const hexToHsv = (hex, fh = 0) => { const n = parseInt(hex.slice(1), 16), r = (n >> 16) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255, mx = Math.max(r, g, b), d = mx - Math.min(r, g, b); let hue = fh; if (d && mx) hue = mx === r ? 60 * (((g - b) / d + 6) % 6) : mx === g ? 60 * ((b - r) / d + 2) : 60 * ((r - g) / d + 4); return { h: hue, s: mx ? d / mx : 0, v: mx }; };
   const normHex = t => { const m = /^#?([\da-f]{3}|[\da-f]{6})$/i.exec(String(t).trim()); if (!m) return null; const b = m[1].toLowerCase(); return '#' + (b.length === 3 ? b.replace(/./g, c => c + c) : b); };
+
+  /* ── GIF 导出（= prts-widgets engine/gif.ts）：逐帧离屏画、读回像素再用 gifenc 编码（快照在 vendor/gifenc/，点了导出才加载）。
+        不靠实时录屏——同一个 t 永远同一个姿态，不丢帧，切到后台也照样出 ── */
+  /* 排帧：GIF 的帧时长以厘秒计，按累计时刻取整再相减（30 帧 / 秒排成 3 4 3 3 4 3…），总时长不漂；浏览器把短于 2 厘秒的帧时长按 10 厘秒放（反倒变慢），
+     快放到一帧不足 2 厘秒就隔帧取，不足 2 厘秒的尾巴并进前一帧。循环时不画最后一帧（和第 0 帧同一个姿态，首尾相接会多停一拍）；
+     播一遍就停在最后一帧，末帧停 1 秒（有的地方——聊天软件转存——不认播放次数照样循环，不至于一闪就跳回开头） */
+  const planGif = (total, speed, loop) => {
+    const cs = 100 / (FPS * speed), at = f => Math.round(f * cs), k = Math.max(1, Math.ceil(2 / cs - 1e-9)), frames = [];
+    for (let f = 0; f < total; f += k) frames.push(f);
+    if (!loop || !frames.length) frames.push(total);
+    const delays = frames.map((f, i) => i + 1 < frames.length ? at(frames[i + 1]) - at(f) : loop ? at(total) - at(f) : 100);
+    for (let i = delays.length - 1; i > 0; i--) if (delays[i] < 2) { delays[i - 1] += delays[i]; frames.splice(i, 1); delays.splice(i, 1); }
+    delays[0] = Math.max(delays[0], 2);
+    return { frames, delays };
+  };
+  let gifenc = null;
+  const loadGifenc = () => gifenc || (gifenc = new Promise((ok, no) => {
+    if (window.gifenc) return ok(window.gifenc);
+    const sc = h('script', { src: 'vendor/gifenc/gifenc.js' });
+    sc.onload = () => ok(window.gifenc); sc.onerror = () => { gifenc = null; no(new Error('GIF 编码器没有加载')); };
+    document.head.append(sc);
+  }));
+  /* 编码：所有帧共用一套 256 色（均匀挑 8 帧、隔点取样并起来求——比逐帧求快得多，前后帧颜色也不闪）。透明底先按 alpha 过半切成两档（GIF 只有全透明 / 不透明），
+     半透明的边缘、光效要么全透明要么不透明，免得按颜色远近乱归。每画一段让出一次主线程好刷新进度（MessageChannel：切到后台时 setTimeout 会被限到一秒一次） */
+  const encodeGif = async ({ size, plan, loop, transparent, grab, onProgress }) => {
+    const { GIFEncoder, quantize, applyPalette } = await loadGifenc();
+    const format = transparent ? 'rgba4444' : 'rgb565';
+    let last = performance.now();
+    const pause = async () => { if (performance.now() - last < 16) return; await new Promise(ok => { const ch = new MessageChannel(); ch.port1.onmessage = () => ok(); ch.port2.postMessage(0); }); last = performance.now(); };
+    const read = f => { const px = grab(f); if (transparent) for (let i = 3; i < px.length; i += 4) { if (px[i] >= 128) px[i] = 255; else px[i - 3] = px[i - 2] = px[i - 1] = px[i] = 0; } return px; };
+    const n = Math.min(8, plan.frames.length), per = size * size, stride = Math.max(1, Math.ceil(per * n / (1 << 19))), sample = new Uint32Array(n * Math.ceil(per / stride));   // quantize 读的是整块 buffer，样本数要正好填满
+    let o = 0;
+    for (let i = 0; i < n; i++) { const px = new Uint32Array(read(plan.frames[Math.floor(i * plan.frames.length / n)]).buffer); for (let q = 0; q < per; q += stride) sample[o++] = px[q]; await pause(); }
+    const palette = quantize(new Uint8Array(sample.buffer), 256, { format, oneBitAlpha: transparent }), ti = transparent ? palette.findIndex(c => c[3] === 0) : -1;
+    const gif = GIFEncoder();
+    for (const [i, f] of plan.frames.entries()) {
+      gif.writeFrame(applyPalette(read(f), palette, format), size, size, Object.assign({ palette: i ? undefined : palette, delay: plan.delays[i] * 10, repeat: loop ? 0 : -1 }, ti >= 0 ? { transparent: true, transparentIndex: ti } : {}));   // 第一帧的写成全局色表，之后的帧不再带
+      onProgress(i + 1, plan.frames.length); await pause();
+    }
+    gif.finish();
+    return new Blob([gif.bytesView()], { type: 'image/gif' });
+  };
+  /* 从 WebGL 画布读像素：得紧跟在同一个任务里的绘制后面调（没开 preserveDrawingBuffer）；经一块 2D 画布转一道，行序和预乘都由浏览器处理好 */
+  const canvasReader = (src, size) => {
+    const c = h('canvas', { width: size, height: size }).getContext('2d', { willReadFrequently: true });
+    return () => { c.clearRect(0, 0, size, size); c.drawImage(src, 0, 0, size, size); return c.getImageData(0, 0, size, size).data; };
+  };
 
   /* ── 渲染：一块 canvas、一套 shader，骨骼按「时装-模型」缓存。不用 AnimationState——每帧从初始姿态起把当前动作在 t 时刻的姿态直接套上去
         （Animation.apply + MixBlend.setup）：同一个 t 永远是同一个姿态，拖时间轴 / 逐帧 / 倒退都准，也没有多圈累加的旋转问题 ── */
@@ -1108,6 +1169,10 @@ var back_list = {
     this.view = { x: 0, y: 0, z: 1 };   // 原点（脚底）在舞台里的位置（CSS 像素，自左上角）与缩放（CSS 像素 / 骨骼单位）
     this.clear = [0, 0, 0, 0];
     this.cur = null;
+    this.w = this.h = 0;   // 舞台尺寸（CSS 像素）
+    this.out = 0;   // 导出时画布的边长：非 0 时只画取景框、按这个尺寸出图；0 = 平时，按舞台尺寸 × 像素比画整块舞台
+    let dpr = 1;
+    const boxes = new WeakMap(), verts = [];   // 各动作的包围盒（没有动作时以骨骼为键，存初始姿态的）
     this.load = async (key, path, skin) => {   // 取骨骼（有缓存直接给）；不设 this.cur——调用方确认这次载入没被后来的覆盖，再自己设（不然先发后到的那次会把骨骼盖掉）
       if (!cache[key]) {
         await fetchAll(path + '.skel', path + '.atlas');
@@ -1129,22 +1194,37 @@ var back_list = {
       if (anim) anim.apply(sk, -1, t, false, null, 1, S.MixBlend.setup, S.MixDirection.mixIn);
       sk.updateWorldTransform();
     };
-    this.bounds = anim => {   // 取景用：动作全程里采 6 个时刻的包围盒并起来（setup pose 常常是摊开的，data.width / height 有的模型是 0）
-      const off = new S.Vector2(), size = new S.Vector2(); let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-      for (let i = 0; i < 6; i++) {
-        this.pose(anim, anim ? anim.duration * i / 6 : 0); this.cur.skeleton.getBounds(off, size, []);
-        if (!isFinite(off.x) || !size.x) continue;
-        x0 = Math.min(x0, off.x); y0 = Math.min(y0, off.y); x1 = Math.max(x1, off.x + size.x); y1 = Math.max(y1, off.y + size.y);
+    /* 取景用：动作全程逐帧（长的隔几帧，最多采 90 个时刻）的包围盒并起来，骨骼单位、不算翻转。
+       只算看得见的附件——有的特效平时 alpha = 0 挂在老远，算进去框会被撑得很大；setup pose 常常是摊开的，data.width / height 有的模型是 0 */
+    this.bounds = anim => {
+      const sk = this.cur.skeleton, key = anim || sk;
+      if (boxes.has(key)) return boxes.get(key);
+      const sx = sk.scaleX, b = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity }, frames = anim ? Math.round(anim.duration * FPS) : 0, step = Math.max(1, Math.ceil(frames / 90));
+      sk.scaleX = 1;
+      for (let f = 0; f <= frames; f += step) {
+        this.pose(anim, f / FPS);
+        for (const slot of sk.drawOrder) {
+          const att = slot.getAttachment(); let n = 0;
+          if (!slot.bone.active || slot.color.a < .02 || !att || !att.color || att.color.a < .02) continue;
+          if (att instanceof S.RegionAttachment) { n = 8; S.Utils.setArraySize(verts, n, 0); att.computeWorldVertices(slot.bone, verts, 0, 2); }
+          else if (att instanceof S.MeshAttachment) { n = att.worldVerticesLength; S.Utils.setArraySize(verts, n, 0); att.computeWorldVertices(slot, 0, n, verts, 0, 2); }
+          for (let i = 0; i < n; i += 2) { b.x0 = Math.min(b.x0, verts[i]); b.x1 = Math.max(b.x1, verts[i]); b.y0 = Math.min(b.y0, verts[i + 1]); b.y1 = Math.max(b.y1, verts[i + 1]); }
+        }
       }
-      return isFinite(x0) ? { x0, y0, x1, y1 } : { x0: -200, y0: 0, x1: 200, y1: 400 };
+      sk.scaleX = sx;
+      const out = isFinite(b.x0) && b.x1 > b.x0 ? b : { x0: -200, y0: 0, x1: 200, y1: 400 };
+      boxes.set(key, out); return out;
     };
-    this.resize = (w, hgt, dpr) => { canvas.width = Math.max(1, Math.round(w * dpr)); canvas.height = Math.max(1, Math.round(hgt * dpr)); this.w = w; this.h = hgt; };
+    this.box = () => { const s = Math.min(this.w, this.h); return { x: (this.w - s) / 2, y: (this.h - s) / 2, s }; };   // 取景框：舞台正中、边长取宽高里短的那个；舞台本身是正方形时就是整块舞台
+    this.setOut = n => { this.out = n; canvas.width = n || Math.max(1, Math.round(this.w * dpr)); canvas.height = n || Math.max(1, Math.round(this.h * dpr)); };   // 进出导出：n 像素见方只画取景框，0 换回整块舞台
+    this.resize = (w, hgt, d) => { this.w = w; this.h = hgt; dpr = d; this.setOut(this.out); };   // 画布跟着舞台走，按设备像素比出图；导出中保持导出尺寸
     this.draw = () => {
       const v = this.view;
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.clearColor(...this.clear); gl.clear(gl.COLOR_BUFFER_BIT);
       if (!this.cur) return;
-      mvp.ortho2d(-v.x / v.z, -(this.h - v.y) / v.z, this.w / v.z, this.h / v.z);
+      const b = this.out ? this.box() : null, [x, y, w, hgt] = b ? [b.x, b.y, b.s, b.s] : [0, 0, this.w, this.h];   // 画布对着舞台上的哪一块（CSS 像素）：平时整块，导出时只取景框
+      mvp.ortho2d((x - v.x) / v.z, -(y + hgt - v.y) / v.z, w / v.z, hgt / v.z);
       shader.bind(); shader.setUniformi(S.webgl.Shader.SAMPLER, 0); shader.setUniform4x4f(S.webgl.Shader.MVP_MATRIX, mvp.values);
       batcher.begin(shader); renderer.draw(batcher, this.cur.skeleton); batcher.end(); shader.unbind();
     };
@@ -1152,39 +1232,41 @@ var back_list = {
 
   function mount(conf) {
     const skins = Object.keys(conf.skin).sort((a, b) => (b === '默认') - (a === '默认'));   // meta.json 里时装的次序不固定，「默认」提到最前
-    const st = { skin: skins[0], model: null, anim: null, t: 0, playing: true, loop: true, chain: false, speed: 1, flip: false, bg: 'dark', color: '#18d1ff', max: false, recording: false };
+    const st = { skin: skins[0], model: null, anim: null, t: 0, playing: true, loop: true, chain: false, speed: 1, flip: false, grid: false, bg: 'dark', picked: false, color: '#18d1ff', max: false, recording: false };
     const models = sk => Object.keys(conf.skin[sk]).sort((a, b) => (MODEL_ORDER.indexOf(a) + 1 || 99) - (MODEL_ORDER.indexOf(b) + 1 || 99));
     st.model = models(st.skin)[0];
 
     /* ── 结构 ── */
     root.textContent = '';
-    root.classList.add('is-ready');
+    root.classList.add('sv', 'is-ready');
     const bar = h('div', { class: 'sv__bar' });
     const skinBox = h('div', { class: 'sv__chips', role: 'group', 'aria-label': '时装' });
     const f1 = h('div', { class: 'sv__field' }, '<span class="ak-overline">时装</span>'), f2 = h('div', { class: 'sv__field' }, '<span class="ak-overline">模型</span>');
     f1.append(skinBox); bar.append(f1, f2);
     const main = h('div', { class: 'sv__main' });
-    const stageEl = h('div', { class: 'sv__stage ak-bg-grid', tabindex: '0', 'data-bg': 'dark', 'aria-label': conf.name + ' 的 Spine 模型：空格 播放 / 暂停，← → 逐帧，F 翻转朝向，0 复位视图' });
+    const stageEl = h('div', { class: 'sv__stage', tabindex: '0', 'data-bg': 'dark', 'aria-label': conf.name + ' 的 Spine 模型：空格 播放 / 暂停，← → 逐帧，F 翻转朝向，G 网格线，0 复位视图' });
     const canvas = h('canvas', { class: 'sv__canvas' });
     const ground = h('div', { class: 'sv__ground' });
+    const cropEl = h('div', { class: 'sv__crop', hidden: '' });   // 取景框：舞台不是正方形时把导出范围框出来、框外压暗。同地面一样不进导出
     const hud = h('div', { class: 'sv__hud' }, '<b></b><span></span><span class="sv__hit">OnAttack</span>');
     const tools = h('div', { class: 'sv__tools' },
       `<button type="button" class="sv__tool" data-act="flip" aria-pressed="false" data-ak-tip="翻转朝向 (F)" aria-label="翻转朝向">${ICON.flip}</button>` +
+      `<button type="button" class="sv__tool" data-act="grid" aria-pressed="false" data-ak-tip="网格线 (G)" aria-label="网格线">${ICON.grid}</button>` +
       `<button type="button" class="sv__tool" data-act="reset" data-ak-tip="复位视图 (0)" aria-label="复位视图">${ICON.reset}</button>` +
       `<button type="button" class="sv__tool" data-act="max" aria-pressed="false" data-ak-tip="放大查看" aria-label="放大查看">${ICON.max}</button>` +
       '<div class="sv__zoom"></div>');
     const bgBox = h('div', { class: 'sv__bg', role: 'group', 'aria-label': '背景' }, BG.map(([k, c, label]) =>
       k === 'custom' ? `<button type="button" class="sv__swatch" data-bg="custom" aria-pressed="false" aria-haspopup="dialog" aria-expanded="false" aria-controls="sv-picker" title="背景：${label}" aria-label="背景：${label}"></button>`
-      : `<button type="button" class="sv__swatch" data-bg="${k}" style="--_c:${c}" aria-pressed="${k === 'dark'}" title="背景：${label}" aria-label="背景：${label}"></button>`).join('') +
+      : `<button type="button" class="sv__swatch" data-bg="${k}" style="--_c:${c}" aria-pressed="false" title="背景：${label}" aria-label="背景：${label}"></button>`).join('') +
       '<div class="ak-popover ak-popover--top-end sv__picker" id="sv-picker" role="dialog" aria-label="自定义背景色" hidden>' +
         '<div class="sv__picker-plane" role="slider" tabindex="0" aria-label="饱和度与明度（← → 饱和度，↑ ↓ 明度）"><i class="sv__picker-thumb"></i></div>' +
         '<div class="sv__picker-hue" role="slider" tabindex="0" aria-label="色相" aria-valuemin="0" aria-valuemax="360"><i class="sv__picker-thumb"></i></div>' +
         '<div class="sv__picker-row"><span class="sv__picker-preview"></span><input class="ak-input ak-input--sm sv__picker-hex" maxlength="7" spellcheck="false" autocomplete="off" aria-label="十六进制颜色"></div>' +
         `<div class="sv__picker-presets" role="group" aria-label="预设颜色">${PRESETS.map(([c, n]) => `<button type="button" class="sv__picker-preset" data-color="${c}" style="--_c:${c}" aria-pressed="false" title="${n} ${c.toUpperCase()}" aria-label="${n} ${c.toUpperCase()}"></button>`).join('')}</div>` +
       '</div>');
-    const hint = h('span', { class: 'sv__hint' }, '拖拽移动 · Ctrl + 滚轮缩放 · 双击复位');
+    const hint = h('span', { class: 'sv__hint' });
     const veil = h('div', { class: 'sv__veil' });
-    stageEl.append(canvas, ground, hud, tools, bgBox, hint, veil);
+    stageEl.append(canvas, ground, cropEl, hud, tools, bgBox, hint, veil);
     const list = h('div', { class: 'sv__list' }, '<div class="sv__list-head"><b>动作</b><span class="ak-overline"></span></div><div class="sv__anims" role="group" aria-label="动作"></div>');
     const animBox = list.lastChild, animCount = list.querySelector('.ak-overline');
     main.append(stageEl, list);
@@ -1195,25 +1277,35 @@ var back_list = {
         '<label class="ak-switch ak-switch--sm"><input type="checkbox" data-act="loop" checked>循环</label>' +
         '<label class="ak-switch ak-switch--sm" data-ak-tip="一招的几段接着播：Begin → Loop → End"><input type="checkbox" data-act="chain">连播</label>' +
         `<label class="sv__speed">速度<select class="ak-select ak-select--sm" data-act="speed">${SPEEDS.map(v => `<option value="${v}"${v === 1 ? ' selected' : ''}>×${v}</option>`).join('')}</select></label>` +
-        `<div class="sv__export"><span class="ak-overline">导出</span><div class="ak-btn-group"><button type="button" class="ak-btn ak-btn--sm" data-act="png" data-ak-tip="当前帧，透明底或所选背景">${ICON.download}PNG</button><button type="button" class="ak-btn ak-btn--sm" data-act="webm" data-ak-tip="当前动作播一遍，按所选速度">${ICON.download}WebM</button></div></div>` +
-      '</div>');
+        `<div class="sv__export"><span class="ak-overline">导出</span><div class="ak-btn-group">` +
+          `<button type="button" class="ak-btn ak-btn--sm" data-act="png" data-ak-tip="尺寸：${EXPORT} × ${EXPORT}">${ICON.download}PNG</button>` +
+          `<button type="button" class="ak-btn ak-btn--sm" data-act="webm" data-ak-tip="尺寸：${EXPORT} × ${EXPORT}">${ICON.download}WebM</button>` +
+          `<button type="button" class="ak-btn ak-btn--sm" data-act="gif" data-ak-tip="尺寸：${EXPORT * GIF_SCALE.gif} × ${EXPORT * GIF_SCALE.gif}">${ICON.download}GIF</button>` +
+          `<button type="button" class="ak-btn ak-btn--sm" data-act="gif2x" data-ak-tip="尺寸：${EXPORT * GIF_SCALE.gif2x} × ${EXPORT * GIF_SCALE.gif2x}，导出文件大小约为 GIF 的 3 倍">${ICON.download}GIF 2x</button>` +
+        '</div></div>' +
+      '</div>' +
+      '<p class="sv__note" hidden><svg class="ak-icon"><use href="#i-warn"/></svg>透明底 GIF 可能存在以下问题：边缘锯齿，半透明的光效会变实或消失，推荐使用其他格式导出</p>');   // 背景选了透明才出
     const rec = h('div', { class: 'sv__rec', hidden: '' });
     root.append(bar, main, transport, rec);
     const $ = s => transport.querySelector(s);
-    const timeline = $('.sv__timeline'), marks = $('.sv__marks'), seek = $('.sv__seek'), frameOut = $('.sv__frame'), playBtn = $('[data-act="play"]'), webmBtn = $('[data-act="webm"]');
+    const timeline = $('.sv__timeline'), marks = $('.sv__marks'), seek = $('.sv__seek'), frameOut = $('.sv__frame'), playBtn = $('[data-act="play"]'), webmBtn = $('[data-act="webm"]'), note = $('.sv__note');
     const hit = hud.querySelector('.sv__hit'), zoomOut = tools.querySelector('.sv__zoom');
     if (!(window.MediaRecorder && canvas.captureStream && MediaRecorder.isTypeSupported('video/webm'))) webmBtn.remove();
 
     const stage = new Stage(canvas);
-    let cur = null, anim = null, home = null, raf = 0, last = 0, visible = true, loadSeq = 0;
+    let cur = null, anim = null, home = { x: 0, y: 0, z: 1 }, raf = 0, last = 0, visible = true, loadSeq = 0;
+    let custom = false;   // 拖过 / 缩放过：换动作时不再替人取景，双击复位才回到 home
 
-    /* ── 取景：原点（脚底）落在舞台横向正中、纵向 80% 处，同一把尺（560 单位 = 舞台高）下各时装 / 模型大小可比；待机姿态装不下才缩 ── */
-    const frame = () => {
-      const b = stage.bounds(cur.anims.find(a => a.name === defaultAnim()).anim), w = stage.w, hgt = stage.h, pad = 16;
-      const x = w / 2, y = hgt * (st.model === '基建' ? .78 : .8);
-      const z = Math.min(hgt / 560, (x - pad) / Math.max(1, -b.x0, b.x1), (y - pad) / Math.max(1, b.y1), (hgt - y - pad) / Math.max(1, -b.y0));
-      home = { x, y, z }; Object.assign(stage.view, home);
+    /* ── 取景：框边长 = 1000 骨骼单位（同现网），原点（脚底）在框里横向正中、纵向 80% 处，各时装 / 模型大小可比。
+          当前动作（连同一招的另几段，连播时不跳）全程在这把尺下出框就先平移，平移也装不下才缩小 ── */
+    const aim = () => {
+      const { x: X, y: Y, s } = stage.box(), p = s * .03;
+      const b = (anim ? chainMembers(anim) : [null]).map(a => stage.bounds(a && a.anim)).reduce((u, q) => ({ x0: Math.min(u.x0, q.x0), y0: Math.min(u.y0, q.y0), x1: Math.max(u.x1, q.x1), y1: Math.max(u.y1, q.y1) }));
+      const [x0, x1] = st.flip ? [-b.x1, -b.x0] : [b.x0, b.x1];
+      const z = Math.min(s / RULER, (s - 2 * p) / (x1 - x0), (s - 2 * p) / Math.max(1, b.y1 - b.y0));
+      return { x: clamp(X + s / 2, X + p - x0 * z, X + s - p - x1 * z), y: clamp(Y + s * (st.model === '基建' ? .78 : .8), Y + p + b.y1 * z, Y + s - p + b.y0 * z), z };
     };
+    const rehome = () => { if (!cur) return; home = aim(); if (!custom) Object.assign(stage.view, home); };   // 换动作 / 翻转后重算 home；拖过、缩放过就只记下，不动当前视图
     const defaultAnim = () => (['Idle', 'Relax', 'Default'].find(n => cur.anims.some(a => a.name === n)) || cur.anims[0].name);
 
     /* ── 画一帧 + 同步界面 ── */
@@ -1223,7 +1315,7 @@ var back_list = {
       stage.pose(anim.anim, st.t); stage.draw();
       const v = stage.view;
       ground.style.transform = `translate(${v.x}px, ${v.y}px)`; stageEl.style.setProperty('--sv-z', v.z.toFixed(3));
-      zoomOut.textContent = Math.round(v.z / home.z * 100) + '%';
+      const side = stage.box().s; zoomOut.textContent = side ? Math.round(v.z * RULER / side * 100) + '%' : '';   // 100% = 取景框 1000 单位的那把尺；动作太大自动缩小时这里会小于 100%
       const f = Math.round(st.t * FPS);
       transport.style.setProperty('--sv-p', (anim.duration ? st.t / anim.duration * 100 : 0).toFixed(2) + '%');
       if (seek.value !== String(f)) seek.value = f;
@@ -1259,7 +1351,7 @@ var back_list = {
     /* ── 动作 ── */
     const setAnim = (name, keepTime) => {
       anim = cur.anims.find(a => a.name === name) || cur.anims.find(a => a.name === defaultAnim()); st.anim = anim.name;
-      if (!keepTime) st.t = 0;
+      if (!keepTime) { rehome(); st.t = 0; }   // 换段（连播）时保留时间和取景，点选时从头播、重新取景
       animBox.querySelectorAll('.sv__anim').forEach(b => { const on = b.dataset.anim === anim.name; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on); });
       if (keepTime) { const on = animBox.querySelector('.sv__anim.is-active'); if (on) animBox.scrollTop = clamp(animBox.scrollTop, on.offsetTop + on.offsetHeight - animBox.clientHeight, on.offsetTop - 28); }   // 连播换段：当前行留在列表视野里（只滚列表，不动页面）
       seek.max = anim.frames; timeline.classList.toggle('is-disabled', !anim.duration);
@@ -1273,8 +1365,9 @@ var back_list = {
     const chainOf = name => { const ts = name.split('_'), i = ts.findLastIndex((t, j) => j > 0 && t in PHASE); return i < 0 ? [name, 1] : [ts.filter((_, j) => j !== i).join('_'), PHASE[ts[i]]]; };
     const chainKey = name => chainOf(name).join(' ');
     /* 连播：播完一段接同一招的下一段（Skill_2_Begin → Skill_2_Loop → Skill_2_End），最后一段播完按「循环」回到第一段或停住；只有一段的动作不受影响 */
+    const chainMembers = a => { const stem = chainOf(a.name)[0]; return cur.anims.filter(x => chainOf(x.name)[0] === stem).sort((p, q) => chainOf(p.name)[1] - chainOf(q.name)[1]); };   // 同一招的几段，按出招次序；取景按它们并起来，连播时换段不跳
     const nextInChain = () => {
-      const stem = chainOf(anim.name)[0], chain = cur.anims.filter(a => a.duration && chainOf(a.name)[0] === stem).sort((a, b) => chainOf(a.name)[1] - chainOf(b.name)[1]), i = chain.indexOf(anim);
+      const chain = chainMembers(anim).filter(a => a.duration), i = chain.indexOf(anim);
       return chain.length < 2 || i < 0 ? null : chain[i + 1] || (st.loop ? chain[0] : null);
     };
     const renderAnims = () => {
@@ -1327,45 +1420,102 @@ var back_list = {
       }
       hud.firstChild.textContent = item.file.split('/').pop() + '.skel';
       hud.children[1].textContent = `Spine ${cur.data.version} · ${cur.data.bones.length} bones`;
-      renderAnims(); fit(); frame(); setAnim(st.anim); showVeil(null);
+      renderAnims(); custom = false; fit(); setAnim(st.anim); showVeil(null);
     };
 
-    /* ── 尺寸：画布跟着舞台走，按设备像素比出图（上限 2） ── */
-    const fit = () => { const r = stageEl.getBoundingClientRect(); stage.resize(r.width, r.height, Math.min(2, window.devicePixelRatio || 1)); };
-    new ResizeObserver(() => { if (!cur) return; const was = stage.w ? { fx: stage.view.x / stage.w, fy: stage.view.y / stage.h, k: stage.view.z / home.z } : null; fit(); frame(); if (was) Object.assign(stage.view, { x: was.fx * stage.w, y: was.fy * stage.h, z: was.k * home.z }); paint(); }).observe(stageEl);
+    /* ── 尺寸：画布跟着舞台走，按设备像素比出图（上限 2）。取景框 = 舞台正中的正方形（舞台本身就是正方形，放大 / 手机横屏时才比舞台小），导出的就是它，
+          不是正方形时把它框出来；平移缩放按取景框换算成比例保住（框里的构图不变，进出放大也是） ── */
+    let cut = false;
+    const paintHint = () => { hint.textContent = st.max ? '拖拽移动 / 滚轮缩放 / 双击复位 / Esc 退出' + (cut ? ' · 框内为导出画面预览' : '') : '拖拽移动 / Ctrl + 滚轮缩放 / 双击复位'; };
+    const fit = () => {
+      const r = stageEl.getBoundingClientRect(); stage.resize(r.width, r.height, Math.min(2, window.devicePixelRatio || 1));
+      const b = stage.box(); cut = Math.abs(r.width - r.height) > 1; cropEl.hidden = !cut;
+      Object.assign(cropEl.style, { left: b.x + 'px', top: b.y + 'px', width: b.s + 'px', height: b.s + 'px' }); paintHint();
+    };
+    new ResizeObserver(() => {
+      if (!cur) return;
+      const v = stage.view, b = stage.box(), was = b.s ? { fx: (v.x - b.x) / b.s, fy: (v.y - b.y) / b.s, k: v.z / b.s } : null;
+      fit(); home = aim(); const n = stage.box();
+      Object.assign(stage.view, was ? { x: n.x + was.fx * n.s, y: n.y + was.fy * n.s, z: was.k * n.s } : home); paint();
+    }).observe(stageEl);
     new IntersectionObserver(es => { visible = es[0].isIntersecting; schedule(); }).observe(stageEl);
     document.addEventListener('visibilitychange', schedule);
 
     /* ── 背景 ── */
-    const setBg = (k, color) => {
-      st.bg = k; if (color) st.color = color;
+    const setBg = (k, color, auto) => {   // auto = 跟页面明暗换的，不算手动选过
+      st.bg = k; if (color) st.color = color; if (!auto) st.picked = true;
       const c = k === 'custom' ? st.color : (BG.find(b => b[0] === k) || [])[1];
       stageEl.dataset.bg = k; stageEl.style.setProperty('--sv-bg', c || 'transparent');
       if (c) { const n = parseInt(c.slice(1), 16), lum = (.299 * (n >> 16) + .587 * (n >> 8 & 255) + .114 * (n & 255)) / 255; stageEl.style.setProperty('--sv-ink', lum > .55 ? '0, 0, 0' : '255, 255, 255'); stageEl.style.setProperty('--sv-shadow', lum > .3 ? '0, 0, 0' : '255, 255, 255'); } else stageEl.style.removeProperty('--sv-ink');
       bgBox.querySelectorAll('.sv__swatch').forEach(b => b.setAttribute('aria-pressed', b.dataset.bg === k));
+      note.hidden = !!c;   // 透明底：GIF 只有全透明 / 不透明两档，播放条下面提示
     };
+    /* 背景没手动选过就跟页面明暗走，切了不用刷新 */
+    const followTheme = () => { if (!st.picked) setBg(autoBg(), null, true); };
+    new MutationObserver(followTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', followTheme);
     const exportClear = () => { const c = st.bg === 'custom' ? st.color : (BG.find(b => b[0] === st.bg) || [])[1]; if (!c) return [0, 0, 0, 0]; const n = parseInt(c.slice(1), 16); return [(n >> 16) / 255, (n >> 8 & 255) / 255, (n & 255) / 255, 1]; };
 
-    /* ── 导出：PNG = 当前帧；WebM = 当前动作从头播一遍（MediaRecorder 录画布）。背景选了颜色就带上，透明就是透明底 ── */
+    /* ── 导出：PNG = 当前帧；WebM = 当前动作从头播一遍（MediaRecorder 录画布）；GIF = 当前动作逐帧画出来编码。都只出取景框（EXPORT 见方，GIF 一半 / 同尺寸两档），
+          背景选了颜色就带上，透明就是透明底 ── */
     const fileName = ext => [conf.name, st.skin, st.model, anim.name].join('-') + ext;
     const save = (blob, name) => { const a = h('a', { href: URL.createObjectURL(blob), download: name }); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
-    const exportPng = () => { stage.clear = exportClear(); paint(); canvas.toBlob(b => save(b, fileName(`-f${Math.round(st.t * FPS)}.png`))); stage.clear = [0, 0, 0, 0]; paint(); };
+    /* 导出中：遮罩盖住整块（指针进不来），画布挪到取景框上——导出时画布只画取景框、按导出尺寸出图，放大模式里舞台不是正方形，不挪会被拉伸 */
+    const startRec = name => { st.recording = true; rec.hidden = false; rec.textContent = '正在导出 ' + name; const b = stage.box(); Object.assign(canvas.style, { left: b.x + 'px', top: b.y + 'px', width: b.s + 'px', height: b.s + 'px' }); };
+    const stopRec = () => { st.recording = false; rec.hidden = true; canvas.style.left = canvas.style.top = canvas.style.width = canvas.style.height = ''; };
+    const exportPng = () => {
+      const name = fileName(`-f${Math.round(st.t * FPS)}.png`);
+      stage.clear = exportClear(); stage.setOut(EXPORT); paint();
+      canvas.toBlob(b => save(b, name));   // toBlob 在调用时就取下画布内容，紧接着换回整块舞台、透明清屏再画一遍不影响结果
+      stage.setOut(0); stage.clear = [0, 0, 0, 0]; paint();
+    };
     const exportWebm = () => {
       if (st.recording || !anim.duration) return;
+      stage.setOut(EXPORT);
       const chunks = [], mr = new MediaRecorder(canvas.captureStream(60), { mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm', videoBitsPerSecond: 8e6 });
       const name = fileName(`-x${st.speed}.webm`);
       mr.ondataavailable = e => chunks.push(e.data);
-      mr.onstop = () => { save(new Blob(chunks, { type: 'video/webm' }), name); st.recording = false; stage.clear = [0, 0, 0, 0]; rec.hidden = true; st.t = 0; setPlaying(true); };
-      st.recording = true; stage.clear = exportClear(); rec.hidden = false; rec.textContent = '正在导出 ' + name;
+      mr.onstop = () => { save(new Blob(chunks, { type: 'video/webm' }), name); stopRec(); stage.clear = [0, 0, 0, 0]; stage.setOut(0); st.t = 0; paint(); setPlaying(true); };
+      startRec(name); stage.clear = exportClear();
       st.onEnd = () => setTimeout(() => mr.stop(), 120);   // 多留几帧，别把最后一帧截掉
       st.t = 0; paint(); mr.start(); setPlaying(true);
     };
+    /* GIF：当前动作逐帧画进取景框、读回来编码，按所选速度；「循环」开着就一直循环，关了播一遍停在最后一帧。
+       不走 rAF，导完回到导出前的那一帧和播放状态。透明底只有全透明 / 不透明两档，照样导，播放条下面有提示 */
+    const exportGif = async kind => {
+      if (st.recording || !anim.duration) return;
+      const a = anim, size = EXPORT * GIF_SCALE[kind], name = fileName(`-x${st.speed}${kind === 'gif2x' ? '@2x' : ''}.gif`), was = { t: st.t, playing: st.playing };
+      cancelAnimationFrame(raf); raf = 0; setPlaying(false);
+      startRec(name); stage.clear = exportClear(); stage.setOut(size);
+      const read = canvasReader(canvas, size);
+      try {
+        save(await encodeGif({ size, plan: planGif(a.frames, st.speed, st.loop), loop: st.loop, transparent: st.bg === 'none',
+          grab: f => { st.t = f / FPS; paint(); return read(); }, onProgress: (d, n) => { rec.textContent = `正在导出 ${name} · ${d} / ${n} 帧`; } }), name);
+      } catch (err) {
+        rec.textContent = `正在导出 ${name} · 导出失败：${err.message || err}`;
+        await new Promise(ok => setTimeout(ok, 2500));
+      }
+      stopRec(); stage.clear = [0, 0, 0, 0]; stage.setOut(0); st.t = was.t; paint(); if (was.playing) setPlaying(true);
+    };
 
-    /* ── 放大 ── */
-    const setMax = on => { st.max = on; root.classList.toggle('is-max', on); const b = tools.querySelector('[data-act="max"]'); b.innerHTML = on ? ICON.min : ICON.max; b.setAttribute('aria-pressed', on); b.dataset.akTip = on ? '退出放大 (Esc)' : '放大查看'; document.documentElement.style.overflow = on ? 'hidden' : ''; hint.textContent = on ? '拖拽移动 · 滚轮缩放 · 双击复位 · Esc 退出' : '拖拽移动 · Ctrl + 滚轮缩放 · 双击复位'; };
-    const setFlip = on => { st.flip = on; tools.querySelector('[data-act="flip"]').setAttribute('aria-pressed', on); paint(); };
-    const resetView = () => { Object.assign(stage.view, home); paint(); };
-    const zoomAt = (cx, cy, k) => { const v = stage.view, z = clamp(v.z * k, home.z * .2, home.z * 8); v.x = cx - (cx - v.x) * z / v.z; v.y = cy - (cy - v.y) * z / v.z; v.z = z; paint(); };
+    /* ── 放大：整块铺满视口（不用 Fullscreen API——iOS 的 Safari 不给普通元素全屏），页面不滚；Esc 退出。
+          支持 Popover API 的浏览器再把它提进顶层（top layer）：Vector 的 #bodyContent 是 z-index: 0 的层叠上下文，里面的 fixed 元素 z-index 再大也盖不过侧栏和「TOP」按钮；
+          顶层不受祖先层叠上下文管，继承仍跟着 DOM 走（令牌、主题不丢）。进不了顶层的旧浏览器：放大期间把会盖上来的侧栏（#mw-panel）和「TOP」按钮（.backToTop）藏起来，退出再放回 ── */
+    let covered = [];
+    const hideCovers = on => {
+      covered.forEach(([e, v, p]) => e.style.setProperty('visibility', v, p)); covered = [];
+      if (on) document.querySelectorAll('#mw-panel, .backToTop').forEach(e => { covered.push([e, e.style.getPropertyValue('visibility'), e.style.getPropertyPriority('visibility')]); e.style.setProperty('visibility', 'hidden', 'important'); });   // 用 visibility 而不是 display：TOP 按钮的小工具滚动时会自己改 display，放回时不跟它抢
+    };
+    const setMax = on => {
+      st.max = on; root.classList.toggle('is-max', on); const b = tools.querySelector('[data-act="max"]'); b.innerHTML = on ? ICON.min : ICON.max; b.setAttribute('aria-pressed', on); b.dataset.akTip = on ? '退出放大 (Esc)' : '放大查看';
+      document.documentElement.style.overflow = on ? 'hidden' : '';
+      if (!('showPopover' in root)) hideCovers(on); else if (on) { root.popover = 'manual'; root.showPopover(); } else root.removeAttribute('popover');   // 去掉属性浏览器就把它撤出顶层，回到正文里
+      paintHint();
+    };
+    const setFlip = on => { st.flip = on; tools.querySelector('[data-act="flip"]').setAttribute('aria-pressed', on); rehome(); paint(); };
+    const setGrid = on => { st.grid = on; stageEl.classList.toggle('ak-bg-grid', on); ground.classList.toggle('has-line', on); tools.querySelector('[data-act="grid"]').setAttribute('aria-pressed', on); };   // 网格线（CSS 铺的，不进导出）默认关；脚底的地面线跟着一起开关
+    const resetView = () => { custom = false; Object.assign(stage.view, home); paint(); };
+    const zoomAt = (cx, cy, k) => { custom = true; const v = stage.view, u = stage.box().s / RULER, z = clamp(v.z * k, u * .2, u * 8); v.x = cx - (cx - v.x) * z / v.z; v.y = cy - (cy - v.y) * z / v.z; v.z = z; paint(); };
 
     /* ── 事件 ── */
     root.addEventListener('click', e => {
@@ -1381,10 +1531,12 @@ var back_list = {
         case 'prev': step(-1); break;
         case 'next': step(1); break;
         case 'flip': setFlip(!st.flip); break;
+        case 'grid': setGrid(!st.grid); break;
         case 'reset': resetView(); break;
         case 'max': setMax(!st.max); break;
         case 'png': exportPng(); break;
         case 'webm': exportWebm(); break;
+        case 'gif': case 'gif2x': exportGif(t.dataset.act); break;
       }
     });
     root.addEventListener('change', e => { const t = e.target; if (t.dataset.act === 'loop') st.loop = t.checked; else if (t.dataset.act === 'chain') st.chain = t.checked; else if (t.dataset.act === 'speed') st.speed = +t.value; else if (t.dataset.act === 'model') { st.model = t.value; load(); } });
@@ -1452,7 +1604,7 @@ var back_list = {
     canvas.addEventListener('pointerdown', e => { if (!cur) return; canvas.setPointerCapture(e.pointerId); pts.set(e.pointerId, local(e)); canvas.classList.add('is-dragging'); pinch = 0; });
     canvas.addEventListener('pointermove', e => {
       const p = pts.get(e.pointerId); if (!p) return; const q = local(e);
-      if (pts.size === 1) { stage.view.x += q[0] - p[0]; stage.view.y += q[1] - p[1]; pts.set(e.pointerId, q); paint(); return; }
+      if (pts.size === 1) { custom = true; stage.view.x += q[0] - p[0]; stage.view.y += q[1] - p[1]; pts.set(e.pointerId, q); paint(); return; }
       pts.set(e.pointerId, q);
       const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
       if (pinch) zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / pinch);
@@ -1460,17 +1612,15 @@ var back_list = {
     });
     const up = e => { pts.delete(e.pointerId); pinch = 0; if (!pts.size) canvas.classList.remove('is-dragging'); };
     canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
-    let nudge = 0;
     canvas.addEventListener('wheel', e => {
-      if (!cur) return;
-      if (!(e.ctrlKey || e.metaKey || st.max)) { hint.classList.add('is-nudge'); clearTimeout(nudge); nudge = setTimeout(() => hint.classList.remove('is-nudge'), 900); return; }
+      if (!cur || !(e.ctrlKey || e.metaKey || st.max)) return;   // 没按 Ctrl 就滚轮：不劫持页面滚动
       e.preventDefault(); const [x, y] = local(e); zoomAt(x, y, Math.exp(-e.deltaY * (e.deltaMode ? .05 : .0025)));
     }, { passive: false });
     canvas.addEventListener('dblclick', resetView);
     stageEl.addEventListener('keydown', e => {
-      if (!cur || e.target !== stageEl || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (!cur || st.recording || e.target !== stageEl || e.ctrlKey || e.metaKey || e.altKey) return;   // 导出中不接（遮罩只挡得住指针），免得改到正在出的画面
       const k = e.key;
-      if (k === ' ') setPlaying(!st.playing); else if (k === 'ArrowLeft') step(-1); else if (k === 'ArrowRight') step(1); else if (k === 'f' || k === 'F') setFlip(!st.flip); else if (k === '0') resetView(); else return;
+      if (k === ' ') setPlaying(!st.playing); else if (k === 'ArrowLeft') step(-1); else if (k === 'ArrowRight') step(1); else if (k === 'f' || k === 'F') setFlip(!st.flip); else if (k === 'g' || k === 'G') setGrid(!st.grid); else if (k === '0') resetView(); else return;
       e.preventDefault();
     });
     document.addEventListener('keydown', e => {
@@ -1481,7 +1631,7 @@ var back_list = {
     });
 
     skinBox.innerHTML = skins.map(s => `<button type="button" class="ak-chip" data-skin="${esc(s)}" aria-pressed="false">${esc(s)}</button>`).join('');
-    setBg('dark');
+    setBg(autoBg(), null, true); paintHint();
     load();
   }
 
@@ -1497,7 +1647,8 @@ var back_list = {
       mount(conf);
     } catch (err) {
       loadBtn.classList.remove('is-loading');
-      const hintEl = root.querySelector('.sv__hint'); if (hintEl) hintEl.textContent = '载入失败（' + (err.message || err) + '），点按钮重试';
+      let e = root.querySelector('.sv-load__error'); if (!e) { e = h('span', { class: 'sv-load__error' }); loadBtn.after(e); }
+      e.textContent = '载入失败（' + (err.message || err) + '），点按钮重试';
     }
   });
 })();
