@@ -12,7 +12,7 @@
 <style>
 /* ═══════════════════════════════════════════════════════════════════════════
    首页 · Main page — 信息结构取自 prts.wiki 现网首页（2026-08-23 抓取）：
-   轮播（7 张：活动 4 + 寻访 3）+ 进行中的网页活动列表 → 12 个入口 → 今日信息（时钟 · 周常倒计时一行 + 资源收集 9 关今日开放、本周排期折叠 + 补充说明）→ 亮点干员（生日 / 新增 / 凭证兑换 / 时装 / 模组）→ 近期新增（关卡 / 家具）→ 网站信息。
+   轮播（7 张：活动 4 + 寻访 3）+ 进行中的网页活动列表 → 12 个入口 → 今日信息（时钟 · 周常倒计时一行 + 资源收集 9 关今日开放、未来七天排期折叠 + 补充说明）→ 亮点干员（生日 / 新增 / 凭证兑换 / 时装 / 模组）→ 近期新增（关卡 / 家具）→ 网站信息。
    这里的一切都是「页面自己的东西」：结构 = MediaWiki:首页 的 wikitext（模板输出下面这些 .mp-* 结构），样式 = 本 <style>（生产环境放 Template:首页/styles.css，TemplateStyles）；
    页面不碰皮肤。够不到正文的那几条——去标题 / 去目录 / 去白纸——是皮肤该在首页收敛的行为，Skin:Arknights 已经内置（.ak-layout--mainpage），站点不用往 MediaWiki:Common.css 里粘任何东西；
    开头「0. 页面级」段只是这份静态预览的补丁（骨架没有「当前是首页」这个状态），别照抄——见该段说明。
@@ -257,11 +257,11 @@
 .mp-nav__tile:hover::before { opacity: 1; }
 .mp-nav__tile:hover .mp-nav__en { color: inherit; opacity: .75; }
 
-/* ── 4. 今日信息：时间条 + 今日开放（本周排期折叠）+ 补充说明 ── */
-/* 今日信息 = 一张卡，自上而下三段，横线隔开：时间条（时钟 · 周常刷新倒计时，一行）· 今日开放（9 关小格，物资筹备 / 芯片搜索各一行；「本周排期」折叠在下面）· 补充说明（有才出）。
- *  先回答「今天能刷什么」，一周怎么排是第二个问题——收进 <details>，展开是一张关卡 × 星期的表；不在 9 张卡上各画一条七格（同一周的排期画 9 遍，占掉每张卡三分之一的高）。
+/* ── 4. 今日信息：时间条 + 今日开放（未来七天排期折叠）+ 补充说明 ── */
+/* 今日信息 = 一张卡，自上而下三段，横线隔开：时间条（时钟 · 周常刷新倒计时，一行）· 今日开放（9 关小格，物资筹备 / 芯片搜索各一行；「未来七天」排期折叠在下面）· 补充说明（有才出）。
+ *  先回答「今天能刷什么」，接下来几天怎么排是第二个问题——收进 <details>，展开是一张关卡 × 日子的表；不在 9 张卡上各画一条七格（同一份排期画 9 遍，占掉每张卡三分之一的高）。
  *  时钟和周常倒计时是同一时刻的两个数，一行写完，不各占一块大字面板（旧版首页「现在时间：…」「剿灭作战 & 周常任务将于 … 后刷新」也是句子）。 */
-.mp-today { margin: 0; --mp-res-label: 5.5rem; }   /* 组标题列宽：物资筹备 / 芯片搜索（overline 四个字 + 字距），「本周排期」的开关也对齐到格子那一列 */
+.mp-today { margin: 0; --mp-res-label: 5.5rem; }   /* 组标题列宽：物资筹备 / 芯片搜索（overline 四个字 + 字距），「未来七天」的开关也对齐到格子那一列 */
 .mp-hud { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px var(--ak-space-5); padding: 12px var(--ak-space-4); border-bottom: 1px solid var(--ak-border); }
 .mp-clock { display: flex; align-items: baseline; gap: 10px; }
 .mp-clock__time { font: 800 1.75rem/1 var(--ak-font-label); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
@@ -270,7 +270,7 @@
 .mp-cd { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; padding-left: var(--ak-space-5); border-left: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); font-weight: 600; color: var(--ak-fg-secondary); }   /* 周常刷新紧跟时钟、竖线隔开（不推到最右——同一时刻的两件事读成一句）；字号字重同日期那一段，倒计时的数字不放大：一行里只有时钟一个大字。手机上放不下，整段另起一行、竖线不画 */
 .mp-cd > b, .mp-cd__left b { font-weight: 700; color: var(--ak-fg); }
 .mp-cd__left b { font-variant-numeric: tabular-nums; margin: 0 1px; }
-.mp-today__res { position: relative; padding: var(--ak-space-4); }   /* 定位上下文：「本周排期」开关钉在右上角 */
+.mp-today__res { position: relative; padding: var(--ak-space-4); }   /* 定位上下文：「未来七天」开关钉在右上角 */
 .mp-res-group { display: grid; grid-template-columns: var(--mp-res-label) minmax(0, 1fr); column-gap: var(--ak-space-3); align-items: start; }
 .mp-res-group + .mp-res-group { margin-top: 6px; }
 .mp-res-group__label { line-height: 36px; color: var(--ak-fg); }   /* 与一行格子同高，字落在第一行格子的中线上；格子折行时标题留在第一行 */
@@ -286,10 +286,11 @@
 .mp-res__icon img { width: 100%; height: 100%; object-fit: contain; }
 .mp-res__name { font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.25; white-space: nowrap; }
 .mp-res__state { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-/* 本周排期：原生 <details>，默认收起（模板直接输出，不要脚本）。开关写法同 .ak-details 的 + / −，钉在格子区右上角、与第一行格子同高——不单占一行，开合时也不挪位置；
+/* 未来七天排期：原生 <details>，默认收起（模板直接输出，不要脚本）。开关写法同 .ak-details 的 + / −，钉在格子区右上角、与第一行格子同高——不单占一行，开合时也不挪位置；
  *  第一行格子右边让出开关的宽（--mp-week-toggle），格子多了先折行、不压到开关底下。手机上开关回到格子下面、不缩进。展开是两张表（物资筹备 | 芯片搜索），窄屏上下叠。
- *  表 = 关卡 × 星期：开放日淡青底，**今天开放 = 这一行唯一的实底**（原来七格条的规则不变），今天那一列表头加粗 + 青色底线；作战记录整行一格「常时开放」（游戏 _ParseOpenText 的写法）。
- *  格子里只有给读屏的「开放」，看的人看底色 + 表头；表头的一 … 日只写一次，不在每一行重复。 */
+ *  表 = 关卡 × 从今天起的 7 天（滚动，不是周一到周日——那样周日打开只剩今天一列有用）：第一列 = 今天，表头写「今天」、加粗 + 青色底线，其余列写周几；
+ *  开放日淡青底，**今天开放 = 这一行唯一的实底**（原来七格条的规则不变）；作战记录整行一格「常时开放」（游戏 _ParseOpenText 的写法）。
+ *  格子里只有给读屏的「开放」，看的人看底色 + 表头；表头的周几只写一次，不在每一行重复。 */
 .mp-today { --mp-week-toggle: 6.5rem; }
 .mp-today__res > .mp-res-group:first-child .mp-res-row { margin-right: var(--mp-week-toggle); }
 .mp-week > summary { position: absolute; top: var(--ak-space-4); right: var(--ak-space-4); display: inline-flex; align-items: center; gap: 6px; height: 36px; list-style: none; cursor: pointer; user-select: none; font-size: var(--ak-fs-xs); font-weight: 700; color: var(--ak-fg-secondary); }
@@ -313,8 +314,8 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
 .mp-week__table td.mp-week__always { background: var(--ak-accent-muted); }
 /* 特别开放（游戏 stage_table.forceOpenTable：一段时间内 9 个资源关全开，通常周年庆 / 大版本；新人 / 回归的 7 天全开是玩家各自的状态，wiki 不管）。
  *  游戏的视觉是一整套「黄 S」：资源收集页顶上的周条、每张区卡的七个小点、区卡上一条黄底 + 斜纹 + S 圆标的「特别开放」横条（zone_group_holder：img_week_force_open / head_bar）——
- *  落进这里 = 次强调黄 --ak-accent-2 把这一块的青全换掉：时间条下面一条通栏通知条（黄实底 + 左缘斜纹 .ak-stripe-edge + 黑圆 S）、在区间内的格子顶条变黄、本周排期里落在区间内的天变黄（今天 = 唯一实底，仍是黄）。
- *  逐日算、不整周涂：强开区间通常周二 04:00 起到下周二 03:59（7 天），跨周，本周只有区间内的那几天是黄的——和游戏 StageDataUtil.WeeklyZoneOpenInfo 一样；
+ *  落进这里 = 次强调黄 --ak-accent-2 把这一块的青全换掉：时间条下面一条通栏通知条（黄实底 + 左缘斜纹 .ak-stripe-edge + 黑圆 S）、在区间内的格子顶条变黄、未来七天里落在区间内的天变黄（今天 = 唯一实底，仍是黄）。
+ *  逐日算、不整段涂：强开区间通常周二 04:00 起到下周二 03:59（7 天），和这七天错开，只有落在区间内的那几天是黄的——逐日判断同游戏 StageDataUtil.WeeklyZoneOpenInfo（游戏排的是本周一到周日，这里是从今天起的七天）；
  *  正常开放且落在区间内的天也变黄（游戏 OPEN → FORCE_OPEN 也是黄 S）：这一周「为什么开」只有一个答案。
  *  格子的淡黄：亮色半透明黄压白面是浅黄，暗色半透明黄压深面会发闷成橄榄（tokens.css 的告诫），所以暗色下底更淡、黄交给文字。 */
 .mp-today { --mp-force-muted: rgba(255,216,0,.38); --mp-force-muted-fg: var(--ak-fg); }
@@ -416,13 +417,13 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
 }
 @media (max-width: 959px) {
   .mp-recent { grid-template-columns: 1fr; }
-  .mp-week__body { grid-template-columns: 1fr; }   /* 本周排期两张表上下叠 */
+  .mp-week__body { grid-template-columns: 1fr; }   /* 未来七天两张表上下叠 */
 }
 
 @media (max-width: 639px) {
   /* 今日信息：和桌面同一个位置（入口网格之后、亮点干员之前）——整块收到 ~400px，不用再像大卡那版（~860px）排到亮点干员 / 近期新增后面。
    *  时间条折成两行（时钟 / 周常刷新）；组标题叠到格子上方；
-   *  格子改竖排小格（图标在上、名字在下），物资筹备 5 个、芯片搜索 4 个各占一行——横排小格三列要折两行、第二行半空；名字放不下省略，读屏有完整名。本周排期的开关回到格子下面 */
+   *  格子改竖排小格（图标在上、名字在下），物资筹备 5 个、芯片搜索 4 个各占一行——横排小格三列要折两行、第二行半空；名字放不下省略，读屏有完整名。未来七天的开关回到格子下面 */
   .mp-hud { padding: 10px var(--ak-space-3); }
   .mp-clock__time { font-size: 1.5rem; }
   .mp-cd { padding-left: 0; border-left: 0; }
@@ -866,8 +867,9 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
       <div class="mp-cd"><b>剿灭作战 &amp; 周常任务</b><span><span class="mp-cd__left" id="mp-weekly"><b>14</b>小时<b>10</b>分</span>后刷新</span></div>
     </div>
     <!-- 今日开放：9 个关卡按「物资筹备 / 芯片搜索」两行小格；开放日 data-days（1–7，7 = 周日），JS 按服务器日（04:00 切日）标 is-open，并把今日未开放的格挪到行末；静态 HTML 反映抓取当天（周日，已按此排好）。
-         本周排期：<details> 默认收起，展开是关卡 × 星期的表（两组各一张）；行上的 data-days 与上面的格子同一份参数，JS 只标「今天」一列与特别开放的天。作战记录 data-days 七天全有 = 常时开放，整行一格。
-         特别开放（全开周）：容器 data-force-open="起/止"（ISO，+08:00，同游戏 forceOpenTable 的 startTime / endTime）由小编在 Template:首页 的参数里填，脚本逐日算本周哪几天落在区间内：
+         未来七天：<details> 默认收起，展开是关卡 × 从今天起 7 天的表（两组各一张）；行上的 data-days 与上面的格子同一份参数。起点每天在变，模板输出哪天起都行（静态 HTML 同样是抓取当天起），
+         JS 按服务器日重写表头（今天 / 周几）并逐格重算开放日 on / today / force。作战记录 data-days 七天全有 = 常时开放，整行一格。
+         特别开放（全开周）：容器 data-force-open="起/止"（ISO，+08:00，同游戏 forceOpenTable 的 startTime / endTime）由小编在 Template:首页 的参数里填，脚本逐日算这七天里哪几天落在区间内：
          落在区间内的天 → 排期表里变黄；今天在区间内 → 格子标 is-force（顶条变黄）+ 通知条（时间条与格子之间，通栏）显示；过期自动消失，不必等人来删。没有全开时不写这个属性、通知条不输出 -->
     <div class="mp-res-force ak-stripe-edge" id="mp-res-force" role="status" hidden><b class="mp-res-force__s" aria-hidden="true">S</b><span class="mp-res-force__title">特别开放</span><span class="mp-res-force__text">全部资源关卡开放 · <b data-force-end>—</b> 结束</span></div>
     <div class="mp-today__res" id="mp-res">
@@ -891,25 +893,25 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
         </div>
       </div>
       <details class="mp-week">
-        <summary>本周排期</summary>
+        <summary>未来七天</summary>
         <div class="mp-week__body">
           <table class="mp-week__table">
-            <thead><tr><th scope="col">物资筹备</th><th scope="col"><span class="ak-sr-only">周</span>一</th><th scope="col"><span class="ak-sr-only">周</span>二</th><th scope="col"><span class="ak-sr-only">周</span>三</th><th scope="col"><span class="ak-sr-only">周</span>四</th><th scope="col"><span class="ak-sr-only">周</span>五</th><th scope="col"><span class="ak-sr-only">周</span>六</th><th scope="col" class="today"><span class="ak-sr-only">周</span>日</th></tr></thead>
+            <thead><tr><th scope="col">物资筹备</th><th scope="col" class="today">今天</th><th scope="col"><span class="ak-sr-only">周</span>一</th><th scope="col"><span class="ak-sr-only">周</span>二</th><th scope="col"><span class="ak-sr-only">周</span>三</th><th scope="col"><span class="ak-sr-only">周</span>四</th><th scope="col"><span class="ak-sr-only">周</span>五</th><th scope="col"><span class="ak-sr-only">周</span>六</th></tr></thead>
             <tbody>
               <tr data-days="1234567"><th scope="row"><img src="assets/item/2004.png" alt="">作战记录</th><td colspan="7" class="mp-week__always">常时开放</td></tr>
-              <tr data-days="2357"><th scope="row"><img src="assets/item/3303.png" alt="">技巧概要</th><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on today"><span class="ak-sr-only">开放</span></td></tr>
-              <tr data-days="2467"><th scope="row"><img src="assets/item/4001.png" alt="">龙门币</th><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on today"><span class="ak-sr-only">开放</span></td></tr>
-              <tr data-days="1467"><th scope="row"><img src="assets/item/4006.png" alt="">采购凭证</th><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on today"><span class="ak-sr-only">开放</span></td></tr>
-              <tr data-days="1356"><th scope="row"><img src="assets/mainpage/item-3113.png" alt="">碳</th><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="today"></td></tr>
+              <tr data-days="2357"><th scope="row"><img src="assets/item/3303.png" alt="">技巧概要</th><td class="on today"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td></tr>
+              <tr data-days="2467"><th scope="row"><img src="assets/item/4001.png" alt="">龙门币</th><td class="on today"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td></tr>
+              <tr data-days="1467"><th scope="row"><img src="assets/item/4006.png" alt="">采购凭证</th><td class="on today"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td></tr>
+              <tr data-days="1356"><th scope="row"><img src="assets/mainpage/item-3113.png" alt="">碳</th><td class="today"></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td></tr>
             </tbody>
           </table>
           <table class="mp-week__table">
-            <thead><tr><th scope="col">芯片搜索</th><th scope="col"><span class="ak-sr-only">周</span>一</th><th scope="col"><span class="ak-sr-only">周</span>二</th><th scope="col"><span class="ak-sr-only">周</span>三</th><th scope="col"><span class="ak-sr-only">周</span>四</th><th scope="col"><span class="ak-sr-only">周</span>五</th><th scope="col"><span class="ak-sr-only">周</span>六</th><th scope="col" class="today"><span class="ak-sr-only">周</span>日</th></tr></thead>
+            <thead><tr><th scope="col">芯片搜索</th><th scope="col" class="today">今天</th><th scope="col"><span class="ak-sr-only">周</span>一</th><th scope="col"><span class="ak-sr-only">周</span>二</th><th scope="col"><span class="ak-sr-only">周</span>三</th><th scope="col"><span class="ak-sr-only">周</span>四</th><th scope="col"><span class="ak-sr-only">周</span>五</th><th scope="col"><span class="ak-sr-only">周</span>六</th></tr></thead>
             <tbody>
-              <tr data-days="2367"><th scope="row"><img src="assets/item/3223.png" alt="">近卫 & 特种</th><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on today"><span class="ak-sr-only">开放</span></td></tr>
-              <tr data-days="1457"><th scope="row"><img src="assets/item/3233.png" alt="">重装 & 医疗</th><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on today"><span class="ak-sr-only">开放</span></td></tr>
-              <tr data-days="3467"><th scope="row"><img src="assets/item/3213.png" alt="">先锋 & 辅助</th><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on today"><span class="ak-sr-only">开放</span></td></tr>
-              <tr data-days="1256"><th scope="row"><img src="assets/item/3243.png" alt="">狙击 & 术师</th><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="today"></td></tr>
+              <tr data-days="2367"><th scope="row"><img src="assets/item/3223.png" alt="">近卫 & 特种</th><td class="on today"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td></tr>
+              <tr data-days="1457"><th scope="row"><img src="assets/item/3233.png" alt="">重装 & 医疗</th><td class="on today"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td></tr>
+              <tr data-days="3467"><th scope="row"><img src="assets/item/3213.png" alt="">先锋 & 辅助</th><td class="on today"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td></tr>
+              <tr data-days="1256"><th scope="row"><img src="assets/item/3243.png" alt="">狙击 & 术师</th><td class="today"></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td><td></td><td></td><td class="on"><span class="ak-sr-only">开放</span></td><td class="on"><span class="ak-sr-only">开放</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1191,7 +1193,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
     }
   };
   tick(); setInterval(tick, 15e3);
-  /* 3. 资源收集开放状态：常规开放日（data-days）+ 特别开放区间（容器 data-force-open="起/止"）→ 今日格标 is-open / is-force、排期表逐日标 force / today；算法同游戏 StageDataUtil.WeeklyZoneOpenInfo */
+  /* 3. 资源收集开放状态：常规开放日（data-days）+ 特别开放区间（容器 data-force-open="起/止"）→ 今日格标 is-open / is-force、未来七天表逐日标 on / today / force；逐日判断同游戏 StageDataUtil.WeeklyZoneOpenInfo */
   var res = document.getElementById('mp-res');
   if (res) {
     var shift = function (d) { return new Date(d.getTime() + (d.getTimezoneOffset() + 480) * 6e4); };   // 真实时刻 → 与 cst() 同一坐标系
@@ -1200,11 +1202,12 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
     var renderRes = function () {
       var now = cst();
       var g = new Date(now); g.setHours(g.getHours() - 4);            // 游戏日 04:00 切
-      var wd = g.getDay() || 7;                                       // 1–7，7 = 周日
-      var mon = new Date(g); mon.setDate(g.getDate() - (wd - 1)); mon.setHours(4, 0, 0, 0);   // 本游戏周的周一 04:00
+      var wd = g.getDay() || 7;                                       // 今天：1–7，7 = 周日
+      var dayOf = function (k) { return (wd + k - 1) % 7 + 1; };      // 今天起第 k 天是周几（1–7）
+      var d0 = new Date(g); d0.setHours(4, 0, 0, 0);                  // 今天这个游戏日的 04:00
       var fo = (res.dataset.forceOpen || '').split('/'), fs = fo.length === 2 ? shift(new Date(fo[0])) : null, fe = fs ? shift(new Date(fo[1])) : null;
-      var force = {};                                                 // 本周哪几天落在强开区间内（1–7）
-      if (fs && fe && !isNaN(fs) && !isNaN(fe)) for (var j = 1; j <= 7; j++) { var a = mon.getTime() + (j - 1) * DAY, b = a + DAY - 1; if (fs <= b && fe >= a) force[j] = true; }
+      var force = [];                                                 // 今天起 7 天，第 k 天（0 = 今天）是否落在强开区间内
+      for (var k = 0; k < 7; k++) { var a = d0.getTime() + k * DAY, b = a + DAY - 1; force[k] = !!(fs && fe && !isNaN(fs) && !isNaN(fe) && fs <= b && fe >= a); }
       var forceNow = !!(fs && fe && fs <= now && now <= fe);
       var notice = document.getElementById('mp-res-force');
       if (notice) { notice.hidden = !forceNow; var end = notice.querySelector('[data-force-end]'); if (end && fe) end.textContent = (fe.getMonth() + 1) + '月' + fe.getDate() + '日 ' + pad(fe.getHours()) + ':' + pad(fe.getMinutes()); }
@@ -1212,24 +1215,29 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
         var cards = [].slice.call(row.querySelectorAll('.mp-res'));
         cards.forEach(function (el) {
           var always = el.dataset.days.length >= 7;
-          var normal = always || el.dataset.days.indexOf(String(wd)) > -1, on = normal || !!force[wd];
+          var normal = always || el.dataset.days.indexOf(String(wd)) > -1, on = normal || force[0];
           el.classList.toggle('is-open', on);
-          el.classList.toggle('is-force', on && !!force[wd]);
-          el.querySelector('.mp-res__state').textContent = (on && force[wd] ? '特别开放 · ' : '') + (always ? '常时开放' : on ? '今日开放' : '今日未开放');
+          el.classList.toggle('is-force', on && force[0]);
+          el.querySelector('.mp-res__state').textContent = (on && force[0] ? '特别开放 · ' : '') + (always ? '常时开放' : on ? '今日开放' : '今日未开放');
         });
         cards.sort(function (x, y) { return (x.classList.contains('is-open') ? 0 : 1) - (y.classList.contains('is-open') ? 0 : 1) || x.dataset.idx - y.dataset.idx; })
           .forEach(function (el) { row.appendChild(el); });   // 今日未开放的排到行末（挪 DOM 而非 CSS order，Tab 顺序与视觉一致）；其余保持原序
       });
-      /* 本周排期表：表头标今天那一列；各行逐日标 today / force（开放日 on 是模板按 data-days 输出的静态类，这里不动）；常时开放那一行整行一格，只看今天在不在区间内 */
+      /* 未来七天表：第 k 列 = 今天起第 k 天，起点每天在变——表头（今天 / 周几）与各格的 on / today / force 全按 data-days 重算，不信模板输出的那一天；常时开放那一行整行一格，只看今天在不在区间内 */
       res.querySelectorAll('.mp-week__table').forEach(function (table) {
-        table.querySelectorAll('thead th').forEach(function (th, j) { th.classList.toggle('today', j === wd); });   // 第 0 格是组名
+        table.querySelectorAll('thead th').forEach(function (th, j) {   // 第 0 格是组名
+          if (!j) return;
+          th.classList.toggle('today', j === 1);
+          th.innerHTML = j === 1 ? '今天' : '<span class="ak-sr-only">周</span>' + DAYS[dayOf(j - 1) % 7];
+        });
         table.querySelectorAll('tbody tr').forEach(function (tr) {
-          tr.classList.toggle('is-force', !!force[wd]);
-          tr.querySelectorAll('td:not(.mp-week__always)').forEach(function (td, j) {
-            var day = j + 1, f = !!force[day];
-            td.classList.toggle('today', day === wd);
-            td.classList.toggle('force', f);
-            var sr = td.querySelector('.ak-sr-only'), text = f ? '特别开放' : td.classList.contains('on') ? '开放' : '';
+          tr.classList.toggle('is-force', force[0]);
+          tr.querySelectorAll('td:not(.mp-week__always)').forEach(function (td, k) {
+            var on = tr.dataset.days.indexOf(String(dayOf(k))) > -1;
+            td.classList.toggle('on', on);
+            td.classList.toggle('today', k === 0);
+            td.classList.toggle('force', force[k]);
+            var sr = td.querySelector('.ak-sr-only'), text = force[k] ? '特别开放' : on ? '开放' : '';
             if (text && !sr) { sr = document.createElement('span'); sr.className = 'ak-sr-only'; td.appendChild(sr); }
             if (sr) sr.textContent = text;
           });
@@ -1237,7 +1245,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
       });
     };
     renderRes();
-    /* 预览用开关：假装一段 7 天的全开区间（前天 04:00 → 第 5 天 03:59:59，跨周，本周只有部分天在区间内，同真实数据的周二起 7 天） */
+    /* 预览用开关：假装一段 7 天的全开区间（前天 04:00 → 第 5 天 03:59:59，未来七天里只有前 5 天在区间内，同真实数据的区间和这七天错开） */
     var demo = document.getElementById('mp-res-force-demo');
     var iso = function (d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + '+08:00'; };
     if (demo) demo.addEventListener('change', function () {
