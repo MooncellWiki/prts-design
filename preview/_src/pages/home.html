@@ -268,11 +268,9 @@ cats: 首页
 .mp-clock__time { font: 800 1.75rem/1 var(--ak-font-label); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
 .mp-clock__date { font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); font-weight: 600; }
 .mp-clock__tz { font: 600 10px/1 var(--ak-font-label); letter-spacing: .12em; color: var(--ak-fg-muted); }
-.mp-cd { flex: 1 1 19rem; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; padding-left: var(--ak-space-5); border-left: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); font-weight: 600; color: var(--ak-fg-secondary); }   /* 周常刷新紧跟时钟、竖线隔开（不推到最右——同一时刻的两件事读成一句）；字号字重同日期那一段，倒计时的数字不放大：一行里只有时钟一个大字。
- *  flex 基准 19rem ≈「剿灭作战 & 周常任务 … 后刷新」那一截：旁边放得下它就留在时钟这一行、只把小字折下去，不会整段掉到下一行、让竖线落在行首；手机上放不下，整段另起一行、竖线不画 */
+.mp-cd { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; padding-left: var(--ak-space-5); border-left: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); font-weight: 600; color: var(--ak-fg-secondary); }   /* 周常刷新紧跟时钟、竖线隔开（不推到最右——同一时刻的两件事读成一句）；字号字重同日期那一段，倒计时的数字不放大：一行里只有时钟一个大字。手机上放不下，整段另起一行、竖线不画 */
 .mp-cd > b, .mp-cd__left b { font-weight: 700; color: var(--ak-fg); }
 .mp-cd__left b { font-variant-numeric: tabular-nums; margin: 0 1px; }
-.mp-cd small { font-size: var(--ak-fs-xs); font-weight: 400; color: var(--ak-fg-muted); }
 .mp-today__res { position: relative; padding: var(--ak-space-4); }   /* 定位上下文：「本周排期」开关钉在右上角 */
 .mp-res-group { display: grid; grid-template-columns: var(--mp-res-label) minmax(0, 1fr); column-gap: var(--ak-space-3); align-items: start; }
 .mp-res-group + .mp-res-group { margin-top: 6px; }
@@ -424,12 +422,11 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
 
 @media (max-width: 639px) {
   /* 今日信息：和桌面同一个位置（入口网格之后、亮点干员之前）——整块收到 ~400px，不用再像大卡那版（~860px）排到亮点干员 / 近期新增后面。
-   *  时间条折成两行（时钟 / 周常刷新），「每周一 04:00 · 含特勤任务」不出；组标题叠到格子上方；
+   *  时间条折成两行（时钟 / 周常刷新）；组标题叠到格子上方；
    *  格子改竖排小格（图标在上、名字在下），物资筹备 5 个、芯片搜索 4 个各占一行——横排小格三列要折两行、第二行半空；名字放不下省略，读屏有完整名。本周排期的开关回到格子下面 */
   .mp-hud { padding: 10px var(--ak-space-3); }
   .mp-clock__time { font-size: 1.5rem; }
   .mp-cd { padding-left: 0; border-left: 0; }
-  .mp-cd small { display: none; }
   .mp-today__res { padding: var(--ak-space-3); }
   .mp-res-group { grid-template-columns: minmax(0, 1fr); }
   .mp-res-group__label { line-height: 1; margin-bottom: 6px; }
@@ -596,7 +593,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
     <!-- 时间条：时钟（JS 走字）+ 周常刷新倒计时（算到下周一 04:00）。一行写完；窄屏折成两行 -->
     <div class="mp-hud">
       <div class="mp-clock"><span class="mp-clock__time" id="mp-clock">13:49</span><span class="mp-clock__date" id="mp-date">8月23日 · 周日</span><span class="mp-clock__tz">UTC+8</span></div>
-      <div class="mp-cd"><b>剿灭作战 &amp; 周常任务</b><span><span class="mp-cd__left" id="mp-weekly"><b>14</b>小时<b>10</b>分</span>后刷新</span><small>每周一 04:00 · 含特勤任务</small></div>
+      <div class="mp-cd"><b>剿灭作战 &amp; 周常任务</b><span><span class="mp-cd__left" id="mp-weekly"><b>14</b>小时<b>10</b>分</span>后刷新</span></div>
     </div>
     <!-- 今日开放：9 个关卡按「物资筹备 / 芯片搜索」两行小格；开放日 data-days（1–7，7 = 周日），JS 按服务器日（04:00 切日）标 is-open，并把今日未开放的格挪到行末；静态 HTML 反映抓取当天（周日，已按此排好）。
          本周排期：<details> 默认收起，展开是关卡 × 星期的表（两组各一张）；行上的 data-days 与上面的格子同一份参数，JS 只标「今天」一列与特别开放的天。作战记录 data-days 七天全有 = 常时开放，整行一格。
