@@ -16,7 +16,8 @@ lastmod: 2023年12月11日 (一) 21:46
    公招计算 · Recruitment calculator — 现网「公招计算」（= prts-widgets 的 HrCalculator Widget）的重新设计。
    现网：四行筛选（资历 / 职业 / 位置 / 词缀，可以无上限地选）→ 一张「Tags | 可能出现」的表，把选中标签的所有子集各列一行，按平均星级排。
    这里照游戏的招募流程排：招募位上出现的标签点上 → 至多选 3 个。页面回答的是「这几个里选哪几个」：
-   标签面板（个数不限）→ 结论 → 全部组合排成一张表（每组至多 3 个标签，保底高的在前）。不让选招募时限，一律按 9:00 算。
+   标签面板（个数不限）→ 图例与工具栏 → 按「保底几星」分层的组合（每组至多 3 个标签，不保底的那层默认收起）；一个标签都没选时，结果区是保底速查。
+   不按招募时限筛干员（带齐标签的 1–5★ 都列），保底按 9:00 算。
    干员数据、词缀、「6★ 只在选了高级资深干员时出现」的规则、地址栏 ?filter= 的写法都与现网一致（现网的分享链接在这里照样能用）。
    这里的一切都是「Widget 自己的东西」：生产环境 = prts-widgets 的 HrCalculator 输出下面这些结构（.ak-* 是设计系统组件，.hr-* 是它自己的排布），样式 = Widget 的样式表；
    页面脚本只是 Widget 的替身。开头「0. 页面级」段是这份静态预览的补丁，别照抄——同干员一览样例。
@@ -35,7 +36,9 @@ lastmod: 2023年12月11日 (一) 21:46
 .hr-notes a { color: var(--ak-link); }
 
 /* ── 1. 标签面板 ──
- *  四行社区通行的归类：资质 / 位置 / 职业 / 词缀（游戏数据 gachaTags 自己不分组，招募位上按服务器给的次序摆；现网把「支援机械」放在词缀里、「新手」放在资历里，这里两个都归资质）。个数不限。
+ *  四行：资质 / 职业 / 位置 / 词缀，个数不限。同现网：「新手」归资质，「支援机械」归词缀（两个在游戏数据里都同治疗、支援一样写在 tagList 里，只是只有 2★ / 1★ 带）。
+ *  次序对齐游戏招募页：招募页照服务器给的 slot.tags 原样一行三个摆（不排序），服务器给的是 tagId 升序，即 职业 1–8 → 位置 9–10 → 词缀 12–29，
+ *  面板照这个从上到下、从左到右排，跟着游戏扫一遍就能选完；资质三个（高资 11、资深 14、新手 17）在游戏里夹在词缀中间，单独成行放最上（同现网）。
  *  游戏里的标签钮（recruit_page 预制件的 btn_tag_item，图集 tag）：未选 btn_request 深灰 #313131 白字、选中 btn_request_choose 蓝 #0098DC；
  *  两个稀有标签（specialTagRarityTable 的键：资深干员 / 高级资深干员）另一套皮——未选 btn_request_r 深灰底 + 右侧黄色半调网点、黄字 #FFEB04，选中 btn_request_r_on 黄 #FFD800 底黑字。
  *  结果里的组合标签用深灰钮 .hr-tagbtn（稀有标签带网点、黄字）；面板里的芯片选中时普通标签青、稀有标签黄。 */
@@ -67,47 +70,66 @@ lastmod: 2023年12月11日 (一) 21:46
 .hr-ico[data-prof="support"] { mask-image: url(assets/profession/line_support.png); }
 .hr-ico[data-prof="special"] { mask-image: url(assets/profession/line_special.png); }
 
-/* ── 2. 结论 + 清空 / 复制分享链接 ── */
-.hr-bar { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: var(--ak-space-4) 0 var(--ak-space-3); min-height: 32px; }
-.hr-verdict { flex: 1 1 320px; min-width: 0; margin: 0; font-size: var(--ak-fs-sm); line-height: 1.5; color: var(--ak-fg-secondary); }
-.hr-verdict b { font-weight: 700; color: var(--ak-fg); }
-.hr-verdict .hr-star { font: 700 var(--ak-fs-h3)/1 var(--ak-font-label); color: var(--ak-r-text); margin: 0 2px; }
+/* ── 2. 标签面板与结果之间的一行：左边图例（限 / 单选保底方块），右边「清空」（下一个招募位从头选）与「复制分享链接」 ── */
+.hr-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: var(--ak-space-4) 0 var(--ak-space-3); min-height: 32px; }
 .hr-bar__tools { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 .hr-bar .ak-icon { width: 14px; height: 14px; }
+.hr-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.hr-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+.hr-legend .hr-op__only { position: static; }
+.hr-legend i { width: 7px; height: 7px; background: var(--ak-r); }
 
-/* ── 3. 结果：全部组合排成一张表 ──
+/* ── 3. 结果：按「保底几星」分层 ──
  *  现网：选中标签的每个子集一行（不限个数——游戏里最多只能选 3 个），按平均星级排；一行保底几星要自己看头像底色里最低的那个。
- *  这里：每组至多 3 个标签；先算出这组（按 9:00）保底几星，保底高的在前、同保底标签少的在前、干员少的在前；行左的色条 = 保底的稀有度，干员全部列出。
- *  多加一个标签却圈不出更小范围的组合不列（与它的子组合是同一批干员）。 */
-.hr-combos { margin: 0; padding: 0; list-style: none; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+ *  这里：每组至多 3 个标签；先算出这组（按 9:00）保底几星，保底 6★ / 5★ / 4★ 各一层，整组都是 1★ 的单列「必得支援机械」，
+ *  保底 3★ 及以下的收在最后一层「不保底」，前面有保底层时默认收起。层内标签少的在前、干员少的在前；行左的色条 = 保底的稀有度，干员全部列出。
+ *  多加一个标签却圈不出更小范围的组合不列（与它的子组合是同一批干员）。
+ *  一个标签都没选时是保底速查：全部能保底 4★ 以上的最小组合，按保底 5★ / 4★ 分层、排成多列的格子。 */
+.hr-tier { margin: 0 0 var(--ak-space-4); }
+.hr-tier__head { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 36px; padding: 0 var(--ak-space-3) 0 0; background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); font-size: var(--ak-fs-sm); }
+.hr-tier__badge { align-self: stretch; display: inline-flex; align-items: center; gap: 4px; padding: 0 12px; background: var(--ak-r, var(--ak-gray-500)); color: #1d1f20; font: 700 var(--ak-fs-body)/1 var(--ak-font-label); white-space: nowrap; }
+.hr-tier__badge i { width: 12px; height: 12px; background: currentColor; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.hr-tier__title { font-weight: 700; }
+.hr-tier__count { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
+button.hr-tier__head { cursor: pointer; }
+button.hr-tier__head:hover { background: var(--ak-bg-hover); }
+button.hr-tier__head:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+button.hr-tier__head::after { content: ""; flex: none; margin-left: auto; width: 10px; height: 10px; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat; opacity: .6; }   /* 右端的 + / − */
+button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2px 0; }
+.hr-combos { margin: 0; padding: 0; list-style: none; border: 1px solid var(--ak-border); border-top: 0; background: var(--ak-bg-surface); }
 .hr-combo { display: grid; grid-template-columns: 232px minmax(0, 1fr); margin: 0; }
 .hr-combo + .hr-combo { border-top: 1px solid var(--ak-border); }
 .hr-combo__tags { display: flex; flex-wrap: wrap; align-content: flex-start; align-items: center; gap: 6px; padding: 12px var(--ak-space-3); border-left: var(--ak-bar-w) solid var(--ak-r, var(--ak-border-strong)); border-right: 1px solid var(--ak-border-subtle); }
 .hr-tagbtn { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; background: var(--ak-gray-800); color: #fff; font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1; white-space: nowrap; box-shadow: 0 2px 0 rgba(0, 0, 0, .28); }
 .hr-tagbtn.is-senior { color: #ffeb04; background-image: linear-gradient(100deg, var(--ak-gray-800) 25%, transparent 80%), radial-gradient(rgba(255, 216, 0, .5) 1.1px, transparent 1.3px); background-size: auto, 5px 5px; }
-.hr-combo__meta { flex: 1 0 100%; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
-.hr-combo__meta b { font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-r-text); }
 .hr-combo__ops { display: flex; flex-wrap: wrap; gap: 8px 6px; padding: 10px var(--ak-space-3); min-width: 0; }
-/* 干员：头像 + 稀有度色条 + 名字；只能靠公开招募获得的（现网的绿色「限」字）右上角一枚「限」 */
-.hr-op { position: relative; display: flex; flex-direction: column; width: 56px; text-decoration: none; color: var(--ak-fg); }
+/* 保底速查：组合多、每组干员少（多数只有一两位）——排成多列的格子，标签在上、干员在下；格子里不画稀有度色条（层标题已经标了） */
+.hr-combos--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); overflow: hidden; }
+.hr-combos--grid > .hr-combo { display: flex; flex-direction: column; border-top: 0; box-shadow: 1px 0 0 var(--ak-border), 0 1px 0 var(--ak-border); }
+.hr-combos--grid .hr-combo__tags { padding: 10px var(--ak-space-3) 0; border: 0; }
+.hr-combos--grid .hr-combo__ops { border: 0; }
+.hr-ref-head { margin-bottom: var(--ak-space-3); }
+/* 干员：头像 + 稀有度色条 + 名字；只能靠公开招募获得的（现网的绿色「限」字）右上角一枚「限」。
+ * 头像同首页的干员卡（.ak-op-card）：左上角黄色星级原图、左下角职业图标，按这里的小头像缩小（首页 88px 头像上星级 14px 高、职业图标 22px 底框）；星级比等比略大，五星不压右上角的「限」。
+ * 筛选结果里大一号（64px 头像、13px 名字）；保底速查的格子与手机排布小一号（56px），一屏多放几组 */
+.hr-op { --hr-op: 64px; --hr-op-stars: 13px; --hr-op-prof: 20px; --hr-op-prof-img: 17px; --hr-op-name: 13px; position: relative; display: flex; flex-direction: column; width: var(--hr-op); text-decoration: none; color: var(--ak-fg); }
+.hr-combos--grid .hr-op { --hr-op: 56px; --hr-op-stars: 12px; --hr-op-prof: 18px; --hr-op-prof-img: 15px; --hr-op-name: max(11px, var(--ak-fs-cjk-min)); }
 .hr-op:is(:visited, :active, :hover) { color: var(--ak-fg); text-decoration: none; }
-.hr-op__img { display: block; width: 56px; height: 56px; box-sizing: border-box; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); border-bottom: 3px solid var(--ak-r, var(--ak-border-strong)); overflow: hidden; }
-.hr-op__img > img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.hr-op__name { padding-top: 3px; font-size: max(11px, var(--ak-fs-cjk-min)); line-height: 1.25; text-align: center; overflow-wrap: anywhere; color: var(--ak-fg-secondary); }
+.hr-op__img { position: relative; display: block; width: var(--hr-op); height: var(--hr-op); box-sizing: border-box; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); border-bottom: 3px solid var(--ak-r, var(--ak-border-strong)); overflow: hidden; }
+.hr-op__avatar { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hr-op__stars { position: absolute; left: 2px; top: 2px; width: auto; height: var(--hr-op-stars); }
+.hr-op__prof { position: absolute; left: 2px; bottom: 2px; display: grid; place-items: center; width: var(--hr-op-prof); height: var(--hr-op-prof); background: rgba(0, 0, 0, .6); }
+.hr-op__prof > img { display: block; width: var(--hr-op-prof-img); height: var(--hr-op-prof-img); }
+.hr-op__name { margin: 0 -3px; padding-top: 3px; font-size: var(--hr-op-name); line-height: 1.25; text-align: center; overflow-wrap: anywhere; color: var(--ak-fg-secondary); }   /* 左右各借半个列间距（3px），五个字的名字（正义骑士号）不折行 */
 .hr-op:hover .hr-op__img { outline: 2px solid var(--ak-accent); outline-offset: -2px; }
 .hr-op:hover .hr-op__name { color: var(--ak-accent); }
 .hr-op:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 .hr-op__only { position: absolute; right: 0; top: 0; padding: 2px 3px; background: var(--ak-success); color: #fff; font-size: 10px; font-weight: 700; line-height: 1; }
-.hr-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 0 0 var(--ak-space-3); font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
-.hr-legend > span { display: inline-flex; align-items: center; gap: 5px; }
-.hr-legend .hr-op__only { position: static; }
-.hr-legend i { width: 7px; height: 7px; background: var(--ak-r); }
 .hr-tip { position: fixed; left: 0; top: 0; max-width: min(300px, calc(100vw - 16px)); white-space: pre-line; line-height: 1.55; pointer-events: none; }
 
 @media (max-width: 760px) {
   .hr-combo { grid-template-columns: minmax(0, 1fr); }
   .hr-combo__tags { padding: 10px var(--ak-space-3) 0; border-right: 0; }
-  .hr-combo__meta { flex: none; margin-left: auto; }
   .hr-combo__ops { border-left: var(--ak-bar-w) solid var(--ak-r, var(--ak-border-strong)); }
 }
 @media (max-width: 639px) {
@@ -115,7 +137,7 @@ lastmod: 2023年12月11日 (一) 21:46
   .hr-row__label { padding: 8px var(--ak-space-3) 0 8px; }
   .hr-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
   .hr-row.has-active > .hr-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }
-  .hr-op { width: 52px; } .hr-op__img { width: 52px; height: 52px; }
+  .hr-op { --hr-op: 56px; --hr-op-stars: 12px; --hr-op-prof: 18px; --hr-op-prof-img: 15px; --hr-op-name: max(11px, var(--ak-fs-cjk-min)); }
   .hr-bar__tools { margin-left: 0; }
 }
 </style>
@@ -134,16 +156,14 @@ lastmod: 2023年12月11日 (一) 21:46
   <section class="hr-pick" id="hr-rows" aria-label="职业需求"></section>
 
   <div class="hr-bar">
-    <p class="hr-verdict" id="hr-verdict" role="status"></p>
+    <div class="hr-legend">
+      <span><span class="hr-op__only">限</span>只能通过公开招募获得</span>
+      <span data-rarity="4"><i></i>单选这一个标签即可保底（方块颜色 = 保底的稀有度）</span>
+    </div>
     <div class="hr-bar__tools">
       <button type="button" class="ak-btn ak-btn--sm" id="hr-clear"><svg class="ak-icon"><use href="#i-refresh"/></svg>清空</button>
-      <button type="button" class="ak-btn ak-btn--sm ak-btn--ghost" id="hr-copy"><svg class="ak-icon"><use href="#i-link"/></svg>复制分享链接</button>
+      <button type="button" class="ak-btn ak-btn--sm" id="hr-copy"><svg class="ak-icon"><use href="#i-link"/></svg>复制分享链接</button>
     </div>
-  </div>
-
-  <div class="hr-legend" id="hr-legend">
-    <span><span class="hr-op__only">限</span>只能通过公开招募获得</span>
-    <span data-rarity="4"><i></i>单选这一个标签即可保底（方块颜色 = 保底的稀有度）</span>
   </div>
 
   <div id="hr-result"></div>
@@ -163,10 +183,11 @@ lastmod: 2023年12月11日 (一) 21:46
   const WIKI = 'https://prts.wiki/w/', MEDIA = 'https://media.prts.wiki/';
   const media = (m, file) => MEDIA + m[0] + '/' + m + '/' + encodeURIComponent(file);
   const PROF = { 先锋: 'pioneer', 近卫: 'warrior', 重装: 'tank', 狙击: 'sniper', 术师: 'caster', 医疗: 'medic', 辅助: 'support', 特种: 'special' };
+  const RARITY_ALT = ['一星', '二星', '三星', '四星', '五星', '六星'];
 
   /* ── 标签 ──
    *  LIVE = 现网 Widget 的四组及组内次序（utils.ts）：?filter= 按它编码，一个字都不能动。
-   *  GROUPS = 这里怎么摆（社区通行的四类；游戏数据不分组）。 */
+   *  GROUPS = 这里怎么摆（社区通行的四类；游戏数据不分组），次序对齐游戏招募页（tagId 升序），见样式表「1. 标签面板」。 */
   const LIVE = {
     profession: ['近卫', '狙击', '重装', '医疗', '辅助', '术师', '特种', '先锋'],
     position: ['近战位', '远程位'],
@@ -174,37 +195,42 @@ lastmod: 2023年12月11日 (一) 21:46
     tag: ['支援机械', '控场', '爆发', '治疗', '支援', '费用回复', '输出', '生存', '群攻', '防护', '减速', '削弱', '快速复活', '位移', '召唤', '元素'],
   };
   const GROUPS = [
-    { title: '资质', tags: ['高级资深干员', '资深干员', '新手', '支援机械'] },
+    { title: '资质', tags: ['高级资深干员', '资深干员', '新手'] },
+    { title: '职业', tags: ['近卫', '狙击', '重装', '医疗', '辅助', '术师', '特种', '先锋'] },
     { title: '位置', tags: ['近战位', '远程位'] },
-    { title: '职业', tags: ['先锋', '近卫', '重装', '狙击', '术师', '医疗', '辅助', '特种'] },
-    { title: '词缀', tags: ['治疗', '支援', '输出', '群攻', '减速', '生存', '防护', '削弱', '位移', '控场', '爆发', '召唤', '快速复活', '费用回复', '元素'] },
+    { title: '词缀', tags: ['控场', '爆发', '治疗', '支援', '费用回复', '输出', '生存', '群攻', '防护', '减速', '削弱', '快速复活', '位移', '召唤', '支援机械', '元素'] },
   ];
-  const TOP = '高级资深干员', SENIOR = '资深干员', ROBOT = '支援机械';
+  const TOP = '高级资深干员', SENIOR = '资深干员', NOVICE = '新手', ROBOT = '支援机械';
   const ALL = GROUPS.flatMap(g => g.tags), BIT = new Map(ALL.map((t, i) => [t, 1 << i]));
   const MAX_PICK = 3;   // 游戏：至多选 3 个标签（RecruitBuildConfigStateBean.MAX_TAG_SELECT_NUM）
-  /* 不让选招募时限，一律按 9:00 算：可能出现 3–5★（gacha_table.recruitRarityTable 460–540 分那一段：2–4，0 起算），两个稀有标签此时锁定。
-   * 6★ 只在组合含【高级资深干员】时算（specialTagRarityTable）；1★ 只在组合含【支援机械】时算（时限压到 3:50 以内才出），见 combosOf */
+  /* 不按招募时限筛干员，1–5★ 都列；6★ 只在组合含【高级资深干员】时出（specialTagRarityTable）。
+   * 保底按 9:00 算：此时只出 3–5★（gacha_table.recruitRarityTable 460–540 分那一段：2–4，0 起算），
+   * 低于 MIN_STAR 的（1★ 支援机械、2★ 新手）要把时限压短才出，不拉低保底，见 combosOf */
   const MIN_STAR = 3;
 
   /* ── 干员：每位算一个标签位图（职业 + 位置 + 词缀 + 按星级补的资深 / 高级资深，同 Widget 的 Char.fromSource）── */
   const chars = D.chars.map(c => {
     const star = c.rarity + 1, tags = [c.profession, c.position, ...c.tag];
     if (star === 5) tags.push(SENIOR); else if (star === 6) tags.push(TOP);
-    return { zh: c.zh, star, tags, am: c.am, mask: tags.reduce((m, t) => m | (BIT.get(t) || 0), 0), only: c.obtainMethod.every(v => !v.includes('寻访')) };   // 寻访出不了的都算只能公招出（同 Widget 的 isOnly）
+    return { zh: c.zh, star, profession: c.profession, tags, am: c.am, mask: tags.reduce((m, t) => m | (BIT.get(t) || 0), 0), only: c.obtainMethod.every(v => !v.includes('寻访')) };   // 寻访出不了的都算只能公招出（同 Widget 的 isOnly）
   }).sort((a, b) => b.star - a.star);
 
-  const state = { sel: new Set() };
+  const state = { sel: new Set(), lowOpen: false };   // lowOpen：「不保底」那一层前面有保底层时默认收起
 
   /* ── 组合 ──
-   *  从 tags 里取 1–3 个；一组的干员 = 带齐这几个标签、按 9:00 可能出现的：3–5★ 都算，6★ 只在组合含【高级资深干员】时算，1★ 只在组合含【支援机械】时算。
-   *  保底 = 这组干员里最低的星级。 */
+   *  从 tags 里取 1–3 个；一组的干员 = 带齐这几个标签的，不按招募时限筛：1–5★ 都算，6★ 只在组合含【高级资深干员】时算。
+   *  保底 = 9:00 时这组里最低的星级：只看 MIN_STAR 以上的；整组都低于 MIN_STAR（新手、支援机械）时才取最低那一星——
+   *  不然【支援】【削弱】【控场】等会被混进来的 1★ 支援机械拉成保底 1★。 */
   function combosOf(tags, maxPick = MAX_PICK) {
     const out = [];
     const walk = (start, picked, mask) => {
       if (picked.length) {
-        const top = (mask & BIT.get(TOP)) !== 0, robot = (mask & BIT.get(ROBOT)) !== 0;
-        const ops = chars.filter(c => (c.mask & mask) === mask && (c.star === 6 ? top : c.star >= MIN_STAR || (c.star === 1 && robot)));
-        if (ops.length) out.push({ tags: picked, mask, ops, min: ops[ops.length - 1].star });
+        const top = (mask & BIT.get(TOP)) !== 0;
+        const ops = chars.filter(c => (c.mask & mask) === mask && (c.star !== 6 || top));
+        if (ops.length) {
+          const sure = ops.filter(c => c.star >= MIN_STAR), floor = sure.length ? sure : ops;
+          out.push({ tags: picked, mask, ops, min: floor[floor.length - 1].star });
+        }
       }
       if (picked.length < maxPick) for (let i = start; i < tags.length; i++) walk(i + 1, picked.concat(tags[i]), mask | BIT.get(tags[i]));
     };
@@ -217,7 +243,16 @@ lastmod: 2023年12月11日 (一) 21:46
    * 要比是不是同一批人，不能只比人数：稀有标签会改星级范围，【高级资深干员】+ 近卫 + 支援（帕拉斯、银灰）与 近卫 + 支援（杜宾、诗怀雅）人数一样，却是另一批干员 */
   const prune = list => list.filter(c => !list.some(s => subOf(s, c) && sameOps(s, c)));
   const order = (a, b) => b.min - a.min || a.tags.length - b.tags.length || a.ops.length - b.ops.length || a.mask - b.mask;
-  const solo = new Map(combosOf(ALL, 1).filter(c => c.min >= 4).map(c => [c.tags[0], c.min]));   // 单选就能保底 4★ 以上的标签 → 保底星级
+  const isSenior = t => t === TOP || t === SENIOR;
+  const solo = new Map(combosOf(ALL.filter(t => !isSenior(t)), 1).filter(c => c.min >= 4).map(c => [c.tags[0], c.min]));   // 单选就能保底 4★ 以上的标签 → 保底星级；稀有标签不算（它们另有一套皮）
+  /* 保底速查：全部标签里能保底 4★ 以上的最小组合（9:00）。不含资质那四个——稀有标签自己就是保底，新手 / 支援机械只出低星。多加标签没把保底抬高的不列 */
+  let refCache;
+  function reference() {
+    if (refCache) return refCache;
+    const skip = new Set([TOP, SENIOR, NOVICE, ROBOT]);
+    const good = combosOf(ALL.filter(t => !skip.has(t))).filter(c => c.min >= 4);
+    return (refCache = good.filter(c => !good.some(s => subOf(s, c) && s.min >= c.min)).sort(order));
+  }
 
   /* ── 地址栏 ?filter=（写法同现网：@urlpack/json = MessagePack → Base58；{ profession, position, rarity, tag } 四个位图，组内第 i 项是从高位数的第 i 位） */
   const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
@@ -279,11 +314,10 @@ lastmod: 2023年12月11日 (一) 21:46
   const writeUrl = () => { const s = search(); if (s !== location.search) history.replaceState(null, '', location.pathname + s + location.hash); };
 
   /* ── 标签面板 ── */
-  const isSenior = t => t === TOP || t === SENIOR;
   function renderPicker() {
     $('#hr-rows').innerHTML = GROUPS.map((g, gi) => `<div class="hr-row" data-g="${gi}" role="group" aria-labelledby="hr-row-${gi}">
         <div class="hr-row__label" id="hr-row-${gi}">${esc(g.title)}</div>
-        <div class="hr-row__opts">${g.tags.map(t => `<button type="button" class="ak-chip${isSenior(t) ? ' is-senior' : ''}" data-o="${esc(t)}"${solo.has(t) && !isSenior(t) ? ` data-solo data-rarity="${solo.get(t)}" title="单选即可保底 ${solo.get(t)}★"` : ''} aria-pressed="false">${PROF[t] ? `<i class="hr-ico" data-prof="${PROF[t]}" aria-hidden="true"></i>` : ''}${esc(t)}</button>`).join('')}</div>
+        <div class="hr-row__opts">${g.tags.map(t => `<button type="button" class="ak-chip${isSenior(t) ? ' is-senior' : ''}" data-o="${esc(t)}"${solo.has(t) ? ` data-solo data-rarity="${solo.get(t)}" title="单选即可保底 ${solo.get(t)}★"` : ''} aria-pressed="false">${PROF[t] ? `<i class="hr-ico" data-prof="${PROF[t]}" aria-hidden="true"></i>` : ''}${esc(t)}</button>`).join('')}</div>
       </div>`).join('');
   }
   function updatePicker() {
@@ -293,33 +327,43 @@ lastmod: 2023年12月11日 (一) 21:46
   }
 
   /* ── 结果 ── */
-  const img = (src, s) => `<img src="${src}" alt="" width="${s}" height="${s}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
-  const opHtml = c => `<a class="hr-op" href="${WIKI + encodeURIComponent(c.zh)}" data-rarity="${c.star}" data-tip="${esc(`${c.star}★ ${c.zh}${c.only ? '（只能通过公开招募获得）' : ''}\n${c.tags.join(' · ')}`)}"><span class="hr-op__img">${img(media(c.am, `头像_${c.zh}.png`), 56)}</span>${c.only ? '<span class="hr-op__only" aria-label="只能通过公开招募获得">限</span>' : ''}<span class="hr-op__name">${esc(c.zh)}</span></a>`;
+  /* 头像同首页的干员卡：左上角黄色星级原图（rarity_yellow_N）、左下角职业图标（icon_<职业>，头像同款小图标） */
+  const opHtml = c => `<a class="hr-op" href="${WIKI + encodeURIComponent(c.zh)}" data-rarity="${c.star}" data-tip="${esc(`${c.star}★ ${c.zh}${c.only ? '（只能通过公开招募获得）' : ''}\n${c.tags.join(' · ')}`)}"><span class="hr-op__img"><img class="hr-op__avatar" src="${media(c.am, `头像_${c.zh}.png`)}" alt="" width="64" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img class="hr-op__stars" src="assets/rarity/rarity_yellow_${c.star - 1}.png" alt="${RARITY_ALT[c.star - 1]}"><span class="hr-op__prof"><img src="assets/profession/icon_${PROF[c.profession]}.png" alt="${esc(c.profession)}" width="17" height="17"></span></span>${c.only ? '<span class="hr-op__only" aria-label="只能通过公开招募获得">限</span>' : ''}<span class="hr-op__name">${esc(c.zh)}</span></a>`;
   const tagBtn = t => `<span class="hr-tagbtn${isSenior(t) ? ' is-senior' : ''}">${esc(t)}</span>`;
   const comboHtml = c => `<li class="hr-combo" data-rarity="${c.min}">
-      <div class="hr-combo__tags">${c.tags.map(tagBtn).join('')}<span class="hr-combo__meta">${c.ops.length} 位 · <b>${c.ops[0].star > c.min ? `${c.min}–${c.ops[0].star}` : c.min}★</b></span></div>
+      <div class="hr-combo__tags">${c.tags.map(tagBtn).join('')}</div>
       <div class="hr-combo__ops">${c.ops.map(opHtml).join('')}</div>
     </li>`;
-  const star = n => `<span class="hr-star" data-rarity="${n}">${n}★</span>`;
+  /* 一层：层标题带稀有度色（保底 6★ / 5★ / 4★、必得支援机械、不保底），下面每组一行；collapsible 时层标题是开合钮 */
+  const head = (min, title, count) => `<span class="hr-tier__badge">${min}<i aria-hidden="true"></i></span><span class="hr-tier__title">${title}</span><span class="hr-tier__count">${count}</span>`;
+  const tierHtml = (min, title, list, { grid = false, level = 2, count = `${list.length} 组` } = {}) =>
+    `<section class="hr-tier" data-rarity="${min}"><div class="hr-tier__head" role="heading" aria-level="${level}">${head(min, title, count)}</div><ol class="hr-combos${grid ? ' hr-combos--grid' : ''}">${list.map(comboHtml).join('')}</ol></section>`;
+  function lowHtml(list, collapsible) {
+    const lo = Math.min(...list.map(c => c.min)), inner = head(lo, '不保底', `${list.length} 组 · 最低可能出 ${lo}★`);
+    return `<section class="hr-tier" data-rarity="${lo}">${collapsible
+      ? `<button type="button" class="hr-tier__head" id="hr-low-toggle" aria-expanded="${state.lowOpen}" aria-controls="hr-low">${inner}</button>`
+      : `<div class="hr-tier__head" role="heading" aria-level="2">${inner}</div>`}<ol class="hr-combos" id="hr-low"${collapsible && !state.lowOpen ? ' hidden' : ''}>${list.map(comboHtml).join('')}</ol></section>`;
+  }
 
   function renderResults() {
-    const res = $('#hr-result'), verdict = $('#hr-verdict');
+    const res = $('#hr-result');
     if (!state.sel.size) {
-      verdict.innerHTML = `还没选标签。把招募位上出现的标签点上，就能看到哪几个组合有保底。`;
-      res.innerHTML = '';
+      const ref = reference();
+      res.innerHTML = `<div class="ak-heading ak-heading--underline hr-ref-head"><h2 class="ak-heading__title">保底速查</h2><span class="ak-heading__en" lang="en">Guarantees</span><span class="ak-heading__aside">时限 9:00 · 共 ${ref.length} 组</span></div>`
+        + [5, 4].map(m => [m, ref.filter(c => c.min === m)]).filter(([, l]) => l.length).map(([m, l]) => tierHtml(m, `保底 ${m}★`, l, { grid: true, level: 3 })).join('');
       return;
     }
     const list = prune(combosOf(ALL.filter(t => state.sel.has(t)))).sort(order);
     if (!list.length) {
-      verdict.innerHTML = `这几个标签圈不出任何干员。`;
       res.innerHTML = `<div class="ak-empty"><svg class="ak-empty__icon"><use href="#i-empty"/></svg><p class="ak-empty__title">没有可能出现的干员</p><p><button type="button" class="ak-btn ak-btn--link" id="hr-reset">清空标签</button>再选一次。</p></div>`;
       return;
     }
-    const good = list.filter(c => c.min >= 4), best = good.length ? good[0].min : 0;
-    verdict.innerHTML = best
-      ? `<b>${good.length}</b> 组能保底 4★ 以上，最高${star(best)}（${good[0].tags.map(t => `【${esc(t)}】`).join(' + ')}${good.filter(c => c.min === best).length > 1 ? ' 等' : ''}）。`
-      : list.some(c => c.min === 1) ? `没有保底 4★ 以上的组合；选【${ROBOT}】必得 1★ 支援机械。` : `没有保底 4★ 以上的组合——不选标签也一样，按想要的干员挑即可。`;
-    res.innerHTML = `<ol class="hr-combos">${list.map(comboHtml).join('')}</ol>`;
+    const robots = list.filter(c => c.ops[0].star === 1), rest = list.filter(c => c.ops[0].star !== 1);   // 整组都是 1★：必得支援机械，单列一层
+    const good = rest.filter(c => c.min >= 4), low = rest.filter(c => c.min < 4);   // 不保底：保底 3★ 及以下（含整组只有 2★ 新手的）
+    const tiers = [6, 5, 4].map(m => [m, good.filter(c => c.min === m)]).filter(([, l]) => l.length);
+    res.innerHTML = tiers.map(([m, l]) => tierHtml(m, `保底 ${m}★`, l)).join('')
+      + (robots.length ? tierHtml(1, '必得支援机械', robots) : '')
+      + (low.length ? lowHtml(low, tiers.length > 0 || robots.length > 0) : '');
   }
   function update() { updatePicker(); renderResults(); writeUrl(); }
 
@@ -332,7 +376,8 @@ lastmod: 2023年12月11日 (一) 21:46
       state.sel.has(tag) ? state.sel.delete(tag) : state.sel.add(tag);
       update();
     }
-    else if (t.id === 'hr-clear' || t.id === 'hr-reset') { state.sel.clear(); update(); }
+    else if (t.id === 'hr-clear' || t.id === 'hr-reset') { state.sel.clear(); state.lowOpen = false; update(); }   // 下一个招募位从头选：「不保底」那一层也跟着收回去
+    else if (t.id === 'hr-low-toggle') { state.lowOpen = !state.lowOpen; t.setAttribute('aria-expanded', state.lowOpen); $('#hr-low').hidden = !state.lowOpen; }
     else if (t.id === 'hr-copy') {
       const url = WIKI + encodeURIComponent('公招计算') + search().replace(/([?&])(theme|demo)=[^&]*&?/g, '$1').replace(/[?&]$/, '');   // 预览自己的 ?theme / ?demo 不带出去
       const done = () => toast(esc(decodeURIComponent(url)), 'success', '链接已复制');
