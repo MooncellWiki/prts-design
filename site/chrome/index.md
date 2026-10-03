@@ -67,7 +67,7 @@ body.skin-arknights
 
 ## 正文白纸
 
-`.ak-body` 是一张浅色「纸」（`--ak-bg-surface` + 1px 细框 + 24 / 32px 内边距），正文 `.mw-body-content` 放在里面；`.ak-body--flat` 去掉纸（首页这类自己排版的页面）。纸底 `.ak-body-foot` 是 MW 的 `#footer-info`：最后编辑时间（等宽数字）· 版权声明。分类栏 `#catlinks` 在纸外、紧贴其下。特殊页面（`Special:` 命名空间、搜索页）内边距收到 20px。
+`.ak-body` 是一张浅色「纸」（`--ak-bg-surface` + 1px 细框 + 24 / 32px 内边距），正文 `.mw-body-content` 放在里面；`.ak-body--flat` 去掉纸（首页这类自己排版的页面），各宽度都不垫边距——窄屏白纸的内边距与左右贴边的负外边距不落到它上面，正文和页眉一样只隔一个 gutter。纸底 `.ak-body-foot` 是 MW 的 `#footer-info`：最后编辑时间（等宽数字）· 版权声明。分类栏 `#catlinks` 在纸外、紧贴其下。特殊页面（`Special:` 命名空间、搜索页）内边距收到 20px。
 
 ## 外壳
 
