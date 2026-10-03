@@ -2,7 +2,7 @@
  *  PRTS Design · chrome/ — L2 MediaWiki 皮肤骨架（原 skin.css）
  *  DOM 约定（见文档站 /guide/skin-template）：
  *    body.skin-arknights
- *      header.ak-header > .ak-header__inner > [menu][logo][nav][search][tools]
+ *      header.ak-header > .ak-header__inner（品牌 · 搜索 · 工具 · ⋮）+ .ak-local-nav（菜单 · 本页目录）——各宽度都排成一行
  *      .ak-layout > aside.ak-sidebar + main.ak-main
  *        main.ak-main > .ak-main__inner > header.ak-page-header + aside.ak-toc + .ak-body + …
  *        （目录在 DOM 上属于页面、紧跟标题；宽屏时才被抬到主列右侧导轨，见 toc.css）

@@ -10,7 +10,7 @@
  *   <SkinFrame highlight=".ak-header" />                 描出一块（CSS 选择器）
  *   <SkinFrame state="palette" query="yh" />             打开搜索面板并输入
  *   state（空格分隔）：nav ⋮ 工具卡片 · toc 目录浮层 · sidebar 侧栏抽屉 · user 用户菜单 · more 「更多」菜单 · palette 搜索面板 ·
- *                      flyout 侧栏悬停飞出 · demo 示例活动主题 · condensed 向下滚过（页眉收起）· bottom 滚到页底
+ *                      flyout 侧栏悬停飞出 · demo 示例活动主题 · bottom 滚到页底
  */
 import { useData, withBase } from "vitepress";
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from "vue";
@@ -178,10 +178,6 @@ function onLoad() {
   const s = states.value;
   if (props.scroll) w.scrollTo(0, props.scroll);
   if (s.has("bottom")) w.scrollTo(0, doc.documentElement.scrollHeight);
-  if (s.has("condensed")) {
-    w.scrollTo(0, Math.max(props.scroll, 480));
-    doc.documentElement.classList.add("ak-condensed");
-  }
   if (s.has("nav")) (doc.getElementById("ak-nav-toggle") as HTMLInputElement | null)?.click();
   if (s.has("toc")) {
     // 不点 label：那样焦点会落到 checkbox 上、按钮出一圈焦点框

@@ -7,7 +7,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 L2 是正文之外的一切：页眉、头图、侧栏、页面头（标题与动作簇）、目录、正文白纸、分类栏的位置、页脚、搜索面板。它由皮肤的 `skin.mustache` 输出，编辑和模板都碰不到；样式在 `packages/css/src/chrome/`，排在所有组件之后加载——页眉里的 `.ak-btn` / `.ak-menu` / `.ak-fab` 靠同特指度后到覆盖。
 
-骨架的形态由**视口宽度**决定（≥1400 目录在右侧导轨，<1400 页眉长出二级吸顶栏，<1120 侧栏变抽屉，≤639 手机、页眉合成一行），所以这一区的示例不是普通的示例块，而是一整页：按上方选定的视口宽度排版、再缩放进正文列。里面照常可以滚动、点击、切换，和真皮肤一致（交互脚本同预览页）；「示例活动主题」开关见[头图与主题接口](/chrome/theming)。
+骨架的形态由**视口宽度**决定（≥1400 目录在右侧导轨，<1400 目录变成页眉里「本页目录」拉下的浮层，<1120 侧栏变抽屉，≤639 手机、页眉全是图标；页眉在各宽度都只有一行），所以这一区的示例不是普通的示例块，而是一整页：按上方选定的视口宽度排版、再缩放进正文列。里面照常可以滚动、点击、切换，和真皮肤一致（交互脚本同预览页）；「示例活动主题」开关见[头图与主题接口](/chrome/theming)。
 
 <SkinFrame :height="960" />
 
@@ -20,7 +20,7 @@ body.skin-arknights
   a.ak-skip                                  跳到内容
   header.ak-header                           页眉：黑色「终端」顶栏
     .ak-header__inner                        品牌 · 搜索 · 工具（外观 / 通知 / 用户菜单）· ⋮
-    .ak-local-nav                            二级吸顶栏（<1400）：菜单 · 本页目录；≤639 两行合成一行（两者 display:contents）
+    .ak-local-nav                            菜单（<1120）· 本页目录（<1400）：不另起一行，与 __inner 都 display:contents，并进 .ak-header 那一行
   div.ak-keyart > .ak-keyart__inner          头图（活动主题设了才出现；垫在版面背后，只露一小条）
   .ak-layout                                 两列：侧栏 + 主列
     aside.ak-sidebar#ak-sidebar              侧栏（门户 / #MenuSidebar 多层树）
@@ -41,7 +41,7 @@ body.skin-arknights
 | 外壳：`body.skin-arknights`、跳转链接、`.ak-sr-only` | `shell.css` | 本页 |
 | 两列布局、目录导轨的让位 | `layout.css` | 本页 |
 | 正文白纸、页脚信息行 | `body.css` | 本页 |
-| 页眉、二级吸顶栏、外观开关 | `header.css` · `local-nav.css` · `theme-toggle.css` | [页眉](/chrome/header) |
+| 页眉（含「菜单」「本页目录」）、外观开关 | `header.css` · `local-nav.css` · `theme-toggle.css` | [页眉](/chrome/header) |
 | 头图、画布底纹、活动主题示例 | `keyart.css` · `demo-theme.css` | [头图与主题接口](/chrome/theming) |
 | 侧栏、多层树、悬停飞出 | `sidebar.css` · `sidebar-tree.css` | [侧栏](/chrome/sidebar) |
 | 面包屑、标题、动作簇 | `page-header.css` | [页面头](/chrome/page-header) |
@@ -55,7 +55,7 @@ body.skin-arknights
 
 ## 布局
 
-`.ak-layout` 只有两列：侧栏 `--ak-sidebar-w` + 主列。目录导轨**不是第三列**，而是主列 `.ak-main` 的右内边距让出来的（`--ak-toc-w + --ak-gutter`）——这样 `aside.ak-toc` 在 DOM 上可以待在页面标题下面（属于页面而不是布局），窄屏收起时直接落回正文流，不需要浮层之外的第二份 DOM。整体最宽 1680，超宽屏两边留白；页眉、二级栏、页脚用同一个 1680 容器，左右缘对齐。
+`.ak-layout` 只有两列：侧栏 `--ak-sidebar-w` + 主列。目录导轨**不是第三列**，而是主列 `.ak-main` 的右内边距让出来的（`--ak-toc-w + --ak-gutter`）——这样 `aside.ak-toc` 在 DOM 上可以待在页面标题下面（属于页面而不是布局），窄屏收起时直接落回正文流，不需要浮层之外的第二份 DOM。整体最宽 1680，超宽屏两边留白；页眉、页脚用同一个 1680 容器，左右缘对齐。
 
 <TokenTable prefix="size.layout" />
 

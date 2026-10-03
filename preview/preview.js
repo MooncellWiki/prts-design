@@ -208,19 +208,6 @@
     if (!mq.matches) flat.forEach(d => { d.open = true; });
   }
 
-  /* ── 页眉收起：向下滚动只留二级吸顶栏，向上滚 / 回到顶部再展开（≤639 页眉只有一行，CSS 不让它收起） ── */
-  let lastY = window.scrollY, ticking = false;
-  function onScroll() {
-    const y = Math.max(0, window.scrollY), root = document.documentElement;
-    if (!(tocCb && tocCb.checked) && !(navCb && navCb.checked)) {   // 目录浮层 / 工具卡片开着时不动，免得浮层跟着跳
-      if (y < 120) root.classList.remove('ak-condensed');
-      else if (y > lastY + 4) root.classList.add('ak-condensed');
-      else if (y < lastY - 4) root.classList.remove('ak-condensed');
-    }
-    lastY = y; ticking = false;
-  }
-  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-
   /* ── Tabs (.ak-tabs[data-tabs]) ────────────────────────────── */
   document.addEventListener('click', e => {
     const tab = e.target.closest('.ak-tabs[data-tabs] .ak-tab, .ak-tabs[data-tabs] .ak-tab');

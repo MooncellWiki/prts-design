@@ -19,13 +19,12 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── 0. 页面级：预览骨架的补丁 ──
- *  这页没有章节标题，也就没有目录：右侧导轨让给主列（列表 / 表格密集页要宽度），二级栏不出「本页目录」。写法同首页设计稿的「0. 页面级」，选择器按预览骨架写。
+ *  这页没有章节标题，也就没有目录：右侧导轨让给主列（列表 / 表格密集页要宽度），页眉不出「本页目录」。写法同首页设计稿的「0. 页面级」，选择器按预览骨架写。
  *  真皮肤里无目录页是 .ak-layout--no-toc（主列收到阅读列 1240），要吃掉导轨得另给口子——见文档站 /patterns/operators#页面与皮肤的分工。
  *  现网这页没有分类：MW 这时给 #catlinks 加 .catlinks-allhidden 整条不显示，骨架是静态的，这里按空列表藏掉。 */
 .ak-toc, .ak-local-nav__toc { display: none; }
 .ak-main { padding-right: 0; }
 .ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
-@media (min-width: 1120px) and (max-width: 1400px) { .ak-local-nav { display: none; } .ak-keyart { --_over: var(--ak-header-h); } }
 .catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
 @media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }   /* 手机上白纸的左右内边距让给卡片 */
 
@@ -370,7 +369,7 @@
     <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
   </div>
 
-  <!-- ═══ LOCAL NAV ═══ 二级吸顶栏：<1400 出现；页眉主行下滑收起后它仍贴顶。≤639 不单独成行：两个按钮并进主行（CSS display:contents，DOM 不变） -->
+  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）「本页目录」（<1400）：不单独成行，两个入口并进页眉那一行（CSS display:contents，DOM 不变；≥1400 整块不显示） -->
   <div class="ak-local-nav">
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
     <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">

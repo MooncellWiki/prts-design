@@ -1,27 +1,27 @@
 /*! PRTS Design · chrome/responsive.css — Responsive 断点（各块的响应式规则集中在这里，顺序敏感，暂不拆） · 依赖：tokens.css · components/ */
 /* ═══ Responsive ═══ */
-/* < 1400：右侧导轨收起 —— 页眉长出二级吸顶栏，目录改由它拉下的浮层承载 */
+/* < 1400：右侧导轨收起 —— 目录改由页眉里「本页目录」拉下的浮层承载。页眉仍是一行：
+ *  .ak-header__inner 与 .ak-local-nav 都 display:contents，两组子项直接排进 .ak-header 这一行（1120–1400 网格、<1120 flex，见下面两档）。
+ *  DOM 不动（皮肤模板不用改），checkbox 的 ~ 联动照旧（按 DOM 兄弟关系，不看盒子）；.ak-header 是 sticky（已定位），工具卡片 / 复选框的绝对定位都相对它。
+ *  这一行始终贴顶、不随滚动收起——菜单 / 目录 / 搜索 / 工具在任何滚动位置都够得着；头图只探这一行、目录浮层贴这一行下沿、锚点只让这一行（都是 --ak-header-h，不另写） */
 @media (max-width: 1400px) {
-  .ak-local-nav { display: flex; }
-  .ak-keyart { --_over: calc(var(--ak-header-h) + var(--ak-local-nav-h)); }   /* 头图探到两行页眉的背后，两行玻璃底下是同一幅画 */
+  .ak-header { height: var(--ak-header-h); padding: 0 var(--ak-gutter); }   /* content-box：底边 1px 亮线另算，与 ≥1400 的 __inner 56 + 1 一样高 */
+  .ak-header__inner, .ak-local-nav { display: contents; }
+  .ak-local-nav__btn { flex: none; height: 40px; }
   /* 回到顶部在这一档照常浮在右下（侧栏变抽屉的 < 1120 才收起）；只在目录浮层开着时让位——它的层级（sticky）高于浮层（dropdown），不收会压在浮层上，而浮层首项本来就是「回到顶部」。
    * :not(.ak-fab--absolute)：滚动区域自己的那枚不归这里管；两条选择器分开写的理由同下面浮层的开合 */
   :root.ak-toc-open .ak-fab:not(.ak-fab--absolute) { display: none; }
   body:has(.ak-toc-cb:checked) .ak-fab:not(.ak-fab--absolute) { display: none; }
   .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
-  /* 向下滚动收起页眉主行（JS 在 <html> 上切 .ak-condensed；无 JS 则始终两行，同样可用） */
-  :root.ak-condensed .ak-header { transform: translateY(calc(-1 * var(--ak-header-h))); }
-  :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6, :target) { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-local-nav-h) + 8px); }   /* 页眉未收起时也不挡住锚点目标（:target = 引用角标 / 参考文献条目等，见 base/typography.css） */
 
-  /* 目录浮层：顶边跟着吸顶栏下沿走，右对齐于二级栏。宽、高都锁死（参考 VitePress LocalNavOutlineDropdown 的 .items）：
+  /* 目录浮层：顶边贴页眉下沿，右对齐于 gutter。宽、高都锁死（参考 VitePress LocalNavOutlineDropdown 的 .items）：
    *  · 宽 = 360px 定宽（≤639 改为拉满可用宽度，见下），border-box，不随条目长短变；
-   *  · 高 ≤ 吸顶栏下沿到视口底的余量，超出只有 .ak-toc__inner 内滚。用 100dvh：手机地址栏 / 底部工具栏收放时 100vh 是「最大视口」，
+   *  · 高 ≤ 页眉下沿到视口底的余量，超出只有 .ak-toc__inner 内滚。用 100dvh：手机地址栏 / 底部工具栏收放时 100vh 是「最大视口」，
    *    浮层底会被工具栏盖住、又因为「没超高」不出内滚（VitePress 靠 JS 量 innerHeight 写 --vp-vh 解决同一件事），100vh 只给不认 dvh 的老浏览器兜底；
    *  · 开着时 JS 锁住页面滚动（html.ak-scroll-lock，见「Responsive」块末尾），浮层内滚到头也不会把页面带着走。 */
-  .ak-toc { --_top: calc(var(--ak-header-h) + var(--ak-local-nav-h)); position: fixed; top: var(--_top); right: var(--ak-gutter); left: auto; bottom: auto; z-index: var(--ak-z-dropdown); box-sizing: border-box;
+  .ak-toc { --_top: var(--ak-header-h); position: fixed; top: var(--_top); right: var(--ak-gutter); left: auto; bottom: auto; z-index: var(--ak-z-dropdown); box-sizing: border-box;
     display: none; flex-direction: column; width: min(360px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--_top) - var(--ak-space-4)); max-height: calc(100dvh - var(--_top) - var(--ak-space-4));
     background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1; box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); }
-  :root.ak-condensed .ak-toc { --_top: var(--ak-local-nav-h); }
   /* 开：JS 把 .ak-toc-cb 的状态镜像到 html.ak-toc-open（主路径，不依赖 :has()——国产手机浏览器 / 旧 WebView 内核没有 :has() 时仍是真正的浮层）；
    * 无 JS 时由 body:has() 纯 CSS 桥接。两条必须分开写：选择器列表里混进不认识的 :has() 会让整条规则作废 */
   :root.ak-toc-open .ak-toc { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
@@ -43,25 +43,32 @@
   :root.ak-toc-open .ak-toc { animation: none; }
   body:has(.ak-toc-cb:checked) .ak-toc { animation: none; }
 }
-/* 1120–1400 且页面无目录（.ak-layout--no-toc）：两个入口都不需要，别留一条空栏 */
+/* 1120–1400：侧栏还在左列，页眉仍是与版面对齐的列头网格（同 ≥1400 的 .ak-header__inner，只是网格挂到 .ak-header 上）：
+ *  品牌 | 搜索 | 本页目录 | 工具。「本页目录」排在工具之前——目录浮层右对齐、从这一角拉下来；页面没有目录时第 3 列是空的（宽 0，只多一道 gap，搜索列窄 24px，看不出来）。
+ *  「本页目录」写死在第 1 行：它在 DOM 上排在工具之后，按列号自动放置会因为列号回退被挤到第 2 行 */
 @media (min-width: 1120px) and (max-width: 1400px) {
-  .ak-local-nav:not(:has(.ak-toc-cb)) { display: none; }
-  body:not(:has(.ak-toc-cb)) .ak-keyart { --_over: var(--ak-header-h); }   /* 二级栏收起了，页眉又是一行，头图只探一行 */
+  .ak-header { display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr) auto auto; column-gap: var(--ak-gutter); align-items: center; }
+  .ak-local-nav__toc { grid-area: 1 / 3; margin-right: calc(var(--ak-space-3) - var(--ak-gutter)); }   /* 与工具组只隔 12px：它和外观 / 通知 / 用户是同一簇页眉控件 */
+  .ak-header__tools { grid-column: 4; }
 }
 @media (max-width: 1119px) {
-  .ak-local-nav__menu { display: inline-flex; }   /* 侧栏变抽屉后才需要这个入口 */
   .ak-fab { display: none; }   /* 回到顶部只留目录浮层首项那一个，不再浮在内容上（手机 / 平板上浮动按钮太挡视野） */
   .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
   /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截）。
    * 展开时 JS 给 <html> 加 .ak-scroll-lock 锁住页面滚动（VitePress VPSidebar 同）：抽屉自己 overflow-y:auto + overscroll-behavior:contain（沿用导轨态声明），滚到头也不会把页面带着走 */
   .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); border-right: 1px solid var(--ak-border); padding: var(--ak-space-4) var(--ak-space-3) var(--ak-space-6); box-sizing: border-box; transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
   .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
-  .ak-header__inner { display: flex; gap: var(--ak-space-4); }   /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex */
-  .ak-header__logo { margin-right: auto; }   /* 品牌靠左，其余（搜索 / ⋮）靠右 */
-  .ak-header__search { flex: 1; width: auto; max-width: none; }
+  /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex 一行——◧ 菜单 · 品牌 · 搜索 · 本页目录 · ⋮。
+   * 「菜单」用 order 排到最左（抽屉从左边出来），⋮ 排到最右（工具卡片从右上角拉下）；Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单 → 目录，与视觉不一致——换来模板不用动 */
+  .ak-header { display: flex; align-items: center; gap: 4px; }
+  .ak-local-nav__menu { display: inline-flex; order: -2; width: 40px; padding: 0; gap: 0; justify-content: center; margin-left: -10px; font-size: 0; }   /* 侧栏变抽屉后才需要这个入口。只留图标：font-size:0 藏起「菜单」两字（仍是按钮的无障碍名）；-10px 让图标左缘落在 gutter 线上，与面包屑同线 */
+  .ak-local-nav__menu .ak-icon { width: 20px; height: 20px; }   /* 与搜索、⋮ 同一档 */
+  .ak-header__logo { order: -1; margin-right: auto; }   /* 品牌靠左，其余（搜索 / 目录 / ⋮）靠右 */
+  .ak-header__search { flex: 1; width: auto; max-width: none; margin: 0 var(--ak-space-3); }   /* 加上 flex 的 4px，与品牌、目录各隔 16px */
+  .ak-header__burger { order: 1; }
   .ak-body { padding: var(--ak-space-5) var(--ak-space-5); }
 
-  /* 主行只留 品牌 / 搜索 / ⋮：工具（外观 / 通知 / 用户）收进 ⋮ 拉下的卡片 —— 贴主行右下沿、盖住二级栏；宽度随内容（max-content），最窄 240px、最宽到视口两侧各留一个 gutter：长用户名 / 长语言名把卡片撑开，而不是固定 320px 右边空一截；不锁页面滚动，卡片自己可滚 */
+  /* 工具（外观 / 通知 / 用户）收进 ⋮ 拉下的卡片 —— 绝对定位于 .ak-header（__inner 是 display:contents，不成盒子），top:100% 即贴页眉右下沿；宽度随内容（max-content），最窄 240px、最宽到视口两侧各留一个 gutter：长用户名 / 长语言名把卡片撑开，而不是固定 320px 右边空一截；不锁页面滚动，卡片自己可滚 */
   .ak-nav-cb { display: block; }
   .ak-header__burger { display: inline-flex; }
   .ak-header__screen { position: absolute; top: 100%; right: var(--ak-gutter); z-index: var(--ak-z-dropdown);
@@ -99,20 +106,9 @@
 @media (max-width: 1119px) and (prefers-reduced-motion: reduce) { .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
 @media (max-width: 639px) {
   /* gutter 16、页眉高 52、标题档收一级、大区块间隔 24：都是令牌的窄屏值（tokens.css 的「窄屏」块，源 = packages/tokens/src/functional/compact.json5），这里不再覆盖 */
-  /* 页眉合成一行（全是图标）：◧ 菜单 · 品牌 ……… 目录 · 搜索 · ⋮ 工具。主行 .ak-header__inner 与二级栏 .ak-local-nav 都 display:contents，两行的子项直接排进 .ak-header 这一个 flex 行——
-   * DOM 不动（皮肤模板不用改），checkbox 的 ~ 联动照旧（按 DOM 兄弟关系，不看盒子）；.ak-header 是 sticky（已定位），工具卡片的 top:100% 改为相对它，照样贴在这一行下沿。
-   * 这一行 52px 始终贴顶，不再向下滚动收起（.ak-condensed 在这一档不位移）：头图只探一行、目录浮层贴这一行下沿、锚点只让一行。
-   * 「菜单」用 order 排到最左（抽屉从左边出来）、「本页目录」排到搜索之前；Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单 → 目录，与视觉不一致——换来模板不用动 */
-  .ak-header { display: flex; align-items: center; gap: 4px; height: var(--ak-header-h); padding: 0 var(--ak-gutter); }
-  .ak-header__inner, .ak-local-nav { display: contents; }
-  :root.ak-condensed .ak-header { transform: none; }
-  .ak-keyart { --_over: var(--ak-header-h); }
-  .ak-toc, :root.ak-condensed .ak-toc { --_top: var(--ak-header-h); }
+  /* 页眉这一行全是图标：◧ 菜单 · 品牌 ……… 目录 · 搜索 · ⋮ 工具（一行的排法见 <1400 / <1120 两档）；「本页目录」排到搜索之前 */
   :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6, :target) { scroll-margin-top: calc(var(--ak-header-h) + 8px); }
-  .ak-local-nav__menu { order: -2; width: 40px; height: 40px; padding: 0; gap: 0; justify-content: center; margin-left: -10px; font-size: 0; }   /* 只留图标：font-size:0 藏起「菜单」两字（仍是按钮的无障碍名）；-10px 让图标左缘落在 gutter 线上，与面包屑同线 */
-  .ak-local-nav__menu .ak-icon { width: 20px; height: 20px; }   /* 与搜索、⋮ 同一档 */
-  .ak-header__logo { order: -1; }
-  .ak-local-nav__toc { order: -1; width: 40px; height: 40px; margin-left: 0; padding: 0; gap: 0; justify-content: center; font-size: 0; }   /* 同 order 按 DOM 先后，排在品牌之后；同「菜单」只留图标，「本页目录」四个字仍是 checkbox 的标签（无障碍名）；开着时照旧变活动主色（local-nav.css） */
+  .ak-local-nav__toc { order: -1; width: 40px; padding: 0; gap: 0; justify-content: center; font-size: 0; }   /* 同 order 按 DOM 先后，排在品牌之后；同「菜单」只留图标，「本页目录」四个字仍是 checkbox 的标签（无障碍名）；开着时照旧变活动主色（local-nav.css） */
   /* 方点列表：三个 4px 方点（同 ⋮ 的方点、同一节奏）+ 横线。不用 i-list（三条线，一眼读成汉堡菜单），也不用缩进的大纲图形（20px 下像「右对齐」） */
   .ak-local-nav__toc::before { content: ""; flex: none; width: 20px; height: 20px; background: currentColor;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat;

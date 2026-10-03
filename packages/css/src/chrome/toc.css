@@ -2,11 +2,11 @@
 /* ═══ TOC ═══
  *  一份 DOM、两种形态（不做第二份目录，也不用角落浮动按钮）：
  *   ≥1400  绝对定位进 .ak-main 右侧预留的导轨，.ak-toc__inner 粘性跟随滚动；
- *   <1400  变成由二级吸顶栏「本页目录」拉下来的浮层，顶边始终贴着吸顶栏下沿。
- *  开合是纯 CSS：.ak-toc-cb（checkbox，在 .ak-local-nav 里）+ label.ak-local-nav__toc。
+ *   <1400  变成由页眉里「本页目录」拉下来的浮层，顶边始终贴着页眉下沿（页眉始终贴顶）。
+ *  开合是纯 CSS：.ak-toc-cb（checkbox，在 .ak-local-nav 里，那一组并在页眉那一行）+ label.ak-local-nav__toc。
  *  浮层与按钮不是兄弟节点：JS 把 checkbox 状态镜像到 html.ak-toc-open（主路径，不依赖 :has()，老内核的手机浏览器也是真浮层）；
  *  无 JS 时用 body:has() 桥接；既无 JS 又不支持 :has() 才退回正文流内的静态卡片。
- *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、收起页眉、点击外部关闭与开着时锁住页面滚动。 */
+ *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、点击外部关闭与开着时锁住页面滚动。 */
 .ak-toc { position: absolute; top: 0; right: 0; bottom: 0; width: var(--ak-toc-w); font-size: var(--ak-fs-xs); }
 /* 限高在底部让出 --ak-toc-clear：默认 = 整页那枚 .ak-fab 占的角落（下边距 space-5 + 44px 按钮 + space-3 间隙）。
  * 导轨贴着视口右缘时，目录一长（出内滚）末几项就会被回到顶部按钮盖住；让出之后导轨止于按钮上方，短目录不受影响。页面没有 .ak-fab 时可设回 var(--ak-space-2) */

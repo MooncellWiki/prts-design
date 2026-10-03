@@ -22,8 +22,8 @@
             a.ak-menu__head#pt-userpage[href=用户页]( .ak-avatar + .ak-menu__head-name{{username}} )   ← 从 data-user-menu 里把 userpage 提出来当抬头
             nav.ak-menu__group#p-user-interface-preferences{{data-user-interface-preferences}}「界面设置」← 语言切换（ULS）在这里
             nav.ak-menu__group#p-personal{{data-user-menu}}「个人工具」（不含 userpage） )
-   label.ak-header__burger[for=ak-nav-toggle]   ← ⋮ → ×，仅 <1120；主行不放侧栏抽屉的入口（那个在二级栏）
-   .ak-local-nav                                ← 页眉第二行「二级吸顶栏」，仅 <1400 显示（CSS 控制，服务端恒输出）；≤639 由 CSS 并进主行，同一份 DOM
+   label.ak-header__burger[for=ak-nav-toggle]   ← ⋮ → ×，仅 <1120；侧栏抽屉的入口在下面 .ak-local-nav 里
+   .ak-local-nav                                ← 「菜单」（<1120）「本页目录」（<1400）；服务端恒输出，CSS 控制显示，不另起一行：与 __inner 都 display:contents，并进页眉那一行
       button.ak-local-nav__menu（开侧栏抽屉）| input.ak-toc-cb + label.ak-local-nav__toc[for]（开目录浮层，纯 CSS）
 div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认只露 72px 一小条（--ak-keyart-reveal；≤639 为 0）；画从页面顶端铺起，垫在页眉玻璃与版面背后（CSS 负外边距，DOM 顺序不变）
 <div class="ak-layout">
@@ -37,7 +37,7 @@ div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认�
             [.ak-page-tools__variants{{data-variants}}]
             .ak-page-tools__more > details > summary.ak-page-tools__btn「⋯ 更多」+ .ak-menu.ak-page-tools__card(
                nav.ak-menu__group#p-cactions{{data-actions}}  nav.ak-menu__group#p-tb{{data-toolbox}} )
-      aside.ak-toc#ak-toc                       ← 目录：DOM 上属于页面、紧跟标题（≥1400 抬进右侧导轨，<1400 变成二级栏拉下的浮层）
+      aside.ak-toc#ak-toc                       ← 目录：DOM 上属于页面、紧跟标题（≥1400 抬进右侧导轨，<1400 变成页眉里「本页目录」拉下的浮层）
          a.ak-toc__top「回到顶部」（仅 <1400；<1120 时 .ak-fab 隐藏）
          .ak-toc__inner  .ak-toc__title#ak-toc-label + .ak-toc__progress > i + ul.ak-toc__list[data-toc]   ← 由 data-toc 或 skin.js 生成
       div.ak-body#bodyContent  {{{html-site-notice}}} {{{html-user-message}}} .mw-body-content{{{html-body-content}}}

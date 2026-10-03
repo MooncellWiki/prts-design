@@ -16,7 +16,7 @@
  *  露出段上半截不蒙纱。-bg 默认透明，所以没有头图时页眉背后什么也不多画。
  *  层序：.ak-keyart 是定位盒（z-index: auto），.ak-sidebar（sticky）与 .ak-main（relative）也是、且在 DOM 里靠后，所以版面画在头图之上，不需要 z-index。
  *  --ak-canvas-image 叠在 body 的 --ak-bg-canvas 之上（现网 body 的 bkg 底纹 / 大图位置）；侧栏与目录没有底色，所以画布图应当是低对比的底纹。 */
-.ak-keyart { --_over: var(--ak-header-h);   /* 往上探进页眉背后的高度；<1400 页眉多一行二级栏，见 responsive.css */
+.ak-keyart { --_over: var(--ak-header-h);   /* 往上探进页眉背后的高度（页眉各宽度都只有一行） */
   --_h: var(--ak-keyart-h); --_reveal: min(var(--ak-keyart-reveal), var(--_h)); --_under: calc(var(--_h) - var(--_reveal));   /* 画高 = 露出段 + 垫在版面背后的一段 */
   --_lead: min(var(--_reveal) / 2, var(--_under)); --_ramp: calc(var(--_lead) + min(var(--ak-space-6), var(--_reveal)));   /* 纱 / 模糊往上探进露出段下半截的长度（没有垫底段 = 横幅带时为 0，整段不蒙）；从起点浓到 -veil 的长度 = 探进的这段 + .ak-layout 的上内边距 24px（还没有内容）；没有露出段时两者都是 0，顶边藏在页眉底下、直接从 -veil 起 */
   position: relative; flex: none; box-sizing: content-box; height: var(--_h); padding-top: var(--_over); margin: calc(-1 * var(--_over)) 0 calc(-1 * var(--_under)); overflow: hidden; pointer-events: none;

@@ -47,7 +47,7 @@ li.ak-tree__branch[.is-open][.is-current-path]
 
 ## 窄屏抽屉
 
-<1120 侧栏变成从左滑出的抽屉（`min(86vw, 300px)`），由二级吸顶栏的「菜单」打开；遮罩、Esc、点遮罩关闭，焦点回到「菜单」。收起时 `visibility: hidden`——不进 Tab 序和无障碍树，阴影也不会从屏幕左缘漏进来。开着时锁住页面滚动（`html.ak-scroll-lock`），抽屉自己内滚。
+<1120 侧栏变成从左滑出的抽屉（`min(86vw, 300px)`），由页眉最左的「菜单」◧ 打开；遮罩、Esc、点遮罩关闭，焦点回到「菜单」。收起时 `visibility: hidden`——不进 Tab 序和无障碍树，阴影也不会从屏幕左缘漏进来。开着时锁住页面滚动（`html.ak-scroll-lock`），抽屉自己内滚。
 
 <SkinFrame :width="1024" :height="640" state="sidebar" />
 

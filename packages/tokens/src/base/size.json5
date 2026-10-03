@@ -29,7 +29,6 @@
       $description: "Layout · 与 Codex 断点一致: 320 / 640 / 1120 / 1680",
       $type: "dimension",
       "header-h": { $value: "56px", $description: "≤639 为 52（functional/compact）" },
-      "local-nav-h": { $value: "48px", $description: "二级吸顶栏（<1400 出现：菜单 / 本页目录）" },
       "sidebar-w": { $value: "208px" },
       "toc-w": { $value: "200px" },
       "content-max": { $value: "1240px", $description: "阅读区最大宽度；表格密集页可加 .ak-wide" },

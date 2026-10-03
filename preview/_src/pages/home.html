@@ -21,7 +21,7 @@ cats: 首页
 
 /* ── 0. 页面级：预览骨架的补丁，不是页面的样式，也不是要粘进 MediaWiki:Common.css 的东西 ──
  *  首页上皮肤要「少做」的几件事——同 Citizen 首页：标题 / 面包屑 / 指示器不显示（h1 留给读屏器——它仍是大纲的根，不 display:none），
- *  动作簇（讨论 / 历史 / 编辑 / 更多）保留、靠右成一行，手机（≤639）上连它也不显示；无目录（导轨让给主列，二级栏也不出「本页目录」）；
+ *  动作簇（讨论 / 历史 / 编辑 / 更多）保留、靠右成一行，手机（≤639）上连它也不显示；无目录（导轨让给主列，页眉也不出「本页目录」）；
  *  正文不包白纸——首页区块各自带容器、直接铺在画布上，外层再套一张纸就是纸上贴纸。
  *  这些都归皮肤：Skin:Arknights 在 .ak-layout--mainpage 下已经做完（resources/skins.arknights.styles/common/mainpage.less），站点侧零配置。
  *  预览的骨架是静态的、没有首页状态，所以在这里复现一份；选择器按预览骨架写，别照抄进 Common.css——真皮肤的 DOM 不一样：
@@ -34,7 +34,6 @@ cats: 首页
 .ak-main { padding-right: 0; }
 .ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }   /* 吃掉目录导轨：右缘与带目录的页面对齐 */
 .ak-body { background: transparent; border: 0; padding: 0; margin: 0; }
-@media (min-width: 1120px) and (max-width: 1400px) { .ak-local-nav { display: none; } .ak-keyart { --_over: var(--ak-header-h); } }   /* 这一档二级栏只剩「本页目录」，首页没有它就整条收起 */
 
 /* ── 1. 通用 ── */
 /* 首页整体标了 ak-not-prose（base/typography.css：正文排版规则不进来，链接 color: inherit）。下面这几处要「像正文链接」，自己取链接令牌 */
@@ -210,8 +209,8 @@ cats: 首页
   .mp-hero__nav .ak-icon { width: 20px; height: 20px; }
 }
 /* 折叠线预算的窄屏档（按视口断点，值量自预览骨架；<1120 时 Hero 内容宽 = 视口 − 50，与上面的容器断点对齐）：
- *  <1120 页眉两行；<850 Hero 窄于 800、说明栏上下排；<690 Hero 窄于 640、说明栏 + 下方控制条；<640 手机（Hero 上方只有页眉 53 + 间距 16——动作簇不显示；网页活动带红标签条、入口格四列 64px 高：间距 16 + 一排 64 + 留白 12） */
-@media (max-width: 1119px) { .mp-hero { --mp-fold-above: 167px; } }
+ *  <1120 版面上间距 24 → 16；<850 Hero 窄于 800、说明栏上下排；<690 Hero 窄于 640、说明栏 + 下方控制条；<640 手机（Hero 上方只有页眉 53 + 间距 16——动作簇不显示；网页活动带红标签条、入口格四列 64px 高：间距 16 + 一排 64 + 留白 12） */
+@media (max-width: 1119px) { .mp-hero { --mp-fold-above: 119px; } }
 @media (max-width: 849px) { .mp-hero { --mp-fold-caption: 112px; } }
 @media (max-width: 689px) { .mp-hero { --mp-fold-caption: 128px; } }
 @media (max-width: 639px) { .mp-hero { --mp-fold-above: 69px; --mp-fold-caption: 128px; --mp-fold-event: 40px; --mp-fold-events-label: 29px; --mp-fold-below: 92px; --mp-hero-pic-min: 80px; } }

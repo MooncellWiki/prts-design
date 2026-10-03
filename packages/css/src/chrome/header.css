@@ -1,8 +1,7 @@
 /*! PRTS Design · chrome/header.css — Header 黑色「终端」顶栏 · 依赖：tokens.css · components/ */
 /* ═══ Header（黑色「终端」顶栏）═══
- *  两行结构：.ak-header__inner（品牌 · 搜索 · 工具，56px）
- *          + .ak-local-nav（二级吸顶栏，仅 <1400 出现，48px）
- *  ≤639 两行合成一行（52px，始终贴顶）：两个容器都 display:contents，子项排进 .ak-header 这一个 flex 行，见 responsive.css。
+ *  只有一行（各宽度都是）：.ak-header__inner（品牌 · 搜索 · 工具，56px；≤639 为 52）。<1400 多出的「菜单」「本页目录」两个入口（.ak-local-nav）不另起一行：
+ *  两个容器都 display:contents，子项排进 .ak-header 这一行，见 local-nav.css / responsive.css。这一行始终贴顶，不随滚动收起。
  *  页眉在两套主题下都是黑的：官网导航栏（#000 底 + 青色当前项 + 白线稿图标）、游戏主界面顶栏（深底 + 半调网点 + 青色选中块）、
  *  干员档案页顶部那道黑边——"黑框白纸 / 黑框黑纸"是方舟本体的框架语言。颜色不读明暗主题，只读 tokens.css §2d 的 --ak-chrome-*，
  *  并在这里把语义令牌重映射过去（--ak-fg → --ak-chrome-fg …），页眉里的按钮 / 搜索触发器 / 头像 / 徽标 / 菜单 / 开关就自动是页眉配色，
@@ -14,12 +13,12 @@
  *  主行是三列网格，与 .ak-layout 的 侧栏 / 正文 两列对齐：品牌在侧栏列上方，搜索从正文列左缘起（≤560px，与面包屑 / 标题同一条线），
  *  工具靠右 —— 页眉是三列各自的「列头」，不是游离的一条。页眉里不放站点级主导航：那 8 项与侧栏「通用」组 1:1 重复，导航只由侧栏承担
  *  （MW 的 data-portlets-first 也只在侧栏渲染一次）。1680 容器与 .ak-layout 同为 border-box，超宽时左右缘才对得齐。
- *  <1400 向下滚动时整个页眉上移一个 __inner 的高度 —— 主行滑出视口，二级栏贴顶。
- *  <1120 主行回到 flex，只留 品牌 / 搜索 / ⋮；工具（外观 / 通知 / 用户菜单）都在 .ak-header__screen 里 —— 桌面 display:contents
- *  （子项直接参与主行网格），窄屏变成 ⋮ 拉下、贴在主行右下沿的卡片（宽度随内容，最窄 240px）（不再是全屏面板：里面只有一行图标控件 + 用户菜单）。开合是纯 CSS：
+ *  1120–1400 网格挂到 .ak-header 上，多一列「本页目录」（排在工具之前）。
+ *  <1120 这一行回到 flex：◧ 菜单 · 品牌 · 搜索 · 本页目录 · ⋮；工具（外观 / 通知 / 用户菜单）都在 .ak-header__screen 里 —— 桌面 display:contents
+ *  （子项直接参与主行网格），窄屏变成 ⋮ 拉下、贴在页眉右下沿的卡片（宽度随内容，最窄 240px）（不再是全屏面板：里面只有一行图标控件 + 用户菜单）。开合是纯 CSS：
  *  input.ak-nav-cb + label.ak-header__burger（同目录浮层的 .ak-toc-cb 做法），DOM 顺序固定为
  *  logo · search · search-toggle · nav-cb · screen[tools] · burger（checkbox 在前才能用 ~ 联动）。
- *  卡片 position:absolute 于 .ak-header__inner（position:relative），top:100% 即贴主行下沿、盖住二级栏；JS 补 Esc / 点卡片外 / 回到桌面宽度收起。 */
+ *  卡片 position:absolute 于 .ak-header（sticky，已定位；<1400 时 __inner 是 display:contents，不成盒子），top:100% 即贴页眉下沿；JS 补 Esc / 点卡片外 / 回到桌面宽度收起。 */
 .ak-header {
   /* 语义令牌 → 页眉配色（只在页眉子树内生效；搜索面板 / 侧栏飞出挂在 body 下，不受影响） */
   --ak-fg: var(--ak-chrome-fg); --ak-fg-secondary: var(--ak-chrome-fg-2); --ak-fg-muted: var(--ak-chrome-fg-muted); --ak-fg-subtle: var(--ak-chrome-fg-muted);
@@ -35,7 +34,7 @@
   position: sticky; top: 0; z-index: var(--ak-z-header); color: var(--ak-fg);
   background: var(--ak-chrome-image) var(--ak-chrome-image-position) / var(--ak-chrome-image-size) var(--ak-chrome-image-repeat), var(--ak-chrome-bg);   /* 角饰在玻璃色之上（不被压暗，所以只放深色低对比素材）；玻璃色之下才是头图 / 滚过来的正文 */
   backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
-  border-bottom: 1px solid var(--ak-chrome-line); transition: transform var(--ak-dur-normal) var(--ak-ease); }
+  border-bottom: 1px solid var(--ak-chrome-line); }
 /* 右侧半调网点场：游戏顶栏 img_back / bkg_openserver、官网页面左缘那片网点。从右缘向左渐隐，只铺到工具区背后，不碰品牌 */
 .ak-header::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--ak-chrome-texture);
   background-image: radial-gradient(rgba(255,255,255,.34) 1px, transparent 1.4px); background-size: 6px 6px; background-position: 0 1px;
@@ -47,7 +46,7 @@
 .ak-nav-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 窄屏 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
 .ak-header__burger { display: none; flex: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; color: var(--ak-fg-secondary); cursor: pointer; }
 .ak-header__burger:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
-/* ⋮（三个方点）→ ×：不画三条线——三条线一眼读成汉堡菜单（= 导航），这里只是外观 / 账户；导航入口是二级栏的「菜单」◧（侧栏抽屉，手机上与它同在一行） */
+/* ⋮（三个方点）→ ×：不画三条线——三条线一眼读成汉堡菜单（= 导航），这里只是外观 / 账户；导航入口是同一行最左的「菜单」◧（侧栏抽屉） */
 .ak-header__burger-icon { position: relative; display: block; width: 18px; height: 18px; }
 .ak-header__burger-icon i { position: absolute; left: 7px; width: 4px; height: 4px; background: currentColor;
   transition: transform var(--ak-dur-fast) var(--ak-ease), opacity var(--ak-dur-fast), top var(--ak-dur-fast) var(--ak-ease), left var(--ak-dur-fast) var(--ak-ease), width var(--ak-dur-fast) var(--ak-ease), height var(--ak-dur-fast) var(--ak-ease); }

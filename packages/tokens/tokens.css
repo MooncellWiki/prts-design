@@ -161,7 +161,6 @@
 
   /* ─── size · layout · Layout · 与 Codex 断点一致: 320 / 640 / 1120 / 1680 */
   --ak-header-h: 56px;                     /* ≤639 为 52（functional/compact） */
-  --ak-local-nav-h: 48px;                  /* 二级吸顶栏（<1400 出现：菜单 / 本页目录） */
   --ak-sidebar-w: 208px;
   --ak-toc-w: 200px;
   --ak-content-max: 1240px;                /* 阅读区最大宽度；表格密集页可加 .ak-wide */
@@ -617,7 +616,7 @@ html.skin-theme-clientpref-night,
 /* ═══ 2d. CHROME · 页眉 / 头图 / 画布 的主题接口 ═══ */
 :root {
   /* ─── chrome · 2d. CHROME · 页眉 / 头图 / 画布 的主题接口（活动主题只改这里）
-   * 皮肤的「框」（页眉主行 + 二级栏 + 窄屏工具卡片）在两套主题下都是黑的：官网导航栏、游戏主界面顶栏、
+   * 皮肤的「框」（页眉 + 窄屏工具卡片）在两套主题下都是黑的：官网导航栏、游戏主界面顶栏、
    * 干员档案页的顶部黑边都是"黑框白纸 / 黑框黑纸"——所以 chrome 令牌不随明暗主题变，只跟着活动主题变。
    * prts.wiki 大活期间会换头图 / 顶栏角饰 / 站标 / 侧栏配色（现网 ext.gadget.seventhStyle 就是改这些）：
    * 新皮肤把这些位置抽成下面这组变量，Gadget / MediaWiki:Common.css 只需在 :root（或 html.ak-theme-xxx）上覆盖，

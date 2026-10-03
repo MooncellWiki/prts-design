@@ -294,7 +294,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
     <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
   </div>
 
-  <!-- ═══ LOCAL NAV ═══ 二级吸顶栏：<1400 出现；页眉主行下滑收起后它仍贴顶。≤639 不单独成行：两个按钮并进主行（CSS display:contents，DOM 不变） -->
+  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）「本页目录」（<1400）：不单独成行，两个入口并进页眉那一行（CSS display:contents，DOM 不变；≥1400 整块不显示） -->
   <div class="ak-local-nav">
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
     <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
