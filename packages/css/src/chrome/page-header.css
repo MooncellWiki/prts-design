@@ -14,7 +14,7 @@
 .ak-page-header__title .mw-page-title-namespace { color: var(--ak-fg-muted); font-weight: 600; }
 .ak-page-header__title .mw-page-title-separator { color: var(--ak-fg-subtle); }
 .ak-page-header__title .mw-page-title-parenthesis { color: var(--ak-fg-muted); font-weight: 500; font-size: .7em; }
-/* 皮肤可以把 h1 包在 .ak-page-heading 里、下面挂一行 tagline（Skin:Arknights：「来自 PRTS」/ 按名字空间的说明）：色条与左内边距挪到包装上，h1 自己不再画 */
+/* 皮肤可以把 h1 包在 .ak-page-heading 里、下面挂一行 tagline（Skin:Arknights：短描述 / 按名字空间的说明，都没有就不挂）：色条与左内边距挪到包装上，h1 自己不再画 */
 .ak-page-heading { position: relative; flex: 1 1 auto; min-width: 0; padding-left: var(--ak-space-4); border-left: var(--ak-bar-w-lg) solid var(--ak-accent); }
 .ak-page-heading > .ak-page-header__title, .skin-arknights .ak-page-heading > h1#firstHeading, .skin-arknights .ak-page-heading > #firstHeading { padding-left: 0; border-left: 0; }
 .ak-page-heading--blank { display: none; }   /* 标题为空（MediaWiki:Mainpage-title = -） */
