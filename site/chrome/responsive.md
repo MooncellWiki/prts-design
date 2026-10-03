@@ -25,7 +25,9 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 ## 滚动锁
 
-侧栏抽屉与目录浮层开着时锁住页面滚动（参考 VitePress `useBodyScrollLock`），两者共用一把锁、按持有者计数（`window.akdsScrollLock(owner, on)`）：
+只有带遮罩或占满屏宽的层才锁页面滚动：侧栏抽屉，以及手机（≤639）上的目录浮层（参考 VitePress `useBodyScrollLock`），两者共用一把锁、按持有者计数（`window.akdsScrollLock(owner, on)`）。640–1400 的目录浮层、页眉 ⋮ 卡片、下拉菜单（`.ak-menu`）都没有遮罩，不锁页面，也不写 `overscroll-behavior: contain`——滚轮在它们上面滚到头（或它们根本没有内滚）时照常带动页面；`contain` 在没有内滚时也会吞掉滚轮，指针停在上面页面就滚不动。
+
+锁的做法：
 
 - 首选 `html.ak-scroll-lock { overflow: hidden }`——不改滚动位置（不像 `body { position: fixed }` 那套会跳回顶部）；
 - 有实体滚动条（Windows、「总是显示滚动条」）时同时写 `scrollbar-gutter: stable` 占住滚动条的位置，页面不会左右抖一下；不认 `scrollbar-gutter` 的老桌面浏览器退回拦 wheel / touchmove / 翻页键；

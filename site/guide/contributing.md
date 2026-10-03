@@ -30,7 +30,7 @@ site/.vitepress/entries/<分组>.ts        注册一条：名字、描述、CSS 
 - 数据属性驱动主题色：`data-rarity`、`data-prof`、`data-theme`、`data-color`（模组类型）。
 - 私有变量用 `--_x`（组件内部的钩子，如 `--_c` 颜色、`--_s` 尺寸），公开的只有令牌 `--ak-*`。
 - 尺寸用令牌（`--ak-space-*` …），颜色只引语义令牌，不写魔法数、不写死色值。
-- **组件不依赖 JS 也应可读**（渐进增强）。JS 只做：主题、抽屉、目录 scrollspy、页眉收起、标签页、阶段 / 等级切换、Toast、对话框、搜索面板。目录开合是纯 CSS，JS 只补「镜像到 `html.ak-toc-open` / 锁页面滚动 / 点浮层外 / Esc / 跳转后关闭」这类收尾；搜索面板是纯 JS 组件，但页眉里先渲染的是真表单，JS 到了才换成触发器——无 JS 照常提交到 `Special:Search`。
+- **组件不依赖 JS 也应可读**（渐进增强）。JS 只做：主题、抽屉、目录 scrollspy、页眉收起、标签页、阶段 / 等级切换、Toast、对话框、搜索面板。目录开合是纯 CSS，JS 只补「镜像到 `html.ak-toc-open` / 手机上锁页面滚动 / 点浮层外 / Esc / 跳转后关闭」这类收尾；搜索面板是纯 JS 组件，但页眉里先渲染的是真表单，JS 到了才换成触发器——无 JS 照常提交到 `Special:Search`。
 - 整块是链接、或会被放进正文的组件，最外层标 `ak-not-prose`（见[设计理念 · prose / not-prose](/foundations/principles#prose-not-prose)）。渲染成 `<a>` 且根节点颜色不是继承色的组件，把颜色规则写到 `:hover` / `:visited` / `:active` 上（`.ak-x:is(:visited, :active) { color: … }`）：宿主与正文的 `a:visited` / `a:hover` 是 (0,1,1)，单个类压不过；`getComputedStyle` 看不到 `:visited`，`hosts` 用 CDP 强制伪类才测得到。
 - **`width: 100%` / `min-width` 的组件必须自带 `box-sizing: border-box`**（MediaWiki 没有全局 box-sizing 重置）。否则 padding 会在窄屏撑破容器；而只要有任何元素横向溢出，移动端 Chrome 就会把布局视口撑宽、整页缩小，`.ak-fab` 这类 fixed 元素被推到可见区之外。`.ak-input` / `.ak-select` / `.ak-textarea` / `.ak-stat` / `.ak-blue-band` 已处理，裸 `input` / `select` / `textarea` / `button` 由 `base/forms.css` 统一设了 border-box；闲置的提示气泡也收成 0 宽（见[文字提示](/components/tooltip)），新组件照做。
 - 形状与装饰遵守[设计理念](/foundations/principles)：直角、不斜切；色条 + 细框用 `border-image` 直角拼接（见[装饰语言 · 色条 + 细框](/foundations/decoration#色条-细框)）。

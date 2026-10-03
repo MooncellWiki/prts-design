@@ -38,7 +38,7 @@
 	tidyCatlinks();
 	if ( window.mw && mw.hook ) { mw.hook( 'wikipage.categories' ).add( ( $c ) => tidyCatlinks( $c && $c[ 0 ] ? $c[ 0 ] : document ) ); }   /* 预览 / VE 保存后重渲染 */
 
-	/* 页面滚动锁（侧栏抽屉 / 目录浮层开着时页面不动；参考 VitePress useBodyScrollLock，与 preview.js 相同）：
+	/* 页面滚动锁（侧栏抽屉、手机 ≤639 的目录浮层开着时页面不动；参考 VitePress useBodyScrollLock，与 preview.js 相同）：
 	 * 首选 html.ak-scroll-lock（overflow:hidden，不改滚动位置）；有实体滚动条占宽时再写 scrollbar-gutter:stable 占住那条位置，页面不会左右抖；
 	 * 不认 scrollbar-gutter 又有实体滚动条的老桌面浏览器退回拦事件（wheel / touchmove / 翻页键），浮层里真正可滚的元素放行；
 	 * iOS 上 overflow:hidden 拦不住触摸滚动，额外拦 touchmove。抽屉与浮层共用一把锁，按持有者计数。 */
@@ -146,14 +146,16 @@
 
 	/* 目录浮层收尾（开合本身是纯 CSS 的 .ak-toc-cb）：
 	 *  · 把 checkbox 状态镜像到 html.ak-toc-open —— 浮层显示的主路径（chrome/responsive.css 不再只靠 body:has() 桥接，没有 :has() 的旧内核也是真浮层）；
-	 *  · 开着时锁页面滚动（VitePress 的 outline dropdown 同样锁）；跳转后 / 点浮层外 / Esc / 回到 ≥1400（目录回右侧导轨，锁必须撤）收起 */
+	 *  · 只在手机（≤639，浮层拉满宽度）开着时锁页面滚动；更宽时浮层没有遮罩、内容就是本页标题，页面照常滚（VitePress 的 outline dropdown 也不锁）；
+	 *  · 跳转后 / 点浮层外 / Esc / 回到 ≥1400（目录回右侧导轨，锁必须撤）收起 */
 	const tocCb = $( '.ak-toc-cb' );
 	if ( tocCb ) {
-		const tocMq = window.matchMedia( '(max-width: 1400px)' );
-		const syncToc = () => { const on = tocCb.checked && tocMq.matches; document.documentElement.classList.toggle( 'ak-toc-open', on ); scrollLock( 'toc', on ); };
+		const tocMq = window.matchMedia( '(max-width: 1400px)' ), tocLockMq = window.matchMedia( '(max-width: 639px)' );
+		const syncToc = () => { const on = tocCb.checked && tocMq.matches; document.documentElement.classList.toggle( 'ak-toc-open', on ); scrollLock( 'toc', on && tocLockMq.matches ); };
 		const closeToc = () => { if ( tocCb.checked ) { tocCb.checked = false; syncToc(); } };
 		tocCb.addEventListener( 'change', syncToc ); syncToc();   // 点 label / 键盘空格切换走 change；程序收起（closeToc）自己同步
 		tocMq.addEventListener( 'change', ( e ) => { if ( !e.matches ) { closeToc(); } } );
+		tocLockMq.addEventListener( 'change', syncToc );   // 开着时跨过 639：锁跟着加 / 撤
 		document.addEventListener( 'click', ( e ) => {
 			if ( !tocCb.checked ) { return; }
 			if ( e.target.closest( '.ak-toc a' ) ) { closeToc(); return; }

@@ -2,7 +2,7 @@
 /* ═══ Dropdown / Menu ═══ */
 .ak-dropdown { position: relative; display: inline-block; }
 .ak-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; z-index: var(--ak-z-dropdown);
-  max-width: min(92vw, 360px); max-height: min(70vh, 560px); overflow-y: auto; overscroll-behavior: contain;   /* 长菜单（MW 工具箱 + Gadget 追加的项）在卡片内滚，不撑出视口 */
+  max-width: min(92vw, 360px); max-height: min(70vh, 560px); overflow-y: auto;   /* 长菜单（MW 工具箱 + Gadget 追加的项）在卡片内滚，不撑出视口。不写 overscroll-behavior:contain：菜单没有遮罩、跟着文档走，滚到头 / 没有内滚时滚轮要照常带动页面（contain 在没有内滚时也会吞掉滚轮，矮窗口里卡片出了视口就再也滚不到） */
   background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; margin: 0; list-style: none; }   /* 底部不留内边距：最后一项的悬停底色要贴到卡片底边（同 .ak-flyout）；顶部 4px 给小标题 / 抬头留呼吸 */
 .ak-menu--right { left: auto; right: 0; }
 .ak-menu li::before { display: none !important; }

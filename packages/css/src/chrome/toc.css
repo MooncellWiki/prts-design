@@ -6,11 +6,12 @@
  *  开合是纯 CSS：.ak-toc-cb（checkbox，在 .ak-local-nav 里，那一组并在页眉那一行）+ label.ak-local-nav__toc。
  *  浮层与按钮不是兄弟节点：JS 把 checkbox 状态镜像到 html.ak-toc-open（主路径，不依赖 :has()，老内核的手机浏览器也是真浮层）；
  *  无 JS 时用 body:has() 桥接；既无 JS 又不支持 :has() 才退回正文流内的静态卡片。
- *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、点击外部关闭与开着时锁住页面滚动。 */
+ *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、点击外部关闭，以及手机（≤639）上开着时锁住页面滚动。
+ *  导轨 / 浮层都不写 overscroll-behavior:contain：目录短、没有内滚时 contain 照样吞滚轮，指针停在目录上页面就滚不动。 */
 .ak-toc { position: absolute; top: 0; right: 0; bottom: 0; width: var(--ak-toc-w); font-size: var(--ak-fs-xs); }
 /* 限高在底部让出 --ak-toc-clear：默认 = 整页那枚 .ak-fab 占的角落（下边距 space-5 + 44px 按钮 + space-3 间隙）。
  * 导轨贴着视口右缘时，目录一长（出内滚）末几项就会被回到顶部按钮盖住；让出之后导轨止于按钮上方，短目录不受影响。页面没有 .ak-fab 时可设回 var(--ak-space-2) */
-.ak-toc__inner { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-6) - var(--ak-toc-clear, calc(var(--ak-space-5) + 44px + var(--ak-space-3)))); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.ak-toc__inner { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-6) - var(--ak-toc-clear, calc(var(--ak-space-5) + 44px + var(--ak-space-3)))); overflow-y: auto; scrollbar-width: thin; }
 .ak-toc__title { display: block; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-muted); margin: 0 0 8px; padding-left: 10px; border-left: 2px solid var(--ak-theme-accent); }
 .ak-toc__top { display: none; }   /* 浮层首项「回到顶部」：仅 <1400 出现；<1120 时 .ak-fab 隐藏、只剩它（手机上浮动按钮太挡视野） */
 .ak-toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--ak-border); }
