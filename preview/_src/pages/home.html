@@ -420,7 +420,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
   <div class="ak-panel mp-today">
     <!-- 时间条：时钟（JS 走字）+ 周常刷新倒计时（算到下周一 04:00）。一行写完；窄屏折成两行 -->
     <div class="mp-hud">
-      <div class="mp-clock"><span class="mp-clock__time" id="mp-clock">13:49</span><span class="mp-clock__date" id="mp-date">8月23日 · 周日</span><span class="mp-clock__tz" id="mp-tz" hidden>UTC+8</span></div>
+      <div class="mp-clock"><span class="mp-clock__time" id="mp-clock">13:49</span><span class="mp-clock__date" id="mp-date">8月23日 周日</span><span class="mp-clock__tz" id="mp-tz" hidden>UTC+8</span></div>
       <div class="mp-cd"><b>剿灭作战 &amp; 周常任务</b><span><span class="mp-cd__left" id="mp-weekly"><b>14</b>小时<b>10</b>分</span>后刷新</span></div>
     </div>
     <!-- 今日开放：9 个关卡按「物资筹备 / 芯片搜索」两行小格；开放日 data-days（1–7，7 = 周日），JS 按服务器日（04:00 切日）标 is-open，并把今日未开放的格挪到行末；静态 HTML 反映抓取当天（周日，已按此排好）。
@@ -724,7 +724,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
   var tick = function () {
     var t = cst();
     if (clock) clock.textContent = pad(t.getHours()) + ':' + pad(t.getMinutes());
-    if (date) date.textContent = (t.getMonth() + 1) + '月' + t.getDate() + '日 · 周' + DAYS[t.getDay()];
+    if (date) date.textContent = (t.getMonth() + 1) + '月' + t.getDate() + '日 周' + DAYS[t.getDay()];   // 日期和周几之间一个空格，不加「·」
     if (weekly) {   // 下一个周一 04:00
       var g = new Date(t); g.setHours(4, 0, 0, 0);
       var add = (8 - g.getDay()) % 7; if (add === 0 && g <= t) add = 7; g.setDate(g.getDate() + add);
