@@ -35,7 +35,7 @@
     "keyart-h": { $value: "0px", $description: "页眉之下那段画的高度（画有多高，不是占多高——占位看 -reveal）" },
     "keyart-reveal": { $value: "72px", $description: "留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带。≤639 为 0（functional/compact）" },
     "keyart-veil": { $value: "60%", $description: "垫在版面背后那一段蒙的画布色纱：顶端的浓度，往下渐浓到 100%。画面越花调得越高；别低于 50%（侧栏 / 标题压在画上要读得清）" },
-    "keyart-veil-filter": { $value: "blur(8px)", $description: "纱底下先给画加的 backdrop-filter：细节先糊开、再被纱盖住，亮色主题下读起来是雾 / 景深而不是隔着磨砂膜；none 关闭。画面鲜艳的主题可以再加 saturate(.6) 之类" },
+    "keyart-veil-filter": { $value: "blur(8px)", $description: "纱底下先给画加的 filter（加在 ::before 里同一幅头图的副本上，不是 backdrop-filter）：细节先糊开、再被纱盖住，亮色主题下读起来是雾 / 景深而不是隔着磨砂膜；none 关闭。画面鲜艳的主题可以再加 saturate(.6) 之类" },
     "keyart-position": { $value: "center 30%", $description: "-position / -size 相对整块（页眉高 + -h）计算" },
     "keyart-size": { $value: "cover" },
     "keyart-bg": { $value: "transparent", $description: "画未铺满 / 未加载时的底色；默认透明，没有头图时页眉背后什么也不多画" },

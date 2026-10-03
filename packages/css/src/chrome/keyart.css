@@ -23,9 +23,13 @@
   background: linear-gradient(to bottom, transparent, var(--ak-bg-canvas)) bottom / 100% max(0px, var(--_under) - min(var(--ak-space-6), var(--_reveal))) no-repeat,   /* 纱的下半：从版面内容起点匀速浓到画布色，叠在 ::after 的 -veil 之下 */
     linear-gradient(to bottom, transparent, var(--ak-bg-canvas)) bottom / 100% min(var(--ak-keyart-fade), var(--_h)) no-repeat,   /* 底部渐隐（没有垫底段时只有它） */
     var(--ak-keyart-bg) var(--ak-keyart-image) var(--ak-keyart-position) / var(--ak-keyart-size) no-repeat; }
-.ak-keyart::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--_under) + var(--_lead)); pointer-events: none;
-  -webkit-backdrop-filter: var(--ak-keyart-veil-filter); backdrop-filter: var(--ak-keyart-veil-filter);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--_ramp)); mask-image: linear-gradient(to bottom, transparent, #000 var(--_ramp)); }   /* 垫底段先糊：在纱底下、与纱同起同满；只糊头图（版面在 DOM 里靠后，不在它的背景里） */
+.ak-keyart::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: inherit; filter: var(--ak-keyart-veil-filter);
+  --_from: calc(100% - var(--_under) - var(--_lead));   /* 糊从这里起（= ::after 纱的顶边），渐入长度同纱 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent var(--_from), #000 calc(var(--_from) + var(--_ramp))); mask-image: linear-gradient(to bottom, transparent var(--_from), #000 calc(var(--_from) + var(--_ramp))); }
+/* ↑ 垫底段先糊：在纱底下、与纱同起同满；只糊头图（版面在 DOM 里靠后，不在它的背景里）。
+ *  糊的是 background: inherit 抄来的同一幅画（连同上面两层渐变，糊了也一样）、加 filter，不是 backdrop-filter 糊背后：画是静止的，filter 光栅化一次就进了图块缓存，
+ *  滚动时不再重算；backdrop-filter 每帧都要把背后重糊一遍（PRTS 现网反馈「首页顶部滚动卡顿」，实测首页顶部滚动 GPU 27 → 9 ms/s，与完全不糊相同）。
+ *  盒子与 .ak-keyart 的内边距盒同大（inset: 0），background 的定位 / 尺寸才与本体算得一样；左右边缘几像素被糊成半透明，压在纱下看不出（截图逐像素平均差 0.2/255）。 */
 .ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--_under) + var(--_lead)); pointer-events: none; background: var(--ak-bg-canvas); opacity: var(--ak-keyart-veil);
   -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .146) calc(var(--_ramp) * .25), rgba(0, 0, 0, .473) calc(var(--_ramp) * .5), rgba(0, 0, 0, .813) calc(var(--_ramp) * .75), #000 var(--_ramp));
   mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .146) calc(var(--_ramp) * .25), rgba(0, 0, 0, .473) calc(var(--_ramp) * .5), rgba(0, 0, 0, .813) calc(var(--_ramp) * .75), #000 var(--_ramp)); }   /* 纱的上半：三次 Hermite 缓入（起点斜率 0），到版面内容起点浓到 -veil，再往下保持；终点斜率按默认几何（72 露出 / 280 画高 / 60%）对上背景里那层匀速的下半，接缝不折 */
