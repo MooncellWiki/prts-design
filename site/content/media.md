@@ -31,7 +31,11 @@ MW 1.40+ 的媒体 DOM 是 `figure[typeof="mw:File/Thumb"] > a > img + figcaptio
   - `height: auto` 盖掉 HTML 的 `height="30px"` 属性，只靠属性定尺寸的图（CharinfoV2 舞台的 HUD 图标）变回原图大小；
   - 百分比 `max-width` 让图的最小宽度计 0。表格自动布局按最小宽度给列分宽，只装图标的列（语音记录的播放 / 下载格）会被 `width: 100%` 的兄弟列挤成 0 宽。
 
-  文件图放进表格照样有第二种风险：图标列旁边别放 `width: 100%` 的列，或者给图标列定宽。
+  文件图放进表格照样有第二种风险，而且不止 `width: 100%` 的兄弟列：兄弟列定了 px 宽时，自动布局先满足定宽列，图标列只分剩下的（`模板:剧情简介` 旁边是 120 / 620px 两列，正文栏窄于约 964px 时播放格只剩 2px，按钮整个不见）；兄弟列是长文本时按内容宽度比例分，图标列也只分到十几 px。给图标列定 `width` 不管用：定宽列放不下时一起按比例缩，`width: 52px` 的播放格在 640 宽下照样只剩 26px。要保住尺寸，得给图本身一个不依赖格子的参照：
+  - 图外套定宽的 `inline-block`：`<span style="display:inline-block;width:50px">[[文件:…|50px]]</span>`。纯行内写法，不用样式页；Minerva 有同样的 `max-width`，一并修好；
+  - 或者类 + TemplateStyles 给图 `max-width: none`（`.prts-item-icon .mw-file-element`）。压不过 Minerva 自己的规则，那边原样不动。
+
+  皮肤层没有干净的写法：改成 `max-width: max(100%, 4rem)`，Blink 里图回到原尺寸，但算列宽时仍按 0，图会伸出格子盖到隔壁。
 - `img.ak-pixel`：像素图（小尺寸游戏图标放大）用 `image-rendering: pixelated`，不糊。
 - 游戏的白色线稿图标（职业 / 精英 / 势力）加 `.ak-glyph`，亮色主题下自动反相，见[装饰语言](/foundations/decoration#白色线稿图标-ak-glyph)。
 
