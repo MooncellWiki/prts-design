@@ -19,7 +19,7 @@
 .ak-page-header__title .mw-page-title-separator { color: var(--ak-fg-subtle); }
 .ak-page-header__title .mw-page-title-parenthesis { color: var(--ak-fg-muted); font-weight: 500; font-size: .7em; }
 /* 皮肤可以把 h1 包在 .ak-page-heading 里、下面挂一行 tagline（Skin:Arknights：短描述 / 按名字空间的说明，都没有就不挂）：色条与左内边距挪到包装上，h1 自己不再画 */
-.ak-page-heading { position: relative; flex: 1 1 auto; min-width: 0; padding-left: var(--ak-space-4); border-left: var(--ak-bar-w-lg) solid var(--ak-accent); }
+.ak-page-heading { position: relative; flex: 9999 1 auto; min-width: 0; padding-left: var(--ak-space-4); border-left: var(--ak-bar-w-lg) solid var(--ak-accent); }
 .ak-page-heading > .ak-page-header__title, .skin-arknights .ak-page-heading > h1#firstHeading, .skin-arknights .ak-page-heading > #firstHeading { padding-left: 0; border-left: 0; }
 .ak-page-heading--blank { display: none; }   /* 标题为空（MediaWiki:Mainpage-title = -） */
 .ak-page-heading__tagline { display: block; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin-top: 4px; line-height: 1.5; }
@@ -28,7 +28,7 @@
  * 标题 flex:1，簇靠右、底线与标题青条底对齐；标题很长时整簇换到标题下方。不再有整条下划线页签——簇里没有「当前」要标。
  * DOM 仍按 MW 菜单顺序（associated-pages → views → variants → 更多），显示顺序由 order 定：讨论 → 查看历史 → 编辑 / 查看源代码 → ★ → 变体 → 更多。 */
 .ak-page-header__row { display: flex; align-items: flex-end; gap: var(--ak-space-3) var(--ak-space-4); flex-wrap: wrap; margin-bottom: var(--ak-space-3); }
-.ak-page-header__row > .ak-page-header__title, .ak-page-header__row > #firstHeading { flex: 1 1 auto; min-width: 0; }
+.ak-page-header__row > .ak-page-header__title, .ak-page-header__row > #firstHeading { flex: 9999 1 auto; min-width: 0; }   /* 9999：窄簇独占一行时自己也要长（见下「窄簇」），与标题同一行时余量仍全归标题。.ak-page-heading 同 */
 .ak-page-tools { display: flex; align-items: center; gap: 4px; flex: none; max-width: 100%; margin-bottom: 2px; }
 .ak-page-tabs { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .ak-page-tabs li { margin: 0; }
@@ -67,6 +67,14 @@
 .ak-page-tools__card a { padding: 7px 14px; }
 .ak-page-tools__card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
 .ak-page-tools__card a:hover .ak-icon { color: var(--ak-fg); }
+/* 窄簇：簇里没有一枚看得见的页签（$wgArknightsShowPageTools 关掉、特殊页面），只剩 变体 / 更多，比卡片还窄——标题很长、簇换到下一行靠左时，贴按钮右对齐的卡片会伸出版心左侧（<1120 没有侧栏，直接出视口）。
+ * 这时卡片改挂在整簇上、定宽 240px：簇独占一行时 flex-grow 把它拉满整行（标题的 9999 让同一行时它分不到余量，仍是内容宽、靠右），簇宽就说明了它在哪——
+ * left: min(0, 簇宽 − 卡片宽) → 与标题同行时卡片右缘贴簇右缘，换行拉满时左缘贴簇左缘，两头都不出版心。
+ * 有页签的簇不走这条：它比卡片宽，贴按钮右对齐怎么都放得下，拉满整行反而让卡片离开按钮。≤639 整簇只剩图标，一律按窄簇走（responsive.css）。不认 :has 的浏览器照旧贴按钮 */
+.ak-page-tools:not(:has(> .ak-page-tabs > li:not(.selected))) { position: relative; flex-grow: 1; }
+.ak-page-tools:not(:has(> .ak-page-tabs > li:not(.selected))) > .ak-dropdown { position: static; }
+.ak-page-tools:not(:has(> .ak-page-tabs > li:not(.selected))) .ak-page-tools__card { left: min(0px, 100% - 240px); right: auto; box-sizing: border-box; width: 240px; min-width: 0; }
+.ak-page-tools:not(:has(> .ak-page-tabs > li:not(.selected))) .ak-page-tools__card a { white-space: normal; }   /* 定宽之后放不下的长文案（Gadget 追加的项、外文界面）折行，不在卡片里横向滚 */
 /* Content sub / redirected from */
 .ak-page-header__sub { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin: 6px 0 0; }
 .ak-page-header__sub:empty { display: none; }

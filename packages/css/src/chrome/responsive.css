@@ -127,8 +127,12 @@
   .ak-page-header__row { align-items: flex-start; }
   .ak-page-tabs li a > span:not(.ak-icon), .ak-page-tools__btn > span:not(.ak-icon) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .ak-page-tabs li a, .ak-page-tools__btn { padding: 0 7px; }
-  /* 下拉卡片照常贴按钮右对齐，最小宽度从桌面的 240px 收到 180px（同 .ak-menu 的默认下限），更长的文案照常撑开：标题很长、簇换行靠左时 ⋯ 的右缘离屏幕左缘只有约 200px，保留 240px 会溢出视口左侧 */
-  .ak-page-tools__card { left: auto; right: 0; min-width: 180px; }
+  /* 下拉卡片（更多 / 变体）：整簇只剩图标，有页签也比卡片窄（未登录 讨论 · 历史 · 查看源代码 · ⋯ 四枚，⋯ 的右缘离屏幕左缘不到 130px）——
+   * 一律按 page-header.css 的「窄簇」走：卡片挂在整簇上、定宽 240px，与标题同行时右缘贴簇右缘，换行靠左时左缘贴簇左缘，不再贴着按钮往左伸出视口 */
+  .ak-page-tools { position: relative; flex-grow: 1; }
+  .ak-page-tools > .ak-dropdown { position: static; }
+  .ak-page-tools__card { left: min(0px, 100% - 240px); right: auto; box-sizing: border-box; width: 240px; min-width: 0; }
+  .ak-page-tools__card a { white-space: normal; }
   .ak-footer__inner { grid-auto-flow: row; grid-template-columns: 1fr 1fr; grid-auto-columns: auto; gap: var(--ak-space-6); }   /* 链接列两两并排 */
   .ak-footer__brand { grid-column: 1 / -1; }
   .ak-footer__bottom { flex-direction: column; align-items: flex-start; }
