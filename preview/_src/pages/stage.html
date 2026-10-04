@@ -1,0 +1,372 @@
+<!--page
+order: 7
+nav: 关卡页（敌方情报）
+title: A-3 最后的炎魔 - PRTS · 关卡页设计稿
+crumb: 首页 > 关卡一览 > 主线关卡 > A-3 最后的炎魔
+h1: A-3 最后的炎魔
+h1en: 敌方情报设计稿
+indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">设计稿</span>
+actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+lastmod: 2026年10月4日 (六) 22:40
+cats: 关卡, 主线关卡
+-->
+<!--head
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   关卡页 · 敌方情报 — 现网 模板:敌方情报（3360 个关卡页）那张表的重新设计（单页设计稿，只画这一节）。
+   现网：16 列（头像 · 名称 · 数量 · 地位 · 级别 · 十一项数值），每列写死 width:5–8%、表 width:80%；
+   新皮肤下表头一字一行竖排、头像被挤到 27px（外壳按内容收缩 + 皮肤 .mw-file-element 的 max-width:100%）、「普通」折行；
+   本关改过的数值是行内 #2F2F2F 深底，暗色主题下看不出、亮色下没有图例；≤700px 横滑一张 1300px 宽的表。
+   这里：13 列——头像 / 名称 / 地位 / 级别合成「敌人」一列，数值分三组；窄了一个敌人一张卡。
+
+   这段样式 = 生产环境的 模板:敌方情报/styles.css（TemplateStyles），所以只用 css-sanitizer 认的写法：
+   - 没有 @container（MW 1.43 的 css-sanitizer 只有 @media / @supports / @font-face / @keyframes / @page 等），窄宽度按视口断点；
+   - 颜色 / 字号全走令牌（var(--ak-*)），两套主题都成立；.ak-table / .ak-tag / .ak-sr-only 是设计系统组件，随皮肤加载，这里不抄。
+   结构（模板输出，见各规则旁注）：
+     div.se > table.ak-table.se-table.sortable
+       tr.se-head：敌人 · 数量 · 生命值 攻击力 防御力 法术抗性 ‖ 攻击间隔 移动速度 攻击半径 重量等级 ‖ 元素抗性 损伤抵抗 目标价值
+       tr[data-rank="elite|boss"]：th.se-enemy（头像 + 名字 + 地位 / 级别标签）+ td[data-label]（数值）
+   wikitext 的表格没有 <thead>：表头行在 <tbody> 里，可排序表要等 jquery.tablesorter 跑完才被挪进 <thead>（本页就是没跑 JS 的样子）。
+   所以表头一律认 tr.se-head，不认 thead。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.se { margin: var(--ak-space-4) 0; }
+.se-table.ak-table { box-sizing: border-box; font-size: var(--ak-fs-sm); font-variant-numeric: tabular-nums; }
+
+/* ── 1. 表头：四字的在中间写 <wbr>（法术<wbr>抗性），keep-all 让它只在那里断——够宽时一行，不够时两行，不会一字一行。
+ *  外观同 .ak-table 的 thead th，这里照写一遍：没跑 JS 时表头行还在 tbody 里 ── */
+.se-head > th { padding: 8px 6px; background: var(--ak-bg-surface-2); border-bottom: 2px solid var(--ak-border-strong); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); text-align: center; vertical-align: bottom; word-break: keep-all; }
+.se-head > th.se-enemy { text-align: left; padding-left: 12px; }
+
+/* ── 2. 数值格 ── */
+.se-table td { padding: 8px 6px; text-align: center; white-space: nowrap; line-height: 1.3; }
+.se-table td.is-zero { color: var(--ak-fg-subtle); }   /* 0 与「—」压淡：一张表大半格是 0，有值的格先被看到 */
+.se-table :is(th, td).is-group-start { border-left: 1px solid var(--ak-border); }   /* 三组：生命 攻击 防御 法抗 ‖ 攻击间隔 移速 攻击半径 重量 ‖ 元素抗性 损伤抵抗 目标价值 */
+.se-table tr:not(.se-head):hover > :is(th, td) { background: var(--ak-bg-hover); }   /* .ak-table 只给 td 上悬停底色，行头跟上 */
+
+/* 本关数值（模板参数 敌人N生命值= 之类，651 个关卡页用到）：强调色粗体 + 右上角一枚三角，表下一行图例。
+ * 格子还带 title（悬停说明；模板可以把默认值写进去）、一段 .ak-sr-only 的「（本关数值）」给读屏器，data-sort-value 写纯数字，排序不受影响 */
+.se-table td.is-override { position: relative; color: var(--ak-accent); font-weight: 700; }
+.se-table td.is-override::after, .se-mark { content: ""; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent var(--ak-accent) transparent transparent; }
+.se-note { position: relative; margin: var(--ak-space-2) 0 0; padding-left: 14px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); line-height: 1.5; }
+.se-mark { top: .4em; right: auto; left: 0; }
+
+/* ── 3. 敌人格：头像 + 名字 + 标签；精英 / 领袖在左缘出色条（色值同敌人卡、敌人一览：精英橙、领袖红），标签把字写出来，不只靠颜色。
+ *  级别只在不是 0 时出标签（同名敌人常有两个级别：召唤物、二阶段）── */
+.se tr[data-rank="elite"] { --_rank: var(--ak-orange-500); --_rank-fg: var(--ak-orange-500); }
+.se tr[data-rank="boss"] { --_rank: var(--ak-red-700); --_rank-fg: var(--ak-red-500); }   /* 色条用敌人卡的深红；标签文字深红在暗色底上太暗，提一级 */
+.se-table th.se-enemy:not(.se-head > *) { padding: 6px 10px 6px 12px; text-align: left; font-weight: 400; box-shadow: inset 4px 0 0 var(--_rank, transparent); }
+.se-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+/* 头像外壳写死 50px：皮肤的 .mw-file-element { max-width:100% } 以外壳为参照，外壳若按内容收缩，图的最小宽度计 0，
+ * 十几列的表一放不下头像先被挤（现网 {{敌人头像}} 的 .enemyicon 在桌面上只剩 27px）。外壳定宽，参照就是确定的 50。
+ * 模板里：<span class="se-avatar">[[文件:头像_敌人_X.png|50px|link=X]]</span> */
+.se-avatar { flex: none; display: block; width: 50px; height: 50px; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
+.se-avatar img { display: block; width: 50px; height: 50px; max-width: none; object-fit: cover; }
+.se-body { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+/* 名字是 wikitext 的 [[X|显示名]]，<a> 上加不了类：规则挂在外层 span 上；颜色写到 :visited / :hover 上，压过宿主的 a:visited */
+.se-name { line-height: 1.3; }
+.se-name > a, .se-name > a:visited { color: var(--ak-link); text-decoration: none; }
+.se-name > a:is(:hover, :focus-visible) { color: var(--ak-accent); text-decoration: underline; }
+.se-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.se-tags:empty { display: none; }
+.ak-tag.se-rank { --_bg: transparent; --_fg: var(--_rank-fg); --_bd: var(--_rank-fg); }
+
+/* ── 4. 窄：一个敌人一张卡 ──
+ *  视口 <900 = 新皮肤正文栏 <810（640–899 无侧栏）与手机；更宽时正文栏至少 810（出侧栏的 1200 是 854），13 列放得下。
+ *  卡头 = 敌人格 + 右上角数量（×3）；下面 4 列属性格正好对上三组（4 · 4 · 3），每格上面是 data-label 写的属性名。
+ *  色条 + 细框同敌人卡（.ak-enemy--elite / --boss 的 border-image 直角拼接）。表头行藏掉，卡片里不能排序 ── */
+@media (max-width: 899px) {
+  .se-table.ak-table, .se-table > tbody { display: block; border: 0; background: none; }
+  .se-table > tbody { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--ak-space-2); }
+  .se-table tr.se-head { display: none; }
+  .se-table tr:not(.se-head) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: start; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+  .se-table tr[data-rank] { border-left-width: 4px; border-image: linear-gradient(to right, var(--_rank) 4px, var(--ak-border) 4px) 1 1 1 4; }
+  .se-table tr:not(.se-head):hover > :is(th, td) { background: none; }
+  .se-table th.se-enemy:not(.se-head > *) { grid-column: 1 / 4; padding: 10px; border: 0; box-shadow: none; }
+  .se-table td { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 10px; border: 0; border-top: 1px solid var(--ak-border-subtle); text-align: left; }
+  .se-table td::before { content: attr(data-label); font-size: var(--ak-fs-xs); font-weight: 400; color: var(--ak-fg-muted); }
+  .se-table td.is-group-start { border-left: 0; }
+  .se-table td.se-count { grid-column: 4; grid-row: 1; flex-direction: row; align-self: center; align-items: baseline; justify-content: flex-end; gap: 1px; padding: 10px; border: 0; font: 700 var(--ak-fs-h4)/1 var(--ak-font-body); color: var(--ak-fg); }
+  .se-table td.se-count.is-zero { color: var(--ak-fg-subtle); }
+  .se-table td.se-count::before { content: "×"; font-size: var(--ak-fs-sm); font-weight: 400; color: var(--ak-fg-muted); }
+}
+
+</style>
+-->
+<div class="ak-cbox ak-cbox--tip">
+  <span class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></span>
+  <div class="ak-cbox__body">关卡页「敌方情报」表（<code>模板:敌方情报</code>，3360 个关卡页）的单页设计稿，只画这一节。数据取自现网 <a href="https://prts.wiki/w/A-3_%E6%9C%80%E5%90%8E%E7%9A%84%E7%82%8E%E9%AD%94">A-3 最后的炎魔</a> 与 <a href="https://prts.wiki/w/1-7_%E6%9A%B4%E5%90%9B">1-7 暴君</a>，可对照着看。窗口拉窄（视口 &lt;900）看卡片。</div>
+</div>
+
+<h2 id="敌方情报">敌方情报</h2>
+<div class="se">
+  <table class="ak-table se-table sortable">
+    <tbody>
+    <tr class="se-head">
+      <th scope="col" class="se-enemy">敌人</th>
+      <th scope="col">数量</th>
+      <th scope="col" class="is-group-start">生命值</th>
+      <th scope="col">攻击力</th>
+      <th scope="col">防御力</th>
+      <th scope="col">法术<wbr>抗性</th>
+      <th scope="col" class="is-group-start">攻击<wbr>间隔</th>
+      <th scope="col">移动<wbr>速度</th>
+      <th scope="col">攻击<wbr>半径</th>
+      <th scope="col">重量<wbr>等级</th>
+      <th scope="col" class="is-group-start">元素<wbr>抗性</th>
+      <th scope="col">损伤<wbr>抵抗</th>
+      <th scope="col">目标<wbr>价值</th>
+    </tr>
+    <tr data-rank="boss">
+      <th scope="row" class="se-enemy" data-sort-value="1"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/b/ba/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB.png" srcset="https://media.prts.wiki/thumb/b/ba/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB">熔戈者，护王余火</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm se-rank">领袖</span><span class="ak-tag ak-tag--sm">级别 1</span></span></span></div></th>
+      <td class="se-count" data-label="数量">1</td>
+      <td class="is-group-start" data-label="生命值">70000</td>
+      <td data-label="攻击力">2200</td>
+      <td data-label="防御力">1500</td>
+      <td data-label="法术抗性">50</td>
+      <td class="is-group-start" data-label="攻击间隔">4.5</td>
+      <td data-label="移动速度">0.4</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">8</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">5</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="2"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E7%BC%A0%E8%BA%AB%E6%81%B6%E7%84%B0" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/50px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png" srcset="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/100px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E7%BC%A0%E8%BA%AB%E6%81%B6%E7%84%B0">缠身恶焰</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">8000</td>
+      <td data-label="攻击力">100</td>
+      <td data-label="防御力">750</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">1</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="3"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E7%BC%A0%E8%BA%AB%E6%81%B6%E7%84%B0" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/50px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png" srcset="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/100px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E7%BC%A0%E8%BA%AB%E6%81%B6%E7%84%B0">缠身恶焰</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm">级别 1</span></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">8000</td>
+      <td data-label="攻击力">100</td>
+      <td data-label="防御力">750</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">1</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="4"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E5%87%9D%E7%BC%A9%E7%83%AD%E5%8A%9B" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/50px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png" srcset="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/100px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E5%87%9D%E7%BC%A9%E7%83%AD%E5%8A%9B">凝缩热力</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">3000</td>
+      <td data-label="攻击力">100</td>
+      <td data-label="防御力">50</td>
+      <td data-label="法术抗性">80</td>
+      <td class="is-group-start" data-label="攻击间隔">1</td>
+      <td data-label="移动速度">0.25</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="5"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E5%87%9D%E7%BC%A9%E7%83%AD%E5%8A%9B" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/50px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png" srcset="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/100px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E5%87%9D%E7%BC%A9%E7%83%AD%E5%8A%9B">凝缩热力</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm">级别 1</span></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">5000</td>
+      <td data-label="攻击力">100</td>
+      <td data-label="防御力">50</td>
+      <td data-label="法术抗性">80</td>
+      <td class="is-group-start" data-label="攻击间隔">1</td>
+      <td data-label="移动速度">0.25</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr data-rank="elite">
+      <th scope="row" class="se-enemy" data-sort-value="6"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/3/36/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E.png" srcset="https://media.prts.wiki/thumb/3/36/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E">再铸扈从</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm se-rank">精英</span></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">50000</td>
+      <td data-label="攻击力">1750</td>
+      <td data-label="防御力">2000</td>
+      <td data-label="法术抗性">40</td>
+      <td class="is-group-start" data-label="攻击间隔">4</td>
+      <td data-label="移动速度">0.5</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">4</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr data-rank="elite">
+      <th scope="row" class="se-enemy" data-sort-value="7"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/4/4e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1.png" srcset="https://media.prts.wiki/thumb/4/4e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1">深池伙友影刃精英</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm se-rank">精英</span></span></span></div></th>
+      <td class="se-count" data-label="数量">3</td>
+      <td class="is-group-start is-override" data-label="生命值" data-sort-value="40000" title="本关数值，与敌人默认数值不同">40000<span class="ak-sr-only">（本关数值）</span></td>
+      <td class="is-override" data-label="攻击力" data-sort-value="700" title="本关数值，与敌人默认数值不同">700<span class="ak-sr-only">（本关数值）</span></td>
+      <td data-label="防御力">550</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2.1</td>
+      <td data-label="移动速度">0.8</td>
+      <td data-label="攻击半径">1.4</td>
+      <td data-label="重量等级">2</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr data-rank="elite">
+      <th scope="row" class="se-enemy" data-sort-value="8"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/9/95/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1.png" srcset="https://media.prts.wiki/thumb/9/95/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1">深池伙友卫队精英</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm se-rank">精英</span></span></span></div></th>
+      <td class="se-count" data-label="数量">3</td>
+      <td class="is-group-start is-override" data-label="生命值" data-sort-value="60000" title="本关数值，与敌人默认数值不同">60000<span class="ak-sr-only">（本关数值）</span></td>
+      <td class="is-override" data-label="攻击力" data-sort-value="2000" title="本关数值，与敌人默认数值不同">2000<span class="ak-sr-only">（本关数值）</span></td>
+      <td class="is-override" data-label="防御力" data-sort-value="2000" title="本关数值，与敌人默认数值不同">2000<span class="ak-sr-only">（本关数值）</span></td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">4</td>
+      <td data-label="移动速度">0.8</td>
+      <td data-label="攻击半径">1.4</td>
+      <td data-label="重量等级">5</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="9"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/7/7b/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88.png" srcset="https://media.prts.wiki/thumb/7/7b/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88">萨卡兹刀术师</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">4</td>
+      <td class="is-group-start" data-label="生命值">4000</td>
+      <td data-label="攻击力">370</td>
+      <td data-label="防御力">100</td>
+      <td data-label="法术抗性">50</td>
+      <td class="is-group-start" data-label="攻击间隔">2.5</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">1</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    </tbody>
+  </table>
+  <p class="se-note"><span class="se-mark" aria-hidden="true"></span>本关数值：与敌人页的默认数值不同。</p>
+</div>
+
+<h2 id="普通关卡">普通关卡的样子</h2>
+<p>多数关卡全是普通敌人、没有改过数值（<a href="https://prts.wiki/w/1-7_%E6%9A%B4%E5%90%9B">1-7 暴君</a>）：</p>
+<div class="se">
+  <table class="ak-table se-table sortable">
+    <tbody>
+    <tr class="se-head">
+      <th scope="col" class="se-enemy">敌人</th>
+      <th scope="col">数量</th>
+      <th scope="col" class="is-group-start">生命值</th>
+      <th scope="col">攻击力</th>
+      <th scope="col">防御力</th>
+      <th scope="col">法术<wbr>抗性</th>
+      <th scope="col" class="is-group-start">攻击<wbr>间隔</th>
+      <th scope="col">移动<wbr>速度</th>
+      <th scope="col">攻击<wbr>半径</th>
+      <th scope="col">重量<wbr>等级</th>
+      <th scope="col" class="is-group-start">元素<wbr>抗性</th>
+      <th scope="col">损伤<wbr>抵抗</th>
+      <th scope="col">目标<wbr>价值</th>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="1"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%9A%B4%E5%BE%92" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/e/ee/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9A%B4%E5%BE%92.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9A%B4%E5%BE%92.png" srcset="https://media.prts.wiki/thumb/e/ee/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9A%B4%E5%BE%92.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9A%B4%E5%BE%92.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%9A%B4%E5%BE%92">暴徒</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">4</td>
+      <td class="is-group-start" data-label="生命值">1700</td>
+      <td data-label="攻击力">250</td>
+      <td data-label="防御力">50</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2</td>
+      <td data-label="移动速度">1.1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="2"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/2/2c/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85.png" srcset="https://media.prts.wiki/thumb/2/2c/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85">鸡尾酒投掷者</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">4</td>
+      <td class="is-group-start" data-label="生命值">1550</td>
+      <td data-label="攻击力">180</td>
+      <td data-label="防御力">50</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2.7</td>
+      <td data-label="移动速度">1</td>
+      <td data-label="攻击半径">1.75</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="3"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E5%A3%AB%E5%85%B5" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/3/34/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%A3%AB%E5%85%B5.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%A3%AB%E5%85%B5.png" srcset="https://media.prts.wiki/thumb/3/34/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%A3%AB%E5%85%B5.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%A3%AB%E5%85%B5.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E5%A3%AB%E5%85%B5">士兵</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">7</td>
+      <td class="is-group-start" data-label="生命值">1650</td>
+      <td data-label="攻击力">200</td>
+      <td data-label="防御力">100</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2</td>
+      <td data-label="移动速度">1.1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">1</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="4"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/f9/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5.png" srcset="https://media.prts.wiki/thumb/f/f9/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5">机动盾兵</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">1</td>
+      <td class="is-group-start" data-label="生命值">2050</td>
+      <td data-label="攻击力">240</td>
+      <td data-label="防御力">250</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">1</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="5"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/b/b6/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1.png" srcset="https://media.prts.wiki/thumb/b/b6/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1">源石虫·α</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">23</td>
+      <td class="is-group-start" data-label="生命值">1050</td>
+      <td data-label="攻击力">185</td>
+      <td class="is-zero" data-label="防御力">0</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">1.7</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="6"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%8B%BE%E8%8D%92%E8%80%85" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/6/64/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%8B%BE%E8%8D%92%E8%80%85.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%8B%BE%E8%8D%92%E8%80%85.png" srcset="https://media.prts.wiki/thumb/6/64/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%8B%BE%E8%8D%92%E8%80%85.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%8B%BE%E8%8D%92%E8%80%85.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%8B%BE%E8%8D%92%E8%80%85">拾荒者</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">2</td>
+      <td class="is-group-start" data-label="生命值">5000</td>
+      <td data-label="攻击力">500</td>
+      <td data-label="防御力">50</td>
+      <td data-label="法术抗性">20</td>
+      <td class="is-group-start" data-label="攻击间隔">3</td>
+      <td data-label="移动速度">0.8</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">2</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

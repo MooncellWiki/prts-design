@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<!-- 生成物：由 scripts/build-preview.py 从 preview/_src/skeleton.html + _src/pages/stage.html 生成，改源文件再重跑 -->
+<html lang="zh-CN" class="client-nojs skin-theme-clientpref-night" data-default-theme="dark">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；chrome/responsive.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-3 最后的炎魔 - PRTS · 关卡页设计稿</title>
+<link rel="stylesheet" href="../src/index.css">   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
+<link rel="stylesheet" href="../src/chrome/demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖令牌 §2d 的接口变量 -->
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   关卡页 · 敌方情报 — 现网 模板:敌方情报（3360 个关卡页）那张表的重新设计（单页设计稿，只画这一节）。
+   现网：16 列（头像 · 名称 · 数量 · 地位 · 级别 · 十一项数值），每列写死 width:5–8%、表 width:80%；
+   新皮肤下表头一字一行竖排、头像被挤到 27px（外壳按内容收缩 + 皮肤 .mw-file-element 的 max-width:100%）、「普通」折行；
+   本关改过的数值是行内 #2F2F2F 深底，暗色主题下看不出、亮色下没有图例；≤700px 横滑一张 1300px 宽的表。
+   这里：13 列——头像 / 名称 / 地位 / 级别合成「敌人」一列，数值分三组；窄了一个敌人一张卡。
+
+   这段样式 = 生产环境的 模板:敌方情报/styles.css（TemplateStyles），所以只用 css-sanitizer 认的写法：
+   - 没有 @container（MW 1.43 的 css-sanitizer 只有 @media / @supports / @font-face / @keyframes / @page 等），窄宽度按视口断点；
+   - 颜色 / 字号全走令牌（var(--ak-*)），两套主题都成立；.ak-table / .ak-tag / .ak-sr-only 是设计系统组件，随皮肤加载，这里不抄。
+   结构（模板输出，见各规则旁注）：
+     div.se > table.ak-table.se-table.sortable
+       tr.se-head：敌人 · 数量 · 生命值 攻击力 防御力 法术抗性 ‖ 攻击间隔 移动速度 攻击半径 重量等级 ‖ 元素抗性 损伤抵抗 目标价值
+       tr[data-rank="elite|boss"]：th.se-enemy（头像 + 名字 + 地位 / 级别标签）+ td[data-label]（数值）
+   wikitext 的表格没有 <thead>：表头行在 <tbody> 里，可排序表要等 jquery.tablesorter 跑完才被挪进 <thead>（本页就是没跑 JS 的样子）。
+   所以表头一律认 tr.se-head，不认 thead。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.se { margin: var(--ak-space-4) 0; }
+.se-table.ak-table { box-sizing: border-box; font-size: var(--ak-fs-sm); font-variant-numeric: tabular-nums; }
+
+/* ── 1. 表头：四字的在中间写 <wbr>（法术<wbr>抗性），keep-all 让它只在那里断——够宽时一行，不够时两行，不会一字一行。
+ *  外观同 .ak-table 的 thead th，这里照写一遍：没跑 JS 时表头行还在 tbody 里 ── */
+.se-head > th { padding: 8px 6px; background: var(--ak-bg-surface-2); border-bottom: 2px solid var(--ak-border-strong); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); text-align: center; vertical-align: bottom; word-break: keep-all; }
+.se-head > th.se-enemy { text-align: left; padding-left: 12px; }
+
+/* ── 2. 数值格 ── */
+.se-table td { padding: 8px 6px; text-align: center; white-space: nowrap; line-height: 1.3; }
+.se-table td.is-zero { color: var(--ak-fg-subtle); }   /* 0 与「—」压淡：一张表大半格是 0，有值的格先被看到 */
+.se-table :is(th, td).is-group-start { border-left: 1px solid var(--ak-border); }   /* 三组：生命 攻击 防御 法抗 ‖ 攻击间隔 移速 攻击半径 重量 ‖ 元素抗性 损伤抵抗 目标价值 */
+.se-table tr:not(.se-head):hover > :is(th, td) { background: var(--ak-bg-hover); }   /* .ak-table 只给 td 上悬停底色，行头跟上 */
+
+/* 本关数值（模板参数 敌人N生命值= 之类，651 个关卡页用到）：强调色粗体 + 右上角一枚三角，表下一行图例。
+ * 格子还带 title（悬停说明；模板可以把默认值写进去）、一段 .ak-sr-only 的「（本关数值）」给读屏器，data-sort-value 写纯数字，排序不受影响 */
+.se-table td.is-override { position: relative; color: var(--ak-accent); font-weight: 700; }
+.se-table td.is-override::after, .se-mark { content: ""; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent var(--ak-accent) transparent transparent; }
+.se-note { position: relative; margin: var(--ak-space-2) 0 0; padding-left: 14px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); line-height: 1.5; }
+.se-mark { top: .4em; right: auto; left: 0; }
+
+/* ── 3. 敌人格：头像 + 名字 + 标签；精英 / 领袖在左缘出色条（色值同敌人卡、敌人一览：精英橙、领袖红），标签把字写出来，不只靠颜色。
+ *  级别只在不是 0 时出标签（同名敌人常有两个级别：召唤物、二阶段）── */
+.se tr[data-rank="elite"] { --_rank: var(--ak-orange-500); --_rank-fg: var(--ak-orange-500); }
+.se tr[data-rank="boss"] { --_rank: var(--ak-red-700); --_rank-fg: var(--ak-red-500); }   /* 色条用敌人卡的深红；标签文字深红在暗色底上太暗，提一级 */
+.se-table th.se-enemy:not(.se-head > *) { padding: 6px 10px 6px 12px; text-align: left; font-weight: 400; box-shadow: inset 4px 0 0 var(--_rank, transparent); }
+.se-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+/* 头像外壳写死 50px：皮肤的 .mw-file-element { max-width:100% } 以外壳为参照，外壳若按内容收缩，图的最小宽度计 0，
+ * 十几列的表一放不下头像先被挤（现网 {{敌人头像}} 的 .enemyicon 在桌面上只剩 27px）。外壳定宽，参照就是确定的 50。
+ * 模板里：<span class="se-avatar">[[文件:头像_敌人_X.png|50px|link=X]]</span> */
+.se-avatar { flex: none; display: block; width: 50px; height: 50px; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
+.se-avatar img { display: block; width: 50px; height: 50px; max-width: none; object-fit: cover; }
+.se-body { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+/* 名字是 wikitext 的 [[X|显示名]]，<a> 上加不了类：规则挂在外层 span 上；颜色写到 :visited / :hover 上，压过宿主的 a:visited */
+.se-name { line-height: 1.3; }
+.se-name > a, .se-name > a:visited { color: var(--ak-link); text-decoration: none; }
+.se-name > a:is(:hover, :focus-visible) { color: var(--ak-accent); text-decoration: underline; }
+.se-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.se-tags:empty { display: none; }
+.ak-tag.se-rank { --_bg: transparent; --_fg: var(--_rank-fg); --_bd: var(--_rank-fg); }
+
+/* ── 4. 窄：一个敌人一张卡 ──
+ *  视口 <900 = 新皮肤正文栏 <810（640–899 无侧栏）与手机；更宽时正文栏至少 810（出侧栏的 1200 是 854），13 列放得下。
+ *  卡头 = 敌人格 + 右上角数量（×3）；下面 4 列属性格正好对上三组（4 · 4 · 3），每格上面是 data-label 写的属性名。
+ *  色条 + 细框同敌人卡（.ak-enemy--elite / --boss 的 border-image 直角拼接）。表头行藏掉，卡片里不能排序 ── */
+@media (max-width: 899px) {
+  .se-table.ak-table, .se-table > tbody { display: block; border: 0; background: none; }
+  .se-table > tbody { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--ak-space-2); }
+  .se-table tr.se-head { display: none; }
+  .se-table tr:not(.se-head) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: start; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+  .se-table tr[data-rank] { border-left-width: 4px; border-image: linear-gradient(to right, var(--_rank) 4px, var(--ak-border) 4px) 1 1 1 4; }
+  .se-table tr:not(.se-head):hover > :is(th, td) { background: none; }
+  .se-table th.se-enemy:not(.se-head > *) { grid-column: 1 / 4; padding: 10px; border: 0; box-shadow: none; }
+  .se-table td { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 10px; border: 0; border-top: 1px solid var(--ak-border-subtle); text-align: left; }
+  .se-table td::before { content: attr(data-label); font-size: var(--ak-fs-xs); font-weight: 400; color: var(--ak-fg-muted); }
+  .se-table td.is-group-start { border-left: 0; }
+  .se-table td.se-count { grid-column: 4; grid-row: 1; flex-direction: row; align-self: center; align-items: baseline; justify-content: flex-end; gap: 1px; padding: 10px; border: 0; font: 700 var(--ak-fs-h4)/1 var(--ak-font-body); color: var(--ak-fg); }
+  .se-table td.se-count.is-zero { color: var(--ak-fg-subtle); }
+  .se-table td.se-count::before { content: "×"; font-size: var(--ak-fs-sm); font-weight: 400; color: var(--ak-fg-muted); }
+}
+
+</style>
+</head>
+<body class="skin-arknights">
+<a class="ak-skip" href="#content">跳到内容</a>
+
+<!-- ═══ SVG sprite ═══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 4h18v16H3z"/><path fill="currentColor" d="M3 4h7v16H3z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 17V11a6 6 0 1 1 12 0v6l2 2H4l2-2zm4 4h4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9c0-4 3.6-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0-6v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M4.9 19.1 7 17m10-10 2.1-2.1"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 4h18v12H3zm5 16h8m-4-4v4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 20h4l11-11-4-4L4 16v4zM13 7l4 4"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5m4-1v5l3 2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zm16 0h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></symbol>
+  <symbol id="i-talk" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></symbol>
+  <!-- 页面动作簇 / 「更多」菜单用（皮肤里对应 OOUI 图标：star / link / articleRedirect / recentChanges / printer / upload / specialPages / reload / quotes / table / wikiText / move / lock / trash） -->
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 3.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.8l6.1-.7z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.5 1.5M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.5-1.5"/></symbol>
+  <symbol id="i-linkin" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12h12m-4-4 4 4-4 4M18 4h3v16h-3"/></symbol>
+  <symbol id="i-arrow-ne" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M7 17 17 7M9 7h8v8"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM6 11a6 6 0 0 0 12 0M12 17v4m-4 0h8"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 8V3h10v5M5 8h14a2 2 0 0 1 2 2v6h-4v-3H7v3H3v-6a2 2 0 0 1 2-2zm2 8v5h10v-5"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 16V4m-5 5 5-5 5 5M4 20h16"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 4v12m-5-5 5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 16h3l2-4V7H5v5h3zm9 0h3l2-4V7h-6v5h3z"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h18v14H3zm0 5h18M3 14h18M9 5v14"/></symbol>
+  <symbol id="i-source" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M8 4H5v16h3M16 4h3v16h-3M10 8l-2 4 2 4m4-8 2 4-2 4"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 2v20M2 12h20M9 5l3-3 3 3M9 19l3 3 3-3M5 9 2 12l3 3m14-6 3 3-3 3"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 11V8a5 5 0 0 1 10 0v3M4 11h16v10H4z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v6m4-6v6"/></symbol>
+  <!-- 用户菜单（#p-user-interface-preferences / #p-personal）：language / settings / watchlist / userContributions / logOut -->
+  <symbol id="i-lang" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h10M8 3v2m3 0c-1 4-3.5 7-7 9m1-6c1 3 3 5 6 6M13 21l4-10 4 10m-6.5-3h5"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-2-6h4l.6 2.4 2.1 1.2 2.4-.7 2 3.4-1.8 1.7v2.4l1.8 1.7-2 3.4-2.4-.7-2.1 1.2L14 21h-4l-.6-2.4-2.1-1.2-2.4.7-2-3.4 1.8-1.7v-2.4L2.9 8.9l2-3.4 2.4.7 2.1-1.2z"/></symbol>
+  <symbol id="i-watchlist" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h12M3 11h8M3 16h6m8-4 1.3 2.7 3 .4-2.2 2.1.5 3-2.6-1.4-2.6 1.4.5-3-2.2-2.1 3-.4z"/></symbol>
+  <symbol id="i-contribs" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h12M3 11h8M3 16h6m9-5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm-4.5 8c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 4H4v16h6m4-12 5 4-5 4m5-4H9"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 8v5m0-9v1"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3l10 18H2zm0 7v5m0 3v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 15l7-7 7 7"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 4v16l12-8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 4h4v16H6zm8 0h4v16h-4z"/></symbol>
+  <symbol id="i-empty" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10"/></symbol>
+</svg>
+
+<!-- ═══ HEADER ═══ -->
+<header class="ak-header">
+  <div class="ak-header__inner">
+    <a class="ak-header__logo" href="#">
+      <img src="assets/camp/rhodes.png" alt="">
+      <span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span>
+    </a>
+    <form class="ak-header__search ak-search" role="search" onsubmit="return false">
+      <svg class="ak-search__icon"><use href="#i-search"/></svg>
+      <input class="ak-input" type="search" placeholder="搜索 PRTS…" aria-label="搜索">
+      <span class="ak-search__kbd">/</span>
+    </form>
+    <button class="ak-btn ak-btn--icon ak-header__search-toggle ak-only-mobile" aria-label="搜索"><svg><use href="#i-search"/></svg></button>
+    <!-- 页眉不放站点级主导航（与侧栏「通用」组重复，导航只由侧栏承担）。<1120：工具（外观 / 通知 / 用户）收进 ⋮ 拉下的右对齐卡片；开合纯 CSS：checkbox 在前，卡片与汉堡在后 -->
+    <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
+    <div class="ak-header__screen" id="ak-nav-screen">
+      <div class="ak-header__tools">
+        <div class="ak-header__tool">
+          <span class="ak-header__tool-label" id="ak-theme-label">外观</span>
+          <div class="ak-theme-toggle" role="group" aria-labelledby="ak-theme-label">
+            <button data-theme="os" title="跟随系统"><svg><use href="#i-monitor"/></svg></button>
+            <button data-theme="light" title="档案模式（亮）"><svg><use href="#i-sun"/></svg></button>
+            <button data-theme="dark" title="终端模式（暗）"><svg><use href="#i-moon"/></svg></button>
+          </div>
+        </div>
+        <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
+        <!-- 用户菜单（MW #p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu 卡片。
+             卡片 = 身份抬头（a.ak-menu__head#pt-userpage：头像 + 用户名，整块链到用户页；没有头像时 .ak-avatar 里放 #i-user 图标）+ 两组门户（「个人工具」里不再重复用户页那一项）：「界面设置」#p-user-interface-preferences（ULS 的语言切换就在这里——侧栏不再有 Languages 组）· 「个人工具」#p-personal。
+             <1120 时这张卡在 ⋮ 面板里就地展开（chrome/responsive.css 已写），不再浮出。 -->
+        <div class="ak-dropdown ak-header__user-menu" id="ak-user-menu">
+          <details>
+            <summary class="ak-btn ak-btn--ghost ak-header__user" title="用户菜单"><span class="ak-avatar ak-avatar--sm"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span>Doctor</span></summary>
+            <div class="ak-menu ak-menu--right ak-header__user-card">
+              <a class="ak-menu__head" id="pt-userpage" href="#"><span class="ak-avatar"><img src="assets/avatar/char_002_amiya_1p.png" alt=""></span><span class="ak-menu__head-name">Doctor</span></a>
+              <nav class="ak-menu__group" id="p-user-interface-preferences" aria-label="界面设置">
+                <div class="ak-menu__label">界面设置</div>
+                <ul><li id="pt-uls"><a href="#"><svg class="ak-icon"><use href="#i-lang"/></svg><span>中文（中国大陆）</span></a></li></ul>
+              </nav>
+              <nav class="ak-menu__group" id="p-personal" aria-label="个人工具">
+                <div class="ak-menu__label">个人工具</div>
+                <ul>
+                  <li id="pt-mytalk"><a href="#"><svg class="ak-icon"><use href="#i-talk"/></svg><span>讨论</span></a></li>
+                  <li id="pt-preferences"><a href="#"><svg class="ak-icon"><use href="#i-gear"/></svg><span>参数设置</span></a></li>
+                  <li id="pt-watchlist"><a href="#"><svg class="ak-icon"><use href="#i-watchlist"/></svg><span>监视列表</span></a></li>
+                  <li id="pt-mycontris"><a href="#"><svg class="ak-icon"><use href="#i-contribs"/></svg><span>贡献</span></a></li>
+                  <li id="pt-logout"><a href="#"><svg class="ak-icon"><use href="#i-logout"/></svg><span>退出</span></a></li>
+                </ul>
+              </nav>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+    <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
+  </div>
+
+  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）「本页目录」（仅手机 ≤639；更宽时目录入口是正文右上角的按钮）：不单独成行，并进页眉那一行（CSS display:contents，DOM 不变；≥1120 整块不显示） -->
+  <div class="ak-local-nav">
+    <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
+    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle" title="本页目录"></label>
+  </div>
+</header>
+
+<!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 72px，各宽度相同；chrome/keyart.css 负外边距，DOM 顺序不变） -->
+<div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
+
+<div class="ak-layout">
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="ak-sidebar" id="ak-sidebar" aria-label="导航">
+    <div class="ak-sidebar__panel" id="mw-panel">
+    <div class="ak-portlet ak-portlet--collapsible" id="p-akds">
+      <h3 class="ak-portlet__title">PRTS Design 预览 · DEMO</h3>
+      <ul>
+        <li><a href="home.html">首页设计稿</a></li>
+        <li><a href="operators.html">干员一览（列表 / 筛选页）</a></li>
+        <li><a href="enemies.html">敌人一览（列表 / 筛选页）</a></li>
+        <li><a href="items.html">道具一览（列表 / 筛选页）</a></li>
+        <li><a href="operator.html">干员页样例（陈）</a></li>
+        <li><a href="recruit.html">公招计算（工具页）</a></li>
+        <li class="is-active"><a href="stage.html">关卡页（敌方情报）</a></li>
+        <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
+      </ul>
+    </div>
+    <!-- ↓ 与 prts.wiki 现网 #MenuSidebar 的原始输出结构一致：段落 = 分组标题；* 列表；'''粗体''' = 有子级的分组项；** 子项。
+         由 src/sidebar-tree.js 增强（li > ul 任意深度）：桌面分支只飞出、不就地展开；抽屉里多层展开 / 记忆，li.is-open 为作者默认展开，用户操作后以 localStorage 记忆为准。 -->
+    <div id="MenuSidebar">
+      <ul>
+        <li><a href="#">首页</a></li>
+        <li><a href="#">支持我们</a></li>
+        <li><a href="#">赞助者一览</a></li>
+        <li><a href="#">反馈与建议</a></li>
+      </ul>
+      <p>热门页面</p>
+      <ul>
+        <li><b>当前活动</b>
+          <ul><li><a href="#">奇象巡展</a></li><li><a href="#">SideStory「直到大地变成一颗酸橙」</a></li><li><a href="#">集成战略「沉沦者的黑流树海」</a></li><li><a href="#">生息演算「重启锚点」</a></li></ul>
+        </li>
+        <li><b>新增干员 <span class="ak-tag ak-tag--sm ak-tag--new">NEW</span></b>
+          <ul><li><a href="#">予愿安洁莉娜</a></li><li><a href="#">珊比</a></li><li><a href="#">嘉辛塔</a></li><li><a href="#">时隙</a></li></ul>
+        </li>
+        <li><a href="operators.html">干员一览</a></li>
+      </ul>
+      <p>菜单</p>
+      <ul>
+        <li class="is-open"><b>通用</b>
+          <ul><li><a href="operators.html">干员一览</a></li><li><a href="#">敌人一览</a></li><li><a href="#">道具一览</a></li><li><a href="#">后勤技能</a></li><li><a href="#">关卡一览</a></li><li><a href="#">剧情记录</a></li><li><a href="#">家具一览</a></li><li><a href="#">时装回廊</a></li><li><a href="#">采购中心</a></li><li><a href="#">卡池一览</a></li><li><a href="#">活动一览</a></li><li><a href="#">公招计算</a></li></ul>
+        </li>
+        <li><b>档案</b>
+          <ul><li><a href="#">画师一览</a></li><li><a href="#">配音一览</a></li><li><a href="#">分支一览</a></li><li><a href="#">干员密录</a></li><li><a href="#">干员模组</a></li><li><a href="#">干员编号</a></li><li><a href="#">角色真名</a></li><li><a href="#">干员预告</a></li><li><a href="#">干员专精</a></li><li><a href="#">干员剧情一览</a></li><li><a href="#">档案信息一览</a></li></ul>
+        </li>
+        <li><b>玩法</b>
+          <ul><li><a href="#">危机合约</a></li><li><a href="#">集成战略</a><ul><li><a href="#">傀影与猩红孤钻</a></li><li><a href="#">水月与深蓝之树</a></li><li><a href="#">探索者的银凇止境</a></li><li><a href="#">萨卡兹的无终奇语</a></li><li><a href="#">岁的界园志异</a></li><li><a href="#">沉沦者的黑流树海</a></li></ul></li><li><a href="#">保全派驻</a></li><li><a href="#">引航者试炼</a></li><li><a href="#">生息演算</a></li><li><a href="#">促融共竞</a></li><li><a href="#">矢量突破</a></li><li><a href="#">卫戍协议</a></li><li><a href="#">争锋频道</a></li><li><a href="#">试验玩法一览</a></li></ul>
+        </li>
+        <li><b>系统</b>
+          <ul><li><a href="#">基建</a></li><li><a href="#">任务列表</a></li><li><a href="#">邮件记录</a></li><li><a href="#">首页场景</a></li><li><a href="#">界面主题</a></li><li><a href="#">头像一览</a></li><li><a href="#">名片一览</a></li><li><a href="#">光荣之路</a></li><li><a href="#">情报处理室</a></li></ul>
+        </li>
+        <li><b>扩展</b>
+          <ul><li><a href="#">基础数据</a></li><li><a href="#">作战机制</a></li><li><a href="#">新人入门</a></li><li><a href="#">贴士一览</a></li><li><a href="#">词汇一览</a></li><li><a href="#">制作组通讯</a></li><li><a href="#">剧情角色一览</a></li><li><a href="#">游戏内容前瞻</a></li><li><a href="#">剧情资源概览</a></li><li><a href="#">各类信息汇总</a></li></ul>
+        </li>
+        <li><b>趣味</b>
+          <ul><li><a href="#">泰拉大典</a></li><li><a href="#">音乐鉴赏</a></li><li><a href="#">寻访模拟</a></li><li><a href="#">衍生作品</a></li></ul>
+        </li>
+        <li><a href="#">随机页面</a></li>
+      </ul>
+      <p>探索</p>
+      <ul class="mooncell-link"><li><a class="external text" href="https://fgo.wiki" target="_blank" rel="noopener">Mooncell主站</a></li></ul>
+      <ul>
+        <li><b>官方网站</b>
+          <ul><li><a href="#">明日方舟简中服官网</a></li><li><a href="#">塞壬唱片</a></li><li><a href="#">泰拉记事社</a></li><li><a href="#">明日方舟日服官网</a></li><li><a href="#">明日方舟美服官网</a></li><li><a href="#">明日方舟台服官网</a></li><li><a href="#">明日方舟韩服官网</a></li></ul>
+        </li>
+        <li><b>友情链接</b>
+          <ul><li><a href="#">少前百科GFwiki</a></li><li><a href="#">企鹅物流数据统计</a></li></ul>
+        </li>
+      </ul>
+      <p>管理与编辑</p>
+      <!-- 「特殊页面 / 上传文件」是工具箱里仅有的两条站点级链接：同 Citizen（moveUploadToSiteTools + addSiteTools）进侧栏站点导航而不是「更多」。
+           皮肤实现：从 TOOLBOX 拆出，在 #MenuSidebar 之后渲染成无标题门户 nav#p-site-tools（紧贴上一组，视觉上就是「管理与编辑」的延续；upload 仍由 MW 按权限决定是否输出）。 -->
+      <ul><li><a href="#">最近更改</a></li><li><a href="#">编辑指南</a></li><li><a href="#">模板一览</a></li><li><a href="#">贡献分数</a></li><li><a href="#">收支一览</a></li><li><a href="#">特殊贡献</a></li><li id="t-specialpages"><a href="#">特殊页面</a></li><li id="t-upload"><a href="#">上传文件</a></li></ul>
+      <!-- 现网 MenuSidebar 末尾的「Languages」组（三个 onclick 切语言的内联脚本链接）与「工具#vmsTB / #MSToolbox」组在新皮肤下都退役：
+           语言切换统一在页眉用户菜单「界面设置」（ULS，#p-user-interface-preferences）；工具箱整组搬进标题行动作簇的「更多」（#p-tb）。侧栏只剩站点导航。 -->
+    </div>
+    </div>
+    <div class="ak-sidebar__foot">MediaWiki 1.43 · Skin: Arknights 0.1<br>Theme tokens: <code>--ak-*</code><br>侧栏：悬停分组可预览，点击/键盘展开并记忆</div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="ak-main" id="content">
+    <div class="ak-main__inner">
+      <header class="ak-page-header">
+        <div class="ak-page-header__top">
+          <ul class="ak-breadcrumb ak-m-0"><li><a href="#">首页</a></li><li><a href="#">关卡一览</a></li><li><a href="#">主线关卡</a></li><li aria-current="page">A-3 最后的炎魔</li></ul>
+          <div class="mw-indicators"><span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">设计稿</span></div>
+        </div>
+        <!-- ═══ 标题行 ═══ h1 + 页面动作簇同一行（Citizen 式），不再有整条下划线页签。
+             簇 = MW 的菜单按原顺序输出：associated-pages（页面 / 讨论）· views（阅读 / 历史 / 编辑 / ★）· [variants] · 更多（actions + TOOLBOX）；
+             显示顺序由 CSS order 定：讨论 → 历史 → 编辑 → ★ → 更多。
+             标题末尾的链条图标 a.ak-page-heading__shortlink =「复制短链接」：现网侧栏首组的那一行搬到这里（皮肤配了 $wgArknightsShortUrl 才输出，href 就是短链接，点击复制、图标变对勾一下）。
+             li.selected（当前命名空间页签「页面」、「阅读」）只留给读屏器：它们只在不是当前态时才是一个动作——讨论页上显示「页面」当返回、历史 / diff 页上显示「阅读」当返回。
+             「编辑」是簇里唯一的主色实底（#ca-edit / #ca-ve-edit）；不可编辑时这一格是「查看源代码」（#ca-viewsource），跟讨论 / 查看历史同一种幽灵按钮。
+             「更多」= .ak-menu 卡片里两组门户：操作 #p-cactions · 工具 #p-tb（整个工具箱从侧栏搬来，id 不变，addPortletLink('p-tb') 照常）。
+             工具箱里的「特殊页面 / 上传文件」不进这里——它们是站点级的，同 Citizen 放进侧栏站点导航（见侧栏「管理与编辑」末尾）。
+             桌面带「更多」二字；<640 只留 ⋯，整簇只留图标（文字进 sr-only，title / accesskey 不变）。 -->
+        <div class="ak-page-header__row">
+          <h1 id="firstHeading" class="ak-page-header__title">A-3 最后的炎魔<a class="ak-page-heading__shortlink" href="#" title="复制本页面的短链接" aria-label="复制短链接"><svg class="ak-icon" aria-hidden="true"><use href="#i-link"/></svg></a><span class="ak-en">敌方情报设计稿</span></h1>
+          <div class="ak-page-tools" id="ak-page-tools">
+            <ul class="ak-page-tabs" id="p-associated-pages">
+              <li class="selected" id="ca-nstab-main"><a href="#" title="查看内容页面"><svg class="ak-icon"><use href="#i-book"/></svg><span>页面</span></a></li>
+              <li id="ca-talk"><a href="#" title="有关内容页面的讨论"><svg class="ak-icon"><use href="#i-talk"/></svg><span>讨论</span></a></li>
+            </ul>
+            <ul class="ak-page-tabs" id="p-views">
+              <li class="selected" id="ca-view"><a href="#"><svg class="ak-icon"><use href="#i-book"/></svg><span>阅读</span></a></li>
+              <li id="ca-history"><a href="#" title="该页面过去的修订"><svg class="ak-icon"><use href="#i-history"/></svg><span>查看历史</span></a></li>
+              <li id="ca-edit"><a href="#" title="编辑本页面"><svg class="ak-icon"><use href="#i-edit"/></svg><span>编辑</span></a></li>
+              <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+            </ul>
+            <div class="ak-dropdown ak-page-tools__more">
+              <details>
+                <summary class="ak-page-tools__btn" title="更多"><svg class="ak-icon"><use href="#i-more"/></svg><span>更多</span></summary>
+                <div class="ak-menu ak-menu--right ak-page-tools__card">
+                  <nav class="ak-menu__group" id="p-cactions" aria-label="操作">
+                    <div class="ak-menu__label">操作</div>
+                    <ul>
+                      <li id="ca-move"><a href="#"><svg class="ak-icon"><use href="#i-move"/></svg><span>移动</span></a></li>
+                      <li id="ca-protect"><a href="#"><svg class="ak-icon"><use href="#i-lock"/></svg><span>保护</span></a></li>
+                      <li id="ca-delete"><a href="#"><svg class="ak-icon"><use href="#i-trash"/></svg><span>删除</span></a></li>
+                      <li id="ca-purge"><a href="#"><svg class="ak-icon"><use href="#i-refresh"/></svg><span>刷新</span></a></li>
+                    </ul>
+                  </nav>
+                  <nav class="ak-menu__group" id="p-tb" aria-label="工具">
+                    <div class="ak-menu__label">工具</div>
+                    <ul>
+                      <li id="t-whatlinkshere"><a href="#"><svg class="ak-icon"><use href="#i-linkin"/></svg><span>链入页面</span></a></li>
+                      <li id="t-recentchangeslinked"><a href="#"><svg class="ak-icon"><use href="#i-list"/></svg><span>相关更改</span></a></li>
+                      <li id="t-permalink"><a href="#"><svg class="ak-icon"><use href="#i-link"/></svg><span>固定链接</span></a></li>
+                      <li id="t-info"><a href="#"><svg class="ak-icon"><use href="#i-info"/></svg><span>页面信息</span></a></li>
+                      <li id="t-cargopagevalueslink"><a href="#"><svg class="ak-icon"><use href="#i-table"/></svg><span>Cargo 数据</span></a></li>
+                      <li id="t-cite"><a href="#"><svg class="ak-icon"><use href="#i-quote"/></svg><span>引用此页</span></a></li>
+                      <li id="t-print"><a href="#"><svg class="ak-icon"><use href="#i-print"/></svg><span>打印版本</span></a></li>
+                    </ul>
+                  </nav>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨；640–1400 收成右上角一枚按钮（平时停在纸张角上，滚过后贴着页眉）+ 从它下面拉出的浮层；手机（≤639）入口在页眉里（上面 .ak-local-nav 的第二个 label），浮层贴页眉下沿。开合是纯 CSS 的 :checked ~ -->
+      <div class="ak-toc-dock">
+        <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb" aria-label="本页目录" aria-controls="ak-toc">
+        <label class="ak-toc-btn" for="ak-toc-toggle" title="本页目录"></label>
+        <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+          <a class="ak-toc__top" href="#"><svg class="ak-icon"><use href="#i-up"/></svg>回到顶部</a>
+          <div class="ak-toc__inner">
+            <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
+            <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
+            <ul class="ak-toc__list" data-auto-toc></ul>
+          </div>
+        </aside>
+      </div>
+
+      <div class="ak-body" id="bodyContent">
+      <!-- 两层照 MW 原样：#mw-content-text.mw-body-content > .mw-parser-output。现网的 Widget / Gadget 会顺着这个嵌套找容器（CharinfoV2 量「舞台的祖父元素」的宽度定手机版缩放），并成一层就量到带内边距的 .ak-body 上去了 -->
+      <div class="mw-body-content" id="mw-content-text"><div class="mw-parser-output">
+
+<div class="ak-cbox ak-cbox--tip">
+  <span class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></span>
+  <div class="ak-cbox__body">关卡页「敌方情报」表（<code>模板:敌方情报</code>，3360 个关卡页）的单页设计稿，只画这一节。数据取自现网 <a href="https://prts.wiki/w/A-3_%E6%9C%80%E5%90%8E%E7%9A%84%E7%82%8E%E9%AD%94">A-3 最后的炎魔</a> 与 <a href="https://prts.wiki/w/1-7_%E6%9A%B4%E5%90%9B">1-7 暴君</a>，可对照着看。窗口拉窄（视口 &lt;900）看卡片。</div>
+</div>
+
+<h2 id="敌方情报">敌方情报</h2>
+<div class="se">
+  <table class="ak-table se-table sortable">
+    <tbody>
+    <tr class="se-head">
+      <th scope="col" class="se-enemy">敌人</th>
+      <th scope="col">数量</th>
+      <th scope="col" class="is-group-start">生命值</th>
+      <th scope="col">攻击力</th>
+      <th scope="col">防御力</th>
+      <th scope="col">法术<wbr>抗性</th>
+      <th scope="col" class="is-group-start">攻击<wbr>间隔</th>
+      <th scope="col">移动<wbr>速度</th>
+      <th scope="col">攻击<wbr>半径</th>
+      <th scope="col">重量<wbr>等级</th>
+      <th scope="col" class="is-group-start">元素<wbr>抗性</th>
+      <th scope="col">损伤<wbr>抵抗</th>
+      <th scope="col">目标<wbr>价值</th>
+    </tr>
+    <tr data-rank="boss">
+      <th scope="row" class="se-enemy" data-sort-value="1"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/b/ba/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB.png" srcset="https://media.prts.wiki/thumb/b/ba/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E7%86%94%E6%88%88%E8%80%85%EF%BC%8C%E6%8A%A4%E7%8E%8B%E4%BD%99%E7%81%AB">熔戈者，护王余火</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm se-rank">领袖</span><span class="ak-tag ak-tag--sm">级别 1</span></span></span></div></th>
+      <td class="se-count" data-label="数量">1</td>
+      <td class="is-group-start" data-label="生命值">70000</td>
+      <td data-label="攻击力">2200</td>
+      <td data-label="防御力">1500</td>
+      <td data-label="法术抗性">50</td>
+      <td class="is-group-start" data-label="攻击间隔">4.5</td>
+      <td data-label="移动速度">0.4</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">8</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">5</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="2"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E7%BC%A0%E8%BA%AB%E6%81%B6%E7%84%B0" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/50px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png" srcset="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/100px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E7%BC%A0%E8%BA%AB%E6%81%B6%E7%84%B0">缠身恶焰</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">8000</td>
+      <td data-label="攻击力">100</td>
+      <td data-label="防御力">750</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">1</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="3"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E7%BC%A0%E8%BA%AB%E6%81%B6%E7%84%B0" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/50px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png" srcset="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/100px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E7%BC%A0%E8%BA%AB%E6%81%B6%E7%84%B0">缠身恶焰</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm">级别 1</span></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">8000</td>
+      <td data-label="攻击力">100</td>
+      <td data-label="防御力">750</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">1</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="4"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E5%87%9D%E7%BC%A9%E7%83%AD%E5%8A%9B" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/50px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png" srcset="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/100px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E5%87%9D%E7%BC%A9%E7%83%AD%E5%8A%9B">凝缩热力</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">3000</td>
+      <td data-label="攻击力">100</td>
+      <td data-label="防御力">50</td>
+      <td data-label="法术抗性">80</td>
+      <td class="is-group-start" data-label="攻击间隔">1</td>
+      <td data-label="移动速度">0.25</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="5"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E5%87%9D%E7%BC%A9%E7%83%AD%E5%8A%9B" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/50px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png" srcset="https://media.prts.wiki/thumb/f/fb/%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png/100px-%E6%97%A0%E5%9B%BE%E7%89%87%E5%8D%A0%E4%BD%8D%E7%AC%A6.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E5%87%9D%E7%BC%A9%E7%83%AD%E5%8A%9B">凝缩热力</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm">级别 1</span></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">5000</td>
+      <td data-label="攻击力">100</td>
+      <td data-label="防御力">50</td>
+      <td data-label="法术抗性">80</td>
+      <td class="is-group-start" data-label="攻击间隔">1</td>
+      <td data-label="移动速度">0.25</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr data-rank="elite">
+      <th scope="row" class="se-enemy" data-sort-value="6"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/3/36/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E.png" srcset="https://media.prts.wiki/thumb/3/36/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E5%86%8D%E9%93%B8%E6%89%88%E4%BB%8E">再铸扈从</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm se-rank">精英</span></span></span></div></th>
+      <td class="se-count is-zero" data-label="数量">0</td>
+      <td class="is-group-start" data-label="生命值">50000</td>
+      <td data-label="攻击力">1750</td>
+      <td data-label="防御力">2000</td>
+      <td data-label="法术抗性">40</td>
+      <td class="is-group-start" data-label="攻击间隔">4</td>
+      <td data-label="移动速度">0.5</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">4</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr data-rank="elite">
+      <th scope="row" class="se-enemy" data-sort-value="7"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/4/4e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1.png" srcset="https://media.prts.wiki/thumb/4/4e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%BD%B1%E5%88%83%E7%B2%BE%E8%8B%B1">深池伙友影刃精英</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm se-rank">精英</span></span></span></div></th>
+      <td class="se-count" data-label="数量">3</td>
+      <td class="is-group-start is-override" data-label="生命值" data-sort-value="40000" title="本关数值，与敌人默认数值不同">40000<span class="ak-sr-only">（本关数值）</span></td>
+      <td class="is-override" data-label="攻击力" data-sort-value="700" title="本关数值，与敌人默认数值不同">700<span class="ak-sr-only">（本关数值）</span></td>
+      <td data-label="防御力">550</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2.1</td>
+      <td data-label="移动速度">0.8</td>
+      <td data-label="攻击半径">1.4</td>
+      <td data-label="重量等级">2</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr data-rank="elite">
+      <th scope="row" class="se-enemy" data-sort-value="8"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/9/95/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1.png" srcset="https://media.prts.wiki/thumb/9/95/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%B7%B1%E6%B1%A0%E4%BC%99%E5%8F%8B%E5%8D%AB%E9%98%9F%E7%B2%BE%E8%8B%B1">深池伙友卫队精英</a></span><span class="se-tags"><span class="ak-tag ak-tag--sm se-rank">精英</span></span></span></div></th>
+      <td class="se-count" data-label="数量">3</td>
+      <td class="is-group-start is-override" data-label="生命值" data-sort-value="60000" title="本关数值，与敌人默认数值不同">60000<span class="ak-sr-only">（本关数值）</span></td>
+      <td class="is-override" data-label="攻击力" data-sort-value="2000" title="本关数值，与敌人默认数值不同">2000<span class="ak-sr-only">（本关数值）</span></td>
+      <td class="is-override" data-label="防御力" data-sort-value="2000" title="本关数值，与敌人默认数值不同">2000<span class="ak-sr-only">（本关数值）</span></td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">4</td>
+      <td data-label="移动速度">0.8</td>
+      <td data-label="攻击半径">1.4</td>
+      <td data-label="重量等级">5</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="9"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/7/7b/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88.png" srcset="https://media.prts.wiki/thumb/7/7b/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E5%88%80%E6%9C%AF%E5%B8%88">萨卡兹刀术师</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">4</td>
+      <td class="is-group-start" data-label="生命值">4000</td>
+      <td data-label="攻击力">370</td>
+      <td data-label="防御力">100</td>
+      <td data-label="法术抗性">50</td>
+      <td class="is-group-start" data-label="攻击间隔">2.5</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">1</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    </tbody>
+  </table>
+  <p class="se-note"><span class="se-mark" aria-hidden="true"></span>本关数值：与敌人页的默认数值不同。</p>
+</div>
+
+<h2 id="普通关卡">普通关卡的样子</h2>
+<p>多数关卡全是普通敌人、没有改过数值（<a href="https://prts.wiki/w/1-7_%E6%9A%B4%E5%90%9B">1-7 暴君</a>）：</p>
+<div class="se">
+  <table class="ak-table se-table sortable">
+    <tbody>
+    <tr class="se-head">
+      <th scope="col" class="se-enemy">敌人</th>
+      <th scope="col">数量</th>
+      <th scope="col" class="is-group-start">生命值</th>
+      <th scope="col">攻击力</th>
+      <th scope="col">防御力</th>
+      <th scope="col">法术<wbr>抗性</th>
+      <th scope="col" class="is-group-start">攻击<wbr>间隔</th>
+      <th scope="col">移动<wbr>速度</th>
+      <th scope="col">攻击<wbr>半径</th>
+      <th scope="col">重量<wbr>等级</th>
+      <th scope="col" class="is-group-start">元素<wbr>抗性</th>
+      <th scope="col">损伤<wbr>抵抗</th>
+      <th scope="col">目标<wbr>价值</th>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="1"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%9A%B4%E5%BE%92" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/e/ee/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9A%B4%E5%BE%92.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9A%B4%E5%BE%92.png" srcset="https://media.prts.wiki/thumb/e/ee/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9A%B4%E5%BE%92.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9A%B4%E5%BE%92.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%9A%B4%E5%BE%92">暴徒</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">4</td>
+      <td class="is-group-start" data-label="生命值">1700</td>
+      <td data-label="攻击力">250</td>
+      <td data-label="防御力">50</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2</td>
+      <td data-label="移动速度">1.1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="2"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/2/2c/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85.png" srcset="https://media.prts.wiki/thumb/2/2c/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E9%B8%A1%E5%B0%BE%E9%85%92%E6%8A%95%E6%8E%B7%E8%80%85">鸡尾酒投掷者</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">4</td>
+      <td class="is-group-start" data-label="生命值">1550</td>
+      <td data-label="攻击力">180</td>
+      <td data-label="防御力">50</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2.7</td>
+      <td data-label="移动速度">1</td>
+      <td data-label="攻击半径">1.75</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="3"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E5%A3%AB%E5%85%B5" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/3/34/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%A3%AB%E5%85%B5.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%A3%AB%E5%85%B5.png" srcset="https://media.prts.wiki/thumb/3/34/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%A3%AB%E5%85%B5.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%A3%AB%E5%85%B5.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E5%A3%AB%E5%85%B5">士兵</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">7</td>
+      <td class="is-group-start" data-label="生命值">1650</td>
+      <td data-label="攻击力">200</td>
+      <td data-label="防御力">100</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2</td>
+      <td data-label="移动速度">1.1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">1</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="4"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/f/f9/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5.png" srcset="https://media.prts.wiki/thumb/f/f9/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%9C%BA%E5%8A%A8%E7%9B%BE%E5%85%B5">机动盾兵</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">1</td>
+      <td class="is-group-start" data-label="生命值">2050</td>
+      <td data-label="攻击力">240</td>
+      <td data-label="防御力">250</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">2</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">1</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="5"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/b/b6/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1.png" srcset="https://media.prts.wiki/thumb/b/b6/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB%C2%B7%CE%B1">源石虫·α</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">23</td>
+      <td class="is-group-start" data-label="生命值">1050</td>
+      <td data-label="攻击力">185</td>
+      <td class="is-zero" data-label="防御力">0</td>
+      <td class="is-zero" data-label="法术抗性">0</td>
+      <td class="is-group-start" data-label="攻击间隔">1.7</td>
+      <td data-label="移动速度">1</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td class="is-zero" data-label="重量等级">0</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    <tr>
+      <th scope="row" class="se-enemy" data-sort-value="6"><div class="se-id"><span class="se-avatar"><span typeof="mw:File"><a href="https://prts.wiki/w/%E6%8B%BE%E8%8D%92%E8%80%85" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/6/64/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%8B%BE%E8%8D%92%E8%80%85.png/50px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%8B%BE%E8%8D%92%E8%80%85.png" srcset="https://media.prts.wiki/thumb/6/64/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%8B%BE%E8%8D%92%E8%80%85.png/100px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%8B%BE%E8%8D%92%E8%80%85.png 2x" width="50" height="50" class="mw-file-element" alt="" loading="lazy"></a></span></span><span class="se-body"><span class="se-name"><a href="https://prts.wiki/w/%E6%8B%BE%E8%8D%92%E8%80%85">拾荒者</a></span><span class="se-tags"></span></span></div></th>
+      <td class="se-count" data-label="数量">2</td>
+      <td class="is-group-start" data-label="生命值">5000</td>
+      <td data-label="攻击力">500</td>
+      <td data-label="防御力">50</td>
+      <td data-label="法术抗性">20</td>
+      <td class="is-group-start" data-label="攻击间隔">3</td>
+      <td data-label="移动速度">0.8</td>
+      <td class="is-zero" data-label="攻击半径">—</td>
+      <td data-label="重量等级">2</td>
+      <td class="is-group-start is-zero" data-label="元素抗性">0</td>
+      <td class="is-zero" data-label="损伤抵抗">0</td>
+      <td data-label="目标价值">1</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+      </div></div><!-- /.mw-parser-output /.mw-body-content -->
+      <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2026年10月4日 (六) 22:40。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
+      </div><!-- /.ak-body -->
+      <div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="#" title="特殊:页面分类">分类</a>：​<ul><li><a href="#">关卡</a></li><li><a href="#">主线关卡</a></li></ul></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="ak-footer">
+  <div class="ak-footer__inner">
+    <div class="ak-footer__brand"><span class="ak-header__wordmark">PRTS<small>ARKNIGHTS WIKI</small></span><p>玩家自建的明日方舟中文维基。本站与上海鹰角网络科技有限公司无隶属关系。游戏内素材版权归鹰角网络所有。</p></div>
+    <div class="ak-footer__col"><h4>浏览</h4><ul><li><a href="#">干员</a></li><li><a href="#">敌人</a></li><li><a href="#">关卡</a></li><li><a href="#">道具</a></li></ul></div>
+    <div class="ak-footer__col"><h4>参与</h4><ul><li><a href="#">编辑指南</a></li><li><a href="#">模板文档</a></li><li><a href="#">最近更改</a></li><li><a href="#">社区门户</a></li></ul></div>
+    <div class="ak-footer__col"><h4>关于</h4><ul><li><a href="#">关于 PRTS</a></li><li><a href="#">免责声明</a></li><li><a href="#">隐私政策</a></li><li><a href="#">API</a></li></ul></div>
+  </div>
+  <!-- 底栏：左文字 + 右侧 $wgFooterIcons 徽章（结构与 prts.wiki 现网 #footer-icons 完全一致，含 MW 加的 cdx-button 假按钮类与站点配置里的内联 margin） -->
+  <div class="ak-footer__bottom">
+    <div class="ak-footer__bottom-text"><span>© 2019–2026 PRTS.wiki · 文本 CC BY-NC-SA 4.0</span><span class="ak-en">Skin Arknights · MediaWiki 1.43</span></div>
+    <ul class="ak-footer__icons noprint" id="footer-icons">
+      <!-- 顺序 = $wgFooterIcons 的键序：站点徽章（原图）在前，通用徽章用白描版（badge/mono/），许可放最后 -->
+      <li id="footer-sponsorsico"><a href="https://project.mooncell.wiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mooncell.png" alt="a Mooncell project" height="31" width="88" loading="lazy"></a><a href="https://www.horain.net/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/horain.png" alt="horain" style="margin-left: 5px" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-poweredbyico"><a href="https://www.mediawiki.org/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/mediawiki.svg" alt="Powered by MediaWiki" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-poweredbysmwico"><a href="https://www.semantic-mediawiki.org/wiki/Semantic_MediaWiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/smw.svg" alt="Powered by Semantic MediaWiki" class="smw-footer" width="88" height="31" loading="lazy"></a></li>
+      <li id="footer-copyrightico"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled" target="_blank" rel="noopener"><img src="assets/badge/mono/cc-by-nc-sa.svg" alt="知识共享署名-非商业性使用-相同方式共享" width="88" height="31" loading="lazy"></a></li>
+    </ul>
+  </div>
+  <span class="ak-watermark">PRTS</span>
+</footer>
+<button class="ak-fab" aria-label="回到顶部"><svg width="18" height="18"><use href="#i-up"/></svg></button>
+<script src="../src/sidebar-tree.js"></script>
+<script src="../src/search-palette.js"></script>
+<script src="preview.js"></script>
+<script src="search-mock.js"></script>
+</body>
+</html>
