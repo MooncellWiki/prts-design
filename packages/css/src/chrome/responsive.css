@@ -1,6 +1,7 @@
 /*! PRTS Design · chrome/responsive.css — Responsive 断点（各块的响应式规则集中在这里，顺序敏感，暂不拆） · 依赖：tokens.css · components/ */
 /* ═══ Responsive ═══ */
 /* < 1400：右侧导轨收起 —— 目录收成一枚独立的按钮 + 从它下面拉出的浮层（结构与理由见 toc.css）。页眉不受影响：1120–1400 与 ≥1400 是同一套三列网格。
+ *  手机（≤639）不走这一套：入口仍在页眉那一行、浮层贴页眉下沿，见最下面那一档。
  *  .ak-toc-dock 是紧跟页面标题的一条零高度粘性锚：平时落在正文纸张顶边，滚过之后停在页眉下沿再往下 space-3 处；按钮与浮层都绝对定位在它里面。
  *  · 纵向：按钮顶边就是 dock（top:0）——平时与纸张的上框线平齐，不往纸里缩一截；滚过之后与页眉之间留的那道缝写在 dock 的粘性 top 上；
  *  · 横向：--_r 把按钮右缘对到回到顶部 .ak-fab 的那一列（离视口右缘 space-5；dock 的右缘在 gutter 线上，所以是个负值），浮层右缘同按钮；
@@ -19,7 +20,7 @@
    * 图标是方点列表：三个 4px 方点（同页眉 ⋮ 的方点）+ 横线，CSS 画（::before + mask，模板不用加图标）。不用 i-list（三条线，一眼读成汉堡菜单），也不用缩进的大纲图形（20px 下像「右对齐」）。
    * 透明边框：强制色模式下背景被抹平，靠它显出按钮的轮廓 */
   .ak-toc-btn { position: absolute; top: 0; right: var(--_r); display: grid; place-items: center; width: 44px; height: 44px; box-sizing: border-box; border: 1px solid transparent; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); box-shadow: var(--ak-shadow-md); cursor: pointer; -webkit-user-select: none; user-select: none; transition: background var(--ak-dur-normal) var(--ak-ease), color var(--ak-dur-normal) var(--ak-ease); }
-  .ak-toc-btn::before { content: ""; width: 20px; height: 20px; background: currentColor;
+  .ak-toc-btn::before, .ak-local-nav__toc::before { content: ""; flex: none; width: 20px; height: 20px; background: currentColor;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat;
             mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat; }
   .ak-toc-cb:checked ~ .ak-toc-btn { background: var(--ak-accent); color: var(--ak-accent-fg); }
@@ -51,9 +52,11 @@
 /* 同样紧跟：强制色下 background 会被抹成 Canvas，用底色 + mask 画的目录图标就没了——改成系统文字色，开着时 Highlight（主色实底同样被抹） */
 @media (max-width: 1400px) and (forced-colors: active) {
   .ak-toc-btn { border-color: CanvasText; }
-  .ak-toc-btn::before { forced-color-adjust: none; background: CanvasText; }
+  .ak-toc-btn::before, .ak-local-nav__toc::before { forced-color-adjust: none; background: CanvasText; }
   .ak-toc-cb:checked ~ .ak-toc-btn { border-color: Highlight; }
   .ak-toc-cb:checked ~ .ak-toc-btn::before { background: Highlight; }
+  :root.ak-toc-open .ak-local-nav__toc::before { background: Highlight; }
+  body:has(.ak-toc-cb:checked) .ak-local-nav__toc::before { background: Highlight; }
 }
 @media (max-width: 1119px) {
   .ak-fab { display: none; }   /* 回到顶部只留目录浮层首项那一个：右侧已经有一枚目录按钮，不再多浮一枚 */
@@ -113,7 +116,7 @@
 @media (max-width: 1119px) and (prefers-reduced-motion: reduce) { .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
 @media (max-width: 639px) {
   /* gutter 16、页眉高 52、标题档收一级、大区块间隔 24：都是令牌的窄屏值（tokens.css 的「窄屏」块，源 = packages/tokens/src/functional/compact.json5），这里不再覆盖 */
-  /* 页眉这一行全是图标：◧ 菜单 · 品牌 ……… 搜索 · ⋮ 工具（一行的排法见 <1120 那一档） */
+  /* 页眉这一行全是图标：◧ 菜单 · 品牌 ……… 目录 · 搜索 · ⋮ 工具（一行的排法见 <1120 那一档）；「本页目录」排到搜索之前 */
   :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6, :target) { scroll-margin-top: calc(var(--ak-header-h) + 8px); }
   .ak-header__logo img { height: 24px; }
   .ak-header__wordmark { font-size: 17px; }
@@ -121,8 +124,18 @@
   .ak-header__search { display: none; }   /* 手机：搜索收成这一行里的图标按钮（.ak-header__search-toggle），同样打开悬浮面板 */
   .ak-page-heading { padding-left: var(--ak-space-3); }
   .ak-body { padding: var(--ak-space-4) var(--ak-space-3); border-left: 0; border-right: 0; margin: 0 calc(-1 * var(--ak-gutter)); }
-  .ak-toc-dock { --_r: 0px; }   /* 目录按钮右缘收到 gutter 线上：这一档没有 .ak-fab 可对齐，浮层又是拉满的——两者右缘对齐 */
-  .ak-toc { left: 0; width: auto; }   /* 手机上目录浮层拉满 dock（= 视口左右各留一个 gutter，VitePress 的 left/right:16px） */
+  /* 手机上目录入口留在页眉那一行，不用浮在正文上的按钮（44px 的方块在 390 宽的屏上压住正文第一行的行尾，滚动时一直挡着右上角）：
+   *  .ak-local-nav 里的第二个 label[for=ak-toc-toggle]（.ak-local-nav__toc，只在这一档显示）开合的是 dock 里同一个 checkbox。
+   *  同 order 按 DOM 先后，排在品牌之后、搜索之前；只有图标（方点列表，画法同目录按钮，见 <1400 那一档），开着时变活动主色。
+   *  它与 checkbox 不是兄弟，状态联动同回到顶部的让位：JS 镜像出的 html.ak-toc-open 为主，无 JS 时 body:has() 桥接（两条分开写） */
+  .ak-toc-btn { display: none; }
+  .ak-local-nav__toc { display: inline-flex; order: -1; width: 40px; padding: 0; gap: 0; justify-content: center; }
+  :root.ak-toc-open .ak-local-nav__toc { color: var(--ak-accent); }
+  body:has(.ak-toc-cb:checked) .ak-local-nav__toc { color: var(--ak-accent); }
+  body:has(.ak-toc-cb:focus-visible) .ak-local-nav__toc { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+  /* 浮层：固定在页眉下沿、拉满可用宽度（左右各留一个 gutter，VitePress 的 left/right:16px），不跟 dock 走——dock 在这一档只剩下托着 checkbox
+   * （它粘在页眉下面，checkbox 始终在视口里：点页眉里的 label 时焦点落到 checkbox 上，不会把页面滚回正文顶部） */
+  .ak-toc { position: fixed; top: var(--ak-header-h); left: var(--ak-gutter); right: var(--ak-gutter); width: auto; max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-4)); max-height: calc(100dvh - var(--ak-header-h) - var(--ak-space-4)); }
   .ak-toc__inner { overscroll-behavior: contain; }   /* 这一档开着时页面是锁住的（JS）：内滚到头不把页面带着走（iOS 橡皮筋） */
   /* 动作簇只留图标：文字进 sr-only（title / accesskey 不变），「更多」只剩 ⋯；标题很长时整簇换到标题下方、靠左 */
   .ak-page-header__row { align-items: flex-start; }

@@ -90,9 +90,10 @@
     <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">{{msg-akds-nav-screen}}</span></label>
   </div>
 
-  {{! 「菜单」（<1120）：不单独成行，并进页眉那一行（CSS display:contents，DOM 不变；≥1120 整块不显示）。页眉各宽度都只有一行、始终贴顶 }}
+  {{! 「菜单」（<1120）「本页目录」（仅手机 ≤639；更宽时目录入口是正文右上角的按钮）：不单独成行，并进页眉那一行（CSS display:contents，DOM 不变；≥1120 整块不显示）。页眉各宽度都只有一行、始终贴顶 }}
   <div class="ak-local-nav">
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon" aria-hidden="true"><use href="#i-menu"/></svg>{{msg-akds-menu}}</button>
+    {{#data-toc}}<label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle" title="{{msg-akds-toc-title}}"></label>{{/data-toc}}
   </div>
 </header>
 
@@ -130,7 +131,7 @@
           {{#data-portlets.data-variants}}<ul class="ak-page-tabs" id="{{id}}">{{{html-items}}}</ul>{{/data-portlets.data-variants}}
         </div>
       </header>
-      {{! 目录：紧跟页面标题。≥1400 由 CSS 抬进 .ak-main 右侧导轨（粘性）；<1400 收成右上角一枚按钮（label.ak-toc-btn，平时停在纸张角上、滚过后贴着页眉）+ 从它下面拉出的浮层。
+      {{! 目录：紧跟页面标题。≥1400 由 CSS 抬进 .ak-main 右侧导轨（粘性）；640–1400 收成右上角一枚按钮（label.ak-toc-btn，平时停在纸张角上、滚过后贴着页眉）+ 从它下面拉出的浮层；手机（≤639）入口是页眉里那个 label.ak-local-nav__toc，浮层贴页眉下沿。
           开关、按钮、浮层三者是兄弟：开合是纯 CSS 的 :checked ~ }}
       {{#data-toc}}
       <div class="ak-toc-dock">

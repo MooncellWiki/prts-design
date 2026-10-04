@@ -123,9 +123,10 @@
     <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
   </div>
 
-  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）：不单独成行，并进页眉那一行（CSS display:contents，DOM 不变；≥1120 整块不显示） -->
+  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）「本页目录」（仅手机 ≤639；更宽时目录入口是正文右上角的按钮）：不单独成行，并进页眉那一行（CSS display:contents，DOM 不变；≥1120 整块不显示） -->
   <div class="ak-local-nav">
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
+    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle" title="本页目录"></label>
   </div>
 </header>
 
@@ -267,7 +268,7 @@
         </div>
       </header>
 
-      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨；<1400 收成右上角一枚按钮（平时停在纸张角上，滚过后贴着页眉）+ 从它下面拉出的浮层，开合是纯 CSS 的 :checked ~ -->
+      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨；640–1400 收成右上角一枚按钮（平时停在纸张角上，滚过后贴着页眉）+ 从它下面拉出的浮层；手机（≤639）入口在页眉里（上面 .ak-local-nav 的第二个 label），浮层贴页眉下沿。开合是纯 CSS 的 :checked ~ -->
       <div class="ak-toc-dock">
         <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb" aria-label="本页目录" aria-controls="ak-toc">
         <label class="ak-toc-btn" for="ak-toc-toggle" title="本页目录"></label>

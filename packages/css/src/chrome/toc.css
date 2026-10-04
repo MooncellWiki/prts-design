@@ -2,16 +2,17 @@
 /* ═══ TOC ═══
  *  一份 DOM、两种形态（不做第二份目录）：
  *   ≥1400  绝对定位进 .ak-main 右侧预留的导轨，.ak-toc__inner 粘性跟随滚动；
- *   <1400  收成一枚独立的目录按钮（label.ak-toc-btn，同回到顶部 .ak-fab 的那种方块、同一列），目录是从它下面拉出的浮层。
+ *   <1400  收成一枚独立的目录按钮（640–1400；label.ak-toc-btn，同回到顶部 .ak-fab 的那种方块、同一列），目录是从它下面拉出的浮层。
  *          按钮平时停在正文纸张的右上角（顶边与纸张的上框线平齐），往下滚就贴在页眉下沿跟着走（Vector 2022 的目录按钮：标题旁 → 滚过后钉在角上）——
  *          靠 .ak-toc-dock 的 position:sticky，不是 fixed：fixed 在页面顶部会压住右上角的状态指示器 / 动作簇。
+ *   ≤639   手机：入口留在页眉那一行（.ak-local-nav 里的 label.ak-local-nav__toc，方点列表图标），浮层固定在页眉下沿、拉满宽度；不出那枚浮动按钮。
  *  DOM：.ak-toc-dock > input.ak-toc-cb + label.ak-toc-btn + aside.ak-toc，紧跟页面标题。三者是兄弟，开合是纯 CSS 的 :checked ~，
  *  不需要 :has() 也不需要 JS；浮层绝对定位在 dock 里，跟着按钮走。≥1400 dock 是个不占高度的普通块（aside 的定位祖先仍是 .ak-main）。
  *  → 无 JS 也完全可用；JS 只负责生成条目、scrollspy、阅读进度、点击外部 / Esc / 跳转后关闭、浮层限高（--_y）、让回到顶部按钮让位（html.ak-toc-open），
  *    以及手机（≤639）上开着时锁住页面滚动。
  *  导轨 / 浮层都不写 overscroll-behavior:contain：目录短、没有内滚时 contain 照样吞滚轮，指针停在目录上页面就滚不动。 */
 .ak-toc-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* <1400 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
-.ak-toc-btn { display: none; }   /* 仅 <1400，样子见 responsive.css */
+.ak-toc-btn { display: none; }   /* 仅 640–1400，样子见 responsive.css */
 .ak-layout--no-toc .ak-toc-dock { display: none; }
 .ak-toc { position: absolute; top: 0; right: 0; bottom: 0; width: var(--ak-toc-w); font-size: var(--ak-fs-xs); }
 /* 限高在底部让出 --ak-toc-clear：默认 = 整页那枚 .ak-fab 占的角落（下边距 space-5 + 44px 按钮 + space-3 间隙）。

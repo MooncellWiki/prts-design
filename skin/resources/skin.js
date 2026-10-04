@@ -165,8 +165,9 @@
 		document.addEventListener( 'click', ( e ) => {
 			if ( !tocCb.checked ) { return; }
 			if ( e.target.closest( '.ak-toc a' ) ) { closeToc(); return; }
-			// 点 dock（开关 + 按钮 + 浮层）外收起。点 label 时浏览器再向 checkbox 派发的那次 click 也落在 dock 里，不算「外部」
-			if ( !e.target.closest( '.ak-toc-dock' ) ) { closeToc(); }
+			// 点 dock（开关 + 按钮 + 浮层）外收起。点 label 时浏览器再向 checkbox 派发的那次 click 也落在 dock 里，不算「外部」；
+			// 手机上页眉里的那个 label（.ak-local-nav__toc）在 dock 之外，同样放行——否则这里先收起、随后的那次 click 又把它点开
+			if ( !e.target.closest( '.ak-toc-dock, .ak-local-nav__toc' ) ) { closeToc(); }
 		} );
 		document.addEventListener( 'keydown', ( e ) => { if ( e.key === 'Escape' ) { closeToc(); } } );
 	}

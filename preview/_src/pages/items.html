@@ -23,7 +23,7 @@ lastmod: 2026年9月4日 (五) 14:23
 /* ── 0. 页面级：预览骨架的补丁（同干员一览样例的「0. 页面级」）──
  *  这页没有章节标题，也就没有目录：右侧导轨让给主列，页眉不出「本页目录」。真皮肤里的办法见文档站 /patterns/operators#页面与皮肤的分工。
  *  现网这页没有分类：骨架是静态的，这里按空列表藏掉。 */
-.ak-toc-dock { display: none; }
+.ak-toc-dock, .ak-local-nav__toc { display: none; }
 .ak-main { padding-right: 0; }
 .ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
 .catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
