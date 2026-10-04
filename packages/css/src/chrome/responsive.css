@@ -154,6 +154,11 @@
   .ak-footer .ak-watermark { font-size: 5rem; }
   .ak-fab { right: var(--ak-space-3); bottom: var(--ak-space-3); }
   .mw-parser-output table.wikitable { display: block; overflow-x: auto; max-width: 100%; }
+  /* 收起的折叠表只剩一行标题：display:block 的表格里行组是按内容收缩的匿名表格，标题格只有文字那么宽、右边露出表格的底色——
+   * 收起时行组自己当表格撑满；border-box 把合并边框外溢的半条边算进 100%（否则多 1px、出横向滚动条），展开后还原，标题格前后同宽。
+   * 前缀包在 :where() 里（优先级只剩一个标签）：模板样式自己改了行组 display 的表（卡片 / 上下排版式）不受影响 */
+  :where(.mw-parser-output table.wikitable.mw-collapsed) > thead,
+  :where(.mw-parser-output table.wikitable.mw-collapsed) > tbody { display: table; box-sizing: border-box; width: 100%; }
   .mw-halign-right, .tright, figure.mw-halign-right, .mw-halign-left, .tleft, figure.mw-halign-left { float: none; margin-left: 0; margin-right: 0; }
 }
 @media (min-width: 1680px) {

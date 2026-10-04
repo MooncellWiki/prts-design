@@ -70,7 +70,7 @@ PRTS 大量表格把 `th` 竖着当行头用（属性表 / 信息表）。加粗
 </table>
 ```
 
-宽表外面包一层 `<div class="ak-table-scroll">` 横向滚动；手机（≤639）上所有 `wikitable` 都会自动变成可横滚的块（规则在[皮肤骨架 · 响应式](/chrome/responsive)）。
+宽表外面包一层 `<div class="ak-table-scroll">` 横向滚动；手机（≤639）上所有 `wikitable` 都会自动变成可横滚的块（规则在[皮肤骨架 · 响应式](/chrome/responsive)）。收起的折叠表（`mw-collapsed`）此时只剩一行标题，标题行撑满表格宽度，不随标题文字长短变。
 
 ## 其它表格
 
