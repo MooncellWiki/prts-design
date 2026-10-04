@@ -71,6 +71,6 @@ component: tooltip
 
 ## CSS 实现
 
-`.ak-term` 是术语的虚线下划线（悬停淡青底），`data-ak-tip` 与 `AkTooltip` 都可以配它。`.ak-tip-anchor` 与 `.ak-tooltip--*` / `.ak-popover--*` 方向修饰是给 Vue 版定位用的：外层相对定位，气泡贴在一边。
+`.ak-term` 是术语的虚线下划线（悬停淡青底），`data-ak-tip` 与 `AkTooltip` 都可以配它。`.ak-tip-anchor` 与 `.ak-tooltip--*` / `.ak-popover--*` 方向修饰是给 Vue 版定位用的：外层相对定位，气泡贴在一边。外层是 `inline-flex`，大小就是触发元素的大小——包着开关、复选框、图片这类基线在底边的元素时，不会像 `inline-block` 那样在下面留出文字下沉的空间、把它顶高几像素；触发元素是术语（`.ak-term` / `.ak-rt-term`）时保持 `inline-block`，虚线下划线的位置不变。
 
 <CssClasses :files="['components/tooltip.css']" />

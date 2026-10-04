@@ -22,7 +22,11 @@
 .ak-term:hover { background: var(--ak-accent-subtle); }
 /* Vue 版 AkTooltip / AkPopover：外层 .ak-tip-anchor 给定位上下文（同 [data-ak-tip] 的 position: relative），气泡按 placement 贴在触发元素的一边、间距 6px（同 CSS-only 版）；
  * 不做碰撞翻转（不引定位库）。宽度随内容（上限仍是 .ak-tooltip 280 / .ak-popover 360），不继承触发处的 nowrap / 居中 / 粗体（表头里的术语提示） */
-.ak-tip-anchor { position: relative; display: inline-block; }
+/* 外层是 inline-flex、不是 inline-block：inline-block 里触发元素按基线排进行框，基线在底边的那些（开关 / 勾选的 label、图、只有图标的按钮）下面留着文字下沉的空间，
+ * 在 align-items: center 的一行里比旁边没包的同类高约 3px。align-items: flex-start = 外层被拉高时触发元素仍在顶上、不跟着拉伸（同原先）。
+ * 术语（虚线下划线画在行内框上）留在 inline-block：作 flex 子项会变成块、框高从字面高变成行高，下划线下移约 1px；不认 :has() 的浏览器就是这 1px */
+.ak-tip-anchor { position: relative; display: inline-flex; align-items: flex-start; }
+.ak-tip-anchor:has(> :is(.ak-term, .ak-rt-term, .ba-term)) { display: inline-block; }
 .ak-tip-anchor > :is(.ak-tooltip, .ak-popover) { width: max-content; white-space: normal; text-align: left; font-weight: 400; }
 .ak-tooltip--top, .ak-popover--top { bottom: calc(100% + 6px); left: 50%; translate: -50% 0; }
 .ak-tooltip--bottom, .ak-popover--bottom { top: calc(100% + 6px); left: 50%; translate: -50% 0; }
