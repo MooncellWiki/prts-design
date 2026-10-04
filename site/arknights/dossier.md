@@ -19,7 +19,7 @@ component: dossier
 
 ## 人员档案
 
-干员页的 9 段档案：竖排[标签页](/components/tabs)（`placement="left"`）每页放一个 `AkDossier`；「基础档案」里是[键值表](/arknights/kv)，「综合体检测试」是紧凑的[属性面板](/arknights/attrs)。页签第二行小字写解锁条件的短写；9 段成组出现，标题只写中文、不带 `en`（见[字体排印 · 双语标题](/foundations/typography#双语标题)）；面板用 `display-directive="show:lazy"`，切到过的页保留。
+干员页的 9 段档案：同现网，收在一块默认收起的折叠面板里，展开后 9 个 `AkDossier` 首尾相接依次排下来。正文一律是游戏原文——「基础档案」「综合体检测试」也是带换行的文本（「【代号】陈」「【物理强度】优良」…），原样放进 `<p>`，不拆成键值表 / 属性面板：拆了要逐个干员维护字段名，原文多一行、换个括号就对不上。解锁条件紧跟标题；9 段成组出现，标题只写中文、不带 `en`（见[字体排印 · 双语标题](/foundations/typography#双语标题)）。
 
 @demo Dossier/Files
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * 档案类卡片（干员密录 / 悖论模拟 / 未获得时档案）——现网那几张「————xx」折叠 wikitable 的替身。
- * 结构同 Naive 的 NCard：头（小标 + 标题 + 右侧解锁条件）+ 体 + #footer 页脚（阅读 / 关卡 / 首通奖励）；与 AkDossier 同一张脸。
+ * 结构同 Naive 的 NCard：头（小标 + 标题 + 紧跟其后的解锁条件）+ 体 + #footer 页脚（阅读 / 关卡 / 首通奖励）；与 AkDossier 同一张脸。
  */
 withDefaults(
   defineProps<{
@@ -11,7 +11,7 @@ withDefaults(
     kicker?: string;
     /** 解锁条件（纯文本）；要放精英 / 信赖 / 关卡号时改用 #unlock 插槽 */
     unlock?: string;
-    /** 解锁条件前的小标 */
+    /** 解锁条件前的小标；传空串不出（条件本身就是图标 + 数值时，如密录的「精英二 Lv.1 · 信赖 50%」） */
     unlockLabel?: string;
   }>(),
   { kicker: undefined, unlock: undefined, unlockLabel: "解锁条件" },
@@ -33,7 +33,7 @@ defineSlots<{
       <span v-if="kicker" class="ak-archive__kicker">{{ kicker }}</span>
       <h4 class="ak-archive__title">{{ title }}</h4>
       <span v-if="unlock || $slots.unlock" class="ak-archive__req">
-        <span class="ak-overline">{{ unlockLabel }}</span>
+        <span v-if="unlockLabel" class="ak-overline">{{ unlockLabel }}</span>
         <slot name="unlock">{{ unlock }}</slot>
       </span>
     </div>

@@ -12,10 +12,10 @@ const paradox = `无论什么时候，陈总是会站在队伍的前端。
 
 <template>
   <div class="ak-flex-col">
-    <!-- 干员密录：解锁条件放精英 / 信赖，页脚是「阅读密录」 -->
-    <AkArchive kicker="密录 1" title="一鼓作气" unlock-label="解锁">
+    <!-- 干员密录：解锁条件同现网——精英化图标 + Lv.1、信赖图标 + 50%，不加小标；页脚是「阅读密录」 -->
+    <AkArchive title="一鼓作气" unlock-label="">
       <template #unlock>
-        <span class="ak-elite"><img :src="asset('elite/elite_2.png')" alt="" />精英二 Lv1</span>
+        <span class="ak-elite" title="精英二 1 级"><img :src="asset('elite/upgrade_2.png')" alt="精英二" />Lv.1</span>
         <span class="ak-trust">50%</span>
       </template>
       <p><i>一鼓作气，再而衰。</i></p>
@@ -26,9 +26,9 @@ const paradox = `无论什么时候，陈总是会站在队伍的前端。
       </template>
     </AkArchive>
     <!-- 悖论模拟：页脚是关卡 + 首通奖励 -->
-    <AkArchive kicker="悖论模拟" title="永不后退" unlock-label="解锁方式">
+    <AkArchive title="永不后退" unlock-label="">
       <template #unlock>
-        <span class="ak-elite"><img :src="asset('elite/elite_2.png')" alt="" />精英二 Lv1</span>
+        <span class="ak-elite" title="精英二 1 级"><img :src="asset('elite/upgrade_2.png')" alt="精英二" />Lv.1</span>
       </template>
       <p>{{ paradox }}</p>
       <p><b>&lt;活性源石&gt;</b> 部署于其上的我军和经过的敌军持续受到伤害，但攻击力和攻速大幅度提升</p>

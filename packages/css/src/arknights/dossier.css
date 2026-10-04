@@ -1,9 +1,11 @@
 /*! PRTS Design · arknights/dossier.css — B12 档案 / 剧情文本块 Dossier · Redacted · 依赖：tokens.css · decor/ */
-/* B12. 档案 / 剧情文本块（含未解锁遮罩） */
+/* B12. 档案 / 剧情文本块（含未解锁遮罩）
+ *  正文是游戏原文：handbook_info_table 的 storyText 就是带换行的文本（基础档案也是「【代号】陈\n【性别】女…」），原样放进 <p>（white-space: pre-line），不拆成键值表——
+ *  拆了要逐个干员维护字段名，原文改一个字（加一行、换个括号）表就对不上。解锁条件紧跟标题（同现网：标题下面一行就是条件），不推到最右 */
 .ak-dossier { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); padding: 16px 20px; position: relative; font-size: var(--ak-fs-sm); line-height: 1.85; }
-.ak-dossier__title { display: flex; align-items: center; gap: 10px; font-weight: 800; margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--ak-border); }
+.ak-dossier__title { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 10px; font-weight: 800; margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--ak-border); }
 .ak-dossier__title .ak-en { color: var(--ak-fg-muted); font-size: .8em; }
-.ak-dossier__unlock { margin-left: auto; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .08em; color: var(--ak-fg-muted); text-transform: uppercase; }
+.ak-dossier__unlock { font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .08em; color: var(--ak-fg-muted); text-transform: uppercase; }
 .ak-dossier p { margin: 0 0 .8em; white-space: pre-line; }
 .ak-dossier p:last-child { margin: 0; }
 .ak-dossier.is-locked > *:not(.ak-dossier__title) { filter: blur(4px); user-select: none; pointer-events: none; }
