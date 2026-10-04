@@ -127,7 +127,7 @@ cats: 首页
 .mp-hero__dot[aria-current="true"]::after { display: block; background: var(--ak-cyan-500); transform-origin: left; transition: height var(--ak-dur-fast); animation: mp-hero-progress 6s linear both; }   /* 自动播放进度 = 一段 6 秒的 CSS 动画（只动 transform，在合成器上跑）；当前格一换就从头播，播完脚本切下一张。亮色主题下同样用官网青：它压在画面上，不跟主题走 */
 .mp-hero.is-held .mp-hero__dot[aria-current="true"]::after { animation-play-state: paused; }   /* 停住 = 动画停住：停着进度不走、继续时接着走（is-held 由脚本按 鼠标在块里 / 拖动 / 不在视口 / 后台标签页 合成） */
 .mp-hero:has(:focus-visible) .mp-hero__dot[aria-current="true"]::after { animation-play-state: paused; }   /* 键盘焦点在块里也停；单写一条，不认 :has() 的浏览器只丢这一条 */
-.mp-hero.is-stopped .mp-hero__dot[aria-current="true"]::after { visibility: hidden; }   /* 不自动播（prefers-reduced-motion）：没有填充，只剩实白的轨道 = 纯「当前格」 */
+.mp-hero.is-stopped .mp-hero__dot[aria-current="true"]::after { display: none; }   /* 不自动播（prefers-reduced-motion）：没有填充，只剩实白的轨道 = 纯「当前格」。整个不生成而不是藏起来：盒子在动画就在，MW 核心 normalize 的减弱动效规则（animation-delay: -0.01ms !important）会让它一生成就落在终点，停住（paused）也照样派发 animationend */
 @keyframes mp-hero-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .mp-hero__pic:has(> a:focus-visible), .mp-hero__nav:focus-visible, .mp-hero__dot:focus-visible { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的大图 / 箭头 / 指示条：焦点环内缩 */
 /* Hero 窄于 640px（手机 / 窄窗口）：箭头小一号；指示条的白条、间隔、边距、投影按旧轮播缩到这个宽度时的样子收（图只有 110–200px 高） */
@@ -678,7 +678,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
   /* 1. Hero：Swiper 轮播 + 左右箭头 + 自动播放（自己计时）+ 指示条（一张一格，进度长在当前格里） */
   var hero = document.getElementById('mp-hero'), pager = document.getElementById('mp-hero-pager');
   if (hero && pager && window.Swiper) {
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     var slides = [].slice.call(hero.querySelectorAll('.mp-hero__slide')), total = slides.length;   // Swiper 初始化前取：loop 模式会重排 DOM
     /* 指示条：一张一格，按张数生成（模板只输出 slide，不用知道有几张）；悬停的原生提示 = 那张的标题（主图的 alt） */
     var dots = slides.map(function (slide, i) {
@@ -689,7 +689,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
       pager.appendChild(b); return b;
     });
     var sw = new Swiper('#mp-hero-swiper', {
-      loop: total > 1, speed: reduce ? 0 : 500,
+      loop: total > 1, speed: motion.matches ? 0 : 500,
       keyboard: { enabled: true, onlyInViewport: true },
       navigation: { prevEl: '#mp-hero-prev', nextEl: '#mp-hero-next' },
       a11y: { prevSlideMessage: '上一张', nextSlideMessage: '下一张', slideLabelMessage: '第 {{' + 'index}} / {{slidesLength}} 张', containerMessage: '活动与寻访轮播' }
@@ -707,7 +707,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
        这里「已播多久」就是动画自己的进度，暂停只是把它停住（.is-held → animation-play-state: paused），所以进度只会连续地涨，且恒在 0–1。
        原先每帧往当前格写一次 --p：主线程每帧都要重算样式、重新分层、提交一帧，滚出视口也照样跑，
        首页顶部滚动时还拖着页眉 / 头图的模糊每帧重画（PRTS 现网反馈「首页顶部滚动卡顿」）。动画只动 transform，在合成器上跑，主线程闲着。 */
-    var stopped = reduce, hover = false, drag = false, away = false;   // stopped：不自动播（只有 prefers-reduced-motion；不设暂停键）
+    var stopped = motion.matches, hover = false, drag = false, away = false;   // stopped：不自动播（只有 prefers-reduced-motion；不设暂停键）
     if (stopped) hero.classList.add('is-stopped');
     var hold = function () { hero.classList.toggle('is-held', stopped || hover || drag || away || document.hidden); };   // 键盘焦点在块里那一条是纯 CSS（:has(:focus-visible)）
     sw.on('slideChange', sync); sync();
@@ -716,7 +716,14 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
     hero.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') { hover = false; hold(); } });
     document.addEventListener('visibilitychange', hold);   // 后台标签页：回来接着播，不会一回来就切走
     if (window.IntersectionObserver) new IntersectionObserver(function (es) { away = !es[es.length - 1].isIntersecting; hold(); }).observe(hero);   // 滚出视口就停，没人看的时候不换张
-    pager.addEventListener('animationend', function (e) { if (e.target === dots[sw.realIndex]) sw.slideNext(); });   // 当前格的进度播完 → 下一张（→ slideChange → sync()）；只认当前格，换张时旧格的事件不算
+    /* 当前格的进度播完 → 下一张（→ slideChange → sync()）；只认当前格，换张时旧格的事件不算。
+       不自动播时一律不认：减弱动效下宿主的全局规则会把动画压到一生成就结束（MW 核心 normalize：animation-delay: -0.01ms + animation-duration: .01ms，都带 !important），
+       animation-play-state: paused 拦不住已经在终点的动画——新的一格一拿到 aria-current 就派发 animationend，换张又点亮下一格，每帧切一张停不下来（现网反馈「首页活动图片疯狂切换」） */
+    pager.addEventListener('animationend', function (e) { if (!stopped && e.target === dots[sw.realIndex]) sw.slideNext(); });
+    if (motion.addEventListener) motion.addEventListener('change', function () {   // 开着页面改系统的动效设置：CSS 那半立刻跟着变，脚本这半也得跟上
+      stopped = motion.matches; sw.params.speed = stopped ? 0 : 500;
+      hero.classList.toggle('is-stopped', stopped); hold();
+    });
     if (total > 1) hold();
     else hero.querySelectorAll('.mp-hero__nav, .mp-hero__pager').forEach(function (el) { el.hidden = true; });   // 只有一张：没有可切的，箭头 / 指示条都不出（指示条藏着，进度动画也不跑）
     pager.addEventListener('click', function (e) { var i = dots.indexOf(e.target.closest('.mp-hero__dot')); if (i > -1) sw.slideToLoop(i); });
