@@ -291,7 +291,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
 .mp-furn__pic { width: 96px; height: 72px; display: grid; place-items: center; background: #1d1f20; border: 1px solid var(--ak-border); overflow: hidden; }
 .mp-furn__pic img { max-width: 90%; max-height: 90%; object-fit: contain; }
 .mp-furn--theme .mp-furn__pic img { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: cover; }
-.mp-furn__name { font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.3; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.mp-furn__name { display: block; font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.3; }   /* 只有名字：主题卡不再跟「主题」小标签——上面的 .mp-label 已经说了，单件也没有标「单件」 */
 .mp-furn__desc { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); line-height: 1.5; margin-top: 4px; }
 
 /* ── 7. 网站信息 ── */
@@ -604,7 +604,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
       <div class="ak-panel__head"><h3 class="ak-panel__title" data-en="Furniture">新增家具</h3></div>
       <div class="ak-panel__body">
         <span class="ak-overline mp-label">主题</span>
-        <div class="mp-furn mp-furn--theme mp-a"><a href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/theme-darkforest.png" alt=""></span><span><span class="mp-furn__name">黑流印象<span class="ak-tag ak-tag--sm ak-tag--outline">主题</span></span><span class="mp-furn__desc">集成战略「沉沦者的黑流树海」主题家具套装。</span></span></a></div>
+        <div class="mp-furn mp-furn--theme mp-a"><a href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/theme-darkforest.png" alt=""></span><span><span class="mp-furn__name">黑流印象</span><span class="mp-furn__desc">集成战略「沉沦者的黑流树海」主题家具套装。</span></span></a></div>
         <span class="ak-overline mp-label ak-mt-4">单件</span>
         <div class="mp-furn mp-a"><a href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/messagetree.png" alt=""></span><span><span class="mp-furn__name">“一撮毛”的树状小窝</span><span class="mp-furn__desc ak-clamp-2">根据在南境的见闻，塔妮为“一撮毛”制作的树状小窝。嘉辛塔在上面添了一些彩带装饰，阿梅利亚缠了一个胡萝卜毛线球，不知道它会不会喜欢。</span></span></a></div>
         <div class="mp-furn mp-a"><a href="#"><span class="mp-furn__pic"><img src="assets/mainpage/furniture/fruitmedley.png" alt=""></span><span><span class="mp-furn__name">饰牌《百果》</span><span class="mp-furn__desc">只需一口，便可遍尝千种缤纷。</span></span></a></div>
