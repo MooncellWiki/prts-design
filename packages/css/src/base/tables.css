@@ -18,8 +18,10 @@
 .wikitable > tbody > tr:not(:has(td)):has(+ tr > td) > th { border-bottom: 2px solid var(--ak-border-strong); }
 .wikitable > thead > tr > th, .wikitable > tbody > tr:first-child > th { position: relative; }
 .wikitable caption { caption-side: top; text-align: left; font-weight: 700; padding: .4em 0; color: var(--ak-fg-secondary); font-size: var(--ak-fs-sm); }
-.wikitable > tbody > tr:hover > td { background: var(--ak-bg-hover); }
 .wikitable.ak-striped > tbody > tr:nth-child(even) > td { background: var(--ak-bg-surface-2); }
+/* 行悬停只在写了 ak-hover 的表上有，默认没有：PRTS 大量 wikitable 的一行不是一条记录（属性表一行并排几组键值、导航 / 总览模板一行几个互不相干的格子、rowspan 的图标格），
+ * 整行变色标出的是并不存在的关联，还会盖掉模板给单元格上的底色。排在斑马纹之后：两个都写时悬停行照样变色。 */
+.wikitable.ak-hover > tbody > tr:hover > td { background: var(--ak-bg-hover); }
 .wikitable.ak-compact > * > tr > th, .wikitable.ak-compact > * > tr > td { padding: .25em .5em; }
 .wikitable.ak-dense { font-size: var(--ak-fs-xs); }
 .wikitable.ak-borderless, .wikitable.ak-borderless > * > tr > th, .wikitable.ak-borderless > * > tr > td { border-left: 0; border-right: 0; }

@@ -4,14 +4,14 @@ import CssSelectors from "../.vitepress/theme/components/CssSelectors.vue";
 
 # 表格
 
-`base/tables.css`：`{| class="wikitable"` 是 PRTS 用得最多的结构——干员一览、属性、材料、掉落，几乎每页都有。表格是数据，不是装饰：浅底表头、1px 细线、悬停行变浅，数字列右对齐。
+`base/tables.css`：`{| class="wikitable"` 是 PRTS 用得最多的结构——干员一览、属性、材料、掉落，几乎每页都有。表格是数据，不是装饰：浅底表头、1px 细线，数字列右对齐。
 
 ## wikitable
 
-表头 `th` 浅一档的底、加粗居中；单元格 1px `--ak-border` 细线；悬停行 `--ak-bg-hover`。可排序表（`sortable` → jquery.tablesorter）的表头右侧是 `⇅`，当前排序列换成青色 `↑` / `↓`。
+表头 `th` 浅一档的底、加粗居中；单元格 1px `--ak-border` 细线。行悬停默认没有，一行一条记录的数据表加 `ak-hover` 才有（见下「修饰类」）。可排序表（`sortable` → jquery.tablesorter）的表头右侧是 `⇅`，当前排序列换成青色 `↑` / `↓`。
 
 ```html demo
-<div class="ak-table-scroll"><table class="wikitable jquery-tablesorter ak-striped" style="width:100%">
+<div class="ak-table-scroll"><table class="wikitable jquery-tablesorter ak-striped ak-hover" style="width:100%">
 <tr><th class="headerSort">干员</th><th class="headerSort headerSortDown">稀有度</th><th>职业</th><th class="headerSort">生命</th><th class="headerSort">攻击</th><th class="headerSort">防御</th><th>阵营</th></tr>
 <tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_010_chen_2.png" alt=""></span><span><span class="ak-op-row__name">陈</span><span class="ak-op-row__meta">剑豪 · LM04</span></span></a></td><td><span class="ak-rarity ak-rarity--r6"><i></i><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/warrior.png" alt=""></span>近卫</span></td><td class="num">2880</td><td class="num">610</td><td class="num">352</td><td>龙门近卫局</td></tr>
 <tr><td><a class="ak-op-row" href="#"><span class="ak-avatar" data-rarity="6"><img src="assets/avatar/char_172_svrash_2.png" alt=""></span><span><span class="ak-op-row__name">银灰</span><span class="ak-op-row__meta">领主 · KJ01</span></span></a></td><td><span class="ak-rarity ak-rarity--r6"><i></i><i></i><i></i><i></i><i></i><i></i></span></td><td><span class="ak-prof-label"><span class="ak-prof ak-prof--sm"><img src="assets/profession/warrior.png" alt=""></span>近卫</span></td><td class="num">2880</td><td class="num">660</td><td class="num">352</td><td>喀兰贸易</td></tr>
@@ -55,6 +55,7 @@ PRTS 大量表格把 `th` 竖着当行头用（属性表 / 信息表）。加粗
 | 类 | 作用 |
 |---|---|
 | `ak-striped` | 斑马纹（偶数行浅底） |
+| `ak-hover` | 悬停行变浅（`--ak-bg-hover`）。只给一行一条记录的数据表：属性表（一行并排几组键值）、导航 / 总览表、带 `rowspan` 的表里，一行的格子彼此没有关系，整行变色反而误导，所以默认不开 |
 | `ak-compact` | 紧凑内边距（`.25em .5em`），信息密的对照表用 |
 | `ak-dense` | 12px 字号 |
 | `ak-borderless` | 去掉竖线，只留横线 |
