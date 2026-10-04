@@ -5,6 +5,13 @@
 .ak-skill-sheet > .ak-skill { border: 0; border-bottom: 1px solid var(--ak-border); }
 .ak-skill-sheet > .ak-skill .ak-skill__desc { grid-column: 1 / -1; }
 .ak-skill-sheet > .ak-skill > .ak-skill__icon + :not(.ak-skill__desc) { justify-content: center; }   /* 表头里没有 SP 芯片行（数值在表格列里），名称行居中对齐图标 */
+/* 技力回复类型 / 触发类型两枚标签上下叠在技能名右边（同现网 {{技能}} 表头的两格），等宽、字居中；有别名时别名在技能名下面。
+ *  竖排比跟在名字后面横排省宽度：窄屏上右侧槽（攻击范围）不用再换到第二行 */
+.ak-skill-sheet > .ak-skill .ak-skill__head { display: grid; grid-template-columns: auto auto; justify-content: start; align-items: center; gap: 4px 12px; }
+.ak-skill-sheet > .ak-skill .ak-skill__head > .ak-skill__name { grid-column: 1; grid-row: span 2; }
+.ak-skill-sheet > .ak-skill .ak-skill__head > .ak-skill__name:is(:has(+ .ak-skill__alias), :nth-last-child(2)) { grid-row: auto; }   /* 下面有别名、或只有一枚标签时不跨两行 */
+.ak-skill-sheet > .ak-skill .ak-skill__head > .ak-skill__alias { grid-column: 1; }
+.ak-skill-sheet > .ak-skill .ak-skill__head > :is(.ak-sp, .ak-sp-trigger) { grid-column: 2; justify-content: center; }
 .ak-skill-table { width: 100%; border-collapse: collapse; font-size: var(--ak-fs-sm); line-height: 1.6; }
 .ak-skill-table th, .ak-skill-table td { padding: 6px 10px; border-top: 1px solid var(--ak-border-subtle); vertical-align: middle; text-align: center; }
 .ak-skill-table thead th { background: var(--ak-bg-surface-2); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); border-top: 0; border-bottom: 1px solid var(--ak-border-strong); white-space: nowrap; }
@@ -20,11 +27,11 @@
 .ak-skill-table tr.is-hl > * { background: var(--ak-accent-subtle); }   /* 可选：高亮某一行（当前等级） */
 .ak-skill-sheet__note { padding: 8px 12px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); line-height: 1.7; border-top: 1px solid var(--ak-border-subtle); }
 .ak-skill-sheet__note p { margin: 0; }
-/* 窄屏：数值列收窄、列头芯片只留图形（文字 font-size:0，mask 图形是固定像素不受影响）；表头卡的右侧槽换到第二行 */
+/* 窄屏：数值列收窄、列头芯片只留图形（文字 font-size:0，mask 图形是固定像素不受影响）；表头卡的右侧槽仍在右边（标签竖排后放得下），槽里有几样时上下叠 */
 @media (max-width: 639px) {
   .ak-skill-table th, .ak-skill-table td { padding: 6px 5px; }
   .ak-skill-table .lv { width: 40px; } .ak-skill-table .num { width: 38px; }
   .ak-skill-table thead th .ak-sp-cost, .ak-skill-table thead th .ak-sp-init, .ak-skill-table thead th .ak-sp-dur { font-size: 0; gap: 0; padding: 0 7px; }
-  .ak-skill--wide { grid-template-columns: 64px 1fr; }
-  .ak-skill__aside { grid-column: 1 / -1; grid-row: auto; justify-content: space-between; }
+  .ak-skill-sheet > .ak-skill--wide { column-gap: 12px; }
+  .ak-skill-sheet .ak-skill__aside { flex-direction: column; align-items: flex-end; gap: 6px; }
 }
