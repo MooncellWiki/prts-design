@@ -11,4 +11,9 @@
   --ak-item-bg-4: url("../img/item/bg_4.png");
   --ak-item-bg-5: url("../img/item/bg_5.png");
   --ak-item-bg-6: url("../img/item/bg_6.png");
+  --ak-trust-icon: url("../img/ui/trust.png");   /* 信赖图标 = prts.wiki 文件:图标_信赖.png（.ak-trust 前面那枚） */
+  --ak-trust-content: "";                        /* 有图标才生成 .ak-trust::before：不加载本文件时 .ak-trust 只有数字，不出图标、不占位 */
 }
+/* 信赖图标是游戏的白色线稿：同 .ak-glyph 跟着主题反相（亮色下变深）。写在 [data-theme] 上也声明一遍——局部主题 .ak-scope[data-theme] 里 --ak-glyph-filter 不同，
+ * 自定义属性里的 var() 在声明处就解析掉了，只写 :root 的话局部主题拿到的是根上的值 */
+:root, [data-theme] { --ak-trust-filter: var(--ak-glyph-filter); }

@@ -4,7 +4,7 @@
  *   · 选中 / 当前项 = Highlight 底 + HighlightText 字（要 forced-color-adjust: none，否则底色照样被抹）
  *   · 自绘控件（勾选 / 单选 / 开关 / 滑块 / 进度）的填充改成系统色
  *   · 用 box-shadow 画的焦点补回 outline；只有底色、边框透明的块补 1px 轮廓（outline 不占位，不影响排版）
- *   · 用 clip-path 裁出来的实心图形（稀有度星、信赖心）改成 CanvasText 填充
+ *   · 用 clip-path 裁出来的实心图形（稀有度星）改成 CanvasText 填充；信赖图标同样填 CanvasText，图标当遮罩（遮罩写在 arknights/trust.css）
  *  斜纹 / 网点 / 头图这类纯装饰在强制色下消失无妨，不处理。 */
 @media (forced-colors: active) {
   /* 选中 / 当前项 */
@@ -49,6 +49,6 @@
   /* 只有底色、边框透明的块：补轮廓 */
   .ak-tag, .ak-badge, .ak-btn--ghost, .ak-toast, .ak-message, .ak-cbox { outline: 1px solid CanvasText; outline-offset: -1px; }
 
-  /* clip-path 裁出来的实心图形 */
+  /* clip-path 裁出来的实心图形；信赖图标（遮罩见 arknights/trust.css） */
   .ak-rarity > i, .ak-trust::before { forced-color-adjust: none; background: CanvasText; }
 }

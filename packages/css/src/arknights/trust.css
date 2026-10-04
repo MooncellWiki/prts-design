@@ -1,4 +1,11 @@
 /*! PRTS Design · arknights/trust.css — B3 信赖 Trust · 依赖：tokens.css · decor/ */
 /* 信赖 */
 .ak-trust { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ak-font-label); font-weight: 700; }
-.ak-trust::before { content: ""; width: 12px; height: 12px; background: var(--ak-red-500); clip-path: polygon(50% 100%, 0 38%, 15% 10%, 50% 30%, 85% 10%, 100% 38%); }
+/* 图标 = 游戏的信赖图标（prts.wiki 文件:图标_信赖.png），只经皮肤的素材接口给：base/skin-assets.css 设 --ak-trust-icon，并用 --ak-trust-content: "" 打开这个伪元素。
+ * 没加载素材接口（站外页面、npm 包）就不出图标、也不占位——不画替代图形；宿主要图标，就在 :root 上设这两个变量（--ak-trust-icon 指到 media.prts.wiki 的绝对地址） */
+.ak-trust::before { content: var(--ak-trust-content, none); flex: none; width: 14px; height: 14px; background: var(--ak-trust-icon) center / contain no-repeat; filter: var(--ak-trust-filter, none); }
+/* 强制色（forced-colors.css 把 ::before 的背景换成 CanvasText 纯色）：图标改当遮罩用，白色线稿的不透明处显示 CanvasText，否则是一个实心方块。
+ * 写在这里而不是 forced-colors.css：Chromium 按「使用处」解析自定义属性里的相对 url()，本文件与 skin-assets.css 同在 src/ 下一层，../img/ 才落得到 src/img/ */
+@media (forced-colors: active) {
+  .ak-trust::before { -webkit-mask: var(--ak-trust-icon) center / contain no-repeat; mask: var(--ak-trust-icon) center / contain no-repeat; filter: none; }
+}

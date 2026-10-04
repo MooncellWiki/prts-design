@@ -3,7 +3,7 @@ withDefaults(
   defineProps<{
     /** 信赖（%）：0–200 */
     value: number;
-    /** 读屏前缀：心形是 CSS 画的、读屏读不到，默认补一段隐藏的「信赖」 */
+    /** 读屏前缀：信赖图标是 ::before 伪元素、读屏读不到，默认补一段隐藏的「信赖」 */
     label?: string;
   }>(),
   { label: "信赖" },
