@@ -26,7 +26,7 @@ div#MenuSidebar
 
 `.ak-sidebar p` 与 `.ak-portlet__title` 是同一套分组标题；`li > b` 与 `li > a` 是同一套行；`li > ul` 缩进 + 左侧导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页。现网末尾的「Languages」组（语言切换改在页眉用户菜单「界面设置」）与「工具」组（工具箱整组搬进标题行的「更多」）在新皮肤下退役，建议从 MenuSidebar 里删掉。现网 `<span style="…">NEW</span>` 角标建议换成 `.ak-tag.ak-tag--sm.ak-tag--new`（放进侧栏行里实测与文字中线差 0.4px）。MenuSidebar 是旧皮肤与新皮肤共用的一页，换成类名后旧皮肤下没有样式，所以旧皮肤退役前现网先留着内联样式，只补了一句 `vertical-align:.1em`：10px 的角标按基线对齐，比 14px 的中文字中线低约 1.7px，`vertical-align: middle` 对的是 x-height 的一半、不管用。现网把 `#MenuSidebar` 移进侧栏的内联脚本在新皮肤里照样工作（`#mw-panel`、`#p-tb` 的 id 都保留），皮肤侧的处理见[skin.mustache 结构 · 侧栏](/guide/skin-template#侧栏与-menusidebar)。
 
-**只给 Vector 看的行**：MenuSidebar 里有些项在新皮肤下另有去处、在 Vector 下没有——「复制短链接」成了标题末尾的链条图标（见[页面头 · 标题](/chrome/page-header#标题)），「常用代码」「编辑指南」「探索」组等进了页脚的链接列。它们留在这一页上，行里包一层 `<span class="menusidebar-vector-only">`（wikitext 没法给 `li` / 分组标题的 `p` 本身加类名，所以标在行内），Skin:Arknights 用 `:has()` 把所在的那一行整行隐藏：标在 `li` 里隐藏这一行（连同它的子级），标在分组标题的 `p` 里隐藏整组（标题 + 紧跟的列表）。Vector 不认这个类名，照常显示。侧栏导轨的高度按吸顶位置算，头图露出段（`--ak-keyart-reveal`，默认 72px）会把它往下推——侧栏越短，首屏越容易整条落在视口里。
+**只给 Vector 看的项**：MenuSidebar 里有些项在新皮肤下另有去处、在 Vector 下没有——「复制短链接」成了标题末尾的链条图标（见[页面头 · 标题](/chrome/page-header#标题)），「常用代码」「编辑指南」「探索」组等进了页脚的链接列。它们不靠皮肤隐藏，而是按皮肤读取：VectorMenuSidebar ≥ 0.1.0 优先读 `MediaWiki:MenuSidebar-vector`，那一页只有一行 `{{MediaWiki:MenuSidebar|vector=1}}`；共用的 `MediaWiki:MenuSidebar` 里把只给 Vector 的部分包进 `{{#if:{{{vector|}}}|…}}`，Skin:Arknights 直接解析这一页、`{{{vector|}}}` 为空，这些项根本不输出。列表里的条件行要接在上一行行尾（`*上一项{{#if:{{{vector|}}}|*只给 Vector 的项}}`）：单独占一行的话，条件不成立时留下的空行会把列表断成两个 `<ul>`。侧栏导轨的高度按吸顶位置算，头图露出段（`--ak-keyart-reveal`，默认 72px）会把它往下推——侧栏越短，首屏越容易整条落在视口里。
 
 ## 多层树
 
