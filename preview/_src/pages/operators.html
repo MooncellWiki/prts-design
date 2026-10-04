@@ -57,7 +57,6 @@ lastmod: 2025年3月1日 (六) 00:06
 .ol-more:hover { background: var(--ak-bg-hover); }
 .ol-more:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 .ol-more.has-active { border-left-color: var(--ak-accent); }
-.ol-more .ak-en { font-size: 10px; color: var(--ak-fg-subtle); }
 .ol-more__count:empty { display: none; }
 .ol-more__what { flex: 1; min-width: 0; font-weight: 400; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* 右端的开合记号：收起 ＋ / 展开 −，同 .ak-panel--collapsible（不用朝右的箭头——整行右端一个 › 读起来像「进下一页」） */
@@ -450,7 +449,7 @@ lastmod: 2025年3月1日 (六) 00:06
     $('#ol-filter').innerHTML = `<div class="ol-rows">
         ${rowHtml('profession', '<span class="ol-hint" id="ol-branch-hint">选了职业可再选分支</span>')}${rowHtml('subProfession')}${rowHtml('rarity', inlineHtml('position'))}
       </div>
-      <button type="button" class="ol-more" id="ol-more" aria-expanded="${adv.open}" aria-controls="ol-adv"><span>高级筛选</span><span class="ak-en">Advanced</span><span class="ol-more__count ak-tag ak-tag--sm ak-tag--accent-soft"></span><span class="ol-more__what">${ADV.map(t => esc(t.id === 'trait' ? t.fields.map(k => byField[k] ? byField[k].title : '').filter(Boolean).join(' · ') : t.title)).join(' · ')}</span></button>
+      <button type="button" class="ol-more" id="ol-more" aria-expanded="${adv.open}" aria-controls="ol-adv"><span>高级筛选</span><span class="ol-more__count ak-tag ak-tag--sm ak-tag--accent-soft"></span><span class="ol-more__what">${ADV.map(t => esc(t.id === 'trait' ? t.fields.map(k => byField[k] ? byField[k].title : '').filter(Boolean).join(' · ') : t.title)).join(' · ')}</span></button>
       <div class="ol-adv" id="ol-adv"${adv.open ? '' : ' hidden'}>
         <div class="ak-tabs ak-tabs--vertical ol-adv__tabs" role="tablist" aria-label="高级筛选分类" aria-orientation="vertical">${ADV.map(t => `<button type="button" class="ak-tab${t.id === adv.tab ? ' is-active' : ''}" role="tab" id="ol-tab-${t.id}" data-tab="${t.id}" aria-selected="${t.id === adv.tab}" aria-controls="ol-panel-${t.id}" tabindex="${t.id === adv.tab ? 0 : -1}">${esc(t.title)}<small></small></button>`).join('')}</div>
         ${ADV.map(t => `<div class="ol-adv__panel" role="tabpanel" id="ol-panel-${t.id}" data-tab="${t.id}" aria-labelledby="ol-tab-${t.id}"${t.id === adv.tab ? '' : ' hidden'}>

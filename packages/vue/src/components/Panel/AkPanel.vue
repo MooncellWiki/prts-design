@@ -13,7 +13,7 @@ const props = withDefaults(
   defineProps<{
     /** 标题（也可用 #header 插槽） */
     title?: string;
-    /** 标题后的英文（Bender 大写灰字：「Today」「Operations」） */
+    /** 标题后的英文（Bender 大写灰字：「Notice」）；并排的一组面板不写 */
     en?: string;
     /** 标题元素：默认 div；面板是页面大纲里的一节时用 h2–h6（首页「新增关卡」是 h3） */
     titleTag?: TitleTag;

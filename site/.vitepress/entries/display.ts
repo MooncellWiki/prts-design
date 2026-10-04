@@ -56,7 +56,7 @@ export default [
     group: "components",
     name: "Heading",
     zh: "区块标题",
-    description: "中文标题 + Bender 英文副题，左侧主色粗竖条；模板 / 首页的区块标题。",
+    description: "中文标题 + 左侧主色粗竖条，可带 Bender 英文副题；模板 / 首页的区块标题。",
     css: { files: ["components/heading.css"], status: "ready" },
     vue: { dir: "Heading", components: ["AkHeading"], status: "experimental" },
     storybook: "components-heading",

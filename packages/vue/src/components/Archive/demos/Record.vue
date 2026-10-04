@@ -13,7 +13,7 @@ const paradox = `无论什么时候，陈总是会站在队伍的前端。
 <template>
   <div class="ak-flex-col">
     <!-- 干员密录：解锁条件放精英 / 信赖，页脚是「阅读密录」 -->
-    <AkArchive kicker="Record · 密录 1" title="一鼓作气" unlock-label="解锁">
+    <AkArchive kicker="密录 1" title="一鼓作气" unlock-label="解锁">
       <template #unlock>
         <span class="ak-elite"><img :src="asset('elite/elite_2.png')" alt="" />精英二 Lv1</span>
         <span class="ak-trust">50%</span>
@@ -26,7 +26,7 @@ const paradox = `无论什么时候，陈总是会站在队伍的前端。
       </template>
     </AkArchive>
     <!-- 悖论模拟：页脚是关卡 + 首通奖励 -->
-    <AkArchive kicker="Paradox · 悖论模拟" title="永不后退" unlock-label="解锁方式">
+    <AkArchive kicker="悖论模拟" title="永不后退" unlock-label="解锁方式">
       <template #unlock>
         <span class="ak-elite"><img :src="asset('elite/elite_2.png')" alt="" />精英二 Lv1</span>
       </template>

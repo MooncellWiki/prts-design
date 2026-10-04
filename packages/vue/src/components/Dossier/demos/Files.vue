@@ -14,7 +14,6 @@ interface DossierFile {
   /** 页签文字 + 第二行小字（解锁条件的短写） */
   tab: string;
   short: string;
-  en: string;
   unlock: string;
   /** 首段加粗的小标题（【源石技艺概览】） */
   lead?: string;
@@ -41,7 +40,6 @@ const files: DossierFile[] = [
     name: "record",
     tab: "客观履历",
     short: "初始开放",
-    en: "Objective Record",
     unlock: "初始开放",
     paras: [
       "陈，龙门高级警司，龙门近卫局特别督察组组长，毕业于维多利亚皇家近卫学校，成绩优异，表现突出。在龙门近卫局供职期间，力主取缔龙门境内非法活动，对抗暴力犯罪和有组织犯罪，追缉武装逃犯与国际重犯等行动，并取得多项重大成果。",
@@ -52,7 +50,6 @@ const files: DossierFile[] = [
     name: "clinical",
     tab: "临床诊断分析",
     short: "信赖 25%",
-    en: "Clinical Analysis",
     unlock: "提升信赖至25%以查看更多信息",
     redacted: "【应龙门近卫局要求，不予公开】",
     paras: [
@@ -64,7 +61,6 @@ const files: DossierFile[] = [
     name: "archive1",
     tab: "档案资料一",
     short: "信赖 50%",
-    en: "Archive 1",
     unlock: "提升信赖至50%以查看更多信息",
     lead: "【源石技艺概览】",
     paras: [
@@ -77,7 +73,6 @@ const files: DossierFile[] = [
     name: "archive2",
     tab: "档案资料二",
     short: "信赖 100%",
-    en: "Archive 2",
     unlock: "提升信赖至100%以查看更多信息",
     paras: [
       "陈以全常规科目A和全教官推荐的优秀成绩自维多利亚皇家近卫学校毕业。回到龙门之后，她几乎立刻就加入了龙门近卫局。",
@@ -94,7 +89,6 @@ const files: DossierFile[] = [
     name: "archive3",
     tab: "档案资料三",
     short: "信赖 150%",
-    en: "Archive 3",
     unlock: "提升信赖至150%以查看更多信息",
     paras: [
       "当然，陈并不是一个完全的工作狂人或警务机器。",
@@ -113,7 +107,6 @@ const files: DossierFile[] = [
     name: "archive4",
     tab: "档案资料四",
     short: "信赖 200%",
-    en: "Archive 4",
     unlock: "提升信赖至200%以查看更多信息",
     lead: "【权限记录】",
     paras: [
@@ -126,7 +119,6 @@ const files: DossierFile[] = [
     name: "promotion",
     tab: "晋升记录",
     short: "精英二",
-    en: "Promotion Record",
     unlock: "提升至精英阶段2以查看更多信息",
     paras: [
       "她一定会回来。",
@@ -139,7 +131,7 @@ const files: DossierFile[] = [
   <AkTabs placement="left" label="人员档案">
     <AkTabPane name="profile" display-directive="show:lazy">
       <template #tab>基础档案<small>初始开放</small></template>
-      <AkDossier title="基础档案" en="Profile" unlock="初始开放">
+      <AkDossier title="基础档案" unlock="初始开放">
         <AkKv>
           <AkKvItem v-for="[k, v] in profile" :key="k" :term="k">{{ v }}</AkKvItem>
         </AkKv>
@@ -147,7 +139,7 @@ const files: DossierFile[] = [
     </AkTabPane>
     <AkTabPane name="exam" display-directive="show:lazy">
       <template #tab>综合体检测试<small>初始开放</small></template>
-      <AkDossier title="综合体检测试" en="Physical Exam" unlock="初始开放">
+      <AkDossier title="综合体检测试" unlock="初始开放">
         <AkAttrs compact>
           <AkAttr name="物理强度" value="优良" />
           <AkAttr name="战场机动" value="标准" />
@@ -161,7 +153,7 @@ const files: DossierFile[] = [
     </AkTabPane>
     <AkTabPane v-for="f in files" :key="f.name" :name="f.name" display-directive="show:lazy">
       <template #tab>{{ f.tab }}<small>{{ f.short }}</small></template>
-      <AkDossier :title="f.tab" :en="f.en" :unlock="f.unlock">
+      <AkDossier :title="f.tab" :unlock="f.unlock">
         <p v-if="f.redacted"><AkRedacted>{{ f.redacted }}</AkRedacted></p>
         <p v-for="(p, i) in f.paras" :key="i"><template v-if="i === 0 && f.lead"><b>{{ f.lead }}</b><br /></template>{{ p }}</p>
         <p v-if="f.sign" class="ak-fg-muted">{{ f.sign }}</p>

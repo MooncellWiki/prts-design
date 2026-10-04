@@ -3,7 +3,7 @@ title: 区块标题 Heading
 component: heading
 ---
 
-模板 / 首页的区块标题：中文标题 + Bender 大写英文副题（「技能 SKILLS」），左侧 8px 主色粗竖条；英文只是装饰层，中文负责信息。Naive UI 没有对应组件（最近的是 `n-page-header` 的 title / subtitle / `#extra`）。
+模板 / 首页的区块标题：中文标题，左侧 8px 主色粗竖条；可带一段 Bender 大写英文副题（「危机合约 CONTINGENCY CONTRACT」）。英文只是装饰层，中文负责信息——留给专题 / 活动页头这类一页一处的标题，一页里成组的区块标题只写中文（见[字体排印 · 双语标题](/foundations/typography#双语标题)）。Naive UI 没有对应组件（最近的是 `n-page-header` 的 title / subtitle / `#extra`）。
 
 正文里编辑写的 `== 章节 ==` 由皮肤的 MediaWiki 内容样式负责（左色条 + 细底线），这里是模板 / 小部件自己输出的标题。
 

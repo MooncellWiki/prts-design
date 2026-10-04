@@ -11,7 +11,7 @@ const meta = {
   component: AkArchive,
   subcomponents: { AkArchivePlay },
   tags: ["autodocs"],
-  args: { title: "情报资料一", kicker: "Intel · 未获得时档案", unlock: "通关主题曲 2-2", unlockLabel: "解锁条件" },
+  args: { title: "情报资料一", kicker: "未获得时档案", unlock: "通关主题曲 2-2", unlockLabel: "解锁条件" },
   render: args => ({
     components: { AkArchive, AkArchivePlay },
     setup: () => ({ args }),

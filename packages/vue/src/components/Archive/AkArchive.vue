@@ -7,7 +7,7 @@ withDefaults(
   defineProps<{
     /** 标题（h4） */
     title: string;
-    /** 标题前的小标（Record · 密录 1 / Paradox · 悖论模拟） */
+    /** 标题前的小标（密录 1 / 悖论模拟） */
     kicker?: string;
     /** 解锁条件（纯文本）；要放精英 / 信赖 / 关卡号时改用 #unlock 插槽 */
     unlock?: string;

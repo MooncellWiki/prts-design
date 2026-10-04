@@ -8,7 +8,7 @@ const text = `龙门近卫局警司，特别督察组组长。
 </script>
 
 <template>
-  <AkArchive kicker="Intel · 未获得时档案" title="情报资料一">
+  <AkArchive kicker="未获得时档案" title="情报资料一">
     <template #unlock>通关主题曲 <a class="ak-stage-code" href="#">2-2</a></template>
     <p><b>【陈】</b><br />{{ text }}</p>
   </AkArchive>

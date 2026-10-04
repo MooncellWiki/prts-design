@@ -19,7 +19,7 @@
 
 1. **Monochrome first** — 大面积黑/白/灰承载信息；青只用于选中、链接、主动作、强调条、文字高亮（`<mark>` / `:target` / 表格当前行都是同一块淡青底）；黄为次强调（稀有度/提示/通知徽标），不做荧光笔；红只表示危险与"NEW/BREAKING"（未读计数不算）。
 2. **Square, not rounded** — `border-radius: 0`，也不做切角 / 斜切 / 斜带；层级与状态用色条、黑白反转、角标三角表达。输入框允许 2px。默认的圆只有两处：单选钮（圆是单选的通用语义）与道具图标 `.ak-item` 的圆框——后者是游戏道具底图（sprite_item_r*）本身，属素材不属 UI 盒子，照游戏 / 现网原样叠图。其余的圆都是有语义、要显式选用的形状：计数徽标（单个数字是正圆、多位是胶囊）、环形进度 `.ak-ring`、按钮加载态的圆弧、敌人头像底、骨架屏 `--circle`，以及确需时才用的 `.ak-avatar--round` / `.ak-btn--pill`。色条 + 细框的盒子（pre / 消息 / 面板头 / 模组卡 / 弹层顶条 …）用 `border-image` 把色条与 1px 框直角拼接——不同宽度的 border 会被浏览器在角上斜接（miter）出一道小斜边，那也是斜边（[令牌 · 形状](/foundations/size#形状) 有写法）。
-3. **Latin as ornament** — 大写拉丁展示字（Novecento/Bender/Oswald）只做标题旁英文、编号、数值、水印；中文永远用思源黑体，行高 1.7。
+3. **Latin as ornament** — 大写拉丁展示字（Novecento/Bender/Oswald）只做标题旁英文、编号、数值、水印；标题旁英文一页一两处，内容多的页面不给成排的标题逐个配英文（见[字体排印 · 双语标题](/foundations/typography#双语标题)）；中文永远用思源黑体，行高 1.7。
 4. **Two canonical themes** — 游戏本身是双色世界（主界面/作战为黑，档案/商店为白灰）。两套主题等价，用 MW 1.43 `skin-theme-clientpref-*` 切换。
 5. **Wiki-native** — 先把 wikitext 产物（标题、表格、TOC、引用、图库、TabberNeue、Cargo）做好，再谈组件（见 [MediaWiki 内容样式](/content/)）；组件是纯 CSS 类，可写进模板/TemplateStyles。
 6. **Traceable tokens** — 每个颜色标明出处（官网 CSS / 解包精灵采样 / gamedata），不用"看起来像"（见[色彩 · 原始色板](/foundations/color#原始色板)）。
@@ -28,7 +28,7 @@
 
 DO：标题左侧粗色条 + 短横条；色条/黑白反转/角标表示选中；HUD 级数值 / 编号 / 大写小标签用 Bender（粗体或大字号、独立出现），表格与正文里的连续数字用正文字体 + 等宽数字（见[字体排印 · Bender 的使用边界](/foundations/typography#bender-的使用边界)）；青色只给选中 / 主动作 / 链接；白色线稿图标亮色下 `filter: invert(1)`；斜纹表示危险/施工/禁用；黑白反转做主动作。
 
-DON'T：圆角卡片、阴影堆叠、玻璃拟态；切角、平行四边形、斜带、border 斜接出来的小斜边；辉光文字；金黄 `#FFD429` 做主色；大写英文替代中文标题；正文用 Orbitron/等宽；非官方稀有度色；**青色给不可点的装饰文字**——青 = 链接 / 选中 / 焦点 / 主动作，卡片 eyebrow、标题英文副标、页眉命名空间这类 overline 小标签用 `--ak-fg-muted`（同 `.ak-overline` / `.ak-stat__label` / `.ak-attr__label`；亮色下 `#0098DC` 压白底只有 3.2:1，11px 小字也过不了 AA）。例外：活动卡 `.ak-event__type` 带「进行中」状态、Hero 黑底海报上的 eyebrow 留青。
+DON'T：圆角卡片、阴影堆叠、玻璃拟态；切角、平行四边形、斜带、border 斜接出来的小斜边；辉光文字；金黄 `#FFD429` 做主色；大写英文替代中文标题；内容多的页面里成排的中英并排标题（区块 / 章节 / 面板标题逐个配英文副题）；正文用 Orbitron/等宽；非官方稀有度色；**青色给不可点的装饰文字**——青 = 链接 / 选中 / 焦点 / 主动作，卡片 eyebrow、标题英文副标、页眉命名空间这类 overline 小标签用 `--ak-fg-muted`（同 `.ak-overline` / `.ak-stat__label` / `.ak-attr__label`；亮色下 `#0098DC` 压白底只有 3.2:1，11px 小字也过不了 AA）。例外：活动卡 `.ak-event__type` 带「进行中」状态、Hero 黑底海报上的 eyebrow 留青。
 
 ## 菱形：源石
 

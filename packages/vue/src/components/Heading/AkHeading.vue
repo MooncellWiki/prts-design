@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * 区块标题：中文标题 + Bender 大写英文副题（「技能 SKILLS」），左侧主色粗竖条；右侧可放「查看全部 ›」这类附加。
+ * 区块标题：中文标题 + 左侧主色粗竖条，可带 Bender 大写英文副题（「危机合约 CONTINGENCY CONTRACT」）；右侧可放「查看全部 ›」这类附加。
  * Naive 没有对应组件（最近的是 NPageHeader 的 title / subtitle / #extra）。标题元素是真正的 h1–h6，进页面大纲。
  */
 import { computed } from "vue";
@@ -9,7 +9,7 @@ const props = withDefaults(
   defineProps<{
     /** 标题（也可写在默认插槽里） */
     title?: string;
-    /** 英文副题（Bender 大写灰字）：并排时跟在标题右边，stack 时叠在标题上方当眉题（「Chapter 08」） */
+    /** 英文副题（Bender 大写灰字）：并排时跟在标题右边，stack 时叠在标题上方当眉题（「Chapter 08」）。一页一两处；成组的区块标题不写 */
     en?: string;
     /** 标题级别，渲染成 h1–h6 */
     level?: 1 | 2 | 3 | 4 | 5 | 6;

@@ -618,7 +618,7 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
     const res = $('#hr-result');
     if (!state.sel.size) {
       const ref = reference();
-      res.innerHTML = `<div class="ak-heading ak-heading--underline hr-ref-head"><h2 class="ak-heading__title">保底速查</h2><span class="ak-heading__en" lang="en">Guarantees</span><span class="ak-heading__aside">时限 9:00 · 共 ${ref.length} 组</span></div>`
+      res.innerHTML = `<div class="ak-heading ak-heading--underline hr-ref-head"><h2 class="ak-heading__title">保底速查</h2><span class="ak-heading__aside">时限 9:00 · 共 ${ref.length} 组</span></div>`
         + [5, 4].map(m => [m, ref.filter(c => c.min === m)]).filter(([, l]) => l.length).map(([m, l]) => tierHtml(m, `保底 ${m}★`, l, { grid: true, level: 3 })).join('');
       return;
     }

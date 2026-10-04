@@ -3,7 +3,7 @@ title: 档案 Dossier
 component: dossier
 ---
 
-同现网 <code v-pre>{{人员档案}}</code> 的一段：标题行（中文 + 英文小标 + 右侧解锁条件）+ 正文。正文的 `<p>` 保留换行（`white-space: pre-line`），游戏文本里的 `\n` 可以原样放进一个 `<p>`。
+同现网 <code v-pre>{{人员档案}}</code> 的一段：标题行（中文 + 可选的英文小标 + 右侧解锁条件）+ 正文。正文的 `<p>` 保留换行（`white-space: pre-line`），游戏文本里的 `\n` 可以原样放进一个 `<p>`。
 
 ## 档案条目 · 涂黑
 
@@ -19,7 +19,7 @@ component: dossier
 
 ## 人员档案
 
-干员页的 9 段档案：竖排[标签页](/components/tabs)（`placement="left"`）每页放一个 `AkDossier`；「基础档案」里是[键值表](/arknights/kv)，「综合体检测试」是紧凑的[属性面板](/arknights/attrs)。页签第二行小字写解锁条件的短写；面板用 `display-directive="show:lazy"`，切到过的页保留。
+干员页的 9 段档案：竖排[标签页](/components/tabs)（`placement="left"`）每页放一个 `AkDossier`；「基础档案」里是[键值表](/arknights/kv)，「综合体检测试」是紧凑的[属性面板](/arknights/attrs)。页签第二行小字写解锁条件的短写；9 段成组出现，标题只写中文、不带 `en`（见[字体排印 · 双语标题](/foundations/typography#双语标题)）；面板用 `display-directive="show:lazy"`，切到过的页保留。
 
 @demo Dossier/Files
 

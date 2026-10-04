@@ -12,7 +12,7 @@ import AkRedacted from "../AkRedacted.vue";
       <p>现作为特别人员协助罗德岛行动，并为现场提供战术指挥支援。</p>
     </AkDossier>
     <!-- 涂黑：悬停 / 聚焦时显出，点一下常显 -->
-    <AkDossier title="临床诊断分析" en="Clinical Analysis" unlock="提升信赖至25%以查看更多信息">
+    <AkDossier title="临床诊断分析" unlock="提升信赖至25%以查看更多信息">
       <p><AkRedacted>【应龙门近卫局要求，不予公开】</AkRedacted></p>
       <p>她是有来做体检啦，只是档案被拿走了，我这里可没留底。嗯？是龙门方面的要求啊。</p>
       <p class="ak-fg-muted">——医疗干员R.T.</p>

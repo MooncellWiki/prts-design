@@ -21,7 +21,7 @@ const pots = [
     <AkPanel title="公告" en="Notice" inverse collapsible>
       <p class="ak-fs-sm ak-m-0">反转标题栏 + 可折叠：点标题栏收起；聚焦标题后 Enter / Space 也行。</p>
     </AkPanel>
-    <AkPanel v-model="open" title="潜能提升" en="Potential" collapsible title-tag="h3">
+    <AkPanel v-model="open" title="潜能提升" collapsible title-tag="h3">
       <template #header-extra><AkTag size="sm" variant="outline">5 项</AkTag></template>
       <ul class="ak-m-0 ak-fs-sm">
         <li v-for="p in pots" :key="p.lv">潜能 {{ p.lv }}：{{ p.text }}</li>

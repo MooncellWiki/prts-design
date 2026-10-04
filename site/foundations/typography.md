@@ -83,6 +83,10 @@ Bender 是游戏 HUD 字——粗体、大字号、独立出现时才成立。14
 
 中文标题永远是主角；英文是跟在旁边 / 上方的装饰层（大写、展示字、灰色），不替代中文。`.ak-bilingual` 是装饰语言里的纯排版类（上下两行，`--row` 横排）；带色条的章节标题用[标题 Heading](/components/heading) 组件（英文在右侧，`--stack` 放到上方做 kicker）。
 
+**一页一两处，不成排。** 英文副题是给页面定调的，留给一页只出现一次的标题：页面标题、专题 / 活动页头（`.ak-heading--lg`、[Hero](/arknights/hero)）。内容多的页面（首页、干员页、一览页、工具页）里成组出现的标题——区块标题、章节标题、面板标题、卡片眉题、档案条目——**只写中文**：同一条信息中英各写一遍，中文读者看两遍，外文读者照样读不懂中文那半；十几个标题每个都拖一段灰色大写字，装饰就成了噪声。正文的 `== 章节 ==` 是编辑写的 wikitext，本来也带不了英文。
+
+英文本身是信息时不算双语标题，照常写：干员 / 技能的外文名、编号、关卡码、章节号眉题（「Chapter 08」）。要照顾外文读者，按浏览器语言只出一种（[首页 · 双语标签](/patterns/home#双语标签)），不并排。
+
 ```html demo
 <div class="ak-flex ak-gap-6 ak-wrap ak-items-center">
   <div class="ak-bilingual" style="font-size:28px"><span class="ak-bilingual__cn">干员档案</span><span class="ak-bilingual__en">Operator Files</span></div>

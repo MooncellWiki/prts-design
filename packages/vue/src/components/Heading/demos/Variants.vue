@@ -4,8 +4,8 @@ import AkHeading from "../AkHeading.vue";
 
 <template>
   <div>
-    <AkHeading title="技能" en="Skills" class="ak-mt-0" />
-    <AkHeading title="干员档案" en="Operator Files" variant="underline" />
+    <AkHeading title="技能" class="ak-mt-0" />
+    <AkHeading title="干员档案" variant="underline" />
     <AkHeading title="危机合约" en="Contingency Contract" size="lg" />
   </div>
 </template>
