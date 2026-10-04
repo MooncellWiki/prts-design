@@ -14,7 +14,7 @@ import { dirname, resolve } from 'node:path';
 import { normToken, props, settle, snapshot, styleAt, SLOTS, type Row, type Snap } from './support/computed.ts';
 import { test, expect } from './support/test.ts';
 
-const PAGES = ['home', 'operators', 'items', 'operator', 'recruit'];
+const PAGES = ['home', 'operators', 'enemies', 'items', 'operator', 'recruit'];
 const DIR = 'preview';
 const NOW = Date.parse('2026-09-27T12:00:00+08:00');   // 首页时钟 / 倒计时 / 今日开放状态才可复现
 const BASELINE = resolve(import.meta.dirname, '../_verify/snapshots', DIR);

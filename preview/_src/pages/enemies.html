@@ -1,0 +1,515 @@
+<!--page
+order: 6
+nav: 敌人一览（列表 / 筛选页）
+title: 敌人一览 - PRTS · 列表 / 筛选页样例
+crumb: 首页 > 敌人一览
+h1: 敌人一览
+h1en: Enemies
+indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">现网数据快照</span>
+actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+lastmod: 2025年3月1日 (六) 00:07
+-->
+<!--head
+<script src="vendor/enemies/data.js"></script>   <!-- 现网 Widget 运行时取的那份 JSON（敌人一览/数据：每个敌人一条）的快照，scripts/fetch-enemies.ts 抓取；生产环境 = Widget 照旧自己取 -->
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   敌人一览 · Enemy list — 现网「敌人一览」（= prts-widgets 的 EnemiesListV2 Widget）的重新设计，排布同干员一览：
+   筛选 → 工具条（搜索 · 排序 · 显示方式）→ 结果栏（条数 · 已选条件 · 复制链接 · 分页）→ 结果（表格 / 卡片 / 头像）。
+   现网：两块折叠面板（筛选 4 行 / 六维筛选 6 行，每行 = 标题 + 全选 / 清除 + 一排按钮）→ 搜索框 + 一枚「简」钮 → 一张十三栏的表。
+   筛选项与匹配规则对着游戏的敌人图鉴（EnemyHandbookShuffleViewModel），数据是现网那份 JSON 的快照（1710 个敌人）。
+   这里的一切都是「Widget 自己的东西」：生产环境 = prts-widgets 的 EnemiesListV2 输出下面这些结构（.ak-* 是设计系统组件，.el-* 是它自己的排布），样式 = Widget 的样式表；
+   页面脚本只是 Widget 的替身。开头「0. 页面级」段是这份静态预览的补丁，别照抄——同干员一览样例。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. 页面级：预览骨架的补丁（同 operators.html 的「0. 页面级」：无目录页把目录导轨让给主列） ── */
+.ak-toc, .ak-local-nav__toc { display: none; }
+.ak-main { padding-right: 0; }
+.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
+.catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
+@media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }   /* 手机上白纸的左右内边距让给卡片 */
+
+/* ── 1. 筛选 ──
+ *  分两层：
+ *   · 常用（一直在）：地位 · 行动方式 / 种类 / 攻击方式 · 伤害类型——游戏敌人图鉴筛选面板的那五组（地位 / 种类 / 攻击方式 / 伤害类型 / 行动方式），选项少的两组并进别的行里；
+ *   · 属性筛选（一枚整行的开关钮，默认收起）：八项属性各一行，选项都是 SS … E，芯片等宽、上下对成列；悬停 / 聚焦给出这一档的数值范围。
+ *  匹配同游戏（CheckShuffleInfo）：一行里选了几项是「或」，行与行之间是「且」。
+ *  其余同干员一览：每行 = 标签 + 筛选芯片 .ak-chip；选中后行标签左缘出青条、露出「清除」；会筛出 0 条的芯片压淡（.is-empty，仍可点）；不设「全选」。 */
+.el-filter { margin: 0 0 var(--ak-space-3); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
+.el-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); }   /* 标签列随本组最长的标签定宽，各行对齐 */
+.el-rows[hidden] { display: none; }
+.el-row { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; }
+.el-row + .el-row { border-top: 1px solid var(--ak-border); }
+.el-row__label { display: flex; align-items: baseline; gap: 10px; padding: 12px var(--ak-space-4) 8px var(--ak-space-3); border-left: var(--ak-bar-w) solid transparent;
+  font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1.4; color: var(--ak-fg-secondary); white-space: nowrap; }
+.el-row.has-active > .el-row__label { border-left-color: var(--ak-accent); color: var(--ak-fg); }
+.el-row__clear { all: unset; font-size: var(--ak-fs-xs); font-weight: 500; color: var(--ak-link); cursor: pointer; }
+.el-row__clear:hover { text-decoration: underline; }
+.el-row__clear:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.el-row:not(.has-active) .el-row__clear { visibility: hidden; }   /* 「清除」横在标签右边；没选中时只藏不撤，标签列的宽度不随选中跳动 */
+.el-row__opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px var(--ak-space-3) 8px 0; min-width: 0; }
+.el-filter .ak-chip.is-empty:not([aria-pressed="true"]) { opacity: .38; }
+.el-filter .ak-chip:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+/* 一行里并排的第二项（地位行里的「行动方式」、攻击方式行里的「伤害类型」）：小标签 + 芯片，前面一道竖线 */
+.el-inline { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-left: 10px; padding-left: 16px; border-left: 1px solid var(--ak-border); }
+.el-inline__label { margin-right: 6px; font-weight: 600; font-size: var(--ak-fs-sm); color: var(--ak-fg-secondary); }
+.el-inline.has-active > .el-inline__label { color: var(--ak-fg); }
+/* 地位的颜色，同敌人卡 .ak-enemy 的左色条：精英橙、领袖红，普通没有颜色。地位行芯片上的色块是结果里色条的图例 */
+.el [data-rank="elite"] { --_rank: var(--ak-orange-500); }
+.el [data-rank="boss"] { --_rank: var(--ak-red-700); }
+.el-rank { width: 7px; height: 7px; background: var(--_rank); }
+/* 属性筛选钮：整条是按钮，左缘色条同行标签（里面有已选项时变青）；右端的开合记号同干员一览的「高级筛选」 */
+.el-more { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 0 var(--ak-space-4) 0 var(--ak-space-3); cursor: pointer; user-select: none;
+  background: var(--ak-bg-surface-2); border-top: 1px solid var(--ak-border); border-left: var(--ak-bar-w) solid var(--ak-border-strong); font-weight: 700; font-size: var(--ak-fs-sm); }
+.el-more:hover { background: var(--ak-bg-hover); }
+.el-more:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.el-more.has-active { border-left-color: var(--ak-accent); }
+.el-more .ak-en { font-size: 10px; color: var(--ak-fg-subtle); }
+.el-more__count:empty { display: none; }
+.el-more::after { content: ""; flex: none; width: 10px; height: 10px; margin-left: auto; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat; opacity: .6; transition: background-size var(--ak-dur-fast); }
+.el-more[aria-expanded="true"]::after { background-size: 100% 2px, 2px 0; }
+.el-rows--stats { border-top: 1px solid var(--ak-border); }
+.el-rows--stats .ak-chip { min-width: 48px; justify-content: center; box-sizing: border-box; font-family: var(--ak-font-label); font-weight: 700; }   /* 八行选项相同：等宽，上下对成列 */
+@media (max-width: 639px) {
+  .el-rows { grid-template-columns: minmax(0, 1fr); }
+  .el-row__label { align-items: center; gap: 4px 12px; padding: 8px var(--ak-space-3) 0 8px; white-space: normal; }
+  .el-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
+  .el-row.has-active > .el-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }   /* 标签在上、选项在下：青条接着往下画满一行 */
+  .el-inline { margin-left: 0; padding-left: 0; border-left: 0; flex-basis: 100%; }
+}
+
+/* ── 2. 工具条：搜索 · 排序 · 显示方式 ── */
+.el-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 0 0 var(--ak-space-3); padding: 10px var(--ak-space-3); background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
+.el-toolbar__search { flex: 1 1 240px; min-width: 0; }
+.el-field { display: inline-flex; align-items: center; gap: 8px; font-size: var(--ak-fs-xs); font-weight: 600; color: var(--ak-fg-muted); white-space: nowrap; }
+.el-field .ak-select { width: auto; min-height: 36px; color: var(--ak-fg); font-weight: 400; }
+.el-sort { gap: 0; } .el-sort > label { margin-right: 8px; } .el-sort > .ak-btn { margin-left: -1px; min-width: 76px; padding: 0 var(--ak-space-3); font-weight: 500; }   /* 排序项 + 升降：游戏图鉴的排序也是一枚升降钮 */
+.el-view .ak-btn { gap: 6px; }
+.el-view .ak-btn[aria-pressed="true"] { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); z-index: 1; }
+.el-view .ak-icon { width: 14px; height: 14px; }
+
+/* ── 3. 结果栏：条数 · 已选条件 · 复制链接 · 每页条数 · 分页 ── */
+.el-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 var(--ak-space-3); min-height: 32px; }
+.el-bar__count { flex: none; font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); white-space: nowrap; }
+.el-bar__count b { font: 700 var(--ak-fs-h3)/1 var(--ak-font-label); color: var(--ak-fg); font-variant-numeric: tabular-nums; margin-right: 2px; }
+.el-bar__active { flex: 1 1 200px; min-width: 0; align-items: center; }
+.el-bar__active .ak-tag { height: 24px; }
+.el-bar__active .ak-tag__remove { font-size: 14px; padding: 0 2px; margin-right: -4px; }
+.el-bar__active .ak-tag__remove:focus-visible { outline: 2px solid var(--ak-focus); }
+.el-bar__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.el-bar__tools .ak-select { width: auto; min-height: 32px; font-size: var(--ak-fs-xs); }
+.el-bar .ak-icon { width: 14px; height: 14px; }
+.el-pager .ak-icon { width: 14px; height: 14px; }
+.el-foot { display: flex; justify-content: flex-end; margin: var(--ak-space-4) 0 0; }
+@media (max-width: 639px) { .el-bar__tools { margin-left: 0; width: 100%; justify-content: space-between; } .el-pager { display: flex; flex: 1 0 100%; } .el-pager > * { flex: 1 1 0; min-width: 0; text-align: center; } .el-pager .ak-pagination__item { min-width: 26px; padding: 0 6px; } .el-foot { justify-content: center; } }
+
+/* ── 4. 头像 / 等级 / 能力：三种结果视图共用 ──
+ *  头像 = 方图原样铺满，图鉴编号叠在左上角的深色条上（游戏敌人图鉴的格子 EnemyHandBookItemView 同款：_viewPart + _idPart）。边长由外面用 --el-avatar 定。
+ *  不用 .ak-enemy__img（裁成圆的那种）：原图是方的，系统默认直角；也不写「NORMAL · B1」那行——编号在头像上，地位看色条。 */
+.el-avatar { position: relative; display: block; width: var(--el-avatar, 64px); height: var(--el-avatar, 64px); background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
+.el-avatar > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.el-avatar__index { position: absolute; top: 0; left: 0; box-sizing: border-box; min-width: 42%; padding: 2px 4px 1px; background: rgba(29, 31, 32, .78); color: #fff; font: 700 10px/1.15 var(--ak-font-label); letter-spacing: .02em; text-align: center; white-space: nowrap; }
+/* 等级：不另配颜色，只分轻重——S 档最重，往下一档比一档淡，一列扫下去先看到高的；?（游戏里隐藏数值的敌人）最淡 */
+.el-grade { font-family: var(--ak-font-label); font-weight: 600; color: var(--ak-fg-muted); }
+.el-grade[data-tier="s"] { font-weight: 700; color: var(--ak-fg); }
+.el-grade[data-tier="a"] { color: var(--ak-fg); }
+.el-grade[data-tier="b"] { color: var(--ak-fg-secondary); }
+.el-grade[data-tier="none"] { font-weight: 400; color: var(--ak-fg-subtle); }
+/* 能力全文：一行一条，行首的 · / ※（可被沉默）悬挂在外；小标题（游戏 abilityList 的 textFormat = TITLE）加粗 */
+.el-ability { font-size: var(--ak-fs-xs); line-height: 1.55; color: var(--ak-fg-secondary); }
+.el-ab__line, .el-ab__title { display: block; }
+.el-ab__line { padding-left: 1em; }
+.el-ab__line > i { float: left; width: 1em; margin-left: -1em; font-style: normal; text-align: center; color: var(--ak-fg-subtle); }
+.el-ab__title { font-weight: 700; color: var(--ak-fg); }
+.el-ab__title:not(:first-child) { margin-top: 4px; }
+.el-ability .ak-term:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
+.el-sub { display: block; font-size: var(--ak-fs-xs); line-height: 1.35; color: var(--ak-fg-muted); overflow-wrap: anywhere; }
+.el-strong { font-weight: 600; }
+
+/* ── 5. 结果 · 表格 ──
+ *  现网：一行十三栏，能力夹在中间占一栏（360 宽），长的把整行撑成十几行高，六项等级被挤到最右边。
+ *  这里：一个敌人 = 一个 <tbody>。上行是头像（带编号）+ 名称 + 种类 / 攻击方式 + 八项等级各占一列（点表头排序）；有能力的另起一行写全文。
+ *  地位看头像左边的色条。表头吸在页眉下。结果区窄于 1000（平板 / 手机）换成卡片，见 6。 */
+.el-table.ak-table { table-layout: fixed; font-size: var(--ak-fs-sm); }
+.el-table thead th { position: sticky; top: var(--ak-header-h); z-index: 2; padding: 9px 8px; white-space: nowrap; letter-spacing: 0; text-transform: none; }
+.el-table th > .ak-table__sort:hover { color: var(--ak-accent); }
+.el-table td { border-bottom: 0; padding: 8px 8px 5px; vertical-align: top; line-height: 1.4; }
+.el-table :is(th, td).el-c-stat { text-align: center; }
+.el-table :is(th, td).el-sep { border-left: 1px solid var(--ak-border); }   /* 生存四项 / 其余四项各成一组 */
+.el-table td.el-c-stat { font-size: var(--ak-fs-body); line-height: 1.3; }
+.el-table td.el-c-stat.is-sorted { background: var(--ak-accent-subtle); }
+.el-table tbody tr:hover td { background: none; }
+.el-table tbody.el-enemy { border-top: 1px solid var(--ak-border); }
+.el-table tbody.el-enemy > tr:first-child > :is(td, th) { padding-bottom: 9px; }
+.el-table tbody.el-enemy > tr:last-child > td.el-ability { padding-top: 5px; padding-bottom: 9px; border-top: 1px solid var(--ak-border-subtle); }   /* 能力行顶上一条弱线：比敌人之间的线弱一级 */
+.el-table tbody.el-enemy:hover td { background: var(--ak-bg-hover); }
+.el-table tbody.el-enemy:hover td.el-c-stat.is-sorted { background: var(--ak-accent-muted); }
+.el-table tbody th.el-c-name { padding: 8px 8px 9px; vertical-align: top; font-weight: 400; text-align: left; border-bottom: 0; line-height: 1.4; }
+.el-c-avatar { --el-avatar: 56px; box-shadow: inset 4px 0 0 var(--_rank, transparent); }   /* 精英 / 领袖在左缘出色条（同敌人卡的左边条） */
+.el-c-avatar > a { display: block; width: var(--el-avatar); margin-left: 8px; }
+.el-name { font-weight: 700; font-size: var(--ak-fs-body); line-height: 1.25; color: var(--ak-fg); text-decoration: none; overflow-wrap: anywhere; }
+.el-name:hover { color: var(--ak-accent); text-decoration: underline; }
+
+/* ── 6. 结果 · 卡片（结果区 < 1000 时表格换成它）──
+ *  外框是敌人卡 .ak-enemy（细框 + 精英 / 领袖的左色条）：头像 + 名字，下面接着摊开八项属性的 4 × 2 格与能力全文。 */
+.el-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--ak-space-2); }
+.el-card.ak-enemy { align-content: start; gap: 8px 12px; min-width: 0; }
+.el-card__id { align-self: center; min-width: 0; }
+.el-card__name { display: block; margin: 0 0 3px; line-height: 1.25; color: var(--ak-fg); text-decoration: none; overflow-wrap: anywhere; }
+.el-card__name:hover { color: var(--ak-accent); text-decoration: underline; }
+.el-card__stats { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 0; background: var(--ak-border); border: 1px solid var(--ak-border); }
+.el-card__stats > div { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; padding: 5px 8px; background: var(--ak-bg-surface); }
+.el-card__stats > div.is-sorted { background: var(--ak-accent-subtle); }
+.el-card__stats dt { font-size: max(10px, var(--ak-fs-cjk-min)); line-height: 1; font-weight: 500; color: var(--ak-fg-muted); white-space: nowrap; }
+.el-card__stats dd { margin: 0; font-size: var(--ak-fs-sm); line-height: 1; }
+.el-card p { grid-column: 1 / -1; margin: 0; }
+
+/* ── 7. 结果 · 头像：敌人卡 .ak-enemy 排成网格，整张卡是链接；按属性排序时卡上带出那项的等级 ── */
+.el-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); gap: var(--ak-space-2); }
+.el-cell.ak-enemy { align-items: center; min-width: 0; color: var(--ak-fg); text-decoration: none; transition: border-color var(--ak-dur-normal); }
+.el-cell.ak-enemy:hover { border-color: var(--ak-accent); color: var(--ak-fg); text-decoration: none; }
+.el-cell:is(.ak-enemy--elite, .ak-enemy--boss):hover { border-image-source: linear-gradient(to right, var(--_bar) 4px, var(--ak-accent) 4px); }   /* 悬停只换细框那一段，色条照旧 */
+.el-cell:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.el-cell__id { min-width: 0; }
+.el-cell .ak-enemy__name { line-height: 1.25; overflow-wrap: anywhere; }
+.el-cell__stat { margin-top: 3px; font-size: var(--ak-fs-xs); line-height: 1.2; color: var(--ak-fg-muted); }
+@media (max-width: 639px) { .el-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .el-cell.ak-enemy { --el-avatar: 52px; grid-template-columns: var(--el-avatar) 1fr; gap: 8px; padding: 8px; } }   /* 手机上一行两张：头像收小一号 */
+
+/* ── 8. 提示（能力里的 {{术语}}、属性筛选芯片的数值范围）：气泡挂在 body 上、按视口定位，不被表格裁掉 ── */
+.el-tip { position: fixed; left: 0; top: 0; max-width: min(340px, calc(100vw - 16px)); white-space: pre-line; line-height: 1.55; pointer-events: none; }
+</style>
+-->
+<div class="el ak-not-prose" id="el" data-no-toggle>
+
+<noscript><div class="ak-cbox ak-cbox--warning"><div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-warn"/></svg></div><div class="ak-cbox__body">敌人列表由脚本生成，需要启用 JavaScript。</div></div></noscript>
+
+<!-- 以下 = Widget 的输出（生产环境挂在 #root 上）。筛选面板与结果由脚本按数据生成；工具条 / 结果栏结构固定，直接写在这里 -->
+<div id="el-root" hidden>
+
+  <section class="el-filter" id="el-filter" aria-label="筛选"></section>
+
+  <div class="el-toolbar">
+    <label class="ak-search el-toolbar__search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input" type="search" id="el-search" placeholder="搜索敌人名称 / 编号 / 能力" aria-label="搜索敌人名称、图鉴编号或能力" autocomplete="off"></label>
+    <div class="el-field el-sort">
+      <label for="el-sort">排序</label>
+      <select class="ak-select" id="el-sort">
+        <option value="index">图鉴顺序</option><option value="name">名称</option>
+        <optgroup label="属性"><option value="endure">生命值</option><option value="attack">攻击力</option><option value="defence">防御力</option><option value="resistance">法术抗性</option><option value="moveSpeed">移动速度</option><option value="attackSpeed">攻击速度</option><option value="enemyRes">元素抗性</option><option value="enemyDamageRes">损伤抵抗</option></optgroup>
+      </select>
+      <button type="button" class="ak-btn" id="el-dir">升序 ↑</button>
+    </div>
+    <div class="ak-btn-group el-view" id="el-view" role="group" aria-label="显示方式">
+      <button type="button" class="ak-btn" data-view="0" aria-pressed="true"><svg class="ak-icon"><use href="#i-table"/></svg>表格</button>
+      <button type="button" class="ak-btn" data-view="1" aria-pressed="false"><svg class="ak-icon"><use href="#i-grid"/></svg>头像</button>
+    </div>
+  </div>
+
+  <div class="el-bar">
+    <div class="el-bar__count" id="el-count" role="status"></div>
+    <div class="el-bar__active ak-tags" id="el-active"></div>
+    <div class="el-bar__tools">
+      <button type="button" class="ak-btn ak-btn--sm ak-btn--ghost" id="el-copy"><svg class="ak-icon"><use href="#i-link"/></svg>复制链接</button>
+      <select class="ak-select" id="el-step" aria-label="每页条数"><option value="50">每页 50</option><option value="100">每页 100</option><option value="200">每页 200</option><option value="500">每页 500</option></select>
+      <nav class="ak-pagination el-pager" aria-label="分页"></nav>
+    </div>
+  </div>
+
+  <div id="el-result"></div>
+
+  <div class="el-foot"><nav class="ak-pagination el-pager" aria-label="分页（底部）"></nav></div>
+</div>
+
+</div>
+
+<script>
+/* 敌人一览脚本——prts-widgets EnemiesListV2 Widget 的替身：数据、筛选逻辑、能力的转换、分享链接的 # 参数都照它（src/widgets/EnemiesListV2/），输出的结构也与它一致。
+ * 生产环境这段不存在：Widget 用 Vue + @mooncellwiki/prts-design-vue 输出同样的结构。 */
+(function () {
+  'use strict';
+  const D = window.PRTS_ENEMIES, root = document.getElementById('el-root');
+  if (!D || !root) return;
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const WIKI = 'https://prts.wiki/w/', MEDIA = 'https://media.prts.wiki/';
+  const media = (m, file) => MEDIA + m[0] + '/' + m + '/' + encodeURIComponent(file);   // 同 Widget 的 getImagePath：文件名 md5 的前两位（快照里已算好）
+  /* ── 属性等级 ──
+   *  八项属性：[字段名, 表头, 全名, SS … D 九档的分界, 是否按攻击间隔分档]。分界取自游戏 enemy_handbook_table.levelInfoList
+   *  （EnemyHandBookEverViewModel._RefreshAttribute：min ≤ 数值 < max 记这一档）：一般是各档的下限；攻击速度按攻击间隔分档、越短越高，记的是各档的上限。 */
+  const GRADES = ['SS', 'S+', 'S', 'A+', 'A', 'B+', 'B', 'C', 'D', 'E'];
+  const COLS = [
+    ['endure', '生命', '生命值', [500000, 250000, 100000, 25000, 12000, 8000, 5000, 3500, 1000]],
+    ['attack', '攻击', '攻击力', [5000, 3000, 2000, 1500, 1000, 700, 500, 300, 200]],
+    ['defence', '防御', '防御力', [5000, 3000, 2000, 1200, 1000, 800, 500, 200, 100]],
+    ['resistance', '法抗', '法术抗性', [90, 80, 70, 60, 50, 30, 20, 10, 1]],
+    ['moveSpeed', '移速', '移动速度', [2, 1.8, 1.5, 1.2, 1, 0.9, 0.7, 0.5, 0.3]],
+    ['attackSpeed', '攻速', '攻击速度', [0.5, 0.8, 1, 1.2, 1.7, 2.6, 3.5, 5, 6.9], true],
+    ['enemyRes', '元抗', '元素抗性', [90, 80, 70, 60, 50, 30, 20, 10, 1]],
+    ['enemyDamageRes', '损抗', '损伤抵抗', [90, 80, 70, 60, 50, 30, 20, 10, 1]],
+  ];
+  const isStat = k => COLS.some(c => c[0] === k);
+  /* 这一档对应的数值范围，筛选芯片的提示用：「生命值 A：12000 – 25000」 */
+  function gradeRange([, , full, bounds, interval], grade) {
+    const i = GRADES.indexOf(grade), outer = bounds[i - 1], inner = bounds[i];
+    const [min, max] = interval ? [outer ?? 0, inner] : [inner ?? 0, outer];
+    const range = max === undefined ? '≥ ' + min : min === 0 ? '< ' + max : min + ' – ' + max;
+    return full + ' ' + grade + '：' + (interval ? '攻击间隔 ' + range + ' 秒' : range);
+  }
+  const gradeRank = g => { const i = GRADES.indexOf(g); return i === -1 ? null : GRADES.length - i; };   // SS 最大；? 等认不出的没有数
+  const grade = g => `<span class="el-grade" data-tier="${{ S: 's', A: 'a', B: 'b' }[g[0]] || (g === '?' ? 'none' : 'low')}">${esc(g)}</span>`;
+  /* ── 能力：数据里的 HTML → 设计系统的写法（照 Widget 的 convertAbility）──
+   *  数据是机器人按游戏的 abilityList 拼的，只有这几种写法：<br> 分行；行首 · = 普通能力，※ = 可被沉默；color:#FF4F0B 的 span = 小标题；
+   *  color:#00FFFF 的 span = 关键词（→ .ak-rt-kw）；{{术语}} 的 .mc-tooltips（→ .ak-term[data-tip]）。
+   *  不走 innerHTML：其余的 < > 都是正文（能力里把别的敌人写成 <源石虫>、<PRTS>），当成标签解析就被吞掉了——现网正是这样。 */
+  const TOKEN = /<br\s*\/?>|<span class="mc-tooltips"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>|<span style="color:\s*(#[0-9a-f]{6});?">(.*?)<\/span>/gi;
+  const strip = s => s.replace(/<[^>]*>/g, '');
+  function ability(src) {
+    const lines = []; let line = { html: '', plain: '', title: false }, last = 0;
+    const text = s => { line.html += esc(s); line.plain += s; };
+    const flush = () => { if (line.plain) lines.push(line); line = { html: '', plain: '', title: false }; };
+    for (const m of src.matchAll(TOKEN)) {
+      text(src.slice(last, m.index)); last = m.index + m[0].length;
+      const [, term, tip, color, colored] = m;
+      if (term !== undefined) { const name = strip(term); line.html += `<span class="ak-term" tabindex="0" data-tip="${esc(strip(tip.replace(/<br\s*\/?>/gi, '\n')).trim())}">${esc(name)}</span>`; line.plain += name; }
+      else if (color === undefined) flush();
+      else if (color.toUpperCase() === '#FF4F0B') { text(strip(colored)); line.title = true; }
+      else if (color.toUpperCase() === '#00FFFF') { const w = strip(colored); line.html += `<span class="ak-rt-kw">${esc(w)}</span>`; line.plain += w; }
+      else text(strip(colored));
+    }
+    text(src.slice(last)); flush();
+    return {
+      html: lines.map(l => (l.title ? `<span class="el-ab__title">${l.html}</span>` : /^[·※]/.test(l.html) ? `<span class="el-ab__line"><i>${l.html[0]}</i>${l.html.slice(1)}</span>` : `<span class="el-ab__line">${l.html}</span>`)).join(''),
+      plain: lines.map(l => l.plain).join('\n'),
+    };
+  }
+  /* ── 数据：每行按 D.fields 的次序 → 一个敌人 ── */
+  const RANK = { 精英: 'elite', 领袖: 'boss' };
+  const words = s => String(s || '').split(/\s+/).filter(Boolean);
+  const enemies = D.rows.map(r => {
+    const d = Object.fromEntries(D.fields.map((k, i) => [k, r[i]])), ab = ability(d.ability || '');
+    return {
+      index: d.enemyIndex, sortId: d.sortId, name: d.name, am: d.am,
+      href: WIKI + encodeURIComponent(String(d.enemyLink || d.name).replace(/ /g, '_')).replace(/%2F/g, '/'),
+      race: d.enemyRace, level: d.enemyLevel, rank: RANK[d.enemyLevel] || 'normal',
+      attackType: words(d.attackType), damageType: words(d.damageType), motion: d.motion,
+      stats: Object.fromEntries(COLS.map(([k]) => [k, d[k] || '?'])),
+      abilityHtml: ab.html, plainAbility: ab.plain,
+    };
+  });
+  /* ── 筛选项 ──
+   *  常用五组同游戏敌人图鉴的筛选面板（EnemyHandbookShuffleViewModel：地位 / 种类 / 攻击方式 / 伤害类型 / 行动方式）；字段名同数据，也是分享链接里的写法。
+   *  种类按 enemy_handbook_table.raceData 的 sortId 排，没有种类的归「其他」（游戏的 RaceShuffleItem.isOther）。 */
+  const QUICK = [
+    { id: 'enemyLevel', title: '地位', opts: ['普通', '精英', '领袖'], values: e => [e.level] },
+    { id: 'motion', title: '行动方式', opts: ['地面', '飞行'], values: e => [e.motion] },
+    { id: 'enemyRace', title: '种类', opts: ['感染生物', '无人机', '萨卡兹', '宿主', '海怪', '法术造物', '化物', '机械', '野生动物', '坍缩体', '源石造物', '其他'], values: e => [e.race] },
+    { id: 'attackType', title: '攻击方式', opts: ['近战', '远程', '不攻击'], values: e => e.attackType },
+    { id: 'damageType', title: '伤害类型', opts: ['物理', '法术', '治疗', '无'], values: e => e.damageType },
+  ];
+  const STATS = COLS.map(col => ({ id: col[0], title: col[2], opts: GRADES, tips: GRADES.map(g => gradeRange(col, g)), values: e => [e.stats[col[0]]], stat: true }));
+  const filters = QUICK.concat(STATS).map(f => Object.assign({ sel: new Set() }, f));
+  const byId = Object.fromEntries(filters.map(f => [f.id, f]));
+  const ADV_KEY = 'elFilterAdvanced';   // 属性筛选开没开
+  /* ── 状态 ── */
+  const DEFAULT_VIEW = window.innerWidth < 640 ? 1 : 0;   // 手机上默认头像，其余默认表格；进页面时定下来
+  const FIRST_DIR = k => (isStat(k) ? -1 : 1);   // 选中一种排序时先给的方向：图鉴顺序、名称升序，属性降序（等级高的在前）
+  const state = { q: '', sort: { key: 'index', dir: 1 }, view: DEFAULT_VIEW, page: 1, step: 50, compact: false };
+  let advOpen = false;
+  try { advOpen = localStorage.getItem(ADV_KEY) === '1'; } catch (e) {}
+  /* ── 筛选逻辑（同游戏图鉴的 CheckShuffleInfo：一行里选了几项是「或」，行与行之间是「且」；同时会近战和远程的敌人选哪个都算）── */
+  const match = (f, e, sel) => !sel.size || f.values(e).some(v => sel.has(v));
+  const needle = () => state.q.trim().toLowerCase();
+  const matchText = (e, q) => !q || [e.name, e.index, e.plainAbility].some(t => t.toLowerCase().includes(q));   // 名称 / 图鉴编号 / 能力（不含术语提示的正文）
+  const pass = (e, skip) => filters.every(f => f === skip || match(f, e, f.sel));
+  /* ── 排序 = 排序项 × 升降 ──
+   *  游戏图鉴只有一种排法（EnemyHandBookEverViewModel.CompareTo 比 sortId）加一枚升降钮；名称与八项属性的等级是现网表头上就能排的。同值时按图鉴顺序。 */
+  function sorted(list) {
+    const { key, dir } = state.sort, out = list.slice(), byIndex = (a, b) => a.sortId - b.sortId;
+    if (key === 'index') return out.sort((a, b) => byIndex(a, b) * dir);
+    if (key === 'name') return out.sort((a, b) => a.name.localeCompare(b.name, 'zh') * dir || byIndex(a, b));
+    return out.sort((a, b) => { const x = gradeRank(a.stats[key]), y = gradeRank(b.stats[key]); return (x === null || y === null ? (x === null) - (y === null) : (x - y) * dir) || byIndex(a, b); });   // 没有等级的不分升降都排最后
+  }
+  /* ── 分享链接的 # 参数（写法照干员一览：<字段>=精英;领袖、_s 搜索、_o 排序项-升降、_d 显示方式 0 表格 / 1 头像）──
+   *  只在打开页面（和地址栏的 # 变了）时读，不往回写——现网没有地址栏参数，刷新页面就是清空；分享走结果栏的「复制链接」。 */
+  function readHash() {
+    filters.forEach(f => f.sel.clear());
+    Object.assign(state, { q: '', sort: { key: 'index', dir: 1 }, view: DEFAULT_VIEW });
+    for (const [k, v] of new URLSearchParams(location.hash.slice(1))) {
+      if (k === '_s') state.q = v;
+      else if (k === '_o') { const m = /^(\w+)-([ad])$/.exec(v); if (m && (m[1] === 'index' || m[1] === 'name' || isStat(m[1]))) state.sort = { key: m[1], dir: m[2] === 'a' ? 1 : -1 }; }
+      else if (k === '_d') { if (/^[01]$/.test(v)) state.view = +v; }
+      else if (byId[k]) v.split(';').forEach(o => { if (byId[k].opts.includes(o)) byId[k].sel.add(o); });
+    }
+    if (STATS.some(f => byId[f.id].sel.size)) advOpen = true;   // 链接里带着属性筛选：面板展开，不然那几个条件只在结果栏里看得到
+  }
+  function buildHash() {
+    const p = new URLSearchParams();
+    filters.forEach(f => { if (f.sel.size) p.set(f.id, f.opts.filter(o => f.sel.has(o)).join(';')); });
+    if (state.q) p.set('_s', state.q);
+    const so = state.sort; if (so.key !== 'index' || so.dir !== 1) p.set('_o', so.key + '-' + (so.dir > 0 ? 'a' : 'd'));
+    if (state.view !== DEFAULT_VIEW) p.set('_d', String(state.view));
+    return p.toString();
+  }
+  /* ── 筛选面板 ── */
+  const fi = id => filters.indexOf(byId[id]);
+  const chips = f => { const i = filters.indexOf(f); return f.opts.map((o, n) => `<button type="button" class="ak-chip" data-f="${i}" data-o="${esc(o)}"${f.tips ? ` data-tip="${esc(f.tips[n])}"` : ''} aria-pressed="false">${f.id === 'enemyLevel' && RANK[o] ? `<i class="el-rank" data-rank="${RANK[o]}" aria-hidden="true"></i>` : ''}${esc(o)}</button>`).join(''); };
+  const rowHtml = (id, extra) => { const f = byId[id], i = fi(id); return `<div class="el-row" data-box="${i}" role="group" aria-labelledby="el-row-${i}">
+        <div class="el-row__label"><span id="el-row-${i}">${esc(f.title)}</span><button type="button" class="el-row__clear" data-clear="${i}" aria-label="清除「${esc(f.title)}」的选择">清除</button></div>
+        <div class="el-row__opts">${chips(f)}${extra || ''}</div></div>`; };
+  const inlineHtml = id => { const f = byId[id], i = fi(id); return `<span class="el-inline" data-box="${i}" role="group" aria-labelledby="el-row-${i}"><span class="el-inline__label" id="el-row-${i}">${esc(f.title)}</span>${chips(f)}</span>`; };
+  function renderFilters() {
+    $('#el-filter').innerHTML = `<div class="el-rows">
+        ${rowHtml('enemyLevel', inlineHtml('motion'))}${rowHtml('enemyRace')}${rowHtml('attackType', inlineHtml('damageType'))}
+      </div>
+      <button type="button" class="el-more" id="el-more" aria-expanded="${advOpen}" aria-controls="el-stats"><span>属性筛选</span><span class="ak-en">Attributes</span><span class="el-more__count ak-tag ak-tag--sm ak-tag--accent-soft"></span></button>
+      <div class="el-rows el-rows--stats" id="el-stats"${advOpen ? '' : ' hidden'}>${STATS.map(f => rowHtml(f.id)).join('')}</div>`;
+  }
+  function setAdv(open) {
+    advOpen = open;
+    try { localStorage.setItem(ADV_KEY, open ? '1' : '0'); } catch (e) {}
+    $('#el-more').setAttribute('aria-expanded', open); $('#el-stats').hidden = !open;
+  }
+  function updateFilters() {
+    const q = needle();
+    let total = 0;
+    filters.forEach((f, i) => {
+      const box = $(`[data-box="${i}"]`);
+      box.classList.toggle('has-active', f.sel.size > 0);
+      if (f.stat) total += f.sel.size;
+      const present = new Set(enemies.filter(e => matchText(e, q) && pass(e, f)).flatMap(e => f.values(e)));   // 其余条件都满足的敌人在这一行上有哪些值：没有的那几项点了会筛出 0 条
+      $$(`.ak-chip[data-f="${i}"]`, box).forEach(b => {
+        const on = f.sel.has(b.dataset.o);
+        b.setAttribute('aria-pressed', on);
+        b.classList.toggle('is-empty', !on && !present.has(b.dataset.o));
+      });
+    });
+    $('#el-more').classList.toggle('has-active', total > 0); $('.el-more__count').textContent = total ? '已选 ' + total : '';
+  }
+  /* ── 结果 ── */
+  const sortKey = () => (isStat(state.sort.key) ? state.sort.key : null);
+  const avatar = e => `<span class="el-avatar"><img src="${media(e.am, `头像_敌人_${e.name}.png`)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">${e.index ? `<span class="el-avatar__index">${esc(e.index)}</span>` : ''}</span>`;
+  const rankText = e => (e.rank !== 'normal' ? `<span class="ak-sr-only">${esc(e.level)}</span>` : '');   // 地位只画成色条，读屏另给一遍文字
+  const enemyCls = e => 'ak-enemy' + (e.rank !== 'normal' ? ' ak-enemy--' + e.rank : '');
+  const ariaSort = k => (state.sort.key === k ? ` aria-sort="${state.sort.dir > 0 ? 'ascending' : 'descending'}"` : '');
+  function tableHtml(list) {
+    const sk = sortKey();
+    const th = COLS.map(([key, short, full], i) => `<th scope="col" class="el-c-stat${i % 4 ? '' : ' el-sep'}" title="${full}"${ariaSort(key)}><button type="button" class="ak-table__sort" data-sort="${key}">${short}</button></th>`).join('');
+    const rows = list.map(e => {
+      const span = e.abilityHtml ? 2 : 1;
+      const td = COLS.map(([key], i) => `<td class="el-c-stat${i % 4 ? '' : ' el-sep'}${sk === key ? ' is-sorted' : ''}">${grade(e.stats[key])}</td>`).join('');
+      return `<tbody class="el-enemy" data-rank="${e.rank}"><tr>
+        <td class="el-c-avatar" rowspan="${span}"><a href="${e.href}" tabindex="-1" aria-hidden="true">${avatar(e)}</a></td>
+        <th scope="row" class="el-c-name" rowspan="${span}"><a class="el-name" href="${e.href}">${esc(e.name)}</a>${rankText(e)}</th>
+        <td><span class="el-strong">${esc(e.race)}</span><span class="el-sub">${esc(e.motion)}</span></td>
+        <td><span>${esc(e.attackType.join(' · '))}</span><span class="el-sub">${esc(e.damageType.join(' · '))}</span></td>${td}
+      </tr>${e.abilityHtml ? `<tr><td colspan="${COLS.length + 2}" class="el-ability" aria-label="能力">${e.abilityHtml}</td></tr>` : ''}</tbody>`;
+    }).join('');
+    return `<table class="ak-table el-table"><colgroup><col style="width:82px"><col style="width:20%"><col style="width:11%"><col style="width:12%">${'<col>'.repeat(COLS.length)}</colgroup>
+      <thead><tr><th scope="col"><span class="ak-sr-only">头像</span></th><th scope="col"${ariaSort('name')}><button type="button" class="ak-table__sort" data-sort="name">敌人</button></th><th scope="col">种类 / 行动</th><th scope="col">攻击 / 伤害</th>${th}</tr></thead>${rows}</table>`;
+  }
+  function cardsHtml(list) {
+    const sk = sortKey();
+    return `<div class="el-cards">${list.map(e => `<article class="el-card ${enemyCls(e)}">
+        <a href="${e.href}" tabindex="-1" aria-hidden="true">${avatar(e)}</a>
+        <div class="el-card__id"><a class="ak-enemy__name el-card__name" href="${e.href}">${esc(e.name)}</a>${rankText(e)}<span class="el-sub">${[e.race, e.motion, ...e.attackType, ...e.damageType].filter(Boolean).map(esc).join(' · ')}</span></div>
+        <dl class="el-card__stats">${COLS.map(([key, short]) => `<div${sk === key ? ' class="is-sorted"' : ''}><dt>${short}</dt><dd>${grade(e.stats[key])}</dd></div>`).join('')}</dl>
+        ${e.abilityHtml ? `<p class="el-ability">${e.abilityHtml}</p>` : ''}
+      </article>`).join('')}</div>`;
+  }
+  function gridHtml(list) {
+    const col = COLS.find(c => c[0] === sortKey());
+    return `<div class="el-grid">${list.map(e => `<a class="el-cell ${enemyCls(e)}" href="${e.href}">${avatar(e)}<div class="el-cell__id"><div class="ak-enemy__name">${esc(e.name)}</div>${rankText(e)}${col ? `<div class="el-cell__stat">${col[1]} ${grade(e.stats[col[0]])}</div>` : ''}</div></a>`).join('')}</div>`;
+  }
+  const emptyHtml = () => `<div class="ak-empty"><svg class="ak-empty__icon"><use href="#i-empty"/></svg><p class="ak-empty__title">没有符合条件的敌人</p><p>放宽几项筛选条件，或者<button type="button" class="ak-btn ak-btn--link" data-reset>清除全部条件</button>。</p></div>`;
+  function pagerHtml(pages) {
+    const p = state.page, items = [];
+    const btn = (n, label, extra) => `<button type="button" class="ak-pagination__item${extra || ''}" data-page="${n}"${n === p && !label ? ' aria-current="page"' : ''}${label ? ` aria-label="${label}"` : ''}>${label ? `<svg class="ak-icon"><use href="#i-chevron-${label === '上一页' ? 'left' : 'right'}"/></svg>` : n}</button>`;
+    items.push(btn(Math.max(1, p - 1), '上一页', p === 1 ? ' is-disabled' : ''));
+    let prev = 0;
+    for (let n = 1; n <= pages; n++) {
+      if (n !== 1 && n !== pages && Math.abs(n - p) > 1 && !(p <= 3 && n <= 4) && !(p >= pages - 2 && n >= pages - 3)) continue;
+      if (n - prev > 1) items.push('<span class="ak-pagination__ellipsis">…</span>');
+      items.push(btn(n, '', n === p ? ' is-active' : '')); prev = n;
+    }
+    items.push(btn(Math.min(pages, p + 1), '下一页', p === pages ? ' is-disabled' : ''));
+    return pages > 1 ? items.join('') : '';
+  }
+  function renderActive() {
+    const out = [];
+    if (state.q) out.push(`<span class="ak-tag">搜索：${esc(state.q)}<button type="button" class="ak-tag__remove" data-unq aria-label="清除搜索">×</button></span>`);
+    filters.forEach((f, i) => f.opts.forEach(o => { if (f.sel.has(o)) out.push(`<span class="ak-tag">${esc(f.title)}：${esc(o)}<button type="button" class="ak-tag__remove" data-f="${i}" data-o="${esc(o)}" aria-label="移除「${esc(f.title)}：${esc(o)}」">×</button></span>`); }));
+    if (out.length > 1) out.push('<button type="button" class="ak-btn ak-btn--link ak-btn--xs" data-reset>清除全部</button>');
+    $('#el-active').innerHTML = out.join('');
+  }
+  function renderResults() {
+    const q = needle();
+    const list = sorted(enemies.filter(e => matchText(e, q) && pass(e)));
+    const pages = Math.max(1, Math.ceil(list.length / state.step));
+    state.page = Math.min(Math.max(1, state.page), pages);
+    const slice = list.slice((state.page - 1) * state.step, state.page * state.step);
+    $('#el-count').innerHTML = list.length === enemies.length ? `共 <b>${enemies.length}</b> 个敌人` : `<b>${list.length}</b> / ${enemies.length} 个敌人`;
+    $('#el-result').innerHTML = !list.length ? emptyHtml() : state.view === 1 ? gridHtml(slice) : state.compact ? cardsHtml(slice) : tableHtml(slice);
+    $$('.el-pager').forEach(n => { n.innerHTML = pagerHtml(pages); });
+    renderActive();
+  }
+  function renderControls() {
+    const dir = $('#el-dir'), down = state.sort.dir < 0;
+    $('#el-sort').value = state.sort.key;
+    dir.textContent = down ? '降序 ↓' : '升序 ↑'; dir.setAttribute('aria-label', '排序方向：' + (down ? '降序' : '升序') + '，点击切换');
+    $('#el-search').value = state.q; $('#el-step').value = String(state.step);
+    $$('#el-view > button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.view === state.view));
+  }
+  function update(keepPage) {
+    if (!keepPage) state.page = 1;
+    updateFilters(); renderControls(); renderResults();
+  }
+  const reset = () => { filters.forEach(f => f.sel.clear()); state.q = ''; update(); };   // 清除全部条件：筛选与搜索回默认；排序 / 显示方式不动
+  /* ── 事件 ── */
+  root.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t || !root.contains(t)) return;
+    if (t.id === 'el-more') setAdv(!advOpen);
+    else if (t.matches('.ak-chip, .ak-tag__remove[data-f]')) { const f = filters[+t.dataset.f], o = t.dataset.o; f.sel.has(o) ? f.sel.delete(o) : f.sel.add(o); update(); }
+    else if (t.dataset.clear) { filters[+t.dataset.clear].sel.clear(); update(); }
+    else if ('unq' in t.dataset) { state.q = ''; update(); }
+    else if ('reset' in t.dataset) reset();
+    else if (t.dataset.view) { state.view = +t.dataset.view; update(true); }
+    else if (t.dataset.sort) { const k = t.dataset.sort, s = state.sort; state.sort = s.key !== k ? { key: k, dir: FIRST_DIR(k) } : s.dir === FIRST_DIR(k) ? { key: k, dir: -s.dir } : { key: 'index', dir: 1 }; update(); }   // 点表头：先排 → 反向 → 回到默认（图鉴顺序）
+    else if (t.id === 'el-dir') { state.sort = { key: state.sort.key, dir: -state.sort.dir }; update(); }
+    else if (t.dataset.page) {
+      state.page = +t.dataset.page; update(true);
+      if (t.closest('.el-foot')) $('#el-result').scrollIntoView({ block: 'start' });   // 在底部翻页：回到结果开头
+    }
+    else if (t.id === 'el-copy') {
+      const h = buildHash(), url = location.origin + location.pathname + location.search + (h ? '#' + h : '');   // 当前的筛选 / 搜索 / 排序 / 显示方式写成 # 参数；地址栏本身不动
+      const done = () => window.akdsToast && window.akdsToast(esc(decodeURIComponent(url)), 'success', '链接已复制');
+      navigator.clipboard ? navigator.clipboard.writeText(url).then(done, () => {}) : done();
+    }
+  });
+  root.addEventListener('change', e => {
+    const t = e.target;
+    if (t.id === 'el-sort') { state.sort = { key: t.value, dir: FIRST_DIR(t.value) }; update(); }
+    else if (t.id === 'el-step') { const first = (state.page - 1) * state.step; state.step = +t.value; state.page = Math.floor(first / state.step) + 1; update(true); }   // 换每页条数：停在原来第一条所在的页
+  });
+  $('#el-search').addEventListener('input', e => { state.q = e.target.value; state.page = 1; updateFilters(); renderResults(); });
+  root.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);   // 头像取不到（离线 / 站内还没传图）：留下深色底框和编号
+  const loadHash = () => { if (location.hash.includes('=')) { readHash(); return true; } return false; };   // 不带 = 的是页内锚点（#top），不当成清空
+  window.addEventListener('hashchange', () => { if (loadHash()) { setAdv(advOpen); update(); } });
+  /* 提示：.ak-tooltip 挂到 body，贴在锚点上方（放不下就放下方），左右不出视口 */
+  let tip = null;
+  const hideTip = () => { if (tip) { tip.remove(); tip = null; } };
+  const showTip = el => {
+    hideTip();
+    tip = document.createElement('div'); tip.className = 'ak-tooltip el-tip'; tip.setAttribute('role', 'tooltip'); tip.textContent = el.dataset.tip; document.body.appendChild(tip);
+    const r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.round(Math.min(Math.max(8, r.left + r.width / 2 - w / 2), document.documentElement.clientWidth - w - 8)) + 'px';
+    tip.style.top = Math.round(r.top - h - 6 < 8 ? r.bottom + 6 : r.top - h - 6) + 'px';
+  };
+  ['mouseover', 'focusin'].forEach(ev => root.addEventListener(ev, e => { const t = e.target.closest('[data-tip]'); if (t) showTip(t); }));
+  ['mouseout', 'focusout'].forEach(ev => root.addEventListener(ev, e => { if (e.target.closest('[data-tip]')) hideTip(); }));
+  window.addEventListener('scroll', hideTip, { passive: true });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+  /* 表格 ↔ 卡片：看结果区自己的宽度，不看视口（侧栏收起 / 展开都会改变它） */
+  const fit = () => { const c = root.clientWidth < 1000; if (c !== state.compact) { state.compact = c; return true; } return false; };
+  root.hidden = false;
+  loadHash(); renderFilters(); fit(); update();
+  if (window.ResizeObserver) new ResizeObserver(() => { if (fit() && state.view === 0) renderResults(); }).observe(root);
+})();
+</script>
