@@ -24,6 +24,17 @@
 .ak-page-heading--blank { display: none; }   /* 标题为空（MediaWiki:Mainpage-title = -） */
 .ak-page-heading__tagline { display: block; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); margin-top: 4px; line-height: 1.5; }
 .ak-page-heading__tagline:empty { display: none; }
+/* 复制短链接：标题末尾的一枚链条图标（a.ak-page-heading__shortlink，现网侧栏首组的「复制短链接」搬到这里）。href 就是短链接，脚本把点击变成复制；复制后挂 .is-copied 一小会儿——
+ * 图标换成对勾、变绿，不弹通知。字号取 h1 的 70%（图标 1em 见方），与标题隔 .4em。
+ * 两种放法：写在 h1 里、紧跟标题文字（静态页面）；或作 h1 的下一个兄弟，这时包装带 .ak-page-heading--shortlink、h1 改成 inline，图标仍跟在标题最后一个字后面，标题折行时也是
+ * （Skin:Arknights 走这条：h1 是核心输出的，它的文字 / 可访问名里不该多出一枚按钮）。 */
+.ak-page-heading--shortlink { font-size: var(--ak-fs-h1); line-height: 1.2; }   /* h1 成了 inline，行盒的支柱改由包装出：字号 / 行高取 h1 的，这一行与 h1 是块时一样高（包装自己的 16px / 1.7 会把行盒撑高 1px 多）；tagline 自带字号行高，不受影响 */
+.ak-page-heading--shortlink > .ak-page-header__title, .skin-arknights .ak-page-heading--shortlink > #firstHeading { display: inline; }
+.ak-page-heading__shortlink { display: inline-block; margin-left: .4em; font-size: calc(var(--ak-fs-h1) * .7); font-weight: 400; line-height: 1; letter-spacing: 0; color: var(--ak-link); text-decoration: none; vertical-align: baseline; cursor: pointer; transition: color var(--ak-dur-fast); }
+.ak-page-heading__shortlink:hover { color: var(--ak-link-hover); text-decoration: none; }
+.ak-page-heading__shortlink:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.ak-page-heading__shortlink .ak-icon { display: block; width: 1em; height: 1em; color: inherit; }
+.ak-page-heading__shortlink.is-copied, .ak-page-heading__shortlink.is-copied:hover { color: var(--ak-success); }
 /* ── 标题行：h1 + 页面动作簇（Citizen 式）──
  * 标题 flex:1，簇靠右、底线与标题青条底对齐；标题很长时整簇换到标题下方。不再有整条下划线页签——簇里没有「当前」要标。
  * DOM 仍按 MW 菜单顺序（associated-pages → views → variants → 更多），显示顺序由 order 定：讨论 → 查看历史 → 编辑 / 查看源代码 → ★ → 变体 → 更多。 */

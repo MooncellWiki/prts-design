@@ -481,7 +481,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
   </div>
 </header>
 
-<!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后，默认不占位（--ak-keyart-reveal 默认 0，设了才在版面之上露一条；chrome/keyart.css 负外边距，DOM 顺序不变） -->
+<!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 72px，各宽度相同；chrome/keyart.css 负外边距，DOM 顺序不变） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout">
@@ -505,7 +505,6 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
     <div id="MenuSidebar">
       <ul>
         <li><a href="#">首页</a></li>
-        <li><a class="copyUrl">复制短链接</a></li>
         <li><a href="#">支持我们</a></li>
         <li><a href="#">赞助者一览</a></li>
         <li><a href="#">反馈与建议</a></li>
@@ -555,7 +554,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
       <p>管理与编辑</p>
       <!-- 「特殊页面 / 上传文件」是工具箱里仅有的两条站点级链接：同 Citizen（moveUploadToSiteTools + addSiteTools）进侧栏站点导航而不是「更多」。
            皮肤实现：从 TOOLBOX 拆出，在 #MenuSidebar 之后渲染成无标题门户 nav#p-site-tools（紧贴上一组，视觉上就是「管理与编辑」的延续；upload 仍由 MW 按权限决定是否输出）。 -->
-      <ul><li><a href="#">最近更改</a></li><li><a href="#">编辑指南</a></li><li><a href="#">常用代码</a></li><li><a href="#">模板一览</a></li><li><a href="#">贡献分数</a></li><li><a href="#">收支一览</a></li><li><a href="#">特殊贡献</a></li><li id="t-specialpages"><a href="#">特殊页面</a></li><li id="t-upload"><a href="#">上传文件</a></li></ul>
+      <ul><li><a href="#">最近更改</a></li><li><a href="#">编辑指南</a></li><li><a href="#">模板一览</a></li><li><a href="#">贡献分数</a></li><li><a href="#">收支一览</a></li><li><a href="#">特殊贡献</a></li><li id="t-specialpages"><a href="#">特殊页面</a></li><li id="t-upload"><a href="#">上传文件</a></li></ul>
       <!-- 现网 MenuSidebar 末尾的「Languages」组（三个 onclick 切语言的内联脚本链接）与「工具#vmsTB / #MSToolbox」组在新皮肤下都退役：
            语言切换统一在页眉用户菜单「界面设置」（ULS，#p-user-interface-preferences）；工具箱整组搬进标题行动作簇的「更多」（#p-tb）。侧栏只剩站点导航。 -->
     </div>
@@ -574,13 +573,14 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
         <!-- ═══ 标题行 ═══ h1 + 页面动作簇同一行（Citizen 式），不再有整条下划线页签。
              簇 = MW 的菜单按原顺序输出：associated-pages（页面 / 讨论）· views（阅读 / 历史 / 编辑 / ★）· [variants] · 更多（actions + TOOLBOX）；
              显示顺序由 CSS order 定：讨论 → 历史 → 编辑 → ★ → 更多。
+             标题末尾的链条图标 a.ak-page-heading__shortlink =「复制短链接」：现网侧栏首组的那一行搬到这里（皮肤配了 $wgArknightsShortUrl 才输出，href 就是短链接，点击复制、图标变对勾一下）。
              li.selected（当前命名空间页签「页面」、「阅读」）只留给读屏器：它们只在不是当前态时才是一个动作——讨论页上显示「页面」当返回、历史 / diff 页上显示「阅读」当返回。
              「编辑」是簇里唯一的主色实底（#ca-edit / #ca-ve-edit）；不可编辑时这一格是「查看源代码」（#ca-viewsource），跟讨论 / 查看历史同一种幽灵按钮。
              「更多」= .ak-menu 卡片里两组门户：操作 #p-cactions · 工具 #p-tb（整个工具箱从侧栏搬来，id 不变，addPortletLink('p-tb') 照常）。
              工具箱里的「特殊页面 / 上传文件」不进这里——它们是站点级的，同 Citizen 放进侧栏站点导航（见侧栏「管理与编辑」末尾）。
              桌面带「更多」二字；<640 只留 ⋯，整簇只留图标（文字进 sr-only，title / accesskey 不变）。 -->
         <div class="ak-page-header__row">
-          <h1 id="firstHeading" class="ak-page-header__title">首页<span class="ak-en">PRTS · Arknights Wiki</span></h1>
+          <h1 id="firstHeading" class="ak-page-header__title">首页<a class="ak-page-heading__shortlink" href="#" title="复制本页面的短链接"><svg class="ak-icon" aria-hidden="true"><use href="#i-link"/></svg><span class="ak-sr-only">复制短链接</span></a><span class="ak-en">PRTS · Arknights Wiki</span></h1>
           <div class="ak-page-tools" id="ak-page-tools">
             <ul class="ak-page-tabs" id="p-associated-pages">
               <li class="selected" id="ca-nstab-main"><a href="#" title="查看内容页面"><svg class="ak-icon"><use href="#i-book"/></svg><span>页面</span></a></li>

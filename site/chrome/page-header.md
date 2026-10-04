@@ -13,6 +13,8 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 h1 思源 32px 800，左侧 8px 青色粗条（比正文 h2 的 4px 粗一档）；英文 / 日文副名放在 `<span class="ak-en">` 里，另起一行、半号、灰色大写。命名空间前缀 `.mw-page-title-namespace` 变灰。手机上随 `--ak-fs-h1` 的窄屏值降到 26px（见[字号 · 窄屏](/foundations/typography#窄屏)）。
 
+标题末尾可以跟一枚**复制短链接**的链条图标 `a.ak-page-heading__shortlink`（现网侧栏首组的「复制短链接」搬到这里，侧栏少一行）：`href` 就是短链接，脚本把点击变成复制，复制后挂 `.is-copied` 一小会儿——图标换成对勾、变绿，不弹通知。字号取 h1 的 70%、与标题隔 .4em。静态页面把它写在 h1 里、紧跟标题文字；Skin:Arknights 的 h1 是核心输出的，按钮作 h1 的下一个兄弟（标题的文字 / 可访问名不变），包装带 `.ak-page-heading--shortlink`、h1 改成 `inline`，图标仍跟在标题最后一个字后面。配了 `$wgArknightsShortUrl`（如 `/id/$1`，`$1` 是页面 ID）才输出。
+
 命名空间小标 `.ak-page-header__ns` 与卡片 eyebrow 同一种 overline：不可点的装饰文字，用 `--ak-fg-muted`，不上青（见[设计理念 · DO / DON'T](/foundations/principles#do-don-t)）。
 
 ## 动作簇
@@ -36,7 +38,7 @@ h1 思源 32px 800，左侧 8px 青色粗条（比正文 h2 的 4px 粗一档）
     <div class="mw-indicators"><span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">gamedata 2.7.61</span></div>
   </div>
   <div class="ak-page-header__row">
-    <h1 id="firstHeading" class="ak-page-header__title">陈<span class="ak-en">Ch'en · LM04</span></h1>
+    <h1 id="firstHeading" class="ak-page-header__title">陈<a class="ak-page-heading__shortlink" href="#" title="复制本页面的短链接"><svg class="ak-icon" aria-hidden="true"><use href="#i-link"/></svg><span class="ak-sr-only">复制短链接</span></a><span class="ak-en">Ch'en · LM04</span></h1>
     <div class="ak-page-tools" id="ak-page-tools">
       <ul class="ak-page-tabs" id="p-associated-pages">
         <li class="selected" id="ca-nstab-main"><a href="#" title="查看内容页面"><svg class="ak-icon"><use href="#i-book"/></svg><span>页面</span></a></li>
