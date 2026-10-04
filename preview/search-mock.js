@@ -117,7 +117,7 @@
 		{ id: 'category', trigger: '/cat', alias: '#', label: '分类', desc: '查找并浏览分类', placeholder: '搜索分类…',
 			search: ( q, signal ) => delay( 100, signal ).then( () => [ { id: 'cats', label: '分类', en: 'Categories', items: CATS.filter( ( c ) => !q || c.includes( q ) ).map( ( c ) => ( { type: 'category', label: '分类:' + c, url: '#cat-' + c, desc: Math.floor( 20 + Math.random() * 400 ) + ' 个页面' } ) ) } ] ) },
 		{ id: 'user', trigger: '/user', alias: '@', label: '用户', desc: '查找用户页 / 贡献', placeholder: '搜索用户…',
-			search: ( q, signal ) => delay( 100, signal ).then( () => [ { id: 'users', label: '用户', en: 'Users', items: USERS.filter( ( u ) => !q || u.toLowerCase().includes( q.toLowerCase() ) ).map( ( u ) => ( { type: 'user', label: u, url: '#user-' + u, desc: '用户页 · 贡献 · 讨论' } ) ) } ] ) },
+			search: ( q, signal ) => delay( 100, signal ).then( () => [ { id: 'users', label: '用户', en: 'Users', items: USERS.filter( ( u ) => !q || u.toLowerCase().includes( q.toLowerCase() ) ).map( ( u ) => ( { type: 'user', label: u, url: '#user-' + u } ) ) } ] ) },
 		{ id: 'file', trigger: '/file', alias: '~', label: '文件', desc: '查找图片与媒体文件', placeholder: '搜索文件…',
 			search: ( q, signal ) => delay( 100, signal ).then( () => [ { id: 'files', label: '文件', en: 'Files', items: FILES.filter( ( f ) => !q || f.includes( q ) ).map( ( f ) => ( { type: 'file', label: '文件:' + f, url: '#file-' + f, desc: 'PNG · 512×512' } ) ) } ] ) }
 	];

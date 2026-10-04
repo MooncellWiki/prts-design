@@ -6,11 +6,11 @@
  *  DOM（由 JS 生成，类名即契约）：
  *    .ak-palette-backdrop
  *    .ak-palette[role=dialog]
- *      __head   [ __back ] __icon [ __chip ] form.__form > input#searchInput  [ __clear ] __close  __loading
+ *      __head   [ __back ] __icon [ __chip ] form.__form > input#searchInput  [ __clear ] [ __close ]  __loading
  *      __body > __viewport > __list[role=listbox] > __group[role=group] > __label + __item[role=option] > __link( __thumb __text( __title __desc ) __meta ) + __actions
  *                          | __empty( __empty-title __empty-desc __shortcuts )
  *      __foot   __foot-left  __hints > span > kbd.ak-kbd
- *  开：点触发器 / 手机图标 / 键 "/"、Ctrl(⌘)K、accesskey F。关：Esc（有字先清空）/ 点遮罩 / 关闭按钮 / 选中结果。
+ *  开：点触发器 / 手机图标 / 键 "/"、Ctrl(⌘)K、accesskey F。关：Esc（有字先清空）/ 点遮罩 / 「取消」（手机、触屏才有）/ 选中结果。
  *  高亮：↑↓ 循环，回车打开；⇧回车全文搜索；结果未到时回车走 MW 原生 Go（精确跳转，无则全文）。 */
 .ak-palette-backdrop { position: fixed; inset: 0; z-index: var(--ak-z-modal); background: var(--ak-bg-overlay); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); animation: ak-fade-in var(--ak-dur-normal) var(--ak-ease-out); }
 .ak-palette { --_top: clamp(48px, 10vh, 120px); --_head-h: 56px; --_foot-h: 40px; position: fixed; z-index: calc(var(--ak-z-modal) + 1); top: var(--_top); left: 0; right: 0; margin-inline: auto; width: min(720px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--_top) * 2);
@@ -21,7 +21,7 @@
 @keyframes ak-palette-in { from { opacity: 0; transform: translateY(-8px); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0 0 0 0); } }
 @keyframes ak-palette-out { to { opacity: 0; transform: translateY(-6px); } }
 @keyframes ak-fade-out { to { opacity: 0; } }
-/* 头：图标 · [模式 chip] · 输入 · [清空] · 关闭 · 进度条 */
+/* 头：图标 · [模式 chip] · 输入 · [清空] · [取消] · 进度条 */
 .ak-palette__head { position: relative; flex: none; display: flex; align-items: center; gap: 4px; height: var(--_head-h); padding-right: 10px; border-bottom: 1px solid var(--ak-border); }
 .ak-palette__icon { flex: none; width: 20px; height: 20px; margin: 0 14px 0 18px; color: var(--ak-fg-muted); }
 .ak-palette__back { display: none; flex: none; width: 32px; height: 32px; margin-left: 10px; padding: 0; border: 0; background: transparent; color: var(--ak-fg-secondary); cursor: pointer; place-items: center; }
@@ -40,10 +40,9 @@
 .ak-palette__clear, .ak-palette__close { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; min-width: 28px; padding: 0 4px; border: 1px solid transparent; background: transparent; color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-xs); cursor: pointer; }
 .ak-palette__clear:hover, .ak-palette__close:hover { color: var(--ak-fg); border-color: var(--ak-border-strong); }
 .ak-palette__clear:focus-visible, .ak-palette__close:focus-visible, .ak-palette__back:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
-.ak-palette__clear { display: none; }
+.ak-palette__clear, .ak-palette__close { display: none; }   /* 「取消」只给手机 / 触屏（见文件末尾）：桌面按 Esc 或点遮罩，页脚有随状态变的 Esc 提示——这里不再放一个长得像键帽、点下去却和按键不一样的按钮 */
 .ak-palette.has-query .ak-palette__clear { display: inline-flex; }
 .ak-palette__clear svg { width: 16px; height: 16px; }
-.ak-palette__close > span { display: none; }   /* 桌面只显示 Esc 键帽；手机换成文字「取消」 */
 .ak-palette__loading { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; visibility: hidden; }
 .ak-palette.is-loading .ak-palette__loading { visibility: visible; }
 @media (forced-colors: active) { .ak-palette__loading { background: Canvas; } }   /* 强制色下保留 forced-colors.css 给 .ak-progress 的 Canvas 轨道：骨架在它之后加载，上面同特指度的 transparent 会盖掉 */
@@ -73,7 +72,8 @@
 .ak-palette__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .ak-palette__title { display: flex; align-items: baseline; gap: 8px; min-width: 0; font-size: var(--ak-fs-body); font-weight: 600; color: var(--ak-fg); }
 .ak-palette__title > bdi { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ak-palette__title mark { background: none; color: inherit; font-weight: 400; }   /* Codex 约定：已输入部分常规、补全部分加粗 */
+.ak-palette__title > .has-match { font-weight: 400; }   /* 有命中片段的标题：片段加粗、其余常规；没有的整条保持 600 */
+.ak-palette__title mark { padding: 0; background: none; color: inherit; font-weight: 700; }   /* padding: 0 —— 盖掉 base/typography.css 给 mark 的左右留白 */
 .ak-palette__title .ak-en { flex: none; font-size: 10px; font-weight: 700; color: var(--ak-fg-subtle); }
 .ak-palette__desc { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ak-palette__desc .ak-icon { width: 12px; height: 12px; vertical-align: -2px; margin-right: 3px; }
@@ -112,13 +112,13 @@
   .ak-palette__hints { display: none; }   /* 触屏不显示键盘提示 */
   .ak-palette__actions { visibility: visible; padding-right: 4px; }   /* 触屏没有悬停高亮：行内动作常显，点得到的就是看得到的 */
   .ak-palette__action { width: 36px; height: 36px; }
+  .ak-palette__close { display: inline-flex; }   /* 没有键盘可按 Esc */
 }
 @media (max-width: 639px) {
   .ak-palette { --_top: 8px; left: 8px; right: 8px; width: auto; max-height: calc(100dvh - 16px); }
   .ak-palette__list { max-height: calc(100dvh - 16px - var(--_head-h) - var(--_foot-h) - 4px); }
   .ak-palette__icon { margin: 0 10px 0 14px; }
-  .ak-palette__close .ak-kbd { display: none; }
-  .ak-palette__close > span { display: inline; }
+  .ak-palette__close { display: inline-flex; }
   .ak-palette__meta .ak-tag, .ak-palette__title .ak-en { display: none; }   /* 窄行：省掉类型标签与英文副标 */
   .ak-palette__foot-left .ak-en { display: none; }
 }

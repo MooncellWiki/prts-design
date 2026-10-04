@@ -13,8 +13,8 @@
  *    · 标题搜索不默认高亮第一条（同旧 Vector 的建议下拉）：没有高亮项时回车 → urls.go(q)（MW 原生 Go：精确跳转，无则全文），
  *      回车去哪只取决于输入的字，不取决于建议怎么排序 / 到没到。只有「精确命中」才预先高亮：标题（或 matched）与输入相同，
  *      或数据源标了 exact（本地索引的别名 / 拼音整词命中）。命令列表与模式（动作 / 分类 / 用户 / 文件）是选择器，仍默认高亮第一条。
- *    · ↑↓ 循环高亮，「没有高亮项」（= 回到输入框）也是循环里的一站（同 Google 的建议列表）：最后一条 ↓ → 输入框 ↓ → 第一条；第一条 ↑ → 输入框 ↑ → 最后一条。
- *      命令列表与模式是选择器、没有「前往」可回，首尾直接相接。回车打开高亮项（⌘/Ctrl 回车新标签），⇧回车全文搜索；继续输入会清掉旧列表上的高亮。
+ *    · ↑↓ 循环高亮，首尾直接相接（最后一条 ↓ → 第一条，第一条 ↑ → 最后一条）。「没有高亮项」只是起点，方向键不会绕回它：Go 的两个去向列表里都有
+ *      （精确命中的那一行、末尾的「全文搜索」），继续输入也会清掉高亮。回车打开高亮项（⌘/Ctrl 回车新标签），⇧回车全文搜索。
  *    · 输入框始终持有焦点（面板里点非控件的地方不夺焦；焦点万一落到面板外，按键仍归面板并把焦点拉回输入框），aria-activedescendant 播报高亮项；Tab 在面板内循环。
  *    · 鼠标 / 触控笔悬停会高亮所在行，手指点按不会（否则点一下就让行内动作显形并点中它）；触屏上行内动作常显（search-palette.css）。
  *    · 输入法组字中的按键（回车上屏、Esc、↑↓ 选字）全部交给输入法，组字结束后才按上面的规则处理。
@@ -100,12 +100,14 @@
 		return n === 'select' || n === 'textarea' || ( n === 'input' && ![ 'submit', 'reset', 'checkbox', 'radio', 'button' ].includes( t ) ) || el.isContentEditable;
 	}
 
-	/* 标题高亮：已输入部分 <mark>（常规字重），其余加粗 —— Codex SearchResultTitle 的约定 */
+	/* 标题高亮：命中的片段 <mark> 加粗、其余常规。匹配是任意位置的 indexOf，不只是前缀——Codex「已输入常规、补全加粗」只在前缀补全时读得通，
+	 * 命中在中间时像是渲染错了。没有命中片段的行（最近访问、命令、别名 / 拼音命中）整条保持标题字重 */
 	function titleNode( label, query, match ) {
 		const bdi = h( 'bdi' );
 		const q = ( query || '' ).trim();
 		const i = ( match !== false && q ) ? label.toLowerCase().indexOf( q.toLowerCase() ) : -1;
 		if ( i < 0 ) { bdi.textContent = label; return bdi; }
+		bdi.className = 'has-match';
 		bdi.append( label.slice( 0, i ) );
 		const m = h( 'mark' ); m.textContent = label.slice( i, i + q.length ); bdi.append( m );
 		bdi.append( label.slice( i + q.length ) );
@@ -150,6 +152,7 @@
 		input.setAttribute( 'aria-label', M.label );
 		input.placeholder = placeholder;
 		input.removeAttribute( 'accesskey' );   // MW 给的 accesskey F 由我们接管（否则聚焦到看不见的输入框）
+		input.removeAttribute( 'title' );   // MW 给的「搜索 XX [alt-shift-f]」是页眉输入框的悬停提示；面板已经开着，再提示「怎么打开」没有意义
 
 		/* ── 面板 DOM ── */
 		const backdrop = h( 'div', 'ak-palette-backdrop', { hidden: '' } );
@@ -159,8 +162,7 @@
 		const icon = svg( 'search', 'ak-palette__icon' );
 		const chip = h( 'span', 'ak-palette__chip' );
 		const clearBtn = h( 'button', 'ak-palette__clear', { type: 'button', 'aria-label': M.clear, title: M.clear } ); clearBtn.append( svg( 'close' ) );
-		const closeBtn = h( 'button', 'ak-palette__close', { type: 'button', 'aria-label': M.close } );
-		const closeKbd = h( 'kbd', 'ak-kbd' ); closeKbd.textContent = 'Esc'; const closeTxt = h( 'span' ); closeTxt.textContent = M.close; closeBtn.append( closeKbd, closeTxt );
+		const closeBtn = h( 'button', 'ak-palette__close', { type: 'button' } ); closeBtn.textContent = M.close;   // 「取消」：只在手机 / 触屏上显示（search-palette.css）；桌面按 Esc 或点遮罩，页脚有随状态变的 Esc 提示
 		const loading = h( 'div', 'ak-palette__loading ak-progress ak-progress--indeterminate', { 'aria-hidden': 'true' } );
 		head.append( backBtn, icon, chip, form, clearBtn, closeBtn, loading );
 		const body = h( 'div', 'ak-palette__body' );
@@ -520,10 +522,9 @@
 			// 输入法组字中的按键（选字 / 直接上屏的回车、撤销组字的 Esc、翻候选的 ↑↓）归输入法：否则回车会当成 Go 跳走、关面板，
 			// 失焦又让组字再上屏一遍（输入框里出现两份）。Safari 的上屏回车在 compositionend 之后才到、isComposing 已是 false，只剩 keyCode 229
 			if ( e.isComposing || e.keyCode === 229 ) { return; }
-			// ↑↓：标题搜索 / 空态里「没有高亮项」（回到输入框，回车 = Go）是循环里的一站；选择器（命令列表、模式）首尾直接相接
-			const picker = !!mode || query.trim()[ 0 ] === '/';
-			if ( e.key === 'ArrowDown' ) { e.preventDefault(); setActive( !picker && active === items.length - 1 ? -1 : active + 1 ); return; }
-			if ( e.key === 'ArrowUp' ) { e.preventDefault(); setActive( active < 0 || ( picker && active === 0 ) ? items.length - 1 : active - 1 ); return; }
+			// ↑↓：首尾直接相接。「没有高亮项」（回车 = Go）只是起点，方向键不会绕回它——Go 的两个去向列表里都有（精确命中的那一行、末尾的「全文搜索」），继续输入也会清掉高亮
+			if ( e.key === 'ArrowDown' ) { e.preventDefault(); setActive( active + 1 ); return; }
+			if ( e.key === 'ArrowUp' ) { e.preventDefault(); setActive( active <= 0 ? items.length - 1 : active - 1 ); return; }
 			if ( e.key === 'Home' && e.target === input && !query ) { e.preventDefault(); setActive( 0 ); return; }
 			if ( e.key === 'End' && e.target === input && !query ) { e.preventDefault(); setActive( items.length - 1 ); return; }
 			if ( e.key === 'Enter' ) {
@@ -545,8 +546,9 @@
 			if ( e.key === 'Backspace' && mode && !input.value && e.target === input ) { e.preventDefault(); exitMode(); return; }
 			if ( e.key === 'ArrowLeft' && mode && !input.value && e.target === input ) { e.preventDefault(); exitMode(); return; }
 			if ( e.key === 'Tab' ) {
-				// 焦点在面板内循环：输入框 → 清空 → 关闭 → 高亮行的动作 → 快捷入口 → 页脚按钮 → 回到输入框
-				const f = Array.from( root.querySelectorAll( 'input, button, a[href], [tabindex="0"]' ) ).filter( ( el ) => el.offsetParent !== null && !el.disabled && el.tabIndex !== -1 && !el.closest( '[hidden]' ) );
+				// 焦点在面板内循环：输入框 → 清空 →（手机 / 触屏：取消）→ 高亮行的动作 → 快捷入口 → 页脚按钮 → 回到输入框
+				// 没高亮的行里「移除 ×」是 visibility: hidden：offsetParent 照样非空、focus() 却落空，不筛掉的话焦点走到高亮行的 × 就再也出不去
+				const f = Array.from( root.querySelectorAll( 'input, button, a[href], [tabindex="0"]' ) ).filter( ( el ) => el.offsetParent !== null && !el.disabled && el.tabIndex !== -1 && !el.closest( '[hidden]' ) && getComputedStyle( el ).visibility !== 'hidden' );
 				if ( !f.length ) { return; }
 				let i = f.indexOf( document.activeElement ); if ( i < 0 ) { i = 0; }
 				i = ( i + ( e.shiftKey ? -1 : 1 ) + f.length ) % f.length;
