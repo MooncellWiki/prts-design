@@ -1,6 +1,6 @@
 {
   "name": "@mooncellwiki/prts-design-tokens",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "description": "PRTS Design · 明日方舟网页设计系统的设计令牌：W3C DTCG 格式的 JSON5 源 + CSS 变量版 tokens.css（亮 / 暗 / 跟随系统 / 局部主题）+ 解析后的 tokens.json（每个令牌带 CSS 写法与亮 / 暗解析值）",
   "license": "MIT",
   "type": "module",
