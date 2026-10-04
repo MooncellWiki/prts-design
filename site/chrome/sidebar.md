@@ -37,13 +37,25 @@ li.ak-tree__branch[.is-open][.is-current-path]
   > ul.ak-tree__list
 ```
 
-- 展开状态记在 `localStorage['akds-sidebar-tree']`（键 = 分组标题 / 标签路径；可折叠门户的整组开合也记在这里，键 `portlet:<id>`）；作者默认展开写 `li class="is-open"`，用户操作后以记忆为准。
-- 当前页所在分支（`a.selflink` / `li.is-active` / `href` 等于当前地址）总是自动展开，并加 `.is-current-path`（标签与导轨变淡青）。
-- 键盘 ← → 收起 / 展开。晚注入的内容由 MutationObserver 接住。
+同一份 DOM 有两种形态，按环境二选一：
 
-**悬停飞出**：桌面（能悬停的精确指针、≥1120）悬停一个**收起着的**分支，右侧飞出 `.ak-flyout` 预览它的子项（`position: fixed` 挂在 body 下，不受侧栏滚动裁切；同 `.ak-menu` 的细框 + 大阴影，青条只给悬停 / 当前项）；点击即就地展开并记忆。关闭飞出：`<aside class="ak-sidebar" data-flyout="off">` 或 `<html data-akds-flyout="off">`；触屏自动不启用。
+**飞出（桌面）**：能悬停的精确指针、≥1120 时，侧栏带 `.is-flyout`，分支**不就地展开**——侧栏的高度不随点开的分支变，矮窗口里也只需要滚这一小段。
 
-<SkinFrame :height="900" state="flyout" caption="悬停「档案」（收起着）→ 右侧飞出子项预览" />
+- 悬停分支，右侧飞出 `.ak-flyout` 列出它的子项（`position: fixed` 挂在 body 下，不受侧栏滚动裁切；同 `.ak-menu` 的细框 + 大阴影，青条只给悬停 / 当前项；多层子级在飞出层里全部展开）；移开即收。长的飞出层从页眉下沿起、在自己里面滚。
+- 点击分支（切换钮，或不是链接的标签）把飞出层钉住，移开不收；再点、Esc、点别处、页面 / 侧栏一滚就收起。
+- 键盘：切换钮上 Enter / Space / → 打开并把焦点移进飞出层，↑ ↓ Home End 在其中移动，Esc / ← 回到切换钮，Tab 收起后从切换钮接着往下走。切换钮的 `aria-expanded` 跟着飞出层开合。
+- 当前页所在分支（`a.selflink` / `li.is-active` / `href` 等于当前地址）只高亮：加 `.is-current-path`（标签与切换钮变淡青），不展开。
+
+**树（抽屉 / 触屏 / 关掉飞出时）**：<1120 的抽屉、没有悬停的设备，或 `<aside class="ak-sidebar" data-flyout="off">` / `<html data-akds-flyout="off">`：
+
+- 点击 / 键盘 ← → 就地展开、收起；展开状态记在 `localStorage['akds-sidebar-tree']`（键 = 分组标题 / 标签路径；可折叠门户的整组开合也记在这里，键 `portlet:<id>`）；作者默认展开写 `li class="is-open"`，用户操作后以记忆为准。
+- 当前页所在分支总是自动展开，并加 `.is-current-path`。
+
+`.is-open` 两种形态下都留在 DOM 上，飞出形态只是不显示；窗口跨过 1120 时形态跟着换。晚注入的内容由 MutationObserver 接住。无 JS 时所有层级全部展开。
+
+导轨吸在页眉之下、`max-height` 取视口剩下的高度，超出的在自己里面滚。它不写 `overscroll-behavior: contain`（同目录导轨、`.ak-menu`）：滚到头，或根本没有内滚时，滚轮照常带动页面；抽屉态页面是锁住的，才写。
+
+<SkinFrame :height="900" state="flyout" caption="悬停「档案」→ 右侧飞出它的子项" />
 
 ## 窄屏抽屉
 

@@ -2,7 +2,7 @@
 /* ═══ Key art（头图）＋ 画布底图 ═══
  *  .ak-keyart 是垫在 .ak-layout 背后的一幅通栏画，默认 --ak-keyart-h: 0、无 DOM 副作用；活动主题设 --ak-keyart-image + --ak-keyart-h 即出现
  *  （现网 body 背景里那幅头图的位置）。它是「背景」不是「横幅」：版面（侧栏 / 页面标题 / 目录）照常从页眉之下排起、压在画上，头图不把正文往下推——
- *  盒子的下外边距取负，把自己占的高度还给版面；--ak-keyart-reveal 是留在版面之上、不被压住的那一段（默认 72px：画先露一小条、版面不贴着页眉；0 = 完全不占位；= --ak-keyart-h 即旧的横幅带）。
+ *  盒子的下外边距取负，把自己占的高度还给版面；--ak-keyart-reveal 是留在版面之上、不被压住的那一段（默认 0 = 完全不占位：版面直接从页眉之下排起，侧栏首屏就在它吸顶的位置、整条都在视口里；设成 72px 之类先露一小条画；= --ak-keyart-h 即旧的横幅带）。
  *  画从页面顶端铺起：盒子上移一个页眉高、再用同样的 padding-top 把内容压回页眉之下，于是画的顶端在粘性页眉（更高的 z-index）背后 ——
  *  页眉是压在画上的一块黑玻璃，画在玻璃后面均匀地透出来（多少由 --ak-chrome-bg 的 alpha 决定），黑框 + 画是一整块。
  *  --ak-keyart-h 是页眉之下那段画的高度；-position / -size 相对整块（页眉 + 这一段）算。
@@ -33,6 +33,6 @@
 .ak-keyart::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--_under) + var(--_lead)); pointer-events: none; background: var(--ak-bg-canvas); opacity: var(--ak-keyart-veil);
   -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .146) calc(var(--_ramp) * .25), rgba(0, 0, 0, .473) calc(var(--_ramp) * .5), rgba(0, 0, 0, .813) calc(var(--_ramp) * .75), #000 var(--_ramp));
   mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .146) calc(var(--_ramp) * .25), rgba(0, 0, 0, .473) calc(var(--_ramp) * .5), rgba(0, 0, 0, .813) calc(var(--_ramp) * .75), #000 var(--_ramp)); }   /* 纱的上半：三次 Hermite 缓入（起点斜率 0），到版面内容起点浓到 -veil，再往下保持；终点斜率按默认几何（72 露出 / 280 画高 / 60%）对上背景里那层匀速的下半，接缝不折 */
-.ak-keyart__inner { position: relative; height: var(--_reveal); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; pointer-events: auto; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽，在页眉之下、版面之上——只有露出段那么高，默认只有 72px，要放东西就调高 -reveal */
-@media (max-width: 639px) { .ak-keyart { --_h: min(var(--ak-keyart-h), 40vw); --_reveal: min(var(--ak-keyart-reveal), var(--_h), 10vw); } }   /* 窄屏画只有 40vw 高；露出段令牌默认 0（tokens.css 窄屏块：版面直接从页眉之下排起），主题显式设了的也收到 10vw 以内 */
+.ak-keyart__inner { position: relative; height: var(--_reveal); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; pointer-events: auto; }   /* 主题若要在头图上放东西（活动标题 / 倒计时），放这里；与页眉三列同宽，在页眉之下、版面之上——只有露出段那么高，默认是 0，要放东西先给 -reveal 一个高度 */
+@media (max-width: 639px) { .ak-keyart { --_h: min(var(--ak-keyart-h), 40vw); --_reveal: min(var(--ak-keyart-reveal), var(--_h), 10vw); } }   /* 窄屏画只有 40vw 高；露出段令牌默认 0（版面直接从页眉之下排起），主题显式设了的收到 10vw 以内 */
 body.skin-arknights { background: var(--ak-bg-canvas) var(--ak-canvas-image) var(--ak-canvas-position) / var(--ak-canvas-size) var(--ak-canvas-repeat); background-attachment: var(--ak-canvas-attachment); }

@@ -19,8 +19,4 @@
       "space-section": { $value: "{size.space.space-6}", $description: "24（宽屏 32）" },
     },
   },
-  chrome: {
-    $description: "窄屏的头图：不留露出段，版面（页面标题 / 动作行）直接从页眉之下排起、压在画上——手机首屏寸土寸金，画仍垫在页眉玻璃与版面背后透出来。主题显式设了 --ak-keyart-reveal 的照它的（chrome/keyart.css 在窄屏再收到 10vw 以内）。",
-    "keyart-reveal": { $value: "0px", $description: "宽屏 72" },
-  },
 }

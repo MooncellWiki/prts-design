@@ -58,7 +58,7 @@ const BLOCKS: Block[] = [
   { title: '2a′. 作用域主题：2a 里引用语义令牌的几个，在作用域上按作用域的主题重新解析', selector: '.ak-scope[data-theme]', source: BASE, include: [LIGHT], only: refsTheme },
   { title: '2d. CHROME · 页眉 / 头图 / 画布 的主题接口', selector: ':root', source: [CHROME], include: [...BASE, LIGHT] },
   { title: '3. CODEX / MEDIAWIKI BRIDGE', selector: ':root, html.skin-theme-clientpref-night, :root[data-theme="dark"]', source: [CODEX], include: [...BASE, LIGHT], file: 'bridge' },
-  { title: '窄屏（≤ 639，与 Codex 的 640 断点一致）：标题档整档收一级（h4 / 正文及以下不动），版面 gutter / 页眉高 / 大区块间隔收紧，头图不留露出段；原始的 --ak-space-* 阶梯不动', media: '(max-width: 639px)', selector: ':root', source: [COMPACT], include: [...BASE, LIGHT] },
+  { title: '窄屏（≤ 639，与 Codex 的 640 断点一致）：标题档整档收一级（h4 / 正文及以下不动），版面 gutter / 页眉高 / 大区块间隔收紧；原始的 --ak-space-* 阶梯不动', media: '(max-width: 639px)', selector: ':root', source: [COMPACT], include: [...BASE, LIGHT] },
   { title: '低分屏：正文链把微软雅黑提到 Noto Sans SC 前面（Windows 100% / 125% 缩放下未 hinting 的 Noto 发虚；没装雅黑的系统不受影响）；中文小字抬到 12px（1× 屏上 9–11px 的汉字分不到足够像素）', media: '(max-resolution: 1.49dppx)', selector: ':root', source: [LOW_DPI], include: [...BASE, LIGHT] },
   { title: '高对比偏好：只有亮色吃得到（暗色块选择器特指度更高，压过这里的 :root——沿用原行为；.ak-scope[data-theme="light"] 与 2b′ 同特指度、本块在后，作用域亮色同样吃得到）', media: '(prefers-contrast: more)', selector: ':root,\n.ak-scope[data-theme="light"]', source: [CONTRAST], include: [...BASE, LIGHT] },
 ];

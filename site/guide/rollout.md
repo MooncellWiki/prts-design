@@ -14,8 +14,8 @@
 |---|---|
 | 亮 / 暗 / 跟随系统三态切换无闪烁；未登录也能持久化 | 待查 |
 | 干员页 / 关卡页 / 首页 / 特殊页（搜索、历史、差异、参数设置）截图对比 | 待查 |
-| 键盘可达：页眉、侧栏（树形展开 Enter / Space / ← / →）、页面动作簇、Tabber、对话框、下拉菜单 | 待查 |
-| 侧栏：现网 `#MenuSidebar` 注入后各层级可展开 / 记忆；`a.selflink` 所在路径自动展开；悬停飞出不被裁切 | 待查 |
+| 键盘可达：页眉、侧栏（桌面：切换钮 Enter / Space / → 打开飞出层，↑ ↓ / Esc / Tab；抽屉：树形展开 Enter / Space / ← / →）、页面动作簇、Tabber、对话框、下拉菜单 | 待查 |
+| 侧栏：现网 `#MenuSidebar` 注入后桌面各分支悬停 / 点击飞出、不被裁切、不钻到页眉底下，`a.selflink` 所在路径高亮；抽屉里各层级可展开 / 记忆，`a.selflink` 所在路径自动展开 | 待查 |
 | 对比度：`.ak-rt-*` 亮色值、`--ak-link`、`--ak-fg-muted` 全部 ≥ 4.5:1（见[可访问性](/foundations/accessibility#对比度)） | 待查 |
 | 移动端 ≤ 390 无横向滚动（表格走 `.ak-table-scroll` / `display: block`；`width: 100%` 的组件一律 `box-sizing: border-box`） | 样例页已在 360 / 414 用脚本核过 `scrollWidth === clientWidth`；上线前用真机 / DevTools 移动模式再核一遍 |
 | Gadget 兼容：列出依赖 Vector 选择器的小工具并迁移 | 待查 |

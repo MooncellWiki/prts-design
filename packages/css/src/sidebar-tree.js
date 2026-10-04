@@ -13,10 +13,15 @@
  *      > button.ak-tree__toggle[aria-expanded][aria-controls][aria-labelledby]
  *      > ul.ak-tree__list
  *
- *  状态：localStorage['akds-sidebar-tree'] = { "<分组>/<标签路径>": 1|0, "portlet:<id|标题>": 1|0 }
- *        当前页所在分支（a.selflink / .mw-selflink / li.is-active / li.selected / [aria-current] / href==location）总是自动展开。
- *  飞出：hover + fine pointer 且 ≥1120px 时，悬停「折叠中」的分支 → 右侧飞出预览（position:fixed，不受侧栏 overflow 裁切）；
- *        点击 / 键盘 → 行内展开并记忆。关闭方式：<aside class="ak-sidebar" data-flyout="off"> 或 <html data-akds-flyout="off">。
+ *  两种形态，同一份 DOM：
+ *  飞出（桌面：hover + fine pointer 且 ≥1120px，侧栏带 .is-flyout）：分支不就地展开——侧栏的高度不随点开的分支变，矮窗口里也只滚这一小段。
+ *        悬停分支 → 右侧飞出它的子项（position:fixed，不受侧栏 overflow 裁切），移开即收；点击分支（切换钮 / 非链接标签）→ 钉住，再点 / Esc / 点别处收起。
+ *        键盘：切换钮上 Enter / Space / → 打开并把焦点移进飞出层，↑ ↓ Home End 在其中移动，Esc / ← 回到切换钮，Tab 收起后接着往下走。
+ *        当前页所在分支只高亮（.is-current-path），不展开。
+ *  树（抽屉 <1120 / 触屏 / 关掉飞出时）：点击 / 键盘 → 行内展开并记忆，当前页所在分支自动展开。
+ *        关掉飞出：<aside class="ak-sidebar" data-flyout="off"> 或 <html data-akds-flyout="off">。
+ *  状态：localStorage['akds-sidebar-tree'] = { "<分组>/<标签路径>": 1|0, "portlet:<id|标题>": 1|0 }（只在树形态下读写展开；.is-open 一直留在 DOM 上，飞出形态由 CSS 不显示）
+ *        当前页 = a.selflink / .mw-selflink / li.is-active / li.selected / [aria-current] / href==location。
  * ═══════════════════════════════════════════════════════════════════════════ */
 ( function () {
 	'use strict';
@@ -65,14 +70,26 @@
 
 	function setOpen( li, open, persist ) {
 		li.classList.toggle( 'is-open', open );
-		var b = child( li, '.ak-tree__toggle' );
-		if ( b ) { b.setAttribute( 'aria-expanded', open ? 'true' : 'false' ); }
 		if ( persist !== false && li.dataset.akKey ) { state[ li.dataset.akKey ] = open ? 1 : 0; save(); }
 		hideFlyout();
+		syncExpanded( li );
+	}
+	/* aria-expanded：树形态 = 行内是否展开；飞出形态 = 它的飞出层是否开着 */
+	function syncExpanded( li ) {
+		var b = child( li, '.ak-tree__toggle' ); if ( !b ) { return; }
+		var root = li.closest( ROOT );
+		var open = root && root.classList.contains( 'is-flyout' ) ? flyLi === li : li.classList.contains( 'is-open' );
+		b.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+	}
+	/* 形态：.is-flyout 由这里按媒体查询 / data-flyout 开关加减，CSS 据此不显示行内的子级 */
+	function syncMode( root ) {
+		root.classList.toggle( 'is-flyout', flyoutEnabled( root ) );
+		each( root.querySelectorAll( '.ak-tree__branch' ), syncExpanded );
 	}
 
 	/* ── 增强（幂等；可对同一 root 反复调用，例如站点脚本晚于皮肤注入 #MenuSidebar） ── */
 	function enhance( root ) {
+		root.classList.toggle( 'is-flyout', flyoutEnabled( root ) );
 		each( root.querySelectorAll( 'li > ul' ), function ( ul ) {
 			var li = ul.parentElement;
 			if ( !ul.id ) { ul.id = 'ak-tree-' + ( ++uid ); }
@@ -92,9 +109,8 @@
 				var k = keyOf( li ); li.dataset.akKey = k;
 				if ( Object.prototype.hasOwnProperty.call( state, k ) ) { li.classList.toggle( 'is-open', !!state[ k ] ); }   /* 用户记忆 > 作者默认(is-open) */
 			}
-			btn.setAttribute( 'aria-expanded', li.classList.contains( 'is-open' ) ? 'true' : 'false' );
 		} );
-		/* 当前页所在路径：自动展开 + 高亮（不写入记忆） */
+		/* 当前页所在路径：高亮 + （树形态下）自动展开，不写入记忆 */
 		var cur = root.querySelectorAll( 'a.selflink, a.mw-selflink, li.is-active > a, li.selected > a, a[aria-current="page"]' );
 		if ( !cur.length ) {
 			cur = Array.prototype.filter.call( root.querySelectorAll( 'li > a[href]' ), function ( a ) {
@@ -104,9 +120,10 @@
 		each( cur, function ( a ) {
 			var li = a.closest( 'li' ); if ( li ) { li.classList.add( 'is-current' ); }
 			for ( var n = a.parentElement; n && n !== root; n = n.parentElement ) {
-				if ( n.tagName === 'LI' && n.classList.contains( 'ak-tree__branch' ) ) { n.classList.add( 'is-open', 'is-current-path' ); var b = child( n, '.ak-tree__toggle' ); if ( b ) { b.setAttribute( 'aria-expanded', 'true' ); } }
+				if ( n.tagName === 'LI' && n.classList.contains( 'ak-tree__branch' ) ) { n.classList.add( 'is-open', 'is-current-path' ); }
 			}
 		} );
+		each( root.querySelectorAll( '.ak-tree__branch' ), syncExpanded );
 		/* 可折叠门户（.ak-portlet--collapsible）恢复记忆 */
 		each( root.querySelectorAll( '.ak-portlet--collapsible' ), function ( p ) {
 			var k = 'portlet:' + ( p.id || txt( child( p, '.ak-portlet__title' ) || child( p, 'h3' ) ) );
@@ -127,7 +144,14 @@
 			var lab = e.target.closest( '.ak-tree__branch > .ak-tree__label' );
 			if ( lab && lab.tagName !== 'A' && !e.target.closest( 'a' ) ) { li = lab.parentElement; }   /* 非链接标签：整行可切换 */
 		}
-		if ( li ) { e.preventDefault(); setOpen( li, !li.classList.contains( 'is-open' ) ); return; }
+		if ( li ) {
+			e.preventDefault();
+			if ( !flyoutEnabled( root ) ) { setOpen( li, !li.classList.contains( 'is-open' ) ); return; }
+			/* 飞出形态：点一下钉住（悬停出来的那一个原地钉住，不重建），再点收起；键盘触发的点击（detail 0）把焦点移进去 */
+			if ( flyLi === li && flyPinned ) { hideFlyout(); } else { showFlyout( li, true ); if ( e.detail === 0 ) { focusFlyout( 0 ); } }
+			return;
+		}
+		if ( flyPinned ) { hideFlyout(); }   /* 钉住的飞出层：点侧栏里别的地方也收起 */
 		var pt = e.target.closest( '.ak-portlet--collapsible > .ak-portlet__title, .ak-portlet--collapsible > h3' );
 		if ( pt ) {
 			var p = pt.parentElement, collapsed = p.classList.toggle( 'is-collapsed' );
@@ -136,12 +160,24 @@
 		}
 	} );
 	document.addEventListener( 'keydown', function ( e ) {
+		var inFly = fly && e.target.closest && fly.contains( e.target );
+		if ( inFly ) {
+			/* 飞出层挂在 body 末尾，Tab 序不挨着侧栏：Tab / Esc / ← 先把焦点还给切换钮再收起（Tab 不拦，浏览器从切换钮接着往下 / 往上走） */
+			if ( e.key === 'ArrowDown' || e.key === 'ArrowUp' ) { e.preventDefault(); focusFlyout( e.target, e.key === 'ArrowDown' ? 1 : -1 ); }
+			else if ( e.key === 'Home' || e.key === 'End' ) { e.preventDefault(); focusFlyout( e.key === 'Home' ? 0 : -1 ); }
+			else if ( e.key === 'Escape' || e.key === 'ArrowLeft' || e.key === 'Tab' ) { if ( e.key !== 'Tab' ) { e.preventDefault(); } closeFlyoutToToggle(); }
+			return;
+		}
 		if ( e.key === 'Escape' ) { hideFlyout(); return; }
 		var root = e.target.closest && e.target.closest( ROOT ); if ( !root ) { return; }
 		var pt = e.target.closest( '.ak-portlet--collapsible > .ak-portlet__title[role="button"]' );
 		if ( pt && ( e.key === 'Enter' || e.key === ' ' ) ) { e.preventDefault(); pt.click(); return; }
 		var li = e.target.closest( '.ak-tree__branch' ); if ( !li ) { return; }
 		var mine = e.target.parentElement === li;   /* 焦点在本分支自己的标签/切换钮上 */
+		if ( flyoutEnabled( root ) ) {
+			if ( mine && e.key === 'ArrowRight' ) { e.preventDefault(); showFlyout( li, true ); focusFlyout( 0 ); }
+			return;
+		}
 		if ( e.key === 'ArrowRight' ) {
 			if ( mine && !li.classList.contains( 'is-open' ) ) { e.preventDefault(); setOpen( li, true ); }
 		} else if ( e.key === 'ArrowLeft' ) {
@@ -151,35 +187,52 @@
 		}
 	} );
 
-	/* ── 桌面悬停飞出（peek） ── */
-	var fly = null, flyLi = null, showTimer = 0, hideTimer = 0;
+	/* ── 桌面飞出：悬停出现、移开即收；点击 / 键盘打开的钉住（flyPinned），不随指针移开收起 ── */
+	var fly = null, flyLi = null, flyPinned = false, showTimer = 0, hideTimer = 0;
 	var mq = window.matchMedia ? window.matchMedia( '(hover: hover) and (pointer: fine) and (min-width: 1120px)' ) : { matches: false };
 	function flyoutEnabled( root ) { return mq.matches && root.getAttribute( 'data-flyout' ) !== 'off' && document.documentElement.getAttribute( 'data-akds-flyout' ) !== 'off'; }
 	function hideFlyout() {
 		clearTimeout( showTimer ); clearTimeout( hideTimer ); showTimer = 0;
 		if ( fly ) { fly.parentNode.removeChild( fly ); fly = null; }   /* 每次重建，不复用（避免残留状态） */
-		if ( flyLi ) { flyLi.classList.remove( 'is-peek' ); flyLi = null; }
+		flyPinned = false;
+		if ( flyLi ) { var was = flyLi; flyLi = null; was.classList.remove( 'is-peek' ); syncExpanded( was ); }
 	}
-	function scheduleHide() { clearTimeout( hideTimer ); hideTimer = setTimeout( hideFlyout, 180 ); }
-	function showFlyout( li ) {
+	function scheduleHide() { if ( flyPinned ) { return; } clearTimeout( hideTimer ); hideTimer = setTimeout( hideFlyout, 180 ); }
+	function showFlyout( li, pin ) {
 		var ul = child( li, 'ul' ); if ( !ul ) { return; }
+		if ( flyLi === li ) { clearTimeout( hideTimer ); flyPinned = flyPinned || !!pin; return; }
 		hideFlyout();
-		fly = document.createElement( 'div' ); fly.className = 'ak-flyout'; fly.setAttribute( 'aria-hidden', 'true' );
+		fly = document.createElement( 'div' ); fly.className = 'ak-flyout'; fly.setAttribute( 'role', 'group' ); fly.setAttribute( 'aria-label', txt( labelOf( li ) ) );
 		fly.addEventListener( 'mouseenter', function () { clearTimeout( hideTimer ); } );
 		fly.addEventListener( 'mouseleave', scheduleHide );
-		var title = document.createElement( 'div' ); title.className = 'ak-flyout__title'; title.textContent = txt( labelOf( li ) ); fly.appendChild( title );
+		var title = document.createElement( 'div' ); title.className = 'ak-flyout__title'; title.setAttribute( 'aria-hidden', 'true' ); title.textContent = txt( labelOf( li ) ); fly.appendChild( title );   /* 名字已在 aria-label 里 */
 		var clone = ul.cloneNode( true );
 		each( clone.querySelectorAll( '[id]' ), function ( n ) { n.removeAttribute( 'id' ); } );
 		each( clone.querySelectorAll( '.ak-tree__toggle, script' ), function ( n ) { n.parentNode.removeChild( n ); } );
 		fly.appendChild( clone );
 		var r = li.getBoundingClientRect();
-		fly.style.maxHeight = ( window.innerHeight - 16 ) + 'px';
+		var header = document.querySelector( '.ak-header' );   /* 粘性页眉压在飞出层之上：长的飞出层从页眉下沿起，不钻到它底下 */
+		var minTop = ( header ? Math.max( 0, header.getBoundingClientRect().bottom ) : 0 ) + 8;
+		fly.style.maxHeight = ( window.innerHeight - minTop - 8 ) + 'px';
 		fly.style.left = Math.round( r.right + 6 ) + 'px';
 		fly.style.top = '0px';
 		document.body.appendChild( fly );
-		var top = Math.max( 8, Math.min( r.top, window.innerHeight - 8 - fly.offsetHeight ) );
+		var top = Math.max( minTop, Math.min( r.top, window.innerHeight - 8 - fly.offsetHeight ) );
 		fly.style.top = Math.round( top ) + 'px';
-		li.classList.add( 'is-peek' ); flyLi = li;
+		li.classList.add( 'is-peek' ); flyLi = li; flyPinned = !!pin;
+		syncExpanded( li );
+	}
+	/* 焦点移进飞出层：focusFlyout( 0 | -1 ) 首 / 末项；focusFlyout( 当前项, ±1 ) 上 / 下一项，首尾相接 */
+	function focusFlyout( from, step ) {
+		if ( !fly ) { return; }
+		var items = fly.querySelectorAll( 'a[href]' ); if ( !items.length ) { return; }
+		var i = typeof from === 'number' ? from : Array.prototype.indexOf.call( items, from ) + step;
+		items[ ( i + items.length ) % items.length ].focus();
+	}
+	function closeFlyoutToToggle() {
+		var b = flyLi && child( flyLi, '.ak-tree__toggle' );
+		if ( b ) { b.focus(); }
+		hideFlyout();
 	}
 	document.addEventListener( 'mouseover', function ( e ) {
 		var root = e.target.closest ? e.target.closest( ROOT ) : null;
@@ -187,7 +240,7 @@
 		if ( !flyoutEnabled( root ) ) { return; }
 		var row = e.target.closest( '.ak-tree__label, .ak-tree__toggle' );
 		var li = row && row.parentElement;
-		if ( li && li.classList.contains( 'ak-tree__branch' ) && !li.classList.contains( 'is-open' ) ) {
+		if ( li && li.classList.contains( 'ak-tree__branch' ) ) {
 			if ( flyLi === li ) { clearTimeout( hideTimer ); return; }
 			clearTimeout( showTimer ); clearTimeout( hideTimer );
 			showTimer = setTimeout( function () { showFlyout( li ); }, 120 );
@@ -198,8 +251,10 @@
 		var to = e.relatedTarget;
 		if ( !to || ( !to.closest( ROOT ) && !( fly && fly.contains( to ) ) ) ) { clearTimeout( showTimer ); showTimer = 0; scheduleHide(); }
 	} );
-	document.addEventListener( 'scroll', function () { if ( flyLi ) { hideFlyout(); } }, true );
+	document.addEventListener( 'scroll', function ( e ) { if ( flyLi && !( fly && fly.contains( e.target ) ) ) { hideFlyout(); } }, true );   /* 页面 / 侧栏一滚，飞出层就离开了它的那一行；它自己的内滚不算 */
 	window.addEventListener( 'resize', hideFlyout );
+	function onModeChange() { hideFlyout(); each( document.querySelectorAll( ROOT ), syncMode ); }
+	if ( mq.addEventListener ) { mq.addEventListener( 'change', onModeChange ); } else if ( mq.addListener ) { mq.addListener( onModeChange ); }
 
 	/* ── 初始化：立即增强 + 监听后续注入（如 PRTS 站点脚本把 #MenuSidebar 移入 #mw-panel） ── */
 	function init( scope ) {

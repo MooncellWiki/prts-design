@@ -14,7 +14,7 @@ html.ak-theme-demo {
   --ak-theme-accent: #ffd800;                                   /* 罗德岛甲板的警示黄（游戏 go_to_shop / 稀有度黄）；页眉标语 / 悬停 / 开关选中项 / 搜索图标框、侧栏与目录分组条、页脚斜纹一起换 */
   --ak-theme-accent-fg: #000;
   --ak-theme-accent-subtle: rgba(255, 216, 0, .14);                 /* 主色的 14% 淡底（页眉里的悬停 / 选中底），跟着主色一起换 */
-  --ak-keyart-image: url("../../preview/assets/keyart/rhodes_day.jpg");       /* 头图：从页面顶端铺起，垫在页眉与版面背后——只露 72px 一小条（--ak-keyart-reveal 的默认值），往下 280px 渐隐进画布 */
+  --ak-keyart-image: url("../../preview/assets/keyart/rhodes_day.jpg");       /* 头图：从页面顶端铺起，整幅垫在页眉与版面背后（--ak-keyart-reveal 默认 0，不占位），往下 280px 渐隐进画布 */
   --ak-keyart-h: 280px;
   --ak-keyart-position: center 40%;                             /* 相对整块（56px 页眉 + 280px）取景 */
   --ak-chrome-bg: rgba(8, 9, 10, .8);                           /* 页眉玻璃调淡一点（默认 .9），让画在页眉后面多透一些；仍是均匀一层，可读性不赌画面 */

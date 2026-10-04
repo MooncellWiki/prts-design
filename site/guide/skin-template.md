@@ -25,7 +25,7 @@
    label.ak-header__burger[for=ak-nav-toggle]   ← ⋮ → ×，仅 <1120；侧栏抽屉的入口在下面 .ak-local-nav 里
    .ak-local-nav                                ← 「菜单」（<1120）「本页目录」（仅 ≤639）；服务端恒输出，CSS 控制显示，不另起一行：与 __inner 都 display:contents，并进页眉那一行
       button.ak-local-nav__menu（开侧栏抽屉）| label.ak-local-nav__toc[for=ak-toc-toggle][title]（手机上的目录入口；checkbox 在下面 .ak-toc-dock 里，有目录才输出）
-div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认只露 72px 一小条（--ak-keyart-reveal；≤639 为 0）；画从页面顶端铺起，垫在页眉玻璃与版面背后（CSS 负外边距，DOM 顺序不变）
+div.ak-keyart > .ak-keyart__inner               ← 头图：恒输出，默认不占位（--ak-keyart-reveal 默认 0，设了才在版面之上露一条）；画从页面顶端铺起，垫在页眉玻璃与版面背后（CSS 负外边距，DOM 顺序不变）
 <div class="ak-layout">
    aside.ak-sidebar {{#data-portlets-sidebar}} .ak-portlet(.ak-portlet--grid for first) …
    main.ak-main#content                         ← position:relative + 右内边距预留目录导轨（.ak-layout 只有侧栏 / 主列两列）

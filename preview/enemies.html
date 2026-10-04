@@ -292,7 +292,7 @@
   </div>
 </header>
 
-<!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 72px、≤639 为 0；chrome/keyart.css 负外边距，DOM 顺序不变） -->
+<!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后，默认不占位（--ak-keyart-reveal 默认 0，设了才在版面之上露一条；chrome/keyart.css 负外边距，DOM 顺序不变） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
 <div class="ak-layout">
@@ -312,7 +312,7 @@
       </ul>
     </div>
     <!-- ↓ 与 prts.wiki 现网 #MenuSidebar 的原始输出结构一致：段落 = 分组标题；* 列表；'''粗体''' = 有子级的分组项；** 子项。
-         多层展开 / 记忆 / 桌面悬停飞出由 src/sidebar-tree.js 增强（li > ul 任意深度）；li.is-open 为作者默认展开，用户操作后以 localStorage 记忆为准。 -->
+         由 src/sidebar-tree.js 增强（li > ul 任意深度）：桌面分支只飞出、不就地展开；抽屉里多层展开 / 记忆，li.is-open 为作者默认展开，用户操作后以 localStorage 记忆为准。 -->
     <div id="MenuSidebar">
       <ul>
         <li><a href="#">首页</a></li>

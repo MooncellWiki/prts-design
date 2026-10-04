@@ -4,7 +4,7 @@
 	const $ = ( s, r = document ) => r.querySelector( s );
 	const $$ = ( s, r = document ) => Array.from( r.querySelectorAll( s ) );
 
-	/* 侧栏多层导航（树形展开 / 记忆 / 桌面悬停飞出 / 可折叠门户）：与 preview 共用 src/sidebar-tree.js */
+	/* 侧栏多层导航（桌面飞出 / 抽屉里树形展开 + 记忆 / 可折叠门户）：与 preview 共用 src/sidebar-tree.js */
 	require( './sidebar-tree.js' );
 	/* 悬浮搜索面板：核心 src/search-palette.js（共用）+ MW 数据源 search-providers.js（REST 标题搜索 / 动作 / 分类 / 用户 / 文件） */
 	if ( mw.config.get( 'wgAKDSSearchPalette', true ) !== false ) { require( './search-providers.js' ); }

@@ -191,7 +191,7 @@ function onLoad() {
   if (s.has("user")) doc.querySelector("#ak-user-menu details")?.setAttribute("open", "");
   if (s.has("more")) doc.querySelector(".ak-page-tools__more details")?.setAttribute("open", "");
   if (s.has("flyout")) {
-    const label = [...doc.querySelectorAll(".ak-sidebar .ak-tree__branch:not(.is-open) > .ak-tree__label")].find(l => l.textContent?.trim() === "档案");
+    const label = [...doc.querySelectorAll(".ak-sidebar .ak-tree__branch > .ak-tree__label")].find(l => l.textContent?.trim() === "档案");
     label?.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
   }
   if (s.has("palette")) {

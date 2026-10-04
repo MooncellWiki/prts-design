@@ -3,9 +3,10 @@
  *  内容来源两种都支持（见文档站 /guide/skin-template#侧栏与-menusidebar）：
  *   a) MediaWiki:Sidebar 门户 → .ak-portlet > h3.ak-portlet__title + ul
  *   b) PRTS #MenuSidebar 原始 wikitext 树 → p（分组标题）+ ul > li > (a|b) [+ ul …任意深度]
- *  多层展开由 sidebar-tree.js 增强：li.ak-tree__branch(.is-open) > .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list
+ *  多层导航由 sidebar-tree.js 增强（桌面飞出、抽屉里就地展开）：li.ak-tree__branch(.is-open) > .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list
+ *  导轨不写 overscroll-behavior:contain（同目录导轨 / .ak-menu）：滚到头、或侧栏根本没有内滚时，滚轮照常带动页面；抽屉态（<1120，页面是锁住的）才写，见 responsive.css。
  */
-.ak-sidebar { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-6)); overflow-y: auto; overscroll-behavior: contain; font-size: var(--ak-fs-sm); scrollbar-width: thin; padding-right: 4px; }
+.ak-sidebar { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-6)); overflow-y: auto; font-size: var(--ak-fs-sm); scrollbar-width: thin; padding-right: 4px; }
 .ak-sidebar__panel { display: block; }
 .ak-portlet { margin-bottom: var(--ak-space-5); }
 /* 分组标题：门户 h3 / MW 原生 heading / 原始 p */

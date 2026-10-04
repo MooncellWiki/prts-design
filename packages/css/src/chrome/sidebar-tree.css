@@ -1,24 +1,26 @@
 /*! PRTS Design · chrome/sidebar-tree.css — Sidebar tree 多层展开 · 悬停飞出 · 依赖：tokens.css · components/ */
-/* ── Sidebar tree（多层展开） ── */
+/* ── Sidebar tree（多层展开） ──
+ *  .is-open 的三条（标签变亮 / 箭头朝下 / 子级显示）只在树形态下生效：桌面（.ak-sidebar.is-flyout，sidebar-tree.js 在能悬停的精确指针、≥1120 时加）分支不就地展开，
+ *  子项只在飞出层里——侧栏高度不随点开的分支变。.is-open（记忆 / 当前页路径）照旧留在 DOM 上，回到抽屉态时原样展开；无 JS 时 .client-nojs 全部展开。 */
 .ak-tree__branch > .ak-tree__label { padding-right: 32px; }
 .ak-tree__branch > b.ak-tree__label, .ak-tree__branch > span.ak-tree__label { font-weight: 600; color: var(--ak-fg-secondary); }
-.ak-tree__branch.is-open > .ak-tree__label, .ak-tree__branch.is-current-path > .ak-tree__label { color: var(--ak-fg); }
+.ak-sidebar:not(.is-flyout) .ak-tree__branch.is-open > .ak-tree__label, .ak-tree__branch.is-current-path > .ak-tree__label { color: var(--ak-fg); }
 .ak-tree__branch.is-current-path > .ak-tree__label { border-left-color: var(--ak-accent-muted); }
 .ak-tree__toggle { position: absolute; top: 0; right: 0; width: 32px; height: 30px; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ak-fg-muted); cursor: pointer; display: grid; place-items: center; }
 .ak-tree__toggle::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translate(-1px, 0) rotate(-45deg); transition: transform var(--ak-dur-fast) var(--ak-ease); }
-.ak-tree__branch.is-open > .ak-tree__toggle::before { transform: translate(0, -1px) rotate(45deg); }
+.ak-sidebar:not(.is-flyout) .ak-tree__branch.is-open > .ak-tree__toggle::before { transform: translate(0, -1px) rotate(45deg); }
 .ak-tree__toggle:hover, .ak-tree__branch.is-current-path > .ak-tree__toggle { color: var(--ak-accent); }
 .ak-tree__toggle:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: -2px; }
 .ak-sidebar li > ul { display: none; position: relative; margin: 0 0 4px; padding-left: 12px; }
 .ak-sidebar li > ul::before { content: ""; position: absolute; left: 11px; top: 2px; bottom: 2px; border-left: 1px solid var(--ak-border); }   /* 缩进导轨 */
 .ak-tree__branch.is-current-path > ul::before { border-left-color: var(--ak-accent-muted); }
-.ak-tree__branch.is-open > ul { display: block; animation: ak-tree-in var(--ak-dur-fast) var(--ak-ease); }
+.ak-sidebar:not(.is-flyout) .ak-tree__branch.is-open > ul { display: block; animation: ak-tree-in var(--ak-dur-fast) var(--ak-ease); }
 .ak-sidebar li li > a, .ak-sidebar li li > b, .ak-sidebar li li > .ak-tree__label { padding-top: 5px; padding-bottom: 5px; font-size: calc(var(--ak-fs-sm) - 1px); }
 .ak-sidebar li li li > a, .ak-sidebar li li li > b, .ak-sidebar li li li > .ak-tree__label { color: var(--ak-fg-muted); }
 .ak-sidebar li li li > a:hover, .ak-sidebar li li li > b:hover { color: var(--ak-fg); }
 @keyframes ak-tree-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .ak-tree__branch.is-open > ul { animation: none; } .ak-tree__toggle::before, .ak-portlet--collapsible > .ak-portlet__title::after { transition: none; } }
-/* 桌面悬停飞出（peek）：由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切。卡片同 .ak-menu 只用 1px 灰边：青条只留给条目悬停 / 当前项，卡片自己再画一条会和悬停条叠成两道 */
+@media (prefers-reduced-motion: reduce) { .ak-sidebar:not(.is-flyout) .ak-tree__branch.is-open > ul { animation: none; } .ak-tree__toggle::before, .ak-portlet--collapsible > .ak-portlet__title::after { transition: none; } }
+/* 桌面飞出：悬停 / 点击 / 键盘打开，由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切。这里保留 overscroll-behavior:contain：页面一滚飞出层就收起（它离开了自己那一行），内滚到头不该把它滚没。卡片同 .ak-menu 只用 1px 灰边：青条只留给条目悬停 / 当前项，卡片自己再画一条会和悬停条叠成两道 */
 .ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
 @keyframes ak-flyout-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
 .ak-flyout__title { padding: 6px 14px 4px 16px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-subtle); }
@@ -27,6 +29,7 @@
 .ak-flyout li > a, .ak-flyout li > b, .ak-flyout li > .ak-tree__label { display: flex; align-items: center; gap: 8px; padding: 6px 14px; color: var(--ak-fg-secondary); font-weight: 400; text-decoration: none; border-left: 2px solid transparent; white-space: nowrap; cursor: pointer; }
 .ak-flyout li > b, .ak-flyout li > span.ak-tree__label { font-weight: 600; color: var(--ak-fg); cursor: default; }
 .ak-flyout li > a:hover { color: var(--ak-fg); background: var(--ak-bg-hover); border-left-color: var(--ak-accent); text-decoration: none; }
+.ak-flyout li > a:focus-visible { outline-offset: -2px; }   /* 飞出层自己会内滚，外扩的焦点环在边上被裁掉 */
 .ak-flyout li.is-current > a, .ak-flyout a.selflink, .ak-flyout a.mw-selflink { color: var(--ak-accent); font-weight: 700; }
 .ak-flyout li > ul { display: block; padding-left: 12px; }
 .ak-flyout a.external { background: none; padding-right: 14px; }
