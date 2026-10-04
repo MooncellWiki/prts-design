@@ -20,8 +20,8 @@
 .ak-sidebar li li li > a:hover, .ak-sidebar li li li > b:hover { color: var(--ak-fg); }
 @keyframes ak-tree-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ak-sidebar:not(.is-flyout) .ak-tree__branch.is-open > ul { animation: none; } .ak-tree__toggle::before, .ak-portlet--collapsible > .ak-portlet__title::after { transition: none; } }
-/* 桌面飞出：悬停 / 点击 / 键盘打开，由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切。这里保留 overscroll-behavior:contain：页面一滚飞出层就收起（它离开了自己那一行），内滚到头不该把它滚没。卡片同 .ak-menu 只用 1px 灰边：青条只留给条目悬停 / 当前项，卡片自己再画一条会和悬停条叠成两道 */
-.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
+/* 桌面飞出：悬停 / 点击 / 键盘打开，由 sidebar-tree.js 生成到 body 下，position:fixed 不受侧栏 overflow 裁切。不写 overscroll-behavior:contain（同侧栏导轨 / .ak-menu）：飞出层没有遮罩，内滚到头、或根本没有内滚时，滚轮照常带动页面；页面 / 侧栏滚动时 JS 让它跟着自己那一行走。卡片同 .ak-menu 只用 1px 灰边：青条只留给条目悬停 / 当前项，卡片自己再画一条会和悬停条叠成两道 */
+.ak-flyout { position: fixed; z-index: var(--ak-z-dropdown); min-width: 184px; max-width: 300px; overflow-y: auto; scrollbar-width: thin; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); box-shadow: var(--ak-shadow-lg); padding: 4px 0 0; font-size: var(--ak-fs-sm); animation: ak-flyout-in var(--ak-dur-fast) var(--ak-ease); }
 @keyframes ak-flyout-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
 .ak-flyout__title { padding: 6px 14px 4px 16px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-label); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-subtle); }
 .ak-flyout ul { list-style: none; margin: 0; padding: 0; }

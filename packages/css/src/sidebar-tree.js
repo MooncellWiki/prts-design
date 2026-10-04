@@ -16,6 +16,7 @@
  *  两种形态，同一份 DOM：
  *  飞出（桌面：hover + fine pointer 且 ≥1120px，侧栏带 .is-flyout）：分支不就地展开——侧栏的高度不随点开的分支变，矮窗口里也只滚这一小段。
  *        悬停分支 → 右侧飞出它的子项（position:fixed，不受侧栏 overflow 裁切），移开即收；点击分支（切换钮 / 非链接标签）→ 钉住，再点 / Esc / 点别处收起。
+ *        飞出层不拦滚轮（内滚到头 / 没有内滚时照常带动页面）；页面 / 侧栏滚动时它跟着自己那一行走，行滚出侧栏的可见范围才收起。
  *        键盘：切换钮上 Enter / Space / → 打开并把焦点移进飞出层，↑ ↓ Home End 在其中移动，Esc / ← 回到切换钮，Tab 收起后接着往下走。
  *        当前页所在分支只高亮（.is-current-path），不展开。
  *  树（抽屉 <1120 / 触屏 / 关掉飞出时）：点击 / 键盘 → 行内展开并记忆，当前页所在分支自动展开。
@@ -210,17 +211,22 @@
 		each( clone.querySelectorAll( '[id]' ), function ( n ) { n.removeAttribute( 'id' ); } );
 		each( clone.querySelectorAll( '.ak-tree__toggle, script' ), function ( n ) { n.parentNode.removeChild( n ); } );
 		fly.appendChild( clone );
-		var r = li.getBoundingClientRect();
-		var header = document.querySelector( '.ak-header' );   /* 粘性页眉压在飞出层之上：长的飞出层从页眉下沿起，不钻到它底下 */
-		var minTop = ( header ? Math.max( 0, header.getBoundingClientRect().bottom ) : 0 ) + 8;
-		fly.style.maxHeight = ( window.innerHeight - minTop - 8 ) + 'px';
-		fly.style.left = Math.round( r.right + 6 ) + 'px';
 		fly.style.top = '0px';
 		document.body.appendChild( fly );
-		var top = Math.max( minTop, Math.min( r.top, window.innerHeight - 8 - fly.offsetHeight ) );
-		fly.style.top = Math.round( top ) + 'px';
+		placeFlyout( li );
 		li.classList.add( 'is-peek' ); flyLi = li; flyPinned = !!pin;
 		syncExpanded( li );
+	}
+	/* 把飞出层摆到分支那一行的右边（打开时、页面 / 侧栏滚动时）。返回这一行是否还在侧栏的可见范围里（滚出去了、钻到页眉底下了 → false） */
+	function placeFlyout( li ) {
+		var root = li.closest( ROOT ); if ( !root ) { return false; }
+		var r = li.getBoundingClientRect(), box = root.getBoundingClientRect();
+		var header = document.querySelector( '.ak-header' );   /* 粘性页眉压在飞出层之上：长的飞出层从页眉下沿起，不钻到它底下 */
+		var headerBottom = header ? Math.max( 0, header.getBoundingClientRect().bottom ) : 0, minTop = headerBottom + 8;
+		fly.style.maxHeight = ( window.innerHeight - minTop - 8 ) + 'px';
+		fly.style.left = Math.round( r.right + 6 ) + 'px';
+		fly.style.top = Math.round( Math.max( minTop, Math.min( r.top, window.innerHeight - 8 - fly.offsetHeight ) ) ) + 'px';
+		return r.bottom > Math.max( box.top, headerBottom ) && r.top < Math.min( box.bottom, window.innerHeight );
 	}
 	/* 焦点移进飞出层：focusFlyout( 0 | -1 ) 首 / 末项；focusFlyout( 当前项, ±1 ) 上 / 下一项，首尾相接 */
 	function focusFlyout( from, step ) {
@@ -251,7 +257,8 @@
 		var to = e.relatedTarget;
 		if ( !to || ( !to.closest( ROOT ) && !( fly && fly.contains( to ) ) ) ) { clearTimeout( showTimer ); showTimer = 0; scheduleHide(); }
 	} );
-	document.addEventListener( 'scroll', function ( e ) { if ( flyLi && !( fly && fly.contains( e.target ) ) ) { hideFlyout(); } }, true );   /* 页面 / 侧栏一滚，飞出层就离开了它的那一行；它自己的内滚不算 */
+	/* 页面 / 侧栏滚动：飞出层跟着它那一行走（侧栏吸住后页面再滚，行不动、它也不动——指针停在飞出层上滚页面，它不会被滚没）；行滚出侧栏的可见范围才收起。它自己的内滚不算 */
+	document.addEventListener( 'scroll', function ( e ) { if ( flyLi && fly && !fly.contains( e.target ) && !placeFlyout( flyLi ) ) { hideFlyout(); } }, true );
 	window.addEventListener( 'resize', hideFlyout );
 	function onModeChange() { hideFlyout(); each( document.querySelectorAll( ROOT ), syncMode ); }
 	if ( mq.addEventListener ) { mq.addEventListener( 'change', onModeChange ); } else if ( mq.addListener ) { mq.addListener( onModeChange ); }
