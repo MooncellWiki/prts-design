@@ -4,7 +4,7 @@ import { computed, inject, warn } from "vue";
 import { useField, useSplitAttrs } from "../Field/context";
 import { radioGroupKey, type RadioValue } from "./context";
 
-/** class / style 给外层 <label>，其余属性给原生 <input type="radio"> */
+/** class / style / data-ak-tip 给外层 <label>，其余属性给原生 <input type="radio"> */
 defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(

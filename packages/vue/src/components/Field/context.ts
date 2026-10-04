@@ -50,15 +50,17 @@ export function useField(kind: "control" | "group" = "control") {
 }
 
 /**
- * 外面包了一层 <label> / <div> 的控件（勾选、开关、步进器、搜索框）：class / style 给外层，其余属性（name、autocomplete、@focus …）给原生控件。
+ * 外面包了一层 <label> / <div> 的控件（勾选、单选、开关、步进器、搜索框）：class / style 给外层，其余属性（name、autocomplete、@focus …）给原生控件。
+ * data-ak-tip 也给外层：气泡是载体的 ::after，原生 <input> 上画不出来；挂在外层，悬停名称文字也出提示，聚焦里面的控件时由 :has(:focus-visible) 显示。
+ * 这样不用为了提示再包一层 <span>——行内的 span 里控件按基线排，在 align-items: center 的一行里会比旁边没包的同类高几像素。
  * 配合 defineOptions({ inheritAttrs: false })。
  */
 export function useSplitAttrs() {
   const attrs = useAttrs();
   return {
-    root: computed(() => ({ class: attrs.class, style: attrs.style })),
+    root: computed(() => ({ class: attrs.class, style: attrs.style, "data-ak-tip": attrs["data-ak-tip"] })),
     control: computed(() => {
-      const { class: _c, style: _s, ...rest } = attrs;
+      const { class: _c, style: _s, "data-ak-tip": _t, ...rest } = attrs;
       return rest;
     }),
   };

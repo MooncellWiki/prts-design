@@ -5,7 +5,7 @@ import { useField, useSplitAttrs } from "../Field/context";
 
 /**
  * 开关（同 Naive 的 NSwitch）：方形轨道，开 = 游戏内 toggle_on 蓝。原生 <input type="checkbox" role="switch">，
- * 读屏念「开关，开 / 关」，Space 切换。class / style 给外层 <label>，其余属性给 <input>。
+ * 读屏念「开关，开 / 关」，Space 切换。class / style / data-ak-tip 给外层 <label>，其余属性给 <input>。
  */
 defineOptions({ inheritAttrs: false });
 

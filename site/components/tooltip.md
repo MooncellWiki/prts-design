@@ -23,6 +23,15 @@ component: tooltip
 <p>技能生效期间，持有效果：<span class="ak-term ak-tip--wide" data-ak-tip="无敌：无法被不同阵营选中（属于无法选择类效果）；受到的伤害与元素值变为 0；无法触发任何单位未绑定选择器的能力">无敌</span>、<span class="ak-term ak-tip--wide" data-ak-tip="晕眩免疫：使自身的晕眩失效，但不会清除相关 Buff">晕眩免疫</span></p>
 ```
 
+给开关、复选框这类「外层 `<label>` + 原生控件」的组件加提示，`data-ak-tip` 直接写在组件上：`AkSwitch` / `AkCheckbox` / `AkRadio` / `AkInputNumber` / `AkSearch` 把它落到外层（原生 `<input>` 上画不出 `::after`），悬停名称文字也出提示，键盘聚焦到里面的控件时由 `:has(:focus-visible)` 显示。**不要为了提示再包一层 `<span data-ak-tip>`**：行内的 span 里控件按基线排，在 `align-items: center` 的一行里会比旁边没包的同类高几像素。
+
+```html demo
+<div class="ak-flex ak-wrap ak-gap-6 ak-items-center">
+  <label class="ak-switch ak-switch--sm"><input type="checkbox" role="switch" checked>循环</label>
+  <label class="ak-switch ak-switch--sm" data-ak-tip="一招的几段接着播：Begin → Loop → End"><input type="checkbox" role="switch">连播</label>
+</div>
+```
+
 纯 CSS 版的气泡闲置时收成 0 宽（`max-width: 0` + `overflow: hidden`），不只是透明——透明的气泡仍占布局，靠近右缘的长提示会把手机页面撑出横向滚动、整页跟着缩小（干员页 130 枚提示就是这么发现的，见[贡献一个组件 · 命名与约定](/guide/contributing#命名与约定)）。
 
 ## 基本用法

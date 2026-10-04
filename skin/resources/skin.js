@@ -235,7 +235,8 @@
 
 	/* 纯 CSS 提示 [data-ak-tip]（components/tooltip.css）的可访问性补齐：
 	 *  提示文字接进读屏（aria-describedby → 一个 hidden 容器里的描述节点）；提示与元素自身名称相同时（道具图的 alt = 道具名）不重复念；
-	 *  不在可聚焦元素上、又带着名称之外信息的提示，补 tabindex=0，键盘聚焦时 :focus-visible 也能看到。wikipage.content 钩子覆盖预览 / 动态载入的正文 */
+	 *  不在可聚焦元素上、又带着名称之外信息的提示，补 tabindex=0，键盘聚焦时 :focus-visible 也能看到。wikipage.content 钩子覆盖预览 / 动态载入的正文；
+	 *  载体是包着控件的外层时（label.ak-switch / .ak-check、.ak-number、.ak-search），描述挂到里面的控件上、不另补 tabindex——聚焦控件时由 :has(:focus-visible) 显示 */
 	let tipSeq = 0; let tipBox = null;
 	const tipA11y = ( root ) => {
 		$$( '[data-ak-tip]:not([data-ak-tip-bound])', root ).forEach( ( el ) => {
@@ -245,8 +246,9 @@
 			if ( names.some( ( n ) => n && n.trim() === tip ) ) { return; }
 			if ( !tipBox ) { tipBox = document.createElement( 'div' ); tipBox.hidden = true; tipBox.id = 'ak-tips'; document.body.appendChild( tipBox ); }
 			const d = document.createElement( 'span' ); d.id = 'ak-tip-' + ( ++tipSeq ); d.textContent = tip; tipBox.appendChild( d );
-			el.setAttribute( 'aria-describedby', ( ( el.getAttribute( 'aria-describedby' ) || '' ) + ' ' + d.id ).trim() );
-			if ( !el.matches( 'a[href], button, input, select, textarea, summary, [tabindex]' ) && !el.closest( 'a[href], button' ) ) { el.tabIndex = 0; }
+			const host = ( el.matches( 'label, .ak-number, .ak-search' ) && el.querySelector( 'input, select, textarea' ) ) || el;
+			host.setAttribute( 'aria-describedby', ( ( host.getAttribute( 'aria-describedby' ) || '' ) + ' ' + d.id ).trim() );
+			if ( !host.matches( 'a[href], button, input, select, textarea, summary, [tabindex]' ) && !host.closest( 'a[href], button' ) ) { host.tabIndex = 0; }
 		} );
 	};
 	tipA11y( document );

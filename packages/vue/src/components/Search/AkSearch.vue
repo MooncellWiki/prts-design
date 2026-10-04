@@ -6,7 +6,7 @@ import AkIcon from "../Icon/AkIcon.vue";
 
 /**
  * 搜索框：左侧放大镜 + <input type="search" class="ak-input">（+ 右侧快捷键键帽），同页眉里无 JS 时的搜索表单。
- * 站点级搜索外面包 <form role="search">；页内筛选直接用。class / style 给外层 .ak-search，其余属性给 <input>。
+ * 站点级搜索外面包 <form role="search">；页内筛选直接用。class / style / data-ak-tip 给外层 .ak-search，其余属性给 <input>。
  */
 defineOptions({ inheritAttrs: false });
 

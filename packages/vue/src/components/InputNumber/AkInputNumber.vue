@@ -6,7 +6,7 @@ import { useField, useSplitAttrs } from "../Field/context";
 /**
  * 数字输入（同 Naive 的 NInputNumber）：.ak-number 里 − / 输入 / + 三段，按钮常显。
  * 输入框是 role="spinbutton"：↑↓ 一步、PageUp / PageDown 十步、Home / End 到上下限；两个按钮不进 Tab 顺序（键盘用方向键）。
- * class / style 给外层，其余属性给 <input>。
+ * class / style / data-ak-tip 给外层，其余属性给 <input>。
  */
 defineOptions({ inheritAttrs: false });
 

@@ -4,7 +4,7 @@ import { computed, inject, onMounted, onUpdated, useTemplateRef, warn } from "vu
 import { useField, useSplitAttrs } from "../Field/context";
 import { checkboxGroupKey, type CheckSize, type CheckValue } from "./context";
 
-/** class / style 给外层 <label>，其余属性（name、@change …）给原生 <input type="checkbox"> */
+/** class / style / data-ak-tip 给外层 <label>，其余属性（name、@change …）给原生 <input type="checkbox"> */
 defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(

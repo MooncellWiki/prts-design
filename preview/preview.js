@@ -293,8 +293,9 @@
     if (names.some(n => n && n.trim() === tip)) return;
     if (!tipBox) { tipBox = document.createElement('div'); tipBox.hidden = true; tipBox.id = 'ak-tips'; document.body.appendChild(tipBox); }
     const d = document.createElement('span'); d.id = 'ak-tip-' + (++tipSeq); d.textContent = tip; tipBox.appendChild(d);
-    el.setAttribute('aria-describedby', ((el.getAttribute('aria-describedby') || '') + ' ' + d.id).trim());
-    if (!el.matches('a[href], button, input, select, textarea, summary, [tabindex]') && !el.closest('a[href], button')) el.tabIndex = 0;
+    const host = (el.matches('label, .ak-number, .ak-search') && el.querySelector('input, select, textarea')) || el;   // 载体包着控件：描述挂到控件上、不另补 tabindex
+    host.setAttribute('aria-describedby', ((host.getAttribute('aria-describedby') || '') + ' ' + d.id).trim());
+    if (!host.matches('a[href], button, input, select, textarea, summary, [tabindex]') && !host.closest('a[href], button')) host.tabIndex = 0;
   });
 
   /* ── Voice play mock ───────────────────────────────────────── */
