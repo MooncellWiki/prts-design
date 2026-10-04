@@ -122,6 +122,7 @@
         "components/empty.css",
         "components/avatar.css",
         "components/breadcrumb.css",
+        "components/pathnav.css",
         "components/pagination.css",
         "components/timeline.css",
         "components/stepper.css",

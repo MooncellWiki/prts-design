@@ -51,4 +51,10 @@
 
   /* clip-path 裁出来的实心图形；信赖图标（遮罩见 arknights/trust.css） */
   .ak-rarity > i, .ak-trust::before { forced-color-adjust: none; background: CanvasText; }
+
+  /* 路径条：三块板的底色都没了——各补一圈轮廓，箭头不裁（裁了轮廓缺一角）；首页图标是遮罩，填链接色 */
+  .ak-pathnav__home, .ak-pathnav__up, .ak-pathnav__here { outline: 1px solid CanvasText; outline-offset: -1px; }
+  .ak-pathnav__up { margin-right: 0; padding-right: 0; border-left: 0; }
+  .ak-pathnav__up, .ak-pathnav__up > a { clip-path: none; }
+  .ak-pathnav__home > a::before { forced-color-adjust: none; background: LinkText; }
 }

@@ -1,0 +1,58 @@
+/*! PRTS Design · components/pathnav.css — Pathnav 路径条 · 依赖：tokens.css */
+/* ═══ Pathnav ═══
+ * 正文第一行的「首页 · 所属一览 · 本页」：读者从条目回到一览的主入口（现网 模板:Pathnav2，6900+ 页）。
+ * 与面包屑分工：.ak-breadcrumb 是页面头里的小灰字（子页面层级、命名空间路径），这一条在正文里、是按钮。
+ * 材质取自游戏左上角的顶部菜单（CommonTopMenu：返回 157×69 + 首页 220×69，#313131 平板、板间一道黑缝、白色线稿图标）；
+ * 板尾的箭头是 Pathnav2 原来的形状，尖上压一道主色。
+ *
+ * 结构——只用 wikitext 写得出来的东西：类标在外壳上，链接是 [[…]] 生成的裸 <a>；没有 <nav> / aria-current（Sanitizer 不放行）。
+ *   div.ak-pathnav.ak-not-prose[role=navigation][aria-label]      整条写在一行里，否则解析器给里面的 span 包 <p>
+ *     span.ak-pathnav__home > a      首页：文字留着当无障碍名（font-size:0 藏起），图标由 CSS 画，不依赖图标字体 / sprite
+ *     span.ak-pathnav__up   > a      所属一览
+ *     span.ak-pathnav__here          本页，不是链接；放不下时省略
+ * 两块深色板在亮 / 暗主题下都是深色（同游戏），悬停 / 焦点用页眉那一点主色。 */
+.ak-pathnav {
+  --_h: 32px; --_tip: 10px; --_band: 3px;
+  --_slab: var(--ak-gray-800); --_slab-fg: var(--ak-gray-0); --_hot: var(--ak-theme-accent, var(--ak-cyan-500));
+  display: flex; width: fit-content; max-width: 100%; height: var(--_h); margin: 0 0 var(--ak-space-4);
+  font: 600 var(--ak-fs-sm)/var(--_h) var(--ak-font-body); white-space: nowrap;
+  --_arrow: polygon(0 -1px, calc(100% - var(--_tip)) -1px, 100% 50%, calc(100% - var(--_tip)) calc(100% + 1px), 0 calc(100% + 1px));   /* 上下各伸出 1px：横边交给盒子自己（对齐像素），裁切只管斜边——条落在半像素上时横边不会糊出一丝底色 */
+}
+.ak-pathnav a { display: block; height: 100%; color: inherit; text-decoration: none; transition: color var(--ak-dur-fast), background-color var(--ak-dur-fast); }
+.ak-pathnav a:is(:hover, :visited, :active) { color: inherit; text-decoration: none; }   /* 宿主 / 正文的 a:visited (0,1,1) 压得过上一条，这里 (0,2,1) 压回来 */
+.ak-pathnav a:hover { color: var(--_hot); }
+.ak-pathnav a:focus-visible { outline: 2px solid var(--_hot); outline-offset: -2px; color: var(--_hot); }   /* 板子被 clip-path 裁着，轮廓画在里面 */
+
+/* 首页板：方块，线稿房子（屋檐一道折线 + 屋身，照游戏 btn_topmenu_home 的图标重画）当遮罩，颜色跟文字 */
+.ak-pathnav__home { flex: none; background: var(--_slab); color: var(--_slab-fg); }
+.ak-pathnav__home > a { display: flex; align-items: center; justify-content: center; width: calc(var(--_h) + 6px); font-size: 0; line-height: 0; }
+.ak-pathnav__home > a::before {
+  content: ""; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: var(--_home) center / contain no-repeat; mask: var(--_home) center / contain no-repeat;
+  --_home: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2.5 11.2 12 3l9.5 8.2-1.7 2L12 6.5 4.2 13.2z'/%3E%3Cpath d='M6 13.6 12 8.5l6 5.1V21h-4.2v-4.6h-3.6V21H6z'/%3E%3C/svg%3E");
+}
+
+/* 一览板：左边一道黑缝接首页板，右端收成箭头。外壳只在箭头那一截铺主色（其余同板色，免得裁切边缘透出一丝），
+ * 里面的链接铺板色、同形裁切、短 --_band——露出来的就是尖上那道主色折线 */
+.ak-pathnav__up {
+  flex: none; max-width: 60%; position: relative; z-index: 1; margin-right: calc(var(--_tip) * -1); padding-right: var(--_band);
+  border-left: 1px solid var(--ak-gray-1000); color: var(--_slab-fg);
+  background: linear-gradient(to left, var(--_hot) calc(var(--_tip) + var(--_band) + 1px), var(--_slab) 0);
+  clip-path: var(--_arrow);
+}
+.ak-pathnav__up > a {
+  padding: 0 calc(var(--ak-space-3) + var(--_tip)) 0 var(--ak-space-3); background: var(--_slab); overflow: hidden; text-overflow: ellipsis;
+  clip-path: var(--_arrow);
+}   /* 一览板不参与收缩（哪怕让出半像素，省略号也会吃掉两个字）：放不下时先省略「本页」；一览名字本身长过 60% 才轮到它省略 */
+
+/* 本页：浅底 + 一圈细线（左边被箭头盖着，不画）、正文色、常规字重——是「你在这里」，不是按钮。左内边距让出箭头 */
+.ak-pathnav__here {
+  flex: 0 1 auto; min-width: 0; padding: 0 var(--ak-space-3) 0 calc(var(--_tip) + var(--_band) + var(--ak-space-3));
+  background: var(--ak-bg-surface-2); box-shadow: inset 0 1px var(--ak-border), inset 0 -1px var(--ak-border), inset -1px 0 var(--ak-border);
+  color: var(--ak-fg); font-weight: 400; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* 手机：加高到 36px，好点 */
+@media (max-width: 639px) {
+  .ak-pathnav { --_h: 36px; --_tip: 11px; }
+}

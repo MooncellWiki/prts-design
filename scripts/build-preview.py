@@ -8,7 +8,7 @@
     order: 4                      侧栏「PRTS Design 预览 · DEMO」里的顺序
     nav: 通用组件                  侧栏文案
     title: PRTS Design · 通用组件          <title>
-    crumb: 首页 > PRTS:皮肤 > 设计系统 > 通用组件    面包屑（最后一项 = 当前页）
+    crumb: 首页 > PRTS:皮肤 > 设计系统 > 通用组件    （可选）面包屑（最后一项 = 当前页）；不写就不出
     h1: 通用组件 / h1en: Core components              页面标题 + 英文副题
     indicators: <span …>          （可选）页头右上角指示器 HTML
     actions: <li>…</li>           （可选）动作簇 #p-views 里追加的项（如 li#ca-watch ★ 监视）
@@ -58,6 +58,7 @@ pages.sort(key=lambda p: int(p[0].get('order', 99)))
 in_nav = [m for m, _ in pages if m.get('skeleton', SKELETON) == SKELETON]   # 侧栏页面列表只列皮肤骨架里的页
 
 def crumb(s):
+    if not s: return ''   # 不写 crumb：页面头不出面包屑（主名字空间的条目，回一览靠正文里的路径条 .ak-pathnav）
     parts = [p.strip() for p in s.split('>')]
     items = ''.join('<li><a href="#">%s</a></li>' % html.escape(p) for p in parts[:-1])
     return '<ul class="ak-breadcrumb ak-m-0">%s<li aria-current="page">%s</li></ul>' % (items, html.escape(parts[-1]))
@@ -70,7 +71,7 @@ for meta, body in pages:
         hidden = ''.join('<li><a href="#">%s</a></li>' % c.strip() for c in meta.get('hiddencats', '').split(',') if c.strip())
         hiddencats = '<div class="mw-hidden-catlinks mw-hidden-cats-hidden">隐藏分类：\u200b<ul>%s</ul></div>' % hidden if hidden else ''
         fills.update({
-            'nav': nav, 'crumb': crumb(meta['crumb']), 'indicators': meta.get('indicators', ''), 'h1': meta['h1'], 'h1en': meta.get('h1en', ''),
+            'nav': nav, 'crumb': crumb(meta.get('crumb', '')), 'indicators': meta.get('indicators', ''), 'h1': meta['h1'], 'h1en': meta.get('h1en', ''),
             'actions': meta.get('actions', ''), 'lastmod': meta.get('lastmod', ''), 'cats': cats, 'hiddencats': hiddencats,
         })
     page = skeleton_of(meta)
