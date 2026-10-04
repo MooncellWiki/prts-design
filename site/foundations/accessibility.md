@@ -44,7 +44,7 @@
 
 | 偏好 | 处理 |
 |---|---|
-| `prefers-reduced-motion: reduce` | 全局把动画与过渡缩到 0.01ms（`base/root.css`，别的宿主上 `scope.css` 在作用域里补；不是 `none`，`animationend` 之类的事件照常触发，依赖它的脚本不会卡住）；平滑滚动关掉。个别需要「不动」而不只是「很快」的地方另写了 `animation: none`（侧栏树、搜索面板、窄屏页眉），加载菱形只留中央静止的一枚，首页轮播不自动播 |
+| `prefers-reduced-motion: reduce` | 全局把动画与过渡缩到 0.01ms、动画再加 `-.01ms` 的负延迟（`base/root.css`，别的宿主上 `scope.css` 在作用域里补；与 MW 核心 `accessibility` 特性同一写法）：动画一生成就落在终态，不是 `none`——`animationend` / `transitionend` 仍会派发，等它们的脚本不会卡住。⚠ 反过来，**动画不能当计时器用**：减弱动效下它第 0 帧就结束，`animation-play-state: paused` 也拦不住 `animationend`，靠动画播完来触发动作的脚本必须自己判断 `prefers-reduced-motion`（首页轮播曾因此每帧切一张，见[首页 · Hero 轮播](/patterns/home#hero-轮播)）；平滑滚动关掉。个别需要「不动」而不只是「很快」的地方另写了 `animation: none`（侧栏树、搜索面板、窄屏页眉），加载菱形只留中央静止的一枚，首页轮播不自动播 |
 | `prefers-contrast: more` | 令牌层（`tokens.css` 末尾）把次要文字提到 `--ak-fg-secondary`、细边框换成 `--ak-border-strong`。⚠ 目前只在亮色主题生效：暗色主题的选择器特指度更高，压过这里的 `:root`（沿用原行为，未改） |
 | `forced-colors: active`（Windows 高对比度等） | 见下 |
 

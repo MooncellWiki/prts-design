@@ -33,10 +33,6 @@ const ALLOW: { hosts: HostName[]; el?: (tag: string, cls: string[]) => boolean; 
     hosts: ['vector', 'bare'], el: (t, c) => t === 'a' && c.includes('ak-btn'), props: ['text-underline-offset', 'text-decoration-thickness'],
     why: '链接形态的 .ak-btn 不标 ak-not-prose，Arknights 皮肤正文的 a:hover（base/typography.css）给了下划线偏移 / 粗细；.ak-btn:hover 没有下划线，看不见',
   },
-  {
-    hosts: ['vector'], props: ['animation-delay'],
-    why: 'Vector 自己的减弱动效规则（* { animation-delay: -0.01ms !important }）：快照一律模拟 prefers-reduced-motion，平时不生效；动画时长仍由作用域的 .01ms 规则统一',
-  },
 ];
 
 type HostSnap = Snap & { sections: string[]; skipped: string[] };

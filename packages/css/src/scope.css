@@ -35,7 +35,7 @@
 :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *):where(:focus-visible) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 a:focus-visible:where(.ak-scope:not(.skin-arknights *) *) { outline: 2px solid var(--ak-focus); outline-offset: 2px; }   /* 链接单独一条 (0,1,1)：宿主的 a:focus-visible（Vector：outline: solid 2px #36c）是 (0,1,1)，上面压成 0 的那条压不过；组件自己的 .ak-x:focus-visible (0,2,0) 照样盖得过 */
 @media (prefers-reduced-motion: reduce) {
-  :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *), :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::before, :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *), :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::before, :where(.ak-scope:not(.skin-arknights *), .ak-scope:not(.skin-arknights *) *)::after { animation-delay: -.01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
 /* 3. 宿主的元素级规则（Vector：h1–h6 的字号 / 外边距 / display: flow-root、li 的下外边距、img 的 vertical-align、code 的底色边框 …）

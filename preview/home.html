@@ -126,7 +126,7 @@
 .mp-hero__dot[aria-current="true"]::after { display: block; background: var(--ak-cyan-500); transform-origin: left; transition: height var(--ak-dur-fast); animation: mp-hero-progress 6s linear both; }   /* 自动播放进度 = 一段 6 秒的 CSS 动画（只动 transform，在合成器上跑）；当前格一换就从头播，播完脚本切下一张。亮色主题下同样用官网青：它压在画面上，不跟主题走 */
 .mp-hero.is-held .mp-hero__dot[aria-current="true"]::after { animation-play-state: paused; }   /* 停住 = 动画停住：停着进度不走、继续时接着走（is-held 由脚本按 鼠标在块里 / 拖动 / 不在视口 / 后台标签页 合成） */
 .mp-hero:has(:focus-visible) .mp-hero__dot[aria-current="true"]::after { animation-play-state: paused; }   /* 键盘焦点在块里也停；单写一条，不认 :has() 的浏览器只丢这一条 */
-.mp-hero.is-stopped .mp-hero__dot[aria-current="true"]::after { display: none; }   /* 不自动播（prefers-reduced-motion）：没有填充，只剩实白的轨道 = 纯「当前格」。整个不生成而不是藏起来：盒子在动画就在，MW 核心 normalize 的减弱动效规则（animation-delay: -0.01ms !important）会让它一生成就落在终点，停住（paused）也照样派发 animationend */
+.mp-hero.is-stopped .mp-hero__dot[aria-current="true"]::after { display: none; }   /* 不自动播（prefers-reduced-motion）：没有填充，只剩实白的轨道 = 纯「当前格」。整个不生成而不是藏起来：盒子在动画就在，MW 核心 accessibility 特性（mediawiki.skinning/accessibility.less）的减弱动效规则（animation-delay: -0.01ms !important）会让它一生成就落在终点，停住（paused）也照样派发 animationend */
 @keyframes mp-hero-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .mp-hero__pic:has(> a:focus-visible), .mp-hero__nav:focus-visible, .mp-hero__dot:focus-visible { outline: 2px solid var(--mp-hero-accent); outline-offset: -2px; }   /* 贴边、会被 overflow 裁掉的大图 / 箭头 / 指示条：焦点环内缩 */
 /* Hero 窄于 640px（手机 / 窄窗口）：箭头小一号；指示条的白条、间隔、边距、投影按旧轮播缩到这个宽度时的样子收（图只有 110–200px 高） */
@@ -989,7 +989,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
     document.addEventListener('visibilitychange', hold);   // 后台标签页：回来接着播，不会一回来就切走
     if (window.IntersectionObserver) new IntersectionObserver(function (es) { away = !es[es.length - 1].isIntersecting; hold(); }).observe(hero);   // 滚出视口就停，没人看的时候不换张
     /* 当前格的进度播完 → 下一张（→ slideChange → sync()）；只认当前格，换张时旧格的事件不算。
-       不自动播时一律不认：减弱动效下宿主的全局规则会把动画压到一生成就结束（MW 核心 normalize：animation-delay: -0.01ms + animation-duration: .01ms，都带 !important），
+       不自动播时一律不认：减弱动效下宿主的全局规则会把动画压到一生成就结束（MW 核心 accessibility 特性：animation-delay: -0.01ms + animation-duration: .01ms，都带 !important），
        animation-play-state: paused 拦不住已经在终点的动画——新的一格一拿到 aria-current 就派发 animationend，换张又点亮下一格，每帧切一张停不下来（现网反馈「首页活动图片疯狂切换」） */
     pager.addEventListener('animationend', function (e) { if (!stopped && e.target === dots[sw.realIndex]) sw.slideNext(); });
     if (motion.addEventListener) motion.addEventListener('change', function () {   // 开着页面改系统的动效设置：CSS 那半立刻跟着变，脚本这半也得跟上

@@ -39,7 +39,7 @@ jobs:
         run: pnpm build:storybook
 
       - name: Run Playwright tests
-        run: pnpm exec playwright test --project=hosts --project=stories
+        run: pnpm exec playwright test --project=hosts --project=stories --project=home
 
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}

@@ -7,6 +7,7 @@
  *   pnpm e2e --project=snapshots -u            重构前：拍整页计算样式基准 → _verify/snapshots/（不入库）
  *   pnpm e2e --project=snapshots               重构后：逐项比对
  *   pnpm e2e --project=stories -g chip         Storybook 每个 story 渲染成功、控制台干净（先 pnpm build:storybook）
+ *   pnpm e2e --project=home                    首页轮播：减弱动效下不自动播、手动一次只切一张；平时 6 秒自动切
  *   pnpm exec playwright show-report           看 HTML 报告（失败的差异 / 截图 / trace 都在附件里）
  */
 import { defineConfig } from '@playwright/test';
@@ -43,5 +44,6 @@ export default defineConfig({
     { name: 'hosts', testMatch: 'hosts.spec.ts' },
     { name: 'snapshots', testMatch: 'snapshots.spec.ts' },
     { name: 'stories', testMatch: 'stories.spec.ts' },
+    { name: 'home', testMatch: 'home.spec.ts' },
   ],
 });

@@ -11,6 +11,9 @@ body { background: var(--ak-bg-canvas); }
 * { scrollbar-color: var(--ak-scrollbar) transparent; scrollbar-width: thin; }
 *::-webkit-scrollbar { width: 8px; height: 8px; }
 *::-webkit-scrollbar-thumb { background: var(--ak-scrollbar); }
+/* 减弱动效：动画一生成就落在终态。负延迟与 MW 核心 accessibility 特性（mediawiki.skinning/accessibility.less，SkinModule 默认开，现网一直带着）一致——
+ * 这里不写的话预览 / 站外和现网不是一回事：现网动画在第 0 帧就结束，停住（animation-play-state: paused）的也照样派发 animationend，
+ * 拿动画当计时器的脚本必须自己判断减弱动效（首页轮播曾因此每帧切一张）。过渡时长核心是 0ms，这里保留 .01ms：transitionend 照常触发 */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  *, *::before, *::after { animation-delay: -.01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
