@@ -87,11 +87,12 @@
   --ak-rarity-5: #efd691;
   --ak-rarity-6: #ff9433;
 
-  /* ─── color · sp · Skill SP 回复类型（对应游戏内技能框配色，近似取值） */
-  --ak-sp-auto: #8fc31f;                   /* 自动回复 INCREASE_WITH_TIME */
-  --ak-sp-attack: #ff8a00;                 /* 攻击回复 INCREASE_WHEN_ATTACK */
-  --ak-sp-hit: #ffd800;                    /* 受击回复 INCREASE_WHEN_TAKEN_DAMAGE */
-  --ak-sp-passive: #8d8d8d;                /* 被动 */
+  /* ─── color · sp · Skill SP 回复类型（对应游戏内技能框配色；色值取自现网 模板:技能类型） */
+  --ak-sp-auto: #8ec31f;                   /* 自动回复 INCREASE_WITH_TIME（同现网 模板:技能类型） */
+  --ak-sp-attack: #fc793e;                 /* 攻击回复 INCREASE_WHEN_ATTACK（同现网 模板:技能类型） */
+  --ak-sp-hit: #f4af09;                    /* 受击回复 INCREASE_WHEN_TAKEN_DAMAGE（同现网 模板:技能类型） */
+  --ak-sp-passive-recovery: #c289e3;       /* 被动回复：仅在特殊条件下回复技力（同现网 模板:技能类型） */
+  --ak-sp-passive: #808080;                /* 被动；手动 / 自动触发同色（同现网 模板:技能类型） */
 
   /* ─── typography */
 

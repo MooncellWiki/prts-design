@@ -83,12 +83,13 @@
       "rarity-6": { $value: "#ff9433" },
     },
     sp: {
-      $description: "Skill SP 回复类型（对应游戏内技能框配色，近似取值）",
+      $description: "Skill SP 回复类型（对应游戏内技能框配色；色值取自现网 模板:技能类型）",
       $type: "color",
-      "sp-auto": { $value: "#8fc31f", $description: "自动回复 INCREASE_WITH_TIME" },
-      "sp-attack": { $value: "#ff8a00", $description: "攻击回复 INCREASE_WHEN_ATTACK" },
-      "sp-hit": { $value: "#ffd800", $description: "受击回复 INCREASE_WHEN_TAKEN_DAMAGE" },
-      "sp-passive": { $value: "#8d8d8d", $description: "被动" },
+      "sp-auto": { $value: "#8ec31f", $description: "自动回复 INCREASE_WITH_TIME（同现网 模板:技能类型）" },
+      "sp-attack": { $value: "#fc793e", $description: "攻击回复 INCREASE_WHEN_ATTACK（同现网 模板:技能类型）" },
+      "sp-hit": { $value: "#f4af09", $description: "受击回复 INCREASE_WHEN_TAKEN_DAMAGE（同现网 模板:技能类型）" },
+      "sp-passive-recovery": { $value: "#c289e3", $description: "被动回复：仅在特殊条件下回复技力（同现网 模板:技能类型）" },
+      "sp-passive": { $value: "#808080", $description: "被动；手动 / 自动触发同色（同现网 模板:技能类型）" },
     },
   },
 }

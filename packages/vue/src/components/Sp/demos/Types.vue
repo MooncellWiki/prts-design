@@ -9,6 +9,7 @@ import AkSpTrigger from "../AkSpTrigger.vue";
       <AkSp />
       <AkSp sp-type="attack" />
       <AkSp sp-type="hit" />
+      <AkSp sp-type="passive-recovery" />
       <AkSp sp-type="passive" />
     </div>
     <div class="ak-flex ak-wrap ak-gap-2 ak-items-center">

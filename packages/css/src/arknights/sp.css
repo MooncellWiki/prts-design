@@ -1,9 +1,10 @@
 /*! PRTS Design · arknights/sp.css — B6 SP 类型 / 触发 / 数值芯片 · 依赖：tokens.css · decor/ */
-/* SP 类型标签（游戏内：绿=自动 橙=攻击 黄=受击 灰=被动） */
-.ak-sp { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: #1d1f20; background: var(--ak-sp-auto); }
-.ak-sp--attack { background: var(--ak-sp-attack); } .ak-sp--hit { background: var(--ak-sp-hit); } .ak-sp--passive { background: var(--ak-sp-passive); color: #fff; }
-.ak-sp-trigger { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); }
-.ak-sp-trigger--auto { background: var(--ak-gray-500); color: #fff; }
+/* SP 类型标签（游戏内：绿=自动 橙=攻击 黄=受击 紫=被动回复 灰=被动）与触发方式。色值与白字同现网 模板:技能类型（玩家认的是这套颜色）；
+ *  白字在绿 / 黄底上对比度不到 4.5:1，标签都带悬停说明（游戏内的原话），不单靠颜色传达 */
+.ak-sp { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: #fff; background: var(--ak-sp-auto); }
+.ak-sp--attack { background: var(--ak-sp-attack); } .ak-sp--hit { background: var(--ak-sp-hit); } .ak-sp--passive-recovery { background: var(--ak-sp-passive-recovery); } .ak-sp--passive { background: var(--ak-sp-passive); }
+/* 触发方式：手动 / 自动同一种灰底（现网两者都是 #808080，靠文字区分） */
+.ak-sp-trigger { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); background: var(--ak-sp-passive); color: #fff; }
 /* SP 数值芯片（游戏内 skill_sp_cost_bkg 荧光绿闪电 / 初始技力 ▶ / 持续 ⏱）
  *  三枚同高同内距、图形用单色 SVG mask（不用 emoji——彩色闪电字形基线不稳，两枚芯片会错半像素），盒子与数字严格对齐 */
 .ak-sp-cost, .ak-sp-init, .ak-sp-dur { display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 8px 0 6px; font: 800 12px/1 var(--ak-font-label); font-variant-numeric: tabular-nums; vertical-align: middle; white-space: nowrap; }

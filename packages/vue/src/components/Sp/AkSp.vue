@@ -6,7 +6,7 @@ import { SP_TYPE_TEXT, SP_TYPE_TIP, type SpType } from "./sp";
 
 const props = withDefaults(
   defineProps<{
-    /** 技力回复方式：auto 自动回复（绿）· attack 攻击回复（橙）· hit 受击回复（黄）· passive 被动（灰） */
+    /** 技力回复方式：auto 自动回复（绿）· attack 攻击回复（橙）· hit 受击回复（黄）· passive-recovery 被动回复（紫）· passive 被动（灰） */
     spType?: SpType;
     /** 悬停提示（data-ak-tip）：默认是游戏内的说明（「每次攻击回复1点技力」），可改写；false 关掉 */
     tip?: string | false;
@@ -15,7 +15,7 @@ const props = withDefaults(
 );
 
 defineSlots<{
-  /** 文字；默认「自动回复」「攻击回复」「受击回复」「被动」 */
+  /** 文字；默认「自动回复」「攻击回复」「受击回复」「被动回复」「被动」 */
   default?: () => unknown;
 }>();
 
