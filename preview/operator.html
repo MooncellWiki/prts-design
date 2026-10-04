@@ -17,6 +17,12 @@
 /* 舞台接缝——不改 Widget 的 CSS / JS，只处理它与皮肤骨架的几处接口（生产环境放 Widget 自己的 <style> 或皮肤的 site 样式里） */
 .charinfo-container { zoom: var(--op-stage-zoom, 1); margin: 0 0 var(--ak-space-4); line-height: 1.6; }   /* 1.6 = Vector 正文行高：Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点 */   /* 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着）；正文列比它窄时整块 zoom——zoom 不像 transform 那样改变 position:fixed 的包含块，Widget 的「全屏查看」（把 wrapper 设成 fixed 铺满视口）照常；系数由页脚脚本按正文列宽算 */
 .charinfo-container:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1; }   /* 全屏查看时不缩 */
+/* Widget 的两份样式表按视口宽度切（600px），脚本却按正文宽度（#mw-content-text）<600 判手机版：视口 601 起、正文列还不到 600 的那一段（皮肤里约 601–690），
+   脚本给桌面版的 1024 舞台套上手机版的缩放（transform: scale(正文宽 / 600) + 容器内联宽高 600×800 的比例），舞台撑出页面一倍。这一段把那两处内联样式压掉，舞台照桌面版按正文列宽 zoom（页脚脚本同步按视口判） */
+@media screen and (min-width: 601px) {
+  .charinfo-container { width: auto !important; height: auto !important; }
+  .charinfo-container > .charinfo-wrapper { transform: none !important; }
+}
 .charinfo-container > .charinfo-wrapper[style*="fixed"] { z-index: calc(var(--ak-z-modal) + 1) !important; }   /* 全屏层要压过皮肤页眉：Widget 内联的 999 只够压 Vector（它顺手把 #mw-panel / #mw-head 压下去，皮肤里没这两个 id） */
 body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查看立绘」全屏层同理 */
 /* 异格一览（{{异格干员}}）：左黑标 + 原型 / 异格头像卡 + 右侧说明 */
@@ -463,7 +469,8 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
       </aside>
 
       <div class="ak-body" id="bodyContent">
-      <div class="mw-body-content mw-parser-output">
+      <!-- 两层照 MW 原样：#mw-content-text.mw-body-content > .mw-parser-output。现网的 Widget / Gadget 会顺着这个嵌套找容器（CharinfoV2 量「舞台的祖父元素」的宽度定手机版缩放），并成一层就量到带内边距的 .ak-body 上去了 -->
+      <div class="mw-body-content" id="mw-content-text"><div class="mw-parser-output">
 
 <div class="ak-message ak-message--neutral ak-fs-xs"><div class="ak-message__body">这是<b>干员页整页样例</b>（信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节，数据取自现网 wikitext / gamedata 2.7.61）。顶部「干员信息」= 现网 <code>{{CharinfoV2}}</code> Widget <b>原样</b>（DOM / CSS / JS 一字不改，静态文件快照在 <code>vendor/charinfo/</code>；立绘 / 场景 / BGM / 语音运行时从现网拉，试听语音 · BGM · 时装 / 场景抽屉 · 看图 / 全屏都是现网的行为）——先把现网的动效与排布原样看全，再决定换皮范围；其余章节 = 现网各模板 → 设计系统组件的映射，见文档站 /patterns/operator。</div></div>
 <div class="op-alter ak-not-prose">
@@ -993,10 +1000,12 @@ var back_list = {
 (function () {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  /* ── 舞台（现网 Widget:CharinfoV2 原样，交互全在它自己的 charinfo_*.min.js 里）：这里只按正文列宽算 --op-stage-zoom；Widget 按父级宽度 <600 切手机版时自己 transform 缩放并给容器写内联 width，那时不插手 ── */
+  /* ── 舞台（现网 Widget:CharinfoV2 原样，交互全在它自己的 charinfo_*.min.js 里）：这里只按正文列宽算 --op-stage-zoom；Widget 按正文宽度 <600 切手机版时自己 transform 缩放并给容器写内联 width，那时不插手——
+     除非视口 >600：加载的是桌面版样式表，那份内联缩放已被上面「舞台接缝」的规则压掉，照桌面版算 ── */
   const stage = $('.charinfo-container');
   if (stage) {
-    const fit = () => stage.style.setProperty('--op-stage-zoom', stage.style.width ? 1 : Math.min(1, stage.parentElement.clientWidth / 1024).toFixed(4));
+    const desk = window.matchMedia('(min-width: 601px)');
+    const fit = () => stage.style.setProperty('--op-stage-zoom', stage.style.width && !desk.matches ? 1 : Math.min(1, stage.parentElement.clientWidth / 1024).toFixed(4));
     fit(); new ResizeObserver(fit).observe(stage.parentElement);
   }
   /* ── 语音记录：播放钮 → 现网同源音频（torappu.prts.wiki/assets/audio/<语种目录>/<charId>/<编号>.mp3，与舞台「试听语音」/ 现网 VoiceTable 同一套地址；语种跟上面的 chip 走） ── */
@@ -1656,7 +1665,7 @@ var back_list = {
 </script>
 
 
-      </div><!-- /.mw-body-content -->
+      </div></div><!-- /.mw-parser-output /.mw-body-content -->
       <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2026年8月29日 (六) 17:40。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
       </div><!-- /.ak-body -->
       <div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="#" title="特殊:页面分类">分类</a>：​<ul><li><a href="#">干员</a></li><li><a href="#">近卫干员</a></li><li><a href="#">近战位干员</a></li><li><a href="#">属于龙门近卫局的干员</a></li><li><a href="#">属于炎-龙门的干员</a></li><li><a href="#">拥有专属模组的干员</a></li><li><a href="#">拥有干员密录的干员</a></li><li><a href="#">拥有悖论模拟的干员</a></li></ul></div><div class="mw-hidden-catlinks mw-hidden-cats-hidden">隐藏分类：​<ul><li><a href="#">对原文有修正的页面</a></li></ul></div></div>

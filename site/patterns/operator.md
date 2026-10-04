@@ -52,7 +52,8 @@ title: 干员页样例（陈）
   1. 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着），正文列比它窄时整块 `zoom: var(--op-stage-zoom)`（页面脚本按列宽算）。用 zoom 不用 transform：Widget 的「全屏查看」是把 wrapper 设成 `position: fixed` 铺满视口，transform 会改它的包含块、zoom 不会；再加 `:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1 }`，全屏时不缩。
   2. 全屏层与手机「查看立绘」层的 z-index 抬到 `--ak-z-modal` 之上（Widget 内联的 999 只够压 Vector——它顺手压下去的 `#mw-panel` `#mw-head` 皮肤里没有）。
   3. `line-height: 1.6`（Vector 正文行高；Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点）。
-- **接缝之外**：Widget 的手机版由脚本按父级宽度 <600 在加载时一次性决定（自己 transform 缩放，不响应 resize），皮肤不插手；看图模式的滚轮缩放 / 拖拽用 `getBoundingClientRect` 对 `offsetWidth`，zoom 之下拖动手感会差一个系数（全屏时 zoom 归 1，不受影响）。
+  4. Widget 的两份样式表按**视口**宽度切（600px），脚本却按**正文**宽度（舞台的祖父元素 `#mw-content-text`）<600 判手机版。视口 601 起、正文列还不到 600 的那一段（皮肤里约 601–690），脚本会给桌面版的 1024 舞台套上手机版的缩放（`transform: scale(正文宽 / 600)` + 容器内联宽高），舞台撑出页面一倍：`@media (min-width: 601px)` 里把容器的内联宽高、wrapper 的内联 transform 用 `!important` 压掉，页面脚本算 zoom 时同样按视口判，这一段照桌面版缩。脚本内部仍当自己是手机版（时装面板的几处内联定位走手机那套），根治得改 Widget 的脚本（判断换成 `matchMedia('(max-width: 600px)')`）。
+- **接缝之外**：Widget 的手机版由脚本按正文宽度 <600 在加载时一次性决定（自己 transform 缩放，不响应 resize），视口 ≤600 时皮肤不插手——它量的是舞台的祖父元素，样例骨架因此照 MW 原样保留 `#mw-content-text.mw-body-content > .mw-parser-output` 两层（并成一层会量到带内边距的 `.ak-body`，手机上舞台比正文宽出 24px）；看图模式的滚轮缩放 / 拖拽用 `getBoundingClientRect` 对 `offsetWidth`，zoom 之下拖动手感会差一个系数（全屏时 zoom 归 1，不受影响）。
 
 ### 换皮草案（暂不接入）
 

@@ -21,6 +21,12 @@ hiddencats: 对原文有修正的页面
 /* 舞台接缝——不改 Widget 的 CSS / JS，只处理它与皮肤骨架的几处接口（生产环境放 Widget 自己的 <style> 或皮肤的 site 样式里） */
 .charinfo-container { zoom: var(--op-stage-zoom, 1); margin: 0 0 var(--ak-space-4); line-height: 1.6; }   /* 1.6 = Vector 正文行高：Widget 的文字全靠继承，皮肤正文的 1.7 会把画师面板 / 语音气泡撑高一点 */   /* 桌面版舞台 1024×576 定宽、Widget 自己不缩（现网 Vector 正文 975 宽也就那么溢出着）；正文列比它窄时整块 zoom——zoom 不像 transform 那样改变 position:fixed 的包含块，Widget 的「全屏查看」（把 wrapper 设成 fixed 铺满视口）照常；系数由页脚脚本按正文列宽算 */
 .charinfo-container:has(> .charinfo-wrapper[style*="fixed"]) { zoom: 1; }   /* 全屏查看时不缩 */
+/* Widget 的两份样式表按视口宽度切（600px），脚本却按正文宽度（#mw-content-text）<600 判手机版：视口 601 起、正文列还不到 600 的那一段（皮肤里约 601–690），
+   脚本给桌面版的 1024 舞台套上手机版的缩放（transform: scale(正文宽 / 600) + 容器内联宽高 600×800 的比例），舞台撑出页面一倍。这一段把那两处内联样式压掉，舞台照桌面版按正文列宽 zoom（页脚脚本同步按视口判） */
+@media screen and (min-width: 601px) {
+  .charinfo-container { width: auto !important; height: auto !important; }
+  .charinfo-container > .charinfo-wrapper { transform: none !important; }
+}
 .charinfo-container > .charinfo-wrapper[style*="fixed"] { z-index: calc(var(--ak-z-modal) + 1) !important; }   /* 全屏层要压过皮肤页眉：Widget 内联的 999 只够压 Vector（它顺手把 #mw-panel / #mw-head 压下去，皮肤里没这两个 id） */
 body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查看立绘」全屏层同理 */
 /* 异格一览（{{异格干员}}）：左黑标 + 原型 / 异格头像卡 + 右侧说明 */
@@ -724,10 +730,12 @@ var back_list = {
 (function () {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  /* ── 舞台（现网 Widget:CharinfoV2 原样，交互全在它自己的 charinfo_*.min.js 里）：这里只按正文列宽算 --op-stage-zoom；Widget 按父级宽度 <600 切手机版时自己 transform 缩放并给容器写内联 width，那时不插手 ── */
+  /* ── 舞台（现网 Widget:CharinfoV2 原样，交互全在它自己的 charinfo_*.min.js 里）：这里只按正文列宽算 --op-stage-zoom；Widget 按正文宽度 <600 切手机版时自己 transform 缩放并给容器写内联 width，那时不插手——
+     除非视口 >600：加载的是桌面版样式表，那份内联缩放已被上面「舞台接缝」的规则压掉，照桌面版算 ── */
   const stage = $('.charinfo-container');
   if (stage) {
-    const fit = () => stage.style.setProperty('--op-stage-zoom', stage.style.width ? 1 : Math.min(1, stage.parentElement.clientWidth / 1024).toFixed(4));
+    const desk = window.matchMedia('(min-width: 601px)');
+    const fit = () => stage.style.setProperty('--op-stage-zoom', stage.style.width && !desk.matches ? 1 : Math.min(1, stage.parentElement.clientWidth / 1024).toFixed(4));
     fit(); new ResizeObserver(fit).observe(stage.parentElement);
   }
   /* ── 语音记录：播放钮 → 现网同源音频（torappu.prts.wiki/assets/audio/<语种目录>/<charId>/<编号>.mp3，与舞台「试听语音」/ 现网 VoiceTable 同一套地址；语种跟上面的 chip 走） ── */

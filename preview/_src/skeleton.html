@@ -280,11 +280,12 @@
       </aside>
 
       <div class="ak-body" id="bodyContent">
-      <div class="mw-body-content mw-parser-output">
+      <!-- 两层照 MW 原样：#mw-content-text.mw-body-content > .mw-parser-output。现网的 Widget / Gadget 会顺着这个嵌套找容器（CharinfoV2 量「舞台的祖父元素」的宽度定手机版缩放），并成一层就量到带内边距的 .ak-body 上去了 -->
+      <div class="mw-body-content" id="mw-content-text"><div class="mw-parser-output">
 
 {{content}}
 
-      </div><!-- /.mw-body-content -->
+      </div></div><!-- /.mw-parser-output /.mw-body-content -->
       <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 {{lastmod}}。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
       </div><!-- /.ak-body -->
       <div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="#" title="特殊:页面分类">分类</a>：​<ul>{{cats}}</ul></div>{{hiddencats}}</div>

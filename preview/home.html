@@ -636,7 +636,8 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
       </aside>
 
       <div class="ak-body" id="bodyContent">
-      <div class="mw-body-content mw-parser-output">
+      <!-- 两层照 MW 原样：#mw-content-text.mw-body-content > .mw-parser-output。现网的 Widget / Gadget 会顺着这个嵌套找容器（CharinfoV2 量「舞台的祖父元素」的宽度定手机版缩放），并成一层就量到带内边距的 .ak-body 上去了 -->
+      <div class="mw-body-content" id="mw-content-text"><div class="mw-parser-output">
 
 <div class="mp ak-not-prose">   <!-- 整个首页是拼出来的 UI 不是文章：标 ak-not-prose，正文排版（标题色条 / 列表符 / 链接色含 :visited）一律不进来；要像正文链接的地方见 .mp-link -->
 
@@ -1083,7 +1084,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
 </script>
 
 
-      </div><!-- /.mw-body-content -->
+      </div></div><!-- /.mw-parser-output /.mw-body-content -->
       <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2026年8月23日 (日) 13:00。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
       </div><!-- /.ak-body -->
       <div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="#" title="特殊:页面分类">分类</a>：​<ul><li><a href="#">首页</a></li></ul></div></div>
