@@ -5,39 +5,60 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 # 目录
 
-`aside.ak-toc`：**一份 DOM、两种形态**，不做第二份目录，也不用角落浮动按钮。皮肤设 `toc: false` 关掉 MW 的内联目录，自己用 `data-toc`（或脚本扫正文标题）渲染这一份。
+`aside.ak-toc`：**一份 DOM、两种形态**，不做第二份目录。皮肤设 `toc: false` 关掉 MW 的内联目录，自己用 `data-toc`（或脚本扫正文标题）渲染这一份。
 
 - **≥1400 右侧导轨**：绝对定位进 `.ak-main` 右内边距让出来的那条导轨，`.ak-toc__inner` 粘性跟随滚动。标题是 overline 小标签 + 2px 活动主色条；下面一道 2px 的阅读进度条；当前小节（scrollspy）= 青色左条 + 青字加粗；层级只靠缩进（竖线只画在最外层）；长标题截断。导轨限高在底部让出 `--ak-toc-clear`（默认 = 右下角 `.ak-fab` 占的 76px），目录长到出内滚时末几项不会被回到顶部按钮盖住；页面没有那枚按钮可设回 `var(--ak-space-2)`。
-- **<1400 浮层**：由页眉里的「本页目录」拉下来（它不另起一行，并在页眉那一行、排在工具 / ⋮ 之前），顶边始终贴着页眉下沿（页眉各宽度都只有一行、始终贴顶），右对齐；宽 360px 定宽（≤639 拉满），高最多到视口底（`100dvh`，手机地址栏收放时不被盖住），超出只在浮层里内滚；浮层没有遮罩，开着时页面照常滚（滚轮在浮层上滚到头也带动页面），只有 ≤639 拉满宽度时才锁住页面滚动。首项「回到顶部」；浮层开着时 `.ak-fab` 让位，<1120 起 `.ak-fab` 不再出现、只剩这一项（手机上浮动按钮太挡视野）。
+- **<1400 按钮 + 浮层**：目录收成一枚独立的按钮 `label.ak-toc-btn`——与右下角「回到顶部」同款的 44px 反色方块、同一列（≤639 右缘收到 gutter 线上），图标是方点列表。它平时停在正文纸张的右上角、顶边与纸张的上框线平齐，往下滚就贴在页眉下沿跟着走（Vector 2022 的目录按钮：标题旁 → 滚过后钉在角上）；目录是从它下面拉出的浮层，右缘同按钮，宽 360px 定宽（≤639 拉满），高最多到视口底（`100dvh`，手机地址栏收放时不被盖住），超出只在浮层里内滚。浮层没有遮罩，开着时页面照常滚（滚轮在浮层上滚到头也带动页面），只有 ≤639 拉满宽度时才锁住页面滚动。首项「回到顶部」；浮层开着时 `.ak-fab` 让位，<1120 起 `.ak-fab` 不再出现、只剩这一项（右侧已经有一枚目录按钮）。
 
 <SkinFrame :height="620" :scroll="700" highlight=".ak-toc" caption="1440：右侧导轨，滚到「技能」附近——当前小节高亮，进度条跟着走" />
 
-<SkinFrame :width="1024" :height="620" state="toc" caption="1024：「本页目录」拉下的浮层" />
+<SkinFrame :width="1280" :height="620" highlight=".ak-toc-btn" caption="1280：目录按钮停在纸张右上角，状态指示器与动作簇都没被压住" />
+
+<SkinFrame :width="1024" :height="620" :scroll="700" state="toc" caption="1024：滚过之后按钮贴着页眉，浮层从它下面拉出" />
+
+<SkinFrame :width="390" :height="620" :scroll="700" state="toc" caption="390：手机上浮层拉满宽度" />
+
+## 为什么是独立按钮，不放进页眉
+
+以前 <1400 的入口是页眉里的「本页目录 ⌄」（≤639 只剩图标），浮层贴着页眉下沿拉下。它和外观 / 通知 / 用户菜单挤在同一簇，读起来像站点级的控件，而目录属于**这一页**；手机上页眉全是图标，◧ 菜单、目录、搜索、⋮ 四枚并排更难分辨。现在入口挪回页面里，页眉在 1120–1400 与 ≥1400 完全相同。
+
+按钮不是 `position: fixed`，而是挂在一条零高度的粘性锚 `.ak-toc-dock` 上（`position: sticky`，粘在页眉下沿再往下 12px 处，紧跟页面标题）：
+
+- 页面顶部它落在纸张右上角；`fixed` 的话会压住页眉正下方的状态指示器 / 动作簇（「更多」就在那一角）。
+- 浮层绝对定位在 dock 里，跟着按钮走，不用另算位置。
+- dock 的层级比下拉低一档（`--ak-z-dropdown − 1`）：「更多」卡片盖得住它，正文里的粘性表头在它之下。
 
 ## 没有 JS 也能开合
 
-开合本身是纯 CSS：`input.ak-toc-cb`（在页眉的 `.ak-local-nav` 一组里）+ `label.ak-local-nav__toc`。浮层和按钮不是兄弟节点，桥接分三级：
+`.ak-toc-dock > input.ak-toc-cb + label.ak-toc-btn + aside.ak-toc` 三者是兄弟，开合就是 `.ak-toc-cb:checked ~ .ak-toc`——纯 CSS，不需要 `:has()`，旧内核的手机浏览器、无 JS 都是真浮层。checkbox 视觉隐藏但可 Tab 聚焦、空格切换，焦点框画在按钮上；按钮只有图标，`label` 里不放字——无障碍名写在 checkbox 的 `aria-label` 上，悬停提示是 `label` 的 `title`。
 
-1. 有 JS：脚本把 checkbox 状态镜像到 `html.ak-toc-open`——浮层显示的主路径，不依赖 `:has()`，旧内核的手机浏览器也是真浮层；
-2. 无 JS、支持 `:has()`：`body:has(.ak-toc-cb:checked) .ak-toc` 纯 CSS 桥接（两条选择器必须分开写——选择器列表里混进不认识的 `:has()` 会让整条规则作废）；
-3. 既无 JS（`html.client-nojs`）又不支持 `:has()`：目录退回正文流里的一张静态卡片，始终展开。
+JS 只负责生成条目、scrollspy、阅读进度，以及这些收尾：
 
-JS 只负责生成条目、scrollspy、阅读进度、收起页眉，以及点浮层外 / Esc / 跳转后 / 回到 ≥1400 时收起。点 `label` 时浏览器会再向 checkbox 派发一次 click，「点外部关闭」必须放行 `.ak-toc-cb`，否则一点就关。
+- 点 dock 外 / Esc / 跳转后 / 回到 ≥1400 时收起；
+- 把状态镜像到 `html.ak-toc-open`，让右下角的 `.ak-fab` 让位（它与浮层不是兄弟；无 JS 时 `body:has(.ak-toc-cb:checked)` 桥接，两条选择器必须分开写——选择器列表里混进不认识的 `:has()` 会让整条规则作废）；
+- 浮层限高：dock 还没贴住页眉时比页眉低一截，JS 把这一截写进 dock 的 `--_y`（开着时随滚动更新），浮层底才不探出视口。无 JS 时它是 0，页面顶部打开长目录会探出去一截——页面没锁，往下滚一点就全在视口里了；
+- ≤639 开着时锁页面滚动。
 
 scrollspy 取「基准线以上最后一个标题」（参考 VitePress / Docusaurus），基准线 = 每个标题自己的 `scroll-margin-top`：点目录跳到哪项就一定亮哪项；页顶不高亮，页底高亮最后一项；收起的折叠块 / 标签页里的标题跳过。
 
 ## 结构
 
 ```html
-<aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
-  <a class="ak-toc__top" href="#">…回到顶部</a>               <!-- 仅 <1400 -->
-  <div class="ak-toc__inner">
-    <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
-    <div class="ak-toc__progress" aria-hidden="true"><i></i></div>   <!-- 宽度 = --_p -->
-    <ul class="ak-toc__list" data-toc>…</ul>                   <!-- li.is-active 为当前小节 -->
-  </div>
-</aside>
+<div class="ak-toc-dock">                                       <!-- ≥1400 不占高度；<1400 粘性锚 -->
+  <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb" aria-label="本页目录" aria-controls="ak-toc">
+  <label class="ak-toc-btn" for="ak-toc-toggle" title="本页目录"></label>   <!-- 仅 <1400；只有图标 -->
+  <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+    <a class="ak-toc__top" href="#">…回到顶部</a>               <!-- 仅 <1400 -->
+    <div class="ak-toc__inner">
+      <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
+      <div class="ak-toc__progress" aria-hidden="true"><i></i></div>   <!-- 宽度 = --_p -->
+      <ul class="ak-toc__list" data-toc>…</ul>                   <!-- li.is-active 为当前小节 -->
+    </div>
+  </aside>
+</div>
 ```
+
+页面没有目录时整个 `.ak-toc-dock` 不输出（或 `.ak-layout--no-toc` 把它藏掉）。
 
 ## CSS
 

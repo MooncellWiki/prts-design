@@ -168,23 +168,29 @@
   const prog = $('.ak-toc__progress > i');
   if (prog) window.addEventListener('scroll', () => { const d = document.documentElement; prog.style.setProperty('--_p', (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%'); }, { passive: true });
 
-  /* ── 目录浮层收尾（开合本身是纯 CSS 的 .ak-toc-cb）：
-   *  · 把 checkbox 状态镜像到 html.ak-toc-open —— 这是浮层显示的主路径（chrome/responsive.css 不再只靠 body:has() 桥接，没有 :has() 的旧内核也是真浮层）；
+  /* ── 目录按钮 / 浮层收尾（<1400；开合本身是纯 CSS：.ak-toc-dock 里 .ak-toc-cb:checked ~ .ak-toc）：
+   *  · 把 checkbox 状态镜像到 html.ak-toc-open —— 只为让右下角的回到顶部按钮让位（浮层与它不是兄弟；无 JS 时 body:has() 桥接）；
+   *  · 浮层限高：dock 还没贴住页眉时比页眉低一截，把这一截写进 --_y（开着时随滚动 / 缩放更新），浮层底才不探出视口；
    *  · 只在手机（≤639，浮层拉满宽度）开着时锁页面滚动；更宽时浮层没有遮罩、内容就是本页标题，页面照常滚（VitePress 的 outline dropdown 也不锁）；
-   *  · 跳转后 / 点浮层外 / Esc / 回到 ≥1400（目录回右侧导轨，锁必须撤）收起 ── */
-  const tocCb = $('.ak-toc-cb');
-  if (tocCb) {
+   *  · 跳转后 / 点 dock 外 / Esc / 回到 ≥1400（目录回右侧导轨，锁必须撤）收起 ── */
+  const tocCb = $('.ak-toc-cb'), tocDock = $('.ak-toc-dock');
+  if (tocCb && tocDock) {
     const tocMq = window.matchMedia('(max-width: 1400px)'), tocLockMq = window.matchMedia('(max-width: 639px)');
-    const syncToc = () => { const on = tocCb.checked && tocMq.matches; document.documentElement.classList.toggle('ak-toc-open', on); scrollLock('toc', on && tocLockMq.matches); };
+    let tocRaf = 0;
+    const placeToc = () => { tocRaf = 0; if (tocCb.checked) tocDock.style.setProperty('--_y', Math.max(0, Math.round(tocDock.getBoundingClientRect().top - (parseFloat(getComputedStyle(tocDock).top) || 0))) + 'px'); };
+    const scheduleToc = () => { if (tocCb.checked && !tocRaf) tocRaf = requestAnimationFrame(placeToc); };
+    const syncToc = () => { const on = tocCb.checked && tocMq.matches; document.documentElement.classList.toggle('ak-toc-open', on); placeToc(); scrollLock('toc', on && tocLockMq.matches); };
     const closeToc = () => { if (tocCb.checked) { tocCb.checked = false; syncToc(); } };
     tocCb.addEventListener('change', syncToc); syncToc();   // 点 label / 键盘空格切换走 change；程序收起（closeToc）自己同步
+    window.addEventListener('scroll', scheduleToc, { passive: true });
+    window.addEventListener('resize', scheduleToc);
     (tocMq.addEventListener ? tocMq.addEventListener('change', e => { if (!e.matches) closeToc(); }) : tocMq.addListener(e => { if (!e.matches) closeToc(); }));
     (tocLockMq.addEventListener ? tocLockMq.addEventListener('change', syncToc) : tocLockMq.addListener(syncToc));   // 开着时跨过 639：锁跟着加 / 撤
     document.addEventListener('click', e => {
       if (!tocCb.checked) return;
       if (e.target.closest('.ak-toc a')) { closeToc(); return; }             // 跳转后收起
-      // 点击浮层外收起。放行 .ak-toc-cb：点 label 会再向 checkbox 派发一次 click，那次不算「外部」
-      if (!e.target.closest('.ak-toc, .ak-local-nav__toc, .ak-toc-cb')) closeToc();
+      // 点 dock（开关 + 按钮 + 浮层）外收起。点 label 时浏览器再向 checkbox 派发的那次 click 也落在 dock 里，不算「外部」
+      if (!e.target.closest('.ak-toc-dock')) closeToc();
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeToc(); });
   }

@@ -25,7 +25,7 @@ title: 首页设计稿
 | 手机上动作簇也不显示 | ≤639：`.ak-page-tools { display: none }`，页面头与 `#contentSub` 的下边距去掉——390 宽下它是页眉与 Hero 之间整整一行图标，首页读者用不上（编辑走桌面版或编辑链接）；h1 仍是 sr-only，页面头没有看得见的东西，正文直接从页眉下的版面间距排起（Hero 顶从 115 提到 69px） |
 | 正文不包白纸 | `.ak-body--mainpage`：无底色、无边框、无内边距 |
 | 不让出目录导轨 | `.ak-layout--mainpage .ak-main` 保留 `--ak-content-max + --ak-toc-w + --ak-gutter` 的总宽（其它无目录页收窄到阅读列），右缘与有目录的页面对齐 |
-| 不出目录 | 首页恒 `toc-enabled = false`：右侧粘性目录与页眉里的「本页目录」都不渲染 |
+| 不出目录 | 首页恒 `toc-enabled = false`：右侧粘性目录与目录按钮都不渲染 |
 | 命名空间小标 / 指示器 | `.ak-page-header__top:empty` 自动收起；编辑真放了 `<indicator>` 会照常显示（要不要藏是站点的决定） |
 
 **页面这半**：结构 = `MediaWiki:首页` / `Template:首页` 输出的 `.mp-*`，**最外层标 `ak-not-prose`**（见[设计理念 · prose / not-prose](/foundations/principles#prose-not-prose)）；区块样式 = `Template:首页/styles.css`（TemplateStyles）；Hero 轮播（Swiper）与时钟 / 周常倒计时 / 资源开放状态由 Gadget 按页加载——皮肤不依赖它们，`.ak-countdown` `.ak-panel` `.ak-op-card` 等组件样式已在设计系统层。

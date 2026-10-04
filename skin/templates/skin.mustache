@@ -90,13 +90,9 @@
     <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">{{msg-akds-nav-screen}}</span></label>
   </div>
 
-  {{! 「菜单」（<1120）「本页目录」（<1400）：不单独成行，两个入口并进页眉那一行（CSS display:contents，DOM 不变；≥1400 整块不显示）。页眉各宽度都只有一行、始终贴顶 }}
+  {{! 「菜单」（<1120）：不单独成行，并进页眉那一行（CSS display:contents，DOM 不变；≥1120 整块不显示）。页眉各宽度都只有一行、始终贴顶 }}
   <div class="ak-local-nav">
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon" aria-hidden="true"><use href="#i-menu"/></svg>{{msg-akds-menu}}</button>
-    {{#data-toc}}
-    <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
-    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle">{{msg-akds-toc-title}}<span class="ak-local-nav__chevron" aria-hidden="true"></span></label>
-    {{/data-toc}}
   </div>
 </header>
 
@@ -134,16 +130,21 @@
           {{#data-portlets.data-variants}}<ul class="ak-page-tabs" id="{{id}}">{{{html-items}}}</ul>{{/data-portlets.data-variants}}
         </div>
       </header>
-      {{! 目录：紧跟页面标题。≥1400 由 CSS 抬进 .ak-main 右侧导轨（粘性）；<1400 变成页眉里「本页目录」拉下的浮层（开关是上面那个 .ak-toc-cb） }}
+      {{! 目录：紧跟页面标题。≥1400 由 CSS 抬进 .ak-main 右侧导轨（粘性）；<1400 收成右上角一枚按钮（label.ak-toc-btn，平时停在纸张角上、滚过后贴着页眉）+ 从它下面拉出的浮层。
+          开关、按钮、浮层三者是兄弟：开合是纯 CSS 的 :checked ~ }}
       {{#data-toc}}
-      <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
-        <a class="ak-toc__top" href="#"><svg class="ak-icon" aria-hidden="true"><use href="#i-up"/></svg>{{msg-akds-back-to-top}}</a>
-        <div class="ak-toc__inner">
-          <div class="ak-toc__title" id="ak-toc-label">{{msg-akds-toc-title}}</div>
-          <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
-          <ul class="ak-toc__list" data-auto-toc>{{#array-sections}}<li class="toclevel-{{toclevel}}"><a href="#{{anchor}}">{{{line}}}</a></li>{{/array-sections}}</ul>
-        </div>
-      </aside>
+      <div class="ak-toc-dock">
+        <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb" aria-label="{{msg-akds-toc-title}}" aria-controls="ak-toc">
+        <label class="ak-toc-btn" for="ak-toc-toggle" title="{{msg-akds-toc-title}}"></label>
+        <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+          <a class="ak-toc__top" href="#"><svg class="ak-icon" aria-hidden="true"><use href="#i-up"/></svg>{{msg-akds-back-to-top}}</a>
+          <div class="ak-toc__inner">
+            <div class="ak-toc__title" id="ak-toc-label">{{msg-akds-toc-title}}</div>
+            <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
+            <ul class="ak-toc__list" data-auto-toc>{{#array-sections}}<li class="toclevel-{{toclevel}}"><a href="#{{anchor}}">{{{line}}}</a></li>{{/array-sections}}</ul>
+          </div>
+        </aside>
+      </div>
       {{/data-toc}}
       <div class="ak-body" id="bodyContent">
         {{{html-site-notice}}}

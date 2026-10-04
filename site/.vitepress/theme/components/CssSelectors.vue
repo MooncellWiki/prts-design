@@ -128,7 +128,7 @@ onMounted(async () => {
 .akd-selectors summary { display: flex; align-items: center; gap: 12px; margin: 0; padding: 8px 12px; cursor: pointer; background: var(--ak-bg-surface); font-size: 13px; list-style: none; }
 .akd-selectors summary::-webkit-details-marker { display: none; }
 .akd-selectors summary span { color: var(--ak-fg-muted); font-size: 12px; }
-/* 展开箭头：同 .ak-local-nav__chevron，收起朝下、展开朝上 */
+/* 展开箭头：收起朝下、展开朝上 */
 .akd-selectors summary::after { content: ""; flex-shrink: 0; margin-left: auto; width: 7px; height: 7px; border-right: 2px solid; border-bottom: 2px solid; color: var(--ak-fg-muted); transform: translateY(-2px) rotate(45deg); transition: transform var(--ak-dur-fast) var(--ak-ease); }
 .akd-selectors summary:hover::after { color: var(--ak-fg); }
 .akd-selectors details[open] > summary::after { transform: translateY(2px) rotate(-135deg); }

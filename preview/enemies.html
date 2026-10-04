@@ -20,7 +20,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── 0. 页面级：预览骨架的补丁（同 operators.html 的「0. 页面级」：无目录页把目录导轨让给主列） ── */
-.ak-toc, .ak-local-nav__toc { display: none; }
+.ak-toc-dock { display: none; }
 .ak-main { padding-right: 0; }
 .ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
 .catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
@@ -285,11 +285,9 @@
     <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
   </div>
 
-  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）「本页目录」（<1400）：不单独成行，两个入口并进页眉那一行（CSS display:contents，DOM 不变；≥1400 整块不显示） -->
+  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）：不单独成行，并进页眉那一行（CSS display:contents，DOM 不变；≥1120 整块不显示） -->
   <div class="ak-local-nav">
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
-    <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
-    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle">本页目录<span class="ak-local-nav__chevron" aria-hidden="true"></span></label>
   </div>
 </header>
 
@@ -436,15 +434,19 @@
         </div>
       </header>
 
-      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨，<1400 就地变折叠条 -->
-      <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
-        <a class="ak-toc__top" href="#"><svg class="ak-icon"><use href="#i-up"/></svg>回到顶部</a>
-        <div class="ak-toc__inner">
-          <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
-          <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
-          <ul class="ak-toc__list" data-auto-toc></ul>
-        </div>
-      </aside>
+      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨；<1400 收成右上角一枚按钮（平时停在纸张角上，滚过后贴着页眉）+ 从它下面拉出的浮层，开合是纯 CSS 的 :checked ~ -->
+      <div class="ak-toc-dock">
+        <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb" aria-label="本页目录" aria-controls="ak-toc">
+        <label class="ak-toc-btn" for="ak-toc-toggle" title="本页目录"></label>
+        <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+          <a class="ak-toc__top" href="#"><svg class="ak-icon"><use href="#i-up"/></svg>回到顶部</a>
+          <div class="ak-toc__inner">
+            <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
+            <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
+            <ul class="ak-toc__list" data-auto-toc></ul>
+          </div>
+        </aside>
+      </div>
 
       <div class="ak-body" id="bodyContent">
       <!-- 两层照 MW 原样：#mw-content-text.mw-body-content > .mw-parser-output。现网的 Widget / Gadget 会顺着这个嵌套找容器（CharinfoV2 量「舞台的祖父元素」的宽度定手机版缩放），并成一层就量到带内边距的 .ak-body 上去了 -->

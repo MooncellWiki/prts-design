@@ -22,7 +22,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 ## 三列的列头
 
-主行（≥1120）是三列网格 `var(--ak-sidebar-w) minmax(0,1fr) auto`（1120–1400 在工具前多一列「本页目录」，见下面[窄屏](#窄屏)），与下面 `.ak-layout` 同列同 gutter：品牌盖着侧栏列，搜索从正文列左缘起（最宽 560px，与面包屑 / 标题左缘同一条线），工具靠右盖着目录列——页眉是三列各自的「列头」，不是游离的一条。
+主行（≥1120）是三列网格 `var(--ak-sidebar-w) minmax(0,1fr) auto`，与下面 `.ak-layout` 同列同 gutter：品牌盖着侧栏列，搜索从正文列左缘起（最宽 560px，与面包屑 / 标题左缘同一条线），工具靠右盖着目录列——页眉是三列各自的「列头」，不是游离的一条。
 
 **页眉不放站点级主导航**：那 8 项与侧栏「通用」组 1:1 重复，没有哪个宽度上「顶栏可见而侧栏不可见」，两处 active 还会打架；导航只由侧栏承担（MW 的 `data-portlets-first` 也只在侧栏渲染一次）。
 
@@ -36,21 +36,19 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 ## 窄屏
 
-页眉在**所有宽度都只有一行**、始终贴顶，不随滚动收起。<1400 多出来的两个入口——「菜单」（拉出侧栏抽屉）与「本页目录」（拉下目录浮层）——在 DOM 上是 `.ak-local-nav` 一组，但不单独成行：`.ak-header__inner` 与 `.ak-local-nav` 都 `display: contents`，两组子项直接排进 `.ak-header` 这一行，DOM 与模板不变。
+页眉在**所有宽度都只有一行**、始终贴顶，不随滚动收起。<1120 多出来的入口——「菜单」（拉出侧栏抽屉）——在 DOM 上是 `.ak-local-nav` 一组，但不单独成行：`.ak-header__inner` 与 `.ak-local-nav` 都 `display: contents`，两组子项直接排进 `.ak-header` 这一行，DOM 与模板不变。「本页目录」不在页眉里：<1400 它是正文右上角一枚独立的按钮，见[目录](/chrome/toc)。
 
-- **1120–1400**：侧栏还在左列，网格挂到 `.ak-header` 上、多出一列——品牌 | 搜索 | 本页目录 ⌄ | 工具。品牌、搜索照旧是侧栏列与正文列的列头；「本页目录」排在工具之前、与工具组隔 12px，目录浮层右对齐、正好从这一角拉下来。页面没有目录时这一列是空的（宽 0），页眉看起来与 ≥1400 一样。
-- **<1120**：侧栏成了抽屉，没有列可对齐，这一行回到 flex——◧ 菜单 · 品牌 · 搜索 · 本页目录 ⌄ · ⋮。「菜单」只留图标（侧栏面板 ◧：外框 + 实心左栏，画的就是拉出来的那一栏；不用 ☰ 三条线——☰ 与手机上目录的方点列表都是三行横排，同在一行扫一眼分不清哪个是导航），`font-size: 0` 藏起「菜单」两字，文字仍是按钮的无障碍名。外观、通知、用户菜单收进 ⋮ 拉下、贴页眉右下沿的卡片（宽度随内容：最窄 240px，内容长就撑开，最宽到视口两侧各留一个 gutter）（`position: absolute` 于 `.ak-header`、`top: 100%`；不是全屏面板——里面只有一行图标控件加用户菜单，卡片自己可滚、不锁页面滚动）：第一行左边是通知图标（徽标照旧压在铃铛右上角）、右边是外观开关（三个按钮加大到 40×32 方便点按），两样并排不各占一行，用户菜单平铺在下面（不折叠、不浮出）。DOM 只有一份：桌面上 `.ak-header__screen` 是 `display: contents`，子项直接参与主行网格；窄屏它变成卡片——Echo 徽标、`#p-personal`、外观开关都不复制，id 不重复。
-- **≤639**：全是图标，52px——◧ 菜单 · 品牌 ……… 本页目录 · 搜索 · ⋮。「本页目录」也只留图标：CSS 画的方点列表（`::before` + `mask`，模板不用加图标），三个 4px 方点与 ⋮ 同一种方点——不用三条线的 `i-list`（一眼读成汉堡菜单），也不用缩进的大纲图形（20px 下像「右对齐」）；开着时同其它宽度变活动主色，不再有下拉箭头；强制色模式下改用系统文字色 / Highlight。搜索收成图标按钮（同样打开悬浮面板），标语隐藏。320px 宽也排得下。
+- **1120–1400**：与 ≥1400 完全相同——侧栏还在左列，三列网格不变。
+- **<1120**：侧栏成了抽屉，没有列可对齐，这一行回到 flex——◧ 菜单 · 品牌 · 搜索 · ⋮。「菜单」只留图标（侧栏面板 ◧：外框 + 实心左栏，画的就是拉出来的那一栏；不用 ☰ 三条线——三条线读不出「从左边拉出一栏」，也和目录按钮的方点列表撞形），`font-size: 0` 藏起「菜单」两字，文字仍是按钮的无障碍名。外观、通知、用户菜单收进 ⋮ 拉下、贴页眉右下沿的卡片（宽度随内容：最窄 240px，内容长就撑开，最宽到视口两侧各留一个 gutter）（`position: absolute` 于 `.ak-header`、`top: 100%`；不是全屏面板——里面只有一行图标控件加用户菜单，卡片自己可滚、不锁页面滚动）：第一行左边是通知图标（徽标照旧压在铃铛右上角）、右边是外观开关（三个按钮加大到 40×32 方便点按），两样并排不各占一行，用户菜单平铺在下面（不折叠、不浮出）。DOM 只有一份：桌面上 `.ak-header__screen` 是 `display: contents`，子项直接参与主行网格；窄屏它变成卡片——Echo 徽标、`#p-personal`、外观开关都不复制，id 不重复。
+- **≤639**：全是图标，52px——◧ 菜单 · 品牌 ……… 搜索 · ⋮。搜索收成图标按钮（同样打开悬浮面板），标语隐藏。320px 宽也排得下。
 
-以前 640–1399 是两行：主行下面还有一条 48px 的「二级吸顶栏」放「菜单」「本页目录」，向下滚动时主行收起、只留它贴顶（`.ak-condensed`）。1120–1400 那条栏里只有一个「本页目录」；而且两行时顶部占 105px，粘性表头（`.wikitable.ak-sticky-head`、干员一览的表头）、粘性侧栏这些只按 `--ak-header-h` 让位的地方，主行没收起时都被第二行压住一截。合成一行后头图只探这一行、目录浮层贴这一行下沿、标题锚点只让这一行，都是 `--ak-header-h`，不必再另算；页眉也不再收起，四个入口在任何滚动位置都够得着。
+以前 640–1399 是两行：主行下面还有一条 48px 的「二级吸顶栏」放「菜单」「本页目录」，向下滚动时主行收起、只留它贴顶（`.ak-condensed`）。两行时顶部占 105px，粘性表头（`.wikitable.ak-sticky-head`、干员一览的表头）、粘性侧栏这些只按 `--ak-header-h` 让位的地方，主行没收起时都被第二行压住一截。合成一行后头图只探这一行、目录按钮贴这一行下沿、标题锚点只让这一行，都是 `--ak-header-h`，不必再另算；页眉也不再收起，各个入口在任何滚动位置都够得着。后来「本页目录」也从这一行挪了出去，成了正文右上角的独立按钮（它属于这一页，不属于站点级的页眉）。
 
-开合是**纯 CSS**：`input.ak-nav-cb` + `label.ak-header__burger`（⋮ 三个方点 → ×；不画三条线——三条线一眼读成汉堡菜单，而这里只是外观 / 账户，不是导航），checkbox 在 DOM 上必须排在卡片与汉堡之前才能用 `~` 联动，所以主行 DOM 顺序固定为 logo · search · search-toggle · nav-cb · screen · burger。<1120「菜单」用 `order` 排到最左、⋮ 排到最右，Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单 → 目录，与视觉不一致——换来模板不用动。JS 只补 Esc / 点卡片外（放行 `.ak-nav-cb`，同[目录浮层](/chrome/toc#没有-js-也能开合)）/ 选了页内链接 / 回到桌面宽度时收起。「菜单」◧（侧栏抽屉 = 本站唯一的导航）与 ⋮（外观 / 账户）分工明确，互不重复。
+开合是**纯 CSS**：`input.ak-nav-cb` + `label.ak-header__burger`（⋮ 三个方点 → ×；不画三条线——三条线一眼读成汉堡菜单，而这里只是外观 / 账户，不是导航），checkbox 在 DOM 上必须排在卡片与汉堡之前才能用 `~` 联动，所以主行 DOM 顺序固定为 logo · search · search-toggle · nav-cb · screen · burger。<1120「菜单」用 `order` 排到最左、⋮ 排到最右，Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单，与视觉不一致——换来模板不用动。JS 只补 Esc / 点卡片外（放行 `.ak-nav-cb`：点 `label` 时浏览器会再向 checkbox 派发一次 click，那次不算「外部」）/ 选了页内链接 / 回到桌面宽度时收起。「菜单」◧（侧栏抽屉 = 本站唯一的导航）与 ⋮（外观 / 账户）分工明确，互不重复。
 
-<SkinFrame :width="1280" :height="560" state="toc" caption="1280：侧栏还在，「本页目录」排在工具之前，浮层从这一角拉下" />
+<SkinFrame :width="1024" :height="560" state="nav" caption="1024：◧ 菜单 · 品牌 · 搜索 · ⋮——⋮ 拉下的工具卡片（外观 / 通知 / 用户）" />
 
-<SkinFrame :width="1024" :height="560" state="nav" caption="1024：◧ 菜单 · 品牌 · 搜索 · 本页目录 · ⋮——⋮ 拉下的工具卡片（外观 / 通知 / 用户）" />
-
-<SkinFrame :width="390" :height="560" state="toc" caption="390：手机上全是图标，目录（方点列表）拉下的浮层贴在这一行下沿" />
+<SkinFrame :width="390" :height="560" caption="390：手机上全是图标——◧ 菜单 · 品牌 ……… 搜索 · ⋮" />
 
 ## 外观开关
 
@@ -86,10 +84,8 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
     </div>
     <label class="ak-header__burger" for="ak-nav-toggle">…</label>
   </div>
-  <div class="ak-local-nav">   <!-- <1400 才显示，且不另起一行：display:contents，两个入口并进上面那一行 -->
+  <div class="ak-local-nav">   <!-- <1120 才显示，且不另起一行：display:contents，并进上面那一行 -->
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false">…菜单</button>
-    <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
-    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle">本页目录<span class="ak-local-nav__chevron"></span></label>
   </div>
 </header>
 ```

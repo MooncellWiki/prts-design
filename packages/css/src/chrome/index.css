@@ -2,10 +2,10 @@
  *  PRTS Design · chrome/ — L2 MediaWiki 皮肤骨架（原 skin.css）
  *  DOM 约定（见文档站 /guide/skin-template）：
  *    body.skin-arknights
- *      header.ak-header > .ak-header__inner（品牌 · 搜索 · 工具 · ⋮）+ .ak-local-nav（菜单 · 本页目录）——各宽度都排成一行
+ *      header.ak-header > .ak-header__inner（品牌 · 搜索 · 工具 · ⋮）+ .ak-local-nav（菜单）——各宽度都排成一行
  *      .ak-layout > aside.ak-sidebar + main.ak-main
- *        main.ak-main > .ak-main__inner > header.ak-page-header + aside.ak-toc + .ak-body + …
- *        （目录在 DOM 上属于页面、紧跟标题；宽屏时才被抬到主列右侧导轨，见 toc.css）
+ *        main.ak-main > .ak-main__inner > header.ak-page-header + .ak-toc-dock（目录开关 + 按钮 + aside.ak-toc）+ .ak-body + …
+ *        （目录在 DOM 上属于页面、紧跟标题；宽屏时才被抬到主列右侧导轨，窄了收成一枚按钮 + 浮层，见 toc.css）
  *      footer.ak-footer
  *  顺序：在通用组件与方舟组件之后（页眉里的 .ak-btn / .ak-menu / .ak-fab 等靠同特指度后到覆盖）；
  *        responsive.css 最后（各块的断点规则集中在那里，内部顺序敏感）。

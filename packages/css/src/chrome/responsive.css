@@ -1,71 +1,77 @@
 /*! PRTS Design · chrome/responsive.css — Responsive 断点（各块的响应式规则集中在这里，顺序敏感，暂不拆） · 依赖：tokens.css · components/ */
 /* ═══ Responsive ═══ */
-/* < 1400：右侧导轨收起 —— 目录改由页眉里「本页目录」拉下的浮层承载。页眉仍是一行：
- *  .ak-header__inner 与 .ak-local-nav 都 display:contents，两组子项直接排进 .ak-header 这一行（1120–1400 网格、<1120 flex，见下面两档）。
- *  DOM 不动（皮肤模板不用改），checkbox 的 ~ 联动照旧（按 DOM 兄弟关系，不看盒子）；.ak-header 是 sticky（已定位），工具卡片 / 复选框的绝对定位都相对它。
- *  这一行始终贴顶、不随滚动收起——菜单 / 目录 / 搜索 / 工具在任何滚动位置都够得着；头图只探这一行、目录浮层贴这一行下沿、锚点只让这一行（都是 --ak-header-h，不另写） */
+/* < 1400：右侧导轨收起 —— 目录收成一枚独立的按钮 + 从它下面拉出的浮层（结构与理由见 toc.css）。页眉不受影响：1120–1400 与 ≥1400 是同一套三列网格。
+ *  .ak-toc-dock 是紧跟页面标题的一条零高度粘性锚：平时落在正文纸张顶边，滚过之后停在页眉下沿再往下 space-3 处；按钮与浮层都绝对定位在它里面。
+ *  · 纵向：按钮顶边就是 dock（top:0）——平时与纸张的上框线平齐，不往纸里缩一截；滚过之后与页眉之间留的那道缝写在 dock 的粘性 top 上；
+ *  · 横向：--_r 把按钮右缘对到回到顶部 .ak-fab 的那一列（离视口右缘 space-5；dock 的右缘在 gutter 线上，所以是个负值），浮层右缘同按钮；
+ *  · 层级：比下拉低一档（z-dropdown − 1）——页面顶部它就在动作簇正下方，「更多」卡片要盖得住它；正文里的粘性表头（z 1）之类则在它之下。 */
 @media (max-width: 1400px) {
-  .ak-header { height: var(--ak-header-h); padding: 0 var(--ak-gutter); }   /* content-box：底边 1px 亮线另算，与 ≥1400 的 __inner 56 + 1 一样高 */
-  .ak-header__inner, .ak-local-nav { display: contents; }
-  .ak-local-nav__btn { flex: none; height: 40px; }
-  /* 回到顶部在这一档照常浮在右下（侧栏变抽屉的 < 1120 才收起）；只在目录浮层开着时让位——它的层级（sticky）高于浮层（dropdown），不收会压在浮层上，而浮层首项本来就是「回到顶部」。
-   * :not(.ak-fab--absolute)：滚动区域自己的那枚不归这里管；两条选择器分开写的理由同下面浮层的开合 */
+  /* 回到顶部在这一档照常浮在右下（侧栏变抽屉的 < 1120 才收起）；只在目录浮层开着时让位——浮层可以一直伸到视口底，不收会压在浮层上，而浮层首项本来就是「回到顶部」。
+   * 这是按钮与浮层之外唯一要跨出 dock 联动的地方：JS 镜像出的 html.ak-toc-open 为主，无 JS 时 body:has() 桥接；两条必须分开写——选择器列表里混进不认识的 :has() 会让整条规则作废。
+   * :not(.ak-fab--absolute)：滚动区域自己的那枚不归这里管 */
   :root.ak-toc-open .ak-fab:not(.ak-fab--absolute) { display: none; }
   body:has(.ak-toc-cb:checked) .ak-fab:not(.ak-fab--absolute) { display: none; }
   .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
 
-  /* 目录浮层：顶边贴页眉下沿，右对齐于 gutter。宽、高都锁死（参考 VitePress LocalNavOutlineDropdown 的 .items）：
-   *  · 宽 = 360px 定宽（≤639 改为拉满可用宽度，见下），border-box，不随条目长短变；
-   *  · 高 ≤ 页眉下沿到视口底的余量，超出只有 .ak-toc__inner 内滚。用 100dvh：手机地址栏 / 底部工具栏收放时 100vh 是「最大视口」，
-   *    浮层底会被工具栏盖住、又因为「没超高」不出内滚（VitePress 靠 JS 量 innerHeight 写 --vp-vh 解决同一件事），100vh 只给不认 dvh 的老浏览器兜底；
+  .ak-toc-dock { --_r: calc(var(--ak-space-5) - var(--ak-gutter)); position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-3)); z-index: calc(var(--ak-z-dropdown) - 1); height: 0; }
+  .ak-toc-cb { display: block; }
+  /* 目录按钮：同 .ak-fab 的 44px 反色方块。只有图标，label 里不放字——无障碍名写在 checkbox 的 aria-label 上，悬停提示是 label 的 title；开着时变主色（悬停同，触屏不认悬停——点完会粘住，看着像还开着）。
+   * 图标是方点列表：三个 4px 方点（同页眉 ⋮ 的方点）+ 横线，CSS 画（::before + mask，模板不用加图标）。不用 i-list（三条线，一眼读成汉堡菜单），也不用缩进的大纲图形（20px 下像「右对齐」）。
+   * 透明边框：强制色模式下背景被抹平，靠它显出按钮的轮廓 */
+  .ak-toc-btn { position: absolute; top: 0; right: var(--_r); display: grid; place-items: center; width: 44px; height: 44px; box-sizing: border-box; border: 1px solid transparent; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); box-shadow: var(--ak-shadow-md); cursor: pointer; -webkit-user-select: none; user-select: none; transition: background var(--ak-dur-normal) var(--ak-ease), color var(--ak-dur-normal) var(--ak-ease); }
+  .ak-toc-btn::before { content: ""; width: 20px; height: 20px; background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat; }
+  .ak-toc-cb:checked ~ .ak-toc-btn { background: var(--ak-accent); color: var(--ak-accent-fg); }
+  @media (hover: hover) { .ak-toc-btn:hover { background: var(--ak-accent); color: var(--ak-accent-fg); } }
+  .ak-toc-cb:focus-visible ~ .ak-toc-btn { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+
+  /* 目录浮层：挂在按钮下方（隔 space-2）、右缘同按钮。宽、高都锁死（参考 VitePress LocalNavOutlineDropdown 的 .items）：
+   *  · 宽 = 360px 定宽（≤639 改为拉满 dock，见下），border-box，不随条目长短变；
+   *  · 高 ≤ 浮层顶边到视口底的余量，超出只有 .ak-toc__inner 内滚。按钮贴着页眉时顶边在 --ak-header-h + space-3 + --_gap 处；页面还没滚到那儿时 dock 比页眉低一截，
+   *    JS 把这一截写进 --_y（开着时随滚动更新）。无 JS 时 --_y 是 0，浮层底可能探出视口——页面没锁，往下滚一点 dock 贴住页眉就全在视口里了。
+   *    用 100dvh：手机地址栏 / 底部工具栏收放时 100vh 是「最大视口」，浮层底会被工具栏盖住、又因为「没超高」不出内滚，100vh 只给不认 dvh 的老浏览器兜底；
    *  · 浮层没有遮罩、内容就是本页的标题：开着时页面照常滚（滚轮在浮层上滚到头也带动页面，scrollspy 高亮跟着走）；
    *    只有手机（≤639，浮层拉满宽度）才由 JS 锁住页面滚动（html.ak-scroll-lock，见「Responsive」块末尾）。 */
-  .ak-toc { --_top: var(--ak-header-h); position: fixed; top: var(--_top); right: var(--ak-gutter); left: auto; bottom: auto; z-index: var(--ak-z-dropdown); box-sizing: border-box;
-    display: none; flex-direction: column; width: min(360px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--_top) - var(--ak-space-4)); max-height: calc(100dvh - var(--_top) - var(--ak-space-4));
+  .ak-toc { --_gap: calc(44px + var(--ak-space-2)); position: absolute; top: var(--_gap); right: var(--_r); left: auto; bottom: auto; box-sizing: border-box;
+    display: none; flex-direction: column; width: min(360px, calc(100vw - var(--ak-gutter) * 2)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-3) - var(--_y, 0px) - var(--_gap) - var(--ak-space-4)); max-height: calc(100dvh - var(--ak-header-h) - var(--ak-space-3) - var(--_y, 0px) - var(--_gap) - var(--ak-space-4));
     background: var(--ak-bg-surface); border: 1px solid var(--ak-border); border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1; box-shadow: var(--ak-shadow-lg); font-size: var(--ak-fs-sm); }
-  /* 开：JS 把 .ak-toc-cb 的状态镜像到 html.ak-toc-open（主路径，不依赖 :has()——国产手机浏览器 / 旧 WebView 内核没有 :has() 时仍是真正的浮层）；
-   * 无 JS 时由 body:has() 纯 CSS 桥接。两条必须分开写：选择器列表里混进不认识的 :has() 会让整条规则作废 */
-  :root.ak-toc-open .ak-toc { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
-  body:has(.ak-toc-cb:checked) .ak-toc { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
+  .ak-toc-cb:checked ~ .ak-toc { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
   .ak-toc__top { display: flex; align-items: center; gap: 8px; flex: none; padding: var(--ak-space-3) var(--ak-space-4); color: var(--ak-accent); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--ak-border); }
   .ak-toc__top:hover { background: var(--ak-bg-hover); text-decoration: none; }
   .ak-toc__top .ak-icon { width: 16px; height: 16px; }
   .ak-toc__inner { position: static; flex: 1 1 auto; min-height: 0; max-height: none; overflow-y: auto; padding: var(--ak-space-3) var(--ak-space-4); }   /* flex 子项默认 min-height:auto 不收缩：必须 min-height:0 才会在浮层限高内出内滚 */
-  .ak-toc__title, .ak-toc__progress { display: none; }   /* 标题已经写在按钮上；阅读进度属于导轨，不进浮层 */
+  .ak-toc__title, .ak-toc__progress { display: none; }   /* 阅读进度属于导轨，不进浮层；标题已经是按钮的名字 */
   .ak-toc li a { white-space: normal; }   /* 浮层比导轨宽松，长标题换行而非截断 */
-  /* 既不支持 :has() 又没有 JS（MW 核心给 <html> 的 client-nojs；预览骨架同样标了）：目录退回正文流内的静态卡片，始终展开 */
-  @supports not selector(:has(*)) {
-    .client-nojs .ak-local-nav__toc, .client-nojs .ak-toc__top { display: none; }
-    .client-nojs .ak-fab { display: grid; }
-    .client-nojs .ak-toc { position: static; display: flex; width: auto; max-height: none; box-shadow: none; margin: 0 0 var(--ak-space-5); }
-  }
 }
 @media (max-width: 1400px) and (prefers-reduced-motion: reduce) {   /* 紧跟上面的块：同选择器同特异性，animation:none 必须排在后面才生效 */
-  :root.ak-toc-open .ak-toc { animation: none; }
-  body:has(.ak-toc-cb:checked) .ak-toc { animation: none; }
+  .ak-toc-cb:checked ~ .ak-toc { animation: none; }
+  .ak-toc-btn { transition: none; }
 }
-/* 1120–1400：侧栏还在左列，页眉仍是与版面对齐的列头网格（同 ≥1400 的 .ak-header__inner，只是网格挂到 .ak-header 上）：
- *  品牌 | 搜索 | 本页目录 | 工具。「本页目录」排在工具之前——目录浮层右对齐、从这一角拉下来；页面没有目录时第 3 列是空的（宽 0，只多一道 gap，搜索列窄 24px，看不出来）。
- *  「本页目录」写死在第 1 行：它在 DOM 上排在工具之后，按列号自动放置会因为列号回退被挤到第 2 行 */
-@media (min-width: 1120px) and (max-width: 1400px) {
-  .ak-header { display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr) auto auto; column-gap: var(--ak-gutter); align-items: center; }
-  .ak-local-nav__toc { grid-area: 1 / 3; margin-right: calc(var(--ak-space-3) - var(--ak-gutter)); }   /* 与工具组只隔 12px：它和外观 / 通知 / 用户是同一簇页眉控件 */
-  .ak-header__tools { grid-column: 4; }
+/* 同样紧跟：强制色下 background 会被抹成 Canvas，用底色 + mask 画的目录图标就没了——改成系统文字色，开着时 Highlight（主色实底同样被抹） */
+@media (max-width: 1400px) and (forced-colors: active) {
+  .ak-toc-btn { border-color: CanvasText; }
+  .ak-toc-btn::before { forced-color-adjust: none; background: CanvasText; }
+  .ak-toc-cb:checked ~ .ak-toc-btn { border-color: Highlight; }
+  .ak-toc-cb:checked ~ .ak-toc-btn::before { background: Highlight; }
 }
 @media (max-width: 1119px) {
-  .ak-fab { display: none; }   /* 回到顶部只留目录浮层首项那一个，不再浮在内容上（手机 / 平板上浮动按钮太挡视野） */
+  .ak-fab { display: none; }   /* 回到顶部只留目录浮层首项那一个：右侧已经有一枚目录按钮，不再多浮一枚 */
   .ak-layout { grid-template-columns: minmax(0, 1fr); padding-top: var(--ak-space-4); }
   /* 抽屉收起时 visibility:hidden：一是不进无障碍树 / Tab 序，二是阴影不会从屏幕左缘漏进来（--ak-shadow-lg 的 32px 模糊比 translateX(-100%) 多出来的那截）。
    * 展开时 JS 给 <html> 加 .ak-scroll-lock 锁住页面滚动（VitePress VPSidebar 同）：抽屉自己 overflow-y:auto + overscroll-behavior:contain（沿用导轨态声明），滚到头也不会把页面带着走 */
   .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); border-right: 1px solid var(--ak-border); padding: var(--ak-space-4) var(--ak-space-3) var(--ak-space-6); box-sizing: border-box; transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
   .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
-  /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex 一行——◧ 菜单 · 品牌 · 搜索 · 本页目录 · ⋮。
-   * 「菜单」用 order 排到最左（抽屉从左边出来），⋮ 排到最右（工具卡片从右上角拉下）；Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单 → 目录，与视觉不一致——换来模板不用动 */
-  .ak-header { display: flex; align-items: center; gap: 4px; }
-  .ak-local-nav__menu { display: inline-flex; order: -2; width: 40px; padding: 0; gap: 0; justify-content: center; margin-left: -10px; font-size: 0; }   /* 侧栏变抽屉后才需要这个入口。只留图标：font-size:0 藏起「菜单」两字（仍是按钮的无障碍名）；-10px 让图标左缘落在 gutter 线上，与面包屑同线 */
+  /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex 一行——◧ 菜单 · 品牌 · 搜索 · ⋮。仍是一行：.ak-header__inner 与 .ak-local-nav 都 display:contents，
+   * 两组子项直接排进 .ak-header（DOM 不动，checkbox 的 ~ 联动照旧——按 DOM 兄弟关系，不看盒子；.ak-header 是 sticky（已定位），工具卡片 / 复选框的绝对定位都相对它）。
+   * 这一行始终贴顶、不随滚动收起。「菜单」用 order 排到最左（抽屉从左边出来），⋮ 排到最右（工具卡片从右上角拉下）；Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单，与视觉不一致——换来模板不用动 */
+  .ak-header { display: flex; align-items: center; gap: 4px; height: var(--ak-header-h); padding: 0 var(--ak-gutter); }   /* content-box：底边 1px 亮线另算，与 ≥1120 的 __inner 56 + 1 一样高 */
+  .ak-header__inner, .ak-local-nav { display: contents; }
+  .ak-local-nav__btn { flex: none; height: 40px; }
+  .ak-local-nav__menu { order: -2; width: 40px; padding: 0; gap: 0; justify-content: center; margin-left: -10px; font-size: 0; }   /* 只留图标：font-size:0 藏起「菜单」两字（仍是按钮的无障碍名）；-10px 让图标左缘落在 gutter 线上，与面包屑同线 */
   .ak-local-nav__menu .ak-icon { width: 20px; height: 20px; }   /* 与搜索、⋮ 同一档 */
-  .ak-header__logo { order: -1; margin-right: auto; }   /* 品牌靠左，其余（搜索 / 目录 / ⋮）靠右 */
-  .ak-header__search { flex: 1; width: auto; max-width: none; margin: 0 var(--ak-space-3); }   /* 加上 flex 的 4px，与品牌、目录各隔 16px */
+  .ak-header__logo { order: -1; margin-right: auto; }   /* 品牌靠左，其余（搜索 / ⋮）靠右 */
+  .ak-header__search { flex: 1; width: auto; max-width: none; margin: 0 var(--ak-space-3); }   /* 加上 flex 的 4px，与品牌、⋮ 各隔 16px */
   .ak-header__burger { order: 1; }
   .ak-body { padding: var(--ak-space-5) var(--ak-space-5); }
 
@@ -107,21 +113,16 @@
 @media (max-width: 1119px) and (prefers-reduced-motion: reduce) { .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
 @media (max-width: 639px) {
   /* gutter 16、页眉高 52、标题档收一级、大区块间隔 24：都是令牌的窄屏值（tokens.css 的「窄屏」块，源 = packages/tokens/src/functional/compact.json5），这里不再覆盖 */
-  /* 页眉这一行全是图标：◧ 菜单 · 品牌 ……… 目录 · 搜索 · ⋮ 工具（一行的排法见 <1400 / <1120 两档）；「本页目录」排到搜索之前 */
+  /* 页眉这一行全是图标：◧ 菜单 · 品牌 ……… 搜索 · ⋮ 工具（一行的排法见 <1120 那一档） */
   :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6, :target) { scroll-margin-top: calc(var(--ak-header-h) + 8px); }
-  .ak-local-nav__toc { order: -1; width: 40px; padding: 0; gap: 0; justify-content: center; font-size: 0; }   /* 同 order 按 DOM 先后，排在品牌之后；同「菜单」只留图标，「本页目录」四个字仍是 checkbox 的标签（无障碍名）；开着时照旧变活动主色（local-nav.css） */
-  /* 方点列表：三个 4px 方点（同 ⋮ 的方点、同一节奏）+ 横线。不用 i-list（三条线，一眼读成汉堡菜单），也不用缩进的大纲图形（20px 下像「右对齐」） */
-  .ak-local-nav__toc::before { content: ""; flex: none; width: 20px; height: 20px; background: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat;
-            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M1 3h4v4H1zM8 4h11v2H8zM1 9h4v4H1zM8 10h11v2H8zM1 15h4v4H1zM8 16h11v2H8z'/%3E%3C/svg%3E") center / 20px no-repeat; }
-  .ak-local-nav__chevron { display: none; }   /* 没有文字，下拉箭头也不要：开没开看颜色 */
   .ak-header__logo img { height: 24px; }
   .ak-header__wordmark { font-size: 17px; }
   .ak-header__wordmark small { display: none; }
   .ak-header__search { display: none; }   /* 手机：搜索收成这一行里的图标按钮（.ak-header__search-toggle），同样打开悬浮面板 */
   .ak-page-heading { padding-left: var(--ak-space-3); }
   .ak-body { padding: var(--ak-space-4) var(--ak-space-3); border-left: 0; border-right: 0; margin: 0 calc(-1 * var(--ak-gutter)); }
-  .ak-toc { left: var(--ak-gutter); width: auto; }   /* 手机上目录浮层拉满可用宽度（左右各留一个 gutter，VitePress 的 left/right:16px） */
+  .ak-toc-dock { --_r: 0px; }   /* 目录按钮右缘收到 gutter 线上：这一档没有 .ak-fab 可对齐，浮层又是拉满的——两者右缘对齐 */
+  .ak-toc { left: 0; width: auto; }   /* 手机上目录浮层拉满 dock（= 视口左右各留一个 gutter，VitePress 的 left/right:16px） */
   .ak-toc__inner { overscroll-behavior: contain; }   /* 这一档开着时页面是锁住的（JS）：内滚到头不把页面带着走（iOS 橡皮筋） */
   /* 动作簇只留图标：文字进 sr-only（title / accesskey 不变），「更多」只剩 ⋯；标题很长时整簇换到标题下方、靠左 */
   .ak-page-header__row { align-items: flex-start; }
@@ -142,11 +143,6 @@
   .mw-parser-output table.wikitable { display: block; overflow-x: auto; max-width: 100%; }
   .mw-halign-right, .tright, figure.mw-halign-right, .mw-halign-left, .tleft, figure.mw-halign-left { float: none; margin-left: 0; margin-right: 0; }
 }
-/* 紧跟上面的块：强制色下 background 会被抹成 Canvas，用底色 + mask 画的目录图标就没了——改成系统文字色，开着时 Highlight（活动主色同样被抹） */
-@media (max-width: 639px) and (forced-colors: active) {
-  .ak-local-nav__toc::before { forced-color-adjust: none; background: CanvasText; }
-  .ak-toc-cb:checked ~ .ak-local-nav__toc::before { background: Highlight; }
-}
 @media (min-width: 1680px) {
   :root { --ak-sidebar-w: 228px; --ak-toc-w: 228px; }   /* 写在 :root：页眉网格与 .ak-layout 共用这两个宽度 */
 }
@@ -155,7 +151,7 @@
  * 占住滚动条位置，页面不会左右抖一下；浮层自己 overflow-y:auto 照常内滚。iOS 上 overflow:hidden 拦不住触摸滚动，由 JS 额外拦 touchmove。 */
 :root.ak-scroll-lock { overflow: hidden; }
 @media print {
-  .ak-header, .ak-keyart, .ak-sidebar, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tools, .ak-fab { display: none !important; }
+  .ak-header, .ak-keyart, .ak-sidebar, .ak-toc-dock, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tools, .ak-fab { display: none !important; }
   .ak-layout { display: block; padding: 0; }
   .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
   .ak-body { border: 0; padding: 0; }

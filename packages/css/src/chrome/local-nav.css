@@ -1,19 +1,12 @@
-/*! PRTS Design · chrome/local-nav.css — Local nav 页眉里的「菜单」「本页目录」 · 依赖：tokens.css · components/ */
-/* ═══ Local nav（「菜单」「本页目录」两个入口）═══
- *  只在 <1400（导轨/侧栏收起时）出现：「菜单」拉出侧栏抽屉（<1120）、「本页目录」拉下目录浮层。
- *  它不单独成行：.ak-local-nav 与 .ak-header__inner 都 display:contents，两个入口与品牌 / 搜索 / 工具排在页眉同一行，那一行始终贴顶（见 responsive.css）——
- *  所以两个入口在任何滚动位置都够得着，不需要角落里的浮动按钮。≥1400 两个都不需要，整块 display:none。
- *  「菜单」只留图标：侧栏面板 ◧（i-menu：外框 + 实心左栏，画的就是拉出来的那一栏），不是 ☰ 三条线——☰ 与手机上目录的方点列表都是三行横排，两者同在一行，扫一眼分不清哪个是导航。
- *  「本页目录」≥640 是 文字 + 下拉箭头，≤639 收成方点列表图标（见 responsive.css）。 */
+/*! PRTS Design · chrome/local-nav.css — Local nav 页眉里的「菜单」 · 依赖：tokens.css · components/ */
+/* ═══ Local nav（「菜单」入口）═══
+ *  只在 <1120（侧栏收成抽屉时）出现：「菜单」拉出侧栏抽屉。≥1120 整块 display:none。
+ *  它不单独成行：.ak-local-nav 与 .ak-header__inner 都 display:contents，入口与品牌 / 搜索 / 工具排在页眉同一行，那一行始终贴顶（见 responsive.css）。
+ *  「菜单」只留图标：侧栏面板 ◧（i-menu：外框 + 实心左栏，画的就是拉出来的那一栏），不是 ☰ 三条线——三条线读不出「从左边拉出一栏」，也和目录按钮的方点列表撞形。
+ *  「本页目录」不在页眉里：<1400 它是正文右上角一枚独立的按钮（.ak-toc-btn，见 toc.css）。 */
 .ak-local-nav { display: none; }
 .ak-local-nav__btn { display: inline-flex; align-items: center; gap: 8px; padding: 0 10px; border: 0; background: transparent; color: var(--ak-fg-secondary); font-family: inherit; font-size: var(--ak-fs-sm); font-weight: 600; line-height: 1; white-space: nowrap; cursor: pointer; }
 .ak-local-nav__btn:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
 .ak-local-nav__btn .ak-icon { width: 18px; height: 18px; }
-.ak-local-nav__menu { display: none; }   /* 侧栏还在左边时（≥1120）不需要这个入口 */
-.ak-local-nav__chevron { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform var(--ak-dur-fast) var(--ak-ease); }
-.ak-toc-cb { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 视觉隐藏但可 Tab 聚焦 / 空格切换；见 toc.css */
-.ak-toc-cb:checked ~ .ak-local-nav__toc { color: var(--ak-accent); }
-.ak-toc-cb:checked ~ .ak-local-nav__toc .ak-local-nav__chevron { transform: translateY(2px) rotate(-135deg); }
-.ak-toc-cb:focus-visible ~ .ak-local-nav__toc { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
-@media (prefers-reduced-motion: reduce) { .ak-local-nav__chevron, .ak-header__burger-icon i { transition: none; } }   /* .ak-header__screen 的 animation:none 见 responsive.css <1120 块之后——写在这里会被后面同选择器的 animation 覆盖 */
+@media (prefers-reduced-motion: reduce) { .ak-header__burger-icon i { transition: none; } }   /* .ak-header__screen 的 animation:none 见 responsive.css <1120 块之后——写在这里会被后面同选择器的 animation 覆盖 */
 @keyframes ak-nav-screen-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }

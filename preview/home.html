@@ -25,7 +25,7 @@
  *  这些都归皮肤：Skin:Arknights 在 .ak-layout--mainpage 下已经做完（resources/skins.arknights.styles/common/mainpage.less），站点侧零配置。
  *  预览的骨架是静态的、没有首页状态，所以在这里复现一份；选择器按预览骨架写，别照抄进 Common.css——真皮肤的 DOM 不一样：
  *  宽度在 .ak-main 自己身上（没有 .ak-main__inner），标题是核心的 #firstHeading 包在 .ak-page-heading 里（没有 .ak-page-header__title）。 */
-.ak-page-header__top, .ak-toc, .ak-local-nav__toc { display: none; }
+.ak-page-header__top, .ak-toc-dock { display: none; }
 .ak-page-header__title { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .ak-page-header { margin-bottom: var(--ak-space-3); }
 .ak-page-header__row { justify-content: flex-end; margin-bottom: 0; }
@@ -474,11 +474,9 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
     <label class="ak-header__burger" for="ak-nav-toggle"><span class="ak-header__burger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="ak-sr-only">外观与账户</span></label>
   </div>
 
-  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）「本页目录」（<1400）：不单独成行，两个入口并进页眉那一行（CSS display:contents，DOM 不变；≥1400 整块不显示） -->
+  <!-- ═══ LOCAL NAV ═══ 「菜单」（<1120）：不单独成行，并进页眉那一行（CSS display:contents，DOM 不变；≥1120 整块不显示） -->
   <div class="ak-local-nav">
     <button type="button" class="ak-local-nav__btn ak-local-nav__menu" aria-controls="ak-sidebar" aria-expanded="false"><svg class="ak-icon"><use href="#i-menu"/></svg>菜单</button>
-    <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb">
-    <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle">本页目录<span class="ak-local-nav__chevron" aria-hidden="true"></span></label>
   </div>
 </header>
 
@@ -625,15 +623,19 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
         </div>
       </header>
 
-      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨，<1400 就地变折叠条 -->
-      <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
-        <a class="ak-toc__top" href="#"><svg class="ak-icon"><use href="#i-up"/></svg>回到顶部</a>
-        <div class="ak-toc__inner">
-          <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
-          <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
-          <ul class="ak-toc__list" data-auto-toc></ul>
-        </div>
-      </aside>
+      <!-- ═══ TOC ═══ 紧跟页面标题：≥1400 抬到主列右侧导轨；<1400 收成右上角一枚按钮（平时停在纸张角上，滚过后贴着页眉）+ 从它下面拉出的浮层，开合是纯 CSS 的 :checked ~ -->
+      <div class="ak-toc-dock">
+        <input type="checkbox" id="ak-toc-toggle" class="ak-toc-cb" aria-label="本页目录" aria-controls="ak-toc">
+        <label class="ak-toc-btn" for="ak-toc-toggle" title="本页目录"></label>
+        <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
+          <a class="ak-toc__top" href="#"><svg class="ak-icon"><use href="#i-up"/></svg>回到顶部</a>
+          <div class="ak-toc__inner">
+            <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
+            <div class="ak-toc__progress" aria-hidden="true"><i></i></div>
+            <ul class="ak-toc__list" data-auto-toc></ul>
+          </div>
+        </aside>
+      </div>
 
       <div class="ak-body" id="bodyContent">
       <!-- 两层照 MW 原样：#mw-content-text.mw-body-content > .mw-parser-output。现网的 Widget / Gadget 会顺着这个嵌套找容器（CharinfoV2 量「舞台的祖父元素」的宽度定手机版缩放），并成一层就量到带内边距的 .ak-body 上去了 -->
