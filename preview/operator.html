@@ -50,12 +50,15 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .op-ranges { display: flex; gap: 28px; flex-wrap: wrap; margin: 0 0 var(--ak-space-4); }
 .op-ranges > div { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 /* 人员档案：左侧竖排页签（游戏档案页的列表）+ 右侧内容；<768 页签横排 */
-.op-files { display: grid; grid-template-columns: 208px minmax(0, 1fr); gap: 16px; align-items: start; margin: 0 0 var(--ak-space-4); }
-.op-files .ak-tabs--vertical { position: sticky; top: calc(var(--ak-header-h) + 16px); }
-.op-files .ak-tab { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; white-space: normal; text-align: left; }
-.op-files .ak-tab small { font: 600 max(9px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .06em; color: var(--ak-fg-subtle); white-space: nowrap; }
-.op-files .ak-tabpanel { padding-top: 0; }
-.op-files .ak-dossier { margin: 0; }
+/* ── 干员档案：同现网——人员档案、未获得时档案各是一块默认收起的面板，点开后各条档案首尾相接（现网是一张折叠表里一段接一段）：
+ *  段与段之间一条分隔线，段头一条浅底（标题 + 紧跟其后的解锁条件），不再一段一张卡、卡与卡之间留白。正文是游戏原文，基础档案也不拆表 ── */
+.op-files > .ak-panel__body { padding: 0; }
+.op-files .ak-dossier, .op-files .ak-archive { margin: 0; border: 0; }
+.op-files > .ak-panel__body > * + * { border-top: 1px solid var(--ak-border); }
+.op-files .ak-dossier { padding: 0 16px 12px; }
+.op-files .ak-dossier__title { margin: 0 -16px 10px; padding: 9px 16px; background: var(--ak-bg-surface-2); border-bottom: 1px solid var(--ak-border-subtle); }
+/* 语音记录：同现网收进默认收起的面板；台词列表贴到面板两边和底边，不在面板里再套一层框 */
+.op-voices > .ak-panel__body > .ak-voice-list { margin: var(--ak-space-3) calc(-1 * var(--ak-space-4)) calc(-1 * var(--ak-space-4)); border-width: 1px 0 0; }
 @media (max-width: 767px) {
   .op-files { grid-template-columns: 1fr; }
   .op-files .ak-tabs--vertical { position: static; flex-direction: row; flex-wrap: wrap; border-left: 0; border-bottom: 1px solid var(--ak-border); }
@@ -196,6 +199,435 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 }
 /* 修正标记（{{修正}}）：底色 + 虚线 */
 .template-fix-mark { background: var(--ak-warning-bg); border-bottom: 1px dashed var(--ak-warning); cursor: help; }
+
+/* ── 相关道具：图标格里的道具都放进同一个纵向列表、居中——招聘合同一枚、信物两枚，上下对齐 ── */
+.op-items__icons { text-align: center; }
+.op-items__icons > .ak-item-list { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; }
+
+.op-base__icon { display: block; margin: 0 auto; }
+/* ── 干员密录：蚀刻章 = 现网 torappu medal_icon；悬停 / 聚焦出弹层（大图 + “名字” + 描述，同现网的提示）。
+ *  设计系统的 .ak-popover 只管外观与位置，显隐交给使用方——模板里就是 .op-medal__pop 那两条 ── */
+/* 模组等级：现网的「1 STAGE」角标图（文件:模组等级_N.png），代替组件 .ak-module__lv 的文字 + 三格进度 */
+.op-stage { display: block; width: 43px; height: auto; filter: var(--ak-glyph-filter); }
+/* ── 模组 X / Y 正文：照现网 {{模组}}（.equiptemplate）的下半张——三阶段一行一个：等级角标 · 属性（一项一行）· 特性追加 / 天赋更新；
+ *  再是「模组解锁任务」「解锁需求与材料消耗」两行，左列标题、右列内容，内容的左缘与上面的特性 / 天赋列对齐。
+ *  需求 = 游戏模组页的圆章（文件:图标_模组需求_信赖.png / 图标_模组需求_精英2等级.png，数字压在章上）+「完成全部解锁任务」圆钮，后面接材料。
+ *  字形同现网的 MDI（plus-circle 特性追加 · asterisk 天赋更新 · arrow-up/down-bold-circle 数值变化 · chevron-right 任务 · clipboard-check）。
+ *  分隔线同现网：阶段之间细线，三块之间粗线 ── */
+.ak-module__body.op-equip { --_lv: 56px; --_stats: 8.5em; --_gap: 16px; gap: 0; font-size: var(--ak-fs-sm); line-height: 1.6; }
+.op-equip > * { border-top: 1px solid var(--ak-border-subtle); }
+.op-equip > :first-child, .op-equip > .op-equip__row { border-top: 1px solid var(--ak-border-strong); }
+.op-equip__glyph { flex: none; width: 1.1em; height: 1.1em; margin-right: .2em; vertical-align: -.2em; fill: currentColor; }
+.op-equip__stage { display: grid; grid-template-columns: var(--_lv) var(--_stats) minmax(0, 1fr); align-items: center; gap: 4px var(--_gap); padding: 8px 0; }
+.op-equip__stage > .op-stage { justify-self: center; }
+.op-equip__stats { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
+.op-equip__stats > span { white-space: nowrap; }
+.op-equip__desc .ak-rt-vup > .op-equip__glyph { margin-right: .1em; }
+.op-equip__row { display: grid; grid-template-columns: calc(var(--_lv) + var(--_stats) + var(--_gap)) minmax(0, 1fr); align-items: center; gap: 8px var(--_gap); padding: 10px 0; }
+.op-equip__title { text-align: center; font-weight: 700; }
+.op-equip__tasks { margin: 0; padding: 0; list-style: none; }
+.op-equip__tasks > li { position: relative; margin: 2px 0; padding-left: 1.3em; }   /* 不用 flex：任务里夹着关卡号链接，flex 会把文字和链接拆成几列 */
+.op-equip__tasks .op-equip__glyph { position: absolute; left: 0; top: .25em; color: var(--ak-fg-muted); }
+.op-equip__cost { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; padding: 6px 0; }
+.op-equip__cost + .op-equip__cost { border-top: 1px solid var(--ak-border-subtle); }
+.op-equip__reqs { display: inline-flex; align-items: center; gap: 4px; }
+.op-equip__req { display: inline-grid; place-items: center; width: 48px; height: 51px; cursor: help; }   /* 悬停说明走设计系统的 data-ak-tip 气泡（同材料图标），不用原生 title */
+.op-equip__req > * { grid-area: 1 / 1; }
+.op-equip__req > img { display: block; width: 48px; height: 51px; }
+.op-equip__req > b { margin-top: -3px; color: #fff; font: 800 19px/1 var(--ak-font-body); font-variant-numeric: lining-nums; text-shadow: 0 0 4px #000, 0 0 4px #000, 0 0 2px #000; }   /* 章是深底图，两套主题都用白字黑晕（同现网） */
+.op-equip__task { display: inline-grid; place-items: center; box-sizing: border-box; width: 40px; height: 40px; margin: 0 4px; border: 2px solid #00b1ff; border-radius: 50%; background: #2f2f2f; color: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, .6); cursor: help; }
+.op-equip__task > svg { width: 24px; height: 24px; fill: currentColor; }
+.op-equip__cost .ak-item { --_s: 48px; }
+@media (max-width: 639px) {
+  .ak-module__body.op-equip { --_lv: 44px; }
+  .op-equip__stage { grid-template-columns: var(--_lv) minmax(0, 1fr); grid-template-areas: "lv stats" "lv desc"; gap: 4px 12px; }
+  .op-equip__stage > .op-stage { grid-area: lv; align-self: start; }
+  .op-equip__stats { grid-area: stats; flex-direction: row; flex-wrap: wrap; gap: 0 12px; }
+  .op-equip__desc { grid-area: desc; }
+  .op-equip__row { grid-template-columns: minmax(0, 1fr); }
+  .op-equip__title { text-align: left; font-size: var(--ak-fs-xs); color: var(--ak-fg-secondary); }
+  .op-equip__cost { padding-left: calc(var(--_lv) + 12px); position: relative; }   /* 角标单占左列，材料换行时从需求下面接着排 */
+  .op-equip__cost > .op-stage { position: absolute; left: 0; top: 8px; }
+}
+.op-medal { flex: none; display: block; cursor: help; }
+.op-medal > img { display: block; }
+.op-medal:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.op-medal > .op-medal__pop { display: none; text-align: center; }   /* 两级选择器：压过组件 .ak-tip-anchor > .ak-popover 的左对齐 */
+.op-medal:is(:hover, :focus-visible, :focus-within) > .op-medal__pop { display: block; }
+.op-medal__pop > img { display: block; margin: 0 auto 6px; }
+.op-medal__pop > .ak-popover__title { display: block; }
+.op-record-play { flex: none; display: block; border-radius: 50%; }   /* 阅读入口 = 现网那枚圆形播放钮（文件:情报处理室_播放按钮.png），跟在引言后面、同一行垂直居中 */
+.op-record-play:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.op-record-play > img { display: block; }
+/* ── 悖论模拟的关卡入口：照旧版 {{悖论模拟}} 的横幅——关卡载入图铺底（游戏 handbook_info_table 的 loadingPicId，陈 = loading4 → 文件:悖论模拟_story_loading4.png），
+ *  左端压一枚战斗图标（文件:图标_战斗.png），左「关卡情报」、右关卡名，白字带黑描边阴影。底图用 <img> 叠在里面，不用 url()：
+ *  模板直接写 [[文件:…|link=]]，不必像旧模板那样拿 Widget 注入 background-image ── */
+.op-paradox-entry { position: relative; box-sizing: border-box; flex: 0 1 260px; display: flex; align-items: center; gap: 12px; min-width: 220px; height: 44px; margin-left: 10px; padding: 0 14px 0 50px; overflow: visible; color: #fff; font-weight: 700; text-decoration: none; text-shadow: 0 0 3px #000, 0 0 1px #000; background: #313131; box-shadow: 0 0 0 1px rgba(127, 127, 127, .5); }
+.op-paradox-entry:is(:hover, :visited, :focus-visible) { color: #fff; text-decoration: none; }
+.op-paradox-entry__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.op-paradox-entry::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0, 0, 0, .45), rgba(0, 0, 0, .1) 45%, rgba(0, 0, 0, .45)); transition: background-color var(--ak-dur-fast) var(--ak-ease); }
+.op-paradox-entry:hover::after { background-color: rgba(255, 255, 255, .08); }
+.op-paradox-entry:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.op-paradox-entry__icon { position: absolute; z-index: 2; left: -10px; top: 50%; width: 52px; height: 52px; transform: translateY(-50%); filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .6)); }
+.op-paradox-entry__label, .op-paradox-entry__name { position: relative; z-index: 1; white-space: nowrap; }
+.op-paradox-entry__name { margin-left: auto; overflow: hidden; text-overflow: ellipsis; }
+/* ── 后勤技能：窄屏一条技能一张卡（现网 {{后勤技能}} 的四列定宽 96 + 48 + 140 + 96 = 380px，手机上描述列只剩一两个字宽）。
+ *  卡：图标在左跨两行、垂直居中；右边第一行技能名，第二行「解锁条件　房间」（只隔间距）；描述占满下面一整行。表头行藏掉 ── */
+@media (max-width: 639px) {
+  .op-base.wikitable, .op-base > tbody { display: block; border: 0; }
+  .op-base > tbody > tr:first-child { display: none; }
+  .op-base > tbody > tr { display: grid; grid-template-columns: 36px max-content minmax(0, 1fr); grid-template-areas: "icon name name" "icon cond room" "desc desc desc"; align-items: center; gap: 4px 12px; padding: 12px; border: 1px solid var(--ak-border); border-top-width: 0; background: var(--ak-bg-surface); }
+  .op-base > tbody > tr:nth-child(2) { border-top-width: 1px; }
+  .op-base.wikitable > tbody > tr > td { padding: 0; border: 0; background: none; line-height: 1.4; }   /* .wikitable 前缀：压过 .wikitable.ak-compact 的单元格内边距 (0,2,2)，否则条件格两边各多 7px、精英图标被挤到格子中间 */
+  .op-base > tbody > tr > td:nth-child(1) { grid-area: cond; }
+  .op-base > tbody > tr > td:nth-child(2) { grid-area: icon; }   /* 图标跨名字、条件两行，在两行中间垂直居中 */
+  .op-base > tbody > tr > td:nth-child(3) { grid-area: name; }
+  .op-base > tbody > tr > td:nth-child(4) { grid-area: room; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }   /* 房间与精英条件之间只留间距，不加分隔符 */
+  .op-base > tbody > tr > td:nth-child(5) { grid-area: desc; margin-top: 8px; line-height: 1.6; }
+}
+
+/* ── 底部导航框：现网 模板:Navbox/styles.css 原样（2026-10-04），每个选择器加 .mw-parser-output 前缀——生产环境由 TemplateStyles 加，
+ *  靠它与皮肤 base/catlinks.css 的灰色 navbox 同特指度、后加载而覆盖。另加一条：Gadget 收起时表头以下的行不显示 ── */
+.mw-parser-output .navbox table.collapsible.collapsed > tbody > tr:not(:first-child) { display: none; }
+
+/* 布局（自 MediaWiki:Vector.css 1772–1907 行分流；配色交给皮肤 / 模板行内样式） */
+.mw-parser-output .navbox {
+  width: 100%;
+  margin: auto;
+  clear: both;
+  text-align: center;
+  padding: 1px;
+}
+.mw-parser-output .navbox-inner,
+.mw-parser-output .navbox-subgroup {
+  width: 100%;
+}
+.mw-parser-output .navbox th,
+.mw-parser-output .navbox-title,
+.mw-parser-output .navbox-abovebelow {
+  text-align: center;
+  padding: 1px 1em;
+}
+.mw-parser-output th.navbox-group {
+  white-space: nowrap;
+  text-align: right;
+  padding: 1px 1em;
+}
+
+/* 模块给每个 navbox-list 画了 2px 左边框（行内 style），Vector 用 #fdfdfd 背景色藏起来；这里直接透明 */
+.mw-parser-output .navbox-list {
+  border-color: transparent;
+}
+.mw-parser-output table.navbox + table.navbox {
+  margin-top: -1px;
+}
+.mw-parser-output ol + table.navbox,
+.mw-parser-output ul + table.navbox {
+  margin-top: 0.5em;
+}
+.mw-parser-output .navbox .hlist td dl,
+.mw-parser-output .navbox .hlist td ol,
+.mw-parser-output .navbox .hlist td ul,
+.mw-parser-output .navbox td.hlist dl,
+.mw-parser-output .navbox td.hlist ol,
+.mw-parser-output .navbox td.hlist ul {
+  padding: 0.125em 0;
+}
+.mw-parser-output .navbox .hlist dd,
+.mw-parser-output .navbox .hlist dt,
+.mw-parser-output .navbox .hlist li {
+  white-space: nowrap;
+}
+.mw-parser-output .navbox .hlist dd dl,
+.mw-parser-output .navbox .hlist dt dl,
+.mw-parser-output .navbox .hlist li ol,
+.mw-parser-output .navbox .hlist li ul {
+  white-space: normal;
+}
+
+
+/* {{Navbar}} 嵌在 navbox 里 */
+.mw-parser-output .navbar {
+  display: inline;
+  font-weight: normal;
+}
+.mw-parser-output .navbar ul {
+  display: inline;
+  white-space: nowrap;
+}
+.mw-parser-output .navbar li {
+  word-spacing: -0.125em;
+}
+.mw-parser-output .navbar.mini li abbr[title] {
+  font-variant: small-caps;
+  border-bottom: none;
+  text-decoration: none;
+  cursor: inherit;
+}
+.mw-parser-output .navbox .navbar {
+  display: block;
+}
+.mw-parser-output .navbox-title .navbar {
+  float: left;
+  text-align: left;
+  margin-right: 0.5em;
+  width: 8em;
+}
+
+
+/* Gadget-collapsibleTables.js 动态插入的 [显示▼]/[隐藏▲] */
+.mw-parser-output .collapseButton {
+  float: right;
+  font-weight: normal;
+  margin-left: 0.5em;
+  text-align: right;
+  width: auto;
+}
+.mw-parser-output .navbox .collapseButton {
+  width: 8em;
+}
+
+
+
+/* layout:begin navbox-narrow 窄屏不撑破页面，见 prts-skin-migration/migration/navbox-narrow/README.md *//* 分组列逐层 nowrap，列表项（上面的 .hlist li）与链接（站点 CSS 的 .nowraplinks a）也不换行，
+   嵌套几层的 navbox 最小宽度到 400–775px，手机 / 平板上把整页撑宽。桌面（≥1120）不受影响。 */
+@media (max-width: 1119px) {
+  
+  /* 列表项改成不可拆的 inline-block：放得下时照旧整项换行，只有单项比一行还宽才在项内折行 */
+.mw-parser-output .navbox .hlist li {
+    display: inline-block;
+    white-space: normal;
+  }
+  .mw-parser-output .navbox .hlist li a,
+.mw-parser-output .navbox .hlist li .selflink {
+    white-space: normal;
+  }
+  
+  /* 皮肤的分隔符 " · " 写在 li::after 里，inline-block 会吃掉它末尾的空格；pre 保住项间距 */
+.mw-parser-output .navbox .hlist li:not(:last-child)::after {
+    white-space: pre;
+  }
+}
+@media (max-width: 639px) {
+  
+  /* 分组名只在空格 / 标点处折行（keep-all：汉字之间不断开），内边距减半 */
+.mw-parser-output th.navbox-group,
+.mw-parser-output th.navbox-group a {
+    white-space: normal;
+    word-break: keep-all;
+  }
+  .mw-parser-output th.navbox-group {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+}
+
+
+
+
+/* layout:end navbox-narrow *//* theme:begin navbox-palette 主题适配，见 prts-skin-migration/docs/主题适配盘点.md *//* 配色：保留 Vector 的三级蓝（自 MediaWiki:Vector.css 分流，2026-09-29 拍板）。
+   皮肤 catlinks.css 60–64 行也给 navbox 上了色（灰底、标题左侧强调条）；这里的选择器经
+   TemplateStyles 加上 .mw-parser-output 前缀后与皮肤同特指度，且在页面里后加载，覆盖皮肤那几行。 */
+.mw-parser-output .navbox {
+  border: 1px solid #a2a9b1;
+  background: #fdfdfd;
+}
+.mw-parser-output .navbox-subgroup {
+  background: #fdfdfd;
+}
+.mw-parser-output .navbox th,
+.mw-parser-output .navbox-title {
+  background: #4487df;
+}
+.mw-parser-output .navbox-title {
+  border-left: 0;
+  color: #fff;
+}
+.mw-parser-output .navbox-title a,
+.mw-parser-output .navbox-title a:visited,
+.mw-parser-output .navbox-title div {
+  color: #fff;
+}
+.mw-parser-output .navbox-abovebelow,
+.mw-parser-output th.navbox-group,
+.mw-parser-output .navbox-subgroup .navbox-title {
+  background: #85c1f7;
+}
+.mw-parser-output .navbox-subgroup .navbox-group,
+.mw-parser-output .navbox-subgroup .navbox-abovebelow {
+  background: #ebf7fe;
+}
+.mw-parser-output .navbox-even {
+  background: #f7f7f7;
+}
+.mw-parser-output .navbox-odd {
+  background: transparent;
+}
+
+/* 分组、上下栏里的链接跟随文字色：皮肤链接色在二级蓝 #85c1f7 上只有 2.9:1（Vector 的 #36c 也只有 2.8），
+   站内模板本来也多用 {{color|#000|…}} 把分组名写成黑字 */
+.mw-parser-output .navbox-group a,
+.mw-parser-output .navbox-group a:visited,
+.mw-parser-output .navbox-abovebelow a,
+.mw-parser-output .navbox-abovebelow a:visited {
+  color: inherit;
+}
+
+
+/* 暗色：每个色值都由上面的浅色值推导（wikibot/theme_palette.py：OKLCH 里色相不变，
+   浅色调按离白多远映射到离皮肤暗色表面 #1a1b1c 多远，深色调压到白字可读的亮度，中性色吸附皮肤令牌）。
+   三级蓝暗色下仍是一级比一级离底色远；正文 #f0f0f0 对各级底色 ≥ 8.7:1，标题白字 7.2:1。 */
+html.skin-theme-clientpref-night body .mw-parser-output .navbox {
+  border-color: #454b50; /* ← #a2a9b1 */
+  background: #1a1b1c; /* ← #fdfdfd */
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox-subgroup {
+  background: #1a1b1c;
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox th,
+html.skin-theme-clientpref-night body .mw-parser-output .navbox-title {
+  background: #20579d; /* ← #4487df */
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox-abovebelow,
+html.skin-theme-clientpref-night body .mw-parser-output th.navbox-group,
+html.skin-theme-clientpref-night body .mw-parser-output .navbox-subgroup .navbox-title {
+  background: #14466d; /* ← #85c1f7 */
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox-subgroup .navbox-group,
+html.skin-theme-clientpref-night body .mw-parser-output .navbox-subgroup .navbox-abovebelow {
+  background: #1f272b; /* ← #ebf7fe */
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox-even {
+  background: #232425; /* ← #f7f7f7 */
+}
+
+/* 暗色：各导航模板行内写死的浅色底（abovestyle / groupstyle 等参数），同样按上面的规则推导 */
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="var(--lightblue)"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#ebf7fe"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#EBF7FE"] {
+  background: #1f272b !important; /* ← #ebf7fe */
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#def"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#DEF"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#ddeeff"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#DDEEFF"] {
+  background: #222d38 !important; /* ← #ddeeff */
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="background-color:#fdfdfd"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="background-color:#FDFDFD"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="background:#fdfdfd"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="background:#FDFDFD"] {
+  background: #1a1b1c !important; /* ← #fdfdfd */
+}
+
+/* 模块给部分单元格行内画了 2px #fdfdfd 左边框（浅色下与底色相同、看不见），暗色下会露成白线 */
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="2px solid #fdfdfd"] {
+  border-left-color: transparent !important;
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#fdd"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#FDD"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#ffdddd"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#FFDDDD"] {
+  background: #3d2828 !important; /* ← #ffdddd */
+}
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#fee"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#FEE"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#ffeeee"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox [style*="#FFEEEE"] {
+  background: #2f2424 !important; /* ← #ffeeee */
+}
+
+/* 分组名常写成 {{color|#000|…}}，暗底上跟随文字色 */
+html.skin-theme-clientpref-night body .mw-parser-output .navbox span[style*="color:#000"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox span[style*="color: #000"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox span[style*="color:black"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox span[style*="color: black"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox span[style*="color:#202122"],
+html.skin-theme-clientpref-night body .mw-parser-output .navbox span[style*="color: #202122"] {
+  color: inherit !important;
+}
+
+
+
+/* theme:end navbox-palette *//* theme-os:begin 自动偏好（跟随系统暗色）。由上方 night 规则机械生成，勿手改 */
+@media (prefers-color-scheme: dark) {
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox {
+    border-color: #454b50;
+    background: #1a1b1c;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox-subgroup {
+    background: #1a1b1c;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox th,
+html.skin-theme-clientpref-os body .mw-parser-output .navbox-title {
+    background: #20579d;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox-abovebelow,
+html.skin-theme-clientpref-os body .mw-parser-output th.navbox-group,
+html.skin-theme-clientpref-os body .mw-parser-output .navbox-subgroup .navbox-title {
+    background: #14466d;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox-subgroup .navbox-group,
+html.skin-theme-clientpref-os body .mw-parser-output .navbox-subgroup .navbox-abovebelow {
+    background: #1f272b;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox-even {
+    background: #232425;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="var(--lightblue)"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#ebf7fe"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#EBF7FE"] {
+    background: #1f272b !important;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#def"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#DEF"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#ddeeff"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#DDEEFF"] {
+    background: #222d38 !important;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="background-color:#fdfdfd"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="background-color:#FDFDFD"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="background:#fdfdfd"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="background:#FDFDFD"] {
+    background: #1a1b1c !important;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="2px solid #fdfdfd"] {
+    border-left-color: transparent !important;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#fdd"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#FDD"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#ffdddd"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#FFDDDD"] {
+    background: #3d2828 !important;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#fee"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#FEE"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#ffeeee"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox [style*="#FFEEEE"] {
+    background: #2f2424 !important;
+  }
+
+  html.skin-theme-clientpref-os body .mw-parser-output .navbox span[style*="color:#000"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox span[style*="color: #000"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox span[style*="color:black"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox span[style*="color: black"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox span[style*="color:#202122"],
+html.skin-theme-clientpref-os body .mw-parser-output .navbox span[style*="color: #202122"] {
+    color: inherit !important;
+  }
+}
+/* theme-os:end */
 </style>
 </head>
 <body class="skin-arknights">
@@ -330,6 +762,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
         <li><a href="items.html">道具一览（列表 / 筛选页）</a></li>
         <li class="is-active"><a href="operator.html">干员页样例（陈）</a></li>
         <li><a href="recruit.html">公招计算（工具页）</a></li>
+        <li><a href="stage.html">关卡页（敌方情报）</a></li>
         <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
       </ul>
     </div>
@@ -401,7 +834,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
       <header class="ak-page-header">
         <div class="ak-page-header__top">
           <ul class="ak-breadcrumb ak-m-0"><li><a href="#">首页</a></li><li><a href="#">干员一览</a></li><li aria-current="page">陈</li></ul>
-          <div class="mw-indicators"><span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">gamedata 2.7.61</span><span class="ak-tag ak-tag--sm ak-tag--accent-soft ak-tag--label">Cargo ✓</span></div>
+          <div class="mw-indicators"></div>
         </div>
         <!-- ═══ 标题行 ═══ h1 + 页面动作簇同一行（Citizen 式），不再有整条下划线页签。
              簇 = MW 的菜单按原顺序输出：associated-pages（页面 / 讨论）· views（阅读 / 历史 / 编辑 / ★）· [variants] · 更多（actions + TOOLBOX）；
@@ -413,7 +846,7 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
              工具箱里的「特殊页面 / 上传文件」不进这里——它们是站点级的，同 Citizen 放进侧栏站点导航（见侧栏「管理与编辑」末尾）。
              桌面带「更多」二字；<640 只留 ⋯，整簇只留图标（文字进 sr-only，title / accesskey 不变）。 -->
         <div class="ak-page-header__row">
-          <h1 id="firstHeading" class="ak-page-header__title">陈<a class="ak-page-heading__shortlink" href="#" title="复制本页面的短链接" aria-label="复制短链接"><svg class="ak-icon" aria-hidden="true"><use href="#i-link"/></svg></a><span class="ak-en">Ch'en · チェン · LM04</span></h1>
+          <h1 id="firstHeading" class="ak-page-header__title">陈<a class="ak-page-heading__shortlink" href="#" title="复制本页面的短链接" aria-label="复制短链接"><svg class="ak-icon" aria-hidden="true"><use href="#i-link"/></svg></a><span class="ak-en"></span></h1>
           <div class="ak-page-tools" id="ak-page-tools">
             <ul class="ak-page-tabs" id="p-associated-pages">
               <li class="selected" id="ca-nstab-main"><a href="#" title="查看内容页面"><svg class="ak-icon"><use href="#i-book"/></svg><span>页面</span></a></li>
@@ -475,7 +908,6 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
       <!-- 两层照 MW 原样：#mw-content-text.mw-body-content > .mw-parser-output。现网的 Widget / Gadget 会顺着这个嵌套找容器（CharinfoV2 量「舞台的祖父元素」的宽度定手机版缩放），并成一层就量到带内边距的 .ak-body 上去了 -->
       <div class="mw-body-content" id="mw-content-text"><div class="mw-parser-output">
 
-<div class="ak-message ak-message--neutral ak-fs-xs"><div class="ak-message__body">这是<b>干员页整页样例</b>（信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节，数据取自现网 wikitext / gamedata 2.7.61）。顶部「干员信息」= 现网 <code>{{CharinfoV2}}</code> Widget <b>原样</b>（DOM / CSS / JS 一字不改，静态文件快照在 <code>vendor/charinfo/</code>；立绘 / 场景 / BGM / 语音运行时从现网拉，试听语音 · BGM · 时装 / 场景抽屉 · 看图 / 全屏都是现网的行为）——先把现网的动效与排布原样看全，再决定换皮范围；其余章节 = 现网各模板 → 设计系统组件的映射，见文档站 /patterns/operator。</div></div>
 <div class="op-alter ak-not-prose">
   <div class="op-alter__label">异格一览</div>
   <div class="op-alter__list">
@@ -702,7 +1134,7 @@ var back_list = {
     <script src="vendor/charinfo/charinfo_20260322_2.min.js"></script>
 <div class="mw-heading mw-heading2"><h2 id="trait">特性</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <dl class="ak-kv ak-kv--boxed ak-mb-4">
-  <dt>分支</dt><dd><span class="ak-prof-label"><span class="ak-subprof"><img src="assets/subprofession/sword.png" alt=""></span><a href="#">剑豪</a> <span class="ak-en">Swordmaster</span></span></dd>
+  <dt>分支</dt><dd><span class="ak-prof-label"><span class="ak-subprof"><img src="assets/subprofession/sword.png" alt=""></span><a href="#">剑豪</a></span></dd>
   <dt>描述</dt><dd>普通攻击连续造成<span class="ak-rt-kw">两次</span>伤害</dd>
   <dt>分支信息</dt><dd><ul><li>可以且优先攻击自身阻挡的单位（即使目标处于攻击范围外或为飞行单位）。</li></ul></dd>
 </dl>
@@ -773,8 +1205,9 @@ var back_list = {
 <div class="ak-pot-list ak-mb-2" id="pot-list"><div class="ak-pot" data-pot="2"><span class="ak-potential"><img src="assets/potential/potential_1.png" alt="潜能 2"></span><div><span class="ak-pot__label">潜能 2</span>部署费用<span class="ak-rt-vup">-1</span></div></div><div class="ak-pot" data-pot="3"><span class="ak-potential"><img src="assets/potential/potential_2.png" alt="潜能 3"></span><div><span class="ak-pot__label">潜能 3</span>再部署时间<span class="ak-rt-vup">-4秒</span></div></div><div class="ak-pot" data-pot="4"><span class="ak-potential"><img src="assets/potential/potential_3.png" alt="潜能 4"></span><div><span class="ak-pot__label">潜能 4</span>攻击力<span class="ak-rt-vup">+23</span></div></div><div class="ak-pot" data-pot="5"><span class="ak-potential"><img src="assets/potential/potential_4.png" alt="潜能 5"></span><div><span class="ak-pot__label">潜能 5</span>第二天赋效果增强</div></div><div class="ak-pot" data-pot="6"><span class="ak-potential"><img src="assets/potential/potential_5.png" alt="潜能 6"></span><div><span class="ak-pot__label">潜能 6</span>部署费用<span class="ak-rt-vup">-1</span></div></div></div>
 <p class="ak-fs-xs ak-fg-muted ak-mb-4">注：潜能提升的数值均为原始属性增减。属性面板选了潜能后，已生效的项在这里点亮。</p>
 <div class="mw-heading mw-heading2"><h2 id="skills">技能</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<div class="mw-heading mw-heading3"><h3 id="skill1">技能1（精英0开放）</h3><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="ak-skill-sheet">
-  <div class="ak-skill ak-skill--wide"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_1.png" alt=""></div><div><div class="ak-skill__head"><h3 class="ak-skill__name" id="skill1">鞘击</h3><span class="ak-skill__alias"><span class="ak-en">Sheathed Strike</span><span class="jp">鞘打ち</span></span><span class="ak-sp ak-sp--attack" data-ak-tip="每次攻击回复1点技力">攻击回复</span><span class="ak-sp-trigger ak-sp-trigger--auto ak-tip--wide" data-ak-tip="技力达到需求并满足开启条件后，自动开启的技能">自动触发</span></div></div><div class="ak-skill__aside"><span class="ak-skill__open"><img src="assets/elite/elite_0.png" alt="">技能1 · 精英零开放</span></div></div>
+  <div class="ak-skill ak-skill--wide"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_1.png" alt=""></div><div><div class="ak-skill__head"><h4 class="ak-skill__name">鞘击</h4><span class="ak-sp ak-sp--attack" data-ak-tip="每次攻击回复1点技力">攻击回复</span><span class="ak-sp-trigger ak-sp-trigger--auto ak-tip--wide" data-ak-tip="技力达到需求并满足开启条件后，自动开启的技能">自动触发</span></div></div></div>
   <table class="ak-skill-table">
 <thead><tr><th class="lv">等级</th><th class="desc">描述</th><th class="num"><span class="ak-sp-init ak-tip--wide" data-ak-tip="初始：干员部署后预置的技力数（每次部署仅一次）">初始</span></th><th class="num"><span class="ak-sp-cost ak-tip--wide" data-ak-tip="消耗：该技能所需要消耗的技力数">消耗</span></th><th class="num"><span class="ak-sp-dur ak-tip--wide" data-ak-tip="持续：该技能的持续时间（秒）">持续</span></th></tr></thead>
 <tbody>
@@ -790,8 +1223,9 @@ var back_list = {
 <tr class="is-mastery"><td class="lv"><img src="assets/specialized/specialized_tiny_3.png" alt="专精3">Ⅲ</td><td class="desc">下次攻击使用刀鞘砸向敌人，造成相当于攻击力<span class="ak-rt-vup">320%</span>的物理伤害，令命中目标<span class="ak-rt-term ak-tip--wide" data-ak-tip="晕眩：无法移动、阻挡、攻击及使用技能">晕眩</span><span class="ak-rt-vup">1.5</span>秒</td><td class="num">0</td><td class="num">4</td><td class="num"></td></tr>
 </tbody></table>
 </div>
+<div class="mw-heading mw-heading3"><h3 id="skill2">技能2（精英1开放）</h3><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="ak-skill-sheet">
-  <div class="ak-skill ak-skill--wide"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_2.png" alt=""></div><div><div class="ak-skill__head"><h3 class="ak-skill__name" id="skill2">赤霄·拔刀</h3><span class="ak-skill__alias"><span class="ak-en">Chi Xiao · Unsheath</span><span class="jp">赤霄・抜刀</span></span><span class="ak-sp ak-sp--attack" data-ak-tip="每次攻击回复1点技力">攻击回复</span><span class="ak-sp-trigger ak-tip--wide" data-ak-tip="技力达到需求并满足开启条件后，需要玩家手动开启的技能">手动触发</span></div></div><div class="ak-skill__aside"><span class="ak-skill__open"><img src="assets/elite/elite_1.png" alt="">技能2 · 精英一开放</span><div class="ak-range ak-range--sm" style="--cols:4" aria-label="技能范围"><i class="on"></i><i class="on"></i><i></i><i></i><i class="self"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></div></div>
+  <div class="ak-skill ak-skill--wide"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_2.png" alt=""></div><div><div class="ak-skill__head"><h4 class="ak-skill__name">赤霄·拔刀</h4><span class="ak-sp ak-sp--attack" data-ak-tip="每次攻击回复1点技力">攻击回复</span><span class="ak-sp-trigger ak-tip--wide" data-ak-tip="技力达到需求并满足开启条件后，需要玩家手动开启的技能">手动触发</span></div></div><div class="ak-skill__aside"><div class="ak-range ak-range--sm" style="--cols:4" aria-label="技能范围"><i class="on"></i><i class="on"></i><i></i><i></i><i class="self"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></div></div>
   <table class="ak-skill-table">
 <thead><tr><th class="lv">等级</th><th class="desc">描述</th><th class="num"><span class="ak-sp-init ak-tip--wide" data-ak-tip="初始：干员部署后预置的技力数（每次部署仅一次）">初始</span></th><th class="num"><span class="ak-sp-cost ak-tip--wide" data-ak-tip="消耗：该技能所需要消耗的技力数">消耗</span></th><th class="num"><span class="ak-sp-dur ak-tip--wide" data-ak-tip="持续：该技能的持续时间（秒）">持续</span></th></tr></thead>
 <tbody>
@@ -807,8 +1241,9 @@ var back_list = {
 <tr class="is-mastery"><td class="lv"><img src="assets/specialized/specialized_tiny_3.png" alt="专精3">Ⅲ</td><td class="desc">对前方范围内最多<span class="ak-rt-vup">7</span>名敌人造成相当于攻击力<span class="ak-rt-vup">500%</span>的<span class="ak-rt-rem">物理</span>和相当于攻击力<span class="ak-rt-vup">500%</span>的<span class="ak-rt-rem">法术</span>伤害</td><td class="num">20</td><td class="num">20</td><td class="num"></td></tr>
 </tbody></table>
 <div class="ak-skill-sheet__note"><p>※可对空；先造成法术伤害，后造成物理伤害</p></div></div>
+<div class="mw-heading mw-heading3"><h3 id="skill3">技能3（精英2开放）</h3><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="ak-skill-sheet">
-  <div class="ak-skill ak-skill--wide"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_3.png" alt=""></div><div><div class="ak-skill__head"><h3 class="ak-skill__name" id="skill3">赤霄·绝影</h3><span class="ak-skill__alias"><span class="ak-en">Chi Xiao · Shadowless</span><span class="jp">赤霄・絶影</span></span><span class="ak-sp ak-sp--attack" data-ak-tip="每次攻击回复1点技力">攻击回复</span><span class="ak-sp-trigger ak-tip--wide" data-ak-tip="技力达到需求并满足开启条件后，需要玩家手动开启的技能">手动触发</span></div></div><div class="ak-skill__aside"><span class="ak-skill__open"><img src="assets/elite/elite_2.png" alt="">技能3 · 精英二开放</span><div class="ak-range ak-range--sm" style="--cols:5" aria-label="技能范围"><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i class="on"></i><i class="self"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i></div></div></div>
+  <div class="ak-skill ak-skill--wide"><div class="ak-skill__icon ak-skill__icon--attack"><img src="assets/skill/chen_3.png" alt=""></div><div><div class="ak-skill__head"><h4 class="ak-skill__name">赤霄·绝影</h4><span class="ak-sp ak-sp--attack" data-ak-tip="每次攻击回复1点技力">攻击回复</span><span class="ak-sp-trigger ak-tip--wide" data-ak-tip="技力达到需求并满足开启条件后，需要玩家手动开启的技能">手动触发</span></div></div><div class="ak-skill__aside"><div class="ak-range ak-range--sm" style="--cols:5" aria-label="技能范围"><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i class="on"></i><i class="self"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i></div></div></div>
   <table class="ak-skill-table">
 <thead><tr><th class="lv">等级</th><th class="desc">描述</th><th class="num"><span class="ak-sp-init ak-tip--wide" data-ak-tip="初始：干员部署后预置的技力数（每次部署仅一次）">初始</span></th><th class="num"><span class="ak-sp-cost ak-tip--wide" data-ak-tip="消耗：该技能所需要消耗的技力数">消耗</span></th><th class="num"><span class="ak-sp-dur ak-tip--wide" data-ak-tip="持续：该技能的持续时间（秒）">持续</span></th></tr></thead>
 <tbody>
@@ -825,10 +1260,10 @@ var back_list = {
 </tbody></table>
 <div class="ak-skill-sheet__note"><p>※不可对空</p><p>※技能生效期间，持有效果：<span class="ak-rt-term ak-tip--wide" data-ak-tip="无敌：无法被不同阵营选中（属于无法选择类效果）；受到的伤害与元素值变为 0；无法触发任何单位未绑定选择器的能力">无敌</span>、<span class="ak-rt-term ak-tip--wide" data-ak-tip="不可阻挡：无法阻挡 / 被阻挡，自动解除阻挡">不可阻挡</span>、<span class="ak-rt-term ak-tip--wide" data-ak-tip="晕眩免疫：使自身的晕眩失效，但不会清除相关 Buff">晕眩免疫</span>、<span class="ak-rt-term ak-tip--wide" data-ak-tip="冻结免疫：使自身的冻结失效。冻结：无法移动、攻击及使用技能（通过寒冷触发）；敌方被冻结时法术抗性 -15">冻结免疫</span></p><p>※若斩击次数未到 10 次之前技能范围内没有目标，立刻中止技能</p></div></div>
 <div class="mw-heading mw-heading2"><h2 id="base">后勤技能</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
-<table class="wikitable ak-compact ak-mb-4" style="width:100%">
+<table class="wikitable ak-compact ak-mb-4 op-base" style="width:100%">
 <tr><th style="width:96px">条件</th><th style="width:48px">图标</th><th style="width:140px">技能</th><th style="width:96px">房间</th><th>描述</th></tr>
-<tr><td><span class="ak-elite"><img src="assets/elite/elite_0.png" alt="">精英零</span></td><td><span class="ak-glyph-box" style="width:36px;height:36px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 20V9l8-5 8 5v11M4 20h16M9 20v-6h6v6"/></svg></span></td><td><b>德才兼备</b> <span class="ak-fg-muted ak-fs-xs">技能 1</span></td><td>控制中枢</td><td>进驻控制中枢时，控制中枢内每个<span class="ak-rt-term ak-tip--wide" data-ak-tip="龙门近卫局：包含以下干员——陈、星熊、诗怀雅">龙门近卫局</span>干员可使控制中枢内所有干员的心情每小时恢复<span class="ak-rt-vup">+0.05</span></td></tr>
-<tr><td><span class="ak-elite"><img src="assets/elite/elite_2.png" alt="">精英二</span></td><td><span class="ak-glyph-box" style="width:36px;height:36px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 20V9l8-5 8 5v11M4 20h16M9 20v-6h6v6"/></svg></span></td><td><b>警司</b> <span class="ak-fg-muted ak-fs-xs">技能 2</span></td><td>会客室</td><td>进驻会客室时，线索搜集速度提升<span class="ak-rt-vup">25%</span></td></tr>
+<tr><td><span class="ak-elite"><img src="assets/elite/elite_0.png" alt="">精英零</span></td><td><img class="op-base__icon" src="assets/bskill/bskill_ctrl_lungmen.png" width="36" height="36" alt=""></td><td><b>德才兼备</b> <span class="ak-fg-muted ak-fs-xs">技能 1</span></td><td>控制中枢</td><td>进驻控制中枢时，控制中枢内每个<span class="ak-rt-term ak-tip--wide" data-ak-tip="龙门近卫局：包含以下干员——陈、星熊、诗怀雅">龙门近卫局</span>干员可使控制中枢内所有干员的心情每小时恢复<span class="ak-rt-vup">+0.05</span></td></tr>
+<tr><td><span class="ak-elite"><img src="assets/elite/elite_2.png" alt="">精英二</span></td><td><img class="op-base__icon" src="assets/bskill/bskill_meet_spd3.png" width="36" height="36" alt=""></td><td><b>警司</b> <span class="ak-fg-muted ak-fs-xs">技能 2</span></td><td>会客室</td><td>进驻会客室时，线索搜集速度提升<span class="ak-rt-vup">25%</span></td></tr>
 </table>
 <div class="mw-heading mw-heading2"><h2 id="promotion">精英化材料</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="ak-materials ak-mb-4">
@@ -854,10 +1289,12 @@ var back_list = {
 </table>
 <div class="mw-heading mw-heading2"><h2 id="modules">模组</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="mw-heading mw-heading3"><h3 id="mod-original">陈证章</h3><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
+<!-- 模组正文用的 MDI 字形（现网 {{mdi|plus-circle}} 等，生产环境走站点已加载的 MDI 字体；设计稿内联成 symbol） -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="op-i-plus-circle" viewBox="0 0 24 24"><path fill="currentColor" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></symbol><symbol id="op-i-asterisk" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13H14.4L19.1 17.7L17.7 19.1L13 14.4V21H11V14.3L6.3 19L4.9 17.6L9.4 13H3V11H9.6L4.9 6.3L6.3 4.9L11 9.6V3H13V9.4L17.6 4.8L19 6.3L14.3 11H21V13Z"/></symbol><symbol id="op-i-arrow-up" viewBox="0 0 24 24"><path fill="currentColor" d="M12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22M12,7L7,12H10V16H14V12H17L12,7Z"/></symbol><symbol id="op-i-arrow-down" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,17L17,12H14V8H10V12H7L12,17Z"/></symbol><symbol id="op-i-clipboard-check" viewBox="0 0 24 24"><path fill="currentColor" d="M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z"/></symbol></svg>
 <div class="ak-module" id="mod-original">
-  <div class="ak-module__img"><img src="assets/subprofession/sword.png" alt="" style="width:56px;filter:none"></div>
+  <div class="ak-module__img"><img src="assets/module/uniequip_original.png" alt=""></div>
   <div class="ak-module__main is-open">
-    <div class="ak-module__head"><span class="ak-module__type">Original</span><h4 class="ak-module__name">陈证章</h4><span class="ak-tag ak-tag--sm ak-tag--outline">基础证章 · 无特殊效果 · STAGE MAX</span></div>
+    <div class="ak-module__head"><span class="ak-module__type"><img src="assets/module/type_original.png" alt="">Original</span><h4 class="ak-module__name">陈证章</h4></div>
     <div class="ak-module__story"><p>干员陈擅长于近身搏斗中对敌人造成多段杀伤<br>根据外勤部门决议<br>在外勤任务中划分为近卫干员，行使剑豪职责<br>特别颁发此证章<br>以兹证明</p></div>
   </div>
 </div>
@@ -869,10 +1306,12 @@ var back_list = {
     <div class="ak-module__story"><p>七月七，晴。生辰，她激动地想要为魏彦吾展示拔刀，却找不到魏彦吾的踪影。等了三天，没有等到。<br>五月十三，多云。以泪锋斩断了庭中的三十年老树，砸坏了屋顶。魏彦吾没有出现，只是差人植了一棵新的。她不再期待魏彦吾的认可。<br>一月一，大雨。贺年，倾盆大雨，去贫民区的途中路见不平，愤而出手，以一敌十五。生死攸关之际，以随身佩剑递出奔夜，伤七人，退八人。闹到了上面，魏彦吾难得出现，看了剑痕后，只看她一眼就走了。她忘了自己当时为何出手，却永远不会忘记那一眼中的失望。<br>十二月二十五，晴。从近卫学院返乡路上见义勇为，浑然无惧，扬眉之剑，当放则放。她意气风发，以为自己可以荡平天下不平事。<br>七月三十，多云。以昏迷五天为代价，递出绝影，最终斩了重大通缉犯，龙门陈晖洁，崭露头角。醒来之后，赤霄放在她的床头，魏彦吾没有来看过她。<br>八月十三，阴。追捕感染者罪犯途中，欲以赤霄出手，赤霄纹丝未动。而后，生死攸关之际，福至心灵，赤霄拔刀，斩塌了半个地下车库。她去找魏彦吾想知道赤霄究竟为何，魏彦吾没有见她。<br>九月三十，晴。赤霄二度出鞘，斩开一扇金库大门，救出其中人质。她开始理解，赤霄乃意志之剑。她以为她一直以来做得够多，其实是她做得太少。她必须更快，她必须更有力。<br>七月七，多云。生辰，十几年来，魏彦吾第一次提出要看一看她的剑，她凝聚一路所学，以未完成的云裂作为答卷，魏彦吾不置可否。<br>一月十一，晴。与罗德岛一同离开龙门。之后一路，赤霄鲜少出鞘。</p></div>
     <label class="ak-module__more"><input type="checkbox" data-toggle-class="is-open" data-toggle-target=".ak-module__main"><span class="off">全文阅读 »</span><span class="on">收起全文 «</span></label>
   </div>
-  <div class="ak-module__body">
-    <table class="ak-module__stages"><thead><tr><th>阶段</th><th>属性</th><th>特性 / 天赋变化</th></tr></thead><tbody><tr><td class="lv"><span class="ak-module__lv">STAGE 1<i><b class="on"></b><b class=""></b><b class=""></b></i></span></td><td class="stats"><span class="ak-module__stats"><span>攻击 <span class="ak-rt-vup">+50</span></span><span>攻击速度 <span class="ak-rt-vup">+5</span></span></span></td><td><span class="ak-module__kicker">特性追加</span><span class="template-fix-mark" title="修正：游戏内原文为「技能」">技能期间</span><sup class="reference" id="cite_ref-note1"><a href="#cite_note-note1">[注 1]</a></sup>造成的伤害提升<span class="ak-rt-vup">10%</span></td></tr><tr><td class="lv"><span class="ak-module__lv">STAGE 2<i><b class="on"></b><b class="on"></b><b class=""></b></i></span></td><td class="stats"><span class="ak-module__stats"><span>攻击 <span class="ak-rt-vup">+65</span></span><span>攻击速度 <span class="ak-rt-vup">+6</span></span></span></td><td><span class="ak-module__kicker">天赋更新</span>天赋【呵斥】更新：在场时每<span class="ak-rt-vup">3</span>秒回复全场友方角色1点攻击/受击技力</td></tr><tr><td class="lv"><span class="ak-module__lv">STAGE 3<i><b class="on"></b><b class="on"></b><b class="on"></b></i></span></td><td class="stats"><span class="ak-module__stats"><span>攻击 <span class="ak-rt-vup">+80</span></span><span>攻击速度 <span class="ak-rt-vup">+7</span></span></span></td><td><span class="ak-module__kicker">天赋更新</span>天赋【呵斥】更新：在场时每3秒回复全场友方角色1点攻击/受击技力，<span class="ak-rt-rem">自身额外回复1点技力</span></td></tr></tbody></table>
-    <div class="ak-module__tasks"><span class="ak-overline">模组解锁任务</span><ul><li>完成5次战斗；必须编入非助战陈并上场，且每次战斗至少释放一次赤霄·拔刀或赤霄·绝影</li><li>3星通关主题曲 <a class="ak-stage-code" style="font-size:.85em" href="#">5-8</a>；必须编入非助战陈并上场，且使用陈至少歼灭16名敌人</li></ul></div>
-    <table class="ak-module__unlock"><thead><tr><th>阶段</th><th>解锁需求</th><th>材料消耗</th></tr></thead><tbody><tr><td class="lv"><span class="ak-module__lv">STAGE 1<i><b class="on"></b><b class=""></b><b class=""></b></i></span></td><td><span class="ak-module__req"><span class="ak-trust">0%</span><span class="ak-elite"><img src="assets/elite/elite_2.png" alt="">精英二 Lv60</span><span class="ak-tag ak-tag--sm ak-tag--outline" title="完成本模组所有模组解锁任务">✓ 全部解锁任务</span></span></td><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-ak-tip="D32钢"><img src="assets/item/framed/30135.png" alt="D32钢"><span class="ak-item__count">2</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">8万</span></span></span></td></tr><tr><td class="lv"><span class="ak-module__lv">STAGE 2<i><b class="on"></b><b class="on"></b><b class=""></b></i></span></td><td><span class="ak-module__req"><span class="ak-trust">50%</span></span></td><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-ak-tip="数据增补条"><img src="assets/item/framed/mod_update_token_1.png" alt="数据增补条"><span class="ak-item__count">60</span></span><span class="ak-item ak-item--sm" data-ak-tip="晶体电子单元"><img src="assets/item/framed/30145.png" alt="晶体电子单元"><span class="ak-item__count">3</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">10万</span></span></span></td></tr><tr><td class="lv"><span class="ak-module__lv">STAGE 3<i><b class="on"></b><b class="on"></b><b class="on"></b></i></span></td><td><span class="ak-module__req"><span class="ak-trust">100%</span></span></td><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-ak-tip="数据增补仪"><img src="assets/item/framed/mod_update_token_2.png" alt="数据增补仪"><span class="ak-item__count">20</span></span><span class="ak-item ak-item--sm" data-ak-tip="聚合剂"><img src="assets/item/framed/30115.png" alt="聚合剂"><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">12万</span></span></span></td></tr></tbody></table>
+  <div class="ak-module__body op-equip">
+    <div class="op-equip__stage"><img class="op-stage" src="assets/module/stage_1.png" width="43" height="40" alt="STAGE 1"><span class="op-equip__stats"><span>攻击 <span class="ak-rt-vup">+50</span></span><span>攻击速度 <span class="ak-rt-vup">+5</span></span></span><span class="op-equip__desc"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-plus-circle"/></svg><b>特性追加：</b><span class="template-fix-mark" title="修正：游戏内原文为「技能」">技能期间</span><sup class="reference" id="cite_ref-note1"><a href="#cite_note-note1">[注 1]</a></sup>造成的伤害提升<span class="ak-rt-vup">10%</span></span></div>
+    <div class="op-equip__stage"><img class="op-stage" src="assets/module/stage_2.png" width="44" height="40" alt="STAGE 2"><span class="op-equip__stats"><span>攻击 <span class="ak-rt-vup">+65</span></span><span>攻击速度 <span class="ak-rt-vup">+6</span></span></span><span class="op-equip__desc"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-asterisk"/></svg>天赋【呵斥】更新<br>在场时每<span class="ak-rt-vup"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-arrow-down"/></svg>3</span>秒回复全场友方角色1点攻击/受击技力</span></div>
+    <div class="op-equip__stage"><img class="op-stage" src="assets/module/stage_3.png" width="44" height="40" alt="STAGE 3"><span class="op-equip__stats"><span>攻击 <span class="ak-rt-vup">+80</span></span><span>攻击速度 <span class="ak-rt-vup">+7</span></span></span><span class="op-equip__desc"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-asterisk"/></svg>天赋【呵斥】更新<br>在场时每3秒回复全场友方角色1点攻击/受击技力，<span class="ak-rt-rem">自身额外回复1点技力</span></span></div>
+    <div class="op-equip__row"><b class="op-equip__title">模组解锁任务</b><ul class="op-equip__tasks ak-not-prose"><li><svg class="op-equip__glyph" aria-hidden="true"><use href="#i-chevron-right"/></svg>完成5次战斗；必须编入非助战陈并上场，且每次战斗至少释放一次赤霄·拔刀或赤霄·绝影</li><li><svg class="op-equip__glyph" aria-hidden="true"><use href="#i-chevron-right"/></svg>3星通关主题曲 <a class="ak-stage-code" style="font-size:.85em" href="#">5-8</a>；必须编入非助战陈并上场，且使用陈至少歼灭16名敌人</li></ul></div>
+    <div class="op-equip__row"><b class="op-equip__title">解锁需求与材料消耗</b><div class="op-equip__costs"><div class="op-equip__cost"><img class="op-stage" src="assets/module/stage_1.png" width="43" height="40" alt="STAGE 1"><span class="op-equip__reqs"><span class="op-equip__req" data-ak-tip="需要信赖值 0%"><img src="assets/module/req_trust.png" width="48" height="51" alt="信赖"><b>0</b></span><span class="op-equip__req" data-ak-tip="需要达到等级 60（精英二阶段）"><img src="assets/module/req_elite2.png" width="48" height="51" alt="精英二等级"><b>60</b></span><span class="op-equip__task" role="img" aria-label="完成本模组所有模组解锁任务" data-ak-tip="完成本模组所有模组解锁任务"><svg aria-hidden="true"><use href="#op-i-clipboard-check"/></svg></span></span><span class="ak-item-list"><span class="ak-item" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item" data-ak-tip="D32钢"><img src="assets/item/framed/30135.png" alt="D32钢"><span class="ak-item__count">2</span></span><span class="ak-item" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">8万</span></span></span></div><div class="op-equip__cost"><img class="op-stage" src="assets/module/stage_2.png" width="44" height="40" alt="STAGE 2"><span class="op-equip__reqs"><span class="op-equip__req" data-ak-tip="需要信赖值 50%"><img src="assets/module/req_trust.png" width="48" height="51" alt="信赖"><b>50</b></span></span><span class="ak-item-list"><span class="ak-item" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item" data-ak-tip="数据增补条"><img src="assets/item/framed/mod_update_token_1.png" alt="数据增补条"><span class="ak-item__count">60</span></span><span class="ak-item" data-ak-tip="晶体电子单元"><img src="assets/item/framed/30145.png" alt="晶体电子单元"><span class="ak-item__count">3</span></span><span class="ak-item" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">10万</span></span></span></div><div class="op-equip__cost"><img class="op-stage" src="assets/module/stage_3.png" width="44" height="40" alt="STAGE 3"><span class="op-equip__reqs"><span class="op-equip__req" data-ak-tip="需要信赖值 100%"><img src="assets/module/req_trust.png" width="48" height="51" alt="信赖"><b>100</b></span></span><span class="ak-item-list"><span class="ak-item" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item" data-ak-tip="数据增补仪"><img src="assets/item/framed/mod_update_token_2.png" alt="数据增补仪"><span class="ak-item__count">20</span></span><span class="ak-item" data-ak-tip="聚合剂"><img src="assets/item/framed/30115.png" alt="聚合剂"><span class="ak-item__count">4</span></span><span class="ak-item" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">12万</span></span></span></div></div></div>
   </div>
 </div>
 <div class="mw-references-wrap ak-fs-xs ak-mb-4"><ol class="references"><li id="cite_note-note1"><span class="mw-cite-backlink"><a href="#cite_ref-note1">↑</a></span> <span class="reference-text">此处游戏内原文是<b>技能</b>，因<b>描述与游戏实际表现不符合</b>，我们对其进行了修正。</span></li></ol></div>
@@ -884,28 +1323,46 @@ var back_list = {
     <div class="ak-module__story"><p>大地的伤痕自天际线奔袭而来，精准地击中一片维多利亚式建筑群，楼宇如同遭遇旋风袭击的树林，围绕着同一个点以放射状倒塌。在这片帝国的废墟之中，两个身影正翻过一座倒下的石碑，试图寻找高点。<br>“这里荒废多久了？”陈站在废墟上远眺，身后的石碑上那些曾经象征着荣誉的名字都被涂抹殆尽。<br>“这片校舍自从战争爆发那会儿就弃用了，还没完成学业的学弟学妹们被分流到了新的校区，完成了剩下的课程......陈陈，前面是我们以前的老训练场，你还记得吗？”风笛的声音从低处传来。<br>“我记得特别清楚，感觉自己当学生的时候总是错过一些好事。一到毕业路也修好了，训练场也修好了。”训练场被冲击波挤成了一片片翘起的地块，陈捡起了一块石头，丢进地块夹缝中冒出的灌木丛，躲在其中的羽兽尖叫着扑腾向远处。<br>“那时候已经足够好啦。”风笛的声音自远而近，停留在了陈的耳畔。<br>“也是。那可能是我最单纯的一段时间了，不用去思考一些麻烦的问题，只需要专心训练和学习。”<br>“这就是当时的你每天疯狂训练，全常规科目拿A的动力？”风笛将双手搭在陈的肩上，轻轻地摇晃着。<br>“回去以后，我发现有太多的事无法用刀剑解决，有些时候会觉得自己过于渺小，即便努力工作，也无法改变很多事——消灭敌人有的时候并不能解决问题。”陈摇了摇头，好像要把过去的庞杂思绪都从脑海中丢出去。<br>两人走下高坡，记忆中的花圃还在原地。曾经高悬的近卫学校标志一半深深插入泥土，一半斜靠在断裂的石柱上。夕阳西下，阳光倾泻在已有斑驳锈迹的标志上，仅剩的金属光泽诉说着这里曾经的荣光。<br>“一切都变了，维多利亚不也一样吗？”陈盯着校徽，喃喃自语道。<br>“还是有人没有变的。知道你要来，我前几天特意去拜访了泰勒教官。当时你走得太匆忙，留在宿舍里的文件啥的都没带走——她这些年一直保管着你这些东西。这是你的学业通过证明。哦对了，还有这个！”风笛从随身的包里掏出了一叠证件，还有一把木剑。<br>“这是你当年的训练用剑，按道理是要收回的，但是你的成绩太好了，教官本来打算给你个惊喜，想把这把剑送给你......”<br>“代我向她表示感谢。那会儿我走得太快了......”<br>“至少你现在回来了。这些年，我们很多同学再也没有回来。”<br>两人沉默了一会儿。<br>“十年后，你觉得你会在哪？”<br>“谁知道呢，应该要回去吧，还有很多事要做。”陈向远方看去，那正是龙门的方向，“那时无论来这上学还是离开，都是他们安排好的。现在，我要自己走回去了。”</p></div>
     <label class="ak-module__more"><input type="checkbox" data-toggle-class="is-open" data-toggle-target=".ak-module__main"><span class="off">全文阅读 »</span><span class="on">收起全文 «</span></label>
   </div>
-  <div class="ak-module__body">
-    <table class="ak-module__stages"><thead><tr><th>阶段</th><th>属性</th><th>特性 / 天赋变化</th></tr></thead><tbody><tr><td class="lv"><span class="ak-module__lv">STAGE 1<i><b class="on"></b><b class=""></b><b class=""></b></i></span></td><td class="stats"><span class="ak-module__stats"><span>攻击 <span class="ak-rt-vup">+52</span></span><span>防御 <span class="ak-rt-vup">+28</span></span></span></td><td><span class="ak-module__kicker">特性追加</span>攻击时无视敌人<span class="ak-rt-vup">70</span>点的防御力</td></tr><tr><td class="lv"><span class="ak-module__lv">STAGE 2<i><b class="on"></b><b class="on"></b><b class=""></b></i></span></td><td class="stats"><span class="ak-module__stats"><span>攻击 <span class="ak-rt-vup">+68</span></span><span>防御 <span class="ak-rt-vup">+36</span></span></span></td><td><span class="ak-module__kicker">天赋更新</span>天赋【持刀格斗术】更新：攻击力<span class="ak-rt-vup">+11%</span>，防御力<span class="ak-rt-vup">+11%</span>，物理闪避<span class="ak-rt-vup">+15%</span> <span class="ak-fg-muted ak-fs-xs">（潜能5：+12% / +12% / +18%）</span></td></tr><tr><td class="lv"><span class="ak-module__lv">STAGE 3<i><b class="on"></b><b class="on"></b><b class="on"></b></i></span></td><td class="stats"><span class="ak-module__stats"><span>攻击 <span class="ak-rt-vup">+85</span></span><span>防御 <span class="ak-rt-vup">+42</span></span></span></td><td><span class="ak-module__kicker">天赋更新</span>天赋【持刀格斗术】更新：攻击力<span class="ak-rt-vup">+15%</span>，防御力<span class="ak-rt-vup">+15%</span>，物理闪避<span class="ak-rt-vup">+18%</span> <span class="ak-fg-muted ak-fs-xs">（潜能5：+16% / +16% / +21%）</span></td></tr></tbody></table>
-    <div class="ak-module__tasks"><span class="ak-overline">模组解锁任务</span><ul><li>由非助战陈累计造成100000点伤害</li><li>3星通关主题曲 <a class="ak-stage-code" style="font-size:.85em" href="#">5-9</a>；必须携带并部署非助战陈，其他成员仅可编入7名干员</li></ul></div>
-    <table class="ak-module__unlock"><thead><tr><th>阶段</th><th>解锁需求</th><th>材料消耗</th></tr></thead><tbody><tr><td class="lv"><span class="ak-module__lv">STAGE 1<i><b class="on"></b><b class=""></b><b class=""></b></i></span></td><td><span class="ak-module__req"><span class="ak-trust">0%</span><span class="ak-elite"><img src="assets/elite/elite_2.png" alt="">精英二 Lv60</span><span class="ak-tag ak-tag--sm ak-tag--outline" title="完成本模组所有模组解锁任务">✓ 全部解锁任务</span></span></td><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-ak-tip="聚合剂"><img src="assets/item/framed/30115.png" alt="聚合剂"><span class="ak-item__count">2</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">8万</span></span></span></td></tr><tr><td class="lv"><span class="ak-module__lv">STAGE 2<i><b class="on"></b><b class="on"></b><b class=""></b></i></span></td><td><span class="ak-module__req"><span class="ak-trust">50%</span></span></td><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-ak-tip="数据增补条"><img src="assets/item/framed/mod_update_token_1.png" alt="数据增补条"><span class="ak-item__count">60</span></span><span class="ak-item ak-item--sm" data-ak-tip="D32钢"><img src="assets/item/framed/30135.png" alt="D32钢"><span class="ak-item__count">3</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">10万</span></span></span></td></tr><tr><td class="lv"><span class="ak-module__lv">STAGE 3<i><b class="on"></b><b class="on"></b><b class="on"></b></i></span></td><td><span class="ak-module__req"><span class="ak-trust">100%</span></span></td><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-ak-tip="数据增补仪"><img src="assets/item/framed/mod_update_token_2.png" alt="数据增补仪"><span class="ak-item__count">20</span></span><span class="ak-item ak-item--sm" data-ak-tip="晶体电子单元"><img src="assets/item/framed/30145.png" alt="晶体电子单元"><span class="ak-item__count">4</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">12万</span></span></span></td></tr></tbody></table>
+  <div class="ak-module__body op-equip">
+    <div class="op-equip__stage"><img class="op-stage" src="assets/module/stage_1.png" width="43" height="40" alt="STAGE 1"><span class="op-equip__stats"><span>攻击 <span class="ak-rt-vup">+52</span></span><span>防御 <span class="ak-rt-vup">+28</span></span></span><span class="op-equip__desc"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-plus-circle"/></svg><b>特性追加：</b>攻击时无视敌人<span class="ak-rt-vup">70</span>点的防御力</span></div>
+    <div class="op-equip__stage"><img class="op-stage" src="assets/module/stage_2.png" width="44" height="40" alt="STAGE 2"><span class="op-equip__stats"><span>攻击 <span class="ak-rt-vup">+68</span></span><span>防御 <span class="ak-rt-vup">+36</span></span></span><span class="op-equip__desc"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-asterisk"/></svg>天赋【持刀格斗术】更新<br>攻击力<span class="ak-rt-vup"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-arrow-up"/></svg>+11%</span>，防御力<span class="ak-rt-vup"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-arrow-up"/></svg>+11%</span>，物理闪避<span class="ak-rt-vup"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-arrow-up"/></svg>+15%</span></span></div>
+    <div class="op-equip__stage"><img class="op-stage" src="assets/module/stage_3.png" width="44" height="40" alt="STAGE 3"><span class="op-equip__stats"><span>攻击 <span class="ak-rt-vup">+85</span></span><span>防御 <span class="ak-rt-vup">+42</span></span></span><span class="op-equip__desc"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-asterisk"/></svg>天赋【持刀格斗术】更新<br>攻击力<span class="ak-rt-vup"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-arrow-up"/></svg>+15%</span>，防御力<span class="ak-rt-vup"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-arrow-up"/></svg>+15%</span>，物理闪避<span class="ak-rt-vup"><svg class="op-equip__glyph" aria-hidden="true"><use href="#op-i-arrow-up"/></svg>+18%</span></span></div>
+    <div class="op-equip__row"><b class="op-equip__title">模组解锁任务</b><ul class="op-equip__tasks ak-not-prose"><li><svg class="op-equip__glyph" aria-hidden="true"><use href="#i-chevron-right"/></svg>由非助战陈累计造成100000点伤害</li><li><svg class="op-equip__glyph" aria-hidden="true"><use href="#i-chevron-right"/></svg>3星通关主题曲 <a class="ak-stage-code" style="font-size:.85em" href="#">5-9</a>；必须携带并部署非助战陈，其他成员仅可编入7名干员</li></ul></div>
+    <div class="op-equip__row"><b class="op-equip__title">解锁需求与材料消耗</b><div class="op-equip__costs"><div class="op-equip__cost"><img class="op-stage" src="assets/module/stage_1.png" width="43" height="40" alt="STAGE 1"><span class="op-equip__reqs"><span class="op-equip__req" data-ak-tip="需要信赖值 0%"><img src="assets/module/req_trust.png" width="48" height="51" alt="信赖"><b>0</b></span><span class="op-equip__req" data-ak-tip="需要达到等级 60（精英二阶段）"><img src="assets/module/req_elite2.png" width="48" height="51" alt="精英二等级"><b>60</b></span><span class="op-equip__task" role="img" aria-label="完成本模组所有模组解锁任务" data-ak-tip="完成本模组所有模组解锁任务"><svg aria-hidden="true"><use href="#op-i-clipboard-check"/></svg></span></span><span class="ak-item-list"><span class="ak-item" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item" data-ak-tip="聚合剂"><img src="assets/item/framed/30115.png" alt="聚合剂"><span class="ak-item__count">2</span></span><span class="ak-item" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">8万</span></span></span></div><div class="op-equip__cost"><img class="op-stage" src="assets/module/stage_2.png" width="44" height="40" alt="STAGE 2"><span class="op-equip__reqs"><span class="op-equip__req" data-ak-tip="需要信赖值 50%"><img src="assets/module/req_trust.png" width="48" height="51" alt="信赖"><b>50</b></span></span><span class="ak-item-list"><span class="ak-item" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item" data-ak-tip="数据增补条"><img src="assets/item/framed/mod_update_token_1.png" alt="数据增补条"><span class="ak-item__count">60</span></span><span class="ak-item" data-ak-tip="D32钢"><img src="assets/item/framed/30135.png" alt="D32钢"><span class="ak-item__count">3</span></span><span class="ak-item" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">10万</span></span></span></div><div class="op-equip__cost"><img class="op-stage" src="assets/module/stage_3.png" width="44" height="40" alt="STAGE 3"><span class="op-equip__reqs"><span class="op-equip__req" data-ak-tip="需要信赖值 100%"><img src="assets/module/req_trust.png" width="48" height="51" alt="信赖"><b>100</b></span></span><span class="ak-item-list"><span class="ak-item" data-ak-tip="模组数据块"><img src="assets/item/framed/mod_unlock_token.png" alt="模组数据块"><span class="ak-item__count">4</span></span><span class="ak-item" data-ak-tip="数据增补仪"><img src="assets/item/framed/mod_update_token_2.png" alt="数据增补仪"><span class="ak-item__count">20</span></span><span class="ak-item" data-ak-tip="晶体电子单元"><img src="assets/item/framed/30145.png" alt="晶体电子单元"><span class="ak-item__count">4</span></span><span class="ak-item" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">12万</span></span></span></div></div></div>
   </div>
 </div>
 <div class="mw-heading mw-heading2"><h2 id="items">相关道具</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <table class="wikitable ak-compact ak-mb-4" style="width:100%">
-<tr><th style="width:110px">招聘合同</th><td style="width:64px"><span class="ak-item ak-item--sm" title="招聘合同"><img src="assets/item/framed/7001.png" alt="招聘合同"><img class="ak-item__avatar" src="assets/avatar/char_010_chen_2.png" alt="陈"></span></td><td>龙门近卫局特别督察组组长陈，正依合约前来协助罗德岛的任务。<br><i class="ak-fg-secondary">生气的时候很可怕，平常也最好别惹她。</i></td></tr>
-<tr><th>信物<br><a href="#" class="ak-fs-xs">中坚信物</a></th><td><span class="ak-item-list" style="flex-direction:column;gap:4px"><span class="ak-item ak-item--sm" title="陈的信物"><img src="assets/item/framed/p_char_010_chen.png" alt="陈的信物"></span><span class="ak-item ak-item--sm" title="陈的中坚信物"><img src="assets/item/framed/class_p_char_010_chen.png" alt="陈的中坚信物"></span></span></td><td>用于提升陈的潜能。<br><i class="ak-fg-secondary">在漫长时光中尘封许久的物件。她并非是将之忘记，而仅仅是不忍再次抚摸它锈蚀的棱角；兴许在某一天，它会重新焕发出过往的炽热吧。</i></td></tr>
+<tr><th style="width:110px">招聘合同</th><td class="op-items__icons" style="width:64px"><span class="ak-item-list"><span class="ak-item ak-item--sm" title="招聘合同"><img src="assets/item/framed/7001.png" alt="招聘合同"><img class="ak-item__avatar" src="assets/avatar/char_010_chen_2.png" alt="陈"></span></span></td><td>龙门近卫局特别督察组组长陈，正依合约前来协助罗德岛的任务。<br><i class="ak-fg-secondary">生气的时候很可怕，平常也最好别惹她。</i></td></tr>
+<tr><th>信物<br><a href="#" class="ak-fs-xs">中坚信物</a></th><td class="op-items__icons"><span class="ak-item-list"><span class="ak-item ak-item--sm" title="陈的信物"><img src="assets/item/framed/p_char_010_chen.png" alt="陈的信物"></span><span class="ak-item ak-item--sm" title="陈的中坚信物"><img src="assets/item/framed/class_p_char_010_chen.png" alt="陈的中坚信物"></span></span></td><td>用于提升陈的潜能。<br><i class="ak-fg-secondary">在漫长时光中尘封许久的物件。她并非是将之忘记，而仅仅是不忍再次抚摸它锈蚀的棱角；兴许在某一天，它会重新焕发出过往的炽热吧。</i></td></tr>
 </table>
 <div class="mw-heading mw-heading2"><h2 id="files">干员档案</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
-<div class="op-files"><nav class="ak-tabs ak-tabs--vertical" data-tabs="files" role="tablist" aria-label="人员档案"><a class="ak-tab is-active" data-tab="f0" href="#f0" role="tab" aria-selected="true">基础档案<small>初始开放</small></a><a class="ak-tab" data-tab="f1" href="#f1" role="tab" aria-selected="false">综合体检测试<small>初始开放</small></a><a class="ak-tab" data-tab="f2" href="#f2" role="tab" aria-selected="false">客观履历<small>初始开放</small></a><a class="ak-tab" data-tab="f3" href="#f3" role="tab" aria-selected="false">临床诊断分析<small>信赖 25%</small></a><a class="ak-tab" data-tab="f4" href="#f4" role="tab" aria-selected="false">档案资料一<small>信赖 50%</small></a><a class="ak-tab" data-tab="f5" href="#f5" role="tab" aria-selected="false">档案资料二<small>信赖 100%</small></a><a class="ak-tab" data-tab="f6" href="#f6" role="tab" aria-selected="false">档案资料三<small>信赖 150%</small></a><a class="ak-tab" data-tab="f7" href="#f7" role="tab" aria-selected="false">档案资料四<small>信赖 200%</small></a><a class="ak-tab" data-tab="f8" href="#f8" role="tab" aria-selected="false">晋升记录<small>精英二</small></a></nav><div class="op-files__panels"><div class="ak-tabpanel" data-tabs="files" data-tab="f0" id="f0"><div class="ak-dossier"><div class="ak-dossier__title">基础档案<span class="ak-dossier__unlock">初始开放</span></div><dl class="ak-kv"><dt>代号</dt><dd>陈</dd><dt>性别</dt><dd>女</dd><dt>战斗经验</dt><dd>四年</dd><dt>出身地</dt><dd>龙门</dd><dt>生日</dt><dd>7月7日</dd><dt>种族</dt><dd>龙</dd><dt>身高</dt><dd>168cm</dd><dt>矿石病感染情况</dt><dd>未公开</dd></dl></div></div><div class="ak-tabpanel" data-tabs="files" data-tab="f1" id="f1" hidden><div class="ak-dossier"><div class="ak-dossier__title">综合体检测试<span class="ak-dossier__unlock">初始开放</span></div><div class="ak-attrs ak-attrs--compact"><div class="ak-attr"><span class="ak-attr__label">物理强度</span><span class="ak-attr__value">优良</span></div><div class="ak-attr"><span class="ak-attr__label">战场机动</span><span class="ak-attr__value">标准</span></div><div class="ak-attr"><span class="ak-attr__label">生理耐受</span><span class="ak-attr__value">优良</span></div><div class="ak-attr"><span class="ak-attr__label">战术规划</span><span class="ak-attr__value">优良</span></div><div class="ak-attr"><span class="ak-attr__label">战斗技巧</span><span class="ak-attr__value ak-fg-accent">卓越</span></div><div class="ak-attr"><span class="ak-attr__label">源石技艺适应性</span><span class="ak-attr__value">标准</span></div></div><p class="ak-fs-xs ak-fg-muted ak-mt-2 ak-mb-0">体细胞与源石融合率 / 血液源石结晶密度：未公开</p></div></div><div class="ak-tabpanel" data-tabs="files" data-tab="f2" id="f2" hidden><div class="ak-dossier"><div class="ak-dossier__title">客观履历<span class="ak-dossier__unlock">初始开放</span></div><p>陈，龙门高级警司，龙门近卫局特别督察组组长，毕业于维多利亚皇家近卫学校，成绩优异，表现突出。在龙门近卫局供职期间，力主取缔龙门境内非法活动，对抗暴力犯罪和有组织犯罪，追缉武装逃犯与国际重犯等行动，并取得多项重大成果。</p><p>现作为特别人员协助罗德岛行动，并为现场提供战术指挥支援。</p></div></div><div class="ak-tabpanel" data-tabs="files" data-tab="f3" id="f3" hidden><div class="ak-dossier"><div class="ak-dossier__title">临床诊断分析<span class="ak-dossier__unlock" title="提升信赖至25%以查看更多信息">提升信赖至25%以查看更多信息</span></div><p><span class="ak-redacted">【应龙门近卫局要求，不予公开】</span></p><p>她是有来做体检啦，只是档案被拿走了，我这里可没留底。嗯？是龙门方面的要求啊。</p><p class="ak-fg-muted">——医疗干员R.T.</p></div></div><div class="ak-tabpanel" data-tabs="files" data-tab="f4" id="f4" hidden><div class="ak-dossier"><div class="ak-dossier__title">档案资料一<span class="ak-dossier__unlock" title="提升信赖至50%以查看更多信息">提升信赖至50%以查看更多信息</span></div><p><b>【源石技艺概览】</b><br>陈从来不在人前使用源石技艺，这使得大多数人都认为陈不善此道。事实上，她确实在掌控源石技艺方面表现得相当糟糕，包括且不限于造成法杖的突然损坏、防爆墙的粉碎、气浪吹飞所有纸质档案，以及一系列对实验外对象的不必要的损害。施放源石技艺后，似乎是一次性动用了太多体力的缘故，陈长官本人也会陷入疲劳状态。至少术师干员们在讨论之后都认为，陈缺乏一个良好的媒介以掌控自己的源石技艺：在缺乏可利用装备的情况下，她就是没法将自己的源石技艺凝聚成型。</p><p>我看了测试结果，法杖的形状越薄越锐，她越能适应；比起塑造新的客体，她更擅长催化法杖蕴含的源石本身。没用啊！如果能有把剑形法杖的话，可能会很适合她吧。不过谁会用那种东西啊，束手束脚的......剑不就是用来砍人的！多此一举啦。</p><p class="ak-fg-muted">——术师干员D</p></div></div><div class="ak-tabpanel" data-tabs="files" data-tab="f5" id="f5" hidden><div class="ak-dossier"><div class="ak-dossier__title">档案资料二<span class="ak-dossier__unlock" title="提升信赖至100%以查看更多信息">提升信赖至100%以查看更多信息</span></div><p>陈以全常规科目A和全教官推荐的优秀成绩自维多利亚皇家近卫学校毕业。回到龙门之后，她几乎立刻就加入了龙门近卫局。</p><p>没人知道她考入皇家近卫学校之前的经历，正如没人怀疑她的能力、她的恪尽职守、以及她的嫉恶如仇。针对陈的行事风格，配合过近卫局工作的警员曾是一片怨声载道——太严厉了，也太苛刻了。几乎所有人都认为，陈一定会在权力斗争中销声匿迹，她的锐气很快就会被无尽的事端打磨干净。</p><p>出乎所有人意料，犯罪率和伤亡率在两年内连续下降，年轻世代警员的岗位提拔越来越快、越来越实质性。陈步步高升，并加入了近卫局最重要的队伍之一，特别督察组。</p><p>特别督察组成员的任期一般不超过两年——出于对警员生命的保护，或是为了减少他们累积压力造成失误的可能性。也许这个岗位本身就不适合久待：在任务中壮烈牺牲几乎是所有老督察组成员一贯的结局。</p><p>陈没有任何退缩。她不曾退缩，不会退缩，也不懂退缩。</p><p>她成了龙门警史中升职最快的警官，同时也是最年轻的近卫局特别督察组组长。原本嘲笑或是背地里阴损她的人，无不为她的气魄和坚毅折服，毕竟对未来有规划是一回事，每一天都在执行规划是另一回事。</p><p>她为何那么卖力？为何投入自己的生命至如斯地步？没人懂，也没人能懂。</p><p>陈的废纸篓里，常有撕得粉碎或揉成一团的残页，写满了莫名的怒意。</p></div></div><div class="ak-tabpanel" data-tabs="files" data-tab="f6" id="f6" hidden><div class="ak-dossier"><div class="ak-dossier__title">档案资料三<span class="ak-dossier__unlock" title="提升信赖至150%以查看更多信息">提升信赖至150%以查看更多信息</span></div><p>当然，陈并不是一个完全的工作狂人或警务机器。</p><p><span class="template-fix-mark" data-ak-tip="修正：游戏内原文为「认识她警员」" title="修正">认识她的警员</span><sup class="reference" id="cite_ref-1"><a href="#cite_note-1">[1]</a></sup>与干员们表示，她更像是个完美的人。合理地分配所有时间，饮食与个人爱好也从不落下，用有意义的事情填满一天中的每一分每一秒。</p><p>这反而更让人为她担忧。假期的突然取消和假期内的完全失踪都是正常的，加班到深夜、堆积如山的卷宗第二天消弭无踪、欣赏完新电影后立刻出现在紧急会议上，也是正常的。</p><p>陈对待自己的方式就是如此高效，仿佛一台没法停下来的机器，这让人总会想要询问她一个问题。</p><p>“你不要紧吧？”</p><p>“没事。”</p><p>尚未有人得到过其他的答案，所有受访者的回答都是一致的。</p><p>陈日复一日地重复着自己的生活，不断地解决龙门内的问题；同时，她的身手愈加利落，思维也越来越明晰。她在不断成为一个更好的人，且未见极限。</p><p>可她究竟在追求什么？</p><p>就连她的那些好友也不敢说自己理解陈。她有太多只留给自己的事情。</p></div></div><div class="ak-tabpanel" data-tabs="files" data-tab="f7" id="f7" hidden><div class="ak-dossier"><div class="ak-dossier__title">档案资料四<span class="ak-dossier__unlock" title="提升信赖至200%以查看更多信息">提升信赖至200%以查看更多信息</span></div><p><b>【权限记录】</b><br>“你的父亲已经和你断绝关系。他同样也和我再无瓜葛，我不会在乎，他也不会。<br>你想离开这里？<br>可以。不过在那之前，我要说些事情给你听。<br>——其实我知道那个老人是谁。<br>但我很健忘，我会忘掉许多事——比如说那天晚上你和你朋友小小的冒险。忘掉这件事简直轻而易举。<br>这的确是我的错，没错。我犯下了不可饶恕的错误。<br>可我会忘记。<br>如果你想离开，我会把你送到很安全的城市，又富饶又安稳。你在那里会平静地度过一生，很幸福。<br>而你将告别这里的一切。你厌恶的家，你讨厌的街道，你嫌弃的人。<br>只是，你将失去了解任何真相的机会，因为这些事实既隐秘又危险，我不能让无关的人被卷入其中。<br>生气？你生气了？你讨厌我？<br>嗯，当然可以。换作是我，也一定会讨厌这样一个无能的人。</p><p>另一个选择，听好了。<br>你选择留下。<br>从今往后，我会锻炼你。你可以讨厌我，恨我，甚至可以尝试攻击我，刺杀我。<br>怎么不可以？当然可以。如果你能的话，就这么做；如果你能做到，你自然可以这么做。<br>你的身体属于你自己，你的思想也是。我会教你对错，但好歹究竟，以后你该自己琢磨。<br>不想忘记，就去做。<br>正确行事值得你努力一生；纠正错误却值得人押上性命。<br>就连我也不清楚有什么会在这座城市的前方等着我们。这是一座充满机遇的城市，什么都可能发生。<br>听不懂也没关系，你会懂的。<br>趁我还记得那件事。趁我还记得你们最后说的那些话。<br>是放弃，还是坚持？<br>选吧。”</p><p class="ak-fg-muted">......模拟结束......<br>......正在回到主界面......</p></div></div><div class="ak-tabpanel" data-tabs="files" data-tab="f8" id="f8" hidden><div class="ak-dossier"><div class="ak-dossier__title">晋升记录<span class="ak-dossier__unlock" title="提升至精英阶段2以查看更多信息">提升至精英阶段2以查看更多信息</span></div><p>她一定会回来。</p></div></div></div></div>
+<div class="ak-panel ak-panel--collapsible is-collapsed op-files"><div class="ak-panel__head"><span class="ak-panel__title">人员档案</span></div><div class="ak-panel__body"><div class="ak-dossier"><div class="ak-dossier__title">基础档案<span class="ak-dossier__unlock">初始开放</span></div><p>【代号】陈
+【性别】女
+【战斗经验】四年
+【出身地】龙门
+【生日】7月7日
+【种族】龙
+【身高】168cm
+【矿石病感染情况】
+未公开</p></div><div class="ak-dossier"><div class="ak-dossier__title">综合体检测试<span class="ak-dossier__unlock">初始开放</span></div><p>【物理强度】优良
+【战场机动】标准
+【生理耐受】优良
+【战术规划】优良
+【战斗技巧】卓越
+【源石技艺适应性】标准</p></div><div class="ak-dossier"><div class="ak-dossier__title">客观履历<span class="ak-dossier__unlock">初始开放</span></div><p>陈，龙门高级警司，龙门近卫局特别督察组组长，毕业于维多利亚皇家近卫学校，成绩优异，表现突出。在龙门近卫局供职期间，力主取缔龙门境内非法活动，对抗暴力犯罪和有组织犯罪，追缉武装逃犯与国际重犯等行动，并取得多项重大成果。</p><p>现作为特别人员协助罗德岛行动，并为现场提供战术指挥支援。</p></div><div class="ak-dossier"><div class="ak-dossier__title">临床诊断分析<span class="ak-dossier__unlock" title="提升信赖至25%以查看更多信息">提升信赖至25%以查看更多信息</span></div><p><span class="ak-redacted">【应龙门近卫局要求，不予公开】</span></p><p>她是有来做体检啦，只是档案被拿走了，我这里可没留底。嗯？是龙门方面的要求啊。</p><p class="ak-fg-muted">——医疗干员R.T.</p></div><div class="ak-dossier"><div class="ak-dossier__title">档案资料一<span class="ak-dossier__unlock" title="提升信赖至50%以查看更多信息">提升信赖至50%以查看更多信息</span></div><p><b>【源石技艺概览】</b><br>陈从来不在人前使用源石技艺，这使得大多数人都认为陈不善此道。事实上，她确实在掌控源石技艺方面表现得相当糟糕，包括且不限于造成法杖的突然损坏、防爆墙的粉碎、气浪吹飞所有纸质档案，以及一系列对实验外对象的不必要的损害。施放源石技艺后，似乎是一次性动用了太多体力的缘故，陈长官本人也会陷入疲劳状态。至少术师干员们在讨论之后都认为，陈缺乏一个良好的媒介以掌控自己的源石技艺：在缺乏可利用装备的情况下，她就是没法将自己的源石技艺凝聚成型。</p><p>我看了测试结果，法杖的形状越薄越锐，她越能适应；比起塑造新的客体，她更擅长催化法杖蕴含的源石本身。没用啊！如果能有把剑形法杖的话，可能会很适合她吧。不过谁会用那种东西啊，束手束脚的......剑不就是用来砍人的！多此一举啦。</p><p class="ak-fg-muted">——术师干员D</p></div><div class="ak-dossier"><div class="ak-dossier__title">档案资料二<span class="ak-dossier__unlock" title="提升信赖至100%以查看更多信息">提升信赖至100%以查看更多信息</span></div><p>陈以全常规科目A和全教官推荐的优秀成绩自维多利亚皇家近卫学校毕业。回到龙门之后，她几乎立刻就加入了龙门近卫局。</p><p>没人知道她考入皇家近卫学校之前的经历，正如没人怀疑她的能力、她的恪尽职守、以及她的嫉恶如仇。针对陈的行事风格，配合过近卫局工作的警员曾是一片怨声载道——太严厉了，也太苛刻了。几乎所有人都认为，陈一定会在权力斗争中销声匿迹，她的锐气很快就会被无尽的事端打磨干净。</p><p>出乎所有人意料，犯罪率和伤亡率在两年内连续下降，年轻世代警员的岗位提拔越来越快、越来越实质性。陈步步高升，并加入了近卫局最重要的队伍之一，特别督察组。</p><p>特别督察组成员的任期一般不超过两年——出于对警员生命的保护，或是为了减少他们累积压力造成失误的可能性。也许这个岗位本身就不适合久待：在任务中壮烈牺牲几乎是所有老督察组成员一贯的结局。</p><p>陈没有任何退缩。她不曾退缩，不会退缩，也不懂退缩。</p><p>她成了龙门警史中升职最快的警官，同时也是最年轻的近卫局特别督察组组长。原本嘲笑或是背地里阴损她的人，无不为她的气魄和坚毅折服，毕竟对未来有规划是一回事，每一天都在执行规划是另一回事。</p><p>她为何那么卖力？为何投入自己的生命至如斯地步？没人懂，也没人能懂。</p><p>陈的废纸篓里，常有撕得粉碎或揉成一团的残页，写满了莫名的怒意。</p></div><div class="ak-dossier"><div class="ak-dossier__title">档案资料三<span class="ak-dossier__unlock" title="提升信赖至150%以查看更多信息">提升信赖至150%以查看更多信息</span></div><p>当然，陈并不是一个完全的工作狂人或警务机器。</p><p><span class="template-fix-mark" data-ak-tip="修正：游戏内原文为「认识她警员」" title="修正">认识她的警员</span><sup class="reference" id="cite_ref-1"><a href="#cite_note-1">[1]</a></sup>与干员们表示，她更像是个完美的人。合理地分配所有时间，饮食与个人爱好也从不落下，用有意义的事情填满一天中的每一分每一秒。</p><p>这反而更让人为她担忧。假期的突然取消和假期内的完全失踪都是正常的，加班到深夜、堆积如山的卷宗第二天消弭无踪、欣赏完新电影后立刻出现在紧急会议上，也是正常的。</p><p>陈对待自己的方式就是如此高效，仿佛一台没法停下来的机器，这让人总会想要询问她一个问题。</p><p>“你不要紧吧？”</p><p>“没事。”</p><p>尚未有人得到过其他的答案，所有受访者的回答都是一致的。</p><p>陈日复一日地重复着自己的生活，不断地解决龙门内的问题；同时，她的身手愈加利落，思维也越来越明晰。她在不断成为一个更好的人，且未见极限。</p><p>可她究竟在追求什么？</p><p>就连她的那些好友也不敢说自己理解陈。她有太多只留给自己的事情。</p></div><div class="ak-dossier"><div class="ak-dossier__title">档案资料四<span class="ak-dossier__unlock" title="提升信赖至200%以查看更多信息">提升信赖至200%以查看更多信息</span></div><p><b>【权限记录】</b><br>“你的父亲已经和你断绝关系。他同样也和我再无瓜葛，我不会在乎，他也不会。<br>你想离开这里？<br>可以。不过在那之前，我要说些事情给你听。<br>——其实我知道那个老人是谁。<br>但我很健忘，我会忘掉许多事——比如说那天晚上你和你朋友小小的冒险。忘掉这件事简直轻而易举。<br>这的确是我的错，没错。我犯下了不可饶恕的错误。<br>可我会忘记。<br>如果你想离开，我会把你送到很安全的城市，又富饶又安稳。你在那里会平静地度过一生，很幸福。<br>而你将告别这里的一切。你厌恶的家，你讨厌的街道，你嫌弃的人。<br>只是，你将失去了解任何真相的机会，因为这些事实既隐秘又危险，我不能让无关的人被卷入其中。<br>生气？你生气了？你讨厌我？<br>嗯，当然可以。换作是我，也一定会讨厌这样一个无能的人。</p><p>另一个选择，听好了。<br>你选择留下。<br>从今往后，我会锻炼你。你可以讨厌我，恨我，甚至可以尝试攻击我，刺杀我。<br>怎么不可以？当然可以。如果你能的话，就这么做；如果你能做到，你自然可以这么做。<br>你的身体属于你自己，你的思想也是。我会教你对错，但好歹究竟，以后你该自己琢磨。<br>不想忘记，就去做。<br>正确行事值得你努力一生；纠正错误却值得人押上性命。<br>就连我也不清楚有什么会在这座城市的前方等着我们。这是一座充满机遇的城市，什么都可能发生。<br>听不懂也没关系，你会懂的。<br>趁我还记得那件事。趁我还记得你们最后说的那些话。<br>是放弃，还是坚持？<br>选吧。”</p><p class="ak-fg-muted">......模拟结束......<br>......正在回到主界面......</p></div><div class="ak-dossier"><div class="ak-dossier__title">晋升记录<span class="ak-dossier__unlock" title="提升至精英阶段2以查看更多信息">提升至精英阶段2以查看更多信息</span></div><p>她一定会回来。</p></div></div></div>
+<div class="ak-panel ak-panel--collapsible is-collapsed op-files"><div class="ak-panel__head"><span class="ak-panel__title">未获得时档案</span></div><div class="ak-panel__body">
 <div class="ak-archive">
-  <div class="ak-archive__head"><span class="ak-archive__kicker">未获得时档案</span><h4 class="ak-archive__title">情报资料一</h4><span class="ak-archive__req"><span class="ak-overline">解锁条件</span>通关主题曲 <a class="ak-stage-code" style="font-size:.85em" href="#">2-2</a></span></div>
+  <div class="ak-archive__head"><h4 class="ak-archive__title">情报资料一</h4><span class="ak-archive__req"><span class="ak-overline">解锁条件</span>通关主题曲 <a class="ak-stage-code" style="font-size:.85em" href="#">2-2</a></span></div>
   <div class="ak-archive__body"><p><b>【陈】</b>
 龙门近卫局警司，特别督察组组长。
 负责龙门近卫局特别督察组的日常指挥执行工作。
 魏彦吾的最得力的下属之一。拥有整个近卫局中最精湛的剑技以及最严苛的态度。态度极度强硬，对人一视同仁。看起来一点都不变通，总是一副凶着脸的样子。</p></div>
 </div>
+</div></div>
 <div class="mw-heading mw-heading2"><h2 id="voice">语音记录</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="ak-cbox ak-cbox--tip"><span class="ak-cbox__icon"><svg><use href="#i-mic"/></svg></span><div class="ak-cbox__body">如需播放并下载陈的各语言的全部语音或查看原文文本，可查阅<a href="#">陈/语音记录</a>条目。</div></div>
+<div class="ak-panel ak-panel--collapsible is-collapsed op-voices"><div class="ak-panel__head"><span class="ak-panel__title">语音记录</span></div><div class="ak-panel__body">
 <!-- 文本（台词语言，多选、可一个不选）与语种（音频差分，单选、带 CV）分开；两排在 .ak-voice-toolbar 里排一行，放不下时语种整组换行。
      data-no-toggle：状态由下面的脚本管，退出 preview.js / 皮肤脚本的 document 级芯片委托 -->
 <div class="ak-voice-toolbar ak-not-prose">
@@ -966,27 +1423,27 @@ var back_list = {
 <div class="ak-voice"><button class="ak-voice__play" aria-label="播放 生日"></button><div><div class="ak-voice__title">生日 <span class="ak-code-id">CN_043</span></div><div class="ak-voice__text" data-cn="我来了，找我有什么事？......生日？你现在还有闲心过这个？还在期待什么，等我给你唱生日歌吗，想得挺好......生日快乐，走了。" data-jp="我来了，找我有什么事？......生日？你现在还有闲心过这个？还在期待什么，等我给你唱生日歌吗，想得挺好......生日快乐，走了。" data-en="Here I am, what do you need…? Your birthday? You have time for stuff like this? What are you waiting for, am I supposed to sing for you? In your dreams… Happy birthday, I&#x27;m leaving." data-kr="나 왔어, 무슨 일로 나를 찾은 거지? ……생일? 아직도 그럴 여유가 있나? 내가 생일 축하 노래라도 해주길 기대하나? 참 좋은 생각이네…… 생일 축하한다, 그럼 이만." data-yue="我来了，找我有什么事？......生日？你现在还有心情整这些？还在期待些什么，等我唱生日歌给你听吗，想得挺好......生日快乐，我先走了。">我来了，找我有什么事？......生日？你现在还有闲心过这个？还在期待什么，等我给你唱生日歌吗，想得挺好......生日快乐，走了。</div></div></div>
 <div class="ak-voice"><button class="ak-voice__play" aria-label="播放 周年庆典"></button><div><div class="ak-voice__title">周年庆典 <span class="ak-code-id">CN_044</span></div><div class="ak-voice__text" data-cn="我离开龙门只是为了寻求一种方式，这是我自己的事，并不需要你们过多的干预。罗德岛，你们确实有着能让他人信服你们所代表东西的力量，希望你们不要让我失望。我？仍是不够，仍需更快。" data-jp="龍門を離れたのは、解決策を探すためだ。これは私自身の問題だから、キミたちの余計な手出しは不要だ。ロドス、キミたちは確かに理想を叶えるかもしれないと、人々に信じさせる力がある。私を失望させるなよ。私？まだ足りないな。もっと速くならないと。" data-en="I left Lungmen in search of something. Something that I can only find on my own... But you Rhodes Islanders, you have the strength to win people over with your ideals, and I hope you won&#x27;t let me down. Me? I&#x27;m not there yet, I need to be faster." data-kr="나는 단지 방법을 찾기 위해 용문을 떠났고, 이것은 나 자신의 일이니 너희가 지나치게 간섭할 필요는 없다. 로도스 아일랜드, 너희들은 확실히 다른 사람들이 너희를 표하는 것을 믿게 하는 힘을 가지고 있지. 부디 나를 실망시키지 않기를 바란다. 나 말인가? 아직 부족하다, 더 서둘러야 해." data-yue="我离开龙门只是为了寻求一种方式，这是我自己的事，唔需要你们过多干预。罗德岛，你们确实有能力令他人信服你们所代表东西，希望你们唔好令我失望。我？仍是不够，仍需更快。">我离开龙门只是为了寻求一种方式，这是我自己的事，并不需要你们过多的干预。罗德岛，你们确实有着能让他人信服你们所代表东西的力量，希望你们不要让我失望。我？仍是不够，仍需更快。</div></div></div>
 </div>
+</div></div>
 <div class="mw-heading mw-heading2"><h2 id="memory">干员密录</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="ak-archive">
-  <div class="ak-archive__head"><span class="ak-archive__kicker">密录 1</span><h4 class="ak-archive__title">一鼓作气</h4><span class="ak-archive__req"><span class="ak-overline">解锁</span><span class="ak-elite"><img src="assets/elite/elite_2.png" alt="">精英二 Lv1</span><span class="ak-trust">50%</span></span></div>
-  <div class="ak-archive__body"><div class="ak-flex ak-gap-4 ak-items-center"><span class="ak-glyph-box" style="width:44px;height:44px;flex:none" title="蚀刻章 · 一鼓作气"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg></span><p class="ak-m-0"><i>一鼓作气，再而衰。</i></p></div></div>
-  <div class="ak-archive__foot"><span class="ak-overline">Story</span><a class="ak-archive__play" href="#" title="陈/干员密录/1"><span class="ak-voice__play" aria-hidden="true"></span>阅读密录 · 一鼓作气</a><span class="ak-fg-muted">蚀刻章 medal_story_chen_1 · 光荣之路</span></div>
+  <div class="ak-archive__head"><h4 class="ak-archive__title">一鼓作气</h4><span class="ak-archive__req" data-ak-tip="解锁条件：精英二 1 级、信赖 50%"><span class="ak-elite"><img src="assets/elite/upgrade_2.png" alt="精英二">Lv.1</span><span class="ak-trust">50%</span></span></div>
+  <div class="ak-archive__body"><div class="ak-flex ak-gap-4 ak-items-center"><span class="op-medal ak-tip-anchor" tabindex="0"><img src="assets/medal/medal_story_chen_1.png" width="40" height="44" alt="蚀刻章：一鼓作气"><span class="ak-popover ak-popover--top-start op-medal__pop" role="tooltip"><img src="assets/medal/medal_story_chen_1.png" width="90" height="100" alt=""><b class="ak-popover__title">“一鼓作气”</b><i>努力没有尽头不可怕，可怕的是努力没有回报。</i></span></span><p class="ak-m-0"><i>一鼓作气，再而衰。</i></p><a class="op-record-play" href="#" title="陈/干员密录/1" aria-label="阅读密录：一鼓作气"><img src="assets/ui/play.png" width="44" height="44" alt=""></a></div></div>
 </div>
 <div class="mw-heading mw-heading2"><h2 id="paradox">悖论模拟</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="ak-archive">
-  <div class="ak-archive__head"><span class="ak-archive__kicker">悖论模拟</span><h4 class="ak-archive__title">永不后退</h4><span class="ak-archive__req"><span class="ak-overline">解锁方式</span><span class="ak-elite"><img src="assets/elite/elite_2.png" alt="">精英二 Lv1</span></span></div>
+  <div class="ak-archive__head"><h4 class="ak-archive__title">永不后退</h4><span class="ak-archive__req" data-ak-tip="解锁条件：精英二 1 级"><span class="ak-elite"><img src="assets/elite/upgrade_2.png" alt="精英二">Lv.1</span></span></div>
   <div class="ak-archive__body"><p>无论什么时候，陈总是会站在队伍的前端。
 一开始，她的同事们以为她是不自量力，她也确实为此付出过一些代价。但是当陈逐渐掌握运用赤霄之后，她的同事们开始主动为她留出场地。
 一是，他们不想自己被出鞘的赤霄卷进去。二是，他们已经知道，如果陈说她做得到，她就会做到。这并不是说她无所不能，而是因为她决不放弃。</p><p><b>&lt;活性源石&gt;</b> 部署于其上的我军和经过的敌军持续受到伤害，但攻击力和攻速大幅度提升</p></div>
-  <div class="ak-archive__foot"><a class="ak-stage ak-not-prose" href="#" style="padding:6px 12px"><span class="ak-stage__code" style="font-size:var(--ak-fs-body)">PARADOX<small>关卡情报</small></span><span><span class="ak-stage__name">悖论模拟 · 永不后退</span><span class="ak-stage__meta"><span>前往关卡页 »</span></span></span></a><span class="ak-overline">首次通关奖励</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="合成玉"><img src="assets/item/framed/4003.png" alt="合成玉"><span class="ak-item__count">200</span></span></span></div>
+  <div class="ak-archive__foot"><a class="op-paradox-entry ak-not-prose" href="#" title="悖论模拟 永不后退"><img class="op-paradox-entry__bg" src="assets/paradox/story_loading4.png" alt=""><img class="op-paradox-entry__icon" src="assets/paradox/icon_battle.png" alt=""><span class="op-paradox-entry__label">关卡情报</span><span class="op-paradox-entry__name">永不后退</span></a><span class="ak-overline">首次通关奖励</span><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="合成玉"><img src="assets/item/framed/4003.png" alt="合成玉"><span class="ak-item__count">200</span></span></span></div>
 </div>
 <div class="mw-heading mw-heading2"><h2 id="alter-mission">干员异格任务</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
 <div class="ak-cbox ak-cbox--warning"><span class="ak-cbox__icon"><svg><use href="#i-trash"/></svg></span><div class="ak-cbox__body"><b>干员异格任务已于 2022 年 12 月 1 日被删除。</b>以下内容仅作存档，无法在当前版本游戏中查阅。</div></div>
 <table class="wikitable ak-compact ak-mb-3" style="width:100%">
 <tr><th colspan="2">干员异格任务 <span class="ak-fg-muted ak-fs-xs">完成对应任务以获得奖励</span></th></tr>
 <tr><th style="width:200px">解锁条件</th><td>拥有干员 <a href="#">假日威龙陈</a></td></tr>
-<tr><th><span class="ak-elite"><img src="assets/elite/elite_1.png" alt="">提升至精英阶段 1 等级 1</span></th><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="狙击芯片"><img src="assets/item/framed/3241.png" alt="狙击芯片"><span class="ak-item__count">3</span></span><span class="ak-item ak-item--sm" data-ak-tip="技巧概要·卷1"><img src="assets/item/framed/3301.png" alt="技巧概要·卷1"><span class="ak-item__count">10</span></span><span class="ak-item ak-item--sm" data-ak-tip="中级作战记录"><img src="assets/item/framed/2003.png" alt="中级作战记录"><span class="ak-item__count">50</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">5万</span></span></span></td></tr>
-<tr><th><span class="ak-elite"><img src="assets/elite/elite_1.png" alt="">提升至精英阶段 1 等级 80</span></th><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="狙击芯片组"><img src="assets/item/framed/3242.png" alt="狙击芯片组"><span class="ak-item__count">2</span></span><span class="ak-item ak-item--sm" data-ak-tip="双极纳米片"><img src="assets/item/framed/30125.png" alt="双极纳米片"><span class="ak-item__count">1</span></span><span class="ak-item ak-item--sm" data-ak-tip="炽合金块"><img src="assets/item/framed/31014.png" alt="炽合金块"><span class="ak-item__count">2</span></span><span class="ak-item ak-item--sm" data-ak-tip="技巧概要·卷2"><img src="assets/item/framed/3302.png" alt="技巧概要·卷2"><span class="ak-item__count">10</span></span><span class="ak-item ak-item--sm" data-ak-tip="中级作战记录"><img src="assets/item/framed/2003.png" alt="中级作战记录"><span class="ak-item__count">100</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">10万</span></span></span></td></tr>
+<tr><th><span class="ak-elite"><img src="assets/elite/upgrade_1.png" alt="">提升至精英阶段 1 等级 1</span></th><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="狙击芯片"><img src="assets/item/framed/3241.png" alt="狙击芯片"><span class="ak-item__count">3</span></span><span class="ak-item ak-item--sm" data-ak-tip="技巧概要·卷1"><img src="assets/item/framed/3301.png" alt="技巧概要·卷1"><span class="ak-item__count">10</span></span><span class="ak-item ak-item--sm" data-ak-tip="中级作战记录"><img src="assets/item/framed/2003.png" alt="中级作战记录"><span class="ak-item__count">50</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">5万</span></span></span></td></tr>
+<tr><th><span class="ak-elite"><img src="assets/elite/upgrade_1.png" alt="">提升至精英阶段 1 等级 80</span></th><td><span class="ak-item-list"><span class="ak-item ak-item--sm" data-ak-tip="狙击芯片组"><img src="assets/item/framed/3242.png" alt="狙击芯片组"><span class="ak-item__count">2</span></span><span class="ak-item ak-item--sm" data-ak-tip="双极纳米片"><img src="assets/item/framed/30125.png" alt="双极纳米片"><span class="ak-item__count">1</span></span><span class="ak-item ak-item--sm" data-ak-tip="炽合金块"><img src="assets/item/framed/31014.png" alt="炽合金块"><span class="ak-item__count">2</span></span><span class="ak-item ak-item--sm" data-ak-tip="技巧概要·卷2"><img src="assets/item/framed/3302.png" alt="技巧概要·卷2"><span class="ak-item__count">10</span></span><span class="ak-item ak-item--sm" data-ak-tip="中级作战记录"><img src="assets/item/framed/2003.png" alt="中级作战记录"><span class="ak-item__count">100</span></span><span class="ak-item ak-item--sm" data-ak-tip="龙门币"><img src="assets/item/framed/4001.png" alt="龙门币"><span class="ak-item__count">10万</span></span></span></td></tr>
 </table>
 <p class="ak-mb-4"><a class="ak-chevrons" href="#">跳转到 假日威龙陈 的异格任务</a></p>
 <div class="mw-heading mw-heading2"><h2 id="model">干员模型</h2><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="#">编辑</a><span class="mw-editsection-bracket">]</span></span></div>
@@ -994,11 +1451,133 @@ var back_list = {
   <div class="sv-load"><button type="button" class="ak-btn ak-btn--primary" id="spine-load">载入模型</button></div>
 </div>
 <div class="mw-references-wrap"><ol class="references"><li id="cite_note-1"><span class="mw-cite-backlink"><a href="#cite_ref-1">↑</a></span> <span class="reference-text">此处游戏内原文是<b>认识她警员</b>，因<b>存在明显笔误</b>，我们对其进行了修正。</span></li></ol></div>
-<div class="navbox" style="width:100%"><table style="width:100%"><tr><th class="navbox-title" colspan="2">干员一览 · Operators</th></tr>
-<tr><th class="navbox-group" style="width:120px">近卫 · 剑豪</th><td class="navbox-list hlist"><ul><li><b>陈</b></li><li><a href="#">艾丽妮</a></li><li><a href="#">锏</a></li><li><a href="#">柏喙</a></li><li><a href="#">战车</a></li><li><a href="#">刻刀</a></li></ul></td></tr>
-<tr><th class="navbox-group">近卫 · 其它分支</th><td class="navbox-list hlist navbox-even"><ul><li><a href="#">佣兵</a></li><li><a href="#">强攻手</a></li><li><a href="#">撼地者</a></li><li><a href="#">收割者</a></li><li><a href="#">教官</a></li><li><a href="#">斗士</a></li><li><a href="#">无畏者</a></li><li><a href="#">本源近卫</a></li><li><a href="#">术战者</a></li><li><a href="#">武者</a></li><li><a href="#">解放者</a></li><li><a href="#">重剑手</a></li><li><a href="#">领主</a></li></ul></td></tr>
-<tr><th class="navbox-group">其它职业</th><td class="navbox-list hlist"><ul><li><a href="#">先锋</a></li><li><a href="#">重装</a></li><li><a href="#">狙击</a></li><li><a href="#">术师</a></li><li><a href="#">医疗</a></li><li><a href="#">辅助</a></li><li><a href="#">特种</a></li></ul></td></tr>
-</table></div>
+<!-- 底部导航框 = 现网「陈」页面的 {{干员一览导航}}（SMW 查询出的 8 个职业 × 分支 × 干员，2026-10-04 快照），结构照搬，链接换成 #；样式见 <head> 里「现网 模板:Navbox/styles.css」那段 -->
+<table cellspacing="0" class="navbox navigation-not-searchable" style="border-spacing:0"><tbody><tr><td style="padding:2px">
+<table cellspacing="0" class="nowraplinks collapsible uncollapsed navbox-inner" style="border-spacing:0;background:transparent;color:inherit"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:86%;"><span class="collapseButton">[<a href="#">隐藏▲</a>]</span><div style="font-size:150%"><a href="#">干员一览</a></div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr>
+<tr><td colspan="2" class="navbox-list navbox-odd hlist" style="width:100%;padding:0px"><div style="padding:0em 0.25em"></div>
+<table cellspacing="0" class="nowraplinks collapsible collapsed navbox-subgroup" style="border-spacing:0"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:72%;"><span class="collapseButton">[<a href="#">显示▼</a>]</span><div style="font-size:150%">先锋</div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">冲锋手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">风笛</a></li><li><a href="#">格拉尼</a></li><li><a href="#">苇草</a></li><li><a href="#">野鬃</a></li><li><a href="#">历阵锐枪芬</a></li><li><a href="#">红豆</a></li><li><a href="#">翎羽</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">尖兵</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">推进之王</a></li><li><a href="#">嵯峨</a></li><li><a href="#">焰尾</a></li><li><a href="#">忍冬</a></li><li><a href="#">凛冬</a></li><li><a href="#">德克萨斯</a></li><li><a href="#">贾维</a></li><li><a href="#">青枳</a></li><li><a href="#">红隼</a></li><li><a href="#">讯使</a></li><li><a href="#">清道夫</a></li><li><a href="#">芬</a></li><li><a href="#">香草</a></li><li><a href="#">夜刀</a></li><li><a href="#">CONFESS-47</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">情报官</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">伊内丝</a></li><li><a href="#">晓歌</a></li><li><a href="#">谜图</a></li><li><a href="#">齐尔查克</a></li><li><a href="#">寻澜</a></li><li><a href="#">冬时</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">战术家</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">伺夜</a></li><li><a href="#">缪尔赛思</a></li><li><a href="#">可露希尔</a></li><li><a href="#">夜半</a></li><li><a href="#">渡桥</a></li><li><a href="#">豆苗</a></li><li><a href="#">罗德岛隐秘队</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">执旗手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">琴柳</a></li><li><a href="#">极境</a></li><li><a href="#">万顷</a></li><li><a href="#">嘉辛塔</a></li><li><a href="#">桃金娘</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">策士</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">凛御银灰</a></li><li><a href="#">松桐</a></li></ul></div></td></tr>
+</tbody></table><div></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr>
+<tr><td colspan="2" class="navbox-list navbox-even hlist" style="width:100%;padding:0px"><div style="padding:0em 0.25em"></div>
+<table cellspacing="0" class="nowraplinks collapsible uncollapsed navbox-subgroup" style="border-spacing:0"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:72%;"><span class="collapseButton">[<a href="#">隐藏▲</a>]</span><div style="font-size:150%">近卫</div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">佣兵</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">哈蒂娅</a></li><li><a href="#">雷狼龙S空爆</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">剑豪</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a class="mw-selflink selflink">陈</a></li><li><a href="#">艾丽妮</a></li><li><a href="#">锏</a></li><li><a href="#">柏喙</a></li><li><a href="#">战车</a></li><li><a href="#">刻刀</a></li><li><a href="#">虎狼丸</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">强攻手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">煌</a></li><li><a href="#">百炼嘉维尔</a></li><li><a href="#">幽灵鲨</a></li><li><a href="#">暴行</a></li><li><a href="#">布洛卡</a></li><li><a href="#">导火索</a></li><li><a href="#">摆渡人</a></li><li><a href="#">艾丝黛尔</a></li><li><a href="#">泡普卡</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">撼地者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">佩佩</a></li><li><a href="#">怒潮凛冬</a></li><li><a href="#">奥达</a></li><li><a href="#">祐天寺若麦</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">收割者</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">圣约送葬人</a></li><li><a href="#">隐德来希</a></li><li><a href="#">羽毛笔</a></li><li><a href="#">海沫</a></li><li><a href="#">休谟斯</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">教官</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">帕拉斯</a></li><li><a href="#">诗怀雅</a></li><li><a href="#">鞭刃</a></li><li><a href="#">苍苔</a></li><li><a href="#">医生</a></li><li><a href="#">杜宾</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">斗士</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">山</a></li><li><a href="#">重岳</a></li><li><a href="#">贝洛内</a></li><li><a href="#">因陀罗</a></li><li><a href="#">燧石</a></li><li><a href="#">达格达</a></li><li><a href="#">猎蜂</a></li><li><a href="#">杰克</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">无畏者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">斯卡蒂</a></li><li><a href="#">耀骑士临光</a></li><li><a href="#">止颂</a></li><li><a href="#">芙兰卡</a></li><li><a href="#">炎客</a></li><li><a href="#">摩根</a></li><li><a href="#">莱欧斯</a></li><li><a href="#">缠丸</a></li><li><a href="#">断罪者</a></li><li><a href="#">玫兰莎</a></li><li><a href="#">Castle-3</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">本源近卫</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">聆音</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">术战者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">史尔特尔</a></li><li><a href="#">薇薇安娜</a></li><li><a href="#">维娜·维多利亚</a></li><li><a href="#">赤刃明霄陈</a></li><li><a href="#">星极</a></li><li><a href="#">铸铁</a></li><li><a href="#">阿米娅(近卫)</a></li><li><a href="#">慕斯</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">武者</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">赫拉格</a></li><li><a href="#">左乐</a></li><li><a href="#">赤冬</a></li><li><a href="#">火龙S黑角</a></li><li><a href="#">宴</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">解放者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">玛恩纳</a></li><li><a href="#">司霆惊蛰</a></li><li><a href="#">龙舌兰</a></li><li><a href="#">骋风</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">重剑手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">赫德雷</a></li><li><a href="#">乌尔比安</a></li><li><a href="#">铎铃</a></li><li><a href="#">石英</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">领主</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">银灰</a></li><li><a href="#">棘刺</a></li><li><a href="#">仇白</a></li><li><a href="#">丰川祥子</a></li><li><a href="#">拉普兰德</a></li><li><a href="#">断崖</a></li><li><a href="#">烈夏</a></li><li><a href="#">霜叶</a></li><li><a href="#">芳汀</a></li><li><a href="#">罗小黑</a></li><li><a href="#">月见夜</a></li></ul></div></td></tr>
+</tbody></table><div></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr>
+<tr><td colspan="2" class="navbox-list navbox-odd hlist" style="width:100%;padding:0px"><div style="padding:0em 0.25em"></div>
+<table cellspacing="0" class="nowraplinks collapsible collapsed navbox-subgroup" style="border-spacing:0"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:72%;"><span class="collapseButton">[<a href="#">显示▼</a>]</span><div style="font-size:150%">重装</div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">不屈者</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">泥岩</a></li><li><a href="#">斥罪</a></li><li><a href="#">火神</a></li><li><a href="#">折桠</a></li><li><a href="#">露托</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">决战者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">森蚺</a></li><li><a href="#">极光</a></li><li><a href="#">洋灰</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">哨戒铁卫</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">涤火杰西卡</a></li><li><a href="#">信仰搅拌机</a></li><li><a href="#">机械师</a></li><li><a href="#">雷蛇</a></li><li><a href="#">闪击</a></li><li><a href="#">深巡</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">守护者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">塞雷娅</a></li><li><a href="#">瑕光</a></li><li><a href="#">黍</a></li><li><a href="#">临光</a></li><li><a href="#">吽</a></li><li><a href="#">深律</a></li><li><a href="#">森西</a></li><li><a href="#">古米</a></li><li><a href="#">斑点</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">本源铁卫</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">余</a></li><li><a href="#">珊比</a></li><li><a href="#">菲莱</a></li><li><a href="#">响石</a></li><li><a href="#">裂响</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">要塞</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">号角</a></li><li><a href="#">灰毫</a></li><li><a href="#">火哨</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">铁卫</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">星熊</a></li><li><a href="#">年</a></li><li><a href="#">可颂</a></li><li><a href="#">拜松</a></li><li><a href="#">暴雨</a></li><li><a href="#">角峰</a></li><li><a href="#">蛇屠箱</a></li><li><a href="#">泡泡</a></li><li><a href="#">卡缇</a></li><li><a href="#">米格鲁</a></li><li><a href="#">黑角</a></li><li><a href="#">Friston-3</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">驭法铁卫</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">斩业星熊</a></li><li><a href="#">石棉</a></li><li><a href="#">暮落</a></li><li><a href="#">车尔尼</a></li><li><a href="#">坚雷</a></li></ul></div></td></tr>
+</tbody></table><div></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr>
+<tr><td colspan="2" class="navbox-list navbox-even hlist" style="width:100%;padding:0px"><div style="padding:0em 0.25em"></div>
+<table cellspacing="0" class="nowraplinks collapsible collapsed navbox-subgroup" style="border-spacing:0"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:72%;"><span class="collapseButton">[<a href="#">显示▼</a>]</span><div style="font-size:150%">狙击</div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">回环射手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">娜仁图亚</a></li><li><a href="#">水灯心</a></li><li><a href="#">跃跃</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">投掷手</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">迷迭香</a></li><li><a href="#">维什戴尔</a></li><li><a href="#">承曦格雷伊</a></li><li><a href="#">泰拉大陆调查团</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">攻城手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">早露</a></li><li><a href="#">提丰</a></li><li><a href="#">熔泉</a></li><li><a href="#">埃拉托</a></li><li><a href="#">矩</a></li><li><a href="#">铅踝</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">散射手</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">假日威龙陈</a></li><li><a href="#">送葬人</a></li><li><a href="#">奥斯塔</a></li><li><a href="#">吉星</a></li><li><a href="#">松果</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">炮手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">W</a></li><li><a href="#">菲亚梅塔</a></li><li><a href="#">陨星</a></li><li><a href="#">慑砂</a></li><li><a href="#">截云</a></li><li><a href="#">白雪</a></li><li><a href="#">空爆</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">猎手</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">莱伊</a></li><li><a href="#">冰酿</a></li><li><a href="#">雪猎</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">神射手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">远牙</a></li><li><a href="#">蕾缪安</a></li><li><a href="#">守林人</a></li><li><a href="#">安哲拉</a></li><li><a href="#">子月</a></li><li><a href="#">安比尔</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">裂空炮手</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">天空盒</a></li><li><a href="#">埃癸斯</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">速射手</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">能天使</a></li><li><a href="#">空弦</a></li><li><a href="#">灰烬</a></li><li><a href="#">蓝毒</a></li><li><a href="#">白金</a></li><li><a href="#">灰喉</a></li><li><a href="#">四月</a></li><li><a href="#">寒芒克洛丝</a></li><li><a href="#">隐现</a></li><li><a href="#">杰西卡</a></li><li><a href="#">流星</a></li><li><a href="#">红云</a></li><li><a href="#">梅</a></li><li><a href="#">克洛丝</a></li><li><a href="#">安德切尔</a></li><li><a href="#">巡林者</a></li><li><a href="#">正义骑士号</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">重射手</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">黑</a></li><li><a href="#">鸿雪</a></li><li><a href="#">焰狐龙梓兰</a></li><li><a href="#">普罗旺斯</a></li><li><a href="#">玫拉</a></li><li><a href="#">酸糖</a></li></ul></div></td></tr>
+</tbody></table><div></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr>
+<tr><td colspan="2" class="navbox-list navbox-odd hlist" style="width:100%;padding:0px"><div style="padding:0em 0.25em"></div>
+<table cellspacing="0" class="nowraplinks collapsible collapsed navbox-subgroup" style="border-spacing:0"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:72%;"><span class="collapseButton">[<a href="#">显示▼</a>]</span><div style="font-size:150%">术师</div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">中坚术师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">艾雅法拉</a></li><li><a href="#">刻俄柏</a></li><li><a href="#">霍尔海雅</a></li><li><a href="#">逻各斯</a></li><li><a href="#">阿米娅</a></li><li><a href="#">夜魔</a></li><li><a href="#">苦艾</a></li><li><a href="#">特米米</a></li><li><a href="#">雪绒</a></li><li><a href="#">夜烟</a></li><li><a href="#">史都华德</a></li><li><a href="#">杜林</a></li><li><a href="#">GALLUS²</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">塑灵术师</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">死芒</a></li><li><a href="#">特克诺</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">扩散术师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">莫斯提马</a></li><li><a href="#">夕</a></li><li><a href="#">玛露西尔</a></li><li><a href="#">天火</a></li><li><a href="#">莱恩哈特</a></li><li><a href="#">炎狱炎熔</a></li><li><a href="#">寒檀</a></li><li><a href="#">复奏</a></li><li><a href="#">远山</a></li><li><a href="#">格雷伊</a></li><li><a href="#">炎熔</a></li><li><a href="#">12F</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">本源术师</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">妮芙</a></li><li><a href="#">烛煌</a></li><li><a href="#">真言</a></li><li><a href="#">折光</a></li><li><a href="#">温米</a></li><li><a href="#">Miss.Christine</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">秘术师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">黑键</a></li><li><a href="#">维伊</a></li><li><a href="#">爱丽丝</a></li><li><a href="#">和弦</a></li><li><a href="#">戴菲恩</a></li><li><a href="#">深靛</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">轰击术师</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">伊芙利特</a></li><li><a href="#">谬因</a></li><li><a href="#">蚀清</a></li><li><a href="#">阿罗玛</a></li><li><a href="#">协律</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">链术师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">异客</a></li><li><a href="#">惊蛰</a></li><li><a href="#">星源</a></li><li><a href="#">布丁</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">阵法术师</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">卡涅利安</a></li><li><a href="#">林</a></li><li><a href="#">圣聆初雪</a></li><li><a href="#">蜜蜡</a></li><li><a href="#">薄绿</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">驭械术师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">澄闪</a></li><li><a href="#">荒芜拉普兰德</a></li><li><a href="#">耶拉</a></li><li><a href="#">洛洛</a></li><li><a href="#">至简</a></li><li><a href="#">时隙</a></li><li><a href="#">卡达</a></li></ul></div></td></tr>
+</tbody></table><div></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr>
+<tr><td colspan="2" class="navbox-list navbox-even hlist" style="width:100%;padding:0px"><div style="padding:0em 0.25em"></div>
+<table cellspacing="0" class="nowraplinks collapsible collapsed navbox-subgroup" style="border-spacing:0"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:72%;"><span class="collapseButton">[<a href="#">显示▼</a>]</span><div style="font-size:150%">医疗</div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">医师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">闪灵</a></li><li><a href="#">凯尔希</a></li><li><a href="#">赫默</a></li><li><a href="#">华法琳</a></li><li><a href="#">亚叶</a></li><li><a href="#">图耶</a></li><li><a href="#">录武官</a></li><li><a href="#">末药</a></li><li><a href="#">嘉维尔</a></li><li><a href="#">苏苏洛</a></li><li><a href="#">芙蓉</a></li><li><a href="#">安赛尔</a></li><li><a href="#">Lancet-2</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">咒愈师</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">焰影苇草</a></li><li><a href="#">缇缇</a></li><li><a href="#">濯尘芙蓉</a></li><li><a href="#">刺玫</a></li><li><a href="#">阿米娅(医疗)</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">守望者</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">凯尔希·思衡托</a></li><li><a href="#">风絮</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">疗养师</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">流明</a></li><li><a href="#">锡兰</a></li><li><a href="#">絮雨</a></li><li><a href="#">诺威尔</a></li><li><a href="#">清流</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">群愈师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">夜莺</a></li><li><a href="#">白面鸮</a></li><li><a href="#">微风</a></li><li><a href="#">瑰盐</a></li><li><a href="#">调香师</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">行医</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">纯烬艾雅法拉</a></li><li><a href="#">桑葚</a></li><li><a href="#">蜜莓</a></li><li><a href="#">哈洛德</a></li><li><a href="#">褐果</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">链愈师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">Mon3tr</a></li><li><a href="#">明椒</a></li><li><a href="#">莎草</a></li><li><a href="#">乌啾</a></li></ul></div></td></tr>
+</tbody></table><div></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr>
+<tr><td colspan="2" class="navbox-list navbox-odd hlist" style="width:100%;padding:0px"><div style="padding:0em 0.25em"></div>
+<table cellspacing="0" class="nowraplinks collapsible collapsed navbox-subgroup" style="border-spacing:0"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:72%;"><span class="collapseButton">[<a href="#">显示▼</a>]</span><div style="font-size:150%">辅助</div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">凝滞师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">安洁莉娜</a></li><li><a href="#">铃兰</a></li><li><a href="#">溯光星源</a></li><li><a href="#">真理</a></li><li><a href="#">格劳克斯</a></li><li><a href="#">但书</a></li><li><a href="#">小满</a></li><li><a href="#">地灵</a></li><li><a href="#">波登可</a></li><li><a href="#">梓兰</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">削弱者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">灵知</a></li><li><a href="#">初雪</a></li><li><a href="#">巫恋</a></li><li><a href="#">海霓</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">召唤师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">麦哲伦</a></li><li><a href="#">令</a></li><li><a href="#">电弧</a></li><li><a href="#">梅尔</a></li><li><a href="#">稀音</a></li><li><a href="#">衡沙</a></li><li><a href="#">深海色</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">吟游者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">浊心斯卡蒂</a></li><li><a href="#">魔王</a></li><li><a href="#">空</a></li><li><a href="#">海蒂</a></li><li><a href="#">三角初华</a></li><li><a href="#">U-Official</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">工匠</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">白铁</a></li><li><a href="#">娜斯提</a></li><li><a href="#">掠风</a></li><li><a href="#">凯瑟琳</a></li><li><a href="#">阿兰娜</a></li><li><a href="#">罗比菈塔</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">巫役</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">塑心</a></li><li><a href="#">酒神</a></li><li><a href="#">凛视</a></li><li><a href="#">波卜</a></li><li><a href="#">伯塔尼</a></li><li><a href="#">PhonoR-0</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">护佑者</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">淬羽赫默</a></li><li><a href="#">遥</a></li><li><a href="#">月禾</a></li><li><a href="#">九色鹿</a></li><li><a href="#">夏栎</a></li><li><a href="#">行箸</a></li><li><a href="#">撷英调香师</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">游击手</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">佩德洛</a></li><li><a href="#">岳羽由加莉</a></li></ul></div></td></tr>
+</tbody></table><div></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr>
+<tr><td colspan="2" class="navbox-list navbox-even hlist" style="width:100%;padding:0px"><div style="padding:0em 0.25em"></div>
+<table cellspacing="0" class="nowraplinks collapsible collapsed navbox-subgroup" style="border-spacing:0"><tbody>
+<tr><th scope="col" class="navbox-title" colspan="2" style="font-size:72%;"><span class="collapseButton">[<a href="#">显示▼</a>]</span><div style="font-size:150%">特种</div></th></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">伏击客</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">水月</a></li><li><a href="#">阿斯卡纶</a></li><li><a href="#">狮蝎</a></li><li><a href="#">绮良</a></li><li><a href="#">八幡海铃</a></li><li><a href="#">伊桑</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">傀儡师</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">归溟幽灵鲨</a></li><li><a href="#">结城理</a></li><li><a href="#">贝娜</a></li><li><a href="#">风丸</a></li><li><a href="#">双月</a></li><li><a href="#">若叶睦</a></li><li><a href="#">维荻</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">处决者</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">傀影</a></li><li><a href="#">缄默德克萨斯</a></li><li><a href="#">麒麟R夜刀</a></li><li><a href="#">弑君者</a></li><li><a href="#">红</a></li><li><a href="#">槐琥</a></li><li><a href="#">卡夫卡</a></li><li><a href="#">砾</a></li><li><a href="#">THRM-EX</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">巡空者</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">予愿安洁莉娜</a></li><li><a href="#">蒂比</a></li><li><a href="#">云迹</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">怪杰</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">阿</a></li><li><a href="#">新约能天使</a></li><li><a href="#">空构</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">推击手</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">温蒂</a></li><li><a href="#">食铁兽</a></li><li><a href="#">见行者</a></li><li><a href="#">阿消</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">炼金师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">引星棘刺</a></li><li><a href="#">锡人</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">行商</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">老鲤</a></li><li><a href="#">琳琅诗怀雅</a></li><li><a href="#">乌有</a></li><li><a href="#">裁度</a></li><li><a href="#">孑</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">钩索师</a></th><td class="navbox-list navbox-odd" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">歌蕾蒂娅</a></li><li><a href="#">崖心</a></li><li><a href="#">雪雉</a></li><li><a href="#">杏仁</a></li><li><a href="#">暗索</a></li></ul></div></td></tr>
+<tr style="height:2px"><td colspan="3"></td></tr><tr><th scope="row" class="navbox-group"><a href="#">陷阱师</a></th><td class="navbox-list navbox-even" style="text-align:left;border-left-width:2px;border-left-style:solid;width:100%;padding:0px"><div style="padding:0em 0.25em"><ul><li><a href="#">多萝西</a></li><li><a href="#">艾拉</a></li><li><a href="#">望</a></li><li><a href="#">罗宾</a></li><li><a href="#">霜华</a></li><li><a href="#">钼铅</a></li></ul></div></td></tr>
+</tbody></table><div></div></td></tr>
+</tbody></table></td></tr></tbody></table>
+<script>
+/* 现网 Gadget-collapsibleTables 的替身：表头里的 [显示▼] / [隐藏▲] 切换 table.collapsible 的 collapsed / uncollapsed（样例页只给这张导航框用） */
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('.collapseButton > a'); if (!a) return;
+  e.preventDefault();
+  const t = a.closest('table.collapsible'); const shut = !t.classList.contains('collapsed');
+  t.classList.toggle('collapsed', shut); t.classList.toggle('uncollapsed', !shut);
+  a.textContent = shut ? '显示▼' : '隐藏▲';
+});
+</script>
 <script>
 (function () {
   'use strict';
