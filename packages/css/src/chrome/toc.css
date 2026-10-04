@@ -38,10 +38,11 @@
 .ak-toc li.ak-toc__item--parent > a { padding-right: 26px; }   /* 给折叠钮留位 */
 .ak-toc__num { display: none; }
 .ak-toc__toggle { position: absolute; top: 3px; right: 2px; width: 22px; height: 20px; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ak-fg-subtle); cursor: pointer; display: grid; place-items: center; }
-.ak-toc__toggle::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-1px) rotate(45deg); transition: transform var(--ak-dur-fast) var(--ak-ease); }
+.ak-toc__toggle::before { content: ""; width: 8px; height: 8px; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 0 no-repeat; transition: background-size var(--ak-dur-fast) var(--ak-ease); }   /* 就地开合 = + / −（同侧栏树形态的切换钮、Panel：两条渐变拼，展开时竖的一条缩没）；目录字小一档，记号 8px */
 .ak-toc__toggle:hover { color: var(--ak-accent); }
 .ak-toc__toggle:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
 .ak-toc li { position: relative; }
-.ak-toc li.is-collapsed > .ak-toc__toggle::before { transform: translate(-1px, 0) rotate(-45deg); }
+.ak-toc li.is-collapsed > .ak-toc__toggle::before { background-size: 100% 2px, 2px 100%; }
 .ak-toc li.is-collapsed > ul { display: none; }
 @media (prefers-reduced-motion: reduce) { .ak-toc__toggle::before { transition: none; } }
+@media (forced-colors: active) { .ak-toc__toggle::before { forced-color-adjust: none; color: ButtonText; } }   /* 渐变画的记号在强制色下会被抹掉 */

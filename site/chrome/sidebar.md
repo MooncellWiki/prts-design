@@ -13,7 +13,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 `chrome/sidebar.css` 对两种结构用同一套样式：
 
-1. **`MediaWiki:Sidebar` 门户** → `.ak-portlet > h3.ak-portlet__title + ul`。首个门户可渲染成 `.ak-portlet--grid`（两列格子）；`.ak-portlet--collapsible` 整组可折叠（示例左上「PRTS Design 预览 · DEMO」那组）。
+1. **`MediaWiki:Sidebar` 门户** → `.ak-portlet > h3.ak-portlet__title + ul`。首个门户可渲染成 `.ak-portlet--grid`（两列格子）；`.ak-portlet--collapsible` 整组可折叠（示例左上「PRTS Design 预览 · DEMO」那组；标题右侧同样是 + / −，它在两种形态下都是就地开合）。
 2. **PRTS 现网的 `#MenuSidebar`**——现网侧栏不是门户，而是一段 wikitext 生成的 `div#MenuSidebar`，结构原样支持，不用改现网 wikitext：
 
 ```
@@ -39,7 +39,7 @@ li.ak-tree__branch[.is-open][.is-current-path]
   > ul.ak-tree__list
 ```
 
-同一份 DOM 有两种形态，按环境二选一：
+同一份 DOM 有两种形态，按环境二选一。切换钮的记号跟着形态走，两种开法不共用一个图标：飞出是朝右的箭头（子项从右边出来，开合都不变），就地展开是 + / −（同 Panel、Accordion 的开合记号）：
 
 **飞出（桌面）**：能悬停的精确指针、≥1120 时，侧栏带 `.is-flyout`，分支**不就地展开**——侧栏的高度不随点开的分支变，矮窗口里也只需要滚这一小段。
 
@@ -51,7 +51,7 @@ li.ak-tree__branch[.is-open][.is-current-path]
 
 **树（抽屉 / 触屏 / 关掉飞出时）**：<1120 的抽屉、没有悬停的设备，或 `<aside class="ak-sidebar" data-flyout="off">` / `<html data-akds-flyout="off">`：
 
-- 点击 / 键盘 ← → 就地展开、收起；展开状态记在 `localStorage['akds-sidebar-tree']`（键 = 分组标题 / 标签路径；可折叠门户的整组开合也记在这里，键 `portlet:<id>`）；作者默认展开写 `li class="is-open"`，用户操作后以记忆为准。
+- 点击 / 键盘 ← → 就地展开、收起，切换钮收着是 +、展开是 −；展开状态记在 `localStorage['akds-sidebar-tree']`（键 = 分组标题 / 标签路径；可折叠门户的整组开合也记在这里，键 `portlet:<id>`）；作者默认展开写 `li class="is-open"`，用户操作后以记忆为准。
 - 当前页所在分支总是自动展开，并加 `.is-current-path`。
 
 `.is-open` 两种形态下都留在 DOM 上，飞出形态只是不显示；窗口跨过 1120 时形态跟着换。晚注入的内容由 MutationObserver 接住。无 JS 时所有层级全部展开。
