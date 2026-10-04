@@ -16,4 +16,6 @@
 .ak-cbox__icon > svg { width: 20px; height: 20px; }
 .ak-cbox__body { flex: 1; min-width: 0; padding: 9px 12px; }
 .ak-cbox__title { font-weight: 700; color: var(--_c); margin: 0 0 2px; }
+.ak-cbox__body > :is(p, ul, ol, dl) { margin-bottom: var(--ak-space-2); }   /* 框内段距收到 8px：正文的 p / ul / ol / dl 段距是 16px（base/typography.css，(0,1,1)，同优先级靠顺序压），配框里 14px 的字太松——现网「* 列表 + 一行说明 + : 缩进」的写法在框里每块之间都空出一行（旧 Vector 是 3–7px）。只管直接子级，嵌套列表照正文规则；特指度不能高过下一条 (0,2,0)，否则框底多出一截 */
 .ak-cbox__body > :last-child { margin-bottom: 0; }
+.ak-cbox__body > :is(ul, ol, dl):last-child > :last-child { margin-bottom: 0; }   /* 收尾的是列表 / 缩进行时，最后一个 li / dd 自己的下外边距（正文 li .25em、dd .5em）会穿过上一条归零的 ul / dl 漏到框底，框底比框顶多出 3.5–7px */
