@@ -1,0 +1,455 @@
+<!--page
+order: 6
+nav: 道具一览（列表 / 筛选页）
+title: 道具一览 - PRTS · 列表 / 筛选页样例
+crumb: 首页 > 道具一览
+h1: 道具一览
+h1en: Items
+indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">现网数据快照</span>
+actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+lastmod: 2026年9月4日 (五) 14:23
+-->
+<!--head
+<script src="vendor/itemlist/data.js"></script>   <!-- 现网「道具一览」正文里的那块数据（#cargo-data，每件道具一条）的快照，scripts/fetch-itemlist.ts 抓取；生产环境 = 页面照旧输出这块，Widget 自己读 -->
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   道具一览 · Item list — 信息结构取自 prts.wiki 现网「道具一览」（= prts-widgets 的 ItemList Widget）：
+   一条提示（关于保险库）→ 筛选（稀有度 / 分类 / 获取途径）→ 条数 · 搜索 · 排序 → 道具图标网格 → 分页。
+   道具数据与现网一致；筛选项、排序、显示方式照游戏的仓库重排过——见文档站 /patterns/items。
+   这里除了那条提示都是「Widget 自己的东西」：生产环境 = prts-widgets 的 ItemList 输出下面这些结构（.ak-* 是设计系统组件，.il-* 是它自己的排布），样式 = Widget 的样式表；
+   页面脚本只是 Widget 的替身。开头「0. 页面级」段是这份静态预览的补丁，别照抄——见该段说明。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. 页面级：预览骨架的补丁（同干员一览样例的「0. 页面级」）──
+ *  这页没有章节标题，也就没有目录：右侧导轨让给主列，页眉不出「本页目录」。真皮肤里的办法见文档站 /patterns/operators#页面与皮肤的分工。
+ *  现网这页没有分类：骨架是静态的，这里按空列表藏掉。 */
+.ak-toc, .ak-local-nav__toc { display: none; }
+.ak-main { padding-right: 0; }
+.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
+.catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
+@media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }   /* 手机上白纸的左右内边距让给卡片 */
+
+/* ── 1. 筛选 ──
+ *  现网：一块折叠面板三行，每行 = 标题 + 全选 / 清除 + 一排按钮；23 个分类平铺成三行，稀有度写成「0 (灰)」…「5 (彩)」。
+ *  这里：每行 = 标签 + 筛选芯片 .ak-chip（排布同干员一览的筛选行）；选中后行标签左缘出青条、露出「清除」；不设「全选」。
+ *   · 分类按游戏仓库的页签归成四组，一组一行、行首是组名——归类只是摆法，筛的还是 wiki 的分类；
+ *   · 稀有度是道具底框那样的圆环 + 色名；
+ *   · 点了也不会多出道具的芯片压淡（.is-empty，仍可点）。
+ *  手机上三行摊开有一屏多高：收成一枚「筛选」钮（钮上有已选数），默认收起。已选条件在结果栏里一直列着。 */
+.il-filter { margin: 0 0 var(--ak-space-3); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
+.il-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); }
+.il-row { display: grid; grid-template-columns: max-content minmax(0, 1fr); grid-column: 1 / -1; }   /* 不认 subgrid 的浏览器各行自己定宽 */
+@supports (grid-template-columns: subgrid) { .il-row { grid-template-columns: subgrid; } }
+.il-row + .il-row { border-top: 1px solid var(--ak-border); }
+.il-row__label { display: flex; align-items: baseline; align-content: start; gap: 10px; padding: 12px var(--ak-space-4) 8px var(--ak-space-3); border-left: var(--ak-bar-w) solid transparent;
+  font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1.4; color: var(--ak-fg-secondary); white-space: nowrap; }
+.il-row.has-active > .il-row__label { border-left-color: var(--ak-accent); color: var(--ak-fg); }
+.il-row__clear { all: unset; font-size: var(--ak-fs-xs); font-weight: 500; color: var(--ak-link); cursor: pointer; }
+.il-row__clear:hover { text-decoration: underline; }
+.il-row__clear:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.il-row:not(.has-active) .il-row__clear { visibility: hidden; }   /* 只藏不撤：标签列的宽度不随选中跳动 */
+.il-row__opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px var(--ak-space-3) 8px 0; min-width: 0; }
+.il-filter .ak-chip.is-empty:not([aria-pressed="true"]) { opacity: .38; }
+.il-filter .ak-chip:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+/* 分类：一组一行，行首是组名 */
+.il-group { display: flex; align-items: flex-start; gap: 10px; flex: 1 1 100%; min-width: 0; }
+.il-group__label { flex: none; width: 4em; font-size: var(--ak-fs-xs); line-height: 28px; color: var(--ak-fg-muted); white-space: nowrap; }
+.il-group__list { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+/* 稀有度：一枚道具底框那样的圆环，取稀有度色（选中后跟文字） */
+.il-contents { display: contents; }
+.il-ring { box-sizing: border-box; width: 12px; height: 12px; margin-left: -2px; border: 3px solid var(--ak-r-text); border-radius: 50%; }
+.ak-chip[aria-pressed="true"] .il-ring { border-color: currentColor; }
+/* 「筛选」钮（只在手机上出）：整条是按钮，左缘色条同行标签（有已选项时变青），同干员一览的「高级筛选」钮 */
+.il-more { all: unset; box-sizing: border-box; display: none; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 0 var(--ak-space-4) 0 var(--ak-space-3); cursor: pointer; user-select: none;
+  background: var(--ak-bg-surface-2); border-left: var(--ak-bar-w) solid var(--ak-border-strong); font-weight: 700; font-size: var(--ak-fs-sm); }
+.il-more:hover { background: var(--ak-bg-hover); }
+.il-more:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.il-more.has-active { border-left-color: var(--ak-accent); }
+.il-more .ak-en { font-size: 10px; color: var(--ak-fg-subtle); }
+.il-more__count:empty { display: none; }
+.il-more::after { content: ""; flex: none; width: 10px; height: 10px; margin-left: auto; opacity: .6; transition: background-size var(--ak-dur-fast);   /* 开合记号：收起 ＋ / 展开 −，同 .ak-panel--collapsible */
+  background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat; }
+.il-more[aria-expanded="true"]::after { background-size: 100% 2px, 2px 0; }
+@media (max-width: 639px) {
+  .il-more { display: flex; }
+  .il-more[aria-expanded="false"] + .il-rows { display: none; }
+  .il-rows { grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--ak-border); }
+  .il-row { grid-template-columns: minmax(0, 1fr); }
+  .il-row__label { align-items: center; padding: 8px var(--ak-space-3) 0 8px; }
+  .il-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
+  .il-row.has-active > .il-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }   /* 标签在上、选项在下：青条接着往下画满一行 */
+  .il-group { flex-direction: column; gap: 2px; }
+  .il-group__label { width: auto; line-height: 1.6; }
+}
+
+/* ── 2. 工具条：搜索 · 排序（排序项 + 升降）· 显示方式 ── */
+.il-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 0 0 var(--ak-space-3); padding: 10px var(--ak-space-3); background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
+.il-toolbar__search { flex: 1 1 240px; min-width: 0; }
+.il-field { display: inline-flex; align-items: center; font-size: var(--ak-fs-xs); font-weight: 600; color: var(--ak-fg-muted); white-space: nowrap; }
+.il-field .ak-select { width: auto; min-height: 36px; color: var(--ak-fg); font-weight: 400; }
+.il-sort > label { margin-right: 8px; }
+.il-sort > .ak-btn { margin-left: -1px; min-width: 76px; padding: 0 var(--ak-space-3); font-weight: 500; }   /* 下拉和方向钮贴在一起 */
+.il-view .ak-btn { gap: 6px; }
+.il-view .ak-btn[aria-pressed="true"] { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); z-index: 1; }
+.il-view .ak-icon { width: 14px; height: 14px; }
+
+/* ── 3. 结果栏：条数 · 已选条件（可逐个移除）· 复制链接 · 每页条数 · 分页 ── */
+.il-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 var(--ak-space-3); min-height: 32px; }
+.il-bar__count { flex: none; font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); white-space: nowrap; }
+.il-bar__count b { font: 700 var(--ak-fs-h3)/1 var(--ak-font-label); color: var(--ak-fg); font-variant-numeric: tabular-nums; margin-right: 2px; }
+.il-bar__active { flex: 1 1 200px; min-width: 0; align-items: center; }
+.il-bar__active .ak-tag { height: 24px; }
+.il-bar__active .ak-tag__remove:focus-visible { outline: 2px solid var(--ak-focus); }
+.il-bar__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.il-bar__tools .ak-select { width: auto; min-height: 32px; font-size: var(--ak-fs-xs); }
+.il-bar .ak-icon, .il-pager .ak-icon { width: 14px; height: 14px; }
+.il-foot { display: flex; justify-content: flex-end; margin: var(--ak-space-4) 0 0; }
+#il-result { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-space-3)); }   /* 在底部翻页回到结果开头时让出吸顶的页眉 */
+@media (max-width: 639px) { .il-bar__tools { margin-left: 0; width: 100%; justify-content: space-between; } .il-pager { display: flex; flex: 1 0 100%; } .il-pager > * { flex: 1 1 0; min-width: 0; text-align: center; } .il-pager .ak-pagination__item { min-width: 26px; padding: 0 6px; } .il-foot { justify-content: center; } }
+
+/* ── 4. 结果 · 图标 ──
+ *  一格一件道具：.ak-item 图标（合成图自带稀有度底框）+ 名字，整格链到道具页。用途 / 描述 / 获取途径在悬停、聚焦时的提示里。
+ *  现网的图标没有可点的范围提示、名字是灰色小字；这里整格悬停铺底。 */
+.il-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: var(--ak-space-1); }
+.il-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; padding: 10px 4px 8px; color: var(--ak-fg-secondary); text-decoration: none; }
+.il-cell:hover { background: var(--ak-bg-hover); color: var(--ak-fg); }
+.il-cell:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.il-cell__name { max-width: 100%; font-size: var(--ak-fs-xs); line-height: 1.35; text-align: center; overflow-wrap: anywhere; }
+/* 白色线稿的图标（集成战略的几种代币）：垫一块道具底框那样的深色圆底，图缩进圆里 */
+.il-icon--dark { background: #2c2c2c; border-radius: 50%; }
+.il-icon--dark > img { width: 62%; height: 62%; }
+@media (max-width: 639px) { .il-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 2px; } .il-cell { padding: 8px 2px 6px; } .il-cell .ak-item { --_s: 64px; } }
+/* 道具提示：挂到 body，按视口定位，不吃指针事件 */
+.il-tip { position: fixed; left: 0; top: 0; display: grid; gap: 4px; box-sizing: border-box; max-width: min(364px, calc(100vw - 16px)); padding: 8px 12px; line-height: 1.55; pointer-events: none; }
+.il-tip p { margin: 0; }
+.il-tip__name { font-size: var(--ak-fs-sm); }
+.il-tip__desc, .il-tip__obtain { opacity: .72; }   /* 描述是游戏里的风味文字，比用途弱一级 */
+.il-tip__obtain > span { margin-right: 8px; font-weight: 600; }
+
+/* ── 5. 结果 · 列表 ──
+ *  现网没有：用途 / 描述 / 获取途径只在悬停提示里，触屏上看不到，按描述搜到的也看不出命中在哪。
+ *  一行一件道具，三项直接摊开；结果区窄于 860（.il--compact，看的是结果区自己的宽度）时一行折成一张卡片。 */
+.il-table { table-layout: fixed; font-size: var(--ak-fs-sm); }
+.il-table thead th { padding: 9px 12px; white-space: nowrap; letter-spacing: 0; text-transform: none; }
+.il-table thead th:nth-child(1) { width: 56px; }
+.il-table thead th:nth-child(2), .il-table thead th:nth-child(4) { width: 22%; }
+.il-table td, .il-table tbody th { padding: 10px 12px; vertical-align: top; line-height: 1.55; overflow-wrap: anywhere; }
+.il-table td.il-c-icon { padding-right: 0; }
+.il-table td.il-c-icon > a { display: block; width: 56px; }
+.il-table tbody th.il-c-name { font-weight: 400; text-align: left; }
+.il-table .il-c-name .ak-tags { gap: 4px; margin-top: 6px; }
+.il-table p { margin: 0; }
+.il-table :is(.il-c-text, .il-c-obtain) a { color: var(--ak-link); }   /* 根节点是 ak-not-prose，链接默认继承文字色：原文里的站内链接照正文链接上色 */
+.il-table :is(.il-c-text, .il-c-obtain) a:hover { color: var(--ak-link-hover); }
+.il-name { font-weight: 700; font-size: var(--ak-fs-body); line-height: 1.3; color: var(--ak-fg); text-decoration: none; }
+.il-name:visited { color: var(--ak-fg); }
+.il-name:hover { color: var(--ak-accent); text-decoration: underline; }
+.il-name:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.il-usage { color: var(--ak-fg); }
+.il-desc { font-size: var(--ak-fs-xs); line-height: 1.6; color: var(--ak-fg-muted); }
+.il-usage + .il-desc { margin-top: 4px; }
+.il-c-obtain { font-size: var(--ak-fs-xs); color: var(--ak-fg-secondary); }
+.il--compact .il-table { display: block; border: 0; background: none; }
+.il--compact .il-table thead { display: none; }
+.il--compact .il-table tbody { display: grid; gap: var(--ak-space-2); }
+.il--compact .il-table tr { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 8px 12px; padding: var(--ak-space-3); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
+.il--compact .il-table td, .il--compact .il-table tbody th { display: block; padding: 0; border: 0; }
+.il--compact .il-table tbody tr:hover :is(td, th) { background: none; }
+.il--compact .il-c-name { align-self: center; }
+.il--compact :is(.il-c-text, .il-c-obtain) { grid-column: 1 / -1; }
+.il--compact :is(.il-c-text, .il-c-obtain).is-blank { display: none; }
+.il--compact .il-c-obtain::before { content: "获取途径"; margin-right: 8px; font-weight: 600; color: var(--ak-fg-muted); }
+</style>
+-->
+<!-- 现网页面开头的 {{道具一览补充说明}}（一条 {{Cbox2}}）：是页面正文，不归 Widget 管 -->
+<div class="ak-cbox">
+  <div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-lock"/></svg></div>
+  <div class="ak-cbox__body">
+    <div class="ak-cbox__title">关于保险库</div>
+    <p>自<a href="#">月行水上</a>版本起，可以将部分具有珍贵意义的物品存入保险库中。</p>
+    <ul><li>可自选存入数量。</li><li>保险库中的该道具无法被任意方式使用。若需要使用存入的该道具，请先将其从保险库中移出。</li></ul>
+    <p>目前仅以下道具支持存入：</p>
+    <ul><li>所有<b>可永久保存</b>的<a href="#">物资补给</a>箱；</li><li>所有<a href="#">干员赠礼</a>（领取后自动转换的除外）；</li><li>所有干员的<a href="#">信物</a>与<a href="#">中坚信物</a>。</li></ul>
+    <p>※不含活动赠送干员的信物、<a href="#">阿米娅的信物</a>、私人信件；采购中心限定干员（含危机合约兑换干员）的信物可存入。</p>
+  </div>
+</div>
+
+<div class="il ak-not-prose" id="il" data-no-toggle>
+
+<noscript><div class="ak-cbox ak-cbox--warning"><div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-warn"/></svg></div><div class="ak-cbox__body">道具列表由脚本生成，需要启用 JavaScript。</div></div></noscript>
+
+<!-- 以下 = Widget 的输出（生产环境挂在 #root 上）。筛选行与结果由脚本按数据生成；工具条 / 结果栏结构固定，直接写在这里 -->
+<div id="il-root" hidden>
+
+  <section class="il-filter" aria-label="筛选">
+    <button type="button" class="il-more" id="il-more" aria-expanded="false" aria-controls="il-rows"><span>筛选</span><span class="ak-en">Filter</span><span class="ak-tag ak-tag--sm ak-tag--accent-soft il-more__count" id="il-more-count"></span></button>
+    <div class="il-rows" id="il-rows"></div>
+  </section>
+
+  <div class="il-toolbar">
+    <label class="ak-search il-toolbar__search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input" type="search" id="il-search" placeholder="搜索道具名称 / 用途 / 描述" aria-label="搜索道具名称、用途或描述" autocomplete="off"></label>
+    <div class="il-field il-sort">
+      <label for="il-sort">排序</label>
+      <select class="ak-select" id="il-sort"><option value="order">仓库顺序</option><option value="rarity">稀有度</option></select>
+      <button type="button" class="ak-btn" id="il-dir">正序 ↑</button>
+    </div>
+    <div class="ak-btn-group il-view" id="il-view" role="group" aria-label="显示方式">
+      <button type="button" class="ak-btn" data-view="0" aria-pressed="true"><svg class="ak-icon"><use href="#i-grid"/></svg>图标</button>
+      <button type="button" class="ak-btn" data-view="1" aria-pressed="false"><svg class="ak-icon"><use href="#i-list"/></svg>列表</button>
+    </div>
+  </div>
+
+  <div class="il-bar">
+    <div class="il-bar__count" id="il-count" role="status"></div>
+    <div class="il-bar__active ak-tags" id="il-active"></div>
+    <div class="il-bar__tools">
+      <button type="button" class="ak-btn ak-btn--sm ak-btn--ghost" id="il-copy"><svg class="ak-icon"><use href="#i-link"/></svg>复制链接</button>
+      <select class="ak-select" id="il-step" aria-label="每页条数"><option value="50">每页 50</option><option value="100">每页 100</option><option value="200">每页 200</option><option value="500">每页 500</option></select>
+      <nav class="ak-pagination il-pager" aria-label="分页"></nav>
+    </div>
+  </div>
+
+  <div id="il-result"></div>
+
+  <div class="il-foot"><nav class="ak-pagination il-pager" aria-label="分页（底部）"></nav></div>
+</div>
+
+</div>
+
+<script>
+/* 道具一览脚本——prts-widgets ItemList Widget 的替身：数据、筛选项、筛选与排序逻辑、地址栏 # 参数都照它（src/widgets/ItemList/），输出同样的结构。
+ * 生产环境这段不存在：Widget 用 Vue + @mooncellwiki/prts-design-vue 输出。 */
+(function () {
+  'use strict';
+  const D = window.PRTS_ITEMLIST, root = document.getElementById('il-root');
+  if (!D || !root) return;
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const WIKI = 'https://prts.wiki/w/', TORAPPU = 'https://torappu.prts.wiki/assets/item_icon/';
+  const PLACEHOLDER = 'https://media.prts.wiki/f/fb/' + encodeURIComponent('无图片占位符.png');   // 同 Widget 的 getImagePath('无图片占位符.png')
+
+  /* ── 筛选项（同 Widget 的 filters.ts）──
+   * 三行：分类 / 稀有度 / 获取途径；行内「或」、行间「且」。选项 = [芯片上的字, 命中哪些值（不写 = 自己）, 是不是兜底项]。
+   * 分类按游戏仓库的页签归成几组（ItemRepoUtil.CheckItemFitFilter 的 ClassifyFilter：MATERIAL 养成 / NORMAL 基础 / CONSUME 消耗；classifyType 是 NONE 的不进仓库），
+   * 一个分类归哪组看它名下多数道具的 classifyType；组内按仓库里的先后（sortId）排，「材料」提到最前。
+   * 兜底项「其他」：别的选项都没命中的道具也归它——现网有 52 件道具哪个分类都筛不到、348 件哪个获取途径都筛不到。 */
+  const CATEGORY_GROUPS = [
+    ['养成材料', [['材料'], ['作战记录'], ['技巧概要'], ['精英化芯片', ['芯片', '芯片组', '双芯片']], ['通用信物'], ['信物'], ['中坚信物'], ['私人信件']]],
+    ['基础物品', [['基础道具'], ['寻访数据契约'], ['可露希尔票券'], ['纪念物'], ['专属寻访凭证'], ['基建材料', ['建材', '建材原材料']]]],
+    ['消耗物品', [['理智药剂'], ['食物'], ['定向寻访凭证'], ['消耗道具'], ['物资补给'], ['干员赠礼']]],
+    ['其他类别', [['活动道具'], ['道具组合', ['养成材料组合', '家具收藏包', '其它道具组合', '形艺特辑组件包']], ['文件夹'], ['其他', ['其他道具', '其他干员道具'], true]]],
+  ];
+  /* 获取途径是一段自由文本，按「、，,」拆开后逐段看含不含这些字 */
+  const OBTAIN = [['采购中心'], ['任务奖励', ['任务奖励', '日常任务', '周常任务']], ['赠送'], ['干员入职'], ['加工站产物', ['加工站']], ['制造站产物', ['制造站']],
+    ['关卡掉落', ['关卡掉落', '关卡限时掉落', '常规掉落']], ['首次通关'], ['活动获得', ['活动']], ['记录修复'], ['其他', null, true]];
+  const RARITY = ['灰', '绿', '蓝', '紫', '金', '彩'];   // 0–5 = 游戏的 ItemRarity TIER_1…TIER_6，叫法照道具底框的颜色
+  const DEFAULT_CATEGORY = ['材料'];   // 进页面时已经选着的（同现网）；地址栏里不写这一行时按它算
+  const defs = list => list.map(([id, values, rest]) => ({ id, label: id, values: values || [id], rest: !!rest }));
+  const CATEGORY = CATEGORY_GROUPS.flatMap(g => defs(g[1]));
+  const filters = [
+    { id: 'category', title: '分类', options: CATEGORY, groups: CATEGORY_GROUPS.map(([label, list]) => ({ label, options: defs(list) })) },
+    { id: 'rarity', title: '稀有度', options: RARITY.map((label, i) => ({ id: String(i), label })) },
+    { id: 'obtain', title: '获取途径', options: defs(OBTAIN) },
+  ];
+  const hit = (options, test) => {
+    const out = new Set(options.filter(o => o.values.some(test)).map(o => o.id));
+    if (!out.size) options.forEach(o => { if (o.rest) out.add(o.id); });
+    return out;
+  };
+
+  /* ── 数据：没有 itemId 的（已移除的旧道具）不收，同现网 ── */
+  const text = html => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent.trim(); };
+  const items = D.items.filter(it => it.itemId).map((it, index) => {
+    const usage = text(it.usage), desc = text(it.desc), obtain = text(it.obtain).split(/[,、，]/).map(s => s.trim()).filter(Boolean);
+    return {
+      ...it, index, usageText: usage, descText: desc, obtainList: obtain,
+      icon: it.filename || (it.iconId ? TORAPPU + it.iconId + '.png' : PLACEHOLDER),   // 模板给了图用模板的，否则按 iconId 从 torappu 取——那批也是带底框的合成图
+      href: WIKI + encodeURIComponent(it.name),
+      haystack: [it.name, usage, desc].join('\n').toLowerCase(),
+      options: {
+        category: hit(CATEGORY, v => it.categories.includes(v)),
+        rarity: new Set([String(it.rarity)]),
+        obtain: hit(filters[2].options, v => obtain.some(piece => piece.includes(v))),
+      },
+    };
+  });
+
+  /* ── 状态 ── */
+  const state = { sel: {}, q: '', sort: { key: 'order', dir: 1 }, view: 0, page: 1, step: 100, compact: false, open: false };
+  const FIRST_DIR = k => (k === 'order' ? 1 : -1);   // 仓库顺序照游戏正着排，稀有度高的在前
+  const needle = () => state.q.trim().toLowerCase();
+  const matchRow = (it, f) => !state.sel[f.id].size || [...it.options[f.id]].some(o => state.sel[f.id].has(o));
+  const pass = (it, q, skip) => (!q || it.haystack.includes(q)) && filters.every(f => f === skip || matchRow(it, f));
+  /* 仓库顺序：同游戏仓库的排法（ItemRepoUtil.GetCurrentItemList：sortId 升序，相同再比 itemId）。sortId 是负数的在仓库里没有位置，不管正序倒序都排在最后 */
+  const byOrder = (a, b, dir) => {
+    const out = a.sortId < 0;
+    if (out !== b.sortId < 0) return out ? 1 : -1;
+    return (a.sortId - b.sortId || (a.itemId < b.itemId ? -1 : a.itemId > b.itemId ? 1 : 0)) * dir || a.index - b.index;
+  };
+  const sorted = list => list.sort((a, b) => state.sort.key === 'rarity' ? (a.rarity - b.rarity) * state.sort.dir || byOrder(a, b, 1) : byOrder(a, b, state.sort.dir));
+
+  /* ── 地址栏 # 参数（写法同干员一览）──
+   *   <行>=1-材料;信物   一行筛选（category / rarity / obtain），稀有度写 0–5
+   *   _s 搜索 · _o 排序（order-d / rarity-a / rarity-d，仓库正序不写）· _d 显示方式（1 = 列表，图标不写）
+   * 分类行默认选着「材料」：不写 = 默认，一项都不选写成 category=1- */
+  function readHash() {
+    filters.forEach(f => { state.sel[f.id] = new Set(f.id === 'category' ? DEFAULT_CATEGORY : []); });
+    Object.assign(state, { q: '', sort: { key: 'order', dir: 1 }, view: 0 });
+    for (const [k, v] of new URLSearchParams(location.hash.slice(1))) {
+      const f = filters.find(f => f.id === k), m = /^(order|rarity)-([ad])$/.exec(v);
+      if (k === '_s') state.q = v;
+      else if (k === '_o') { if (m) state.sort = { key: m[1], dir: m[2] === 'a' ? 1 : -1 }; }
+      else if (k === '_d') { if (v === '1') state.view = 1; }
+      else if (f && v.startsWith('1-')) state.sel[k] = new Set(v.slice(2).split(';').filter(o => f.options.some(x => x.id === o)));
+    }
+  }
+  function writeHash() {
+    const p = new URLSearchParams(), sort = state.sort.key + '-' + (state.sort.dir > 0 ? 'a' : 'd');
+    filters.forEach(f => {
+      const ids = f.options.filter(o => state.sel[f.id].has(o.id)).map(o => o.id);
+      if (f.id === 'category' ? ids.join() === DEFAULT_CATEGORY.join() : !ids.length) return;
+      p.set(f.id, '1-' + ids.join(';'));
+    });
+    if (state.q) p.set('_s', state.q);
+    if (sort !== 'order-a') p.set('_o', sort);
+    if (state.view) p.set('_d', '1');
+    const h = p.toString();
+    if (h !== location.hash.slice(1)) history.replaceState(null, '', h ? '#' + h : location.pathname + location.search);
+  }
+
+  /* ── 筛选面板 ── */
+  const chipHtml = (f, o, inner) => `<button type="button" class="ak-chip" aria-pressed="false" data-no-toggle data-f="${f.id}" data-o="${esc(o.id)}">${inner || esc(o.label)}</button>`;
+  function renderFilters() {
+    $('#il-rows').innerHTML = filters.map(f => `<div class="il-row" role="group" aria-labelledby="il-l-${f.id}" data-row="${f.id}">
+      <div class="il-row__label"><span id="il-l-${f.id}">${f.title}</span><button type="button" class="il-row__clear" data-clear="${f.id}" aria-label="清除「${f.title}」的选择">清除</button></div>
+      <div class="il-row__opts">${
+        f.groups ? f.groups.map(g => `<div class="il-group" role="group" aria-label="${g.label}"><span class="il-group__label" aria-hidden="true">${g.label}</span><div class="il-group__list">${g.options.map(o => chipHtml(f, o)).join('')}</div></div>`).join('')
+        : f.id === 'rarity' ? f.options.map(o => `<span class="il-contents" data-rarity="${+o.id + 1}">${chipHtml(f, o, `<i class="il-ring" aria-hidden="true"></i>${o.label}`)}</span>`).join('')   // 外面包一层拿稀有度色（--ak-r-text）
+        : f.options.map(o => chipHtml(f, o)).join('')
+      }</div></div>`).join('');
+  }
+  function updateFilters() {
+    const q = needle();
+    let total = 0;
+    filters.forEach(f => {
+      const reach = new Set();   // 其余条件不变，这一行里有道具落在上面的选项；不在里面的 = 点了也不会多出道具
+      items.forEach(it => { if (pass(it, q, f)) it.options[f.id].forEach(o => reach.add(o)); });
+      $$(`.ak-chip[data-f="${f.id}"]`).forEach(c => { c.setAttribute('aria-pressed', state.sel[f.id].has(c.dataset.o)); c.classList.toggle('is-empty', !reach.has(c.dataset.o)); });
+      $(`[data-row="${f.id}"]`).classList.toggle('has-active', state.sel[f.id].size > 0);
+      total += state.sel[f.id].size;
+    });
+    $('#il-more-count').textContent = total ? '已选 ' + total : '';
+    $('#il-more').classList.toggle('has-active', total > 0);
+    $('#il-more').setAttribute('aria-expanded', state.open);
+  }
+
+  /* ── 结果 ── */
+  const iconHtml = (it, size) => `<span class="ak-item${size ? ' ak-item--' + size : ''}${it.dark ? ' il-icon--dark' : ''}"><img src="${esc(it.icon)}" alt="" loading="lazy" decoding="async"></span>`;   // 道具名就写在图旁边，alt 留空免得读两遍
+  const gridHtml = list => `<div class="il-grid">${list.map(it => `<a class="il-cell" href="${it.href}" data-tip="${it.index}">${iconHtml(it, 'lg')}<span class="il-cell__name">${esc(it.name)}</span></a>`).join('')}</div>`;
+  const listHtml = list => `<table class="ak-table il-table"><thead><tr><th scope="col"><span class="ak-sr-only">图标</span></th><th scope="col">道具</th><th scope="col">用途 / 描述</th><th scope="col">获取途径</th></tr></thead><tbody>${list.map(it => `<tr>
+    <td class="il-c-icon"><a href="${it.href}" tabindex="-1" aria-hidden="true">${iconHtml(it)}</a></td>
+    <th scope="row" class="il-c-name"><a class="il-name" href="${it.href}">${esc(it.name)}</a>${it.categories.length ? `<span class="ak-tags">${it.categories.map(c => `<span class="ak-tag ak-tag--sm ak-tag--outline">${esc(c)}</span>`).join('')}</span>` : ''}</th>
+    <td class="il-c-text${it.usageText || it.descText ? '' : ' is-blank'}">${it.usageText ? `<p class="il-usage">${it.usage}</p>` : ''}${it.descText ? `<p class="il-desc">${it.desc}</p>` : ''}</td>
+    <td class="il-c-obtain${it.obtain ? '' : ' is-blank'}">${it.obtain}</td></tr>`).join('')}</tbody></table>`;   // 用途 / 描述 / 获取途径是快照里清过的 HTML（只有文字、<br>、链接），原样放回
+  const emptyHtml = () => `<div class="ak-empty"><svg class="ak-empty__icon"><use href="#i-empty"/></svg><p class="ak-empty__title">没有符合条件的道具</p><p>放宽几项筛选条件，或者<button type="button" class="ak-btn ak-btn--link" data-reset>清除全部条件</button>。</p></div>`;
+  function pagerHtml(pages) {
+    const p = state.page, out = [];
+    const btn = (n, label, extra) => `<button type="button" class="ak-pagination__item${extra || ''}" data-page="${n}"${n === p && !label ? ' aria-current="page"' : ''}${label ? ` aria-label="${label}"` : ''}>${label ? `<svg class="ak-icon"><use href="#i-chevron-${label === '上一页' ? 'left' : 'right'}"/></svg>` : n}</button>`;
+    out.push(btn(Math.max(1, p - 1), '上一页', p === 1 ? ' is-disabled' : ''));
+    let prev = 0;
+    for (let n = 1; n <= pages; n++) {
+      if (n !== 1 && n !== pages && Math.abs(n - p) > 1 && !(p <= 3 && n <= 4) && !(p >= pages - 2 && n >= pages - 3)) continue;
+      if (n - prev > 1) out.push('<span class="ak-pagination__ellipsis">…</span>');
+      out.push(btn(n, '', n === p ? ' is-active' : '')); prev = n;
+    }
+    out.push(btn(Math.min(pages, p + 1), '下一页', p === pages ? ' is-disabled' : ''));
+    return pages > 1 ? out.join('') : '';   // 只有一页时不出
+  }
+  function renderActive() {
+    const out = [];
+    if (state.q) out.push(`<span class="ak-tag">搜索：${esc(state.q)}<button type="button" class="ak-tag__remove" data-unq aria-label="清除搜索">×</button></span>`);
+    filters.forEach(f => f.options.forEach(o => { if (state.sel[f.id].has(o.id)) out.push(`<span class="ak-tag">${f.title}：${esc(o.label)}<button type="button" class="ak-tag__remove" data-f="${f.id}" data-o="${esc(o.id)}" aria-label="移除「${f.title}：${esc(o.label)}」">×</button></span>`); }));
+    if (out.length > 1) out.push('<button type="button" class="ak-btn ak-btn--link ak-btn--xs" data-reset>清除全部</button>');
+    $('#il-active').innerHTML = out.join('');
+  }
+  function renderResults() {
+    const q = needle(), list = sorted(items.filter(it => pass(it, q)));
+    const pages = Math.max(1, Math.ceil(list.length / state.step));
+    state.page = Math.min(Math.max(1, state.page), pages);
+    const slice = list.slice((state.page - 1) * state.step, state.page * state.step);
+    $('#il-count').innerHTML = list.length === items.length ? `共 <b>${items.length}</b> 件道具` : `<b>${list.length}</b> / ${items.length} 件道具`;
+    $('#il-result').innerHTML = !list.length ? emptyHtml() : state.view === 1 ? listHtml(slice) : gridHtml(slice);
+    $$('.il-pager').forEach(n => { n.innerHTML = pagerHtml(pages); });
+    renderActive();
+  }
+  function renderControls() {
+    const dir = $('#il-dir'), up = state.sort.dir > 0, word = state.sort.key === 'order' ? (up ? '正序' : '倒序') : (up ? '升序' : '降序');   // 仓库顺序没有高低，方向写成正序 / 倒序
+    $('#il-sort').value = state.sort.key;
+    dir.textContent = word + (up ? ' ↑' : ' ↓'); dir.setAttribute('aria-label', '排序方向：' + word + '，点击切换');
+    $('#il-search').value = state.q; $('#il-step').value = String(state.step);
+    $$('#il-view > button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.view === state.view));
+  }
+  function update(keepPage) {
+    if (!keepPage) state.page = 1;
+    updateFilters(); renderControls(); renderResults(); writeHash();
+  }
+  const reset = () => { filters.forEach(f => state.sel[f.id].clear()); state.q = ''; update(); };   // 清除全部条件：默认选着的「材料」也清掉；排序 / 显示方式不动
+
+  /* ── 事件 ── */
+  root.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t || !root.contains(t)) return;
+    if (t.id === 'il-more') { state.open = !state.open; updateFilters(); }
+    else if (t.matches('.ak-chip, .ak-tag__remove[data-f]')) { const sel = state.sel[t.dataset.f], o = t.dataset.o; sel.has(o) ? sel.delete(o) : sel.add(o); update(); }
+    else if (t.dataset.clear) { state.sel[t.dataset.clear].clear(); update(); }
+    else if ('unq' in t.dataset) { state.q = ''; update(); }
+    else if ('reset' in t.dataset) reset();
+    else if (t.dataset.view) { state.view = +t.dataset.view; update(true); }
+    else if (t.id === 'il-dir') { state.sort = { key: state.sort.key, dir: -state.sort.dir }; update(); }
+    else if (t.dataset.page) {
+      state.page = +t.dataset.page; update(true);
+      if (t.closest('.il-foot')) $('#il-result').scrollIntoView({ block: 'start' });   // 在底部翻页：回到结果开头
+    }
+    else if (t.id === 'il-copy') {
+      const url = WIKI + encodeURIComponent('道具一览') + location.hash;
+      const done = () => window.akdsToast && window.akdsToast(esc(decodeURIComponent(url)), 'success', '链接已复制');
+      navigator.clipboard ? navigator.clipboard.writeText(url).then(done, () => {}) : done();
+    }
+  });
+  root.addEventListener('change', e => {
+    const t = e.target;
+    if (t.id === 'il-sort') { state.sort = { key: t.value, dir: FIRST_DIR(t.value) }; update(); }
+    else if (t.id === 'il-step') { const first = (state.page - 1) * state.step; state.step = +t.value; state.page = Math.floor(first / state.step) + 1; update(true); }   // 换每页条数：停在原来第一条所在的页
+  });
+  $('#il-search').addEventListener('input', e => { state.q = e.target.value; state.page = 1; updateFilters(); renderResults(); writeHash(); });
+  root.addEventListener('error', e => {   // 图标取不到：换占位图，只换一次；占位图也取不到（离线）就撤掉
+    const img = e.target; if (img.tagName !== 'IMG') return;
+    if (img.dataset.fallback) img.remove(); else { img.dataset.fallback = '1'; img.src = PLACEHOLDER; }
+  }, true);
+  window.addEventListener('hashchange', () => { readHash(); update(); });
+
+  /* 道具提示（图标视图）：.ak-tooltip 挂到 body，贴在那一格上方（放不下就放下方），左右不出视口 */
+  let tip = null, tipFor = null;
+  const hideTip = () => { if (tip) { tip.remove(); tip = tipFor = null; } };
+  const showTip = el => {
+    const it = items[+el.dataset.tip]; if (!it || el === tipFor) return;
+    hideTip(); tipFor = el;
+    tip = document.createElement('div'); tip.className = 'ak-tooltip il-tip'; tip.setAttribute('role', 'tooltip');
+    tip.innerHTML = `<b class="il-tip__name">${esc(it.name)}</b>${it.usageText ? `<p>${it.usage}</p>` : ''}${it.descText ? `<p class="il-tip__desc">${it.desc}</p>` : ''}${it.obtainList.length ? `<p class="il-tip__obtain"><span>获取途径</span>${esc(it.obtainList.join('、'))}</p>` : ''}`;
+    document.body.appendChild(tip);
+    const r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.round(Math.min(Math.max(8, r.left + r.width / 2 - w / 2), document.documentElement.clientWidth - w - 8)) + 'px';
+    tip.style.top = Math.round(r.top - h - 6 < 8 ? r.bottom + 6 : r.top - h - 6) + 'px';
+  };
+  ['mouseover', 'focusin'].forEach(ev => root.addEventListener(ev, e => { const t = e.target.closest('.il-cell[data-tip]'); if (t) showTip(t); }));
+  ['mouseout', 'focusout'].forEach(ev => root.addEventListener(ev, e => { const t = e.target.closest('.il-cell[data-tip]'); if (t && !(e.relatedTarget instanceof Node && t.contains(e.relatedTarget))) hideTip(); }));
+  window.addEventListener('scroll', hideTip, { passive: true });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+
+  /* 列表 ↔ 卡片：看结果区自己的宽度，不看视口（侧栏收起 / 展开都会改变它） */
+  const fit = () => root.classList.toggle('il--compact', root.clientWidth < 860);
+
+  root.hidden = false;
+  readHash(); renderFilters(); fit(); update();
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(root);
+})();
+</script>

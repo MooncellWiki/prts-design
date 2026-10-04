@@ -34,7 +34,7 @@ redirect() {
 }
 for p in home operator; do redirect "$out/$p.html" "preview/$p.html" "./"; done
 mkdir -p "$out/dist"
-for p in home operators operator recruit; do redirect "$out/dist/$p.html" "../preview/$p.html" "../"; done
+for p in home operators items operator recruit; do redirect "$out/dist/$p.html" "../preview/$p.html" "../"; done
 # 退役的展示页 → 文档站（根目录旧地址与 /preview/ 下的地址都留；根目录的 index.html 就是文档站首页，不覆盖）
 for pair in index: chrome:chrome/ mediawiki:content/ components:components/ arknights:components/; do
   p="${pair%%:*}"; to="${pair#*:}"

@@ -21,5 +21,6 @@ export default { title: "Pages/整页样例", tags: ["!autodocs"] } satisfies Me
 
 export const Home: StoryObj = { name: "首页设计稿", ...page("home.html") };
 export const Operators: StoryObj = { name: "干员一览（列表 / 筛选页）", ...page("operators.html") };
+export const Items: StoryObj = { name: "道具一览（列表 / 筛选页）", ...page("items.html") };
 export const Recruit: StoryObj = { name: "公招计算（工具页）", ...page("recruit.html") };
 export const Operator: StoryObj = { name: "干员页样例（陈）", ...page("operator.html") };
