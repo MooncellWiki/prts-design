@@ -5,7 +5,7 @@ export type ModuleColor = "red" | "blue" | "green" | "yellow" | "purple";
 
 /**
  * 模组卡（= 现网 {{模组}}）：一张卡装完型号 + 名称 + 故事 + 三阶段表 + 解锁任务 + 解锁需求与材料。
- * 结构照 Naive 的 NCard（#header-extra）；故事默认只露 3 行，「全文阅读」展开同 NEllipsis 的 line-clamp + expand-trigger="click"——
+ * 结构照 Naive 的 NCard（#header-extra）；故事默认定高 5 行、框内可滚动（同现网），「全文阅读」展开成全高——
  * 这里用组件内状态（v-model）代替 CSS 版的 data-toggle-class，真皮肤上也能用。
  */
 const props = withDefaults(
@@ -22,7 +22,7 @@ const props = withDefaults(
     color?: ModuleColor;
     /** 「说明 ⓘ」的悬停解释（调整效果先于潜能生效 …）；不写不显示 */
     hint?: string;
-    /** 故事可折叠：默认只露 3 行 +「全文阅读」开关；false 时全文展开、不出开关（原型证章那种短文） */
+    /** 故事可折叠：默认定高 5 行可滚动 +「全文阅读」开关；false 时全文展开、不出开关（原型证章那种短文） */
     collapsible?: boolean;
     /** 模组解锁任务（纯文本，一条一行）；要链接关卡时改用 #tasks 插槽 */
     tasks?: string[];
