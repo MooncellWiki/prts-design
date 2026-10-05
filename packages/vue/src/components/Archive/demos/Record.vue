@@ -20,12 +20,14 @@ const paradox = `无论什么时候，陈总是会站在队伍的前端。
       </template>
       <p><i>一鼓作气，再而衰。</i></p>
       <template #footer>
-        <span class="ak-overline">Story</span>
-        <AkArchivePlay href="#" title="陈/干员密录/1">阅读密录 · 一鼓作气</AkArchivePlay>
+        <span class="ak-archive__group">
+          <span class="ak-overline">Story</span>
+          <AkArchivePlay href="#" title="陈/干员密录/1">阅读密录 · 一鼓作气</AkArchivePlay>
+        </span>
         <span class="ak-fg-muted">蚀刻章 medal_story_chen_1 · 光荣之路</span>
       </template>
     </AkArchive>
-    <!-- 悖论模拟：页脚是关卡 + 首通奖励 -->
+    <!-- 悖论模拟：页脚是关卡 + 首通奖励；小标与内容包 .ak-archive__group，窄屏整组换行 -->
     <AkArchive title="永不后退" unlock-label="">
       <template #unlock>
         <span class="ak-elite" title="精英二 1 级"><img :src="asset('elite/upgrade_2.png')" alt="精英二" />Lv.1</span>
@@ -33,12 +35,16 @@ const paradox = `无论什么时候，陈总是会站在队伍的前端。
       <p>{{ paradox }}</p>
       <p><b>&lt;活性源石&gt;</b> 部署于其上的我军和经过的敌军持续受到伤害，但攻击力和攻速大幅度提升</p>
       <template #footer>
-        <span class="ak-overline">关卡</span>
-        <AkArchivePlay href="#">悖论模拟 · 永不后退</AkArchivePlay>
-        <span class="ak-overline">首次通关奖励</span>
-        <AkItemList>
-          <AkItem :src="asset('item/framed/4003.png')" name="合成玉" :count="200" size="sm" />
-        </AkItemList>
+        <span class="ak-archive__group">
+          <span class="ak-overline">关卡</span>
+          <AkArchivePlay href="#">悖论模拟 · 永不后退</AkArchivePlay>
+        </span>
+        <span class="ak-archive__group">
+          <span class="ak-overline">首次通关奖励</span>
+          <AkItemList>
+            <AkItem :src="asset('item/framed/4003.png')" name="合成玉" :count="200" size="sm" />
+          </AkItemList>
+        </span>
       </template>
     </AkArchive>
   </div>

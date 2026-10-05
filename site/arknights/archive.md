@@ -13,7 +13,7 @@ component: archive
 
 ## 干员密录 · 悖论模拟
 
-页脚放阅读 / 关卡 / 首通奖励。`AkArchivePlay` 是页脚里那块黑底「阅读 / 播放」：有 `href` 时是链接（去密录页），没有时是按钮。
+页脚放阅读 / 关卡 / 首通奖励；「小标 + 内容」成对的包一层 `.ak-archive__group`，窄屏放不下时整组换行，小标不会单独留在上一行。`AkArchivePlay` 是页脚里那块黑底「阅读 / 播放」：有 `href` 时是链接（去密录页），没有时是按钮。
 
 @demo Archive/Record
 

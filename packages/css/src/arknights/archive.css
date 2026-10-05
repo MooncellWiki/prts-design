@@ -1,6 +1,7 @@
 /*! PRTS Design · arknights/archive.css — B12b 档案类卡片 Archive · 依赖：tokens.css · decor/ */
 /* B12b. 档案类卡片（干员密录 / 悖论模拟 / 未获得时的情报资料 …）——现网「————干员密录」「————悖论模拟」那几张折叠 wikitable 的替身，与 .ak-dossier 同一张脸但多了解锁条件与页脚：
  *  .ak-archive > .ak-archive__head( .ak-archive__kicker + .ak-archive__title + .ak-archive__req ) + .ak-archive__body + [.ak-archive__foot（关卡 / 奖励 / 播放 …）]
+ *  页脚里「小标 + 内容」成对的（首次通关奖励 + 物品）包一层 .ak-archive__group：放不下时整组换到下一行，不把小标孤零零留在上一行
  *  解锁条件紧跟在标题后面、左对齐（同现网密录的标题栏：条件与标题挨着读），不推到最右——宽屏上隔着一整行空白，眼睛对不上是哪一条的条件 */
 .ak-archive { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); margin: 0 0 var(--ak-space-3); }
 .ak-archive__head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; min-height: 40px; padding: 6px 14px 6px 12px; background: var(--ak-bg-surface-2); border: 0 solid var(--ak-border); border-width: 0 0 1px var(--ak-bar-w); border-image: linear-gradient(to right, var(--ak-accent) 4px, var(--ak-border) 4px) 0 0 1 4; }
@@ -14,6 +15,7 @@
 .ak-archive__body p:last-child { margin: 0; }
 .ak-archive__foot { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 20px; padding: 10px 16px; border-top: 1px solid var(--ak-border-subtle); background: var(--ak-bg-surface-2); font-size: var(--ak-fs-xs); }
 .ak-archive__foot > .ak-overline { margin-right: -10px; }
+.ak-archive__group { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; min-width: 0; }
 .ak-archive__play { all: unset; display: inline-flex; align-items: center; gap: 10px; padding-right: 12px; background: var(--ak-bg-inverse); color: var(--ak-fg-inverse); cursor: pointer; font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); white-space: nowrap; }
 .ak-archive__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
 .ak-archive__play:is(:visited, :active) { color: var(--ak-fg-inverse); }   /* 渲染成 <a> 时，宿主 / 正文的 a:visited、a:active (0,1,1) 压得过 all: unset 后的 (0,1,0) 颜色 */
