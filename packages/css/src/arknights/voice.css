@@ -7,7 +7,7 @@
 .ak-voice__play::before { content: ""; width: 0; height: 0; border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent currentColor; margin-left: 2px; }
 .ak-voice__play.is-playing::before { width: 10px; height: 12px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; margin: 0; }
 .ak-voice__play:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
-.ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; min-height: 16px; }   /* 最小高度 = 行里最高的可选件（.ak-voice__cond 16px；声波 14px）：带不带解锁条件、放没放都一样高，播放时插进声波不会把下面的行顶下去 */
+.ak-voice__title { font: 700 var(--ak-fs-xs)/1 var(--ak-font-body); color: var(--ak-fg-muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; min-height: 16px; }   /* 最小高度 16px：播放时插进声波（14px）不会把下面的行顶下去。只放标题和声波，解锁条件另起一行（.ak-voice__cond） */
 .ak-voice__text { font-size: var(--ak-fs-sm); line-height: 1.7; white-space: pre-line; }   /* 同时显示几种文本时一种一行（调用方用换行拼） */
 .ak-voice__wave { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
 .ak-voice__wave > i { width: 2px; background: var(--ak-accent); height: 40%; }
@@ -18,7 +18,7 @@
 .ak-voice__download > .ak-icon { width: 16px; height: 16px; }
 .ak-voice__download:hover { background: var(--ak-accent); color: var(--ak-accent-fg); }
 .ak-voice__play:focus-visible, .ak-voice__download:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }   /* all: unset 把作用域的焦点环（:where，零特指度）也压掉了，这里补回 */
-.ak-voice__cond { font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .06em; padding: 3px 5px; background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); white-space: nowrap; }   /* 解锁条件（提升至精英阶段1以查看 / 提升信赖至40%以查看） */
+.ak-voice__cond { display: block; width: max-content; max-width: 100%; margin-bottom: 4px; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .06em; padding: 3px 5px; background: var(--ak-bg-surface-3); color: var(--ak-fg-muted); }   /* 解锁 / 显示条件（提升至精英阶段1以查看 / 游戏内仅在每年1月1日-1月4日显示）：标题下面单独一行的灰标。挤在标题行里时，长条件在手机上把标题挤成一列一字、把整页撑宽；比栏宽还长时在灰标里折行 */
 .ak-voice-list { border: 1px solid var(--ak-border); background: var(--ak-bg-surface); margin: 0 0 var(--ak-space-4); }
 .ak-voice-list > .ak-voice:last-child { border-bottom: 0; }
 .ak-voice-list > .ak-voice:hover { background: var(--ak-bg-hover); }
@@ -28,4 +28,14 @@
 .ak-voice-toolbar { display: flex; flex-wrap: wrap; align-items: flex-start; column-gap: var(--ak-space-4); }
 .ak-voice-toolbar > .ak-voice-langs { flex: 0 0 auto; max-width: 100%; }
 .ak-voice-langs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 0 0 var(--ak-space-3); }
+.ak-voice-langs > .ak-overline { flex: none; align-self: flex-start; line-height: 28px; }   /* 标签和第一排芯片（28px 高）对齐，芯片折成几行时不跟着居中到中间 */
+.ak-voice-langs__opts { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 0; min-width: 0; }   /* 芯片包在这里（Vue 版）：标签单独占左边一列，芯片多到折行时（手机上）折下去的行和第一个芯片左对齐，不排到标签底下；没包这层的静态写法照旧整排折行 */
+/* 手机（<640）：标题和播放 / 下载钮排成一行，解锁条件 + 台词（.ak-voice__body）换到下一行占满整宽，台词不用让出按钮那一列。
+ * 文字列 display: contents，标题、body 直接当 .ak-voice 的弹性项；没有 body 这层的静态写法让台词自己占满一行 */
+@media (max-width: 639px) {
+  .ak-voice { flex-wrap: wrap; align-items: center; row-gap: 8px; }
+  .ak-voice > div { display: contents; }
+  .ak-voice > div > .ak-voice__title { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
+  .ak-voice > div > :is(.ak-voice__body, .ak-voice__text) { flex: 0 0 100%; min-width: 0; }
+}
 .ak-voice-langs .ak-chip small { font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); color: inherit; opacity: .7; }

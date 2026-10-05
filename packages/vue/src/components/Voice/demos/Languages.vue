@@ -46,7 +46,6 @@ const voices = [
       v-for="v in voices"
       :key="v.code"
       :title="v.title"
-      :code="v.code"
       :unlock="v.unlock"
       :text="v.text"
       :src="audio(v.code)"

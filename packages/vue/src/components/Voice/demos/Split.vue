@@ -46,6 +46,6 @@ const voices = [
 
 <template>
   <AkVoiceList v-model="lang" v-model:shown-texts="shown" :languages="languages" :texts="texts">
-    <AkVoice v-for="v in voices" :key="v.code" :title="v.title" :code="v.code" :unlock="v.unlock" :text="v.text" :src="audio(v.code)" />
+    <AkVoice v-for="v in voices" :key="v.code" :title="v.title" :unlock="v.unlock" :text="v.text" :src="audio(v.code)" />
   </AkVoiceList>
 </template>

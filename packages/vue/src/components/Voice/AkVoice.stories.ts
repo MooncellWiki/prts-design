@@ -16,7 +16,6 @@ const meta = {
     title: "任命助理",
     text: "博士，现在起由我担任你的护卫。",
     src: "https://torappu.prts.wiki/assets/audio/voice_cn/char_010_chen/cn_001.mp3",
-    code: "CN_001",
     unlock: "",
     lang: "cn",
     download: "https://torappu.prts.wiki/assets/audio/voice_cn/char_010_chen/cn_001.wav?filename=%E4%BB%BB%E5%91%BD%E5%8A%A9%E7%90%86.wav",

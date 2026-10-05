@@ -8,6 +8,7 @@ import { voiceListKey, type VoiceLanguage, type VoiceText } from "./context";
  * 上方最多两排切换条（.ak-voice-toolbar 里排一行，放不下时后一排整组换行）：
  *   - texts：文本（台词的语言），多选、可以一个都不选，v-model:shown-texts；AkVoice 的 text 按文本键给对象，选中的几种一种一行
  *   - languages：语种（音频差分，普通话 / 方言 / 日 / 英 / 韩，带 CV 名），单选，v-model；AkVoice 的 src 按语种键给对象
+ * 每排的芯片包在 .ak-voice-langs__opts 里：标签单独占左边一列，芯片多到折行时（手机上的「中文 日文 英文 韩文 中文-方言」）折下去的行和第一行左对齐，不排到标签底下。
  * 只给 languages 时 AkVoice 的 text 也按语种给，切语种同时换台词和音频地址。
  * 当前语种 / 选中的文本经 provide 给子项；播放全页只有一条（见 player.ts）。
  * 切换条标 data-no-toggle：皮肤脚本会在 document 上替模板输出的纯 CSS 芯片翻 is-active / aria-pressed，这里的状态归 Vue 管，
@@ -55,30 +56,34 @@ const id = useId();
     <div v-if="texts.length || languages.length" class="ak-voice-toolbar ak-not-prose" data-no-toggle>
       <div v-if="texts.length" class="ak-voice-langs" role="group" :aria-labelledby="`${id}-texts`">
         <span :id="`${id}-texts`" class="ak-overline">文本</span>
-        <button
-          v-for="t in texts"
-          :key="t.value"
-          type="button"
-          :class="['ak-chip', { 'is-active': shown.includes(t.value) }]"
-          :aria-pressed="shown.includes(t.value)"
-          @click="toggleText(t.value)"
-        >
-          {{ t.label }}
-        </button>
+        <div class="ak-voice-langs__opts">
+          <button
+            v-for="t in texts"
+            :key="t.value"
+            type="button"
+            :class="['ak-chip', { 'is-active': shown.includes(t.value) }]"
+            :aria-pressed="shown.includes(t.value)"
+            @click="toggleText(t.value)"
+          >
+            {{ t.label }}
+          </button>
+        </div>
       </div>
       <div v-if="languages.length" class="ak-voice-langs" role="group" :aria-labelledby="`${id}-langs`">
         <span :id="`${id}-langs`" class="ak-overline">语种</span>
-        <button
-          v-for="l in languages"
-          :key="l.value"
-          type="button"
-          :class="['ak-chip', { 'is-active': l.value === current }]"
-          :aria-pressed="l.value === current"
-          @click="lang = l.value"
-        >
-          {{ l.label }}<small v-if="l.cv">{{ l.cv }}</small>
-        </button>
-        <slot name="header-extra" />
+        <div class="ak-voice-langs__opts">
+          <button
+            v-for="l in languages"
+            :key="l.value"
+            type="button"
+            :class="['ak-chip', { 'is-active': l.value === current }]"
+            :aria-pressed="l.value === current"
+            @click="lang = l.value"
+          >
+            {{ l.label }}<small v-if="l.cv">{{ l.cv }}</small>
+          </button>
+          <slot name="header-extra" />
+        </div>
       </div>
     </div>
     <div class="ak-voice-list ak-not-prose"><slot /></div>

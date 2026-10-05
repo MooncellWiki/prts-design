@@ -9,7 +9,7 @@ const wav = (code: string, name: string) =>
 </script>
 
 <template>
-  <!-- 不给 languages：没有切换条，text / src 直接写串，lang 只用来标台词的 HTML lang；download 出下载钮 -->
+  <!-- 不给 languages：没有切换条，text / src 直接写串，lang 只用来标台词的 HTML lang；download 出下载钮；unlock 是标题下面一行的灰标 -->
   <AkVoiceList>
     <AkVoice
       title="任命助理"
@@ -27,5 +27,12 @@ const wav = (code: string, name: string) =>
       :src="src('cn_005')"
     />
     <AkVoice title="标题" text="明日方舟。" />
+    <AkVoice
+      title="新年祝福"
+      lang="cn"
+      unlock="游戏内仅在每年1月1日-1月4日显示"
+      text="博士，关于上次的报告——博士也还在工作吗？嗯，倒是在我的意料之外，毕竟外面已经闹成这样，我以为打开门就能看到一屋子正在庆祝的干员。新年快乐，好了，这是打印出的事件报告——"
+      :src="src('cn_038')"
+    />
   </AkVoiceList>
 </template>

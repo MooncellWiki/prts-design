@@ -6,7 +6,10 @@ import { HTML_LANG, voiceListKey } from "./context";
 import { playing, stop, toggle } from "./player";
 
 /**
- * 一条语音：播放钮（+ 下载钮）+ 标题行（解锁条件 / 编号）+ 台词。一般放在 AkVoiceList 里，跟列表的语种走。
+ * 一条语音：播放钮（+ 下载钮）+ 标题 + 解锁条件（另起一行）+ 台词。一般放在 AkVoiceList 里，跟列表的语种走。
+ * 不出语音编号（CN_001 这类文件名）：那是内部序号，读者用不上。
+ * 解锁条件不和标题挤一行：「游戏内仅在每年1月1日-1月4日显示」这样的长条件在手机上会把标题挤成一列一字、把整页撑宽。
+ * 条件和台词包在 .ak-voice__body 里：手机上（<640）标题和播放 / 下载钮排成一行，body 换到下一行占满整宽，台词不用让出按钮那一列。
  * 标题旁不再标语种：当前语种在上面的切换条里，每条再标一遍只是复读，而「方言」这类也没有靠谱的缩写。
  * 播放钮标 data-no-toggle：皮肤脚本会在 document 上替模板输出的纯 CSS 播放钮翻 is-playing（演示用），这里的 is-playing 跟真实播放状态走，
  * 不退出那层委托就会两边各翻一次（点一下在放但图标还是播放，再点停了图标却变成暂停）。
@@ -19,9 +22,7 @@ const props = withDefaults(
     text: string | Record<string, string>;
     /** 音频地址：一个串，或按语种的对象（同 text）；取不到时播放钮禁用 */
     src?: string | Record<string, string>;
-    /** 语音编号（CN_001），标题行里的小字 */
-    code?: string;
-    /** 游戏内解锁条件（提升至精英阶段1以查看），标题行里的灰标 */
+    /** 游戏内解锁 / 显示条件（提升至精英阶段1以查看 · 游戏内仅在每年1月1日-1月4日显示），标题下面单独一行的灰标 */
     unlock?: string;
     /** 语种键：不在 AkVoiceList 里时用它取 text / src、标台词的 HTML lang；在列表里时跟列表的 v-model */
     lang?: string;
@@ -30,7 +31,7 @@ const props = withDefaults(
     /** 下载存成的文件名（<a download> 的值，任命助理.wav）；不写由浏览器按地址定 */
     downloadName?: string;
   }>(),
-  { src: undefined, code: undefined, unlock: undefined, lang: undefined, download: undefined, downloadName: undefined },
+  { src: undefined, unlock: undefined, lang: undefined, download: undefined, downloadName: undefined },
 );
 
 const list = inject(voiceListKey, undefined);
@@ -74,11 +75,12 @@ function onClick() {
     <div>
       <div class="ak-voice__title">
         {{ title }}
-        <span v-if="unlock" class="ak-voice__cond">{{ unlock }}</span>
-        <span v-if="code" class="ak-code-id">{{ code }}</span>
         <span v-if="isPlaying" class="ak-voice__wave" aria-hidden="true"><i v-for="n in 5" :key="n" /></span>
       </div>
-      <div class="ak-voice__text" :lang="lang && HTML_LANG[lang]">{{ text }}</div>
+      <div class="ak-voice__body">
+        <div v-if="unlock" class="ak-voice__cond">{{ unlock }}</div>
+        <div class="ak-voice__text" :lang="lang && HTML_LANG[lang]">{{ text }}</div>
+      </div>
     </div>
   </div>
 </template>
