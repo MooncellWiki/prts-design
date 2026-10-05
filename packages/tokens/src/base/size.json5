@@ -29,7 +29,7 @@
       $description: "Layout · 与 Codex 断点一致: 320 / 640 / 1120 / 1680",
       $type: "dimension",
       "header-h": { $value: "56px", $description: "≤639 为 52（functional/compact）" },
-      "sidebar-w": { $value: "208px" },
+      "sidebar-w": { $value: "200px", $description: "与 toc-w 等宽：正文夹在两条导轨正中；≤1400 目录导轨收起后收到 176" },
       "toc-w": { $value: "200px" },
       "content-max": { $value: "1240px", $description: "阅读区最大宽度；表格密集页可加 .ak-wide" },
       "content-narrow": { $value: "760px" },

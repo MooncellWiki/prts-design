@@ -162,7 +162,7 @@
 
   /* ─── size · layout · Layout · 与 Codex 断点一致: 320 / 640 / 1120 / 1680 */
   --ak-header-h: 56px;                     /* ≤639 为 52（functional/compact） */
-  --ak-sidebar-w: 208px;
+  --ak-sidebar-w: 200px;                   /* 与 toc-w 等宽：正文夹在两条导轨正中；≤1400 目录导轨收起后收到 176 */
   --ak-toc-w: 200px;
   --ak-content-max: 1240px;                /* 阅读区最大宽度；表格密集页可加 .ak-wide */
   --ak-content-narrow: 760px;

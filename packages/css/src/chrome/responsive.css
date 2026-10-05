@@ -1,12 +1,13 @@
 /*! PRTS Design · chrome/responsive.css — Responsive 断点（各块的响应式规则集中在这里，顺序敏感，暂不拆） · 依赖：tokens.css · components/ */
 /* ═══ Responsive ═══ */
-/* < 1400：右侧导轨收起 —— 目录收成一枚独立的按钮 + 从它下面拉出的浮层（结构与理由见 toc.css）。页眉不受影响：1120–1400 与 ≥1400 是同一套三列网格。
+/* < 1400：右侧导轨收起 —— 目录收成一枚独立的按钮 + 从它下面拉出的浮层（结构与理由见 toc.css）。页眉仍是同一套三列网格，只有侧栏列跟着收窄。
  *  手机（≤639）不走这一套：入口仍在页眉那一行、浮层贴页眉下沿，见最下面那一档。
  *  .ak-toc-dock 是紧跟页面标题的一条零高度粘性锚：平时落在正文纸张顶边，滚过之后停在页眉下沿再往下 space-3 处；按钮与浮层都绝对定位在它里面。
  *  · 纵向：按钮顶边就是 dock（top:0）——平时与纸张的上框线平齐，不往纸里缩一截；滚过之后与页眉之间留的那道缝写在 dock 的粘性 top 上；
  *  · 横向：--_r 把按钮右缘对到回到顶部 .ak-fab 的那一列（离视口右缘 space-5；dock 的右缘在 gutter 线上，所以是个负值），浮层右缘同按钮；
  *  · 层级：比下拉低一档（z-dropdown − 1）——页面顶部它就在动作簇正下方，「更多」卡片要盖得住它；正文里的粘性表头（z 1）之类则在它之下。 */
 @media (max-width: 1400px) {
+  :root { --ak-sidebar-w: 176px; }   /* 右边没有导轨要对称了：侧栏收到内容所需的宽度（现网顶层行 ≤125px、页眉品牌 131px；就地展开的树形态 168 起不多换行），省下的给正文。<1120 侧栏是抽屉、页眉是 flex，都不读这个值 */
   /* 回到顶部在这一档照常浮在右下（侧栏变抽屉的 < 1120 才收起）；只在目录浮层开着时让位——浮层可以一直伸到视口底，不收会压在浮层上，而浮层首项本来就是「回到顶部」。
    * 这是按钮与浮层之外唯一要跨出 dock 联动的地方：JS 镜像出的 html.ak-toc-open 为主，无 JS 时 body:has() 桥接；两条必须分开写——选择器列表里混进不认识的 :has() 会让整条规则作废。
    * :not(.ak-fab--absolute)：滚动区域自己的那枚不归这里管 */
@@ -161,9 +162,7 @@
   :where(.mw-parser-output table.wikitable.mw-collapsed) > tbody { display: table; box-sizing: border-box; width: 100%; }
   .mw-halign-right, .tright, figure.mw-halign-right, .mw-halign-left, .tleft, figure.mw-halign-left { float: none; margin-left: 0; margin-right: 0; }
 }
-@media (min-width: 1680px) {
-  :root { --ak-sidebar-w: 228px; --ak-toc-w: 228px; }   /* 写在 :root：页眉网格与 .ak-layout 共用这两个宽度 */
-}
+/* ≥1680 不再加宽侧栏 / 目录导轨：容器在 1680 封顶，导轨一加宽正文反而变窄（1679 → 1680 少 55px）；两条导轨保持 200，多出来的宽度先给正文、正文到顶后留在两侧。 */
 /* 页面滚动锁（侧栏抽屉、手机 ≤639 的目录浮层开着时；参考 VitePress useBodyScrollLock）：JS 给 <html> 加 .ak-scroll-lock。
  * overflow:hidden 不改滚动位置（不像 body position:fixed 那套会跳回顶部）；有实体滚动条（Windows / 「总是显示滚动条」）时 JS 同时写 scrollbar-gutter:stable
  * 占住滚动条位置，页面不会左右抖一下；浮层自己 overflow-y:auto 照常内滚。iOS 上 overflow:hidden 拦不住触摸滚动，由 JS 额外拦 touchmove。 */
