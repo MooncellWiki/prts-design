@@ -6,7 +6,7 @@ title: 干员一览
 
 列表 / 筛选页的样例。信息结构取自 prts.wiki 现网[干员一览](https://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%80%E8%A7%88)（= prts-widgets 的 `CharList` Widget）：两条提示 → 筛选（16 行）→ 排序 / 搜索 / 满潜能 · 满信赖 / 三种显示方式 → 复制短链接 · 分页 → 结果。**筛选项、干员数据、筛选逻辑、地址栏 `#` 参数的写法都与现网一致**（现网的短链接在这里照样能用），换的是视觉与排布；交互上能对着游戏的地方对着游戏——游戏自己的干员列表就有一套筛选 / 排序（`ui/[uc]charsortfilter`）。
 
-源文件 `preview/_src/pages/operators.html`，`python3 scripts/build-preview.py` 生成。数据是现网页面的快照 `preview/vendor/charlist/data.js`（431 位干员，`node scripts/fetch-charlist.ts` 重抓）；头像 / 半身像不入库，运行时从 `media.prts.wiki` 取，取不到时留深色底框。
+源文件 `preview/_src/pages/operators.html`，`python3 scripts/build-preview.py` 生成。数据是现网页面的快照 `preview/vendor/charlist/data.js`（431 位干员，`node scripts/fetch-charlist.ts` 重抓）；头像 / 半身像不入库，运行时从 `media.prts.wiki` 取，取不到时留稀有度色的底框（表格里的头像同干员卡，垫 `.ak-r-avatar`，下面不再拉色条）。
 
 <PageFrame page="operators.html" />
 
