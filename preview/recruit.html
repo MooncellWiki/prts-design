@@ -108,14 +108,13 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
 .hr-combos--grid .hr-combo__ops { border: 0; }
 .hr-ref-head { margin-bottom: var(--ak-space-3); }
 /* 干员：头像 + 名字；只能靠公开招募获得的（现网的绿色「限」字）右上角一枚「限」。
- * 头像垫稀有度色的底（同现网）：一组里混着几种星级时扫一眼底色就能分开。底色带渐变，画法照现网的抽卡模拟器（GachaSimulatorV2 的 .rarity-5 / .rarity-4）：上面稀有度色、往下褪成浅灰 #e6e5e2，6★ 另是斜向 32° 的 奶油 #eee2b8 → 橙；稀有度色换成令牌（模拟器自己的 4★ 紫偏灰，这里 1★ 也是灰底，照搬分不开）。
+ * 头像垫稀有度色的渐变底（同现网）：一组里混着几种星级时扫一眼底色就能分开。底就是 .ak-r-avatar（rarity.css；画法照现网的抽卡模拟器）。
  * 头像同首页的干员卡（.ak-op-card）：左上角黄色星级原图、左下角职业图标，按这里的小头像缩小（首页 88px 头像上星级 14px 高、职业图标 22px 底框）；星级比等比略大，五星不压右上角的「限」，垫半透明黑底（同职业图标）——黄星压在 5★ 金、2★ 黄绿的底色上也看得清。
  * 筛选结果里大一号（64px 头像、13px 名字）；保底速查的格子与手机排布小一号（56px），一屏多放几组 */
 .hr-op { --hr-op: 64px; --hr-op-stars: 13px; --hr-op-prof: 20px; --hr-op-prof-img: 17px; --hr-op-name: 13px; position: relative; display: flex; flex-direction: column; width: var(--hr-op); text-decoration: none; color: var(--ak-fg); }
 .hr-combos--grid .hr-op { --hr-op: 56px; --hr-op-stars: 12px; --hr-op-prof: 18px; --hr-op-prof-img: 15px; --hr-op-name: max(11px, var(--ak-fs-cjk-min)); }
 .hr-op:is(:visited, :active, :hover) { color: var(--ak-fg); text-decoration: none; }
-.hr-op__img { position: relative; display: block; width: var(--hr-op); height: var(--hr-op); background: var(--ak-r, var(--ak-gray-800)) linear-gradient(180deg, transparent, #e6e5e2); overflow: hidden; }
-.hr-op[data-rarity="6"] .hr-op__img { background-image: linear-gradient(32deg, #eee2b8 22%, transparent); }
+.hr-op__img { position: relative; display: block; width: var(--hr-op); height: var(--hr-op); overflow: hidden; }   /* 底色来自 .ak-r-avatar */
 .hr-op__avatar { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hr-op__stars { position: absolute; left: 0; top: 0; box-sizing: content-box; width: auto; height: var(--hr-op-stars); padding: 1px; background: rgba(0, 0, 0, .6); }
 .hr-op__prof { position: absolute; left: 2px; bottom: 2px; display: grid; place-items: center; width: var(--hr-op-prof); height: var(--hr-op-prof); background: rgba(0, 0, 0, .6); }
@@ -606,7 +605,7 @@ button.hr-tier__head[aria-expanded="true"]::after { background-size: 100% 2px, 2
 
   /* ── 结果 ── */
   /* 头像同首页的干员卡：左上角黄色星级原图（rarity_yellow_N）、左下角职业图标（icon_<职业>，头像同款小图标） */
-  const opHtml = c => `<a class="hr-op" href="${WIKI + encodeURIComponent(c.zh)}" data-rarity="${c.star}" data-tip="${esc(`${c.star}★ ${c.zh}${c.only ? '（只能通过公开招募获得）' : ''}\n${c.tags.join(' · ')}`)}"><span class="hr-op__img"><img class="hr-op__avatar" src="${media(c.am, `头像_${c.zh}.png`)}" alt="" width="64" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img class="hr-op__stars" src="assets/rarity/rarity_yellow_${c.star - 1}.png" alt="${RARITY_ALT[c.star - 1]}"><span class="hr-op__prof"><img src="assets/profession/icon_${PROF[c.profession]}.png" alt="${esc(c.profession)}" width="17" height="17"></span></span>${c.only ? '<span class="hr-op__only" aria-label="只能通过公开招募获得">限</span>' : ''}<span class="hr-op__name">${esc(c.zh)}</span></a>`;
+  const opHtml = c => `<a class="hr-op" href="${WIKI + encodeURIComponent(c.zh)}" data-rarity="${c.star}" data-tip="${esc(`${c.star}★ ${c.zh}${c.only ? '（只能通过公开招募获得）' : ''}\n${c.tags.join(' · ')}`)}"><span class="hr-op__img ak-r-avatar"><img class="hr-op__avatar" src="${media(c.am, `头像_${c.zh}.png`)}" alt="" width="64" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img class="hr-op__stars" src="assets/rarity/rarity_yellow_${c.star - 1}.png" alt="${RARITY_ALT[c.star - 1]}"><span class="hr-op__prof"><img src="assets/profession/icon_${PROF[c.profession]}.png" alt="${esc(c.profession)}" width="17" height="17"></span></span>${c.only ? '<span class="hr-op__only" aria-label="只能通过公开招募获得">限</span>' : ''}<span class="hr-op__name">${esc(c.zh)}</span></a>`;
   const tagBtn = t => `<span class="hr-tagbtn${isSenior(t) ? ' is-senior' : ''}">${esc(t)}</span>`;
   const comboHtml = c => `<li class="hr-combo" data-rarity="${c.min}">
       <div class="hr-combo__tags">${c.tags.map(tagBtn).join('')}</div>
