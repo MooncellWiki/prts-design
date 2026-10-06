@@ -51,7 +51,7 @@ html.skin-theme-clientpref-night { --ak-keyart-image: url(//media.prts.wiki/…/
 ```
 
 - 头图取景：`--ak-keyart-position` / `-size` 相对「页眉 + 画高」整块算（页眉 56 + `--ak-keyart-h`；手机上页眉 52）；头图不必自己压暗 / 洗白——页眉靠玻璃的 alpha，版面靠 `--ak-keyart-veil-filter` 的模糊加 `--ak-keyart-veil` 那层纱。
-- 头图默认只占 72px（`--ak-keyart-reveal`，手机上也是）：页眉之下先露一小条画，侧栏 / 页面标题 / 目录从那以下压在画上。想多露一些设 `--ak-keyart-reveal: 96px` 之类，想顶满设 0；要旧的横幅带就设成与 `-h` 相等。露出段会把侧栏导轨往下推：它的高度按吸顶位置算，矮窗口里首屏底下那一截要滚一下页面才看得全，侧栏内容宜短。
+- 头图默认只占 72px（`--ak-keyart-reveal`，手机上也是）：页眉之下先露一小条画，侧栏 / 页面标题 / 目录从那以下压在画上。想多露一些设 `--ak-keyart-reveal: 96px` 之类，想顶满设 0；要旧的横幅带就设成与 `-h` 相等。露出段会把侧栏导轨往下推：还没吸顶时导轨限高跟着减掉这一截（见[侧栏](/chrome/sidebar)），首屏也整条在视口里、只滚侧栏就能到底。
 - **页眉本身在两套主题下都是黑的**，所以角饰 / 站标只需准备一套；头图与画布图要分昼夜，就按 `html.skin-theme-clientpref-day | night` 分写（跟随系统时另加 `@media (prefers-color-scheme: dark)` 分支，`demo-theme.css` 里有写法）。
 - 只换 `--ak-theme-accent` 时正文不动，只有「框」在换——这是有意的：活动皮不该把内容页读起来的对比度也一起赌上。想连正文的链接 / 选中色一起换，再覆盖 `--ak-accent`（亮 / 暗各写一次）。
 

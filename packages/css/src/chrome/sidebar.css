@@ -5,8 +5,10 @@
  *   b) PRTS #MenuSidebar 原始 wikitext 树 → p（分组标题）+ ul > li > (a|b) [+ ul …任意深度]
  *  多层导航由 sidebar-tree.js 增强（桌面飞出、抽屉里就地展开）：li.ak-tree__branch(.is-open) > .ak-tree__label + button.ak-tree__toggle + ul.ak-tree__list
  *  导轨不写 overscroll-behavior:contain（同目录导轨 / .ak-menu）：滚到头、或侧栏根本没有内滚时，滚轮照常带动页面；抽屉态（<1120，页面是锁住的）才写，见 responsive.css。
+ *  导轨限高 = 视口减去吸顶位置，再减 --_y：还没吸到页眉下时（首屏被头图露出段 --ak-keyart-reveal 往下推了一截）比吸顶位置低的那一截，sidebar-tree.js 随滚动 / 缩放写入，
+ *  吸住后为 0——导轨底边始终落在视口底边，首屏也看得到整条滚动条、只滚侧栏就能到底（同 Docusaurus 有公告条时给侧栏菜单补的 margin-bottom）。无 JS 时 --_y 是 0，首屏底下那一截要先滚一下页面。
  */
-.ak-sidebar { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-6)); overflow-y: auto; font-size: var(--ak-fs-sm); scrollbar-width: thin; padding-right: 4px; }
+.ak-sidebar { position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-6)); max-height: calc(100vh - var(--ak-header-h) - var(--ak-space-6) - var(--_y, 0px)); overflow-y: auto; font-size: var(--ak-fs-sm); scrollbar-width: thin; padding-right: 4px; }
 .ak-sidebar__panel { display: block; }
 .ak-portlet { margin-bottom: var(--ak-space-5); }
 /* 分组标题：门户 h3 / MW 原生 heading / 原始 p */

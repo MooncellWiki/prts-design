@@ -56,7 +56,7 @@ li.ak-tree__branch[.is-open][.is-current-path]
 
 `.is-open` 两种形态下都留在 DOM 上，飞出形态只是不显示；窗口跨过 1120 时形态跟着换。晚注入的内容由 MutationObserver 接住。无 JS 时所有层级全部展开。
 
-导轨吸在页眉之下、`max-height` 取视口剩下的高度，超出的在自己里面滚。它不写 `overscroll-behavior: contain`（同目录导轨、`.ak-menu`）：滚到头，或根本没有内滚时，滚轮照常带动页面；抽屉态页面是锁住的，才写。
+导轨吸在页眉之下、`max-height` 取视口剩下的高度，超出的在自己里面滚。还没吸住时（首屏被头图露出段 `--ak-keyart-reveal` 往下推了一截），`sidebar-tree.js` 把比吸顶位置低出的那一截写进 `--_y`（随滚动 / 缩放更新，吸住后为 0），限高减掉它——导轨底边始终落在视口底边，首屏也看得到整条滚动条、只滚侧栏就能到底（同 Docusaurus 有公告条时给侧栏菜单补的 `margin-bottom`）；无 JS 时首屏底下那一截要先滚一下页面。它不写 `overscroll-behavior: contain`（同目录导轨、`.ak-menu`）：滚到头，或根本没有内滚时，滚轮照常带动页面；抽屉态页面是锁住的，才写。
 
 <SkinFrame :height="900" state="flyout" caption="悬停「档案」→ 右侧飞出它的子项" />
 

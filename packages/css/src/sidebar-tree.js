@@ -23,6 +23,7 @@
  *        关掉飞出：<aside class="ak-sidebar" data-flyout="off"> 或 <html data-akds-flyout="off">。
  *  状态：localStorage['akds-sidebar-tree'] = { "<分组>/<标签路径>": 1|0, "portlet:<id|标题>": 1|0 }（只在树形态下读写展开；.is-open 一直留在 DOM 上，飞出形态由 CSS 不显示）
  *        当前页 = a.selflink / .mw-selflink / li.is-active / li.selected / [aria-current] / href==location。
+ *  导轨限高：侧栏还没吸顶时（首屏）比吸顶位置低出的那一截写进 .ak-sidebar 的 --_y，限高减掉它，导轨底边不探出视口（CSS 见 chrome/sidebar.css）。
  * ═══════════════════════════════════════════════════════════════════════════ */
 ( function () {
 	'use strict';
@@ -263,6 +264,20 @@
 	function onModeChange() { hideFlyout(); each( document.querySelectorAll( ROOT ), syncMode ); }
 	if ( mq.addEventListener ) { mq.addEventListener( 'change', onModeChange ); } else if ( mq.addListener ) { mq.addListener( onModeChange ); }
 
+	/* ── 导轨限高：侧栏还没吸到页眉下时（首屏被头图露出段往下推了一截）比吸顶位置低，把这一截写进 --_y（CSS 从 max-height 里减掉），
+	 *  导轨底边才不探出视口——首屏也看得到整条滚动条、只滚侧栏就能到底。随滚动 / 缩放更新、只在值变了时写；吸住之后、抽屉态（fixed，top 0）都是 0 ── */
+	var fitRaf = 0;
+	function fitRail() {
+		fitRaf = 0;
+		each( document.querySelectorAll( ROOT ), function ( root ) {
+			var y = Math.max( 0, Math.round( root.getBoundingClientRect().top - ( parseFloat( getComputedStyle( root ).top ) || 0 ) ) ) + 'px';
+			if ( root.style.getPropertyValue( '--_y' ) !== y ) { root.style.setProperty( '--_y', y ); }
+		} );
+	}
+	function scheduleFit() { if ( !fitRaf ) { fitRaf = requestAnimationFrame( fitRail ); } }
+	window.addEventListener( 'scroll', scheduleFit, { passive: true } );
+	window.addEventListener( 'resize', scheduleFit );
+
 	/* ── 初始化：立即增强 + 监听后续注入（如 PRTS 站点脚本把 #MenuSidebar 移入 #mw-panel） ── */
 	function init( scope ) {
 		scope = scope || document;
@@ -276,6 +291,7 @@
 				root.__akTree = mo;
 			}
 		} );
+		scheduleFit();
 	}
 	if ( document.readyState === 'loading' ) { document.addEventListener( 'DOMContentLoaded', function () { init(); } ); } else { init(); }
 	window.akdsSidebarTree = { init: init, refresh: enhance, setOpen: setOpen, hideFlyout: hideFlyout };

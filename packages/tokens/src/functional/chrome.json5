@@ -33,7 +33,7 @@
     "chrome-texture": { $value: ".55", $description: "右侧半调网点强度 0–1（游戏顶栏 img_back / 官网左缘网点），0 关闭" },
     "keyart-image": { $value: "none", $description: "头图（Key Visual）：从页面顶端铺起、垫在页眉与版面背后的一幅通栏画；--ak-keyart-h 为 0 时只在页眉后面透" },
     "keyart-h": { $value: "0px", $description: "页眉之下那段画的高度（画有多高，不是占多高——占位看 -reveal）" },
-    "keyart-reveal": { $value: "72px", $description: "留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉，各宽度相同（手机上也露）；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带。露出段会把侧栏导轨往下推这么多——它的高度按吸顶位置算，矮窗口里首屏底下那一截要滚一下才看得到，侧栏内容宜短" },
+    "keyart-reveal": { $value: "72px", $description: "留在版面之上、不被压住的一段高度（不超过 --ak-keyart-h，没有头图时不占位）：默认留一小条，画先露一口气、版面不贴着页眉，各宽度相同（手机上也露）；0 = 完全垫在版面背后；= --ak-keyart-h 即一条横幅带。露出段会把侧栏导轨往下推这么多——还没吸顶时导轨限高跟着减掉这一截（sidebar-tree.js 写 --_y），首屏底边也落在视口底边" },
     "keyart-veil": { $value: "60%", $description: "垫在版面背后那一段蒙的画布色纱：顶端的浓度，往下渐浓到 100%。画面越花调得越高；别低于 50%（侧栏 / 标题压在画上要读得清）" },
     "keyart-veil-filter": { $value: "blur(8px)", $description: "纱底下先给画加的 filter（加在 ::before 里同一幅头图的副本上，不是 backdrop-filter）：细节先糊开、再被纱盖住，亮色主题下读起来是雾 / 景深而不是隔着磨砂膜；none 关闭。画面鲜艳的主题可以再加 saturate(.6) 之类" },
     "keyart-position": { $value: "center 30%", $description: "-position / -size 相对整块（页眉高 + -h）计算" },
