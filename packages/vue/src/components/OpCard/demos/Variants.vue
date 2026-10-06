@@ -6,7 +6,7 @@ import AkOpCard from "../AkOpCard.vue";
 
 <template>
   <div class="ak-flex ak-wrap ak-gap-4 ak-items-start">
-    <!-- rail：稀有度色放在左边条 -->
+    <!-- rail：头像底之外另加一条稀有度色左边条 -->
     <AkOpCard
       variant="rail"
       name="煌"

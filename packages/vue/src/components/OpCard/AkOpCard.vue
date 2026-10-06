@@ -11,7 +11,7 @@ const props = withDefaults(
     sub?: string;
     /** 头像地址（正方形，avatar/char_xxx_2.png） */
     avatar: string;
-    /** 稀有度 1–6：名字上方的色线（rail 时是左边条），并作左上角星级的 alt */
+    /** 稀有度 1–6：头像的稀有度色渐变底（rail 时另加左边条），并作左上角星级的 alt */
     rarity: Rarity;
     /** 左上角星级原图地址（rarity/rarity_yellow_{rarity−1}.png）；不传时画 CSS 星形 */
     rarityIcon?: string;
@@ -25,7 +25,7 @@ const props = withDefaults(
     eliteIcon?: string;
     /** 尺寸：sm 88 · md 128 · lg 180（px 宽）；放进 AkOpGrid 时宽度由网格定 */
     size?: "sm" | "md" | "lg";
-    /** 外观：default 稀有度色顶线 · rail 稀有度色左边条（与 1px 框直角拼接） */
+    /** 外观：default 稀有度只看头像底 · rail 另加稀有度色左边条（与 1px 框直角拼接） */
     variant?: "default" | "rail";
     /** 链接到干员页；不写渲染成 <div> */
     href?: string;

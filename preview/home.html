@@ -259,7 +259,7 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
 .mp-ops__row { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
 .mp-ops__row .ak-op-card { --_w: 88px; }
 .mp-ops__row .ak-op-card__name { font-size: var(--ak-fs-xs); padding: 5px 6px 6px; }
-.mp-ops__row .ak-op-card__rarity { height: 14px; left: 3px; top: 3px; }   /* 星级原图上下左右各留 16% 透明边，14px 高时星形约 9.5px；往角上让 1px，可见的星仍离边 ~5px，六星右端与 30px 模组框之间还留 ~3px */
+.mp-ops__row .ak-op-card__rarity { height: 14px; }   /* 星级原图上下左右各留 16% 透明边，14px 高时星形约 9.5px；黑底贴在左上角（组件默认） */
 .mp-ops__row .ak-op-card__prof { width: 22px; height: 22px; } .mp-ops__row .ak-op-card__prof img { width: 18px; height: 18px; }   /* 角上用游戏头像同款小职业图标 assets/profession/icon_*.png（= 现网 图标_职业_*.png），不是大号 hub 图标 */
 .mp-ops__row .ak-op-card__sub { font-size: max(9px, var(--ak-fs-cjk-min)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: none; }   /* 副标题是内容（分支 / 时装名 / 模组名），不是 HUD 标签：不转大写，「悠然假日 HDm25」不能变成 HDM25 */
 .mp-ops__badge { position: absolute; right: 4px; top: 4px; z-index: 1; }   /* 「兑」——黄 = 高级凭证兑换（提示 / 次强调，同现网） */

@@ -21,7 +21,7 @@
 .ak-r-swatch { display: inline-block; width: 1em; height: 1em; background: var(--ak-r); vertical-align: -.15em; margin-right: .3em; }
 /* 头像底：透明底的干员头像垫一块稀有度色渐变——一排里混着几种星级时扫一眼底色就能分开，头像下面 / 旁边不必再拉一道同色的色条。
  * 画法照现网的抽卡模拟器（GachaSimulatorV2 的 .rarity-5 / .rarity-4）：上面稀有度色、往下褪成浅灰 #e6e5e2，6★ 另是斜向 32° 的 奶油 #eee2b8 → 橙；稀有度色仍用令牌（模拟器自己的 4★ 紫偏灰，和 1★ 的灰底分不开）。
- * --ak-r-fade 是叠在 --ak-r 上的那层渐变，随 data-rarity 给（两条同特指度，6★ 在后）；头像框写 .ak-r-avatar。
+ * --ak-r-fade 是叠在 --ak-r 上的那层渐变，随 data-rarity 给（两条同特指度，6★ 在后）；干员卡的头像默认就垫，别处的头像框写 .ak-r-avatar。
  * 底的上半截是饱和的稀有度色：压在上面的黄星（5★ 金、2★ 黄绿底上看不清）、白色线稿图标要自己垫半透明黑底。 */
 [data-rarity] { --ak-r-fade: linear-gradient(180deg, transparent, #e6e5e2); }
 [data-rarity="6"] { --ak-r-fade: linear-gradient(32deg, #eee2b8 22%, transparent); }
