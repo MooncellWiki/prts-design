@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import AkRarity, { type Rarity } from "../Rarity/AkRarity.vue";
 
-/** 干员横向条目：列表 / 表格里一行一位——头像（稀有度色左边条）+ 名字 + 第二行小字 */
+/** 干员横向条目：列表 / 表格里一行一位——头像（稀有度色渐变底）+ 名字 + 第二行小字 */
 withDefaults(
   defineProps<{
     /** 干员名 */
     name: string;
     /** 头像地址（正方形，36px 显示） */
     avatar: string;
-    /** 稀有度 1–6：头像左边的色条；stars 时第二行的星也按它画 */
+    /** 稀有度 1–6：头像的稀有度色渐变底；stars 时第二行的星也按它画 */
     rarity?: Rarity;
     /** 第二行小字：分支 / 职业 / 获得方式 */
     meta?: string;

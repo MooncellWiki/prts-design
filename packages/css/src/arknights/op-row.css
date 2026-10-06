@@ -1,6 +1,6 @@
 /*! PRTS Design · arknights/op-row.css — B4 干员横向条目 Operator row · 依赖：tokens.css · decor/ */
 /* 干员横向条目（列表/表格内） */
 .ak-op-row { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
-.ak-op-row .ak-avatar { --_s: 36px; border-left-width: 3px; border-image: linear-gradient(to right, var(--ak-r, var(--ak-border)) 3px, var(--ak-border) 3px) 1 1 1 3; }
+.ak-op-row .ak-avatar { --_s: 36px; background: var(--ak-r, var(--ak-bg-surface-3)) var(--ak-r-fade, none); }   /* 头像底 = 稀有度色渐变（同 .ak-r-avatar，见 rarity.css），不再拉左边色条；没有 data-rarity 时同普通头像 */
 .ak-op-row__name { font-weight: 700; line-height: 1.2; }
 .ak-op-row__meta { font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); display: flex; gap: 6px; align-items: center; }

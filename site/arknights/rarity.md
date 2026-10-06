@@ -25,7 +25,7 @@ component: rarity
 
 ## 稀有度色轨
 
-表格行、卡片、头像要带稀有度色时，不用组件：在容器上写 `data-rarity="1–6"`，它提供 `--ak-r`（色块）/ `--ak-r-text`（文字色：亮色主题下换成加深的 text-safe 版）两个变量，再配下面几个工具类。[干员卡](/arknights/op-card)的头像底、[干员条目](/arknights/op-row)的头像色条都是这么来的（[道具](/arknights/item)的裸图标底框也认 `data-rarity`，但画的是游戏底图）。
+表格行、卡片、头像要带稀有度色时，不用组件：在容器上写 `data-rarity="1–6"`，它提供 `--ak-r`（色块）/ `--ak-r-text`（文字色：亮色主题下换成加深的 text-safe 版）两个变量，再配下面几个工具类。[干员卡](/arknights/op-card)、[干员条目](/arknights/op-row)的头像底都是这么来的（[道具](/arknights/item)的裸图标底框也认 `data-rarity`，但画的是游戏底图）。
 
 ```html demo
 <div class="ak-flex ak-wrap ak-gap-3 ak-items-center">
@@ -52,7 +52,7 @@ component: rarity
 
 ## 头像底
 
-透明底的干员头像垫一块稀有度色渐变：一排里混着几种星级时扫一眼底色就能分开，头像下面 / 旁边不必再拉一道同色的色条（那是重复信息）。画法照现网的抽卡模拟器（`GachaSimulatorV2` 的 `.rarity-5` / `.rarity-4`）：上面稀有度色、往下褪成浅灰 `#e6e5e2`，6★ 另是斜向 32° 的 奶油 `#eee2b8` → 橙；稀有度色仍用令牌（模拟器自己的 4★ 紫偏灰，和 1★ 的灰底分不开）。[干员卡](/arknights/op-card)的头像默认就垫；别处的头像框（[头像](/components/avatar)、页面自己排的小头像、公招结果、表格里的头像列）写 `.ak-r-avatar`，稀有度照旧从祖先或自己的 `data-rarity` 来；下面是 `.ak-avatar--lg` + `.ak-r-avatar`（2★ / 1★ 没有图，只看底）。叠在 `--ak-r` 上的那层渐变是变量 `--ak-r-fade`（随 `data-rarity` 给），自己画背景时写 `background: var(--ak-r) var(--ak-r-fade)`。
+透明底的干员头像垫一块稀有度色渐变：一排里混着几种星级时扫一眼底色就能分开，头像下面 / 旁边不必再拉一道同色的色条（那是重复信息）。画法照现网的抽卡模拟器（`GachaSimulatorV2` 的 `.rarity-5` / `.rarity-4`）：上面稀有度色、往下褪成浅灰 `#e6e5e2`，6★ 另是斜向 32° 的 奶油 `#eee2b8` → 橙；稀有度色仍用令牌（模拟器自己的 4★ 紫偏灰，和 1★ 的灰底分不开）。[干员卡](/arknights/op-card)、[干员条目](/arknights/op-row)的头像默认就垫；别处的头像框（[头像](/components/avatar)、页面自己排的小头像、公招结果、表格里的头像列）写 `.ak-r-avatar`，稀有度照旧从祖先或自己的 `data-rarity` 来；下面是 `.ak-avatar--lg` + `.ak-r-avatar`（2★ / 1★ 没有图，只看底）。叠在 `--ak-r` 上的那层渐变是变量 `--ak-r-fade`（随 `data-rarity` 给），自己画背景时写 `background: var(--ak-r) var(--ak-r-fade)`。
 
 底的上半截是饱和的稀有度色：压在上面的黄星（5★ 金、2★ 黄绿底上看不清）、白色线稿图标要自己垫半透明黑底（同干员卡的角标）。
 

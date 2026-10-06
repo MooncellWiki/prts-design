@@ -3,7 +3,7 @@ title: 干员条目 Op Row
 component: op-row
 ---
 
-列表 / 表格里一行一位干员：36px 头像（左边 3px 稀有度色条，与 1px 框直角拼接）+ 名字 + 第二行小字。整条是一个链接（`href`），外层带 `ak-not-prose`，不吃正文链接色。要卡片式的网格用[干员卡](/arknights/op-card)。
+列表 / 表格里一行一位干员：36px 头像（垫稀有度色的渐变底，见[稀有度 · 头像底](/arknights/rarity#头像底)）+ 名字 + 第二行小字。整条是一个链接（`href`），外层带 `ak-not-prose`，不吃正文链接色。要卡片式的网格用[干员卡](/arknights/op-card)。
 
 ## 条目
 
