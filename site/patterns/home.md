@@ -24,7 +24,7 @@ title: 首页设计稿
 | 动作簇保留、靠右 | `.ak-page-header__row { justify-content: flex-end; margin-bottom: 0 }`——标题出流后它是行里唯一的项，默认会滑到左边 |
 | 手机上动作簇也不显示 | ≤639：`.ak-page-tools { display: none }`，页面头与 `#contentSub` 的下边距去掉——390 宽下它是页眉与 Hero 之间整整一行图标，首页读者用不上（编辑走桌面版或编辑链接）；h1 仍是 sr-only，页面头没有看得见的东西，正文直接从页眉下的版面间距排起（Hero 顶从 115 提到 69px） |
 | 正文不包白纸 | `.ak-body--mainpage`：无底色、无边框、无内边距 |
-| 不让出目录导轨 | `.ak-layout--mainpage .ak-main` 保留 `--ak-content-max + --ak-toc-w + --ak-gutter` 的总宽（其它无目录页收窄到阅读列），右缘与有目录的页面对齐 |
+| 不让出目录导轨 | 无目录页的 `.ak-layout--no-toc` 本身就不让导轨、正文铺到 `--ak-content-max + --ak-toc-w + --ak-gutter` 的总宽，右缘与有目录的页面对齐；首页不需要再多做什么（`mainpage.less` 里那条 `.ak-main` 覆盖是早先无目录页还收窄到阅读列时留下的，可去） |
 | 不出目录 | 首页恒 `toc-enabled = false`：右侧粘性目录、目录按钮与手机页眉里的目录图标都不渲染 |
 | 命名空间小标 / 指示器 | `.ak-page-header__top:empty` 自动收起；编辑真放了 `<indicator>` 会照常显示（要不要藏是站点的决定） |
 
@@ -34,7 +34,7 @@ title: 首页设计稿
 
 **链接必须是真盒子，不能用 `display: contents` 偷懒**：没有盒子的 `<a>` 在 Chromium / WebKit 里不算「按住的链接」（它们沿布局树找链接），整格拖不出去——拖到标签栏开新标签页失效；右键菜单和中键按 DOM 找链接，照常能用，所以不容易发现。现网首页第一版就踩了这个坑。轮播例外：它在 Swiper 里，按住拖动是滑动切换，本来就拖不出链接——要在新标签页打开用中键或右键菜单（它们按 DOM 找链接，照常可用）。
 
-设计稿里「0. 页面级」那段 CSS 是**静态骨架的补丁**（预览没有「当前是首页」这个状态），选择器按预览骨架写（`.ak-main__inner` / `.ak-page-header__title`），与真皮肤的 DOM 不一致，不要照抄。
+设计稿里「0. 页面级」那段 CSS 是**静态骨架的补丁**（预览没有「当前是首页」这个状态），选择器按预览骨架写（`.ak-page-header__title`），与真皮肤的 DOM 不一致，不要照抄；无目录由 front matter `toc: false` 给出 `.ak-layout--no-toc`，与真皮肤一致。
 
 ## Hero 轮播
 

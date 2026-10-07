@@ -7,6 +7,7 @@ h1: 公招计算
 h1en: Recruitment
 indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">现网数据快照</span>
 actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+toc: false
 lastmod: 2023年12月11日 (一) 21:46
 -->
 <!--head
@@ -23,10 +24,8 @@ lastmod: 2023年12月11日 (一) 21:46
    页面脚本只是 Widget 的替身。开头「0. 页面级」段是这份静态预览的补丁，别照抄——同干员一览样例。
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── 0. 页面级：预览骨架的补丁（同 operators.html 的「0. 页面级」：无目录页把目录导轨让给主列） ── */
-.ak-toc-dock, .ak-local-nav__toc { display: none; }
-.ak-main { padding-right: 0; }
-.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
+/* ── 0. 页面级：预览骨架的补丁（同 operators.html 的「0. 页面级」：无目录页 front matter toc: false → .ak-layout--no-toc；页眉的「本页目录」这里藏） ── */
+.ak-local-nav__toc { display: none; }
 .catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
 @media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }
 

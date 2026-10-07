@@ -14,6 +14,7 @@
     actions: <li>…</li>           （可选）动作簇 #p-views 里追加的项（如 li#ca-watch ★ 监视）
     lastmod: 2026年8月19日 (三) 22:30
     cats: PRTS 皮肤, 设计系统       底部分类（逗号分隔）；hiddencats: …（可选）隐藏分类
+    toc: false                    （可选）页面没有目录：.ak-layout 加 .ak-layout--no-toc（同真皮肤 toc-enabled=false），不让导轨、不出目录
     -->
     <!--head
     <style>…本页私有样式…</style>    （可选）塞进 <head>
@@ -73,6 +74,9 @@ for meta, body in pages:
         fills.update({
             'nav': nav, 'crumb': crumb(meta.get('crumb', '')), 'indicators': meta.get('indicators', ''), 'h1': meta['h1'], 'h1en': meta.get('h1en', ''),
             'actions': meta.get('actions', ''), 'lastmod': meta.get('lastmod', ''), 'cats': cats, 'hiddencats': hiddencats,
+            # toc: false → 同真皮肤 toc-enabled=false 时的 .ak-layout--no-toc（layout.css 不让导轨、toc.css 藏掉 .ak-toc-dock）；
+            # 页眉里的「本页目录」label 在 .ak-layout 之外、这个类够不到（真皮肤是不输出它），页面自己的「0. 页面级」里藏
+            'layoutmod': ' ak-layout--no-toc' if meta.get('toc', '').lower() == 'false' else '',
         })
     page = skeleton_of(meta)
     for k, v in fills.items():

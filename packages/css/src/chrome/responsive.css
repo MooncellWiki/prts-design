@@ -13,7 +13,7 @@
    * :not(.ak-fab--absolute)：滚动区域自己的那枚不归这里管 */
   :root.ak-toc-open .ak-fab:not(.ak-fab--absolute) { display: none; }
   body:has(.ak-toc-cb:checked) .ak-fab:not(.ak-fab--absolute) { display: none; }
-  .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
+  .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（压过 .ak-main 的 阅读列 + 导轨 封顶） */
 
   .ak-toc-dock { --_r: calc(var(--ak-space-5) - var(--ak-gutter)); position: sticky; top: calc(var(--ak-header-h) + var(--ak-space-3)); z-index: calc(var(--ak-z-dropdown) - 1); height: 0; }
   .ak-toc-cb { display: block; }
@@ -170,6 +170,6 @@
 @media print {
   .ak-header, .ak-keyart, .ak-sidebar, .ak-toc-dock, .ak-toc, .ak-local-nav, .ak-footer, .ak-page-tools, .ak-fab { display: none !important; }
   .ak-layout { display: block; padding: 0; }
-  .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（同特指度压过 .ak-layout--no-toc .ak-main 的阅读列封顶） */
+  .ak-layout .ak-main { max-width: none; padding-right: 0; }   /* 导轨收起：主列铺满（压过 .ak-main 的 阅读列 + 导轨 封顶） */
   .ak-body { border: 0; padding: 0; }
 }

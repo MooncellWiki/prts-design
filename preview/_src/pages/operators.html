@@ -7,6 +7,7 @@ h1: 干员一览
 h1en: Operators
 indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">现网数据快照</span>
 actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+toc: false
 lastmod: 2025年3月1日 (六) 00:06
 -->
 <!--head
@@ -21,12 +22,11 @@ lastmod: 2025年3月1日 (六) 00:06
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── 0. 页面级：预览骨架的补丁 ──
- *  这页没有章节标题，也就没有目录：右侧导轨让给主列（列表 / 表格密集页要宽度），页眉不出「本页目录」。写法同首页设计稿的「0. 页面级」，选择器按预览骨架写。
- *  真皮肤里无目录页是 .ak-layout--no-toc（主列收到阅读列 1240），要吃掉导轨得另给口子——见文档站 /patterns/operators#页面与皮肤的分工。
+ *  这页没有章节标题，也就没有目录：front matter toc: false → 骨架给 .ak-layout--no-toc（同真皮肤 toc-enabled=false），皮肤层就把右侧导轨让给主列、
+ *  正文铺到阅读列 + 导轨之和（列表 / 表格密集页要宽度；右缘与有目录的页面对齐，见文档站 /patterns/operators#页面与皮肤的分工）。
+ *  页眉里的「本页目录」在 .ak-layout 之外，这里藏（真皮肤是不输出它）。
  *  现网这页没有分类：MW 这时给 #catlinks 加 .catlinks-allhidden 整条不显示，骨架是静态的，这里按空列表藏掉。 */
-.ak-toc-dock, .ak-local-nav__toc { display: none; }
-.ak-main { padding-right: 0; }
-.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
+.ak-local-nav__toc { display: none; }
 .catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
 @media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }   /* 手机上白纸的左右内边距让给卡片 */
 

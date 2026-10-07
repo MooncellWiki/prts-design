@@ -19,11 +19,9 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── 0. 页面级：预览骨架的补丁（同干员一览样例的「0. 页面级」）──
- *  这页没有章节标题，也就没有目录：右侧导轨让给主列，页眉不出「本页目录」。真皮肤里的办法见文档站 /patterns/operators#页面与皮肤的分工。
+ *  这页没有章节标题，也就没有目录：front matter toc: false → .ak-layout--no-toc（同真皮肤），皮肤层把导轨让给主列；页眉的「本页目录」这里藏。
  *  现网这页没有分类：骨架是静态的，这里按空列表藏掉。 */
-.ak-toc-dock, .ak-local-nav__toc { display: none; }
-.ak-main { padding-right: 0; }
-.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
+.ak-local-nav__toc { display: none; }
 .catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
 @media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }   /* 手机上白纸的左右内边距让给卡片 */
 
@@ -278,7 +276,7 @@
 <!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 72px，各宽度相同；chrome/keyart.css 负外边距，DOM 顺序不变） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
 
-<div class="ak-layout">
+<div class="ak-layout ak-layout--no-toc">
   <!-- ═══ SIDEBAR ═══ -->
   <aside class="ak-sidebar" id="ak-sidebar" aria-label="导航">
     <div class="ak-sidebar__panel" id="mw-panel">

@@ -5,6 +5,7 @@ title: 首页 - PRTS · 首页设计稿
 crumb: 首页
 h1: 首页
 h1en: PRTS · Arknights Wiki
+toc: false
 lastmod: 2026年8月23日 (日) 13:00
 cats: 首页
 -->
@@ -21,18 +22,17 @@ cats: 首页
 
 /* ── 0. 页面级：预览骨架的补丁，不是页面的样式，也不是要粘进 MediaWiki:Common.css 的东西 ──
  *  首页上皮肤要「少做」的几件事——同 Citizen 首页：标题 / 面包屑 / 指示器不显示（h1 留给读屏器——它仍是大纲的根，不 display:none），
- *  动作簇（讨论 / 历史 / 编辑 / 更多）保留、靠右成一行，手机（≤639）上连它也不显示；无目录（导轨让给主列，页眉也不出「本页目录」）；
+ *  动作簇（讨论 / 历史 / 编辑 / 更多）保留、靠右成一行，手机（≤639）上连它也不显示；无目录（front matter toc: false → .ak-layout--no-toc，
+ *  皮肤层就把导轨让给主列；页眉里的「本页目录」在 .ak-layout 之外，这里藏——真皮肤是不输出它）；
  *  正文不包白纸——首页区块各自带容器、直接铺在画布上，外层再套一张纸就是纸上贴纸。
  *  这些都归皮肤：Skin:Arknights 在 .ak-layout--mainpage 下已经做完（resources/skins.arknights.styles/common/mainpage.less），站点侧零配置。
  *  预览的骨架是静态的、没有首页状态，所以在这里复现一份；选择器按预览骨架写，别照抄进 Common.css——真皮肤的 DOM 不一样：
- *  宽度在 .ak-main 自己身上（没有 .ak-main__inner），标题是核心的 #firstHeading 包在 .ak-page-heading 里（没有 .ak-page-header__title）。 */
-.ak-page-header__top, .ak-toc-dock, .ak-local-nav__toc { display: none; }
+ *  标题是核心的 #firstHeading 包在 .ak-page-heading 里（没有 .ak-page-header__title）。 */
+.ak-page-header__top, .ak-local-nav__toc { display: none; }
 .ak-page-header__title { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .ak-page-header { margin-bottom: var(--ak-space-3); }
 .ak-page-header__row { justify-content: flex-end; margin-bottom: 0; }
 @media (max-width: 639px) { .ak-page-tools { display: none; } .ak-page-header { margin-bottom: 0; } }   /* 手机：390 宽下动作簇是页眉与 Hero 之间整整一行图标，首页读者用不上（编辑走桌面版或编辑链接）；h1 仍在读屏器里，页面头没有看得见的东西了，下边距一起去掉 */
-.ak-main { padding-right: 0; }
-.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }   /* 吃掉目录导轨：右缘与带目录的页面对齐 */
 .ak-body { background: transparent; border: 0; padding: 0; margin: 0; }
 
 /* ── 1. 通用 ── */

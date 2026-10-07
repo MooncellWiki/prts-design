@@ -2,14 +2,17 @@
 /* ═══ Layout ═══
  *  两列网格：侧栏 + 主列。目录导轨不是第三列，而是由 .ak-main 的右内边距预留出来的
  *  —— 这样 aside.ak-toc 在 DOM 上可以待在页面标题下方（属于页面而非布局），
- *  窄屏收起时直接落回正文流，不需要浮层，也不需要第二份 DOM。 */
+ *  窄屏收起时直接落回正文流，不需要浮层，也不需要第二份 DOM。
+ *  阅读列的宽度（--ak-content-max）只由「主列封顶 − 导轨内边距」得出，不在 .ak-main__inner 或无目录页的 .ak-main 上另锁一道：
+ *  那两道只对无目录页起作用，结果是 >1512 的屏上正文右边剩一条与导轨等宽的空白、左边又与侧栏贴齐，读起来像少了一栏（现网反馈
+ *  「无目录栏页面中的网页右侧空白栏」）。无目录页（一览 / 工具页、短讨论页）把导轨那 224px 一并用掉，右缘与有目录页面的导轨右缘、
+ *  页眉工具列对齐；正文页本来就有标题 → 有目录 → 走导轨那条路，行长照旧封在阅读列。 */
 .ak-layout { flex: 1; display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr); gap: var(--ak-gutter); max-width: 1680px; width: 100%; margin: 0 auto; padding: var(--ak-space-6) var(--ak-gutter) var(--ak-space-16); box-sizing: border-box; align-items: start; }
 .ak-layout--no-toc .ak-toc { display: none; }
-.ak-layout--no-toc .ak-main { max-width: var(--ak-content-max); padding-right: 0; }   /* 没有目录：不让导轨，主列收窄到阅读列 */
+.ak-layout--no-toc .ak-main { padding-right: 0; }   /* 没有目录：不让导轨，正文铺到主列封顶（阅读列 + 导轨之和），右缘与有目录的页面对齐 */
 .ak-layout--wide { max-width: none; }
 .ak-layout--reading { grid-template-columns: var(--ak-sidebar-w) minmax(0, calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter))); justify-content: center; }
 /* 主列 = 阅读列 + 右侧导轨（给 .ak-toc 让位的右内边距）。宽度封顶在两者之和、靠左：超宽屏上导轨贴着正文右缘，多出来的空间留在最右，
  * 而不是导轨被推到网格列的最右、与正文之间拉开一段空白（Skin:Arknights 在 1680+ 上核过） */
 .ak-main { min-width: 0; position: relative; width: 100%; max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); padding-right: calc(var(--ak-toc-w) + var(--ak-gutter)); box-sizing: border-box; justify-self: start; }
-.ak-main__inner { max-width: var(--ak-content-max); }
-.ak-layout--wide .ak-main, .ak-layout--wide .ak-main__inner { max-width: none; }
+.ak-layout--wide .ak-main { max-width: none; }

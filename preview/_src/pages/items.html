@@ -7,6 +7,7 @@ h1: 道具一览
 h1en: Items
 indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">现网数据快照</span>
 actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+toc: false
 lastmod: 2026年9月4日 (五) 14:23
 -->
 <!--head
@@ -21,11 +22,9 @@ lastmod: 2026年9月4日 (五) 14:23
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── 0. 页面级：预览骨架的补丁（同干员一览样例的「0. 页面级」）──
- *  这页没有章节标题，也就没有目录：右侧导轨让给主列，页眉不出「本页目录」。真皮肤里的办法见文档站 /patterns/operators#页面与皮肤的分工。
+ *  这页没有章节标题，也就没有目录：front matter toc: false → .ak-layout--no-toc（同真皮肤），皮肤层把导轨让给主列；页眉的「本页目录」这里藏。
  *  现网这页没有分类：骨架是静态的，这里按空列表藏掉。 */
-.ak-toc-dock, .ak-local-nav__toc { display: none; }
-.ak-main { padding-right: 0; }
-.ak-main__inner { max-width: calc(var(--ak-content-max) + var(--ak-toc-w) + var(--ak-gutter)); }
+.ak-local-nav__toc { display: none; }
 .catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
 @media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }   /* 手机上白纸的左右内边距让给卡片 */
 
