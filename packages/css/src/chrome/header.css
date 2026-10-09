@@ -16,7 +16,7 @@
  *  主行是三列网格，与 .ak-layout 的 侧栏 / 正文 两列对齐：品牌在侧栏列上方，搜索从正文列左缘起（≤560px，与面包屑 / 标题同一条线），
  *  工具靠右 —— 页眉是三列各自的「列头」，不是游离的一条。页眉里不放站点级主导航：那 8 项与侧栏「通用」组 1:1 重复，导航只由侧栏承担
  *  （MW 的 data-portlets-first 也只在侧栏渲染一次）。1680 容器与 .ak-layout 同为 border-box，超宽时左右缘才对得齐。
- *  <1120 这一行回到 flex：◧ 菜单 · 品牌 · 搜索 · ⋮；工具（外观 / 通知 / 用户菜单）都在 .ak-header__screen 里 —— 桌面 display:contents
+ *  <1120 这一行回到 flex：» 菜单 · 品牌 · 搜索 · ⋮；工具（外观 / 通知 / 用户菜单）都在 .ak-header__screen 里 —— 桌面 display:contents
  *  （子项直接参与主行网格），窄屏变成 ⋮ 拉下、贴在页眉右下沿的卡片（宽度随内容，最窄 240px）（不再是全屏面板：里面只有一行图标控件 + 用户菜单）。开合是纯 CSS：
  *  input.ak-nav-cb + label.ak-header__burger（同目录按钮的 .ak-toc-cb 做法），DOM 顺序固定为
  *  logo · search · search-toggle · nav-cb · screen[tools] · burger（checkbox 在前才能用 ~ 联动）。
@@ -48,7 +48,7 @@
 .ak-nav-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 窄屏 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
 .ak-header__burger { display: none; flex: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; color: var(--ak-fg-secondary); cursor: pointer; }
 .ak-header__burger:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
-/* ⋮（三个方点）→ ×：不画三条线——三条线一眼读成汉堡菜单（= 导航），这里只是外观 / 账户；导航入口是同一行最左的「菜单」◧（侧栏抽屉） */
+/* ⋮（三个方点）→ ×：不画三条线——三条线一眼读成汉堡菜单（= 导航），这里只是外观 / 账户；导航入口是同一行最左的「菜单」»（侧栏抽屉） */
 .ak-header__burger-icon { position: relative; display: block; width: 18px; height: 18px; }
 .ak-header__burger-icon i { position: absolute; left: 7px; width: 4px; height: 4px; background: currentColor;
   transition: transform var(--ak-dur-fast) var(--ak-ease), opacity var(--ak-dur-fast), top var(--ak-dur-fast) var(--ak-ease), left var(--ak-dur-fast) var(--ak-ease), width var(--ak-dur-fast) var(--ak-ease), height var(--ak-dur-fast) var(--ak-ease); }

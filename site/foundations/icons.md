@@ -11,7 +11,7 @@
 
 ## 界面线稿图标
 
-- 24×24 网格、2px 描边（少数实心），颜色一律 `currentColor`，跟着文字色走；尺寸档 14 / 18 / 24 / 32 / 48（`--ak-icon-*`，见[尺寸 / 动效 / 层级](/foundations/size)）。
+- 24×24 网格、2px 描边（少数实心），颜色一律 `currentColor`，跟着文字色走；`menu`（页眉「菜单」的双右箭头）改自 [Lets Icons](https://www.figma.com/community/file/886554014393250663) 的 `expand-right-double`（Leonid Tsvetkov，[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)；从 6–18 放大到 4–20、描边加到 2.5，与同排的搜索等大、与 sprite 里其余箭头同粗），其余为自绘；尺寸档 14 / 18 / 24 / 32 / 48（`--ak-icon-*`，见[尺寸 / 动效 / 层级](/foundations/size)）。
 - 同一套路径有三处：预览骨架 `preview/_src/skeleton.html` 的 sprite（`<symbol id="i-*">`）、皮肤模板 `skin/templates/skin.mustache` 的 sprite、Vue 的 `packages/vue/src/icons.ts`；`node scripts/sprite-sync.ts` 检查三处一致（Pages 构建时也跑）。缺的图标往 sprite 里补，三处同步。
 - 模板里引用：`<svg class="ak-icon"><use href="#i-search"/></svg>`（sprite 由皮肤输出在页面顶部）。现网模板用的 MDI 图标名要映射到 `i-*`，见[模板与 TemplateStyles](/guide/templates#图标)。
 

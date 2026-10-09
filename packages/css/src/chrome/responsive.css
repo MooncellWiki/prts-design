@@ -66,7 +66,7 @@
    * 展开时 JS 给 <html> 加 .ak-scroll-lock 锁住页面滚动（VitePress VPSidebar 同）：抽屉自己 overflow-y:auto（沿用导轨态声明）+ overscroll-behavior:contain（导轨态不写，这里才有），滚到头也不会把页面带着走 */
   .ak-sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(86vw, 300px); max-height: none; overscroll-behavior: contain; z-index: var(--ak-z-modal); background: var(--ak-bg-surface); border-right: 1px solid var(--ak-border); padding: var(--ak-space-4) var(--ak-space-3) var(--ak-space-6); box-sizing: border-box; transform: translateX(-100%); visibility: hidden; transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s var(--ak-dur-normal); }
   .ak-sidebar.is-open { transform: none; visibility: visible; box-shadow: var(--ak-shadow-lg); transition: transform var(--ak-dur-normal) var(--ak-ease), visibility 0s; }
-  /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex 一行——◧ 菜单 · 品牌 · 搜索 · ⋮。仍是一行：.ak-header__inner 与 .ak-local-nav 都 display:contents，
+  /* 侧栏成了抽屉，页眉不再有列可对齐：回到 flex 一行——» 菜单 · 品牌 · 搜索 · ⋮。仍是一行：.ak-header__inner 与 .ak-local-nav 都 display:contents，
    * 两组子项直接排进 .ak-header（DOM 不动，checkbox 的 ~ 联动照旧——按 DOM 兄弟关系，不看盒子；.ak-header 是 sticky（已定位），工具卡片 / 复选框的绝对定位都相对它）。
    * 这一行始终贴顶、不随滚动收起。「菜单」用 order 排到最左（抽屉从左边出来），⋮ 排到最右（工具卡片从右上角拉下）；Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单，与视觉不一致——换来模板不用动 */
   .ak-header { display: flex; align-items: center; gap: 4px; height: var(--ak-header-h); padding: 0 var(--ak-gutter); }   /* content-box：底边 1px 亮线另算，与 ≥1120 的 __inner 56 + 1 一样高 */
@@ -117,7 +117,7 @@
 @media (max-width: 1119px) and (prefers-reduced-motion: reduce) { .ak-nav-cb:checked ~ .ak-header__screen { animation: none; } }
 @media (max-width: 639px) {
   /* gutter 16、页眉高 52、标题档收一级、大区块间隔 24：都是令牌的窄屏值（tokens.css 的「窄屏」块，源 = packages/tokens/src/functional/compact.json5），这里不再覆盖 */
-  /* 页眉这一行全是图标：◧ 菜单 · 品牌 ……… 目录 · 搜索 · ⋮ 工具（一行的排法见 <1120 那一档）；「本页目录」排到搜索之前 */
+  /* 页眉这一行全是图标：» 菜单 · 品牌 ……… 目录 · 搜索 · ⋮ 工具（一行的排法见 <1120 那一档）；「本页目录」排到搜索之前 */
   :where(.mw-body-content) :is(h1, h2, h3, h4, h5, h6, :target) { scroll-margin-top: calc(var(--ak-header-h) + 8px); }
   .ak-header__logo img { height: 24px; }
   .ak-header__wordmark { font-size: 17px; }

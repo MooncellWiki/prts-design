@@ -1,9 +1,10 @@
 /**
  * PRTS Design 线稿图标（24×24，stroke / fill 用 currentColor）——与预览骨架 preview/_src/skeleton.html 的 SVG sprite 同一套路径。
  * Vue 组件内联渲染（<AkIcon name="search" />），不依赖页面里有没有 sprite；MW 皮肤 / 模板那边仍走 <svg><use href="#i-…"></svg>。
+ * menu 改自 Lets Icons「expand-right-double」（Leonid Tsvetkov，CC BY 4.0，https://creativecommons.org/licenses/by/4.0/）：从 6–18 放大到 4–20、描边 2 → 2.5。
  */
 export const icons = {
-  "menu": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M3 4h18v16H3z\"/><path fill=\"currentColor\" d=\"M3 4h7v16H3z\"/>",
+  "menu": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" d=\"M12 20l8-8-8-8M4 20l8-8-8-8\"/>",
   "search": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5\"/>",
   "bell": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M6 17V11a6 6 0 1 1 12 0v6l2 2H4l2-2zm4 4h4\"/>",
   "user": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9c0-4 3.6-6 8-6s8 2 8 6\"/>",

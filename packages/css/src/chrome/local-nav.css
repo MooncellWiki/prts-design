@@ -2,7 +2,7 @@
 /* ═══ Local nav（「菜单」入口；手机上多一个「本页目录」）═══
  *  只在 <1120（侧栏收成抽屉时）出现：「菜单」拉出侧栏抽屉。≥1120 整块 display:none。
  *  它不单独成行：.ak-local-nav 与 .ak-header__inner 都 display:contents，入口与品牌 / 搜索 / 工具排在页眉同一行，那一行始终贴顶（见 responsive.css）。
- *  「菜单」只留图标：侧栏面板 ◧（i-menu：外框 + 实心左栏，画的就是拉出来的那一栏），不是 ☰ 三条线——三条线读不出「从左边拉出一栏」，也和目录按钮的方点列表撞形。
+ *  「菜单」只留图标：双右箭头 »（i-menu，改自 Lets Icons 的 expand-right-double，CC BY 4.0：朝右展开，指的就是从左边拉出一栏；放大到 4–20、描边 2.5，与同排的搜索等大、与 sprite 里其余箭头同粗），不是 ☰ 三条线——三条线读不出「从左边拉出一栏」，也和目录按钮的方点列表撞形。
  *  「本页目录」640–1400 不在页眉里：它是正文右上角一枚独立的按钮（.ak-toc-btn，见 toc.css）。只有手机（≤639）才用这里的 label.ak-local-nav__toc
  *  （方点列表图标，排在品牌之后、搜索之前，见 responsive.css）——开合的是 .ak-toc-dock 里同一个 checkbox。 */
 .ak-local-nav { display: none; }
