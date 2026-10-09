@@ -5,14 +5,14 @@
 .ak-op-card:is(:visited, :active) { color: var(--ak-fg); }   /* 同 :hover：整块是链接，宿主的 a:visited / a:active (0,1,1) 压得过 .ak-op-card */
 .ak-op-card__portrait { display: block; position: relative; aspect-ratio: 1; background: var(--ak-r, #1d1f20) var(--ak-r-fade, linear-gradient(180deg, #2b2d2f, #141516)); overflow: hidden; }   /* 头像底 = 稀有度色渐变（同 .ak-r-avatar，见 rarity.css）：稀有度看底色，名字上方不再拉一道同色的线；没有 data-rarity 时是深灰 */
 .ak-op-card__portrait > img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.ak-op-card__rarity { position: absolute; left: 0; top: 0; z-index: 1; box-sizing: content-box; height: 12px; padding: 1px; background: rgba(0,0,0,.6); }   /* 星级垫半透明黑底、贴到左上角：黄星压在 5★ 金、2★ 黄绿的头像底上看不清 */
+.ak-op-card__rarity { position: absolute; right: 0; bottom: 0; z-index: 1; box-sizing: content-box; height: 12px; padding: 1px; background: rgba(0,0,0,.6); }   /* 角标排法同现网 微件:干员头像：职业左上、星级右下、精英左下。星级垫半透明黑底、贴到右下角：头像底往下褪成浅灰 / 奶油色，黄星压在上面看不清 */
 .ak-op-card__rarity img { height: 100%; width: auto; display: block; }
 .ak-op-card__rarity > .ak-rarity { display: flex; height: 100%; font-size: 8px; }   /* 没有星级原图时的 CSS 星形：原图 12px 高里星形只占 ~7px，8px 字号（星 .9em）与它等大，在 12px 高里居中 */
-.ak-op-card__prof { position: absolute; left: 4px; bottom: 4px; z-index: 1; width: 26px; height: 26px; background: rgba(0,0,0,.6); display: grid; place-items: center; }
+.ak-op-card__prof { position: absolute; left: 0; top: 0; z-index: 1; width: 26px; height: 26px; background: rgba(0,0,0,.6); display: grid; place-items: center; }   /* 四个角标都贴角、不内缩（同星级，同现网 微件:干员头像） */
 .ak-op-card__prof img { width: 22px; height: 22px; }
-.ak-op-card__elite { position: absolute; right: 4px; bottom: 4px; z-index: 1; height: 26px; min-width: 26px; padding: 0 3px; box-sizing: border-box; background: rgba(0,0,0,.6); display: grid; place-items: center; }   /* 同职业角标的黑底：头像底往下褪成浅灰，白色精英图标要垫底才看得清 */
+.ak-op-card__elite { position: absolute; left: 0; bottom: 0; z-index: 1; height: 26px; min-width: 26px; padding: 0 3px; box-sizing: border-box; background: rgba(0,0,0,.6); display: grid; place-items: center; }   /* 同职业角标的黑底：头像底往下褪成浅灰，白色精英图标要垫底才看得清 */
 .ak-op-card__elite img { height: 16px; width: auto; }
-.ak-op-card__badge { position: absolute; right: 4px; top: 4px; z-index: 1; }   /* 右上角空着的那一角：额外角标（首页「兑」字标 / 模组类型小图标），Vue 的 #badge 插槽包在这里 */
+.ak-op-card__badge { position: absolute; right: 0; top: 0; z-index: 1; }   /* 右上角空着的那一角：额外角标（首页「兑」字标 / 模组类型小图标），Vue 的 #badge 插槽包在这里 */
 .ak-op-card__name { display: block; padding: 6px 8px 7px; font-weight: 700; font-size: var(--ak-fs-sm); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ak-op-card__sub { display: block; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); color: var(--ak-fg-muted); margin-top: 3px; letter-spacing: .06em; text-transform: uppercase; }
 .ak-op-card--sm { --_w: 88px; } .ak-op-card--sm .ak-op-card__name { font-size: var(--ak-fs-xs); padding: 4px 6px; }
