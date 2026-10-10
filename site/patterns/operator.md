@@ -39,7 +39,7 @@ title: 干员页样例（陈）
 | <code v-pre>{{:xx/语音记录}}</code>（`#voice-table-root` VoiceTable + `#voice-data-root` 多语种数据） | 默认收起的 `.ak-panel--collapsible`（同现网「语音记录」折叠条；「如需播放并下载…」提示框在面板外）里：`.ak-voice-toolbar` 两排 `.ak-voice-langs`：**文本**（台词语言 `.ak-chip` 多选，可一个不选）+ **语种**（音频差分单选，带 CV 名）+ [`.ak-voice-list > .ak-voice`](/arknights/voice)（标题 / `__cond` 解锁条件 / 文件名 `.ak-code-id` / 文本 `data-cn data-jp data-en data-kr data-yue`） | 38 条全部列出；文本选几种就显示几行，语种只换音频；独立的 `/语音记录` 页每条多一枚下载钮 `.ak-voice__download`，干员页里不给 |
 | <code v-pre>{{干员密录}}</code> <code v-pre>{{悖论模拟}}</code> → 折叠 wikitable | [`.ak-archive`](/arknights/archive)：头（kicker + 标题 + 解锁条件 `.ak-elite` / `.ak-trust`）+ 体（文案）+ 脚（阅读密录 / 关卡 `.ak-stage` / 首通奖励 `.ak-item`） | |
 | <code v-pre>{{干员异格任务}}</code> → cbox + wikitable | `.ak-cbox--warning`（已删除、仅存档；图标 `i-trash` = 现网 delete-empty）+ `wikitable.ak-compact` + `.ak-item-list` + `.ak-chevrons` | |
-| <code v-pre>{{spineId}}</code>（SpineViewer） | `.sv`：选择条（时装 `.ak-chip` · 模型 `.ak-btn-group`，多于 5 个换 `.ak-select`）+ 舞台 + 动作列表 + 时间轴 / 播放条 | 见下「[干员模型](#干员模型)」；未载入时只有一个「载入模型」`.ak-btn--primary` |
+| <code v-pre>{{spineId}}</code>（SpineViewer） | `.sv`：选择条（时装 `.ak-chip` · 模型 `.ak-select`）+ 舞台 + 动作列表 + 时间轴 / 播放条 | 见下「[干员模型](#干员模型)」；未载入时只有一个「载入模型」`.ak-btn--primary` |
 | <code v-pre>{{干员导航}}</code> | `.navbox`（见[分类栏与杂项](/content/catlinks#工具类)） | |
 
 ## CharinfoV2 怎么接
@@ -61,11 +61,11 @@ title: 干员页样例（陈）
 
 ## 干员模型
 
-页面最后一节 = 现网的 SpineViewer（prts-widgets `src/widgets/SpineViewer/`）。**运行时、模型地址、`meta.json` 的结构都与现网相同**（样例页真的从 `torappu.prts.wiki` 取模型来播；运行时是 prts-widgets 那一份的快照 `preview/vendor/spine/`，`node scripts/fetch-spine.ts`；导出 GIF 用的 gifenc 同现网一个版本，快照在 `preview/vendor/gifenc/`，`node scripts/fetch-gifenc.ts`，点了导出才加载），换的是「怎么看」。样例页那段脚本是 Widget 的替身，地址栏加 `?spine=char_4104_coldst` 可以换一位干员看（动作多的 / JSON 骨骼的 / 只有「战斗」一面的）；`?spine=enemy_1265_durcar` 是模型多的敌人（自走车，31 个，模型收进下拉；敌人没有 `meta.json`，模型表是页面里内联的那份，样例页留了一份快照）。
+页面最后一节 = 现网的 SpineViewer（prts-widgets `src/widgets/SpineViewer/`）。**运行时、模型地址、`meta.json` 的结构都与现网相同**（样例页真的从 `torappu.prts.wiki` 取模型来播；运行时是 prts-widgets 那一份的快照 `preview/vendor/spine/`，`node scripts/fetch-spine.ts`；导出 GIF 用的 gifenc 同现网一个版本，快照在 `preview/vendor/gifenc/`，`node scripts/fetch-gifenc.ts`，点了导出才加载），换的是「怎么看」。样例页那段脚本是 Widget 的替身，地址栏加 `?spine=char_4104_coldst` 可以换一位干员看（动作多的 / JSON 骨骼的 / 只有「战斗」一面的）；`?spine=enemy_1265_durcar` 是模型多的敌人（自走车，31 个；敌人没有 `meta.json`，模型表是页面里内联的那份，样例页留了一份快照）。
 
 现网是一张卡片：左边三个下拉（时装组 / 模型组 / 动画）、循环开关、背景取色器、速度滑杆、四个圆按钮，右边一块 300×300 的画布（1000×1000 的画布缩到 0.3）。这里拆成四块，从上到下是「选哪个 → 看 → 控制」：
 
-- **选择条**：时装是一排[筛选芯片](/components/chip)，模型是一组按钮（正面 / 背面 / 基建，顺序固定）。游戏里小人只有两类：战斗（`CharacterAnimator` 的 `front` / `back` 两张脸）与基建（`VCharacter`），`UICharSpineHolder.SpineType` 也只分 `BATTLE` / `BUILDING`——所以是一组三个键而不是下拉。敌人页的「敌人模型」也是这个 Widget，一套骨骼可以装几十个 skin（自走车有 31 个），一行按钮会撑出正文列——**模型多于 5 个就收进[下拉选择](/components/select)**（同 Select 的用法：≤ 5 个、立即生效的视图切换才用按钮组），宽度随最长的名字；手机上弹的是系统的滚轮选择器。换时装 / 模型时沿用同名动作（没有就回到待机），速度、循环、朝向、背景不变。
+- **选择条**：时装是一排[筛选芯片](/components/chip)，模型是[下拉选择](/components/select)（正面 / 背面 / 基建，顺序固定），宽度随最长的名字；手机上弹的是系统的滚轮选择器。两栏都靠左、挨着排（操作区聚在一起，不把模型甩到最右边），一行放不下时模型整栏换到下一行。干员的模型只有这三个（游戏里小人只分战斗——`CharacterAnimator` 的 `front` / `back` 两张脸——与基建 `VCharacter`，`UICharSpineHolder.SpineType` 也只有 `BATTLE` / `BUILDING`），本可以排一组按钮；但敌人页的「敌人模型」也是这个 Widget，一套骨骼可以装几十个 skin（自走车有 31 个），个数不多的名字也可能长（「0~1塑能基质」「7+塑能基质」……），一组按钮在窄列 / 手机上会撑出正文列。按个数切（多于 5 个收下拉）挡不住后一种，按宽度切得用脚本量按钮组排开多宽（容器查询只知道容器多宽、不知道内容多宽），**所以一律下拉**。换时装 / 模型时沿用同名动作（没有就回到待机），速度、循环、朝向、背景不变。
 - **舞台**：正方形，边长随正文列宽、最大 560（动作列表吃掉剩下的宽度，高度跟舞台齐），按设备像素比出图。舞台就是**取景框** = 导出的画幅：框边长 1000 骨骼单位，同现网 1000×1000 画布的那把尺（贴图差不多 1 : 1，各时装 / 模型大小可比），缩放读数的 100% 就是它；放大、手机横屏时舞台不是正方形，把框画出来、框外压暗（提示里写「框内为导出画面预览」）。载入、换动作后自动取景——脚底原点落在框里横向正中、纵向 80% 处；当前动作（连同一招的另几段，连播换段时不跳）全程的包围盒只算看得见的附件（有的特效平时 alpha = 0 挂在老远），在这把尺下出框就先平移，平移也装不下才缩小；拖过 / 缩放过就不再替人取景，双击复位才回去。脚下一枚落脚点（游戏里战斗 / 基建小人脚下都有一枚 `Shadow`）。底色没手动选过就跟页面：Arknights 皮肤白天浅色、夜间深色（看令牌解析出来的 `color-scheme`，clientpref 类 / `data-theme` / 跟随系统几种开法都认，切了不用刷新），别的皮肤固定浅色；右下角四格换：深 / 浅 / 透明 / 自定义，选过就不再跟。「自定义」是自己画的取色面板（外框 [`.ak-popover`](/components/tooltip)，里面是饱和度 / 明度平面 + 色相条 + 十六进制 + 8 个预设，预设里有绿幕 / 品红，导出 WebM 后好抠像），不用 `<input type="color">`——那个弹的是浏览器 / 系统自己的取色面板（Chrome 的小窗、macOS 的系统色板、Windows 的对话框），各家长得不一样。右上角四个工具：翻转朝向（游戏的 `faceSign`）、网格线（默认关，脚底那条地面线跟着一起开关）、复位视图、放大（整块铺满视口，Esc 退出；支持 Popover API 的浏览器提进顶层——Vector 的 `#bodyContent` 是 `z-index: 0` 的层叠上下文，里面的 fixed 再高也盖不过侧栏和「TOP」按钮，进不了顶层的旧浏览器放大期间把这两样藏起来）。
   - **拖拽平移；缩放要按住 Ctrl / ⌘ 再滚轮**（触控板捏合、双指捏合同效）。现网在画布上直接吃掉滚轮，长页面滚到这里会被卡住；这里不按 Ctrl 的滚轮照常滚页面。放大模式里滚轮直接缩放。手机上竖向滑动留给页面，放大后才整块接管。
   - 键盘（舞台获得焦点后）：空格 播放 / 暂停，← → 逐帧，F 翻转，G 网格线，0 复位；导出中不接（遮罩只挡得住指针）。

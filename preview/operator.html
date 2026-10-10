@@ -68,10 +68,11 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 /* ═══ 干员模型（Widget:SpineViewer = prts-widgets 的 SpineViewer）——.sv-* 是 Widget 自己的排布（放 Widget 的样式表），里面的按钮 / 芯片 / 开关 / 下拉是设计系统组件。
    选择条（时装 · 模型）→ 舞台 + 动作列表 → 时间轴 + 播放条。取舍见文档站 /patterns/operator#干员模型 ═══ */
 .sv { --sv-ink: 255, 255, 255; position: relative; border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+/* 选择条：时装芯片 + 模型下拉，都靠左（操作区聚在一起）；一行放不下时整栏换行 */
 .sv__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 10px 14px; background: var(--ak-bg-surface-2); border-bottom: 1px solid var(--ak-border); }
 .sv__field { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.sv__field:last-child { margin-left: auto; }
-.sv__field > .ak-select { width: auto; min-width: 0; }   /* 模型多于 5 个时的下拉选择：宽度随最长的名字，不撑满 */
+.sv__field > .ak-overline { flex: none; }   /* 标签不跟着挤：挤了会折成一字一行 */
+.sv__field > .ak-select { width: auto; min-width: 0; }   /* 模型下拉：宽度随最长的名字，不撑满 */
 .sv__chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .sv__main { display: grid; grid-template-columns: minmax(0, 560px) minmax(272px, 1fr); }   /* 舞台是正方形（导出也是这个画幅），边长随正文列宽、最大 560；动作列表吃掉剩下的宽度，高度跟舞台齐 */
 .sv__main > .sv__list { contain: size; }   /* 列表不参与撑高：行高只由舞台定，列表拉伸到同高、自己滚动 */
@@ -181,7 +182,6 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .sv.is-max .sv__canvas { touch-action: none; }
 @media (max-width: 767px) {
   .sv { display: flex; flex-direction: column; }
-  .sv__field:last-child { margin-left: 0; }
   .sv__main { display: contents; }   /* 手机上顺序改成 选择条 → 舞台 → 时间轴 / 播放条 → 动作列表：播放条贴着舞台 */
   .sv__main > .sv__list { contain: none; }
   .sv__list { order: 1; }
@@ -1669,8 +1669,6 @@ document.addEventListener('click', (e) => {
   const GLOSS = { Start: '入场', Idle: '待机', Attack: '攻击', Die: '倒下', Stun: '晕眩', Default: '默认姿态', Relax: '闲置', Move: '移动', Interact: '交互', Sit: '坐下', Sleep: '睡眠', Special: '特殊动作' };
   const FAMILY = [['入场', /^Start/], ['待机', /^(Idle|Default|Relax)/], ['攻击', /^(Attack|Combat|Reload)/], ['技能', /^Skill/], ['其它', /./]];
   const MODEL_ORDER = ['正面', '背面', '战斗', '基建'];
-  /* 模型多于这个数就收进下拉选择（Select 的用法：≤ 5 个、立即生效的视图切换用按钮组）——干员只有 正面 / 背面 / 基建，敌人一套骨骼可以装几十个 skin */
-  const MODEL_MENU = 5;
   /* 敌人没有 meta.json，模型表内联在页面的 #SPINEDATA 里；样例页留一份「自走车」（一套骨骼 31 个 skin）：?spine=enemy_1265_durcar */
   const ENEMY = {
     enemy_1265_durcar: ['自走车', '默认 Color/Green|“无尽之拳” Color/White|“矛盾的爆发” Color/Purple|“赛事简化方案” Color/Orange|' +
@@ -1989,19 +1987,16 @@ document.addEventListener('click', (e) => {
 
     /* ── 载入一个「时装 × 模型」──切换时沿用同名动作（没有就回到待机），速度 / 循环 / 朝向 / 背景不变 */
     const showVeil = html => { veil.hidden = html == null; if (html != null) veil.innerHTML = html; };
-    /* 模型：一组按钮，多于 MODEL_MENU 个换成下拉选择。只在时装换了、模型表变了时重建，其余就地改选中态（不丢焦点：下拉里按方向键就会换模型） */
+    /* 模型：一律下拉（敌人一套骨骼可以装几十个 skin，个数不多的名字也可能长，排成一组按钮会撑出正文列）。只在时装换了、模型表变了时重建，其余就地改选中值（不丢焦点：下拉里按方向键就会换模型） */
     let modelList = '';
     const renderModels = () => {
       const ms = models(st.skin), key = ms.join('\n');
       if (key !== modelList) {
         modelList = key;
-        f2.querySelector('.ak-btn-group, select')?.remove();
-        f2.insertAdjacentHTML('beforeend', ms.length > MODEL_MENU
-          ? `<select class="ak-select ak-select--sm" data-act="model" aria-label="模型">${ms.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join('')}</select>`
-          : `<div class="ak-btn-group" role="group" aria-label="模型">${ms.map(m => `<button type="button" class="ak-btn ak-btn--sm" data-model="${esc(m)}">${esc(m)}</button>`).join('')}</div>`);
+        f2.querySelector('select')?.remove();
+        f2.insertAdjacentHTML('beforeend', `<select class="ak-select ak-select--sm" data-act="model" aria-label="模型">${ms.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join('')}</select>`);
       }
-      const sel = f2.querySelector('select'); if (sel) sel.value = st.model;
-      f2.querySelectorAll('[data-model]').forEach(b => { const on = b.dataset.model === st.model; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on); });
+      f2.querySelector('select').value = st.model;
     };
     const load = async () => {
       const seq = ++loadSeq, item = conf.skin[st.skin][st.model];
@@ -2119,9 +2114,8 @@ document.addEventListener('click', (e) => {
 
     /* ── 事件 ── */
     root.addEventListener('click', e => {
-      const t = e.target.closest('[data-skin], [data-model], [data-anim], [data-act], .sv__swatch'); if (!t || !root.contains(t)) return;
+      const t = e.target.closest('[data-skin], [data-anim], [data-act], .sv__swatch'); if (!t || !root.contains(t)) return;
       if (t.dataset.skin) { st.skin = t.dataset.skin; if (!conf.skin[st.skin][st.model]) st.model = models(st.skin)[0]; load(); }
-      else if (t.dataset.model) { st.model = t.dataset.model; load(); }
       else if (t.dataset.anim) { if (cur) setAnim(t.dataset.anim); }   // 载入中 cur 是空的，先不理
       else if (t.classList.contains('sv__swatch')) { setBg(t.dataset.bg); if (t.dataset.bg === 'custom') setPicker(!picking); }   // 自定义：先换回上次的自定义色，再开合取色面板
       else if (!cur && t.dataset.act !== 'retry') return;
