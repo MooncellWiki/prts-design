@@ -56,7 +56,7 @@ scrollspy 取「基准线以上最后一个标题」（参考 VitePress / Docusa
   <aside class="ak-toc" id="ak-toc" aria-labelledby="ak-toc-label">
     <a class="ak-toc__top" href="#">…回到顶部</a>               <!-- 仅 <1400 -->
     <div class="ak-toc__inner">
-      <div class="ak-toc__title" id="ak-toc-label">目录 · Contents</div>
+      <div class="ak-toc__title" id="ak-toc-label">目录</div>
       <div class="ak-toc__progress" aria-hidden="true"><i></i></div>   <!-- 宽度 = --_p -->
       <ul class="ak-toc__list" data-toc>…</ul>                   <!-- li.is-active 为当前小节 -->
     </div>
