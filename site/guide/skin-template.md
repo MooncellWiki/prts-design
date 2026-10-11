@@ -79,7 +79,7 @@ button.ak-fab                                   ← 回到顶部（≥1120）
 | mustache | `.ak-sidebar > .ak-sidebar__panel#mw-panel` 保留 `#mw-panel` id；`#p-tb > ul` 仍在文档里但**不在侧栏**（在动作簇的「更多」卡片里），现网内联脚本按 `#p-tb ul` 找照样找得到 |
 | `chrome/sidebar.css` · `sidebar-tree.css` | `.ak-sidebar p` 与 `.ak-portlet__title` 同一套分组标题；`li > b` 与 `li > a` 同一套行；`li > ul` 缩进 + 导轨、默认折叠；`li.mw-empty-elt` 隐藏；`a.selflink` 高亮为当前页 |
 | `sidebar-tree.js` | 对 `.ak-sidebar` 里所有 `li > ul` 幂等增强成树（MutationObserver 兼容晚注入），见[侧栏 · 多层树](/chrome/sidebar#多层树) |
-| `client-prefs.js` · `sections.js` | 阅读设置（`ak-sections` / `ak-font-size`，skin.json `ClientPreferences` 登记、经 `mw.user.clientPrefs` 读写）与章节折叠（顶层 h2 包进 `section.ak-section`，`wikipage.content` 后重新 init），见[章节折叠](/content/toc#章节折叠) |
+| `client-prefs.js` · `sections.js` | 阅读设置（`ak-sections-on` / `ak-sections` / `ak-font-size` / `ak-table-font-size`，skin.json `ClientPreferences` 登记、经 `mw.user.clientPrefs` 读写）与章节折叠（顶层 h2 包进 `section.ak-section`，`wikipage.content` 后重新 init），见[章节折叠](/content/toc#章节折叠) |
 
 - 现网末尾的两组在新皮肤下退役，建议从 MenuSidebar 的 wikitext 里删掉：「Languages」（三个 `onclick` 内联脚本链接）→ 语言切换统一在页眉用户菜单「界面设置」（ULS，`#p-user-interface-preferences`）；「工具」`#vmsTB` / `#MSToolbox` → 工具箱整组在标题行动作簇的「更多」里（`#p-tb`）。
 - 建议后续把 `#MenuSidebar` 的注入改成皮肤钩子（`SidebarBeforeOutput` / `SkinAfterPortlet` 解析 `MediaWiki:MenuSidebar`），去掉内联脚本，结构与类名不变。

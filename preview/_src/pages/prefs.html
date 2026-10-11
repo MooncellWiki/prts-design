@@ -31,10 +31,17 @@ toc: false
     </div>
   </fieldset>
   <fieldset class="ak-pref">
-    <legend class="ak-pref__label">章节折叠默认模式</legend>
-    <div class="ak-seg ak-seg--lg" role="radiogroup" aria-label="章节折叠默认模式" data-pref="ak-sections">
+    <legend class="ak-pref__label">章节折叠</legend>
+    <div class="ak-seg ak-seg--lg" role="radiogroup" aria-label="章节折叠" data-pref="ak-sections-on">
+      <label><input type="radio" name="ak-sections-on" value="mobile" checked><span>窄屏</span></label>
+      <label><input type="radio" name="ak-sections-on" value="all"><span>全部</span></label>
+      <label><input type="radio" name="ak-sections-on" value="off"><span>关闭</span></label>
+    </div>
+  </fieldset>
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">章节默认</legend>
+    <div class="ak-seg ak-seg--lg" role="radiogroup" aria-label="章节默认" data-pref="ak-sections">
       <label><input type="radio" name="ak-sections" value="expand" checked><span>展开</span></label>
-      <label><input type="radio" name="ak-sections" value="mobile"><span>窄屏收起</span></label>
       <label><input type="radio" name="ak-sections" value="collapse"><span>收起</span></label>
     </div>
   </fieldset>

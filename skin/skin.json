@@ -50,9 +50,12 @@
             "akds-footer-about",
             "akds-search-label",
             "akds-prefs",
+            "akds-prefs-sections-on",
+            "akds-prefs-sections-on-mobile",
+            "akds-prefs-sections-on-all",
+            "akds-prefs-sections-on-off",
             "akds-prefs-sections",
             "akds-prefs-sections-expand",
-            "akds-prefs-sections-mobile",
             "akds-prefs-sections-collapse",
             "akds-prefs-sections-hint",
             "akds-prefs-font-size",
@@ -322,10 +325,18 @@
       "default": "os",
       "callback": "skins.akds.js"
     },
+    "ak-sections-on": {
+      "options": [
+        "mobile",
+        "all",
+        "off"
+      ],
+      "default": "mobile",
+      "callback": "skins.akds.js"
+    },
     "ak-sections": {
       "options": [
         "expand",
-        "mobile",
         "collapse"
       ],
       "default": "expand",

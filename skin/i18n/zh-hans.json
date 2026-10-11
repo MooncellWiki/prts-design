@@ -58,11 +58,10 @@
   "akds-search-mode-file-desc": "查找图片与媒体文件",
   "akds-search-mode-file-placeholder": "搜索文件…",
   "akds-prefs": "阅读设置",
-  "akds-prefs-sections": "章节折叠默认模式",
+  "akds-prefs-sections": "章节默认",
   "akds-prefs-sections-expand": "展开",
-  "akds-prefs-sections-mobile": "窄屏收起",
   "akds-prefs-sections-collapse": "收起",
-  "akds-prefs-sections-hint": "打开页面时各章节是展开还是收起；点章节标题随时开合。",
+  "akds-prefs-sections-hint": "章节标题在哪些宽度带折叠开关，以及打开页面时是展开还是收起。",
   "akds-prefs-font-size": "字号",
   "akds-prefs-font-size-small": "小",
   "akds-prefs-font-size-regular": "中",
@@ -76,5 +75,9 @@
   "akds-prefs-table-font-size": "表格字号",
   "akds-prefs-table-font-size-hint": "表格可以比正文再小一档，同原来手机版。",
   "akds-prefs-table-font-size-auto": "跟随正文",
-  "akds-prefs-reset": "恢复默认设置"
+  "akds-prefs-reset": "恢复默认设置",
+  "akds-prefs-sections-on": "章节折叠",
+  "akds-prefs-sections-on-mobile": "窄屏",
+  "akds-prefs-sections-on-all": "全部",
+  "akds-prefs-sections-on-off": "关闭"
 }

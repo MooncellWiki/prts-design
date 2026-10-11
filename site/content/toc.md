@@ -21,7 +21,7 @@ prts 并成 Arknights 单皮肤、`m.` 域名回主域之后，手机上 Minerva
 - **一节一开关**：`sections.js`（皮肤与预览共用）把 `.mw-parser-output` 顶层每个 `.mw-heading2` 之后、下一个之前的内容包进 `<section class="ak-section">`（做法同 MobileFrontend 的 `MakeSectionsTransform` / `sectionCollapsing.js`，只折顶层、h3 以下跟着父节走），标题文字前插一枚 + / −（`button.ak-section__toggle`，同 Minerva 把箭头放在标题前；两条渐变拼的记号，同 [Panel](/components/panel) 折叠头 / 目录折叠钮 / 侧栏树）。点标题整行或那枚按钮开合；编辑链接、行内链接、拖选文字不算点。
 - **收起 = `hidden="until-found"`**：内容仍在 DOM 里、Ctrl+F 搜得到，命中时浏览器派发 `beforematch`、脚本随即展开；点目录 / 页内链接 / 地址栏带 `#` 跳到收起节里的标题或引用，先展开再滚过去；跳到收起的 h2 本身也展开它（同 Minerva）。不写 `display: none`，那样就搜不到了。
 - **收起的样子**：标题行下边距收到 0、连着的收起标题之间只留 `space-3`，全部收起时一页就是一列章节名（Minerva 的样子）；打印全部展开、不出记号。
-- **默认状态**由[阅读设置](/chrome/prefs)（页眉眼镜图标链到的特殊页面）的「章节折叠默认模式」决定：展开（反馈里「初始全部展开、后续可收起」就是这一档）/ 窄屏收起（≤639，= 原来 Minerva 的行为）/ 收起；改了立刻套用到当前页。不记忆每一节的开合（Minerva 也不记）。
+- **在哪开、默认什么状态**由[阅读设置](/chrome/prefs)决定：「章节折叠」窄屏（默认：只在 ≤639 开，桌面 / 平板不出开关——Minerva 的范围，宽屏有目录导轨不缺导航）/ 全部 / 关闭；「章节默认」展开（默认，反馈里「初始全部展开、后续可收起」就是这一档）/ 收起（窄屏 + 收起 = 原来 Minerva 的行为）。改了或视口跨过 639 立刻重新套用到当前页：关掉时全部展开、`.mw-parser-output` 加 `.ak-sections--off` 藏起开关。不记忆每一节的开合（Minerva 也不记）。
 - **不折的页面**：没有顶层 h2 的（首页）、`.mw-parser-output[data-ak-sections="off"]`、`body.ak-no-sections`、MW 首页（`wgIsMainPage`）。再渲染（VE 保存 / 编辑预览）由皮肤在 `wikipage.content` 钩子里重新 `init`。
 - **模板不用改**：标题 DOM 还是 MW 1.43 的 `<div class="mw-heading mw-heading2"><h2>…</h2><span class="mw-editsection">…</span></div>`（站点须 `$wgParserEnableLegacyHeadingDOM = false`），脚本只是在它后面包一层 `<section>`、标题文字前插一枚没有文字的按钮（`h2.textContent` 不变，目录 / 搜索照常读标题）。靠 `.mw-parser-output > X` 直接子选择器找内容的 Gadget 会受影响（prts 现网在 Minerva 下跑过同样的结构，没出过问题）。
 

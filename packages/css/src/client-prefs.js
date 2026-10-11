@@ -6,9 +6,10 @@
  *  持久化是一条 "feature-clientpref-value,…" 字符串——核心存 cookie（mwclientpreferences），Skin:Arknights 的 inline.js 存 localStorage 同名键、
  *  首帧前就打到 <html> 上。这里：有 mw.user.clientPrefs（皮肤在 skin.json 的 ClientPreferences 登记过）就交给核心；没有（预览 / 站外）就自己改类 + localStorage。
  *
- *  目前四项（值即 CSS 类后缀；主题见 tokens.css，其余见 base/sections.css · base/typography.css）：
+ *  目前五项（值即 CSS 类后缀；主题见 tokens.css，其余见 base/sections.css · base/typography.css）：
  *    skin-theme    os（默认）/ day / night                            外观：MW 1.43 核心的 skin-theme（预览里 preview.js 听 akds:pref 再套用自己的 data-theme）
- *    ak-sections   expand（默认）/ mobile（≤639 收起）/ collapse   章节打开页面时展开还是收起（sections.js 读它）
+ *    ak-sections-on  mobile（默认）/ all / off                       章节折叠在哪开：只在 ≤639 窄屏 / 所有宽度 / 关（sections.js 读它）
+ *    ak-sections   expand（默认）/ collapse                        开着时打开页面是展开还是收起
  *    ak-font-size  xsmall / small / regular（默认）/ large          正文字号 12 / 14 / 16 / 20（.mw-body-content 内的字号令牌整体换档）
  *    ak-table-font-size  auto（默认）/ xsmall                       表格字号：跟正文 / 12（base/tables.css；现网手机版「正文 13、表格 12」那种搭配）
  *
@@ -20,7 +21,7 @@
 	'use strict';
 	var SUFFIX = '-clientpref-';
 	var KEY = 'mwclientpreferences';
-	var DEFAULTS = { 'skin-theme': 'os', 'ak-sections': 'expand', 'ak-font-size': 'regular', 'ak-table-font-size': 'auto' };
+	var DEFAULTS = { 'skin-theme': 'os', 'ak-sections-on': 'mobile', 'ak-sections': 'expand', 'ak-font-size': 'regular', 'ak-table-font-size': 'auto' };
 	var html = document.documentElement;
 
 	function get( feature ) {

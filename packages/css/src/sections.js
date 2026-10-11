@@ -9,7 +9,8 @@
  *  收起 = section[hidden="until-found"]（内容仍可被 Ctrl+F / 锚点找到，命中时浏览器派发 beforematch → 这里展开）；展开 = 去掉 hidden。
  *  开合：点标题整行（编辑链接 / 行内链接除外，拖选文字不算）或那枚按钮。
  *  锚点：跳到收起节里的标题 / 引用（点目录、点页内链接、地址栏带 #、hashchange）先展开再滚过去；跳到收起的 h2 本身也展开它（同 Minerva）。
- *  初始状态读阅读设置 ak-sections（client-prefs.js）：expand 全展开 / collapse 全收起 / mobile 视口 ≤639 时收起；改了设置立刻套用到当前页。
+ *  两项阅读设置（client-prefs.js）：ak-sections-on = 折叠在哪开——mobile（默认：只在 ≤639 的窄屏，桌面 / 平板不出开关，Minerva 的范围）/ all / off；
+ *  ak-sections = 开着时的初始状态——expand（默认）/ collapse。改了设置、或视口跨过 639，立刻重新套用到当前页：关掉时全部展开、.mw-parser-output 加 .ak-sections--off 藏起开关。
  *  不记忆每一节的开合（Minerva 也不记）；打印样式全部展开（base/sections.css）。
  *  跳过：没有顶层 h2 的页面（首页）、.mw-parser-output[data-ak-sections="off"]、body.ak-no-sections、MW 首页（wgIsMainPage）。
  *  再渲染（VE 保存 / 编辑预览）：皮肤在 wikipage.content 钩子里再调 init(root)。
@@ -18,11 +19,9 @@
 	'use strict';
 	var PHONE = '(max-width: 639px)';
 	var seq = 0;
-	function pref() { return window.akdsClientPrefs ? akdsClientPrefs.get( 'ak-sections' ) : 'expand'; }
-	function collapsedByDefault() {
-		var p = pref();
-		return p === 'collapse' || ( p === 'mobile' && window.matchMedia( PHONE ).matches );
-	}
+	function pref( k, d ) { return window.akdsClientPrefs ? akdsClientPrefs.get( k ) : d; }
+	function enabled() { var on = pref( 'ak-sections-on', 'mobile' ); return on === 'all' || ( on === 'mobile' && window.matchMedia( PHONE ).matches ); }
+	function collapsedByDefault() { return enabled() && pref( 'ak-sections', 'expand' ) === 'collapse'; }
 	function heads( root ) { return Array.prototype.slice.call( root.querySelectorAll( ':scope > .mw-heading.mw-heading2' ) ); }
 
 	function setState( head, collapsed ) {
@@ -68,7 +67,7 @@
 			}
 			setState( head, collapsed );
 		} );
-		root.classList.add( 'ak-sections' );
+		root.classList.add( 'ak-sections' ); root.classList.toggle( 'ak-sections--off', !enabled() );
 		// 地址栏带着 # 进来：目标在收起的节里就展开再滚过去（首帧时浏览器已经试过一次、没滚到）
 		var t = targetOf( location.hash );
 		if ( t && root.contains( t ) && reveal( t ) ) { t.scrollIntoView(); }
@@ -88,7 +87,7 @@
 		var t = e.target;
 		if ( !t.closest ) { return; }
 		var head = t.closest( '.ak-section-head' );
-		if ( !head ) { return; }
+		if ( !head || head.closest( '.ak-sections--off' ) ) { return; }
 		if ( !t.closest( '.ak-section__toggle' ) ) {
 			if ( t.closest( 'a, button, input, select, textarea, label, summary, .mw-editsection' ) ) { return; }
 			var sel = window.getSelection && window.getSelection();
@@ -108,7 +107,14 @@
 	} );
 	window.addEventListener( 'hashchange', function () { var t = targetOf( location.hash ); if ( reveal( t ) ) { t.scrollIntoView(); } } );
 	/* 阅读设置改了「章节」：立刻套用到当前页（同 Minerva：改偏好即刷新） */
-	document.addEventListener( 'akds:pref', function ( e ) { if ( e.detail && e.detail.feature === 'ak-sections' ) { setAll( collapsedByDefault() ); } } );
+	/* 阅读设置改了、或视口跨过 639：重新套用——关掉时全部展开并藏起开关 */
+	function reapply() {
+		var on = enabled();
+		Array.prototype.forEach.call( document.querySelectorAll( '.mw-parser-output.ak-sections' ), function ( out ) { out.classList.toggle( 'ak-sections--off', !on ); } );
+		setAll( collapsedByDefault() );
+	}
+	document.addEventListener( 'akds:pref', function ( e ) { if ( e.detail && ( e.detail.feature === 'ak-sections' || e.detail.feature === 'ak-sections-on' ) ) { reapply(); } } );
+	window.matchMedia( PHONE ).addEventListener( 'change', reapply );
 
 	if ( document.readyState === 'loading' ) { document.addEventListener( 'DOMContentLoaded', function () { init(); } ); } else { init(); }
 	window.akdsSections = { init: init, setAll: setAll, reveal: reveal, toggle: toggle };
