@@ -1,0 +1,17 @@
+/*! PRTS Design · components/seg.css — Segmented control 分段开关（button 组 / label+radio 组） · 依赖：tokens.css */
+/* ═══ Segmented control ═══
+ *  页眉外观开关（chrome/theme-toggle.css）的通用版：一条细框、格子按内容宽、选中项主色实底（游戏 selected_back / toggle_on）。
+ *  两种写法，样子相同：
+ *    .ak-seg > button[data-value][aria-pressed]            JS 切换（阅读设置的 client-prefs.js 认 .ak-seg[data-pref]）
+ *    .ak-seg > label > input[type=radio] + span            真表单（特殊页面 Special:ReadingPreferences 无 JS 也能提交）：选中态由 :has(input:checked) 画，JS 在时再同步 .is-active
+ *  .ak-seg--lg 36px 高（表单页 / 触屏）；.ak-seg--font 字号四档：格子里的字就是那一档的大小。 */
+.ak-seg { display: inline-flex; max-width: 100%; border: 1px solid var(--ak-border-strong); }
+.ak-seg > button, .ak-seg > label { all: unset; box-sizing: border-box; position: relative; cursor: pointer; min-width: 44px; height: 28px; padding: 0 12px; display: grid; place-items: center; font-size: var(--ak-fs-xs); line-height: 1; white-space: nowrap; color: var(--ak-fg-muted); transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-seg > :is(button, label) + :is(button, label) { border-left: 1px solid var(--ak-border); }
+.ak-seg > label > input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 视觉隐藏、仍可 Tab / 方向键选 */
+.ak-seg > button:hover, .ak-seg > label:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
+.ak-seg > button:focus-visible, .ak-seg > label:has(> input:focus-visible) { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ak-seg > button.is-active, .ak-seg > button[aria-pressed="true"], .ak-seg > label.is-active, .ak-seg > label:has(> input:checked) { background: var(--ak-accent); color: var(--ak-accent-fg); }
+.ak-seg--lg > button, .ak-seg--lg > label { min-width: 56px; height: 36px; padding: 0 16px; font-size: var(--ak-fs-sm); }
+.ak-seg--font > :nth-child(1) { font-size: 0.75rem; } .ak-seg--font > :nth-child(2) { font-size: 0.875rem; } .ak-seg--font > :nth-child(3) { font-size: 1rem; } .ak-seg--font > :nth-child(4) { font-size: 1.25rem; }   /* 极小 / 小 / 中 / 大 = 12 / 14 / 16 / 20，写死：这里的字不该跟着当前档位变 */
+@media (prefers-reduced-motion: reduce) { .ak-seg > button, .ak-seg > label { transition: none; } }

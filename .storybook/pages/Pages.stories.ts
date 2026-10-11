@@ -25,3 +25,4 @@ export const Enemies: StoryObj = { name: "敌人一览（列表 / 筛选页）",
 export const Items: StoryObj = { name: "道具一览（列表 / 筛选页）", ...page("items.html") };
 export const Recruit: StoryObj = { name: "公招计算（工具页）", ...page("recruit.html") };
 export const Operator: StoryObj = { name: "干员页样例（陈）", ...page("operator.html") };
+export const Prefs: StoryObj = { name: "阅读设置（特殊页面）", ...page("prefs.html") };

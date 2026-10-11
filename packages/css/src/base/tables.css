@@ -45,3 +45,8 @@
 .cargoTable th, table.mw-datatable th { background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); padding: .4em .6em; }
 .cargoTable td, table.mw-datatable td { border: 1px solid var(--ak-border); padding: .4em .6em; }
 table.mw-datatable tr:hover td { background: var(--ak-bg-hover); }
+
+/* ─── 表格字号（阅读设置 ak-table-font-size，client-prefs.js；默认 auto = 跟着正文档位走、表格仍是 --ak-fs-sm）：
+ *  现网 MediaWiki:Mobile.css 在手机上把 .wikitable / .infobox 压到 x-small（Chrome 中文环境托到 12px）而正文是 13，有人就要「正文正常、表格更小」这种搭配——
+ *  所以表格的字号单独一项，与正文档位无关、写绝对值：xsmall 12。作用于 wikitext 表格、Cargo / 数据表、方舟数据表 .ak-table、infobox；.ak-dense 本来就是小一档的紧凑表，不再动它 */
+.ak-table-font-size-clientpref-xsmall .mw-body-content :is(.wikitable, .cargoTable, table.mw-datatable, .ak-table, .infobox):not(.ak-dense) { font-size: 0.75rem; }

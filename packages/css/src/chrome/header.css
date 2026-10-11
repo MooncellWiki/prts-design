@@ -43,8 +43,8 @@
   -webkit-mask-image: linear-gradient(90deg, transparent 52%, #000 100%); mask-image: linear-gradient(90deg, transparent 52%, #000 100%); }
 .ak-header__inner { height: var(--ak-header-h); max-width: 1680px; margin: 0 auto; padding: 0 var(--ak-gutter); box-sizing: border-box; position: relative;
   display: grid; grid-template-columns: var(--ak-sidebar-w) minmax(0, 1fr) auto; gap: var(--ak-gutter); align-items: center; }   /* 三列 = 侧栏 / 正文 / 工具，列宽与 .ak-layout 相同 */
-.ak-header__screen, .ak-header__tool { display: contents; }   /* 桌面：只是分组，不产生盒子；窄屏见 responsive.css */
-.ak-header__tool-label { display: none; }   /* 「外观」「通知」这类标签不显示（桌面、窄屏面板里都是图标控件），只留给 aria-labelledby */
+.ak-header__screen { display: contents; }   /* 桌面：只是分组，不产生盒子；窄屏见 responsive.css */
+.ak-header__tool-label { display: none; }   /* 「通知」这类标签不显示（桌面、窄屏面板里都是图标控件），只留给 aria-labelledby */
 .ak-nav-cb { display: none; position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }   /* 窄屏 display:block：视觉隐藏但可 Tab 聚焦 / 空格切换 */
 .ak-header__burger { display: none; flex: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; color: var(--ak-fg-secondary); cursor: pointer; }
 .ak-header__burger:hover { color: var(--ak-fg); background: var(--ak-bg-hover); }
@@ -81,9 +81,9 @@
 .ak-search-trigger__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ak-header .ak-search__kbd, .ak-header .ak-kbd { background: rgba(0,0,0,.4); border-color: var(--ak-chrome-line-strong); box-shadow: inset 0 -1px 0 var(--ak-chrome-line-strong); color: var(--ak-fg-muted); }
 .ak-header__tools { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: 4px; flex: none; }
-.ak-header__tools .ak-btn--icon, .ak-header__search-toggle { border-color: transparent; background: transparent; color: var(--ak-fg-secondary); }
-.ak-header__tools .ak-btn--icon:hover, .ak-header__search-toggle:hover { background: var(--ak-bg-hover); color: var(--ak-theme-accent); }   /* 悬停变活动主色：官网导航项的 hover */
-.ak-header__tools .ak-btn--icon svg, .ak-header__search-toggle svg { width: 20px; height: 20px; }
+.ak-header__tools .ak-btn--icon, .ak-header__search-toggle, .ak-header__prefs { border-color: transparent; background: transparent; color: var(--ak-fg-secondary); }
+.ak-header__tools .ak-btn--icon:hover, .ak-header__search-toggle:hover, .ak-header__prefs:hover { background: var(--ak-bg-hover); color: var(--ak-theme-accent); }   /* 悬停变活动主色：官网导航项的 hover */
+.ak-header__tools .ak-btn--icon svg, .ak-header__search-toggle svg, .ak-header__prefs svg { width: 20px; height: 20px; }
 .ak-header__user { display: inline-flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; }
 .ak-header__user:hover { --_fg: var(--ak-theme-accent); }   /* 走 .ak-btn 的 --_fg（下面 :visited 也读它），悬停变活动主色 */
 .ak-header__user .ak-avatar { --_s: 28px; border-color: var(--ak-chrome-line-strong); }

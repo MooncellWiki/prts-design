@@ -34,6 +34,7 @@
   <!-- 用户菜单（#p-user-interface-preferences / #p-personal）：language / settings / watchlist / userContributions / logOut -->
   <symbol id="i-lang" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h10M8 3v2m3 0c-1 4-3.5 7-7 9m1-6c1 3 3 5 6 6M13 21l4-10 4 10m-6.5-3h5"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-2-6h4l.6 2.4 2.1 1.2 2.4-.7 2 3.4-1.8 1.7v2.4l1.8 1.7-2 3.4-2.4-.7-2.1 1.2L14 21h-4l-.6-2.4-2.1-1.2-2.4.7-2-3.4 1.8-1.7v-2.4L2.9 8.9l2-3.4 2.4.7 2.1-1.2z"/></symbol>
+  <symbol id="i-glasses" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 14.5a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0zm11 0a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0zM10 14.5h4M3.5 13 6 7h1.5M20.5 13 18 7h-1.5"/></symbol>   <!-- 阅读设置（页眉入口）：眼镜 = 外观 / 阅读，同 Vector 2022「外观」菜单的图标；不用齿轮——用户菜单里「参数设置」已经是齿轮 -->
   <symbol id="i-watchlist" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h12M3 11h8M3 16h6m8-4 1.3 2.7 3 .4-2.2 2.1.5 3-2.6-1.4-2.6 1.4.5-3-2.2-2.1 3-.4z"/></symbol>
   <symbol id="i-contribs" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h12M3 11h8M3 16h6m9-5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm-4.5 8c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/></symbol>
   <symbol id="i-logout" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 4H4v16h6m4-12 5 4-5 4m5-4H9"/></symbol>
@@ -73,14 +74,9 @@
     <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
     <div class="ak-header__screen" id="ak-nav-screen">
       <div class="ak-header__tools">
-        <div class="ak-header__tool">
-          <span class="ak-header__tool-label" id="ak-theme-label">{{msg-akds-appearance}}</span>
-          <div class="ak-theme-toggle" role="group" aria-labelledby="ak-theme-label">
-            <button data-theme="os" title="{{msg-akds-theme-os}}">◐</button>
-            <button data-theme="day" title="{{msg-akds-theme-day}}">☼</button>
-            <button data-theme="night" title="{{msg-akds-theme-night}}">☾</button>
-          </div>
-        </div>
+        {{! 阅读设置（外观 / 章节 / 字号；同 Vector 2022 的「外观」菜单，见文档站 /chrome/prefs）：眼镜图标在铃铛左边、随工具进 <1120 的 ⋮ 卡片；有 JS 点开 </header> 后面的 <dialog>，无 JS 去特殊页面。
+            href-akds-prefs = Special:ReadingPreferences 的 URL（带 returnto）——SkinMustache 自己给不出，这份参考骨架留空；Skin:Arknights 在 getTemplateData 里补 }}
+        <a class="ak-btn ak-btn--icon ak-header__prefs" id="ak-prefs-toggle" href="{{href-akds-prefs}}" title="{{msg-akds-prefs}}" aria-label="{{msg-akds-prefs}}" aria-haspopup="dialog" aria-controls="ak-prefs-panel" aria-expanded="false"><svg class="ak-icon" aria-hidden="true"><use href="#i-glasses"/></svg></a>
         {{#data-portlets.data-notifications}}<div id="{{id}}" class="ak-header__notifications {{class}}">{{{html-items}}}</div>{{/data-portlets.data-notifications}}
         {{#data-portlets.data-user-menu}}
         <div class="ak-dropdown" id="p-personal"><details><summary class="ak-btn ak-btn--ghost ak-header__user">{{label}}</summary><ul class="ak-menu ak-menu--right">{{{html-items}}}</ul></details></div>
@@ -96,6 +92,44 @@
     {{#data-toc}}<label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle" title="{{msg-akds-toc-title}}"></label>{{/data-toc}}
   </div>
 </header>
+{{! 阅读设置面板：在页眉外面——页眉子树里语义令牌是黑页眉配色，面板要跟亮 / 暗主题走；position:fixed 贴页眉下沿（≥640）/ 页面中央（≤639） }}
+<dialog class="ak-menu ak-menu--right ak-prefs-panel" id="ak-prefs-panel" aria-labelledby="ak-prefs-panel-title">
+  <a class="ak-menu__head" href="{{href-akds-prefs}}"><svg class="ak-icon" aria-hidden="true"><use href="#i-glasses"/></svg><span class="ak-menu__head-name" id="ak-prefs-panel-title">{{msg-akds-prefs}}</span></a>
+  <form class="ak-prefs ak-prefs--panel" method="post" action="{{href-akds-prefs}}">
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">{{msg-akds-appearance}}</legend>
+    <div class="ak-seg" role="radiogroup" aria-label="{{msg-akds-appearance}}" data-pref="skin-theme">
+      <label><input type="radio" name="p-skin-theme" value="os" checked><span>{{msg-akds-theme-os}}</span></label>
+      <label><input type="radio" name="p-skin-theme" value="day"><span>{{msg-akds-theme-day}}</span></label>
+      <label><input type="radio" name="p-skin-theme" value="night"><span>{{msg-akds-theme-night}}</span></label>
+    </div>
+  </fieldset>
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">{{msg-akds-prefs-sections}}</legend>
+    <div class="ak-seg" role="radiogroup" aria-label="{{msg-akds-prefs-sections}}" data-pref="ak-sections">
+      <label><input type="radio" name="p-ak-sections" value="expand" checked><span>{{msg-akds-prefs-sections-expand}}</span></label>
+      <label><input type="radio" name="p-ak-sections" value="mobile"><span>{{msg-akds-prefs-sections-mobile}}</span></label>
+      <label><input type="radio" name="p-ak-sections" value="collapse"><span>{{msg-akds-prefs-sections-collapse}}</span></label>
+    </div>
+  </fieldset>
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">{{msg-akds-prefs-font-size}}</legend>
+    <div class="ak-seg ak-seg--font" role="radiogroup" aria-label="{{msg-akds-prefs-font-size}}" data-pref="ak-font-size">
+      <label><input type="radio" name="p-ak-font-size" value="xsmall"><span>{{msg-akds-prefs-font-size-xsmall}}</span></label>
+      <label><input type="radio" name="p-ak-font-size" value="small"><span>{{msg-akds-prefs-font-size-small}}</span></label>
+      <label><input type="radio" name="p-ak-font-size" value="regular" checked><span>{{msg-akds-prefs-font-size-regular}}</span></label>
+      <label><input type="radio" name="p-ak-font-size" value="large"><span>{{msg-akds-prefs-font-size-large}}</span></label>
+    </div>
+  </fieldset>
+    <fieldset class="ak-pref">
+    <legend class="ak-pref__label">{{msg-akds-prefs-table-font-size}}</legend>
+    <div class="ak-seg" role="radiogroup" aria-label="{{msg-akds-prefs-table-font-size}}" data-pref="ak-table-font-size">
+      <label><input type="radio" name="p-ak-table-font-size" value="auto" checked><span>{{msg-akds-prefs-table-font-size-auto}}</span></label>
+      <label><input type="radio" name="p-ak-table-font-size" value="xsmall"><span>{{msg-akds-prefs-font-size-xsmall}}</span></label>
+    </div>
+  </fieldset>
+  </form>
+</dialog>
 
 {{! 头图（Key Visual）：活动主题（Gadget / MediaWiki:Common.css）设 --ak-keyart-image / --ak-keyart-h 即出现，见 tokens.css §2d。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 72px，各宽度相同；chrome/keyart.css 用负外边距实现，DOM 顺序不变） }}
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>

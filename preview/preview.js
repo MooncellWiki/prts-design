@@ -14,9 +14,12 @@
     else if (mode === 'dark') { html.setAttribute('data-theme', 'dark'); html.classList.add('skin-theme-clientpref-night'); }
     else { html.classList.add('skin-theme-clientpref-os'); }
     $$('.ak-theme-toggle > button').forEach(b => b.classList.toggle('is-active', b.dataset.theme === mode));
+    if (window.akdsClientPrefs) akdsClientPrefs.sync();
     try { localStorage.setItem(THEME_KEY, mode); } catch (e) {}
   }
   window.akdsSetTheme = applyTheme;
+  /* 阅读设置面板 / 特殊页面里的「外观」radio（client-prefs.js 的 skin-theme：os / day / night）→ 这里的 applyTheme；applyTheme 打好 html 类后再让面板的选中态跟上 */
+  document.addEventListener('akds:pref', e => { if (e.detail && e.detail.feature === 'skin-theme') { applyTheme({ os: 'os', day: 'light', night: 'dark' }[e.detail.value] || 'os'); } });
   /* 初始主题：URL ?theme= > localStorage > 页面默认(data-default-theme) > 宿主已打的 data-theme > 跟随系统 */
   let saved = null;
   try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
@@ -214,6 +217,14 @@
     const onMq = e => { if (e.matches) closeNav(); flat.forEach(d => { d.open = !e.matches; }); };
     (mq.addEventListener ? mq.addEventListener('change', onMq) : mq.addListener(onMq));
     if (!mq.matches) flat.forEach(d => { d.open = true; });
+  }
+
+  /* ── 页眉里的下拉卡片（阅读设置 / 用户菜单，.ak-header__tools .ak-dropdown > details）：桌面（≥1120）点卡片外 / Esc 收起；<1120 它们在 ⋮ 卡片里平铺（上面置了 open），不碰 ── */
+  {
+    const mq = window.matchMedia('(min-width: 1120px)');
+    const open = () => mq.matches ? $$('.ak-header__tools .ak-dropdown > details[open]') : [];
+    document.addEventListener('click', e => { open().forEach(d => { if (!d.contains(e.target)) d.open = false; }); });
+    document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; open().forEach(d => { d.open = false; const s = d.querySelector(':scope > summary'); if (s && d.contains(document.activeElement)) s.focus(); }); });
   }
 
   /* ── Tabs (.ak-tabs[data-tabs]) ────────────────────────────── */

@@ -8,7 +8,8 @@
 	require( './sidebar-tree.js' );
 	/* 悬浮搜索面板：核心 src/search-palette.js（共用）+ MW 数据源 search-providers.js（REST 标题搜索 / 动作 / 分类 / 用户 / 文件） */
 	if ( mw.config.get( 'wgAKDSSearchPalette', true ) !== false ) { require( './search-providers.js' ); }
-	/* 章节折叠：与 preview 共用 src/sections.js */
+	/* 阅读设置（章节 / 字号；偏好经 mw.user.clientPrefs，skin.json ClientPreferences 登记）+ 章节折叠：与 preview 共用 src/client-prefs.js · src/sections.js */
+	require( './client-prefs.js' );
 	require( './sections.js' );
 	if ( mw.hook ) { mw.hook( 'wikipage.content' ).add( ( $c ) => { if ( $c && $c[ 0 ] && window.akdsSections ) { akdsSections.init( $c[ 0 ] ); } } ); }   /* VE 保存 / 编辑预览后再渲染的正文 */
 

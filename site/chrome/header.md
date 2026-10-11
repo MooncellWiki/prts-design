@@ -39,20 +39,20 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 页眉在**所有宽度都只有一行**、始终贴顶，不随滚动收起。<1120 多出来的入口——「菜单」（拉出侧栏抽屉）——在 DOM 上是 `.ak-local-nav` 一组，但不单独成行：`.ak-header__inner` 与 `.ak-local-nav` 都 `display: contents`，两组子项直接排进 `.ak-header` 这一行，DOM 与模板不变。「本页目录」在 640–1400 不在页眉里（是正文右上角一枚独立的按钮，见[目录](/chrome/toc)），只有手机（≤639）才是这一行里的一枚图标。
 
 - **1120–1400**：与 ≥1400 完全相同——侧栏还在左列，三列网格不变。
-- **<1120**：侧栏成了抽屉，没有列可对齐，这一行回到 flex——» 菜单 · 品牌 · 搜索 · ⋮。「菜单」只留图标（双右箭头 »，`i-menu`：朝右展开，指的就是从左边拉出一栏；不用 ☰ 三条线——三条线读不出「从左边拉出一栏」，也和目录按钮的方点列表撞形），`font-size: 0` 藏起「菜单」两字，文字仍是按钮的无障碍名。外观、通知、用户菜单收进 ⋮ 拉下、贴页眉右下沿的卡片（宽度随内容：最窄 240px，内容长就撑开，最宽到视口两侧各留一个 gutter）（`position: absolute` 于 `.ak-header`、`top: 100%`；不是全屏面板——里面只有一行图标控件加用户菜单，卡片自己可滚、不锁页面滚动）：第一行左边是通知图标（徽标照旧压在铃铛右上角）、右边是外观开关（三个按钮加大到 40×32 方便点按），两样并排不各占一行，用户菜单平铺在下面（不折叠、不浮出）。DOM 只有一份：桌面上 `.ak-header__screen` 是 `display: contents`，子项直接参与主行网格；窄屏它变成卡片——Echo 徽标、`#p-personal`、外观开关都不复制，id 不重复。
+- **<1120**：侧栏成了抽屉，没有列可对齐，这一行回到 flex——» 菜单 · 品牌 · 搜索 · ⋮。「菜单」只留图标（双右箭头 »，`i-menu`：朝右展开，指的就是从左边拉出一栏；不用 ☰ 三条线——三条线读不出「从左边拉出一栏」，也和目录按钮的方点列表撞形），`font-size: 0` 藏起「菜单」两字，文字仍是按钮的无障碍名。阅读设置、通知、用户菜单收进 ⋮ 拉下、贴页眉右下沿的卡片（外观在阅读设置的面板里）（宽度随内容：最窄 240px，内容长就撑开，最宽到视口两侧各留一个 gutter）（`position: absolute` 于 `.ak-header`、`top: 100%`；不是全屏面板——里面只有一行图标控件加用户菜单，卡片自己可滚、不锁页面滚动）：第一行是阅读设置的眼镜与通知图标（徽标照旧压在铃铛右上角；外观开关已收进阅读设置面板），用户菜单平铺在下面（不折叠、不浮出）。DOM 只有一份：桌面上 `.ak-header__screen` 是 `display: contents`，子项直接参与主行网格；窄屏它变成卡片——Echo 徽标、`#p-personal`、外观开关都不复制，id 不重复。
 - **≤639**：全是图标，52px——» 菜单 · 品牌 ……… 本页目录 · 搜索 · ⋮。「本页目录」是 `.ak-local-nav` 里的 `label.ak-local-nav__toc`（只在这一档显示）：CSS 画的方点列表（`::before` + `mask`，模板不用加图标），三个 4px 方点与 ⋮ 同一种方点——不用三条线的 `i-list`（一眼读成汉堡菜单），也不用缩进的大纲图形（20px 下像「右对齐」）；开着时变活动主色；强制色模式下改用系统文字色 / Highlight。它开合的是正文里 `.ak-toc-dock` 的那个 checkbox，浮层贴在这一行下沿。搜索收成图标按钮（同样打开悬浮面板），标语隐藏。320px 宽也排得下。
 
 以前 640–1399 是两行：主行下面还有一条 48px 的「二级吸顶栏」放「菜单」「本页目录」，向下滚动时主行收起、只留它贴顶（`.ak-condensed`）。两行时顶部占 105px，粘性表头（`.wikitable.ak-sticky-head`、干员一览的表头）、粘性侧栏这些只按 `--ak-header-h` 让位的地方，主行没收起时都被第二行压住一截。合成一行后头图只探这一行、目录按钮贴这一行下沿、标题锚点只让这一行，都是 `--ak-header-h`，不必再另算；页眉也不再收起，各个入口在任何滚动位置都够得着。后来 640–1400 的「本页目录」也从这一行挪了出去，成了正文右上角的独立按钮（它属于这一页，不属于站点级的页眉）；手机上仍留在这一行。
 
 开合是**纯 CSS**：`input.ak-nav-cb` + `label.ak-header__burger`（⋮ 三个方点 → ×；不画三条线——三条线一眼读成汉堡菜单，而这里只是外观 / 账户，不是导航），checkbox 在 DOM 上必须排在卡片与汉堡之前才能用 `~` 联动，所以主行 DOM 顺序固定为 logo · search · search-toggle · nav-cb · screen · burger。<1120「菜单」用 `order` 排到最左、⋮ 排到最右，Tab / 读屏顺序仍是 DOM 的 品牌 → 搜索 → ⋮ → 菜单（目录的 checkbox 在正文里），与视觉不一致——换来模板不用动。JS 只补 Esc / 点卡片外（放行 `.ak-nav-cb`：点 `label` 时浏览器会再向 checkbox 派发一次 click，那次不算「外部」）/ 选了页内链接 / 回到桌面宽度时收起。「菜单」»（侧栏抽屉 = 本站唯一的导航）与 ⋮（外观 / 账户）分工明确，互不重复。
 
-<SkinFrame :width="1024" :height="560" state="nav" caption="1024：» 菜单 · 品牌 · 搜索 · ⋮——⋮ 拉下的工具卡片（外观 / 通知 / 用户）" />
+<SkinFrame :width="1024" :height="560" state="nav" caption="1024：» 菜单 · 品牌 · 搜索 · ⋮——⋮ 拉下的工具卡片（阅读设置 / 通知 / 用户）" />
 
 <SkinFrame :width="390" :height="560" state="toc" caption="390：手机上全是图标，目录（方点列表）拉下的浮层贴在这一行下沿" />
 
 ## 外观开关
 
-三态：跟随系统 / 档案（亮）/ 终端（暗），对应 MW 1.43 的 `skin-theme-clientpref-os | day | night`（`mw.user.clientPrefs`，未登录也可用）。`button[data-theme]`，选中项 `.is-active`。
+三态：跟随系统 / 档案（亮）/ 终端（暗），对应 MW 1.43 的 `skin-theme-clientpref-os | day | night`（`mw.user.clientPrefs`，未登录也可用）。`button[data-theme]`，选中项 `.is-active`。页眉上现在不常驻它（外观收进了阅读设置面板，那里是同一套值的 radio 分段开关）；`chrome/theme-toggle.css` 仍是独立组件，活动页 / 小工具要放一枚三格开关时照用。
 
 ```html demo bare
 <div class="ak-header" style="position:relative;padding:14px 16px">
@@ -66,6 +66,12 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 示例外面包了一层 `.ak-header`，开关才拿到页眉配色；点一下会切换示例自己的主题。
 
+## 阅读设置（含外观）
+
+工具区铃铛左边一枚眼镜 `a.ak-header__prefs`（`i-glasses`，同 `.ak-btn--icon` 的 36px 图标钮）拉下「阅读设置」面板——**外观**（跟随系统 / 亮 / 暗）、章节折叠、字号、表格字号，同 Vector 2022 的「外观」菜单；手机（≤639）上是页面正中的弹层，无 JS 时是去 `Special:ReadingPreferences` 的链接，见[阅读设置](/chrome/prefs)。<1120 它随工具进 ⋮ 卡片的第一行（眼镜 · 通知），点开面板时卡片收起。面板放在页眉外面、跟着亮 / 暗主题走。页眉上不再有常驻的三格外观开关：换主题的频次不高，一枚眼镜收下三样，工具区只剩 眼镜 · 通知 · 用户。
+
+<SkinFrame :height="420" state="prefs" caption="眼镜拉下的「阅读设置」面板：外观 · 章节 · 字号" />
+
 ## 结构
 
 ```html
@@ -77,7 +83,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
     <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
     <div class="ak-header__screen" id="ak-nav-screen">
       <div class="ak-header__tools">
-        <div class="ak-header__tool"><span class="ak-header__tool-label">外观</span><div class="ak-theme-toggle">…</div></div>
+        <a class="ak-btn ak-btn--icon ak-header__prefs" href="Special:ReadingPreferences" aria-haspopup="dialog" aria-controls="ak-prefs-panel">…</a>   <!-- 阅读设置（外观 / 章节 / 字号），有 JS 开 </header> 后面的 dialog.ak-prefs-panel -->
         <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知">…<span class="ak-badge">3</span></button>
         <div class="ak-dropdown ak-header__user-menu"><details><summary class="ak-btn ak-btn--ghost ak-header__user">…</summary><div class="ak-menu ak-menu--right ak-header__user-card">…</div></details></div>
       </div>
@@ -89,10 +95,11 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
     <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle" title="本页目录"></label>   <!-- 仅 ≤639；checkbox 在正文的 .ak-toc-dock 里 -->
   </div>
 </header>
+<dialog class="ak-menu ak-menu--right ak-prefs-panel" id="ak-prefs-panel">…</dialog>   <!-- 阅读设置面板：页眉外面，跟亮 / 暗主题 -->
 ```
 
 ## CSS
 
-<CssClasses :files="['chrome/header.css', 'chrome/local-nav.css', 'chrome/theme-toggle.css']" />
+<CssClasses :files="['chrome/header.css', 'chrome/local-nav.css', 'chrome/theme-toggle.css', 'chrome/prefs.css']" />
 
-<CssSelectors :files="['chrome/header.css', 'chrome/local-nav.css', 'chrome/theme-toggle.css']" />
+<CssSelectors :files="['chrome/header.css', 'chrome/local-nav.css', 'chrome/theme-toggle.css', 'chrome/prefs.css']" />

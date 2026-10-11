@@ -89,6 +89,7 @@ const sidebar: DefaultTheme.Sidebar = [
       { text: "侧栏", link: "/chrome/sidebar" },
       { text: "页面头", link: "/chrome/page-header" },
       { text: "目录", link: "/chrome/toc" },
+      { text: "阅读设置", link: "/chrome/prefs" },
       { text: "页脚", link: "/chrome/footer" },
       { text: "搜索面板", link: "/chrome/search" },
       { text: "响应式", link: "/chrome/responsive" },

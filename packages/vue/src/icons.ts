@@ -34,6 +34,7 @@ export const icons = {
   "lock": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M7 11V8a5 5 0 0 1 10 0v3M4 11h16v10H4z\"/>",
   "trash": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v6m4-6v6\"/>",
   "lang": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M3 5h10M8 3v2m3 0c-1 4-3.5 7-7 9m1-6c1 3 3 5 6 6M13 21l4-10 4 10m-6.5-3h5\"/>",
+  "glasses": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M3 14.5a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0zm11 0a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0zM10 14.5h4M3.5 13 6 7h1.5M20.5 13 18 7h-1.5\"/>",
   "gear": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-2-6h4l.6 2.4 2.1 1.2 2.4-.7 2 3.4-1.8 1.7v2.4l1.8 1.7-2 3.4-2.4-.7-2.1 1.2L14 21h-4l-.6-2.4-2.1-1.2-2.4.7-2-3.4 1.8-1.7v-2.4L2.9 8.9l2-3.4 2.4.7 2.1-1.2z\"/>",
   "watchlist": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M3 6h12M3 11h8M3 16h6m8-4 1.3 2.7 3 .4-2.2 2.1.5 3-2.6-1.4-2.6 1.4.5-3-2.2-2.1 3-.4z\"/>",
   "contribs": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M3 6h12M3 11h8M3 16h6m9-5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm-4.5 8c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4\"/>",

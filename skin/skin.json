@@ -48,7 +48,27 @@
             "akds-back-to-top",
             "akds-skip",
             "akds-footer-about",
-            "akds-search-label"
+            "akds-search-label",
+            "akds-prefs",
+            "akds-prefs-sections",
+            "akds-prefs-sections-expand",
+            "akds-prefs-sections-mobile",
+            "akds-prefs-sections-collapse",
+            "akds-prefs-sections-hint",
+            "akds-prefs-font-size",
+            "akds-prefs-font-size-xsmall",
+            "akds-prefs-font-size-small",
+            "akds-prefs-font-size-regular",
+            "akds-prefs-font-size-large",
+            "akds-prefs-font-size-hint",
+            "akds-prefs-save",
+            "akds-prefs-reset",
+            "akds-prefs-return",
+            "akds-prefs-saved",
+            "akds-theme-hint",
+            "akds-prefs-table-font-size",
+            "akds-prefs-table-font-size-hint",
+            "akds-prefs-table-font-size-auto"
           ]
         }
       ]
@@ -110,6 +130,7 @@
         "components/panel.css",
         "components/heading.css",
         "components/tabs.css",
+        "components/seg.css",
         "components/message.css",
         "components/cbox.css",
         "components/tooltip.css",
@@ -210,6 +231,7 @@
         "chrome/toc.css",
         "chrome/footer.css",
         "chrome/theme-toggle.css",
+        "chrome/prefs.css",
         "chrome/search-palette.css",
         "chrome/special-pages.css",
         "chrome/responsive.css"
@@ -232,6 +254,7 @@
     "skins.akds.js": {
       "packageFiles": [
         "skin.js",
+        "client-prefs.js",
         "sections.js",
         "sidebar-tree.js",
         "search-palette.js",
@@ -297,6 +320,33 @@
         "night"
       ],
       "default": "os",
+      "callback": "skins.akds.js"
+    },
+    "ak-sections": {
+      "options": [
+        "expand",
+        "mobile",
+        "collapse"
+      ],
+      "default": "expand",
+      "callback": "skins.akds.js"
+    },
+    "ak-font-size": {
+      "options": [
+        "xsmall",
+        "small",
+        "regular",
+        "large"
+      ],
+      "default": "regular",
+      "callback": "skins.akds.js"
+    },
+    "ak-table-font-size": {
+      "options": [
+        "auto",
+        "xsmall"
+      ],
+      "default": "auto",
       "callback": "skins.akds.js"
     }
   },

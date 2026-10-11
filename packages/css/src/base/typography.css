@@ -67,6 +67,16 @@ small, .ak-text-sm { font-size: var(--ak-fs-sm); }
    `.mw-heading .mw-editsection`，0,2,0 输给 0,3,0，编辑链接在触屏上一直是半透明的）。 */
 @media (hover: none) { .mw-heading:not(:hover) .mw-editsection { opacity: 1; } }
 
+/* ─── 字号（阅读设置 ak-font-size，client-prefs.js；默认 regular = 令牌原值 16px）：只换 .mw-body-content 里的字号令牌，正文 / 组件 / 模板跟着整体换一档，
+ *  页眉 / 侧栏 / 目录 / 页面标题不动。四档 极小 / 小 / 中 / 大 = 12 / 14 / 16 / 20：
+ *    「大」照 prts 老皮肤 Minerva（MobileFrontend mf-font-size 的 large 20px，行高收到 1.5）；MF 还有一档 18「中等」，有了 16 的「中」不要。
+ *    「极小」12 = 现网 MediaWiki:Mobile.css 在手机（≤640）上给 .wikitable / .infobox 的 x-small（关键字本是 10px，Chrome 中文环境最小字号 12 把它托到 12——老手机版读者看到的表格就是 12px；body 的 small 是 13）；
+ *    「小」14 介于其间（Vector 现网的正文大小）。极小档的小字令牌托底 11px，再小中文就糊了。
+ *  写在这里而不是令牌里：令牌表按主题 / 视口生成，这几档是用户偏好、不是主题。≤639 令牌把 h2 / h3 各小一档（tokens.css §functional/compact），这里的值是绝对值、在手机上一样生效 */
+.ak-font-size-clientpref-xsmall .mw-body-content { --ak-fs-body-lg: 0.875rem; --ak-fs-body: 0.75rem; --ak-fs-sm: 0.6875rem; --ak-fs-xs: 0.6875rem; --ak-fs-h2: 1.125rem; --ak-fs-h3: 1rem; --ak-fs-h4: 0.875rem; }
+.ak-font-size-clientpref-small .mw-body-content { --ak-fs-body-lg: 1rem; --ak-fs-body: 0.875rem; --ak-fs-sm: 0.8125rem; --ak-fs-xs: 0.75rem; --ak-fs-h2: 1.375rem; --ak-fs-h3: 1.125rem; --ak-fs-h4: 1rem; }
+.ak-font-size-clientpref-large .mw-body-content { --ak-fs-body-lg: 1.375rem; --ak-fs-body: 1.25rem; --ak-fs-sm: 1.0625rem; --ak-fs-xs: 0.9375rem; --ak-fs-h2: 1.875rem; --ak-fs-h3: 1.5rem; --ak-fs-h4: 1.3125rem; --ak-lh-body: 1.5; }
+
 /* Links */
 a:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link); text-decoration: none; transition: color var(--ak-dur-fast) var(--ak-ease); }
 a:hover:not(:where(.ak-not-prose, .ak-not-prose *)) { color: var(--ak-link-hover); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }

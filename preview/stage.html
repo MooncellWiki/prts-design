@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <!-- 生成物：由 scripts/build-preview.py 从 preview/_src/skeleton.html + _src/pages/stage.html 生成，改源文件再重跑 -->
-<html lang="zh-CN" class="client-nojs skin-theme-clientpref-night" data-default-theme="dark">
+<html lang="zh-CN" class="client-nojs skin-theme-clientpref-night ak-sections-clientpref-expand ak-font-size-clientpref-regular ak-table-font-size-clientpref-auto" data-default-theme="dark">
 <head>
 <meta charset="utf-8">
 <script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；chrome/responsive.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
+<script>(function(){var k='mwclientpreferences',raw;try{raw=localStorage.getItem(k)}catch(e){return}if(!raw)return;var c=document.documentElement.className;raw.split(',').forEach(function(p){if(!/^[a-zA-Z0-9-]+-clientpref-[a-zA-Z0-9]+$/.test(p))return;var f=p.replace(/-clientpref-[a-zA-Z0-9]+$/,''),re=new RegExp('(^| )'+f+'-clientpref-[a-zA-Z0-9]+( |$)');c=re.test(c)?c.replace(re,'$1'+p+'$2'):c+' '+p});document.documentElement.className=c})();</script>   <!-- 阅读设置（章节 / 字号）首帧前就打到 <html> 上：同 Skin:Arknights 的 inline.js，localStorage 里 "feature-clientpref-value,…" 一条（MW 核心 clientPrefs 的格式）；主题在预览里另走 preview.js 的 akds-theme -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A-3 最后的炎魔 - PRTS · 关卡页设计稿</title>
 <link rel="stylesheet" href="../src/index.css">   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
@@ -128,6 +129,7 @@
   <!-- 用户菜单（#p-user-interface-preferences / #p-personal）：language / settings / watchlist / userContributions / logOut -->
   <symbol id="i-lang" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h10M8 3v2m3 0c-1 4-3.5 7-7 9m1-6c1 3 3 5 6 6M13 21l4-10 4 10m-6.5-3h5"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-2-6h4l.6 2.4 2.1 1.2 2.4-.7 2 3.4-1.8 1.7v2.4l1.8 1.7-2 3.4-2.4-.7-2.1 1.2L14 21h-4l-.6-2.4-2.1-1.2-2.4.7-2-3.4 1.8-1.7v-2.4L2.9 8.9l2-3.4 2.4.7 2.1-1.2z"/></symbol>
+  <symbol id="i-glasses" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 14.5a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0zm11 0a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0zM10 14.5h4M3.5 13 6 7h1.5M20.5 13 18 7h-1.5"/></symbol>   <!-- 阅读设置（页眉入口）：眼镜 = 外观 / 阅读，同 Vector 2022「外观」菜单的图标；不用齿轮——用户菜单里「参数设置」已经是齿轮 -->
   <symbol id="i-watchlist" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h12M3 11h8M3 16h6m8-4 1.3 2.7 3 .4-2.2 2.1.5 3-2.6-1.4-2.6 1.4.5-3-2.2-2.1 3-.4z"/></symbol>
   <symbol id="i-contribs" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h12M3 11h8M3 16h6m9-5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm-4.5 8c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/></symbol>
   <symbol id="i-logout" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 4H4v16h6m4-12 5 4-5 4m5-4H9"/></symbol>
@@ -160,14 +162,9 @@
     <input type="checkbox" id="ak-nav-toggle" class="ak-nav-cb">
     <div class="ak-header__screen" id="ak-nav-screen">
       <div class="ak-header__tools">
-        <div class="ak-header__tool">
-          <span class="ak-header__tool-label" id="ak-theme-label">外观</span>
-          <div class="ak-theme-toggle" role="group" aria-labelledby="ak-theme-label">
-            <button data-theme="os" title="跟随系统"><svg><use href="#i-monitor"/></svg></button>
-            <button data-theme="light" title="档案模式（亮）"><svg><use href="#i-sun"/></svg></button>
-            <button data-theme="dark" title="终端模式（暗）"><svg><use href="#i-moon"/></svg></button>
-          </div>
-        </div>
+        <!-- 阅读设置（外观 / 章节 / 字号；chrome/prefs.css + client-prefs.js，同 Vector 2022 的「外观」菜单）：眼镜图标在工具区铃铛左边，<1120 随工具进 ⋮ 卡片第一行；
+             有 JS 时点开 </header> 后面那个 <dialog>（≥640 非模态、贴页眉右下沿；≤639 模态、页面中央），无 JS 时是链接、去特殊页面 prefs.html（Special:ReadingPreferences，同一份表单真提交） -->
+        <a class="ak-btn ak-btn--icon ak-header__prefs" id="ak-prefs-toggle" href="prefs.html" title="阅读设置" aria-label="阅读设置" aria-haspopup="dialog" aria-controls="ak-prefs-panel" aria-expanded="false"><svg><use href="#i-glasses"/></svg></a>
         <button class="ak-btn ak-btn--icon ak-header__bell" aria-label="通知"><svg><use href="#i-bell"/></svg><span class="ak-header__tool-label">通知</span><span class="ak-badge">3</span></button>
         <!-- 用户菜单（MW #p-personal）：.ak-dropdown > details > summary.ak-header__user + .ak-menu 卡片。
              卡片 = 身份抬头（a.ak-menu__head#pt-userpage：头像 + 用户名，整块链到用户页；没有头像时 .ak-avatar 里放 #i-user 图标）+ 两组门户（「个人工具」里不再重复用户页那一项）：「界面设置」#p-user-interface-preferences（ULS 的语言切换就在这里——侧栏不再有 Languages 组）· 「个人工具」#p-personal。
@@ -205,6 +202,45 @@
     <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle" title="本页目录"></label>
   </div>
 </header>
+<!-- 阅读设置面板：放在页眉外面——页眉子树里语义令牌被重映射成黑页眉配色，面板要跟着亮 / 暗主题走（同正文），所以不在 .ak-header 里；position:fixed 贴页眉下沿 / 居中 -->
+<dialog class="ak-menu ak-menu--right ak-prefs-panel" id="ak-prefs-panel" aria-labelledby="ak-prefs-panel-title">
+  <!-- 抬头 = 同用户菜单：图标 + 名字 + 右端箭头，整块链到特殊页面；没有 × 和「整页打开」——点外面 / Esc 收起 -->
+  <a class="ak-menu__head" href="prefs.html"><svg class="ak-icon"><use href="#i-glasses"/></svg><span class="ak-menu__head-name" id="ak-prefs-panel-title">阅读设置</span></a>
+  <form class="ak-prefs ak-prefs--panel" method="post" action="prefs.html">
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">外观</legend>
+    <div class="ak-seg" role="radiogroup" aria-label="外观" data-pref="skin-theme">
+      <label><input type="radio" name="p-skin-theme" value="os" checked><span>跟随系统</span></label>
+      <label><input type="radio" name="p-skin-theme" value="day"><span>亮</span></label>
+      <label><input type="radio" name="p-skin-theme" value="night"><span>暗</span></label>
+    </div>
+  </fieldset>
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">章节折叠默认模式</legend>
+    <div class="ak-seg" role="radiogroup" aria-label="章节折叠默认模式" data-pref="ak-sections">
+      <label><input type="radio" name="p-ak-sections" value="expand" checked><span>展开</span></label>
+      <label><input type="radio" name="p-ak-sections" value="mobile"><span>窄屏收起</span></label>
+      <label><input type="radio" name="p-ak-sections" value="collapse"><span>收起</span></label>
+    </div>
+  </fieldset>
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">字号</legend>
+    <div class="ak-seg ak-seg--font" role="radiogroup" aria-label="字号" data-pref="ak-font-size">
+      <label><input type="radio" name="p-ak-font-size" value="xsmall"><span>极小</span></label>
+      <label><input type="radio" name="p-ak-font-size" value="small"><span>小</span></label>
+      <label><input type="radio" name="p-ak-font-size" value="regular" checked><span>中</span></label>
+      <label><input type="radio" name="p-ak-font-size" value="large"><span>大</span></label>
+    </div>
+  </fieldset>
+    <fieldset class="ak-pref">
+    <legend class="ak-pref__label">表格字号</legend>
+    <div class="ak-seg" role="radiogroup" aria-label="表格字号" data-pref="ak-table-font-size">
+      <label><input type="radio" name="p-ak-table-font-size" value="auto" checked><span>跟随正文</span></label>
+      <label><input type="radio" name="p-ak-table-font-size" value="xsmall"><span>极小</span></label>
+    </div>
+  </fieldset>
+  </form>
+</dialog>
 
 <!-- ═══ KEY ART ═══ 头图：活动主题设 --ak-keyart-image / --ak-keyart-h 即出现（见 tokens.css §2d、src/chrome/demo-theme.css）。画从页面顶端铺起，垫在页眉玻璃与版面背后、只在版面之上露一小条（--ak-keyart-reveal，默认 72px，各宽度相同；chrome/keyart.css 负外边距，DOM 顺序不变） -->
 <div class="ak-keyart" aria-hidden="true"><div class="ak-keyart__inner"></div></div>
@@ -681,6 +717,7 @@
 <button class="ak-fab" aria-label="回到顶部"><svg width="18" height="18"><use href="#i-up"/></svg></button>
 <script src="../src/sidebar-tree.js"></script>
 <script src="../src/search-palette.js"></script>
+<script src="../src/client-prefs.js"></script>   <!-- 阅读设置：偏好读写 + 卡片里的分段开关 -->
 <script src="../src/sections.js"></script>   <!-- 章节折叠 -->
 <script src="preview.js"></script>
 <script src="search-mock.js"></script>

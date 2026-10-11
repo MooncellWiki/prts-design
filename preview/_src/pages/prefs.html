@@ -1,0 +1,63 @@
+<!--page
+order: 8
+nav: 阅读设置（特殊页面）
+title: 阅读设置 - PRTS · 特殊页面样例
+h1: 阅读设置
+h1en: Special:ReadingPreferences
+toc: false
+-->
+<!--head
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   阅读设置 · Special:ReadingPreferences — 皮肤自己的特殊页面（同 MobileFrontend 的 Special:MobileOptions），页眉的齿轮链到这里。
+   页面本身的样式在 chrome/prefs.css（.ak-prefs / .ak-pref）、分段开关在 components/seg.css；这里只有预览骨架的补丁。
+   ── 0. 页面级：预览骨架的补丁，不是页面的样式 ──
+   特殊页面没有 讨论 / 历史 / 编辑 动作簇、没有「最后编辑于」、没有分类栏、没有面包屑（MW 本来就不输出；骨架是静态的、这里藏掉）；
+   正文白纸的内边距同 .ns-special（chrome/special-pages.css）。 */
+.ak-page-header__top, .ak-page-tools, .ak-body-foot, .catlinks, .ak-local-nav__toc { display: none; }
+.ak-body { padding: var(--ak-space-5); }
+</style>
+-->
+<!-- 真表单：无 JS 时 POST 回特殊页面，服务端写 cookie（匿名）/ 用户选项（登录）后 302 回 returnto（同 MobileOptions::submitSettingsForm）；
+     有 JS 时 client-prefs.js 监听 radio 的 change、改了立刻生效并持久化，「保存」钮由 .client-js 藏起（chrome/prefs.css）。
+     选中态：无 JS 靠 label:has(input:checked)，有 JS 再同步 .is-active（client-prefs.js sync）。预览里 action 指向自己、不会真的提交。 -->
+<form class="ak-prefs" id="ak-prefs" method="post" action="prefs.html">
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">外观</legend>
+    <div class="ak-seg ak-seg--lg" role="radiogroup" aria-label="外观" data-pref="skin-theme">
+      <label><input type="radio" name="skin-theme" value="os" checked><span>跟随系统</span></label>
+      <label><input type="radio" name="skin-theme" value="day"><span>亮</span></label>
+      <label><input type="radio" name="skin-theme" value="night"><span>暗</span></label>
+    </div>
+  </fieldset>
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">章节折叠默认模式</legend>
+    <div class="ak-seg ak-seg--lg" role="radiogroup" aria-label="章节折叠默认模式" data-pref="ak-sections">
+      <label><input type="radio" name="ak-sections" value="expand" checked><span>展开</span></label>
+      <label><input type="radio" name="ak-sections" value="mobile"><span>窄屏收起</span></label>
+      <label><input type="radio" name="ak-sections" value="collapse"><span>收起</span></label>
+    </div>
+  </fieldset>
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">字号</legend>
+    <div class="ak-seg ak-seg--lg ak-seg--font" role="radiogroup" aria-label="字号" data-pref="ak-font-size">
+      <label><input type="radio" name="ak-font-size" value="xsmall"><span>极小</span></label>
+      <label><input type="radio" name="ak-font-size" value="small"><span>小</span></label>
+      <label><input type="radio" name="ak-font-size" value="regular" checked><span>中</span></label>
+      <label><input type="radio" name="ak-font-size" value="large"><span>大</span></label>
+    </div>
+  </fieldset>
+  <fieldset class="ak-pref">
+    <legend class="ak-pref__label">表格字号</legend>
+    <div class="ak-seg ak-seg--lg" role="radiogroup" aria-label="表格字号" data-pref="ak-table-font-size">
+      <label><input type="radio" name="ak-table-font-size" value="auto" checked><span>跟随正文</span></label>
+      <label><input type="radio" name="ak-table-font-size" value="xsmall"><span>极小</span></label>
+    </div>
+  </fieldset>
+  <!-- 有 JS：「保存」藏起（改了就生效），「恢复默认设置」把四项都设回默认值（client-prefs.js），「返回」走 history.back()（同源来路时还原滚动位置）；无 JS：保存 / 恢复默认都是提交（name 区分），返回是 returnto 链接 -->
+  <div class="ak-prefs__actions">
+    <button type="submit" class="ak-btn ak-btn--primary ak-prefs__submit">保存</button>
+    <button type="submit" class="ak-btn ak-prefs__reset" name="reset" value="1">恢复默认设置</button>
+    <a class="ak-btn ak-prefs__back" href="operator.html">返回</a>
+  </div>
+</form>

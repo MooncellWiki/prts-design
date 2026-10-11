@@ -49,7 +49,7 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
     ├── arknights/ chrome/ img/  │
     ├── utilities.css            │
     ├── forced-colors.css        │
-    └── sidebar-tree.js · search-palette.js ─┘
+    └── sidebar-tree.js · search-palette.js · client-prefs.js · sections.js ─┘
 ```
 
 `resources/` 里除 `skin.js` / `search-providers.js` 外都是指向 `packages/css/src/` 的符号链接；`img/` 是 `.ak-item--bare` 的道具底框（`base/skin-assets.css` 按 `../img/` 声明成 `--ak-item-bg-*`，`arknights/item.css` 读变量）。部署时要跟随链接拷贝实体文件。

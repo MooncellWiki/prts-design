@@ -9,7 +9,7 @@
  *   <SkinFrame :width="1024" state="toc" />             打开目录浮层
  *   <SkinFrame highlight=".ak-header" />                 描出一块（CSS 选择器）
  *   <SkinFrame state="palette" query="yh" />             打开搜索面板并输入
- *   state（空格分隔）：nav ⋮ 工具卡片 · toc 目录浮层 · sidebar 侧栏抽屉 · user 用户菜单 · more 「更多」菜单 · palette 搜索面板 ·
+ *   state（空格分隔）：nav ⋮ 工具卡片 · toc 目录浮层 · sidebar 侧栏抽屉 · user 用户菜单 · prefs 阅读设置面板 · more 「更多」菜单 · palette 搜索面板 ·
  *                      flyout 侧栏悬停飞出 · demo 示例活动主题 · bottom 滚到页底
  */
 import { useData, withBase } from "vitepress";
@@ -189,6 +189,7 @@ function onLoad() {
   }
   if (s.has("sidebar")) (doc.querySelector(".ak-local-nav__menu") as HTMLElement | null)?.click();
   if (s.has("user")) doc.querySelector("#ak-user-menu details")?.setAttribute("open", "");
+  if (s.has("prefs")) (doc.getElementById("ak-prefs-toggle") as HTMLElement | null)?.click();
   if (s.has("more")) doc.querySelector(".ak-page-tools__more details")?.setAttribute("open", "");
   if (s.has("flyout")) {
     const label = [...doc.querySelectorAll(".ak-sidebar .ak-tree__branch > .ak-tree__label")].find(l => l.textContent?.trim() === "档案");

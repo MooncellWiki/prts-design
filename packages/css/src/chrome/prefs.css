@@ -1,0 +1,44 @@
+/*! PRTS Design · chrome/prefs.css — Reading preferences 阅读设置（页眉眼镜图标 + 下拉面板 / 手机弹层 + 特殊页面） · 依赖：tokens.css · components/seg.css · components/dialog.css · chrome/header.css */
+/* ═══ 阅读设置 ═══
+ *  做法同 Vector 2022 的「外观」菜单：页眉工具区一枚眼镜图标 a.ak-header__prefs（铃铛左边；<1120 随工具进 ⋮ 卡片第一行），点开一张面板（外观 / 章节 / 字号），改一下立刻生效。
+ *  外观三态（跟随系统 / 档案·亮 / 终端·暗）从页眉收进来：页眉上不再有常驻的三格开关（chrome/theme-toggle.css 仍是独立组件，别处可用），值仍是 skin-theme-clientpref-*。
+ *  面板是一个 <dialog class="ak-menu ak-menu--right ak-prefs-panel">，放在 </header> 之后、不在页眉子树里（页眉里语义令牌被重映射成黑页眉配色，面板要跟亮 / 暗主题走，同正文），DOM 只此一份：
+ *    ≥640  dialog.show()：非模态，position:fixed 贴页眉下沿、右缘对齐工具区（同用户菜单的卡片：1px 框 + 大阴影 + 6px 间距，不画顶部亮线）；点面板外 / Esc / 跨过 639 收起
+ *    ≤639  dialog.showModal()：模态、页面正中（同 .ak-dialog：框 + 遮罩 + 轻微毛玻璃，锁页面滚动）；点遮罩 / Esc 收起
+ *  抬头 a.ak-menu__head = 眼镜图标 + 「阅读设置」+ 右端箭头，整块链到特殊页面（同用户菜单抬头链到用户页）——没有 × 和「整页打开」。
+ *  无 JS：眼镜就是一条链接，去皮肤的特殊页面 Special:ReadingPreferences（同一份表单，真提交；样式见下 .ak-prefs）。
+ *  特殊页面（正文在 .mw-body-content 里）：form.ak-prefs > fieldset.ak-pref × N + .ak-prefs__actions；面板里是同一份表单的紧凑版（.ak-prefs--panel）。
+ *    外观  os / day / night                   skin-theme（MW 核心）
+ *    章节  expand / mobile / collapse         sections.js
+ *    字号  xsmall / small / regular / large   base/typography.css（12 / 14 / 16 / 20；「极小」= 现网手机版表格的 x-small，「大」= Minerva 的 large）
+ *    表格字号  auto / xsmall                   base/tables.css（跟正文 / 12：现网手机版「正文正常、表格 x-small」那种搭配单独给一项）
+ *  有 JS：改一下立刻生效（client-prefs.js 经 mw.user.clientPrefs / localStorage 持久化），「保存」藏起、留「恢复默认设置」「返回」；无 JS：真表单 POST，服务端写 cookie / 用户选项后 302 回 returnto（同 MobileOptions）。 */
+.ak-header__prefs { flex: none; }
+.ak-header__prefs.is-open, .ak-header__prefs[aria-expanded="true"] { color: var(--ak-theme-accent); background: var(--ak-bg-hover); }
+/* 面板（非模态，≥640）：.ak-menu 卡片改成 fixed——它在页眉外面，贴着页眉下沿；右缘 = 工具区右缘（视口 gutter，超宽时对齐 1680 容器） */
+.ak-prefs-panel { position: fixed; top: calc(var(--ak-header-h) + 6px); right: max(var(--ak-gutter), calc((100vw - 1680px) / 2 + var(--ak-gutter))); left: auto; bottom: auto; z-index: calc(var(--ak-z-header) + 1);
+  width: 320px; max-width: calc(100vw - var(--ak-gutter) * 2); max-height: calc(100dvh - var(--ak-header-h) - var(--ak-space-4)); padding: 0; color: var(--ak-fg); }
+.ak-prefs-panel[open] { animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
+.ak-prefs-panel > .ak-menu__head { margin-bottom: 0; }
+/* 模态（≤639 用 showModal）：页面正中，同 .ak-dialog 的遮罩 */
+.ak-prefs-panel:modal { position: fixed; inset: 0; margin: auto; width: min(360px, calc(100vw - var(--ak-gutter) * 2)); max-width: none; max-height: calc(100dvh - var(--ak-space-5) * 2); animation: ak-prefs-pop-in var(--ak-dur-normal) var(--ak-ease); }
+.ak-prefs-panel::backdrop { background: var(--ak-bg-overlay); backdrop-filter: blur(2px); }
+@keyframes ak-prefs-pop-in { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .ak-prefs-panel[open], .ak-prefs-panel:modal { animation: none; } }
+/* 面板里的紧凑表单 */
+.ak-prefs--panel { max-width: none; padding: 2px 14px 8px; }
+.ak-prefs--panel .ak-pref, .ak-prefs--panel .ak-pref:not(:last-of-type) { margin: 0; padding: 8px 0 10px; }   /* 标签 + 开关两行，紧凑（后一个选择器压掉特殊页面那条 20px 的底边距） */
+.ak-prefs--panel .ak-pref:not(:last-of-type) { border-bottom: 1px solid var(--ak-border); }
+.ak-prefs--panel .ak-pref__label { font-size: var(--ak-fs-sm); margin-bottom: 6px; }
+.ak-prefs--panel .ak-seg { display: flex; }
+.ak-prefs--panel .ak-seg > label { flex: 1 1 0; min-width: 0; padding: 0 8px; }
+/* 特殊页面 Special:ReadingPreferences */
+.ak-prefs { max-width: 640px; }
+.ak-pref { margin: 0 0 var(--ak-space-5); padding: 0; border: 0; min-width: 0; }
+.ak-pref:not(:last-of-type) { padding-bottom: var(--ak-space-5); border-bottom: 1px solid var(--ak-border); }   /* 分隔线画在上一项底部：fieldset 的上框线会从 legend 中间穿过 */
+.ak-pref__label { float: left; width: 100%; padding: 0; font-size: var(--ak-fs-body); font-weight: 700; margin: 0 0 8px; }   /* legend 浮动 = 退出 fieldset 的「标题压在框线上」特殊排版：否则它被抬到内边距之上、padding-top 反而垫在它和开关之间，标签和开关之间就多出一截 */
+.ak-pref > .ak-seg { clear: both; }
+.ak-pref > .ak-seg { max-width: 100%; }
+.ak-prefs__actions { display: flex; gap: var(--ak-space-3); align-items: center; padding-top: var(--ak-space-5); border-top: 1px solid var(--ak-border); }
+.client-js .ak-prefs__submit { display: none; }   /* 有 JS 时改了就生效，不用保存；留「恢复默认设置」（JS 把各项设回默认）与「返回」（history.back，同源来路时还原滚动位置） */
+@media (max-width: 639px) { .ak-prefs:not(.ak-prefs--panel) .ak-pref > .ak-seg { display: flex; } .ak-prefs:not(.ak-prefs--panel) .ak-pref > .ak-seg > label { flex: 1 1 0; min-width: 0; padding: 0 8px; } }   /* 手机：四档拉满一行 */
