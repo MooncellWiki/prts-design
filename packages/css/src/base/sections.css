@@ -1,0 +1,23 @@
+/*! PRTS Design · base/sections.css — Sections 章节折叠（顶层 h2 一节一开关；sections.js 加类） · 依赖：tokens.css · typography.css */
+/* ─── Sections（章节折叠）──────────────────────────────────────────────────
+ *  结构（sections.js 在客户端包出来，Skin:Arknights 也可在服务端包，同 MobileFrontend 的 MakeSectionsTransform）：
+ *    .mw-parser-output.ak-sections > .mw-heading.mw-heading2.ak-section-head[.is-collapsed]( h2( button.ak-section__toggle + 标题文字 ) + .mw-editsection ) + section.ak-section[hidden="until-found"]
+ *  记号 = 标题文字前一枚 + / −（同 Minerva 把箭头放在标题前；两条渐变拼，展开时竖的一条缩没——同 Panel 折叠头 / 目录的折叠钮 / 侧栏树），平时压淡、悬停标题行才亮；
+ *  整行可点（cursor: pointer），所以标题行悬停给一层浅底，和「悬停标题才显形」的编辑链接一起说明这一行是活的。
+ *  收起的节：内容 hidden="until-found"（UA 样式 content-visibility:hidden，不要写 display:none——那样 Ctrl+F 就找不到了）；标题行下边距收到 0、
+ *  连着的收起标题之间只留 space-3，全部收起时一页就是一列章节名（Minerva 的样子）。打印全部展开、不出记号。 */
+.ak-section-head { cursor: pointer; transition: background var(--ak-dur-fast); }
+.ak-section-head:hover { background: var(--ak-bg-hover); }
+.ak-section-head > h2 { cursor: pointer; }
+.ak-section__toggle { all: unset; box-sizing: border-box; display: inline-grid; place-items: center; width: 22px; height: 22px; margin: 0 6px 0 0; vertical-align: calc(.5em - 11px); color: var(--ak-fg-subtle); cursor: pointer; }   /* 在 h2 的文字流里：盒子中心对到基线上方 .5em（汉字的视觉中心），记号就与标题文字对中；字号换档也跟着走 */
+.ak-section__toggle::before { content: ""; width: 12px; height: 12px; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 0 no-repeat; transition: background-size var(--ak-dur-fast) var(--ak-ease); }
+.ak-section-head.is-collapsed .ak-section__toggle::before { background-size: 100% 2px, 2px 100%; }   /* 收起 = + */
+.ak-section-head:hover .ak-section__toggle, .ak-section-head.is-collapsed .ak-section__toggle { color: var(--ak-fg-muted); }
+.ak-section__toggle:hover, .ak-section-head:hover .ak-section__toggle:hover { color: var(--ak-accent); }
+.ak-section__toggle:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.ak-section-head.is-collapsed { margin-bottom: 0; }
+.ak-section[hidden] + .mw-heading2 { margin-top: var(--ak-space-3); }   /* 收起的节后面紧跟的标题：一列章节名，不留 1.6em 的章节间距 */
+@media (hover: none) { .ak-section__toggle { color: var(--ak-fg-muted); } }   /* 触屏没有悬停：记号常亮 */
+@media (prefers-reduced-motion: reduce) { .ak-section-head, .ak-section__toggle::before { transition: none; } }
+@media (forced-colors: active) { .ak-section__toggle::before { forced-color-adjust: none; color: ButtonText; } }   /* 渐变画的记号在强制色下会被抹掉 */
+@media print { .ak-section[hidden] { display: block; content-visibility: visible; } .ak-section__toggle { display: none; } .ak-section-head { cursor: auto; } }

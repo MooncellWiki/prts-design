@@ -38,7 +38,7 @@ packages/css/src/   CSS 实现（≈ primer/css；npm 包 @mooncellwiki/prts-des
   tokens.css        生成物（pnpm tokens）：令牌 + 双主题 + 局部主题 + 页眉/头图/画布主题接口（§2d）；任何宿主都能加载
   bridge-codex.css  生成物（pnpm tokens）：Codex/MW 令牌桥接——只属于皮肤（加载到别的皮肤上会改掉宿主的 Codex 配色）
   scope.css         作用域根：排版基线挂在 body.skin-arknights / .ak-scope 上；别的宿主上把宿主的继承属性 / 元素规则 / 裸控件 / 链接色换成皮肤上那一套（Vue：<AkScope>）
-  base/             L1 MediaWiki 内容：root（html / body 基底）· skin-assets（皮肤持有的素材接口 --ak-item-bg-*，由 index.css 直接引；放在 base/ 这一层是因为 Chromium 按使用处解析自定义属性里的相对 url()）· typography（正文排版，带 prose / not-prose 作用域，见文档站 /foundations/principles#prose-not-prose）· tables · media · toc · collapsible · references · notices · catlinks · tabber · forms（裸控件）· special-pages · print
+  base/             L1 MediaWiki 内容：root（html / body 基底）· skin-assets（皮肤持有的素材接口 --ak-item-bg-*，由 index.css 直接引；放在 base/ 这一层是因为 Chromium 按使用处解析自定义属性里的相对 url()）· typography（正文排版，带 prose / not-prose 作用域，见文档站 /foundations/principles#prose-not-prose）· tables · media · toc · collapsible · sections（章节折叠）· references · notices · catlinks · tabber · forms（裸控件）· special-pages · print
   components/       L3 通用组件：button · tag · chip · badge · card · panel · heading · tabs · message · cbox · tooltip · dropdown · dialog · toast · progress · stat · skeleton · spinner · empty · avatar · breadcrumb · pagination · timeline · stepper · form · table · accordion · divider · fab · title-reset · keyframes
   decor/            L4 方舟装饰语言（色条/斜纹/网点/角标/线稿/反转/拉丁字…）
   arknights/        L4 游戏数据组件（稀有度/职业/精英化/潜能/干员卡/道具/技能（卡 + 全等级表 + 参数矩阵）/天赋条件表/属性/键值表/攻击范围/模组/语音/档案/关卡/敌人/活动…；table-numerals（B99）最后）
@@ -49,6 +49,7 @@ packages/css/src/   CSS 实现（≈ primer/css；npm 包 @mooncellwiki/prts-des
   standalone.css    组件入口（npm 包的默认入口；别的皮肤 / 站外用）：tokens + scope + components + decor + arknights + utilities + forced-colors，是 index.css 的子序列
   charinfo.css      干员页「干员信息」舞台的皮肤化样式表草案（**预览页目前不接入**，见 preview/vendor/charinfo/ 与文档站 /patterns/operator#charinfov2-怎么接）
   sidebar-tree.js   侧栏多层导航增强（皮肤与预览共用）
+  sections.js       章节折叠：顶层 h2 一节一开关（同 Minerva / MobileFrontend；皮肤与预览共用）
   search-palette.js 悬浮搜索面板核心（数据源由调用方注入，皮肤与预览共用）
 packages/vue/       @mooncellwiki/prts-design-vue Vue 3 实现（≈ primer/react；pnpm build 出 dist/：Vite 库模式 JS + vue-tsc 类型）：src/components/<Name>/{Ak<Name>.vue, Ak<Name>.stories.ts, demos/*.vue}（demos 由 Storybook 与文档站共用）· src/icons.ts（界面线稿图标，= 骨架 sprite）· src/index.ts。组件只输出 .ak-* 结构 + 状态 / 键盘 / ARIA，不带样式
 .storybook/         Storybook 10（@storybook/vue3-vite）：pages/ 整页样例 stories；主题 / 活动主题 / 宿主（Arknights 皮肤 / Vector 2022 / 站外）工具栏，组件包在 .ak-scope（+ 宿主的正文容器类）里渲染；preview/ 挂到 /preview/

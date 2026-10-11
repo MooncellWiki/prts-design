@@ -11,7 +11,7 @@
 | `skins.akds.fonts` | `fonts.css`（122 条 `@font-face`：Novecento Sans Wide（含 1 条给 800 接大写高度数字的面，见[字体排印](/foundations/typography#字族)）+ Bender+ Noto Sans SC 101 片 + Oswald + Chakra Petch + JetBrains Mono，`font-display: swap`） | Arknights 皮肤；别的皮肤想要官网字体时再加它。独立成模块是为了能整体关掉（用户偏好 / Gadget / 低带宽），关掉后字体链自然退到装机 / 系统字。RL 只重写 `url()` 路径、不内联（没写 `@embed`），浏览器按 `unicode-range` 只取用到的片；上线时确认 CSSMin 没有改动 `unicode-range` |
 | `skins.akds.shell` | `chrome/`（L2 皮肤骨架：页眉 / 头图 / 侧栏 / 页面头 / 目录 / 页脚 / 搜索面板 / 响应式），逐文件列出（15 个） | 只有 Arknights 皮肤 |
 | `skins.akds.tokens` | `tokens.css` + `scope.css`（= `skins.akds.components` 的开头两个文件） | **不进皮肤的 `styles`**；别的皮肤上只要令牌（Gadget / 自写样式）时加载。Arknights 皮肤上令牌已随 components 到位，再加载它只是重复一份 |
-| `skins.akds.js` | `skin.js` + `sidebar-tree.js` + `search-palette.js` + `search-providers.js`（`packageFiles`）；依赖 `mediawiki.user` / `mediawiki.util` / `mediawiki.cookie` / `mediawiki.api` | 所有页面 |
+| `skins.akds.js` | `skin.js` + `sections.js` + `sidebar-tree.js` + `search-palette.js` + `search-providers.js`（`packageFiles`）；依赖 `mediawiki.user` / `mediawiki.util` / `mediawiki.cookie` / `mediawiki.api` | 所有页面 |
 
 生产皮肤 Skin:Arknights 是同样的分法，模块名前缀换成 `skins.arknights.`：`base` / `components` / `fonts` / `shell` / `tokens` 的文件列表由它的 `scripts/sync-design-system.sh` 按本仓库 `index.css` 展开写入（`base` 的 `SkinModule` 特性按它自己的 skinStyles 配置；`shell` 逐文件列出 `chrome/`，哪些文件进去由脚本里的 `ADOPTED_CHROME` 定，现在是全部 15 个）；另有 `skins.arknights.icons`（OOUI 图标包）与字母序排在最后的 `skins.arknights.styles`——只装 MediaWiki 胶水 LESS，压在骨架之上。所以 prts.wiki 上别的皮肤用组件写的是 `mw.loader.using("skins.arknights.components")`。
 

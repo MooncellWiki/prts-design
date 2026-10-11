@@ -84,6 +84,7 @@
         "base/media.css",
         "base/toc.css",
         "base/collapsible.css",
+        "base/sections.css",
         "base/references.css",
         "base/notices.css",
         "base/catlinks.css",
@@ -231,6 +232,7 @@
     "skins.akds.js": {
       "packageFiles": [
         "skin.js",
+        "sections.js",
         "sidebar-tree.js",
         "search-palette.js",
         "search-providers.js"

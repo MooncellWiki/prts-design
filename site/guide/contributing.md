@@ -63,6 +63,7 @@ packages/css/src/
   charinfo.css                干员页舞台的换皮草案（不接入，见 /patterns/operator）
   search-palette.js           悬浮搜索面板核心（皮肤与预览共用；数据源由调用方注入）
   sidebar-tree.js             侧栏多层导航（皮肤与预览共用）
+  sections.js                 章节折叠：顶层 h2 一节一开关（皮肤与预览共用）
   img/                        CSS 直接引用的游戏素材（道具稀有度底框）
 packages/vue/src/             Vue 实现（见上）
 skin/                         MediaWiki 皮肤：skin.json（样式模块 base / components / fonts / shell / tokens）· templates/skin.mustache · resources/（skin.js、search-providers.js + 指向 packages/css/src 的链接）· i18n/
