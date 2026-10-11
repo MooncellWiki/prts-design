@@ -18,7 +18,7 @@ toc: false
 .ak-body { padding: var(--ak-space-5); }
 </style>
 -->
-<!-- 真表单：无 JS 时 POST 回特殊页面，服务端写 cookie（匿名）/ 用户选项（登录）后 302 回 returnto（同 MobileOptions::submitSettingsForm）；
+<!-- 真表单：无 JS 时 POST 回特殊页面，服务端存下后 302 回 returnto（同 MobileOptions::submitSettingsForm；Skin:Arknights 只为登录用户存成用户选项）；
      有 JS 时 client-prefs.js 监听 radio 的 change、改了立刻生效并持久化，「保存」钮由 .client-js 藏起（chrome/prefs.css）。
      选中态：无 JS 靠 label:has(input:checked)，有 JS 再同步 .is-active（client-prefs.js sync）。预览里 action 指向自己、不会真的提交。 -->
 <form class="ak-prefs" id="ak-prefs" method="post" action="prefs.html">

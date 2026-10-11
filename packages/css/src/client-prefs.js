@@ -4,10 +4,14 @@
  *
  *  偏好的载体与 MediaWiki 核心的 clientPrefs 相同：<html class="<feature>-clientpref-<value>">，CSS 只认这个类；
  *  持久化是一条 "feature-clientpref-value,…" 字符串——核心存 cookie（mwclientpreferences），Skin:Arknights 的 inline.js 存 localStorage 同名键、
- *  首帧前就打到 <html> 上。这里：有 mw.user.clientPrefs（皮肤在 skin.json 的 ClientPreferences 登记过）就交给核心；没有（预览 / 站外）就自己改类 + localStorage。
+ *  首帧前就打到 <html> 上。这里：<html> 上已有这一项的类、又有 mw.user.clientPrefs 就交给它；否则（预览 / 站外 / 类还没输出）自己改类 + localStorage。
+ *  MW 1.43 核心的 mw.user.clientPrefs 只管匿名用户：set() 写 cookie，皮肤开了 clientPrefEnabled 才有核心的内联脚本首帧前读回（只替换 <html> 上已有的同名类），
+ *  登录用户调用直接抛错；核心也不会替登录用户读用户选项、打到 <html> 上（skin.json 的 ClientPreferences 键 1.43 不认）。
+ *  宿主自己存偏好时就替换 mw.user.clientPrefs.set——Skin:Arknights 把它指到 inline.js 读的 localStorage，所有访客都存本机（见文档站 /chrome/prefs）。
  *
  *  目前五项（值即 CSS 类后缀；主题见 tokens.css，其余见 base/sections.css · base/typography.css）：
- *    skin-theme    os（默认）/ day / night                            外观：MW 1.43 核心的 skin-theme（预览里 preview.js 听 akds:pref 再套用自己的 data-theme）
+ *    skin-theme    os（默认）/ day / night                            外观：MW 1.43 核心的 skin-theme（预览里 preview.js 听 akds:pref 再套用自己的 data-theme）；
+ *                  站点默认不是跟随系统时，宿主在 <html data-akds-theme-default="day|night"> 上给（同 sidebar-tree.js 的 data-akds-flyout），「恢复默认设置」按它
  *    ak-sections-on  mobile（默认）/ all / off                       章节折叠在哪开：只在 ≤639 窄屏 / 所有宽度 / 关（sections.js 读它）
  *    ak-sections   expand（默认）/ collapse                        开着时打开页面是展开还是收起
  *    ak-font-size  xsmall / small / regular（默认）/ large          正文字号 12 / 14 / 16 / 20（.mw-body-content 内的字号令牌整体换档）
@@ -21,8 +25,9 @@
 	'use strict';
 	var SUFFIX = '-clientpref-';
 	var KEY = 'mwclientpreferences';
-	var DEFAULTS = { 'skin-theme': 'os', 'ak-sections-on': 'mobile', 'ak-sections': 'expand', 'ak-font-size': 'regular', 'ak-table-font-size': 'auto' };
 	var html = document.documentElement;
+	var THEME_DEFAULT = html.getAttribute( 'data-akds-theme-default' );
+	var DEFAULTS = { 'skin-theme': /^(os|day|night)$/.test( THEME_DEFAULT || '' ) ? THEME_DEFAULT : 'os', 'ak-sections-on': 'mobile', 'ak-sections': 'expand', 'ak-font-size': 'regular', 'ak-table-font-size': 'auto' };
 
 	function get( feature ) {
 		var m = html.className.match( new RegExp( '(?:^| )' + feature + SUFFIX + '([a-zA-Z0-9]+)(?: |$)' ) );
@@ -37,7 +42,7 @@
 	}
 	function set( feature, value ) {
 		if ( window.mw && mw.user && mw.user.clientPrefs && mw.user.clientPrefs.get( feature ) !== false ) {
-			mw.user.clientPrefs.set( feature, value );   // 核心：改类 + 持久化（匿名 cookie / 登录用户 API）
+			mw.user.clientPrefs.set( feature, value );   // 核心：改类 + 持久化（1.43 只有匿名用户的 cookie；登录用户要宿主替换 set，见文件头）
 		} else {
 			var cur = html.className.match( new RegExp( '(?:^| )' + feature + SUFFIX + '[a-zA-Z0-9]+(?: |$)' ) );
 			if ( cur ) { html.classList.remove( cur[ 0 ].trim() ); }

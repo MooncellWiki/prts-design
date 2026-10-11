@@ -11,7 +11,7 @@ prts.wiki 实际部署的是 [mediawiki-skins-Arknights](https://github.com/Moon
 | `skins.akds.base / components / fonts / shell / tokens` | `skins.arknights.base / components / fonts / shell / tokens`，另有 `skins.arknights.icons`（OOUI 图标包）与排在最后的 `skins.arknights.styles`（MediaWiki 胶水 LESS） |
 | `$wgAKDSDefaultTheme` / `$wgAKDSSearchPalette` | `$wgArknightsThemeDefault` / `$wgArknightsSearchPalette`（全部配置见其 README） |
 | `mw.hook('akds.search.local')` · `localStorage['akds-recent']` | `mw.hook('skin.arknights.search')` · `localStorage['arknights-search-recent']`；另有 `$wgArknightsSearchIndex` 把 Cargo 表做成带拼音的本地索引 |
-| 主题：核心 `clientPrefEnabled` + `ClientPreferences` | 同一套 `skin-theme-clientpref-*` 类与 `mwclientpreferences` 存储，由皮肤自己的内联脚本与 `theme.js` 读写 |
+| 主题：核心 `clientPrefEnabled` + `ClientPreferences` | 同一套 `*-clientpref-*` 类（主题与[阅读设置](/chrome/prefs)）与 `mwclientpreferences` 格式，但不开 `clientPrefEnabled`：所有访客存本机 localStorage，由皮肤自己的内联脚本读、`clientPrefs.js` 写（核心那套只管匿名用户，见[阅读设置](/chrome/prefs#skin-arknights-的做法)） |
 | 侧栏 `#MenuSidebar` 由现网内联脚本搬入 | 服务端以当前页为上下文解析 `MediaWiki:MenuSidebar`（`$wgArknightsMenuSidebar`），无内联脚本 |
 | 图标 sprite 内联在 skin.mustache | 同样内联（`templates/IconSprite.mustache`，同步脚本从本仓库抽取）；骨架自身另用 OOUI 图标包 `<span class="ak-icon ak-icon--{name}">` |
 :::
@@ -76,8 +76,8 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
 
 ## 明暗主题
 
-- `<html>` 上的类：`skin-theme-clientpref-os | -day | -night`，与 Vector 2022 一致（核心 `mediawiki.page.ready` 读写 cookie / localStorage 的 `mwclientpreferences`）。`tokens.css` 已按这三个类定义两套语义令牌，见[色彩 · 主题机制](/foundations/color#主题机制)。
-- 切换：`mw.user.clientPrefs.set('skin-theme', 'night')`；页眉的外观开关就是做这件事。未登录也可用（clientPrefs 走 localStorage）。主题类在 `<html>` 上、clientPrefs 的内联脚本早于样式执行，没有 FOUC。
+- `<html>` 上的类：`skin-theme-clientpref-os | -day | -night`，与 Vector 2022 一致（开了 `clientPrefEnabled` 时，核心的内联脚本首帧前按 cookie `mwclientpreferences` 换类——只对匿名用户、只换 `<html>` 上已有的同名类；`skin.json` 的 `ClientPreferences` 键 MW 1.43 不认）。`tokens.css` 已按这三个类定义两套语义令牌，见[色彩 · 主题机制](/foundations/color#主题机制)。
+- 切换：`mw.user.clientPrefs.set('skin-theme', 'night')`；页眉的外观开关就是做这件事。只对未登录用户有效（存 cookie）；登录用户调用会抛错，要皮肤自己存（Skin:Arknights 的做法见[阅读设置](/chrome/prefs#skin-arknights-的做法)）。主题类在 `<html>` 上、clientPrefs 的内联脚本早于样式执行，没有 FOUC。
 - **Codex 桥接**：`bridge-codex.css`（生成物，在 `skins.akds.base` 里，只有 Arknights 皮肤加载——放到别的皮肤上会改掉宿主自己的 Codex 配色）把 `--background-color-base`、`--color-progressive`、`--border-color-base` 等 Codex 令牌映射到 PRTS Design 语义令牌，`mw-message-box`、Codex 表单、Echo 弹窗等核心 UI 因此自动跟随；OOUI 少量写死的颜色在 `base/forms.css` 等处覆盖（见[色彩 · Codex / MediaWiki 桥接](/foundations/color#codex-mediawiki-桥接)）。
 - 游戏的白色线稿图标统一走 `filter: var(--ak-glyph-filter)`（亮色反相），模板里放游戏图标时给 `<img>` 加 `.ak-glyph`。
 

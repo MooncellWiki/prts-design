@@ -12,7 +12,7 @@
  *    章节  expand / mobile / collapse         sections.js
  *    字号  xsmall / small / regular / large   base/typography.css（12 / 14 / 16 / 20；「极小」= 现网手机版表格的 x-small，「大」= Minerva 的 large）
  *    表格字号  auto / xsmall                   base/tables.css（跟正文 / 12：现网手机版「正文正常、表格 x-small」那种搭配单独给一项）
- *  有 JS：改一下立刻生效（client-prefs.js 经 mw.user.clientPrefs / localStorage 持久化），「保存」藏起、留「恢复默认设置」「返回」；无 JS：真表单 POST，服务端写 cookie / 用户选项后 302 回 returnto（同 MobileOptions）。 */
+ *  有 JS：改一下立刻生效（client-prefs.js 经 mw.user.clientPrefs / localStorage 持久化），「保存」藏起、留「恢复默认设置」「返回」；无 JS：真表单 POST，服务端存下后 302 回 returnto（同 MobileOptions；Skin:Arknights 只能为登录用户存成用户选项，见文档站 /chrome/prefs）。 */
 .ak-header__prefs { flex: none; }
 .ak-header__prefs.is-open, .ak-header__prefs[aria-expanded="true"] { color: var(--ak-theme-accent); background: var(--ak-bg-hover); }
 /* 面板（非模态，≥640）：.ak-menu 卡片改成 fixed——它在页眉外面，贴着页眉下沿；右缘 = 工具区右缘（视口 gutter，超宽时对齐 1680 容器） */

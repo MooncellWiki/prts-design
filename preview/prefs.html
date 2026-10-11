@@ -341,7 +341,7 @@
       <!-- 两层照 MW 原样：#mw-content-text.mw-body-content > .mw-parser-output。现网的 Widget / Gadget 会顺着这个嵌套找容器（CharinfoV2 量「舞台的祖父元素」的宽度定手机版缩放），并成一层就量到带内边距的 .ak-body 上去了 -->
       <div class="mw-body-content" id="mw-content-text"><div class="mw-parser-output">
 
-<!-- 真表单：无 JS 时 POST 回特殊页面，服务端写 cookie（匿名）/ 用户选项（登录）后 302 回 returnto（同 MobileOptions::submitSettingsForm）；
+<!-- 真表单：无 JS 时 POST 回特殊页面，服务端存下后 302 回 returnto（同 MobileOptions::submitSettingsForm；Skin:Arknights 只为登录用户存成用户选项）；
      有 JS 时 client-prefs.js 监听 radio 的 change、改了立刻生效并持久化，「保存」钮由 .client-js 藏起（chrome/prefs.css）。
      选中态：无 JS 靠 label:has(input:checked)，有 JS 再同步 .is-active（client-prefs.js sync）。预览里 action 指向自己、不会真的提交。 -->
 <form class="ak-prefs" id="ak-prefs" method="post" action="prefs.html">
