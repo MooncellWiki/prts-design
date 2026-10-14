@@ -65,6 +65,7 @@
   --border-color-input-binary: var(--ak-border-strong);   /* 复选框/单选框/开关：OOUI 用 6px 边框画选中态的圆点，不映射就是 Codex 默认的 #36c，和强调色对不上 */
   --border-color-input-binary--checked: var(--ak-accent);
   --border-color-input-binary--active: var(--ak-accent-hover);
+  --background-color-input-binary--checked: var(--ak-accent);   /* Codex 复选框选中时的实底（CSS-only 的 .cdx-checkbox：ULS 语言设置、核心特殊页面…）；边框上面已映射，底色不映射就是 #36c，框青底蓝 */
   --border-color-destructive: var(--ak-danger);
   --border-color-error: var(--ak-danger);
   --border-color-warning: var(--ak-warning);

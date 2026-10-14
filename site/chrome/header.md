@@ -68,9 +68,20 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 
 ## 阅读设置（含外观）
 
-工具区铃铛左边一枚眼镜 `a.ak-header__prefs`（`i-glasses`，同 `.ak-btn--icon` 的 36px 图标钮）拉下「阅读设置」面板——**外观**（跟随系统 / 亮 / 暗）、章节折叠、字号、表格字号，同 Vector 2022 的「外观」菜单；手机（≤639）上是页面正中的弹层，无 JS 时是去 `Special:ReadingPreferences` 的链接，见[阅读设置](/chrome/prefs)。<1120 它随工具进 ⋮ 卡片的第一行（眼镜 · 通知），点开面板时卡片收起。面板放在页眉外面、跟着亮 / 暗主题走。页眉上不再有常驻的三格外观开关：换主题的频次不高，一枚眼镜收下三样，工具区只剩 眼镜 · 通知 · 用户。
+工具区铃铛左边一枚眼镜 `a.ak-header__prefs`（`i-glasses`，同 `.ak-btn--icon` 的 36px 图标钮）拉下「阅读设置」面板——**外观**（跟随系统 / 亮 / 暗）、章节折叠、字号、表格字号，同 Vector 2022 的「外观」菜单；手机（≤639）上是页面正中的弹层，无 JS 时是去 `Special:ReadingPreferences` 的链接，见[阅读设置](/chrome/prefs)。<1120 它随工具进 ⋮ 卡片的第一行（眼镜 · 通知），点开面板时卡片收起。面板放在页眉外面，配色仍是页眉配色（同用户菜单，见下「拉下来的浮层」）。页眉上不再有常驻的三格外观开关：换主题的频次不高，一枚眼镜收下三样，工具区只剩 眼镜 · 通知 · 用户。
 
 <SkinFrame :height="420" state="prefs" caption="眼镜拉下的「阅读设置」面板：外观 · 章节 · 字号" />
+
+## 拉下来的浮层
+
+工具区每一枚图标拉下来的东西——阅读设置面板、通知、用户菜单，以及从用户菜单里再拉出的语言菜单——是同一家族，按同一套写：
+
+- **页眉配色**，两套主题下都是黑的。它们是页眉的延伸（"黑框"），不是正文（"纸"）：同一排图标拉下来的卡片不该一张黑一张白，阅读设置里切外观时面板自己也不该跟着翻色。用户菜单在页眉子树里，自然继承 `.ak-header` 的令牌重映射；阅读设置面板挂在 `</header>` 后面，在 `chrome/header.css` 里和 `.ak-header` 并列在同一条重映射上。宿主自己生成、挂在 `body` 末尾的同类浮层（Skin:Arknights 里 Echo 的两个通知弹层、ULS 的语言菜单与语言设置）由宿主把这条重映射照抄到它们的选择器上，Codex 令牌桥接（`bridge-codex.css`）也要在那里再声明一次——自定义属性在声明处就解析了，`:root` 上的桥接值不会跟着子树里的重映射变。重映射里也有链接色与禁用字色——页眉自己用不上，浮层里的说明链接、禁用按钮要用。
+- **框**：`.ak-menu` 那一套——1px 框 + 大阴影，不画顶部亮线，没有指向图标的小三角（直角语言，不做切角）；顶边贴着页眉底线挂下来（同 <1120 的 ⋮ 卡片），右缘与工具区右缘（= 正文列 / 导轨右缘）齐。
+- **哪一个开着**由触发它的图标说：开着时图标保持悬停底色（眼镜 `.is-open` / `[aria-expanded]`，用户菜单 `details[open]`），而不是靠浮层上的小三角——两枚铃铛紧挨着，三角也指不清。
+- **字号**：卡片基准是 `--ak-fs-sm`（14），抬头 14 粗体，次要信息（时间、操作）`--ak-fs-xs`（12），不出现 12.6、16.8 这类 em 推出来的字号。
+
+不在此列的：搜索面板（页面正中的模态工作区）与侧栏飞出（侧栏的延伸），都跟亮 / 暗主题走。
 
 ## 结构
 
@@ -95,7 +106,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
     <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle" title="本页目录"></label>   <!-- 仅 ≤639；checkbox 在正文的 .ak-toc-dock 里 -->
   </div>
 </header>
-<dialog class="ak-menu ak-menu--right ak-prefs-panel" id="ak-prefs-panel">…</dialog>   <!-- 阅读设置面板：页眉外面，跟亮 / 暗主题 -->
+<dialog class="ak-menu ak-menu--right ak-prefs-panel" id="ak-prefs-panel">…</dialog>   <!-- 阅读设置面板：页眉外面，页眉配色 -->
 ```
 
 ## CSS

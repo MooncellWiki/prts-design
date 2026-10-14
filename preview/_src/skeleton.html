@@ -126,7 +126,7 @@
     <label class="ak-local-nav__btn ak-local-nav__toc" for="ak-toc-toggle" title="本页目录"></label>
   </div>
 </header>
-<!-- 阅读设置面板：放在页眉外面——页眉子树里语义令牌被重映射成黑页眉配色，面板要跟着亮 / 暗主题走（同正文），所以不在 .ak-header 里；position:fixed 贴页眉下沿 / 居中 -->
+<!-- 阅读设置面板：页眉配色（同用户菜单，chrome/header.css 的令牌重映射里有它），但放在页眉外面——<1120 ⋮ 卡片收起时不能把它一起藏掉，页眉开毛玻璃时也不能成为它的包含块；position:fixed 贴页眉下沿 / 居中 -->
 <dialog class="ak-menu ak-menu--right ak-prefs-panel" id="ak-prefs-panel" aria-labelledby="ak-prefs-panel-title">
   <!-- 抬头 = 同用户菜单：图标 + 名字 + 右端箭头，整块链到特殊页面；没有 × 和「整页打开」——点外面 / Esc 收起 -->
   <a class="ak-menu__head" href="prefs.html"><svg class="ak-icon"><use href="#i-glasses"/></svg><span class="ak-menu__head-name" id="ak-prefs-panel-title">阅读设置</span></a>

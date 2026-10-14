@@ -8,7 +8,7 @@ import SkinFrame from "../.vitepress/theme/components/SkinFrame.vue";
 prts 并成 Arknights 单皮肤、`m.` 域名回主域之后，手机版（Minerva + MobileFrontend）的两样读者偏好没了：**章节折叠**（`Special:MobileOptions` 的「展开章节」）和**字号**（「文本」三档）。皮肤把它们连同**外观三态**（原来页眉上常驻的三格开关）一起做成页眉上的一张面板，同 Vector 2022 的「外观」菜单；另有一页 `Special:ReadingPreferences` 兜底（无 JS、可直链）。
 
 - **入口**：页眉一枚眼镜图标 `a.ak-header__prefs`（`i-glasses`，同 `.ak-btn--icon` 的 36px 图标钮；眼镜 = 外观 / 阅读，同 Vector 2022「外观」菜单的图标，不用齿轮——用户菜单里「参数设置」已经是齿轮）。它在工具区铃铛左边，<1120 随工具进 ⋮ 卡片的第一行（眼镜 · 通知）；点开面板时卡片收起。
-- **面板**：`<dialog class="ak-menu ak-menu--right ak-prefs-panel">`，放在 `</header>` 之后、不在页眉子树里（页眉里语义令牌被重映射成黑页眉配色，面板要跟亮 / 暗主题走，同正文），DOM 只此一份、两种开法——≥640 `show()`，非模态、`position: fixed` 贴页眉下沿、右缘对齐工具区的 `.ak-menu` 卡片（同用户菜单的卡片：1px 框 + 大阴影 + 6px 间距，不画顶部亮线；点外面 / Esc 收起）；≤639 `showModal()`，页面正中（同 `.ak-dialog`：遮罩 + 轻微毛玻璃，锁页面滚动，点遮罩 / Esc 收起）。抬头 `a.ak-menu__head` = 眼镜 + 「阅读设置」+ 右端箭头，整块链到特殊页面——同用户菜单抬头链到用户页，没有另外的「整页打开」和 ×。
+- **面板**：`<dialog class="ak-menu ak-menu--right ak-prefs-panel">`，配色同用户菜单——页眉配色，两套主题下都是黑的（`chrome/header.css` 的令牌重映射把 `.ak-prefs-panel` 列在 `.ak-header` 旁边）：同一排工具拉下来的卡片不该一张黑一张白，面板里切外观时面板自己也不跟着翻色。它仍放在 `</header>` 之后、不在页眉子树里——<1120 眼镜在 ⋮ 卡片里，开面板时卡片收起，面板若在卡片子树里会被一起藏掉；活动主题给页眉开了毛玻璃时，页眉还会成为 `position: fixed` 子元素的包含块。DOM 只此一份、两种开法——≥640 `show()`，非模态、`position: fixed` 贴页眉下沿、右缘对齐工具区的 `.ak-menu` 卡片（同用户菜单的卡片：1px 框 + 大阴影，不画顶部亮线，顶边贴着页眉底线挂下来；点外面 / Esc 收起）；≤639 `showModal()`，页面正中（同 `.ak-dialog`：遮罩 + 轻微毛玻璃，锁页面滚动，点遮罩 / Esc 收起）。抬头 `a.ak-menu__head` = 眼镜 + 「阅读设置」+ 右端箭头，整块链到特殊页面——同用户菜单抬头链到用户页，没有另外的「整页打开」和 ×。
 - **无 JS**：眼镜就是一条链接，去 `Special:ReadingPreferences`——`form.ak-prefs` 真表单（`fieldset.ak-pref` = 标签 + label + radio 的分段开关，不放说明灰字；选中态由 `label:has(input:checked)` 画），POST 回特殊页面，服务端存下后 302 回 `returnto`（同 `MobileOptions::submitSettingsForm`；Skin:Arknights 只能为登录用户存成用户选项，见[下文](#skin-arknights-的做法)）；有 JS 时同一页上改一下立刻生效，「保存」藏起，留「恢复默认设置」（各项设回默认）与「返回」（同源来路时 `history.back()`，还原阅读位置；否则照 `returnto` 链接走）。无 JS 时「恢复默认设置」是 `name=reset` 的提交，服务端清掉偏好。曾试过把偏好塞进 ⋮ 卡片、也试过只做特殊页面：前者 <1120 占了半张卡，后者改个字号要离开当前页、回来丢阅读位置。
 - **外观**：跟随系统 / 亮 / 暗 = `skin-theme` 的 `os` / `day` / `night`，MW 1.43 核心的那项（`skin.json` 里早已登记）；与原来页眉三格开关同一套值，`chrome/theme-toggle.css` 仍保留给别处用。
 - **章节折叠**：窄屏（默认：只在 ≤639 开，桌面 / 平板不出开关——Minerva 的范围，宽屏有目录不缺导航）/ 全部 / 关闭 = `ak-sections-on` 的 `mobile` / `all` / `off`；**章节默认**：展开（默认）/ 收起 = `ak-sections` 的 `expand` / `collapse`，开着时打开页面的初始状态（窄屏 + 收起 = 原 Minerva 的行为）。改了或视口跨过 639 立刻重新套用，见[章节折叠](/content/toc#章节折叠)。
@@ -19,7 +19,7 @@ prts 并成 Arknights 单皮肤、`m.` 域名回主域之后，手机版（Miner
 
 <SkinFrame :height="420" state="prefs" caption="≥640：眼镜拉下的面板，贴页眉右下沿" />
 
-<SkinFrame :width="390" :height="640" state="prefs" caption="≤639：页面正中的弹层，跟着亮 / 暗主题" />
+<SkinFrame :width="390" :height="640" state="prefs" caption="≤639：页面正中的弹层，仍是页眉配色" />
 
 ## 表单
 

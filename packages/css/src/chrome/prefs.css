@@ -2,9 +2,12 @@
 /* ═══ 阅读设置 ═══
  *  做法同 Vector 2022 的「外观」菜单：页眉工具区一枚眼镜图标 a.ak-header__prefs（铃铛左边；<1120 随工具进 ⋮ 卡片第一行），点开一张面板（外观 / 章节 / 字号），改一下立刻生效。
  *  外观三态（跟随系统 / 档案·亮 / 终端·暗）从页眉收进来：页眉上不再有常驻的三格开关（chrome/theme-toggle.css 仍是独立组件，别处可用），值仍是 skin-theme-clientpref-*。
- *  面板是一个 <dialog class="ak-menu ak-menu--right ak-prefs-panel">，放在 </header> 之后、不在页眉子树里（页眉里语义令牌被重映射成黑页眉配色，面板要跟亮 / 暗主题走，同正文），DOM 只此一份：
- *    ≥640  dialog.show()：非模态，position:fixed 贴页眉下沿、右缘对齐工具区（同用户菜单的卡片：1px 框 + 大阴影 + 6px 间距，不画顶部亮线）；点面板外 / Esc / 跨过 639 收起
- *    ≤639  dialog.showModal()：模态、页面正中（同 .ak-dialog：框 + 遮罩 + 轻微毛玻璃，锁页面滚动）；点遮罩 / Esc 收起
+ *  面板是一个 <dialog class="ak-menu ak-menu--right ak-prefs-panel">，配色同用户菜单——页眉配色，两套主题下都是黑的（header.css 的令牌重映射把 .ak-prefs-panel 列在 .ak-header 旁边）：
+ *  同一排工具拉下来的卡片不该一张黑一张白；面板里切外观时，面板自己也不跟着翻色。
+ *  它仍放在 </header> 之后、不在页眉子树里：<1120 眼镜在 ⋮ 卡片里，开面板时卡片收起（display:none 会把子树里的面板一起藏掉）；活动主题给页眉开了毛玻璃（--ak-chrome-backdrop）时，
+ *  页眉会成为 position:fixed 子元素的包含块，面板就定不到视口上了。DOM 只此一份：
+ *    ≥640  dialog.show()：非模态，position:fixed 贴页眉下沿、右缘对齐工具区（同用户菜单的卡片：1px 框 + 大阴影，不画顶部亮线；顶边贴着页眉底线挂下来，同用户菜单与 <1120 的 ⋮ 卡片）；点面板外 / Esc / 跨过 639 收起
+ *    ≤639  dialog.showModal()：模态、页面正中（同 .ak-dialog：框 + 遮罩 + 轻微毛玻璃，锁页面滚动；仍是页眉配色——同一个组件，不随开法换色）；点遮罩 / Esc 收起
  *  抬头 a.ak-menu__head = 眼镜图标 + 「阅读设置」+ 右端箭头，整块链到特殊页面（同用户菜单抬头链到用户页）——没有 × 和「整页打开」。
  *  无 JS：眼镜就是一条链接，去皮肤的特殊页面 Special:ReadingPreferences（同一份表单，真提交；样式见下 .ak-prefs）。
  *  特殊页面（正文在 .mw-body-content 里）：form.ak-prefs > fieldset.ak-pref × N + .ak-prefs__actions；面板里是同一份表单的紧凑版（.ak-prefs--panel）。
@@ -15,8 +18,8 @@
  *  有 JS：改一下立刻生效（client-prefs.js 经 mw.user.clientPrefs / localStorage 持久化），「保存」藏起、留「恢复默认设置」「返回」；无 JS：真表单 POST，服务端存下后 302 回 returnto（同 MobileOptions；Skin:Arknights 只能为登录用户存成用户选项，见文档站 /chrome/prefs）。 */
 .ak-header__prefs { flex: none; }
 .ak-header__prefs.is-open, .ak-header__prefs[aria-expanded="true"] { color: var(--ak-theme-accent); background: var(--ak-bg-hover); }
-/* 面板（非模态，≥640）：.ak-menu 卡片改成 fixed——它在页眉外面，贴着页眉下沿；右缘 = 工具区右缘（视口 gutter，超宽时对齐 1680 容器） */
-.ak-prefs-panel { position: fixed; top: calc(var(--ak-header-h) + 6px); right: max(var(--ak-gutter), calc((100vw - 1680px) / 2 + var(--ak-gutter))); left: auto; bottom: auto; z-index: calc(var(--ak-z-header) + 1);
+/* 面板（非模态，≥640）：.ak-menu 卡片改成 fixed——它在页眉外面，贴着页眉下沿（+1px = 页眉底线，同用户菜单卡片落下的位置）；右缘 = 工具区右缘（视口 gutter，超宽时对齐 1680 容器） */
+.ak-prefs-panel { position: fixed; top: calc(var(--ak-header-h) + 1px); right: max(var(--ak-gutter), calc((100vw - 1680px) / 2 + var(--ak-gutter))); left: auto; bottom: auto; z-index: calc(var(--ak-z-header) + 1);
   width: 320px; max-width: calc(100vw - var(--ak-gutter) * 2); max-height: calc(100dvh - var(--ak-header-h) - var(--ak-space-4)); padding: 0; color: var(--ak-fg); }
 .ak-prefs-panel[open] { animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
 .ak-prefs-panel > .ak-menu__head { margin-bottom: 0; }

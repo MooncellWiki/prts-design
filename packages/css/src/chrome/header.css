@@ -21,8 +21,11 @@
  *  input.ak-nav-cb + label.ak-header__burger（同目录按钮的 .ak-toc-cb 做法），DOM 顺序固定为
  *  logo · search · search-toggle · nav-cb · screen[tools] · burger（checkbox 在前才能用 ~ 联动）。
  *  卡片 position:absolute 于 .ak-header（sticky，已定位；<1120 时 __inner 是 display:contents，不成盒子），top:100% 即贴页眉下沿；JS 补 Esc / 点卡片外 / 回到桌面宽度收起。 */
-.ak-header {
-  /* 语义令牌 → 页眉配色（只在页眉子树内生效；搜索面板 / 侧栏飞出挂在 body 下，不受影响） */
+/* 语义令牌 → 页眉配色。页眉子树之外，从页眉工具区拉下的浮层也用这一套——同一排图标拉下来的东西是页眉的延伸（"黑框"），不是正文（"纸"），
+ * 两套主题下都是黑的：用户菜单卡片在页眉子树里，自动就是；阅读设置面板挂在 </header> 后面（见 prefs.css），列在这里。
+ * 宿主自己的同类浮层（Skin:Arknights 里 Echo 的两个通知弹层、用户菜单里拉出的 ULS 语言菜单 / 语言设置，都挂在 body 末尾）由宿主把这一条照抄到它们的选择器上，Codex 令牌桥接也要在那里重新声明一次。
+ * 搜索面板 / 侧栏飞出不在此列：一个是页面正中的模态工作区，一个是侧栏的延伸，都跟亮 / 暗主题走。 */
+.ak-header, .ak-prefs-panel {
   --ak-fg: var(--ak-chrome-fg); --ak-fg-secondary: var(--ak-chrome-fg-2); --ak-fg-muted: var(--ak-chrome-fg-muted); --ak-fg-subtle: var(--ak-chrome-fg-muted);
   --ak-bg-surface: var(--ak-chrome-bg-solid); --ak-bg-surface-2: var(--ak-chrome-field); --ak-bg-surface-3: rgba(255,255,255,.12);
   --ak-bg-hover: var(--ak-chrome-hover); --ak-bg-active: rgba(255,255,255,.14);
@@ -30,10 +33,14 @@
   --ak-bg-inverse: #fff; --ak-fg-inverse: #000;
   --ak-accent: var(--ak-theme-accent); --ak-accent-fg: var(--ak-theme-accent-fg); --ak-accent-hover: var(--ak-theme-accent); --ak-focus: var(--ak-theme-accent);
   --ak-accent-subtle: var(--ak-theme-accent-subtle);
+  --ak-link: var(--ak-theme-accent); --ak-link-hover: var(--ak-theme-accent); --ak-link-visited: var(--ak-theme-accent);   /* 浮层里的说明链接（ULS 的「更多信息」…）：亮色主题的 #0072a8 落在黑底上只有 3.5:1；不分已访问，同下面 .ak-header a:visited */
+  --ak-fg-disabled: rgba(255,255,255,.3);   /* 禁用的按钮字（ULS「应用设置」…）：不跟主题，亮色主题的 gray-300 在黑底上太亮、像能点 */
   --ak-glyph-filter: none;   /* 游戏白色线稿站标在黑页眉上不反相 */
   --ak-shadow-lg: 0 16px 40px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
   color-scheme: dark;        /* 页眉内的原生控件（无 JS 时的真搜索框）也走深色 */
-  position: sticky; top: 0; z-index: var(--ak-z-header); color: var(--ak-fg);
+  color: var(--ak-fg); }
+.ak-header {
+  position: sticky; top: 0; z-index: var(--ak-z-header);
   background: var(--ak-chrome-image) var(--ak-chrome-image-position) / var(--ak-chrome-image-size) var(--ak-chrome-image-repeat), var(--ak-chrome-bg);   /* 角饰在玻璃色之上（不被压暗，所以只放深色低对比素材）；玻璃色之下才是头图 / 滚过来的正文 */
   -webkit-backdrop-filter: var(--ak-chrome-backdrop); backdrop-filter: var(--ak-chrome-backdrop);   /* 默认 none，见上 */
   border-bottom: 1px solid var(--ak-chrome-line); }
