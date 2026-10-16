@@ -77,7 +77,6 @@
   "akds-prefs-table-font-size-auto": "Same as body",
   "akds-prefs-reset": "Restore defaults",
   "akds-prefs-sections-on": "Section collapsing",
-  "akds-prefs-sections-on-mobile": "Narrow screens",
-  "akds-prefs-sections-on-all": "Everywhere",
+  "akds-prefs-sections-on-on": "On",
   "akds-prefs-sections-on-off": "Off"
 }

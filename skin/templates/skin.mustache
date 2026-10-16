@@ -107,8 +107,8 @@
   <fieldset class="ak-pref">
     <legend class="ak-pref__label">{{msg-akds-prefs-sections-on}}</legend>
     <div class="ak-seg" role="radiogroup" aria-label="{{msg-akds-prefs-sections-on}}" data-pref="ak-sections-on">
-      <label><input type="radio" name="p-ak-sections-on" value="mobile" checked><span>{{msg-akds-prefs-sections-on-mobile}}</span></label>
-      <label><input type="radio" name="p-ak-sections-on" value="all"><span>{{msg-akds-prefs-sections-on-all}}</span></label>
+      {{! 默认 auto（窄屏开、宽屏关）没有自己的格，服务端不勾任何一格；client-prefs.js 按当前视口亮 on / off，点了才存成 on / off }}
+      <label><input type="radio" name="p-ak-sections-on" value="on"><span>{{msg-akds-prefs-sections-on-on}}</span></label>
       <label><input type="radio" name="p-ak-sections-on" value="off"><span>{{msg-akds-prefs-sections-on-off}}</span></label>
     </div>
   </fieldset>

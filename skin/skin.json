@@ -51,8 +51,7 @@
             "akds-search-label",
             "akds-prefs",
             "akds-prefs-sections-on",
-            "akds-prefs-sections-on-mobile",
-            "akds-prefs-sections-on-all",
+            "akds-prefs-sections-on-on",
             "akds-prefs-sections-on-off",
             "akds-prefs-sections",
             "akds-prefs-sections-expand",
@@ -327,11 +326,11 @@
     },
     "ak-sections-on": {
       "options": [
-        "mobile",
-        "all",
+        "auto",
+        "on",
         "off"
       ],
-      "default": "mobile",
+      "default": "auto",
       "callback": "skins.akds.js"
     },
     "ak-sections": {

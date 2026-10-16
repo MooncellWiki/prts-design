@@ -77,7 +77,6 @@
   "akds-prefs-table-font-size-auto": "跟随正文",
   "akds-prefs-reset": "恢复默认设置",
   "akds-prefs-sections-on": "章节折叠",
-  "akds-prefs-sections-on-mobile": "窄屏",
-  "akds-prefs-sections-on-all": "全部",
+  "akds-prefs-sections-on-on": "开启",
   "akds-prefs-sections-on-off": "关闭"
 }

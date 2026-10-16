@@ -21,7 +21,7 @@
 @media (prefers-reduced-motion: reduce) { .ak-section-head, .ak-section__toggle::before { transition: none; } }
 @media (forced-colors: active) { .ak-section__toggle::before { forced-color-adjust: none; color: ButtonText; } }   /* 渐变画的记号在强制色下会被抹掉 */
 @media print { .ak-section[hidden] { display: block; content-visibility: visible; } .ak-section__toggle { display: none; } .ak-section-head { cursor: auto; } }
-/* 折叠没开（阅读设置 ak-sections-on：默认只在 ≤639 的窄屏开，桌面 / 平板不出开关；sections.js 给 .mw-parser-output 加 .ak-sections--off）：开关藏起、标题行不再像按钮 */
+/* 折叠没开（阅读设置 ak-sections-on = off，或没设过时在 ≥640 的桌面 / 平板——默认只在 ≤639 的窄屏开；sections.js 给 .mw-parser-output 加 .ak-sections--off）：开关藏起、标题行不再像按钮 */
 .ak-sections--off .ak-section__toggle { display: none; }
 .ak-sections--off .ak-section-head, .ak-sections--off .ak-section-head > h2 { cursor: auto; }
 .ak-sections--off .ak-section-head:hover { background: none; }

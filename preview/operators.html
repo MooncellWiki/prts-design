@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 生成物：由 scripts/build-preview.py 从 preview/_src/skeleton.html + _src/pages/operators.html 生成，改源文件再重跑 -->
-<html lang="zh-CN" class="client-nojs skin-theme-clientpref-os ak-sections-on-clientpref-mobile ak-sections-clientpref-expand ak-font-size-clientpref-regular ak-table-font-size-clientpref-auto" data-default-theme="os">   <!-- 默认跟随系统（同皮肤的 $wgArknightsThemeDefault = os）；?theme= / 记忆优先，见 preview.js -->
+<html lang="zh-CN" class="client-nojs skin-theme-clientpref-os ak-sections-on-clientpref-auto ak-sections-clientpref-expand ak-font-size-clientpref-regular ak-table-font-size-clientpref-auto" data-default-theme="os">   <!-- 默认跟随系统（同皮肤的 $wgArknightsThemeDefault = os）；?theme= / 记忆优先，见 preview.js -->
 <head>
 <meta charset="utf-8">
 <script>document.documentElement.classList.replace('client-nojs', 'client-js') || document.documentElement.classList.add('client-js');</script>   <!-- 同 MW 核心：有 JS 立刻换成 client-js；chrome/responsive.css 的 :has() 兜底（目录静态卡片）只对 .client-nojs 生效 -->
@@ -386,8 +386,8 @@
   <fieldset class="ak-pref">
     <legend class="ak-pref__label">章节折叠</legend>
     <div class="ak-seg" role="radiogroup" aria-label="章节折叠" data-pref="ak-sections-on">
-      <label><input type="radio" name="p-ak-sections-on" value="mobile" checked><span>窄屏</span></label>
-      <label><input type="radio" name="p-ak-sections-on" value="all"><span>全部</span></label>
+      <!-- 默认 auto（窄屏开、宽屏关）没有自己的格、不预勾；client-prefs.js 按当前视口亮 on / off，点了才存成 on / off -->
+      <label><input type="radio" name="p-ak-sections-on" value="on"><span>开启</span></label>
       <label><input type="radio" name="p-ak-sections-on" value="off"><span>关闭</span></label>
     </div>
   </fieldset>

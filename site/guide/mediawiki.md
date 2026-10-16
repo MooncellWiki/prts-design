@@ -89,7 +89,7 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
 | Cargo / SMW / DPL3 | 结果表继承 wikitable 规则（`.cargoTable` / `table.mw-datatable`）；结果格式用 `template` 时输出 PRTS Design 组件结构 |
 | Echo | 徽标用 `.ak-badge`（notices 默认黄；alerts 加 `--danger` 红）；弹窗走 Codex 桥接 |
 | WikiEditor / CodeMirror | 编辑器底色 `--ak-bg-inset`，在 `base/forms.css` 覆盖（见[表单控件 · 核心按钮与编辑器](/content/forms#核心按钮与编辑器)） |
-| MobileFrontend + Minerva | prts 已并成 Arknights 单皮肤（`m.` 域名在 Varnish 301 回主域），Minerva 的章节折叠由皮肤的 `sections.js` 补回（见[章节折叠](/content/toc#章节折叠)，默认只在 ≤639 的窄屏开、初始展开，阅读设置里可开到全部宽度或关掉、也可改成默认收起 = 原 Minerva 行为）。其他站两条路：(a) 皮肤 `responsive: true`，直接当移动端皮肤用（≤639 规则已写）；(b) 保留 Minerva，把令牌 + Codex 桥接（`tokens.css` + `bridge-codex.css`）经 `skinStyles` 注入 Minerva、只换色（仓库里还没有这样的模块；组件本身在 Minerva 上直接 `mw.loader.using("skins.akds.components")` 即可）。推荐 (a)，分阶段替换 |
+| MobileFrontend + Minerva | prts 已并成 Arknights 单皮肤（`m.` 域名在 Varnish 301 回主域），Minerva 的章节折叠由皮肤的 `sections.js` 补回（见[章节折叠](/content/toc#章节折叠)，默认只在 ≤639 的窄屏开、初始展开，阅读设置里可在本机开 / 关、也可改成默认收起 = 原 Minerva 行为）。其他站两条路：(a) 皮肤 `responsive: true`，直接当移动端皮肤用（≤639 规则已写）；(b) 保留 Minerva，把令牌 + Codex 桥接（`tokens.css` + `bridge-codex.css`）经 `skinStyles` 注入 Minerva、只换色（仓库里还没有这样的模块；组件本身在 Minerva 上直接 `mw.loader.using("skins.akds.components")` 即可）。推荐 (a)，分阶段替换 |
 | UniversalLanguageSelector | 语言切换在页眉用户菜单的「界面设置」组 `#p-user-interface-preferences`，侧栏不再有 Languages 组 |
 | Gadgets | 依赖 Vector 类名（`#mw-panel`、`.vector-*`）的要迁移；骨架保留 MW 标准 id（`#p-personal #p-views #p-cactions #p-navigation #p-tb #searchform #searchInput #firstHeading #bodyContent #catlinks`） |
 | Widgets / Gadgets 吐出的裸表单控件（`Widget:PropertyCalc`、各计算器 / 筛选栏） | `base/forms.css` 兜底：36px 定高、表格里 30px 且对齐跟随单元格、主题化颜色与状态；Widget 里针对旧皮肤的样式补丁可以删掉，见[表单控件](/content/forms) |

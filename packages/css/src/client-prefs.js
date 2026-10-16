@@ -12,7 +12,8 @@
  *  目前五项（值即 CSS 类后缀；主题见 tokens.css，其余见 base/sections.css · base/typography.css）：
  *    skin-theme    os（默认）/ day / night                            外观：MW 1.43 核心的 skin-theme（预览里 preview.js 听 akds:pref 再套用自己的 data-theme）；
  *                  站点默认不是跟随系统时，宿主在 <html data-akds-theme-default="day|night"> 上给（同 sidebar-tree.js 的 data-akds-flyout），「恢复默认设置」按它
- *    ak-sections-on  mobile（默认）/ all / off                       章节折叠在哪开：只在 ≤639 窄屏 / 所有宽度 / 关（sections.js 读它）
+ *    ak-sections-on  on / off，默认 auto                            章节折叠：开 / 关；auto = 没设过，只在 ≤639 窄屏开（sections.js 读它）。设置存本机，所以面板上只有开启 / 关闭两格，
+ *                  auto 时按当前视口亮其中一格（effective()），点了才存成 on / off；老值 mobile / all 读成 auto / on
  *    ak-sections   expand（默认）/ collapse                        开着时打开页面是展开还是收起
  *    ak-font-size  xsmall / small / regular（默认）/ large          正文字号 12 / 14 / 16 / 20（.mw-body-content 内的字号令牌整体换档）
  *    ak-table-font-size  auto（默认）/ xsmall                       表格字号：跟正文 / 12（base/tables.css；现网手机版「正文 13、表格 12」那种搭配）
@@ -27,12 +28,17 @@
 	var KEY = 'mwclientpreferences';
 	var html = document.documentElement;
 	var THEME_DEFAULT = html.getAttribute( 'data-akds-theme-default' );
-	var DEFAULTS = { 'skin-theme': /^(os|day|night)$/.test( THEME_DEFAULT || '' ) ? THEME_DEFAULT : 'os', 'ak-sections-on': 'mobile', 'ak-sections': 'expand', 'ak-font-size': 'regular', 'ak-table-font-size': 'auto' };
+	var DEFAULTS = { 'skin-theme': /^(os|day|night)$/.test( THEME_DEFAULT || '' ) ? THEME_DEFAULT : 'os', 'ak-sections-on': 'auto', 'ak-sections': 'expand', 'ak-font-size': 'regular', 'ak-table-font-size': 'auto' };
 
+	var LEGACY = { 'ak-sections-on': { mobile: 'auto', all: 'on' } };   // 三档时期存下的值
+	var PHONE = window.matchMedia( '(max-width: 639px)' );
 	function get( feature ) {
 		var m = html.className.match( new RegExp( '(?:^| )' + feature + SUFFIX + '([a-zA-Z0-9]+)(?: |$)' ) );
-		return m ? m[ 1 ] : ( DEFAULTS[ feature ] || null );
+		var v = m ? m[ 1 ] : ( DEFAULTS[ feature ] || null );
+		return LEGACY[ feature ] && LEGACY[ feature ][ v ] || v;
 	}
+	/* 开关上亮哪一格：ak-sections-on 的 auto 没有自己的格，按当前视口落到 on / off */
+	function effective( feature ) { var v = get( feature ); return feature === 'ak-sections-on' && v === 'auto' ? ( PHONE.matches ? 'on' : 'off' ) : v; }
 	function store( feature, value ) {
 		var data = {}, raw = '';
 		try { raw = localStorage.getItem( KEY ) || ''; } catch ( e ) { return; }
@@ -55,7 +61,7 @@
 	/* 分段开关的选中态跟着 <html> 上的类走（多处开关、多标签页都一致） */
 	function sync() {
 		Array.prototype.forEach.call( document.querySelectorAll( '.ak-seg[data-pref]' ), function ( seg ) {
-			var v = get( seg.getAttribute( 'data-pref' ) );
+			var v = effective( seg.getAttribute( 'data-pref' ) );
 			Array.prototype.forEach.call( seg.querySelectorAll( 'button[data-value]' ), function ( b ) {
 				var on = b.getAttribute( 'data-value' ) === v;
 				b.classList.toggle( 'is-active', on ); b.setAttribute( 'aria-pressed', on ? 'true' : 'false' );
@@ -67,9 +73,10 @@
 	}
 	document.addEventListener( 'click', function ( e ) {
 		var b = e.target.closest ? e.target.closest( '.ak-seg[data-pref] > button[data-value]' ) : null;
-		if ( !b ) { return; }
-		e.preventDefault();
-		set( b.parentNode.getAttribute( 'data-pref' ), b.getAttribute( 'data-value' ) );
+		if ( b ) { e.preventDefault(); set( b.parentNode.getAttribute( 'data-pref' ), b.getAttribute( 'data-value' ) ); return; }
+		/* 点了已经亮着、但只是 auto 按视口落上去的那格（ak-sections-on）：radio 没变、不来 change，这里显式存下，转屏 / 拉窗口就不再跟着翻 */
+		var r = e.target.matches && e.target.matches( '.ak-seg[data-pref] > label > input[type="radio"]' ) ? e.target : null;
+		if ( r && r.checked && get( r.closest( '.ak-seg' ).getAttribute( 'data-pref' ) ) !== r.value ) { set( r.closest( '.ak-seg' ).getAttribute( 'data-pref' ), r.value ); }
 	} );
 	document.addEventListener( 'change', function ( e ) {
 		var r = e.target, seg = r && r.matches && r.matches( '.ak-seg[data-pref] > label > input[type="radio"]' ) ? r.closest( '.ak-seg' ) : null;
@@ -92,7 +99,7 @@
 	document.addEventListener( 'click', function ( e ) {
 		var t = e.target.closest ? e.target.closest( '.ak-prefs__reset, .ak-prefs__back' ) : null;
 		if ( !t ) { return; }
-		if ( t.classList.contains( 'ak-prefs__reset' ) ) { e.preventDefault(); Object.keys( DEFAULTS ).forEach( function ( f ) { if ( get( f ) !== DEFAULTS[ f ] ) { set( f, DEFAULTS[ f ] ); } } ); return; }
+		if ( t.classList.contains( 'ak-prefs__reset' ) ) { e.preventDefault(); Object.keys( DEFAULTS ).forEach( function ( f ) { if ( !html.classList.contains( f + SUFFIX + DEFAULTS[ f ] ) ) { set( f, DEFAULTS[ f ] ); } } ); return; }
 		if ( window.history.length > 1 && document.referrer && document.referrer.indexOf( location.origin + '/' ) === 0 ) { e.preventDefault(); window.history.back(); }
 	} );
 	/* 页眉眼镜图标 → 面板 <dialog.ak-prefs-panel>（同 Vector 2022 的「外观」菜单）：≥640 非模态下拉（贴页眉右下沿），≤639 模态、页面正中（锁页面滚动）；
@@ -122,5 +129,6 @@
 		mq.addEventListener( 'change', function () { close( false ); } );
 	}
 	if ( document.readyState === 'loading' ) { document.addEventListener( 'DOMContentLoaded', function () { sync(); panelInit(); } ); } else { sync(); panelInit(); }
+	PHONE.addEventListener( 'change', sync );   // auto 的那格跟视口走
 	window.akdsClientPrefs = { get: get, set: set, sync: sync, defaults: DEFAULTS };
 }() );
