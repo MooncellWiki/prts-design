@@ -1,0 +1,319 @@
+<!--page
+order: 8
+nav: 敌人页（数据区）
+title: 圣徒瓦列里奥 - PRTS · 敌人页设计稿
+h1: 圣徒瓦列里奥
+h1en: 敌人页设计稿
+indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">设计稿</span>
+actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+lastmod: 2026年10月16日 (五) 21:10
+cats: 敌人, 领袖级别的敌人, 敌方敌人, 昨日海登场的敌人
+-->
+<!--head
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   敌人页 · 数据区 — 现网 模板:敌人信息/common2 + 模板:敌人信息/levelcontent（1832 个敌人页）的重新设计（单页设计稿，只画数据区，敌人模型一节不画）。
+   现网（2026-10 那版）：头表仍是红表头 wikitable；每个「级别N」章节一张 .ak-card，里面 INFO. / ATTRIBUTES / SKILLS / TALENTS 四节各带一个全大写英文眉题，
+   每级把名字 / 地位 / 种类 / 描述再写一遍；属性一行一个 grid、列数不同对不齐，窄屏折成 3 + 1；评级字母 40% 透明度绝对定位在格子中间，窄屏压在标签上；
+   「相对上一级别有变化」用 #2F2F2F 反白块，描述框和技力槽行不变也反白，没有图例；技能正文 12px。
+
+   这里：**数字并排、文字分页**。
+   - 身份只写一次：头像 + 名字 + 地位标签 + 一行键值（种类 / 攻击方式 / 伤害类型 / 行动方式 / 登场活动，标签照原版写全）+ 描述 + 图鉴「能力」。
+   - 属性一张表，同原版 wikitable 的 6 列网格（标签行压在值行上），但行 = 级别（级别 0 / 级别 1 / …）——两级上下挨着比，不用翻；三段 6 列对齐；评级字母是数值旁的实体按钮（点开分档阈值），按档位分轻重、不分颜色（同敌人一览）；
+     与级别 0 不同的值 = 强调色 + 右上角角标 + 表下图例（同关卡页敌方情报稿的「本关数值」）；0 与「—」压淡。
+   - 技能 / 天赋按级别分页签（TabberNeue，编辑直接写 <tabber>），同原版的两列表（名称 + 芯片 ‖ 效果），正文 14px；级别 1 文中变了的数值 = 淡青底 + ▲ / ▼，悬停给级别 0 的值。
+     冷却 / 技力写成「初始冷却 60 / 50」这样的标签 + 值，没有的值不写。
+
+   这段样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles），只用 css-sanitizer 认的写法（没有 @container，窄宽度按视口断点）；
+   颜色 / 字号全走令牌，两套主题都成立；.ak-table / .ak-tag / .ak-kv / .ak-tabs / .ak-sp-* / .ak-dialog / .ak-sr-only 是设计系统组件，随皮肤加载，这里不抄。
+   wikitext 的表格没有 <thead>：表头行在 <tbody> 里，所以表头一律认 tr.en-head（同关卡页稿）。
+   模板怎么拿到所有级别：levelcontent 现在就把每级写成 SMW 子对象（LEVEL0 / LEVEL1 …），common2 用 #ask 把本页的子对象列成列即可；或由 Lua 模块一次收齐。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. 身份头：头像 120 + 右栏；精英 / 领袖在左缘出色条（色值同敌人卡 / 敌人一览 / 关卡页稿：精英橙、领袖红），标签把字写出来 ── */
+.en-head { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--ak-space-3) var(--ak-space-5); align-items: start; margin: var(--ak-space-4) 0; padding: var(--ak-space-4); border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
+.en-head[data-rank="elite"] { --_rank: var(--ak-orange-500); --_rank-fg: var(--ak-orange-500); }
+.en-head[data-rank="boss"] { --_rank: var(--ak-red-700); --_rank-fg: var(--ak-red-500); }   /* 色条用深红；标签文字深红在暗底上太暗，提一级 */
+.en-head[data-rank] { border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_rank) 4px, var(--ak-border) 4px) 1 1 1 4; }
+/* 头像外壳定宽（皮肤的 .mw-file-element { max-width:100% } 以外壳为参照，外壳按内容收缩时图会被挤成 0）；图鉴编号叠在左上角的深色条上 = 游戏图鉴格子的画法（同敌人一览） */
+.en-avatar { position: relative; width: 120px; height: 120px; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
+.en-avatar img { display: block; width: 120px; height: 120px; max-width: none; object-fit: cover; }
+.en-avatar__code { position: absolute; left: 0; top: 0; padding: 4px 7px; background: rgba(0, 0, 0, .72); color: #fff; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .06em; }
+.en-title { display: flex; align-items: center; flex-wrap: wrap; gap: var(--ak-space-2) var(--ak-space-3); margin: 0 0 var(--ak-space-2); }
+.en-name { font-size: var(--ak-fs-h3); font-weight: 800; line-height: 1.2; }
+.ak-tag.en-rank { --_bg: transparent; --_fg: var(--_rank-fg); --_bd: var(--_rank-fg); }
+.en-head .ak-kv--inline { margin: 0 0 var(--ak-space-3); }
+.en-desc { margin: 0; color: var(--ak-fg-secondary); line-height: 1.7; }
+/* 图鉴「能力」：一行一条，行首的 · 悬挂在外（同敌人一览的能力列），【技能名】加粗由数据里的 ''' 给 */
+.en-head > .en-ability { grid-column: 2; margin: 0; padding: 0; list-style: none; font-size: var(--ak-fs-sm); line-height: 1.7; }   /* 是网格的直接子元素：桌面落在右栏，手机横跨两栏 */
+.en-head .en-ability > li { padding-left: 1.1em; text-indent: -1.1em; }
+.en-head .en-ability > li::before { content: "·"; position: static; display: inline-block; width: 1.1em; height: auto; margin: 0; background: none; transform: none; text-indent: 0; color: var(--ak-fg-muted); }   /* 压掉正文 li::before 的青色斜杠装饰（绝对定位 + 旋转），这里要的是悬挂的 · */
+
+/* ── 2. 属性表：列 = 属性（6 列一段，同原版 wikitable 的网格）、行 = 级别，标签行压在值行上；三段：四维 + 攻击间隔 移速 ‖ 半径 重量 元素抗性 损伤抵抗 嘲讽 目标价值 ‖ 生命自回 · 异常抗性 · 技力。
+ *  外观同 .ak-table，表头行在 tbody 里所以照写一遍；table-layout: fixed 让三段的 6 列对齐 ── */
+.en-stats { margin: 0; table-layout: fixed; font-variant-numeric: tabular-nums; }
+.en-stats th, .en-stats td { padding: 6px 10px; border-left: 1px solid var(--ak-border); }   /* 画竖线：6 列网格靠框线对齐，不靠对齐方式 */
+.en-stats tr > :first-child { border-left: 0; }
+.en-stats .en-lv { width: 4.6em; }
+.en-head-row > th { background: var(--ak-bg-surface-2); border-bottom: 2px solid var(--ak-border-strong); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); text-align: center; vertical-align: bottom; word-break: keep-all; }   /* 四字的在中间写 <wbr>：够宽一行，不够两行，不会一字一行 */
+.en-head-row > th.en-lv, .en-head-row > th.en-wide { text-align: left; }
+.en-stats tr.en-head-row:not(:first-child) > th { border-top: 1px solid var(--ak-border-strong); }   /* 段与段之间 */
+.en-stats tbody th.en-lv { white-space: nowrap; font-weight: 600; color: var(--ak-fg-secondary); text-align: left; }
+.en-stats td { text-align: center; white-space: nowrap; }   /* 同原版：值居中在标签下 */
+.en-stats tr:not(.en-head-row):hover > :is(th, td) { background: var(--ak-bg-hover); }
+/* 评级字母不占行内：同旧版 wikitable 的画法——展示字（Novecento）、压淡、落在格子左上角，数值居中不受它影响；仍是按钮（点开分档阈值），hit 区 24px；各档同一灰度 */
+.en-stats td { position: relative; }
+.en-cell { display: block; }
+.en-grade { all: unset; position: absolute; left: 0; top: 0; box-sizing: border-box; min-width: 24px; height: 24px; padding: 2px 0 0 4px; display: flex; align-items: flex-start; cursor: pointer;
+  font: 700 15px/1 var(--ak-font-display); letter-spacing: -.02em; color: var(--ak-fg-muted); opacity: .6; }   /* 各档同一灰度，不按档位分轻重：字母本身已经是信息 */
+.en-grade:hover { color: var(--ak-accent); opacity: 1; }
+.en-grade:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.en-stats td.is-zero .en-val { color: var(--ak-fg-subtle); }   /* 0 与「—」压淡：有值的格先被看到 */
+.en-stats td.en-wide { text-align: left; white-space: normal; }   /* 跨列的格（异常抗性 / 技力） */
+.en-stats td.en-wide > span + span { margin-left: .6em; }
+/* 与级别 0 不同的值：强调色粗体 + 右上角一枚三角，表下一行图例（同关卡页敌方情报稿的「本关数值」）；格子带 title，读屏另有一段 .ak-sr-only */
+.en-stats td.is-diff { position: relative; }
+.en-stats td.is-diff .en-val { color: var(--ak-accent); font-weight: 700; }
+.en-stats td.is-diff::after, .en-mark { content: ""; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent var(--ak-accent) transparent transparent; }
+.en-note { position: relative; margin: var(--ak-space-2) 0 0; padding-left: 14px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); line-height: 1.6; }
+.en-mark { top: .4em; right: auto; left: 0; }
+.en-note + .en-note { margin-top: 2px; }
+.en-sp { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }   /* 技力：初始 / 上限 + 回复方式芯片 */
+.en-sp > span + span { margin-left: 0; }
+.en-sp__n { min-width: 3.4em; text-align: left; }   /* 数值定宽：级别 1 的粗体不把芯片推走 */
+
+/* ── 3. 技能 / 天赋：级别页签 + 两列表（名称 + 冷却 / 技力芯片 ‖ 效果），天赋与能力是最后一行；同原版的表，比一条一张卡省一半高度 ── */
+/* 标题后的圆圈问号：悬停一句话（data-ak-tip，皮肤 tooltip.css 的 CSS-only 气泡），点击开完整说明的对话框 */
+.en-help { all: unset; position: relative; display: inline-grid; place-items: center; width: 18px; height: 18px; margin-left: 6px; border: 1.5px solid var(--ak-fg-muted); border-radius: 50%; color: var(--ak-fg-muted); font: 700 12px/1 var(--ak-font-label); vertical-align: 3px; cursor: help; }
+.en-help:hover, .en-help:focus-visible { border-color: var(--ak-accent); color: var(--ak-accent); }
+.en-help:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.en-help::before { content: "?"; }
+.en-help::after { font-family: var(--ak-font-body); font-weight: 400; }   /* 气泡文字不继承标题字重 */
+.en-skills { margin: 0; }
+.en-skills th[scope="row"] { width: 9.5em; vertical-align: top; font-weight: 400; background: var(--ak-bg-surface-2); }
+.en-skills td { vertical-align: top; font-size: var(--ak-fs-sm); line-height: 1.7; }
+.en-skill__name { display: block; margin: 0 0 6px; font-size: var(--ak-fs-body); font-weight: 800; line-height: 1.3; }
+.en-skills tr.en-talent .en-skill__name { margin: 0; }
+.en-skill__stats { margin: 0; display: grid; grid-template-columns: max-content auto; gap: 3px 8px; font-size: var(--ak-fs-xs); line-height: 1.4; }   /* 初始冷却 / 冷却 / 技力，标签 + 值，不用图标芯片 */
+.en-skill__stats > div { display: contents; }
+.en-skill__stats dt { margin: 0; color: var(--ak-fg-muted); font-weight: 600; }
+.en-skill__stats dd { margin: 0; font-variant-numeric: tabular-nums; }
+.en-skills td > p { margin: 0 0 .6em; }
+.en-skills td > p:last-child { margin-bottom: 0; }
+.en-skills td h4 { margin: .8em 0 .2em; font-size: var(--ak-fs-sm); font-weight: 700; }   /* 第一形态 / 第二形态 这种文内小节 */
+/* 文中与级别 0 不同的数值（现网 模板:变动数值 的红 / 绿实心胶囊）：淡青底 + 粗体 + 青色小三角写方向，title 给级别 0 的值。
+ * 不把数字本身染青：正文里青字 = 链接，同一段里「150%」和「晕眩」会分不清谁能点；三角是与表格里角标共用的「与级别 0 不同」记号 */
+.en-delta { padding: 0 3px; background: var(--ak-mark-bg); font-weight: 700; white-space: nowrap; }
+.en-delta::after { content: "▲"; margin-left: 1px; font-size: .6em; vertical-align: .5em; color: var(--ak-accent); }
+.en-delta--down::after { content: "▼"; }
+.en-empty { margin: 0; padding: var(--ak-space-3) var(--ak-space-4); border: 1px dashed var(--ak-border-strong); color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); }
+
+/* ── 4. 出场关卡：键值表，一类一行 ── */
+.en-stages dd a + a::before { content: "·"; margin: 0 .5em; color: var(--ak-fg-subtle); }
+
+/* ── 5. 评级弹窗里的阈值表 ── */
+.en-rank-table { margin: var(--ak-space-3) 0 0; font-variant-numeric: tabular-nums; }
+.en-rank-table th:first-child, .en-rank-table td:first-child { width: 4em; font-family: var(--ak-font-label); font-weight: 700; }
+.en-rank-table td:last-child { text-align: right; }
+
+/* ── 6. 窄：头像 72、格子内距收紧；属性表 7 列照常是表，放不下在 .ak-table-scroll 里横滑（手机上皮肤会给所有 wikitable 包，这张是 .ak-table，自己包）；技能表的名称列叠到效果上面 ── */
+@media (max-width: 639px) {
+  .en-head { grid-template-columns: 72px minmax(0, 1fr); gap: var(--ak-space-3); padding: var(--ak-space-3); }
+  .en-avatar, .en-avatar img { width: 72px; height: 72px; }
+  .en-avatar__code { padding: 3px 5px; font-size: 10px; }
+  .en-name { font-size: var(--ak-fs-h4); }
+  .en-head > .en-ability { grid-column: 1 / -1; }   /* 能力列表横跨头像下方，不挤在右栏里 */
+  .en-stats { table-layout: auto; }
+  .en-stats .en-lv { position: sticky; left: 0; z-index: 1; background: var(--ak-bg-surface); box-shadow: 1px 0 0 var(--ak-border); }   /* 横滑时级别列钉在左边，知道看的是哪一级 */
+  .en-head-row > th.en-lv { background: var(--ak-bg-surface-2); }
+  .en-stats th, .en-stats td { padding: 5px 7px; }
+  .en-stats td:not(.en-wide) { padding-left: 22px; }   /* 窄格里居中的数值给左上角的评级字母让位 */
+  .en-grade { font-size: 12px; padding-top: 3px; }
+  .en-skills th[scope="row"], .en-skills td { display: block; width: auto; }
+  .en-skills th[scope="row"] { border-bottom: 0; padding-bottom: 4px; }
+  .en-skills .en-skill__name { display: inline; margin: 0 8px 0 0; }
+  .en-skills .en-skill__stats { display: inline-grid; grid-auto-flow: column; gap: 0 10px; vertical-align: middle; }
+  .en-skills .en-skill__stats > div { display: inline-flex; gap: 4px; }
+}
+</style>
+-->
+<div class="ak-pathnav ak-not-prose" role="navigation" aria-label="所在位置"><span class="ak-pathnav__home"><a href="home.html" title="首页">首页</a></span><span class="ak-pathnav__up"><a href="enemies.html" title="敌人一览">敌人一览</a></span><span class="ak-pathnav__here">圣徒瓦列里奥</span></div>   <!-- 路径条：现网 {{Navigator|敌人一览}}，正文第一行 -->
+<div class="ak-cbox ak-cbox--tip">
+  <span class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></span>
+  <div class="ak-cbox__body">敌人页数据区（<code>模板:敌人信息/common2</code> + <code>敌人信息/levelcontent</code>，1832 个敌人页）的单页设计稿。数据取自现网 <a href="https://prts.wiki/w/%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5">圣徒瓦列里奥</a> 与 <a href="https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB">源石虫</a>，可对照着看。点评级字母看分档阈值；级别页签切技能文本；窗口拉窄看手机排布。</div>
+</div>
+
+<!-- ── 身份头：现网 common2 的红表头 wikitable + 每级卡片里重复的 INFO. 合成一块，只写一次 ── -->
+<div class="en-head" data-rank="boss">
+  <span class="en-avatar"><a href="https://prts.wiki/w/%E6%96%87%E4%BB%B6:%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5.png" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/c/c7/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5.png/120px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5.png" srcset="https://media.prts.wiki/c/c7/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5.png 2x" width="120" height="120" class="mw-file-element" alt="" loading="lazy"></a><span class="en-avatar__code" aria-label="图鉴编号 VAL">VAL</span></span>
+  <div>
+    <div class="en-title"><span class="en-name">圣徒瓦列里奥</span><span class="ak-tag en-rank">领袖</span></div>
+    <dl class="ak-kv ak-kv--inline">
+      <div><dt>种类</dt><dd>—</dd></div>
+      <div><dt>攻击方式</dt><dd>近战</dd></div>
+      <div><dt>伤害类型</dt><dd>物理 / 法术</dd></div>
+      <div><dt>行动方式</dt><dd>地面</dd></div>
+      <div><dt>登场活动</dt><dd><a href="#">昨日海</a></dd></div>
+    </dl>
+    <p class="en-desc">如果审判庭不能，他就亲手为自己的牺牲创造意义。</p>
+  </div>
+  <ul class="en-ability">
+      <li>每拥有一个&lt;塑能基质&gt;获得一定比例伤害减免和攻击力加成</li>
+      <li>在【塑能力场】内逐渐失去&lt;塑能基质&gt;</li>
+      <li><b>【报偿】</b>锁定数个地块，蓄力后对其使用手炮射击造成溅射物理伤害和<span class="ak-term" title="晕眩：无法移动、阻挡、攻击及使用技能">晕眩</span>效果，若击倒我方单位则留下一个&lt;不甘的火&gt;</li>
+      <li><b>【审判】</b>攻击数次后对前方一定范围内所有我方单位造成一次多连击，连击数随拥有的&lt;塑能基质&gt;提升</li>
+      <li><b>【绝罚】</b>自身一定范围内我方干员被击倒或撤退时造成一次法术伤害，并留下一团火焰持续造成法术伤害和<span class="ak-term" title="灼燃损伤：累计至 1000 时，10 秒内降低 20 法术抗性并受到 1200 点法术伤害">灼燃损伤</span>，且使周围所有未达上限的敌人获得一个&lt;塑能基质&gt;。在【塑能力场】内无效</li>
+      <li>免疫晕眩</li>
+  </ul>
+</div>
+
+<h2 id="属性">属性</h2>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats">
+  <tbody>
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命值</th><th scope="col">攻击力</th><th scope="col">防御力</th><th scope="col">法术<wbr>抗性</th><th scope="col">攻击<wbr>间隔</th><th scope="col">移动<wbr>速度</th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td><span class="en-cell"><span class="en-val">90000</span><button type="button" class="en-grade" data-tier="a" data-stat="hp" data-value="90000" title="生命值评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">650</span><button type="button" class="en-grade" data-tier="b" data-stat="atk" data-value="650" title="攻击力评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">1700</span><button type="button" class="en-grade" data-tier="a" data-stat="def" data-value="1700" title="防御力评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">20</span><button type="button" class="en-grade" data-tier="b" data-stat="res" data-value="20" title="法术抗性评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">2.5</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="2.5" title="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">0.35</span><button type="button" class="en-grade" data-tier="low" data-stat="movespeed" data-value="0.35" title="移动速度评级 D，点击看分档阈值">D</button></span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-diff" title="与级别 0 不同"><span class="en-cell"><span class="en-val">120000<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="s" data-stat="hp" data-value="120000" title="生命值评级 S，点击看分档阈值">S</button></span></td><td class="is-diff" title="与级别 0 不同"><span class="en-cell"><span class="en-val">850<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="b" data-stat="atk" data-value="850" title="攻击力评级 B+，点击看分档阈值">B+</button></span></td><td class="is-diff" title="与级别 0 不同"><span class="en-cell"><span class="en-val">2000<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="s" data-stat="def" data-value="2000" title="防御力评级 S，点击看分档阈值">S</button></span></td><td><span class="en-cell"><span class="en-val">20</span><button type="button" class="en-grade" data-tier="b" data-stat="res" data-value="20" title="法术抗性评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">2.5</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="2.5" title="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">0.35</span><button type="button" class="en-grade" data-tier="low" data-stat="movespeed" data-value="0.35" title="移动速度评级 D，点击看分档阈值">D</button></span></td></tr>
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col"><span class="ak-term" title="没有攻击半径时只进行阻挡攻击；有攻击半径时未被阻挡也能普通攻击">攻击<wbr>半径</span></th><th scope="col">重量<wbr>等级</th><th scope="col">元素<wbr>抗性</th><th scope="col">损伤<wbr>抵抗</th><th scope="col"><span class="ak-term" title="以属性值写入的嘲讽等级，实际嘲讽等级要算上自身所受效果；范围 −2 ～ 2">基础嘲讽<wbr>等级</span></th><th scope="col"><span class="ak-term" title="到达终点退场时通常扣除的关卡生命值">目标<wbr>价值</span></th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td><span class="en-cell"><span class="en-val">2.5</span></span></td><td><span class="en-cell"><span class="en-val">10</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" title="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" title="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">2</span></span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td><span class="en-cell"><span class="en-val">2.5</span></span></td><td><span class="en-cell"><span class="en-val">10</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" title="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" title="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">2</span></span></td></tr>
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命自回<wbr>速度</th><th scope="col" colspan="3" class="en-wide">异常抗性</th><th scope="col" colspan="2" class="en-wide">技力</th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide" colspan="3"><span>沉默</span><span class="ak-term" title="沉睡：无法行动，受到的伤害固定为 1，且无法被选中">沉睡</span><span class="ak-term" title="冻结：无法移动、阻挡、攻击及使用技能，法术抗性 −15">冻结</span><span class="ak-term" title="浮空：被抬离地面，无法行动，位移效果加强">浮空</span></td><td class="en-wide" colspan="2"><span class="en-sp"><span class="en-val en-sp__n">0 / 5</span><span class="ak-sp ak-sp--attack" title="每次攻击回复 1 点技力">攻击回复</span></span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide" colspan="3"><span>沉默</span><span class="ak-term" title="沉睡：无法行动，受到的伤害固定为 1，且无法被选中">沉睡</span><span class="ak-term" title="冻结：无法移动、阻挡、攻击及使用技能，法术抗性 −15">冻结</span><span class="ak-term" title="浮空：被抬离地面，无法行动，位移效果加强">浮空</span></td><td class="en-wide is-diff" colspan="2" title="与级别 0 不同"><span class="en-sp"><span class="en-val en-sp__n">0 / 4<span class="ak-sr-only">（与级别 0 不同）</span></span><span class="ak-sp ak-sp--attack" title="每次攻击回复 1 点技力">攻击回复</span></span></td></tr>
+  </tbody>
+</table>
+</div>
+<p class="en-note"><span class="en-mark" aria-hidden="true"></span>与级别 0 不同的数值。评级字母按站内分档，点击查看阈值。</p>
+<p class="en-note">表中是敌人的默认数值；各关卡可能另行调整，以关卡页「敌方情报」为准。</p>
+
+<h2 id="技能与天赋">技能与天赋 <button type="button" class="en-help" data-dialog-open="#en-about" data-ak-tip="冷却与技力的读法、技能的默认行为、数值计算顺序；点击查看" aria-label="技能与天赋怎么读"></button></h2>   <!-- 问号用 ::before 画：按钮里不放文字，目录（读 heading 的文本）就不会多出一个「?」 -->
+<div class="tabber">   <!-- = wikitext 的 <tabber>级别 0=…|-|级别 1=…</tabber>（TabberNeue），样式随皮肤 base/tabber.css -->
+  <header class="tabber__header"><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" href="#en-lv-0" id="en-lv-tab-0" aria-selected="true" aria-controls="en-lv-0">级别 0</a><a class="tabber__tab" role="tab" href="#en-lv-1" id="en-lv-tab-1" aria-selected="false" aria-controls="en-lv-1" tabindex="-1">级别 1</a></nav></header>
+  <section class="tabber__section">
+    <article class="tabber__panel" id="en-lv-0" role="tabpanel" aria-labelledby="en-lv-tab-0" data-title="级别 0">
+  <table class="ak-table en-skills">
+    <tbody>
+    <tr><th scope="row"><span class="en-skill__name">审判</span><dl class="en-skill__stats"><div><dt>技力</dt><dd title="技力消耗：第一形态 5 · 第二形态 4">5 / 4</dd></div></dl></th>
+      <td><p>记录当前基质数量然后开始蓄力。</p>
+      <p>蓄力 3 秒后，向攻击范围半径（存疑）内的所有我方单位发动 (3 + 记录的基质数量 / 2) 次近战途径的攻击（次数向下取整，可以攻击飞行单位），每次攻击造成 130%（第一形态）或 100%（第二形态）倍率。</p></td></tr>
+    <tr><th scope="row"><span class="en-skill__name">报偿</span><dl class="en-skill__stats"><div><dt>初始冷却</dt><dd title="初始冷却：第一形态 60 秒 · 第二形态 50 秒">60 / 50</dd></div><div><dt>冷却</dt><dd title="冷却：第一形态 60 秒 · 第二形态 50 秒">60 / 50</dd></div></dl></th>
+      <td><p>选择攻击范围半径（存疑）内的至多 2 个目标（第一形态）或至多 3 个目标（第二形态），优先选择阻挡自身的对象 ＞ 位于塑能砖上的单位 ＞ 距离自己最近的单位。</p>
+      <p>对所选目标所在的地块发射弹道，弹道持续 5 秒（存疑），对击中的单位造成 100% 攻击力的物理伤害并施加 5 秒<a href="#">晕眩</a>。</p></td></tr>
+    <tr class="en-talent"><th scope="row"><span class="en-skill__name">天赋与能力</span></th>
+      <td><p>常态持有<a href="#">晕眩免疫</a>。<br>属于<a href="#">基质容器</a>（3 / 6 · <span class="ak-fg-danger">可超限瘫痪</span>）。<br>位于塑能力场内时，攻击速度 −60 且固定每 3 秒失去 1 个&lt;塑能基质&gt;（覆盖原有随机间隔）。<br>攻击力 +(100 × 基质数量)，受到的物理与法术伤害降低 (12% × 基质数量)。<br>可无视上限吸收过量&lt;塑能基质&gt;，届时清空&lt;塑能基质&gt;并进入【瘫痪】状态 15 秒：期间失去上述晕眩免疫，获得 15 秒<a href="#">晕眩</a>。<br>※ 此单位的&lt;塑能基质&gt;检测与吸收间隔改为 0.1 秒。</p>
+      <p>非重生期间持有【绝罚光环】（<span class="ak-term" title="亮蓝色外圈">亮蓝色外圈</span>；碰撞判定，无视无法选择）：对 3.0（第一形态）或 3.5（第二形态）半径内的所有我方干员生效，其因生命值归零或撤退离场时，为范围内的所有<a href="#">基质容器</a>敌人（至多 256 个）增加 1 个&lt;塑能基质&gt;（不超出容量上限），并对其所在格及周围四格内所有不持有<a href="#">隐匿</a>的我方单位造成 60%（第一形态）或 80%（第二形态）攻击力的法术溅射伤害（不触发受击回复），随后在该地块及周围四格留下一个持续 10 秒、每秒造成 50 点<a href="#">灼燃损伤</a>和 200 点法术伤害的燃烧区域弹道；若自身处于重生期间，【绝罚】无效。</p>
+      <h4>第一形态［初始形态］</h4>
+      <p>仅在被阻挡的情况下进行阻挡攻击，造成物理伤害。</p>
+      <p>首次受到致命伤时进入持续 10 秒的重生：生命值恢复至 100%，防御力永久 −700，最大生命值永久 +25000，法术抗性永久 +40。<br>重生完毕后清空现有&lt;塑能基质&gt;，<a href="#">基质容器</a>变为 4 / 7，技力强制减少 999 点，随后进入第二形态并获得 10 秒<a href="#">无敌</a>。</p>
+      <h4>第二形态</h4>
+      <p>仅在被阻挡的情况下进行阻挡攻击，造成法术伤害并附带相当于攻击力 20% 的<a href="#">灼燃损伤</a>。<br>自身半径 1.25 内的我方单位每秒受到 50 点<a href="#">灼燃损伤</a>和 200 点法术伤害（<span class="ak-term" title="深蓝色燃烧内圈">深蓝色燃烧内圈</span>；光环效果，碰撞判定，无视<a href="#">迷彩</a>）。</p></td></tr>
+    </tbody>
+  </table>
+
+    </article>
+    <article class="tabber__panel" id="en-lv-1" role="tabpanel" aria-labelledby="en-lv-tab-1" data-title="级别 1" hidden>
+  <table class="ak-table en-skills">
+    <tbody>
+    <tr><th scope="row"><span class="en-skill__name">审判</span><dl class="en-skill__stats"><div><dt>技力</dt><dd title="技力消耗：第一形态 4 · 第二形态 3（级别 0：5 / 4）">4 / 3</dd></div></dl></th>
+      <td><p>记录当前基质数量然后开始蓄力。</p>
+      <p>蓄力 3 秒后，向攻击范围半径（存疑）内的所有我方单位发动 (3 + 记录的基质数量 / 2) 次近战途径的攻击（次数向下取整，可以攻击飞行单位），每次攻击造成 <span class="en-delta" title="级别 0：130%">150%</span>（第一形态）或 <span class="en-delta" title="级别 0：100%">110%</span>（第二形态）倍率。</p></td></tr>
+    <tr><th scope="row"><span class="en-skill__name">报偿</span><dl class="en-skill__stats"><div><dt>初始冷却</dt><dd title="初始冷却：第一形态 50 秒 · 第二形态 45 秒（级别 0：60 / 50）">50 / 45</dd></div><div><dt>冷却</dt><dd title="冷却：第一形态 50 秒 · 第二形态 45 秒（级别 0：60 / 50）">50 / 45</dd></div></dl></th>
+      <td><p>选择攻击范围半径（存疑）内的至多 2 个目标（第一形态）或至多 3 个目标（第二形态），优先选择阻挡自身的对象 ＞ 位于塑能砖上的单位 ＞ 距离自己最近的单位。</p>
+      <p>对所选目标所在的地块发射弹道，弹道持续 5 秒（存疑），对击中的单位造成 <span class="en-delta" title="级别 0：100%">130%</span> 攻击力（第一形态）或 <span class="en-delta" title="级别 0：100%">110%</span> 攻击力（第二形态）的物理伤害并施加 5 秒<a href="#">晕眩</a>。</p></td></tr>
+    <tr class="en-talent"><th scope="row"><span class="en-skill__name">天赋与能力</span></th>
+      <td><p>常态持有<a href="#">晕眩免疫</a>。<br>属于<a href="#">基质容器</a>（3 / 6 · <span class="ak-fg-danger">可超限瘫痪</span>）。<br>位于塑能力场内时，攻击速度 −60 且固定每 3 秒失去 1 个&lt;塑能基质&gt;（覆盖原有随机间隔）。<br>攻击力 +(<span class="en-delta" title="级别 0：100">130</span> × 基质数量)，受到的物理与法术伤害降低 (12% × 基质数量)。<br>可无视上限吸收过量&lt;塑能基质&gt;，届时清空&lt;塑能基质&gt;并进入【瘫痪】状态 15 秒：期间失去上述晕眩免疫，获得 15 秒<a href="#">晕眩</a>。<br>※ 此单位的&lt;塑能基质&gt;检测与吸收间隔改为 0.1 秒。</p>
+      <p>非重生期间持有【绝罚光环】（碰撞判定，无视无法选择）：对 3.0（第一形态）或 3.5（第二形态）半径内的所有我方干员生效，其因生命值归零或撤退离场时，为范围内的所有<a href="#">基质容器</a>敌人（至多 256 个）增加 1 个&lt;塑能基质&gt;（不超出容量上限），并对其所在格及周围四格内所有不持有<a href="#">隐匿</a>的我方单位造成 <span class="en-delta" title="级别 0：60%">70%</span>（第一形态）或 80%（第二形态）攻击力的法术溅射伤害（不触发受击回复），随后在该地块及周围四格留下一个持续 10 秒、每秒造成 <span class="en-delta" title="级别 0：50">60</span> 点<a href="#">灼燃损伤</a>和 <span class="en-delta" title="级别 0：200">300</span> 点法术伤害的燃烧区域弹道；若自身处于重生期间，【绝罚】无效。</p>
+      <h4>第一形态［初始形态］</h4>
+      <p>仅在被阻挡的情况下进行阻挡攻击，造成物理伤害。</p>
+      <p>首次受到致命伤时进入持续 10 秒的重生：生命值恢复至 100%，防御力永久 <span class="en-delta en-delta--down" title="级别 0：−700">−600</span>，最大生命值永久 <span class="en-delta" title="级别 0：+25000">+35000</span>，法术抗性永久 +40。<br>重生完毕后清空现有&lt;塑能基质&gt;，<a href="#">基质容器</a>变为 4 / 7，技力强制减少 999 点，随后进入第二形态并获得 10 秒<a href="#">无敌</a>。</p>
+      <h4>第二形态</h4>
+      <p>仅在被阻挡的情况下进行阻挡攻击，造成法术伤害并附带相当于攻击力 20% 的<a href="#">灼燃损伤</a>。<br>自身半径 1.25 内的我方单位每秒受到 <span class="en-delta" title="级别 0：50">60</span> 点<a href="#">灼燃损伤</a>和 <span class="en-delta" title="级别 0：200">300</span> 点法术伤害（光环效果，碰撞判定，无视<a href="#">迷彩</a>）。</p></td></tr>
+    </tbody>
+  </table>
+  <p class="en-note"><span class="en-mark" aria-hidden="true"></span>带 ▲ / ▼ 的数值与级别 0 不同，悬停看级别 0 的值。</p>
+
+    </article>
+  </section>
+</div>
+
+<h2 id="出场关卡">出场关卡</h2>
+<dl class="ak-kv ak-kv--boxed en-stages">   <!-- 带框的信息栏变体（设计系统 .ak-kv--boxed：外框 + 键列底色），同干员页「特性」节 -->
+  <dt>活动</dt><dd><a href="#">YW-8 鳞的记忆</a><a href="#">YW-EX-8 一件失物</a></dd>
+  <dt>相关敌人</dt><dd><a href="#">塑能基质</a></dd>
+</dl>
+
+<h2 id="普通敌人">普通敌人的样子</h2>
+<p>多数敌人没有技能与天赋、两个级别只差几个数（<a href="https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB">源石虫</a>）。普通地位不出色条和标签，地位写进键值一行：</p>
+<div class="en-head">
+  <span class="en-avatar"><a href="https://prts.wiki/w/%E6%96%87%E4%BB%B6:%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/3/3e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png/120px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png" srcset="https://media.prts.wiki/3/3e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png 2x" width="120" height="120" class="mw-file-element" alt="" loading="lazy"></a><span class="en-avatar__code" aria-label="图鉴编号 B1">B1</span></span>
+  <div>
+    <div class="en-title"><span class="en-name">源石虫</span></div>
+    <dl class="ak-kv ak-kv--inline">
+      <div><dt>地位级别</dt><dd>普通</dd></div>
+      <div><dt>种类</dt><dd>感染生物</dd></div>
+      <div><dt>攻击方式</dt><dd>近战</dd></div>
+      <div><dt>伤害类型</dt><dd>物理</dd></div>
+      <div><dt>行动方式</dt><dd>地面</dd></div>
+      <div><dt>登场活动</dt><dd>初始</dd></div>
+    </dl>
+    <p class="en-desc">野生的被感染生物。这种低智能生物极有可能会被敌方术师操纵，以进入人工设施内发动集群攻击。</p>
+  </div>
+</div>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats">
+  <tbody>
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命值</th><th scope="col">攻击力</th><th scope="col">防御力</th><th scope="col">法术<wbr>抗性</th><th scope="col">攻击<wbr>间隔</th><th scope="col">移动<wbr>速度</th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td><span class="en-cell"><span class="en-val">550</span><button type="button" class="en-grade" data-tier="low" data-stat="hp" data-value="550" title="生命值评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">130</span><button type="button" class="en-grade" data-tier="low" data-stat="atk" data-value="130" title="攻击力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="def" data-value="0" title="防御力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="res" data-value="0" title="法术抗性评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">1.7</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="1.7" title="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.0</span><button type="button" class="en-grade" data-tier="a" data-stat="movespeed" data-value="1.0" title="移动速度评级 A，点击看分档阈值">A</button></span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-diff" title="与级别 0 不同"><span class="en-cell"><span class="en-val">2050<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="low" data-stat="hp" data-value="2050" title="生命值评级 D，点击看分档阈值">D</button></span></td><td class="is-diff" title="与级别 0 不同"><span class="en-cell"><span class="en-val">300<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="low" data-stat="atk" data-value="300" title="攻击力评级 C，点击看分档阈值">C</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="def" data-value="0" title="防御力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="res" data-value="0" title="法术抗性评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">1.7</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="1.7" title="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.0</span><button type="button" class="en-grade" data-tier="a" data-stat="movespeed" data-value="1.0" title="移动速度评级 A，点击看分档阈值">A</button></span></td></tr>
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col"><span class="ak-term" title="没有攻击半径时只进行阻挡攻击；有攻击半径时未被阻挡也能普通攻击">攻击<wbr>半径</span></th><th scope="col">重量<wbr>等级</th><th scope="col">元素<wbr>抗性</th><th scope="col">损伤<wbr>抵抗</th><th scope="col"><span class="ak-term" title="以属性值写入的嘲讽等级，实际嘲讽等级要算上自身所受效果；范围 −2 ～ 2">基础嘲讽<wbr>等级</span></th><th scope="col"><span class="ak-term" title="到达终点退场时通常扣除的关卡生命值">目标<wbr>价值</span></th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" title="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" title="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">1</span></span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" title="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" title="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">1</span></span></td></tr>
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命自回<wbr>速度</th><th scope="col" colspan="3" class="en-wide">异常抗性</th><th scope="col" colspan="2" class="en-wide">技力</th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide is-zero" colspan="3"><span class="en-val">无</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide is-zero" colspan="3"><span class="en-val">无</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
+  </tbody>
+</table>
+</div>
+<p class="en-note"><span class="en-mark" aria-hidden="true"></span>与级别 0 不同的数值。</p>
+<p class="en-empty">该敌人没有技能与天赋。</p>
+
+<!-- ── 评级阈值弹窗（现网 微件:EnemyDataController 的评级表换成 .ak-dialog；阈值数据同微件）。标题不用 h2：写在 wikitext 里的 h2 会进目录，用 div[role=heading] ── -->
+<dialog class="ak-dialog ak-dialog--sm" id="en-grade-dialog" aria-labelledby="en-grade-dialog-title">
+  <div class="ak-dialog__head"><div class="ak-dialog__title" role="heading" aria-level="2" id="en-grade-dialog-title">属性评级</div><button type="button" class="ak-btn ak-btn--ghost ak-btn--sm ak-btn--icon" title="关闭" data-dialog-close><svg class="ak-btn__icon"><use href="#i-x"/></svg></button></div>
+  <div class="ak-dialog__body"><p id="en-grade-dialog-desc" class="ak-fs-sm"></p><table class="ak-table ak-table--compact en-rank-table"><thead><tr><th scope="col">评级</th><th scope="col" id="en-grade-dialog-th">阈值</th></tr></thead><tbody id="en-grade-dialog-rows"></tbody></table></div>
+</dialog>
+<dialog class="ak-dialog" id="en-about" aria-labelledby="en-about-title">
+  <div class="ak-dialog__head"><div class="ak-dialog__title" role="heading" aria-level="2" id="en-about-title">技能与天赋怎么读</div><button type="button" class="ak-btn ak-btn--ghost ak-btn--sm ak-btn--icon" title="关闭" data-dialog-close><svg class="ak-btn__icon"><use href="#i-x"/></svg></button></div>
+  <div class="ak-dialog__body ak-fs-sm">
+    <p><b>冷却与技力。</b>「初始冷却」是技能第一次就绪要等的秒数，「冷却」是之后每次释放后再就绪的秒数，「技力」是触发一次要消耗的技力；「60 / 50」这样写的是第一形态 / 第二形态各自的值。省略冷却的技能不会自动触发；只写技力的技能冷却完成后还要攒够技力才触发。名字后面的「[第一形态]」是技能绑定的模式，只在该模式下冷却和触发。</p>
+    <p><b>技能的默认行为。</b>自动触发会占用攻击间隔，可被<a href="#">缴械</a>干扰；多个技能同时就绪时按优先级，优先级相同随机；能重生的敌人重生后重置全部冷却。如无特殊说明，技能可被沉默、只选一个对立阵营的目标、优先仇恨最高者、可对空。</p>
+    <p><b>天赋与能力的数值计算顺序。</b>基础属性改变 → 直接加算 → 直接乘算 → 最终加算 → 最终乘算。如无特殊说明，天赋不可被沉默。</p>
+  </div>
+</dialog>
+<script>
+/* 评级阈值弹窗：阈值同现网 微件:EnemyDataController；生产环境这段进微件，点击代理照皮肤 interactive.js 的 data-dialog-open */
+(function () {
+  var RANK = {
+    hp: ['生命值', '最大生命值。越高越不容易被击倒。', 'atLeast', [[0,'E'],[1000,'D'],[3500,'C'],[5000,'B'],[8000,'B+'],[12000,'A'],[25000,'A+'],[100000,'S'],[250000,'S+'],[500000,'SS']]],
+    atk: ['攻击力', '越高直接威胁越大。', 'atLeast', [[0,'E'],[200,'D'],[300,'C'],[500,'B'],[700,'B+'],[1000,'A'],[1500,'A+'],[2000,'S'],[3000,'S+'],[5000,'SS']]],
+    def: ['防御力', '越高越能接下物理伤害。', 'atLeast', [[0,'E'],[100,'D'],[200,'C'],[500,'B'],[800,'B+'],[1000,'A'],[1200,'A+'],[2000,'S'],[3000,'S+'],[5000,'SS']]],
+    res: ['法术抗性', '越高越能接下法术伤害。', 'atLeast', [[0,'E'],[1,'D'],[10,'C'],[20,'B'],[30,'B+'],[50,'A'],[60,'A+'],[70,'S'],[80,'S+'],[90,'SS']]],
+    movespeed: ['移动速度', '格 / 秒。实际移速受地图倍率（通常 0.5）影响。', 'atLeast', [[0,'E'],[0.3,'D'],[0.5,'C'],[0.7,'B'],[0.9,'B+'],[1.0,'A'],[1.2,'A+'],[1.5,'S'],[1.8,'S+'],[2.0,'SS']]],
+    atkspeed: ['攻击间隔', '秒。越短单位时间攻击次数越多，评级越高。', 'atMost', [[0.5,'SS'],[0.8,'S+'],[1.0,'S'],[1.2,'A+'],[1.7,'A'],[2.6,'B+'],[3.5,'B'],[5.0,'C'],[6.9,'D'],[Infinity,'E']]],
+    eres: ['元素抗性', '越高越能接下元素伤害。', 'atLeast', [[0,'E'],[1,'D'],[10,'C'],[20,'B'],[30,'B+'],[50,'A'],[60,'A+'],[70,'S'],[80,'S+'],[90,'SS']]],
+    epres: ['损伤抵抗', '越高受到的元素损伤衰减越多，越难进入元素爆发。', 'atLeast', [[0,'E'],[1,'D'],[10,'C'],[20,'B'],[30,'B+'],[50,'A'],[60,'A+'],[70,'S'],[80,'S+'],[90,'SS']]]
+  };
+  var fmt = function (n) { return n === Infinity ? '∞' : String(n); };
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.en-grade'); if (!b) return;
+    var d = RANK[b.dataset.stat]; if (!d) return;
+    var dlg = document.getElementById('en-grade-dialog');
+    document.getElementById('en-grade-dialog-title').textContent = '属性评级：' + d[0];
+    document.getElementById('en-grade-dialog-desc').textContent = d[1];
+    document.getElementById('en-grade-dialog-th').textContent = d[2] === 'atLeast' ? '不低于' : '低于';
+    var cur = b.textContent.trim();
+    document.getElementById('en-grade-dialog-rows').innerHTML = d[3].map(function (r) { return '<tr' + (r[1] === cur ? ' class="is-selected"' : '') + '><td>' + r[1] + '</td><td>' + fmt(r[0]) + '</td></tr>'; }).join('');
+    dlg.showModal();
+  });
+})();
+</script>
