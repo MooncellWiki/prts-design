@@ -1,177 +1,192 @@
-/*! 敌人页设计稿的页面样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles）。preview/enemy.html / enemy-slug.html / enemy-touch.html / enemy-misery.html / enemy-dukare.html 共用；见各页顶部的说明 */
-/* ═══════════════════════════════════════════════════════════════════════════
-   敌人页 · 数据区 — 现网 模板:敌人信息/common2 + 模板:敌人信息/levelcontent（1832 个敌人页）的重新设计（单页设计稿，只画数据区，敌人模型一节不画）。
-   现网（2026-10 那版）：头表仍是红表头 wikitable；每个「级别N」章节一张 .ak-card，里面 INFO. / ATTRIBUTES / SKILLS / TALENTS 四节各带一个全大写英文眉题，
-   每级把名字 / 地位 / 种类 / 描述再写一遍；属性一行一个 grid、列数不同对不齐，窄屏折成 3 + 1；评级字母 40% 透明度绝对定位在格子中间，窄屏压在标签上；
-   「相对上一级别有变化」用 #2F2F2F 反白块，描述框和技力槽行不变也反白，没有图例；技能正文 12px。
+/*! 敌人页设计稿的页面样式。与线上 微件:EnemyPage（prts-skin-migration migration/enemy-page/微件_EnemyPage.css）是同一份规则，只有这段头注释不同，改一边要同步另一边。
+   preview/enemy.html / enemy-slug.html / enemy-touch.html / enemy-misery.html / enemy-dukare.html 共用。
+   结构同线上 模块:EnemyPage 的输出：图鉴卡（.en-head）+ 每个「级别N」章节里这一级的三张表（.en-level：级别信息 / 属性 / 技能与天赋），表里没有级别列。
+   两份数据：图鉴（common2 = 游戏【敌方档案库】那份）只在图鉴卡里写一次；每级的「级别信息」是关卡内「敌方情报」那份，两者常不一样。
+   组：同一敌人的若干级别（index=0 或 reindex 起新组）；组里第一级以后的各级，与第一级不同的值出强调色 + 角标、变了的芯片带角标并在气泡里给第一级的值、新出现的技能带「新增」。
+   线上不放 TemplateStyles：css-sanitizer 只让 var() 用在颜色里、不认 --x: 声明 / :is() / :focus-visible，设计系统的令牌写法放不进去，所以走微件；
+   线上两个模板的 styles.css 默认藏起新版、所有皮肤看原来的表格，第 0 节在 Arknights 皮肤上把新版换上来（样例页没有原来的表格，第 0 节在这里不起作用）。
+   wikitext 写不出来、所以和一般表格写法不同的地方：属性三段是三张叠起来的表（wikitext 不认 <tbody>）；评级字母 / 问号线上是 span[role=button]（样例页是 <button>，
+   两种都按 all: unset 起头）；「技能与天赋」是技能表的 caption；文中变了的数值是 模板:变动数值 输出的 .prts-delta，这里改画成淡青底 + ▲ / ▼ / ● */
 
-   两份数据，两个地方（评审：「图鉴数据和等级数据是两个不同的定义」）：
-   - **图鉴**（common2 的参数 = 游戏【敌方档案库】那份：描述 / 种类 / 地位级别 / 攻击性 / 行动方式 / 能力 / 登场活动）只写一次，在头部卡片里，键值的标签照图鉴的叫法（攻击性 = 攻击方式 + 伤害类型）。
-   - **级别信息**（levelcontent 每级的 INFO = 关卡内「敌方情报」那份：名称 / 地位 / 种类 / 攻击方式 / 行动方式 / 描述）是另一张表，行 = 级别，紧跟在头部下面——两份常不一样
-     （圆仔 / 源石虫的图鉴描述一整段、级别描述只一句；杜卡雷图鉴写「远程」、第一形态写「近战 远程」、第二形态写「近战」），不能合成一块。
+/* ── 0. 新旧二选一：两个模板的 styles.css（TemplateStyles）默认藏起新版、所有皮肤都看原来的表格；这里在 Arknights 皮肤上把新版换上来。
+ *  所以这份样式没到（任何原因）时，Arknights 皮肤上看到的也是原来那版能用的表格，不会是一块没样式的新版。
+ *  特指度：TemplateStyles 的 .mw-parser-output .en-head 是 (0,2,0)，这里 (0,2,1)；原来的表格自己带行内 display: table，要 !important ── */
+body.skin-arknights .en-head { display: grid; }
+body.skin-arknights .en-level { display: block; }
+body.skin-arknights .enemy-info-common, body.skin-arknights .prts-enemy-level-table { display: none !important; }
 
-   组（group）：一页不一定是一个敌人（评审：矢量突破的 Rank 页、入梦砖、血魔大君（杜卡雷）这些是几个不同的敌人为方便查阅合写一页，「必须维持原状分立」）。
-   - 一个组 = 同一敌人的若干级别（级别 0 / 1 / …），组内才并排、才比：级别信息表 + 属性表的行 = 组内级别，技能 / 天赋按级别分页签，与组里第一级不同的值出强调色 + 角标 / ▲ ▼ ● / 「新增」。
-   - 不同的敌人各是一组、各在编辑写的章节（== RANK Ⅰ == / == 第一形态 ==）里，页上不另加「这些章节是不同敌人」的提示：章节下先是这一组的级别信息表（带标题行，不再另起小节），再 h3 属性、h3 技能与天赋；只有一级的组表里只有一行、技能不出页签；组与组之间不比、不标。
-   - 模板怎么分组：levelcontent 现有的 reindex=true 就是「这级不和上一级比」，= 新起一组；矢量突破那些 Rank 页补上这个参数即可。所有级别由 Lua 模块一次收齐（或 common2 用 #ask 读 LEVELn 子对象）。
-
-   这里：**数字并排、文字分页**（组内）。
-   - 属性一张表，同原版 wikitable 的 6 列网格（标签行压在值行上），但行 = 级别——两级上下挨着比，不用翻；三段 6 列对齐；评级字母是数值旁的实体按钮（点开分档阈值），各档同一灰度（同敌人一览）；
-     与第一级不同的值 = 强调色 + 右上角角标（同关卡页敌方情报稿的「本关数值」；不另加悬停说明，表下也不加图例 / 说明文字）；0 与「—」压淡。
-   - 技能 / 天赋按级别分页签（TabberNeue，编辑直接写 <tabber>），同原版的两列表（名称 + 芯片 ‖ 效果），正文 14px；文中变了的数值 = 淡青底 + ▲ / ▼（现网 模板:变动数值 只写新值，没有第一级的值可给）。
-     冷却 / 技力用设计系统的 SP 芯片（▶ / ⏱ / ⚡），芯片里把「初始冷却 / 冷却 / 技力」写出来，没有的值不画。
-
-   这段样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles），只用 css-sanitizer 认的写法（没有 @container，窄宽度按视口断点）；
-   颜色 / 字号全走令牌，两套主题都成立；.ak-table / .ak-tag / .ak-kv / .ak-tabs / .ak-sp-* / .ak-dialog / .ak-sr-only 是设计系统组件，随皮肤加载，这里不抄。
-   wikitext 的表格没有 <thead>：表头行在 <tbody> 里，所以表头一律认 tr.en-head-row（同关卡页稿）；表的标题行是 wikitext 的 |+（<caption>）。
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ── 1. 图鉴头：头像 120 + 右栏；只放 common2（图鉴）的数据；精英 / 领袖在左缘出色条（色值同敌人卡 / 敌人一览 / 关卡页稿：精英橙、领袖红），标签把字写出来 ── */
+/* ── 1. 图鉴头：头像 120 + 右栏；精英 / 领袖左缘色条 + 标签 ── */
 .en-head { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--ak-space-3) var(--ak-space-5); align-items: start; margin: var(--ak-space-4) 0; padding: var(--ak-space-4); border: 1px solid var(--ak-border); background: var(--ak-bg-surface); }
 .en-head[data-rank="elite"] { --_rank: var(--ak-orange-500); --_rank-fg: var(--ak-orange-500); }
-.en-head[data-rank="boss"] { --_rank: var(--ak-red-700); --_rank-fg: var(--ak-red-500); }   /* 色条用深红；标签文字深红在暗底上太暗，提一级 */
+.en-head[data-rank="boss"] { --_rank: var(--ak-red-700); --_rank-fg: var(--ak-red-500); }
 .en-head[data-rank] { border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_rank) 4px, var(--ak-border) 4px) 1 1 1 4; }
-/* 头像外壳定宽（皮肤的 .mw-file-element { max-width:100% } 以外壳为参照，外壳按内容收缩时图会被挤成 0）；图鉴编号叠在左上角的深色条上 = 游戏图鉴格子的画法（同敌人一览） */
-.en-avatar { position: relative; width: 120px; height: 120px; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
+.en-avatar { position: relative; display: block; width: 120px; height: 120px; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
 .en-avatar img { display: block; width: 120px; height: 120px; max-width: none; object-fit: cover; }
+.en-avatar a { display: block; }
 .en-avatar__code { position: absolute; left: 0; top: 0; padding: 4px 7px; background: rgba(0, 0, 0, .72); color: #fff; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .06em; }
+.en-main { min-width: 0; }
 .en-title { display: flex; align-items: center; flex-wrap: wrap; gap: var(--ak-space-2) var(--ak-space-3); margin: 0 0 var(--ak-space-2); }
 .en-name { font-size: var(--ak-fs-h3); font-weight: 800; line-height: 1.2; }
 .ak-tag.en-rank { --_bg: transparent; --_fg: var(--_rank-fg); --_bd: var(--_rank-fg); }
+.en-icon-toggle { cursor: pointer; }
 .en-head .ak-kv--inline { margin: 0 0 var(--ak-space-3); }
 .en-desc { margin: 0; color: var(--ak-fg-secondary); line-height: 1.7; }
-/* 图鉴「能力」：一行一条，行首的 · 悬挂在外（同敌人一览的能力列），【技能名】加粗由数据里的 ''' 给 */
-.en-head > .en-ability { grid-column: 2; margin: 0; padding: 0; list-style: none; font-size: var(--ak-fs-sm); line-height: 1.7; }   /* 是网格的直接子元素：桌面落在右栏，手机横跨两栏 */
-.en-head .en-ability > li { padding-left: 1.1em; text-indent: -1.1em; }
-.en-head .en-ability > li::before { content: "·"; position: static; display: inline-block; width: 1.1em; height: auto; margin: 0; background: none; transform: none; text-indent: 0; color: var(--ak-fg-muted); }   /* 压掉正文 li::before 的青色斜杠装饰（绝对定位 + 旋转），这里要的是悬挂的 · */
+.en-desc .poem { margin: 0; padding: 0; border: 0; }   /* 描述照原样用 <poem> 保留换行，不要正文 poem 的左边线 */
+.en-desc .poem p { margin: 0; }
+/* 图鉴「能力」：一行一条，行首的 · 悬挂在外；网格的直接子元素是外面那层 .en-ability-box：桌面落在右栏，手机横跨两栏 */
+.en-head > .en-ability-box { grid-column: 2; min-width: 0; }
+.en-head .en-ability { margin: 0; padding: 0; list-style: none; font-size: var(--ak-fs-sm); line-height: 1.7; }
+.en-head .en-ability > li { margin: 0; padding-left: 1.1em; text-indent: -1.1em; }
+.en-head .en-ability > li::before { content: "·"; position: static; display: inline-block; width: 1.1em; height: auto; margin: 0; background: none; transform: none; text-indent: 0; color: var(--ak-fg-muted); }
+.en-head .en-ability > li.en-ability__mode { margin-top: 4px; padding-left: 0; text-indent: 0; font-weight: 700; color: var(--ak-fg-secondary); }
+.en-head .en-ability > li.en-ability__mode::before { content: none; }
+/* 「能力修正」：两版只露一版，切换钮在列表下面（mw-collapsible 的自定义开关；脚本接管前先藏起收着的那版） */
+.client-js .en-head .mw-collapsed:not(.mw-made-collapsible) { display: none; }
+.en-more { display: inline-block; margin-top: 2px; color: var(--ak-link); font-size: var(--ak-fs-xs); cursor: pointer; }
+.en-more:hover { text-decoration: underline; }
+.en-more:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
 
-/* ── 2. 属性表：列 = 属性（6 列一段，同原版 wikitable 的网格）、行 = 级别，标签行压在值行上；三段：四维 + 攻击间隔 移速 ‖ 半径 重量 元素抗性 损伤抵抗 嘲讽 目标价值 ‖ 生命自回 · 异常抗性 · 技力。
- *  外观同 .ak-table，表头行在 tbody 里所以照写一遍；table-layout: fixed 让三段的 6 列对齐 ── */
+/* ── 2. 每一级的「级别信息」「属性」：一级一张，标签行压在值行上（同原版 wikitable 的网格）；表头行在表里第一行 tr.en-head-row ── */
+.en-level { margin: var(--ak-space-4) 0; }
+.en-group { margin: 0 0 var(--ak-space-4); }
+.en-scroll { margin: 0; }
+.en-scroll + .en-scroll { margin-top: var(--ak-space-4); }
 .en-stats { margin: 0; table-layout: fixed; font-variant-numeric: tabular-nums; }
-.en-stats th, .en-stats td { padding: 6px 10px; border-left: 1px solid var(--ak-border); }   /* 画竖线：6 列网格靠框线对齐，不靠对齐方式 */
+.en-stats th, .en-stats td { padding: 6px 10px; border-left: 1px solid var(--ak-border); }
 .en-stats tr > :first-child { border-left: 0; }
-.en-stats .en-lv { width: 5.2em; }   /* 「级别 0」或章节名「RANK Ⅲ」都放得下 */
-.en-head-row > th { background: var(--ak-bg-surface-2); border-bottom: 2px solid var(--ak-border-strong); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); text-align: center; vertical-align: bottom; word-break: keep-all; }   /* 四字的在中间写 <wbr>：够宽一行，不够两行，不会一字一行 */
-.en-head-row > th.en-lv, .en-head-row > th.en-wide { text-align: left; }
-.en-stats tbody th.en-lv { white-space: nowrap; font-weight: 600; color: var(--ak-fg-secondary); text-align: left; }
-.en-stats > tbody + tbody > tr:first-child > th { border-top: 1px solid var(--ak-border-strong); }   /* 段与段之间 */
-.en-stats td { text-align: center; white-space: nowrap; }   /* 同原版：值居中在标签下 */
-.en-stats tr:not(.en-head-row):hover > :is(th, td) { background: var(--ak-bg-hover); }
-/* 评级字母不占行内：同旧版 wikitable 的画法——展示字（Novecento）、压淡、落在格子左上角，数值居中不受它影响；仍是按钮（点开分档阈值），hit 区 24px；各档同一灰度 */
-.en-stats td { position: relative; }
+.en-head-row > th { background: var(--ak-bg-surface-2); border-bottom: 2px solid var(--ak-border-strong); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); text-align: center; vertical-align: bottom; word-break: keep-all; }
+.en-head-row > th.en-wide { text-align: left; }
+/* 三段是三张表：接着排、共用外框，段与段之间一条粗线 */
+.en-band + .en-band { border-top: 0; }
+.en-band + .en-band .en-head-row > th { border-top: 1px solid var(--ak-border-strong); }
+.en-stats td { position: relative; text-align: center; white-space: nowrap; }
+.ak-table.en-stats tbody tr:hover > td { background: none; }   /* 压掉 .ak-table 的整行悬停：每张表只有一行值，手机上这一行转置成一整列，悬停任何一格整列都会变亮 */
 .en-cell { display: block; }
+/* 评级字母不占行内：压淡的展示字落在格子左上角，数值居中不受它影响；仍是按钮（点开分档阈值），hit 区 24px；各档同一灰度 */
 .en-grade { all: unset; position: absolute; left: 0; top: 0; box-sizing: border-box; min-width: 24px; height: 24px; padding: 2px 0 0 4px; display: flex; align-items: flex-start; cursor: pointer;
-  font: 700 15px/1 var(--ak-font-display); letter-spacing: -.02em; color: var(--ak-fg-muted); opacity: .6; }   /* 各档同一灰度，不按档位分轻重：字母本身已经是信息 */
+  font: 700 15px/1 var(--ak-font-display); letter-spacing: -.02em; color: var(--ak-fg-muted); opacity: .6; }
 .en-grade:hover { color: var(--ak-accent); opacity: 1; }
-.en-grade:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
-.en-stats td.is-zero .en-val { color: var(--ak-fg-subtle); }   /* 0 与「—」压淡：有值的格先被看到 */
-.en-stats td.en-wide { text-align: left; white-space: normal; }   /* 跨列的格（异常抗性 / 技力） */
-.en-stats td.en-wide > span + span { margin-left: .6em; }
-/* 与级别 0 不同的值：强调色粗体 + 右上角一枚三角（同关卡页敌方情报稿的「本关数值」），表下不另加图例；格子不带悬停说明（会和评级字母的气泡叠在一起，角标已经说明了），读屏另有一段 .ak-sr-only */
-.en-stats td.is-diff { position: relative; }
-.en-stats td.is-diff .en-val { color: var(--ak-accent); font-weight: 700; }
+.en-grade:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; opacity: 1; }
+.en-stats td.is-zero .en-val { color: var(--ak-fg-subtle); }
+.en-stats td.en-wide { text-align: left; white-space: normal; }
+.en-stats td.en-wide > .en-res + .en-res { margin-left: .6em; }
+.en-res--extra { display: block; margin-top: 2px; white-space: normal; }
+.en-stats td.en-wide > .en-res--extra { margin-left: 0; }
+.en-res__label { margin-right: .5em; color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); font-weight: 600; }
+/* 与组里第一级不同的值：强调色粗体 + 右上角一枚三角（同关卡页敌方情报稿的「本关数值」）；不带悬停说明，读屏另有一段 .ak-sr-only */
+.en-stats td.is-diff .en-val, .en-info td.is-diff { color: var(--ak-accent); font-weight: 700; }
 .en-stats td.is-diff::before { content: ""; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent var(--ak-accent) transparent transparent; }
-.en-sp { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }   /* 技力：初始 / 上限 + 回复方式芯片 */
-.en-sp > span + span { margin-left: 0; }
-.en-sp__n { min-width: 3.4em; text-align: left; }   /* 数值定宽：级别 1 的粗体不把芯片推走 */
+.en-sp { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.en-sp__n { min-width: 3.4em; text-align: left; }
+.en-sp__rate { color: var(--ak-fg-muted); font-size: var(--ak-fs-xs); }
 
-/* ── 2a. 级别信息表：关卡内「敌方情报」那份（名称 / 地位 / 种类 / 攻击方式 / 行动方式 / 描述），行 = 组内级别，与属性表同一张网格的画法（同一个 .en-stats 的骨架，手机同样转置）但是文字表：
- *  列宽自动、左对齐、允许折行，描述列占大头；表的标题行是 <caption>（wikitext 的 |+），不进目录 ── */
+/* ── 2a. 级别信息表：文字表，列宽自动、左对齐、允许折行，描述列占大头 ── */
 .en-info { table-layout: auto; }
-.en-info .en-lv { width: 5.2em; }   /* 级别列与下面属性表的对齐 */
 .en-info td { text-align: left; white-space: normal; }
+.en-info th.en-desc-cell { text-align: left; }
 .en-info td.en-desc-cell { width: 38%; min-width: 14em; color: var(--ak-fg-secondary); }
 .en-info td.is-zero .en-val { color: var(--ak-fg-subtle); }
 .en-caption { caption-side: top; padding: 0 0 6px; text-align: left; font: 700 var(--ak-fs-sm)/1.4 var(--ak-font-body); color: var(--ak-fg); }
+/* 级别描述里的关键词（{{color|#00FFFF|…}}，游戏「敌方情报」里的高亮）：青色原本是给深色底用的（旧表格 / 旧卡片的描述格是深底），
+   浅色底上几乎看不见；改画成设计系统的富文本关键词（--ak-rt-kw：日间 #0077b3、夜间浅蓝，加粗），同游戏的 <@ba.kw> */
+.en-head span[style*="00FFFF" i], .en-level span[style*="00FFFF" i] { color: var(--ak-rt-kw) !important; font-weight: 600; }
 
-/* ── 3. 技能 / 天赋：级别页签 + 两列表（名称 + 冷却 / 技力芯片 ‖ 效果），天赋与能力是最后一行；同原版的表，比一条一张卡省一半高度 ── */
-/* 标题后的问号就是一个现网 {{Popup}}：外面一层 .mc-tooltips，按钮是触发点，第二个子元素是藏起来的说明（data-trigger="click mouseenter focus"、可交互），
- * 由现网的 Tooltip.js 用 tippy 挂到 body 上——悬停 / 聚焦 / 点击出气泡、点一下钉住，日间 light-border、夜间 dark-border，不用自己摆位置；
- * 问号就是 {{Popup}} 的图标：mdi help-circle-outline、颜色 var(--darkblue)（现网 #4487DF），样例页加载同版 mdi 的子集 vendor/mdi/。分立页面每组的「技能与天赋」各有一枚，说明各带一份 */
-.en-help { all: unset; margin-left: 4px; cursor: pointer; }   /* 按钮去掉原生外观，剩下的就是 mdi 图标（字形由 vendor/mdi/mdi.css 的 .mdi:before 给，字号跟着标题），颜色由行内 var(--darkblue) 给，同 {{Popup}} */
+/* ── 3. 技能与天赋：两列表（名称 + 冷却 / 技力芯片 ‖ 效果），天赋与能力是最后一行；只有天赋时标题写「天赋与能力」、表里直接是正文 ── */
+.en-help { all: unset; margin-left: 4px; cursor: pointer; }   /* 图标同 {{Popup}}：mdi help-circle-outline，颜色由行内 var(--darkblue) 给，字号跟着标题行 */
 .en-help:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; border-radius: 50%; }
-.en-help-p { display: block; margin: 0 0 .6em; }   /* 气泡里一段一个块（.mc-tooltips 的内容是 <span>，wikitext 里不能放 <p>） */
-.en-help-p:last-child { margin-bottom: 0; }
 .en-skills { margin: 0; }
 .en-skills th[scope="row"] { width: 9.5em; vertical-align: top; font-weight: 400; background: var(--ak-bg-surface-2); }
 .en-skills td { vertical-align: top; font-size: var(--ak-fs-sm); line-height: 1.7; }
 .en-skill__name { display: block; margin: 0 0 6px; font-size: var(--ak-fs-body); font-weight: 800; line-height: 1.3; }
 .en-skills tr.en-talent .en-skill__name { margin: 0; }
-/* 初始冷却 / 冷却 / 技力：设计系统的 SP 芯片（▶ / ⏱ / ⚡，同干员技能卡），芯片里把标签写出来，不只靠图标；桌面在名称下一枚一行 */
 .en-skill__stats { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .en-sp-label { font: 600 var(--ak-fs-xs)/1 var(--ak-font-body); letter-spacing: 0; opacity: .85; }
-.en-skills td > p { margin: 0 0 .6em; }
-.en-skills td > p:last-child { margin-bottom: 0; }
-.en-skills td h4 { margin: .8em 0 .2em; font-size: var(--ak-fs-sm); font-weight: 700; }   /* 第一形态 / 第二形态 这种文内小节 */
-/* 文中与级别 0 不同的数值（现网 模板:变动数值 的红 / 绿实心胶囊）：淡青底 + 粗体 + 青色小三角写方向（模板只写新值，不带第一级的值）。
- * 不把数字本身染青：正文里青字 = 链接，同一段里「150%」和「晕眩」会分不清谁能点；三角是与表格里角标共用的「与级别 0 不同」记号 */
-.en-delta { padding: 0 3px; background: var(--ak-mark-bg); font-weight: 700; white-space: nowrap; }
-/* 悬停说明一律走现网的 mc-tooltips（同 {{Popup}} / {{术语}}：.mc-tooltips 的第一个子元素是触发点，第二个是藏起来的内容，现网 Tooltip.js 用 tippy 挂到 body 上，
- * 样例页加载它的快照 vendor/tooltip/Tooltip.js）：评级字母、表头术语、技力回复方式、变了的芯片、文中术语都这样。不用皮肤 tooltip.css 的 CSS-only 气泡——
- * 那个画在载体的 ::after 上，最右一列表头的气泡会被表格的横滑容器裁掉，也会和格子里另一个气泡叠在一起 */
-.en-delta__i::before { content: "▲"; margin-left: 1px; font-size: .6em; vertical-align: .5em; color: var(--ak-accent); }   /* 方向记号是真实元素（生产环境由 模板:变动数值 的类名在 ::after 上画） */
-.en-delta--down .en-delta__i::before { content: "▼"; }
-.en-delta--text { white-space: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; }   /* 整句文字改了（现网 模板:变动数值 不带 + / − 的那种）：允许折行，淡青底逐行包住 */
-.en-delta--text .en-delta__i::before { content: "●"; font-size: .45em; vertical-align: .7em; }
-.en-chg { position: relative; display: inline-flex; }   /* 冷却 / 技力芯片变了：右上角同表格的角标，悬停（mc-tooltips）给级别 0 的值 */
-.en-chg::before { content: ""; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 6px 6px 0; border-color: transparent var(--ak-accent) transparent transparent; }
-.en-skill__mode { display: block; margin: -4px 0 6px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }   /* 技能绑定的模式（第一形态 / 第二形态），没有就不写 */
+.en-skill__mode { display: block; margin: -4px 0 6px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
 .en-skill__mode::before { content: "［"; } .en-skill__mode::after { content: "］"; }
-.en-head .en-ability > li.en-ability__mode { margin-top: 4px; padding-left: 0; text-indent: 0; font-weight: 700; color: var(--ak-fg-secondary); }   /* 图鉴「能力」里的形态小节（现网用 {{color|#FF4F0B}} 染橙，橙在这里是精英的色，不借用） */
-.en-head .en-ability > li.en-ability__mode::before { content: none; }
+.en-new { margin: -2px 0 6px; }
+.en-chg { position: relative; display: inline-flex; }
+.en-chg::before { content: ""; position: absolute; top: 0; right: 0; z-index: 1; width: 0; height: 0; border-style: solid; border-width: 0 6px 6px 0; border-color: transparent var(--ak-accent) transparent transparent; }
 .en-empty { margin: 0; padding: var(--ak-space-3) var(--ak-space-4); border: 1px dashed var(--ak-border-strong); color: var(--ak-fg-muted); font-size: var(--ak-fs-sm); }
+/* 文中变了的数值：模板:变动数值 的红 / 绿实心胶囊（行内样式）改画成淡青底 + 粗体 + 青色小三角；不把数字本身染青（正文里青字 = 链接） */
+.en-level .prts-delta { display: inline !important; padding: 0 3px !important; border-radius: 0 !important; background: var(--ak-mark-bg) !important; color: inherit !important; font-weight: 700; white-space: nowrap; }
+.en-level .prts-delta > sup { display: none; }
+.en-level .prts-delta::after { content: "▲"; margin-left: 1px; font-size: .6em; vertical-align: .5em; color: var(--ak-accent); }
+.en-level .prts-delta--down::after { content: "▼"; }
+.en-level .prts-delta--text { white-space: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.en-level .prts-delta--text::after { content: "●"; font-size: .45em; vertical-align: .7em; }
 
-/* ── 4. 出场关卡 / 相关敌人：同现网 common2 头表里的两行，留在图鉴卡里、紧跟能力（合页时不会沉到页底）。
- *  卡里其余部分（键值一行、描述、能力列表）都没有框，这两行也不带框：设计系统 .ak-kv 的网格（标签列 max-content + 值列），去掉它的上边线 / 行线 / 值列左边线，
- *  标签与顶上那行键值同一副样子（灰、600），出场关卡一行（不分主线 / 磨难 / 悖论模拟，同现网一串）、相关敌人一行 ── */
-.en-head > .en-stages { grid-column: 2; margin: var(--ak-space-2) 0 0; border: 0; row-gap: 2px; }
-.en-stages > dt, .en-stages > dd { padding: 0; border: 0; line-height: 1.7; align-content: start; }   /* 值折成两行时标签贴第一行，不居中悬在两行中间 */
+/* 悬停说明：都是现网的 mc-tooltips（同 {{Popup}} / {{术语}}，站点脚本 Tooltip.js 用 tippy 挂到 body 上，日间 light-border / 夜间 dark-border），
+   不用皮肤 tooltip.css 的 CSS-only 气泡——那个画在载体的 ::after 上，会被表格的横滑容器裁掉，也会和格子里另一个气泡叠在一起。
+   触发点外面那层 .mc-tooltips 是行内的，评级字母照旧按格子定位；气泡里的「技能与天赋」说明一段一个块（.mc-tooltips 的内容是 <span>，wikitext 里不能放 <p>） */
+.en-help-p { display: block; margin: 0 0 .6em; }
+.en-help-p:last-child { margin-bottom: 0; }
+.en-head-row .ak-term { border-bottom-color: var(--ak-fg-subtle); }
+
+/* ── 4. 出场关卡 / 出场敌袭 / 相关敌人：图鉴卡里紧跟能力的无框键值；一个关卡名不从中间断开，分隔点挂在前一个链接后面 ── */
+.en-head > .en-stages { grid-column: 2; margin: 0; border: 0; row-gap: 2px; font-size: var(--ak-fs-sm); }
+.en-stages > dt, .en-stages > dd { margin: 0; padding: 0; border: 0; line-height: 1.7; align-content: start; }
 .en-stages > dt { padding-right: 16px; }
-.en-stages dd a { white-space: nowrap; }   /* 一个关卡名不从中间断开（「磨难 13-21 殷红君主」不拆成两行） */
-.en-stages dd a:not(:last-child)::after { content: "·"; margin: 0 .5em; color: var(--ak-fg-subtle); }   /* 分隔点挂在前一个链接后面（同 MW hlist）：折行时留在上一行末尾，下一行从关卡名起头，不会以一个点开头 */
+.en-links > a { white-space: nowrap; }
+.en-links > a:not(:last-child)::after { content: "·"; display: inline-block; margin: 0 .5em; color: var(--ak-fg-subtle); }
+.en-links + .en-more { margin-left: .8em; }
 
-/* ── 5. 评级弹窗里的阈值表 ── */
-.en-rank-table { margin: var(--ak-space-3) 0 0; font-variant-numeric: tabular-nums; }
-.en-rank-table th:first-child, .en-rank-table td:first-child { width: 4em; font-family: var(--ak-font-label); font-weight: 700; }
-.en-rank-table td:last-child { text-align: right; }
-
-/* ── 6. 窄：头像 72；属性表不横滑——每段（一个 <tbody>）转置成「属性 | 级别 0 | 级别 1」三列：tbody 变 grid、按列填（grid-auto-flow: column），
- *  一段 7 格（1 空角 + 6 属性名）高，原表头行的格落到第一列成行头，原级别列的格落到第一行成列头；杂项段 4 格高（空角 / 生命自回 / 异常抗性 / 技力）。
- *  --en-levels 由模板写在 table 上（有几级几列）。tr 是 display: contents——读屏对表格语义的支持各家不一，这是设计稿里的取舍；技能表的名称列叠到效果上面 ── */
+/* ── 5. 窄：头像 72；级别信息 / 属性每张表转置成「字段 | 值」两列，不横滑；技能名与芯片一行 ── */
 @media (max-width: 639px) {
   .en-head { grid-template-columns: 72px minmax(0, 1fr); gap: var(--ak-space-3); padding: var(--ak-space-3); }
   .en-avatar, .en-avatar img { width: 72px; height: 72px; }
   .en-avatar__code { padding: 3px 5px; font-size: 10px; }
   .en-name { font-size: var(--ak-fs-h4); }
-  .en-head > .en-ability, .en-head > .en-stages { grid-column: 1 / -1; }   /* 能力列表、出场关卡横跨头像下方，不挤在右栏里 */
-  .en-stats { display: block; border: 0; }
-  .en-stats > tbody { display: grid; grid-template-columns: 6.5em repeat(var(--en-levels, 1), minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: repeat(7, min-content); align-content: start; border: 1px solid var(--ak-border); border-bottom: 0; }   /* 行头列定宽，三段的竖线对齐 */
-  .en-stats > tbody.en-band--misc { grid-template-rows: repeat(4, min-content); }
-  /* 第二、三段不再重复「级别 0 / 级别 1」那一行：第一行高度 0、格子清空（格子还得在，按列填格要数够） */
-  .en-stats > tbody + tbody { grid-template-rows: 0 repeat(6, min-content); }
-  .en-stats > tbody.en-band--misc { grid-template-rows: 0 repeat(3, min-content); }
-  .en-stats > tbody + tbody > tr > .en-lv { min-height: 0; height: 0; padding: 0; border: 0; overflow: hidden; }
-  .en-stats > tbody + tbody > tr:first-child > th:not(.en-lv) { border-top: 0; }
-  .en-stats > tbody:last-child { border-bottom: 1px solid var(--ak-border); }
+  .en-head > .en-ability-box, .en-head > .en-stages { grid-column: 1 / -1; }
+  /* 每张表转置成「字段 | 值 | 字段 | 值」：tbody 变 grid、tr 是 display: contents，表头行的第 i 格（字段）和值行的第 i 格按位置摆到同一行；
+   * 属性的数值两两并排、3 行排完（原来 6 行），宽的字段（杂项段三项、级别信息的名称 / 描述）占一整行 */
+  .en-stats { display: block; border: 0; background: none; }
+  .en-stats > tbody { display: grid; grid-template-columns: 6.5em minmax(0, 1fr) 6.5em minmax(0, 1fr); border: 1px solid var(--ak-border); border-bottom: 0; background: var(--ak-bg-surface); }
+  .en-band + .en-band > tbody { border-top-color: var(--ak-border-strong); }   /* 段与段之间 */
+  .en-band--misc > tbody, .en-info > tbody { border-bottom: 1px solid var(--ak-border); }
   .en-stats tr { display: contents; }
   .en-stats th, .en-stats td { display: flex; align-items: center; box-sizing: border-box; min-height: 38px; padding: 6px 8px; border: 0; border-bottom: 1px solid var(--ak-border); border-left: 1px solid var(--ak-border); }
-  .en-stats > tbody > tr > :last-child { border-bottom-width: 0; }   /* 转置后 tr 是一列，它的最后一格落在段底，边线由下一段的框画；最后一段的框自己带底边 */
-  .en-stats .en-lv { width: auto; }
-  .en-head-row > th { justify-content: flex-start; text-align: left; white-space: normal; border-left: 0; border-bottom: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); }   /* 原表头格 → 行头（第一列） */
+  .en-head-row > th { justify-content: flex-start; text-align: left; white-space: normal; border-bottom: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); }
   .en-head-row .ak-term { white-space: nowrap; }
-  .en-head-row > th.en-wide { justify-content: flex-start; }
-  .en-stats tbody th.en-lv { justify-content: center; background: var(--ak-bg-surface-2); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); }   /* 原级别格 → 列头（第一行） */
-  .en-stats td { justify-content: center; }
+  /* 属性前两段：第 1、2 个字段一行，3、4 一行，5、6 一行；奇数在左半、偶数在右半 */
+  .en-band tr > :nth-child(1), .en-band tr > :nth-child(2) { grid-row: 1; }
+  .en-band tr > :nth-child(3), .en-band tr > :nth-child(4) { grid-row: 2; }
+  .en-band tr > :nth-child(5), .en-band tr > :nth-child(6) { grid-row: 3; }
+  .en-band .en-head-row > :nth-child(odd) { grid-column: 1; border-left: 0; }
+  .en-band .en-head-row > :nth-child(even) { grid-column: 3; }
+  .en-band tr:not(.en-head-row) > :nth-child(odd) { grid-column: 2; }
+  .en-band tr:not(.en-head-row) > :nth-child(even) { grid-column: 4; }
+  .en-band tr > :nth-child(n+5) { border-bottom-width: 0; }   /* 最后一行的下边线由下一段的框画；最后一段的框自己带底边 */
+  /* 杂项段（生命自回速度 / 异常抗性 / 技力）：每项一整行 */
+  .en-band--misc tr > :nth-child(1) { grid-row: 1; } .en-band--misc tr > :nth-child(2) { grid-row: 2; } .en-band--misc tr > :nth-child(3) { grid-row: 3; }
+  .en-band--misc .en-head-row > :nth-child(n) { grid-column: 1; border-left: 0; }
+  .en-band--misc tr:not(.en-head-row) > :nth-child(n) { grid-column: 2 / 5; }
+  .en-band--misc tr > :nth-child(n+3) { border-bottom-width: 0; }
+  .en-band--misc tr > :nth-child(-n+2) { border-bottom-width: 1px; }
+  /* 级别信息：名称一整行；地位 | 种类；攻击方式 | 行动方式；描述一整行 */
+  .en-info tr > :nth-child(1) { grid-row: 1; }
+  .en-info tr > :nth-child(2), .en-info tr > :nth-child(3) { grid-row: 2; }
+  .en-info tr > :nth-child(4), .en-info tr > :nth-child(5) { grid-row: 3; }
+  .en-info tr > :nth-child(6) { grid-row: 4; border-bottom-width: 0; }
+  .en-info .en-head-row > :nth-child(1), .en-info .en-head-row > :nth-child(2), .en-info .en-head-row > :nth-child(4), .en-info .en-head-row > :nth-child(6) { grid-column: 1; border-left: 0; }
+  .en-info .en-head-row > :nth-child(3), .en-info .en-head-row > :nth-child(5) { grid-column: 3; }
+  .en-info tr:not(.en-head-row) > :nth-child(1), .en-info tr:not(.en-head-row) > :nth-child(6) { grid-column: 2 / 5; }
+  .en-info tr:not(.en-head-row) > :nth-child(2), .en-info tr:not(.en-head-row) > :nth-child(4) { grid-column: 2; }
+  .en-info tr:not(.en-head-row) > :nth-child(3), .en-info tr:not(.en-head-row) > :nth-child(5) { grid-column: 4; }
+  /* 数值靠右：评级字母在格子左上角，两列时值格只有一半宽，居中的六位数会压到字母上 */
+  .en-band td { justify-content: flex-end; }
+  .en-band--misc td { justify-content: flex-start; }   /* 杂项段的值占一整行，靠左（同异常抗性 / 技力） */
+  /* 级别信息是文字格：不用 flex——正文和里面的 {{color}} / 链接会各成一个 flex 项横排，一句话被切成几列（「同时攻击 | 两个 | 目标…」） */
+  .en-info td { display: block; align-content: center; text-align: left; }
   .en-stats td.en-wide { justify-content: flex-start; flex-wrap: wrap; white-space: normal; }
-  .en-stats td.en-wide > span { flex: none; white-space: nowrap; }   /* 抗性名不拆字 */
+  .en-stats td.en-wide > .en-res { flex: none; white-space: nowrap; }
+  .en-stats td.en-wide > .en-res--extra { flex: 1 1 100%; white-space: normal; }
   .en-sp__n { min-width: 0; }
-  .en-caption { display: block; }   /* 表变 block 后 caption 也当块排 */
-  .en-info td { justify-content: flex-start; }
+  .en-caption { display: block; }
   .en-info td.en-desc-cell { width: auto; min-width: 0; }
   .en-grade { font-size: 12px; padding-top: 3px; }
   .en-skills th[scope="row"], .en-skills td { display: block; width: auto; }
-  .en-skills th[scope="row"] { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; border-bottom: 0; padding-bottom: 4px; }   /* 名称与芯片一行、垂直居中，放不下芯片折到下一行 */
+  .en-skills th[scope="row"] { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; border-bottom: 0; padding-bottom: 4px; }
   .en-skills .en-skill__name { margin: 0; }
-  .en-skills .en-skill__mode { display: inline; margin: 0; }
+  .en-skills .en-skill__mode, .en-skills .en-new { display: inline; margin: 0; }
   .en-skills .en-skill__stats { flex-direction: row; flex-wrap: wrap; gap: 4px 6px; }
 }
