@@ -8,9 +8,9 @@
 /* SP 数值芯片（游戏内 skill_sp_cost_bkg 荧光绿闪电 / 初始技力 ▶ / 持续 ⏱）
  *  三枚同高同内距、图形用单色 SVG mask（不用 emoji——彩色闪电字形基线不稳，两枚芯片会错半像素），盒子与数字严格对齐 */
 .ak-sp-cost, .ak-sp-init, .ak-sp-dur { display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 8px 0 6px; font: 800 12px/1 var(--ak-font-label); font-variant-numeric: tabular-nums; vertical-align: middle; white-space: nowrap; }
-.ak-sp-cost::before, .ak-sp-init::before, .ak-sp-dur::before { content: ""; flex: none; width: 10px; height: 11px; background: currentColor; -webkit-mask: var(--_g) center / contain no-repeat; mask: var(--_g) center / contain no-repeat; }
+.ak-sp-cost::before, .ak-sp-init::before, .ak-sp-dur::before { content: ""; flex: none; width: 11px; height: 11px; background: currentColor; -webkit-mask: var(--_g) center / var(--_s, 10px 11px) no-repeat; mask: var(--_g) center / var(--_s, 10px 11px) no-repeat; }   /* 三枚图形盒子同宽同高（11×11），图形按各自尺寸居中：几枚芯片上下叠放时文字起点对齐；图形本身 ▶ 8×10 / ⚡ 10×11 / ⏱ 11×11，实心的 ▶ 做小一号才与描边的 ⏱ 视觉等重 */
 .ak-sp-cost { --_g: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 16'%3E%3Cpolygon points='8,0 1,9.5 5.5,9.5 4,16 11,6.5 6.5,6.5'/%3E%3C/svg%3E"); background: var(--ak-lime-400); color: #1d1f20; }
 .ak-sp-init { --_g: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12'%3E%3Cpolygon points='0,0 10,6 0,12'/%3E%3C/svg%3E"); background: var(--ak-gray-800); color: #fff; }
-.ak-sp-init::before { width: 8px; height: 10px; }
+.ak-sp-init::before { --_s: 8px 10px; -webkit-mask-position: 2px center; mask-position: 2px center; }   /* ▶ 的视觉重心在底边起 1/3 处：几何居中（左边 1.5px）显得 ⏱ 偏右，按重心对齐（左边 3px）又显得 ⏱ 偏左，取 2px 两头都看得过去 */
 .ak-sp-dur { --_g: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.5' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M7 3.5v3.8l2.6 1.6' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); background: var(--ak-bg-surface-3); color: var(--ak-fg); }
-.ak-sp-dur::before { width: 11px; height: 11px; }
+.ak-sp-dur::before { --_s: 11px 11px; }
