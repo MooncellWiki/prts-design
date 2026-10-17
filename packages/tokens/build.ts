@@ -45,17 +45,21 @@ async function load(source: string[], include: string[] = []) {
 
 /** only：只输出满足条件的令牌（空分组连标题一起略去）；file：输出到哪个文件（默认 tokens.css） */
 type Block = { title: string; selector: string; media?: string; decls?: string[]; source: string[]; include?: string[]; only?: (t: TransformedToken) => boolean; file?: 'bridge' };
-const DARK_SELECTOR = ':root[data-theme="dark"],\nhtml.skin-theme-clientpref-night,\n.ak-scope[data-theme="dark"]';
-/** 主题无关块（:root）里引用了语义令牌的几个（--ak-select-arrow 引 --ak-fg-muted）在 :root 上就解析成了页面主题的值、再往下继承，局部主题的作用域得重新声明一遍 */
+/** 页眉配色（chrome/header.css 的重映射挂在这两个选择器上，改了两边一起改）：先拿 2c 终端（暗）整套，header.css 再把其中一部分换成 --ak-chrome-*。
+ *  页眉与它拉下来的浮层两套主题下都是黑的，重映射没点名的令牌（画布、状态色、红链、选区、小阴影 …）也得是暗色的值——
+ *  不在这里声明就从 :root 继承页面主题的：亮色主题下 Echo 展开的通知组落回了浅灰画布，白字压在上面看不清 */
+const CHROME_SELECTOR = '.ak-header,\n.ak-prefs-panel';
+const DARK_SELECTOR = ':root[data-theme="dark"],\nhtml.skin-theme-clientpref-night,\n.ak-scope[data-theme="dark"],\n' + CHROME_SELECTOR;
+/** 主题无关块（:root）里引用了语义令牌的几个（--ak-select-arrow 引 --ak-fg-muted）在 :root 上就解析成了页面主题的值、再往下继承，局部主题的作用域（含页眉配色）得重新声明一遍 */
 const refsTheme = (t: TransformedToken) => /\{theme\./.test(String(t.original.$value));
 const OS_DARK_SELECTOR = ':root:not([data-theme="light"]):not(.skin-theme-clientpref-day):not([data-theme="dark"]):not(.skin-theme-clientpref-night)';
 const BLOCKS: Block[] = [
   { title: '1. PRIMITIVE PALETTE · 2a. THEME-INDEPENDENT SEMANTICS', selector: ':root', source: BASE, include: [LIGHT] },
   { title: '2b. SEMANTIC TOKENS · LIGHT（"档案模式" · in-game archive / white UI）', selector: ':root', decls: ['color-scheme: light'], source: [LIGHT], include: BASE },
-  { title: '2c. SEMANTIC TOKENS · DARK（"终端模式" · main menu / PRTS terminal）', selector: DARK_SELECTOR, decls: ['color-scheme: dark'], source: [DARK], include: BASE },
+  { title: '2c. SEMANTIC TOKENS · DARK（"终端模式" · main menu / PRTS terminal；也是页眉配色的底子）', selector: DARK_SELECTOR, decls: ['color-scheme: dark'], source: [DARK], include: BASE },
   { title: '跟随系统：仅当未显式指定时生效（= 2c，同一份源）', media: '(prefers-color-scheme: dark)', selector: OS_DARK_SELECTOR, decls: ['color-scheme: dark'], source: [DARK], include: BASE },
   { title: "2b′. SEMANTIC TOKENS · LIGHT（作用域内强制亮色：= 2b，同一份源）", selector: '.ak-scope[data-theme="light"]', decls: ['color-scheme: light'], source: [LIGHT], include: BASE },
-  { title: '2a′. 作用域主题：2a 里引用语义令牌的几个，在作用域上按作用域的主题重新解析', selector: '.ak-scope[data-theme]', source: BASE, include: [LIGHT], only: refsTheme },
+  { title: '2a′. 作用域主题：2a 里引用语义令牌的几个，在作用域上按作用域的主题重新解析', selector: '.ak-scope[data-theme],\n' + CHROME_SELECTOR, source: BASE, include: [LIGHT], only: refsTheme },
   { title: '2d. CHROME · 页眉 / 头图 / 画布 的主题接口', selector: ':root', source: [CHROME], include: [...BASE, LIGHT] },
   { title: '3. CODEX / MEDIAWIKI BRIDGE', selector: ':root, html.skin-theme-clientpref-night, :root[data-theme="dark"]', source: [CODEX], include: [...BASE, LIGHT], file: 'bridge' },
   { title: '窄屏（≤ 639，与 Codex 的 640 断点一致）：标题档整档收一级（h4 / 正文及以下不动），版面 gutter / 页眉高 / 大区块间隔收紧；原始的 --ak-space-* 阶梯不动', media: '(max-width: 639px)', selector: ':root', source: [COMPACT], include: [...BASE, LIGHT] },
@@ -128,6 +132,7 @@ const css: string[] = [
  *    <html class="skin-theme-clientpref-day">   档案模式（亮）
  *  非 MW 环境亦可用 data-theme="dark|light"。
  *  局部主题：.ak-scope[data-theme="dark|light"]——作用域内走终端 / 档案配色，不写 data-theme 的 .ak-scope 跟随页面。
+ *  页眉配色：.ak-header / .ak-prefs-panel 在两套主题下都先拿终端（暗）这一套（2c），chrome/header.css 再把其中一部分换成 --ak-chrome-*。
  *  排版基线（字体 / 字号 / 行高 / 前景色）见 scope.css；html / body 的底色、选区、焦点环等皮肤全局样式见 base/root.css。
  * ═══════════════════════════════════════════════════════════════════════════ */`,
 ];

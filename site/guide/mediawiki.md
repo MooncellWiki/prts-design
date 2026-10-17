@@ -87,7 +87,7 @@ skins/AKDS/                      ← 仓库的 skin/ 拷过去，LocalSettings �
 |---|---|
 | TabberNeue | `base/tabber.css` 覆盖 `.tabber__*`；变体 `ak-tabber-boxed` / `ak-tabber-block` 必须和 `.tabber` 在同一个元素上（`<tabber class="…">`），包一层 div 不生效，见 [TabberNeue](/content/tabber#变体) |
 | Cargo / SMW / DPL3 | 结果表继承 wikitable 规则（`.cargoTable` / `table.mw-datatable`）；结果格式用 `template` 时输出 PRTS Design 组件结构 |
-| Echo | 徽标用 `.ak-badge`（notices 默认黄；alerts 加 `--danger` 红）；弹窗走 Codex 桥接 |
+| Echo | 徽标用 `.ak-badge`（notices 默认黄；alerts 加 `--danger` 红）。两个弹窗是页眉[拉下来的浮层](/chrome/header#拉下来的浮层)：两套主题下都是页眉配色——Echo 把它们建在 `body` 末尾、加不上类，宿主把 2c 暗色令牌 + 页眉重映射 + Codex 桥接一起声明到弹窗的选择器上（只抄重映射时，亮色主题下展开的打包通知落回浅灰画布）。未读 = 淡青底（同 `tr.is-hl`）、已读 = 卡片底，弹窗与 `Special:Notifications`（跟页面主题）同一套；打包通知（「…页面在 3 个页面被链接」「2 人感谢了您」、讨论页留言）展开后是卡片里的一张子列表，指针在子列表里时只亮那一行，外面那条不跟着亮。<1120 铃铛直接去 `Special:Notifications` |
 | WikiEditor / CodeMirror | 编辑器底色 `--ak-bg-inset`，在 `base/forms.css` 覆盖（见[表单控件 · 核心按钮与编辑器](/content/forms#核心按钮与编辑器)） |
 | MobileFrontend + Minerva | prts 已并成 Arknights 单皮肤（`m.` 域名在 Varnish 301 回主域），Minerva 的章节折叠由皮肤的 `sections.js` 补回（见[章节折叠](/content/toc#章节折叠)，默认只在 ≤639 的窄屏开、初始展开，阅读设置里可在本机开 / 关、也可改成默认收起 = 原 Minerva 行为）。其他站两条路：(a) 皮肤 `responsive: true`，直接当移动端皮肤用（≤639 规则已写）；(b) 保留 Minerva，把令牌 + Codex 桥接（`tokens.css` + `bridge-codex.css`）经 `skinStyles` 注入 Minerva、只换色（仓库里还没有这样的模块；组件本身在 Minerva 上直接 `mw.loader.using("skins.akds.components")` 即可）。推荐 (a)，分阶段替换 |
 | UniversalLanguageSelector | 语言切换在页眉用户菜单的「界面设置」组 `#p-user-interface-preferences`，侧栏不再有 Languages 组 |

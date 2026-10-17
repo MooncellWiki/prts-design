@@ -21,7 +21,7 @@ prts.wiki 大活期间会换头图、顶栏底图、站标、侧栏配色（现�
 | `--ak-chrome-bg` / `-bg-solid` | `rgba(8,9,10,.9)` / `#0E0F10` | 页眉玻璃（半透明，头图 / 滚过来的正文在下面均匀透出；想让头图多透一点调 alpha 到 .78–.85，别低于 .72——白色画面之下 `#F2F2F2` 仍 ≥7:1）/ 不透明处（窄屏工具卡片） |
 | `--ak-chrome-backdrop` | `none` | 页眉玻璃底下的 `backdrop-filter`（毛玻璃）。默认不开：玻璃 .9 不透明时模糊只透出一成，开不开截图逐像素平均只差 1.4/255，却是滚动时 GPU 上最重的一项——粘性页眉每帧都要把底下重糊一遍。玻璃调淡、确实要毛玻璃的主题再设 `saturate(1.4) blur(10px)` 之类 |
 | `--ak-chrome-fg` / `-fg-2` / `-fg-muted` | `#F2F2F2` … | 页眉前景三级 |
-| `--ak-chrome-line` / `-line-strong` · `-hover` · `-field` | 白 `.14` / `.32` / `.08` / `.16` | 底线与分隔线 · 悬停底 · 搜索触发器底（比悬停底亮一截，触发器要在黑玻璃上一眼找得到） |
+| `--ak-chrome-line` / `-line-strong` · `-hover` · `-field` | 白 `.14` / `.32` / `.08` / `.16` | 底线与分隔线 · 悬停底 · 搜索触发器底（比悬停底亮一截，触发器要在黑玻璃上一眼找得到；只有触发器与无 JS 的回退输入框读它，页眉里别的控件的底仍是 `--ak-bg-surface-2` 白 .07） |
 | `--ak-chrome-image` / `-position` / `-size` / `-repeat` | `none` / `right top` / `auto 100%` / `no-repeat` | **顶栏角饰 / 底纹**：`url(left.png), url(right.png)`（现网 PRTSheadleft 的活动徽章 / Garanheadright 的波纹那种）。画在玻璃之上、不被压暗——只放深色低对比素材，照片请走 `--ak-keyart-image` |
 | `--ak-chrome-texture` | `.55` | 右侧半调网点强度 0–1，有角饰时可设 0 |
 | `--ak-keyart-image` / `-h` / `-position` / `-size` / `-bg` / `-fade` | `none` / `0` / `center 30%` / `cover` / `transparent` / `96px` | **头图** `.ak-keyart`：从页面顶端铺起、垫在页眉与版面背后的通栏画；`-h` 是页眉之下那段画的高度（画有多高，不是占多高）；`-position` / `-size` 相对整块（页眉 + `-h`）算；底部按 `-fade` 渐隐进画布；≤639 限高 40vw |
