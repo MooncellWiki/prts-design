@@ -74,17 +74,19 @@
 .ak-header__wordmark img { display: block; max-height: 30px; width: auto; }   /* MW $wgLogos.wordmark：站名是一张图时 */
 .ak-header__wordmark small { display: block; font: 600 9px/1 var(--ak-font-label); letter-spacing: .18em; color: var(--ak-theme-accent); margin-top: 3px; }   /* 标语用活动主色：官网导航当前项那一点青 */
 .ak-header__search { grid-column: 2; justify-self: start; width: 100%; max-width: 560px; min-width: 0; }   /* 从正文列左缘起，与面包屑 / 标题左缘同线；有 JS 时这是 button.ak-search-trigger（保留此类名，它自带 width:100%，所以上限用 max-width 写） */
-.ak-header__search .ak-input, .ak-header__search input[type="search"] { min-height: 34px; background: var(--ak-bg-surface-2); border-color: var(--ak-chrome-line); color: var(--ak-fg); }   /* 无 JS 回退：真表单 */
+.ak-header__search .ak-input, .ak-header__search input[type="search"] { min-height: 34px; background: var(--ak-bg-surface-2); border-color: var(--ak-chrome-line-strong); color: var(--ak-fg); }   /* 无 JS 回退：真表单 */
 .ak-header__search .ak-input:focus, .ak-header__search input[type="search"]:focus { background: rgba(0,0,0,.35); border-color: var(--ak-accent); box-shadow: none; }
+.ak-header__search .ak-search__icon { color: var(--ak-theme-accent); }   /* 回退表单的放大镜也用主色，与有 JS 时的图标框同一个锚点 */
 /* 有 JS 时 search-palette.js 把上面的表单换成这个「长得像输入框的按钮」，点击 / 聚焦回车 → 打开悬浮面板；真表单被搬进面板。
- * 左端一格深色图标框（游戏 HUD announce_title_on 的图标位）+ 矩形浅条；曾试过右端斜切，Tab 聚焦的描边会被 clip-path 裁断，作罢 */
-.ak-search-trigger { display: inline-flex; align-items: center; gap: 10px; height: 34px; width: 100%; padding: 0 8px 0 0; box-sizing: border-box; border: 1px solid var(--ak-chrome-line); background: var(--ak-bg-surface-2); color: var(--ak-fg-muted); font: inherit; font-size: var(--ak-fs-sm); text-align: left; cursor: text; transition: background var(--ak-dur-fast), border-color var(--ak-dur-fast), color var(--ak-dur-fast); }
-.ak-search-trigger:hover { border-color: var(--ak-chrome-line-strong); color: var(--ak-fg-secondary); }
+ * 左端一格活动主色实底的图标框（游戏 HUD announce_title_on 的图标位 / selected 态那块青）+ 矩形浅条；曾试过右端斜切，Tab 聚焦的描边会被 clip-path 裁断，作罢。
+ * 要在黑玻璃上一眼找得到：底 --ak-chrome-field（白 .16）、边线 -line-strong（.32）、字 -fg-2（.74）、图标框常亮主色——先前底 .07 / 线 .14 / 字 .5、图标框只在打开时才变主色，
+ * 整条和页眉是同一个亮度，有头图时边线更看不见，用户反馈「找不到搜索栏」；白底输入框（黑框白纸）试过，太跳，作罢 */
+.ak-search-trigger { display: inline-flex; align-items: center; gap: 10px; height: 34px; width: 100%; padding: 0 8px 0 0; box-sizing: border-box; border: 1px solid var(--ak-chrome-line-strong); background: var(--ak-bg-surface-2); color: var(--ak-fg-secondary); font: inherit; font-size: var(--ak-fs-sm); text-align: left; cursor: text; transition: background var(--ak-dur-fast), border-color var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger:hover { border-color: var(--ak-chrome-fg-muted); color: var(--ak-fg); }
 .ak-search-trigger:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; }
 .ak-search-trigger[aria-expanded="true"] { border-color: var(--ak-theme-accent); background: rgba(0,0,0,.35); color: var(--ak-fg); }
-.ak-search-trigger__icon { flex: none; align-self: stretch; width: 32px; height: auto; padding: 8px; box-sizing: border-box; display: grid; place-items: center; background: rgba(0,0,0,.35); color: var(--ak-theme-accent); transition: background var(--ak-dur-fast), color var(--ak-dur-fast); }
+.ak-search-trigger__icon { flex: none; align-self: stretch; width: 32px; height: auto; padding: 8px; box-sizing: border-box; display: grid; place-items: center; background: var(--ak-theme-accent); color: var(--ak-theme-accent-fg); }   /* 常亮主色实底：黑页眉上的色块锚点，页眉里唯一一块主色实底 */
 .ak-search-trigger__icon .ak-icon { width: 16px; height: 16px; }   /* 皮肤把自己的图标（<span class="ak-icon ak-icon--search">）放进框里时的尺寸；sprite <svg> 由 padding 定 */
-.ak-search-trigger[aria-expanded="true"] .ak-search-trigger__icon { background: var(--ak-theme-accent); color: var(--ak-theme-accent-fg); }   /* 打开时图标框反成主色实底（游戏 selected 态） */
 .ak-search-trigger__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ak-header .ak-search__kbd, .ak-header .ak-kbd { background: rgba(0,0,0,.4); border-color: var(--ak-chrome-line-strong); box-shadow: inset 0 -1px 0 var(--ak-chrome-line-strong); color: var(--ak-fg-muted); }
 .ak-header__tools { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: 4px; flex: none; }

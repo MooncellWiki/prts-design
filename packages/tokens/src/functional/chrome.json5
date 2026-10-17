@@ -22,7 +22,7 @@
     "chrome-line": { $value: "rgba(255, 255, 255, .14)", $description: "页眉底线 / 分隔线" },
     "chrome-line-strong": { $value: "rgba(255, 255, 255, .32)" },
     "chrome-hover": { $value: "rgba(255, 255, 255, .08)" },
-    "chrome-field": { $value: "rgba(255, 255, 255, .07)", $description: "搜索触发器底" },
+    "chrome-field": { $value: "rgba(255, 255, 255, .16)", $description: "搜索触发器底。比 -hover 亮一截、比 -line-strong 暗：触发器要在黑玻璃上一眼找得到（.07 时底 / 线 / 字都是「黑上一点白」，整条和页眉融成一块，用户反馈找不到搜索栏），又不能亮到像实底的卡片" },
     "chrome-image": {
       $value: "none",
       $description: "顶栏角饰 / 底纹：url(left.png), url(right.png)（现网 PRTSheadleft 的活动徽章 / Garanheadright 的波纹那种）。画在玻璃之上、不会被压暗——只放深色低对比素材，照片请走 --ak-keyart-image",

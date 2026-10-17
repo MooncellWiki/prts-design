@@ -637,7 +637,7 @@ html.skin-theme-clientpref-night,
   --ak-chrome-line: rgba(255, 255, 255, .14);   /* 页眉底线 / 分隔线 */
   --ak-chrome-line-strong: rgba(255, 255, 255, .32);
   --ak-chrome-hover: rgba(255, 255, 255, .08);
-  --ak-chrome-field: rgba(255, 255, 255, .07);   /* 搜索触发器底 */
+  --ak-chrome-field: rgba(255, 255, 255, .16);   /* 搜索触发器底。比 -hover 亮一截、比 -line-strong 暗：触发器要在黑玻璃上一眼找得到（.07 时底 / 线 / 字都是「黑上一点白」，整条和页眉融成一块，用户反馈找不到搜索栏），又不能亮到像实底的卡片 */
   --ak-chrome-image: none;                 /* 顶栏角饰 / 底纹：url(left.png), url(right.png)（现网 PRTSheadleft 的活动徽章 / Garanheadright 的波纹那种）。画在玻璃之上、不会被压暗——只放深色低对比素材，照片请走 --ak-keyart-image */
   --ak-chrome-image-position: right top;
   --ak-chrome-image-size: auto 100%;
