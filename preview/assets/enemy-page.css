@@ -17,8 +17,8 @@
 
    这里：**数字并排、文字分页**（组内）。
    - 属性一张表，同原版 wikitable 的 6 列网格（标签行压在值行上），但行 = 级别——两级上下挨着比，不用翻；三段 6 列对齐；评级字母是数值旁的实体按钮（点开分档阈值），各档同一灰度（同敌人一览）；
-     与第一级不同的值 = 强调色 + 右上角角标、悬停说明（同关卡页敌方情报稿的「本关数值」；表下不另加图例 / 说明文字）；0 与「—」压淡。
-   - 技能 / 天赋按级别分页签（TabberNeue，编辑直接写 <tabber>），同原版的两列表（名称 + 芯片 ‖ 效果），正文 14px；文中变了的数值 = 淡青底 + ▲ / ▼，悬停给第一级的值。
+     与第一级不同的值 = 强调色 + 右上角角标（同关卡页敌方情报稿的「本关数值」；不另加悬停说明，表下也不加图例 / 说明文字）；0 与「—」压淡。
+   - 技能 / 天赋按级别分页签（TabberNeue，编辑直接写 <tabber>），同原版的两列表（名称 + 芯片 ‖ 效果），正文 14px；文中变了的数值 = 淡青底 + ▲ / ▼（现网 模板:变动数值 只写新值，没有第一级的值可给）。
      冷却 / 技力用设计系统的 SP 芯片（▶ / ⏱ / ⚡），芯片里把「初始冷却 / 冷却 / 技力」写出来，没有的值不画。
 
    这段样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles），只用 css-sanitizer 认的写法（没有 @container，窄宽度按视口断点）；
@@ -67,7 +67,7 @@
 .en-stats td.is-zero .en-val { color: var(--ak-fg-subtle); }   /* 0 与「—」压淡：有值的格先被看到 */
 .en-stats td.en-wide { text-align: left; white-space: normal; }   /* 跨列的格（异常抗性 / 技力） */
 .en-stats td.en-wide > span + span { margin-left: .6em; }
-/* 与级别 0 不同的值：强调色粗体 + 右上角一枚三角（同关卡页敌方情报稿的「本关数值」），表下不另加图例；格子带悬停说明，读屏另有一段 .ak-sr-only */
+/* 与级别 0 不同的值：强调色粗体 + 右上角一枚三角（同关卡页敌方情报稿的「本关数值」），表下不另加图例；格子不带悬停说明（会和评级字母的气泡叠在一起，角标已经说明了），读屏另有一段 .ak-sr-only */
 .en-stats td.is-diff { position: relative; }
 .en-stats td.is-diff .en-val { color: var(--ak-accent); font-weight: 700; }
 .en-stats td.is-diff::before { content: ""; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent var(--ak-accent) transparent transparent; }
@@ -85,16 +85,13 @@
 .en-caption { caption-side: top; padding: 0 0 6px; text-align: left; font: 700 var(--ak-fs-sm)/1.4 var(--ak-font-body); color: var(--ak-fg); }
 
 /* ── 3. 技能 / 天赋：级别页签 + 两列表（名称 + 冷却 / 技力芯片 ‖ 效果），天赋与能力是最后一行；同原版的表，比一条一张卡省一半高度 ── */
-/* 标题后的问号 = 现网 {{Popup}} 的样子（mdi help-circle-outline、链接色）：空心圆 + 问号，悬停 / 聚焦 / 点击出一张 .ak-popover（设计系统的气泡卡，最宽 360，同现网 tippy 的 350）。
- * 气泡是第一个带问号的标题的下一个兄弟、position: fixed，位置由脚本按被悬停的那枚问号算（内容若写在标题里会被目录读进去）；分立页面每组的「技能与天赋」各有一枚问号，共用这一张气泡；字号 / 字重 / 对齐在气泡里重置 */
-.en-help { all: unset; box-sizing: border-box; display: inline-grid; place-items: center; width: 18px; height: 18px; margin-left: 6px; vertical-align: 2px; border: 1.5px solid var(--ak-link); border-radius: 50%; color: var(--ak-link); font: 700 12px/1 var(--ak-font-label); cursor: help; }
-.en-help::before { content: "?"; }
-.en-help:hover, .en-help:focus-visible, .en-help[aria-expanded="true"] { background: var(--ak-link); color: #fff; }
-.en-help:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
-.en-help-pop { position: fixed; z-index: var(--ak-z-tooltip); width: max-content; max-width: 360px; font: 400 var(--ak-fs-sm)/1.6 var(--ak-font-body); letter-spacing: 0; text-transform: none; }
-.en-help-pop[hidden] { display: none; }
-.en-help-pop > p { margin: 0 0 .6em; }
-.en-help-pop > p:last-child { margin-bottom: 0; }
+/* 标题后的问号就是一个现网 {{Popup}}：外面一层 .mc-tooltips，按钮是触发点，第二个子元素是藏起来的说明（data-trigger="click mouseenter focus"、可交互），
+ * 由现网的 Tooltip.js 用 tippy 挂到 body 上——悬停 / 聚焦 / 点击出气泡、点一下钉住，日间 light-border、夜间 dark-border，不用自己摆位置；
+ * 问号就是 {{Popup}} 的图标：mdi help-circle-outline、颜色 var(--darkblue)（现网 #4487DF），样例页加载同版 mdi 的子集 vendor/mdi/。分立页面每组的「技能与天赋」各有一枚，说明各带一份 */
+.en-help { all: unset; margin-left: 4px; cursor: pointer; }   /* 按钮去掉原生外观，剩下的就是 mdi 图标（字形由 vendor/mdi/mdi.css 的 .mdi:before 给，字号跟着标题），颜色由行内 var(--darkblue) 给，同 {{Popup}} */
+.en-help:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; border-radius: 50%; }
+.en-help-p { display: block; margin: 0 0 .6em; }   /* 气泡里一段一个块（.mc-tooltips 的内容是 <span>，wikitext 里不能放 <p>） */
+.en-help-p:last-child { margin-bottom: 0; }
 .en-skills { margin: 0; }
 .en-skills th[scope="row"] { width: 9.5em; vertical-align: top; font-weight: 400; background: var(--ak-bg-surface-2); }
 .en-skills td { vertical-align: top; font-size: var(--ak-fs-sm); line-height: 1.7; }
@@ -106,19 +103,17 @@
 .en-skills td > p { margin: 0 0 .6em; }
 .en-skills td > p:last-child { margin-bottom: 0; }
 .en-skills td h4 { margin: .8em 0 .2em; font-size: var(--ak-fs-sm); font-weight: 700; }   /* 第一形态 / 第二形态 这种文内小节 */
-/* 文中与级别 0 不同的数值（现网 模板:变动数值 的红 / 绿实心胶囊）：淡青底 + 粗体 + 青色小三角写方向，title 给级别 0 的值。
+/* 文中与级别 0 不同的数值（现网 模板:变动数值 的红 / 绿实心胶囊）：淡青底 + 粗体 + 青色小三角写方向（模板只写新值，不带第一级的值）。
  * 不把数字本身染青：正文里青字 = 链接，同一段里「150%」和「晕眩」会分不清谁能点；三角是与表格里角标共用的「与级别 0 不同」记号 */
 .en-delta { padding: 0 3px; background: var(--ak-mark-bg); font-weight: 700; white-space: nowrap; }
-/* 悬停说明一律用皮肤 tooltip.css 的 CSS-only 气泡（data-ak-tip，立刻出，不用浏览器 title 的延迟）；气泡文字不继承载体的字体 / 字重 / 字距（评级字母是 Novecento、芯片是 Bender、变动数值是粗体） */
-.en-head [data-ak-tip]::after, .en-stats [data-ak-tip]::after, .en-skills [data-ak-tip]::after, .ak-cbox [data-ak-tip]::after { font: 400 var(--ak-fs-xs)/1.4 var(--ak-font-body); letter-spacing: 0; text-transform: none; text-align: left; opacity: 0; }
-.en-head [data-ak-tip]:hover::after, .en-stats [data-ak-tip]:hover::after, .en-skills [data-ak-tip]:hover::after, .ak-cbox [data-ak-tip]:hover::after,
-.en-head [data-ak-tip]:focus-visible::after, .en-stats [data-ak-tip]:focus-visible::after, .en-skills [data-ak-tip]:focus-visible::after, .ak-cbox [data-ak-tip]:focus-visible::after { opacity: 1; }
-.en-stats td[data-ak-tip]::after { z-index: 2; }   /* 格子里的气泡压过旁边格子的评级按钮 */
-.en-delta__i::before { content: "▲"; margin-left: 1px; font-size: .6em; vertical-align: .5em; color: var(--ak-accent); }   /* 方向记号是真实元素：.en-delta 的 ::after 让给 data-ak-tip 的气泡 */
+/* 悬停说明一律走现网的 mc-tooltips（同 {{Popup}} / {{术语}}：.mc-tooltips 的第一个子元素是触发点，第二个是藏起来的内容，现网 Tooltip.js 用 tippy 挂到 body 上，
+ * 样例页加载它的快照 vendor/tooltip/Tooltip.js）：评级字母、表头术语、技力回复方式、变了的芯片、文中术语都这样。不用皮肤 tooltip.css 的 CSS-only 气泡——
+ * 那个画在载体的 ::after 上，最右一列表头的气泡会被表格的横滑容器裁掉，也会和格子里另一个气泡叠在一起 */
+.en-delta__i::before { content: "▲"; margin-left: 1px; font-size: .6em; vertical-align: .5em; color: var(--ak-accent); }   /* 方向记号是真实元素（生产环境由 模板:变动数值 的类名在 ::after 上画） */
 .en-delta--down .en-delta__i::before { content: "▼"; }
 .en-delta--text { white-space: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; }   /* 整句文字改了（现网 模板:变动数值 不带 + / − 的那种）：允许折行，淡青底逐行包住 */
 .en-delta--text .en-delta__i::before { content: "●"; font-size: .45em; vertical-align: .7em; }
-.en-chg { position: relative; display: inline-flex; }   /* 冷却 / 技力芯片变了：右上角同表格的角标，title 给级别 0 的值 */
+.en-chg { position: relative; display: inline-flex; }   /* 冷却 / 技力芯片变了：右上角同表格的角标，悬停（mc-tooltips）给级别 0 的值 */
 .en-chg::before { content: ""; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 6px 6px 0; border-color: transparent var(--ak-accent) transparent transparent; }
 .en-skill__mode { display: block; margin: -4px 0 6px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }   /* 技能绑定的模式（第一形态 / 第二形态），没有就不写 */
 .en-skill__mode::before { content: "［"; } .en-skill__mode::after { content: "］"; }
@@ -163,7 +158,7 @@
   .en-stats > tbody > tr > :last-child { border-bottom-width: 0; }   /* 转置后 tr 是一列，它的最后一格落在段底，边线由下一段的框画；最后一段的框自己带底边 */
   .en-stats .en-lv { width: auto; }
   .en-head-row > th { justify-content: flex-start; text-align: left; white-space: normal; border-left: 0; border-bottom: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); }   /* 原表头格 → 行头（第一列） */
-  .en-head-row > th > .ak-term { white-space: nowrap; }
+  .en-head-row .ak-term { white-space: nowrap; }
   .en-head-row > th.en-wide { justify-content: flex-start; }
   .en-stats tbody th.en-lv { justify-content: center; background: var(--ak-bg-surface-2); font: 700 var(--ak-fs-xs)/1.3 var(--ak-font-body); color: var(--ak-fg-secondary); }   /* 原级别格 → 列头（第一行） */
   .en-stats td { justify-content: center; }
@@ -173,8 +168,6 @@
   .en-caption { display: block; }   /* 表变 block 后 caption 也当块排 */
   .en-info td { justify-content: flex-start; }
   .en-info td.en-desc-cell { width: auto; min-width: 0; }
-  /* 标题问号的气泡：手机上不挂在问号下（会把布局视口撑宽），改成贴底的一张卡（脚本在 ≤639 不算位置），点别处收起 */
-  .en-help-pop { left: var(--ak-space-3) !important; right: var(--ak-space-3); top: auto !important; bottom: var(--ak-space-3); width: auto; max-width: none; z-index: var(--ak-z-modal); }
   .en-grade { font-size: 12px; padding-top: 3px; }
   .en-skills th[scope="row"], .en-skills td { display: block; width: auto; }
   .en-skills th[scope="row"] { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; border-bottom: 0; padding-bottom: 4px; }   /* 名称与芯片一行、垂直居中，放不下芯片折到下一行 */

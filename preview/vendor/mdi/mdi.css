@@ -1,0 +1,4 @@
+/* Material Design Icons 7.4.47（@mdi/font；Pictogrammers Free License：字体与图标按 Apache-2.0，见同目录 LICENSE）的子集：只含样例页用到的 1 个图标，由 scripts/fetch-mdi.py 生成。基础规则与现网 static.prts.wiki/mdi/7.4.47 那份相同 */
+@font-face{font-family:"Material Design Icons";src:url("materialdesignicons-subset.woff2") format("woff2");font-weight:normal;font-style:normal}
+.mdi:before,.mdi-set{display:inline-block;font:normal normal normal 24px/1 "Material Design Icons";font-size:inherit;text-rendering:auto;line-height:inherit;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.mdi-help-circle-outline::before{content:"\F0625"}

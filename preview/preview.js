@@ -115,11 +115,13 @@
   const tocList = $('.ak-toc ul[data-auto-toc]');
   const content = $('.mw-body-content');
   if (tocList && content) {
-    const heads = $$('h2, h3', content).filter(h => (h.id || h.textContent.trim()) && !h.closest('.toc'));   // 跳过 MW 原生目录示例里的 <h2>目录</h2>，否则它会当成一级项把后面的 h3 全收进去
+    /* 标题文字：去掉 .mc-tooltips 里藏起来的说明（现网 {{Popup}} 的第二个子元素，敌人页「技能与天赋」的问号就是这样），只留触发点 */
+    const headText = h => { const c = h.cloneNode(true); c.querySelectorAll('.mc-tooltips > :not(:first-child)').forEach(e => e.remove()); return c.textContent; };
+    const heads = $$('h2, h3', content).filter(h => (h.id || headText(h).trim()) && !h.closest('.toc'));   // 跳过 MW 原生目录示例里的 <h2>目录</h2>，否则它会当成一级项把后面的 h3 全收进去
     let cur2 = null;
     heads.forEach(h => {
-      if (!h.id) h.id = h.textContent.trim().replace(/\s+/g, '_').replace(/[^\w一-龥_-]/g, '');
-      const li = document.createElement('li'); const a = document.createElement('a'); a.href = '#' + h.id; a.textContent = h.textContent.replace(/\[.*?\]/g, '').trim(); li.appendChild(a);
+      if (!h.id) h.id = headText(h).trim().replace(/\s+/g, '_').replace(/[^\w一-龥_-]/g, '');
+      const li = document.createElement('li'); const a = document.createElement('a'); a.href = '#' + h.id; a.textContent = headText(h).replace(/\[.*?\]/g, '').trim(); li.appendChild(a);
       if (h.tagName === 'H2') { tocList.appendChild(li); cur2 = li; }
       else if (cur2) { let ul = cur2.querySelector('ul'); if (!ul) { ul = document.createElement('ul'); cur2.appendChild(ul); } ul.appendChild(li); }
     });
