@@ -1,0 +1,67 @@
+<!--page
+order: 9
+nav: 敌人页（普通敌人：源石虫）
+title: 源石虫 - PRTS · 敌人页设计稿
+h1: 源石虫
+h1en: 敌人页设计稿
+indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">设计稿</span>
+actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+lastmod: 2026年10月17日 (六) 16:40
+cats: 敌人, 普通级别的敌人, 敌方敌人, 初始登场的敌人
+-->
+<!--head
+<link rel="stylesheet" href="assets/enemy-page.css">   <!-- 五张敌人页样例共用的页面样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles），设计说明写在那个文件开头 -->
+-->
+<div class="ak-pathnav ak-not-prose" role="navigation" aria-label="所在位置"><span class="ak-pathnav__home"><a href="home.html" title="首页">首页</a></span><span class="ak-pathnav__up"><a href="enemies.html" title="敌人一览">敌人一览</a></span><span class="ak-pathnav__here">源石虫</span></div>
+<!-- 普通敌人：没有技能与天赋、两个级别只差几个数；普通地位不出色条和标签，地位级别写进键值一行；图鉴描述一整段、关卡里的级别描述只一句（圆仔同） -->
+<div class="en-head">
+  <span class="en-avatar"><a href="https://prts.wiki/w/%E6%96%87%E4%BB%B6:%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/3/3e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png/120px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png" srcset="https://media.prts.wiki/3/3e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png 2x" width="120" height="120" class="mw-file-element" alt="" loading="lazy"></a><span class="en-avatar__code" aria-label="图鉴编号 B1">B1</span></span>
+  <div>
+    <div class="en-title"><span class="en-name">源石虫</span></div>
+    <dl class="ak-kv ak-kv--inline">
+      <div><dt>地位级别</dt><dd>普通</dd></div>
+      <div><dt>种类</dt><dd>感染生物</dd></div>
+      <div><dt>攻击性</dt><dd>近战 物理</dd></div>
+      <div><dt>行动方式</dt><dd>地面</dd></div>
+      <div><dt>登场活动</dt><dd>初始</dd></div>
+    </dl>
+    <p class="en-desc">野生的被感染生物。这种低智能生物极有可能会被敌方术师操纵，以进入人工设施内发动集群攻击。</p>
+  </div>
+</div>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats en-info" style="--en-levels: 2;">
+  <caption class="en-caption">级别信息</caption>
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">名称</th><th scope="col">地位</th><th scope="col">种类</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="常规认知上的攻击方式，本质是一个标签，与实现层面是否真的进行此类攻击无关；守林人、棘刺会检测这个标签。与普通攻击的攻击途径不一致时站内另行说明">攻击方式</span></th><th scope="col">行动方式</th><th scope="col">描述</th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td>源石虫</td><td>普通</td><td>感染生物</td><td>近战</td><td>地面</td><td class="en-desc-cell">野生的被感染生物。</td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td>源石虫</td><td>普通</td><td>感染生物</td><td>近战</td><td>地面</td><td class="en-desc-cell">野生的被感染生物。</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats" style="--en-levels: 2;">
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命值</th><th scope="col">攻击力</th><th scope="col">防御力</th><th scope="col">法术<wbr>抗性</th><th scope="col">攻击<wbr>间隔</th><th scope="col">移动<wbr>速度</th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td><span class="en-cell"><span class="en-val">550</span><button type="button" class="en-grade" data-tier="low" data-stat="hp" data-value="550" data-ak-tip="生命值评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">130</span><button type="button" class="en-grade" data-tier="low" data-stat="atk" data-value="130" data-ak-tip="攻击力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="def" data-value="0" data-ak-tip="防御力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="res" data-value="0" data-ak-tip="法术抗性评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">1.7</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="1.7" data-ak-tip="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.0</span><button type="button" class="en-grade" data-tier="a" data-stat="movespeed" data-value="1.0" data-ak-tip="移动速度评级 A，点击看分档阈值">A</button></span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-diff" data-ak-tip="与级别 0 不同"><span class="en-cell"><span class="en-val">2050<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="low" data-stat="hp" data-value="2050" data-ak-tip="生命值评级 D，点击看分档阈值">D</button></span></td><td class="is-diff" data-ak-tip="与级别 0 不同"><span class="en-cell"><span class="en-val">300<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="low" data-stat="atk" data-value="300" data-ak-tip="攻击力评级 C，点击看分档阈值">C</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="def" data-value="0" data-ak-tip="防御力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="res" data-value="0" data-ak-tip="法术抗性评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">1.7</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="1.7" data-ak-tip="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.0</span><button type="button" class="en-grade" data-tier="a" data-stat="movespeed" data-value="1.0" data-ak-tip="移动速度评级 A，点击看分档阈值">A</button></span></td></tr>
+  </tbody>
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="没有攻击半径时只进行阻挡攻击；有攻击半径时未被阻挡也能普通攻击">攻击<wbr>半径</span></th><th scope="col">重量<wbr>等级</th><th scope="col">元素<wbr>抗性</th><th scope="col">损伤<wbr>抵抗</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="以属性值写入的嘲讽等级，实际嘲讽等级要算上自身所受效果；范围 −2 ～ 2">基础嘲讽<wbr>等级</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="到达终点退场时通常扣除的关卡生命值">目标<wbr>价值</span></th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">1</span></span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">1</span></span></td></tr>
+  </tbody>
+  <tbody class="en-band en-band--misc">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命自回<wbr>速度</th><th scope="col" colspan="3" class="en-wide">异常抗性</th><th scope="col" colspan="2" class="en-wide">技力</th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide is-zero" colspan="3"><span class="en-val">无</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide is-zero" colspan="3"><span class="en-val">无</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
+  </tbody>
+</table>
+</div>
+<p class="en-empty">该敌人没有技能与天赋。</p>
+
+<!-- ── 评级阈值弹窗（现网 微件:EnemyDataController 的评级表换成 .ak-dialog；阈值数据同微件）。标题不用 h2：写在 wikitext 里的 h2 会进目录，用 div[role=heading] ── -->
+<dialog class="ak-dialog ak-dialog--sm" id="en-grade-dialog" aria-labelledby="en-grade-dialog-title">
+  <div class="ak-dialog__head"><div class="ak-dialog__title" role="heading" aria-level="2" id="en-grade-dialog-title">属性评级</div><button type="button" class="ak-btn ak-btn--ghost ak-btn--sm ak-btn--icon" title="关闭" data-dialog-close><svg class="ak-btn__icon"><use href="#i-x"/></svg></button></div>
+  <div class="ak-dialog__body"><p id="en-grade-dialog-desc" class="ak-fs-sm"></p><table class="ak-table ak-table--compact en-rank-table"><thead><tr><th scope="col">评级</th><th scope="col" id="en-grade-dialog-th">阈值</th></tr></thead><tbody id="en-grade-dialog-rows"></tbody></table></div>
+</dialog>
+<script src="assets/enemy-page.js"></script>   <!-- 评级阈值弹窗 + 标题问号的气泡，四张样例共用 -->

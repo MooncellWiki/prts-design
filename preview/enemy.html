@@ -9,7 +9,7 @@
 <title>圣徒瓦列里奥 - PRTS · 敌人页设计稿</title>
 <link rel="stylesheet" href="../src/index.css">   <!-- 全部样式：字体 → 令牌 → base → components → decor / arknights → chrome → utilities（逐层 index.css 按序 @import，与 skin.json 同序） -->
 <link rel="stylesheet" href="../src/chrome/demo-theme.css">   <!-- 活动主题示例（html.ak-theme-demo 时生效）：只覆盖令牌 §2d 的接口变量 -->
-<link rel="stylesheet" href="assets/enemy-page.css">   <!-- 本页 + enemy-touch.html 共用的页面样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles），设计说明写在那个文件开头 -->
+<link rel="stylesheet" href="assets/enemy-page.css">   <!-- 五张敌人页样例共用的页面样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles），设计说明写在那个文件开头 -->
 </head>
 <body class="skin-arknights">
 <a class="ak-skip" href="#content">跳到内容</a>
@@ -188,8 +188,10 @@
         <li><a href="stage.html">关卡页（敌方情报）</a></li>
         <li class="is-active"><a href="enemy.html">敌人页（数据区）</a></li>
         <li><a href="prefs.html">阅读设置（特殊页面）</a></li>
-        <li><a href="enemy-touch.html">敌人页（复杂样例：Touch）</a></li>
-        <li><a href="enemy-misery.html">敌人页（复杂样例：Misery）</a></li>
+        <li><a href="enemy-slug.html">敌人页（普通敌人：源石虫）</a></li>
+        <li><a href="enemy-touch.html">敌人页（合页样例：Touch）</a></li>
+        <li><a href="enemy-misery.html">敌人页（合页样例：Misery）</a></li>
+        <li><a href="enemy-dukare.html">敌人页（合页样例：杜卡雷）</a></li>
         <li><a href="#" class="ak-demo-theme-toggle" role="button" aria-pressed="false">示例活动主题：<b data-demo-state>关</b></a></li>
       </ul>
     </div>
@@ -336,20 +338,15 @@
       <div class="mw-body-content" id="mw-content-text"><div class="mw-parser-output">
 
 <div class="ak-pathnav ak-not-prose" role="navigation" aria-label="所在位置"><span class="ak-pathnav__home"><a href="home.html" title="首页">首页</a></span><span class="ak-pathnav__up"><a href="enemies.html" title="敌人一览">敌人一览</a></span><span class="ak-pathnav__here">圣徒瓦列里奥</span></div>   <!-- 路径条：现网 {{Navigator|敌人一览}}，正文第一行 -->
-<div class="ak-cbox ak-cbox--tip">
-  <span class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></span>
-  <div class="ak-cbox__body">敌人页数据区（<code>模板:敌人信息/common2</code> + <code>敌人信息/levelcontent</code>，1832 个敌人页）的单页设计稿。数据取自现网 <a href="https://prts.wiki/w/%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5">圣徒瓦列里奥</a> 与 <a href="https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB">源石虫</a>，可对照着看。点评级字母看分档阈值；级别页签切技能文本；窗口拉窄看手机排布（属性表按段转置成三列，不横滑）。</div>
-</div>
 
-<!-- ── 身份头：现网 common2 的红表头 wikitable + 每级卡片里重复的 INFO. 合成一块，只写一次 ── -->
+<!-- ── 图鉴头：现网 common2 的红表头 wikitable（游戏【敌方档案库】的那份），只写一次、标签照图鉴的叫法（攻击性 = 攻击方式 + 伤害类型）；每级在关卡里的名字 / 描述 / 攻击方式是另一份，在下面的「级别信息」表里 ── -->
 <div class="en-head" data-rank="boss">
   <span class="en-avatar"><a href="https://prts.wiki/w/%E6%96%87%E4%BB%B6:%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5.png" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/c/c7/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5.png/120px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5.png" srcset="https://media.prts.wiki/c/c7/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E5%9C%A3%E5%BE%92%E7%93%A6%E5%88%97%E9%87%8C%E5%A5%A5.png 2x" width="120" height="120" class="mw-file-element" alt="" loading="lazy"></a><span class="en-avatar__code" aria-label="图鉴编号 VAL">VAL</span></span>
   <div>
     <div class="en-title"><span class="en-name">圣徒瓦列里奥</span><span class="ak-tag en-rank">领袖</span></div>
     <dl class="ak-kv ak-kv--inline">
       <div><dt>种类</dt><dd>—</dd></div>
-      <div><dt>攻击方式</dt><dd>近战</dd></div>
-      <div><dt>伤害类型</dt><dd>物理 / 法术</dd></div>
+      <div><dt>攻击性</dt><dd>近战 物理 法术</dd></div>
       <div><dt>行动方式</dt><dd>地面</dd></div>
       <div><dt>登场活动</dt><dd><a href="#">昨日海</a></dd></div>
     </dl>
@@ -363,6 +360,21 @@
       <li><b>【绝罚】</b>自身一定范围内我方干员被击倒或撤退时造成一次法术伤害，并留下一团火焰持续造成法术伤害和<span class="ak-term ak-tip--wide" data-ak-tip="灼燃损伤：累计至 1000 时，10 秒内降低 20 法术抗性并受到 1200 点法术伤害">灼燃损伤</span>，且使周围所有未达上限的敌人获得一个&lt;塑能基质&gt;。在【塑能力场】内无效</li>
       <li>免疫晕眩</li>
   </ul>
+  <dl class="ak-kv en-stages">   <!-- 出场关卡 / 相关敌人：同现网 common2 头表里的两行，留在图鉴卡里、紧跟能力，合页时不会沉到页底 -->
+  <dt>出场关卡</dt><dd><a href="#">YW-8 鳞的记忆</a><a href="#">YW-EX-8 一件失物</a></dd>
+  <dt>相关敌人</dt><dd><a href="#">塑能基质</a></dd>
+  </dl>
+</div>
+<!-- ── 级别信息：levelcontent 每级的 INFO（关卡「敌方情报」那份），与属性表同一张网格的画法但是文字表；这页两级一样、与图鉴也一样，所以没有标记 ── -->
+<div class="ak-table-scroll">
+<table class="ak-table en-stats en-info" style="--en-levels: 2;">
+  <caption class="en-caption">级别信息</caption>
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">名称</th><th scope="col">地位</th><th scope="col">种类</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="常规认知上的攻击方式，本质是一个标签，与实现层面是否真的进行此类攻击无关；守林人、棘刺会检测这个标签。与普通攻击的攻击途径不一致时站内另行说明">攻击方式</span></th><th scope="col">行动方式</th><th scope="col">描述</th></tr>
+  <tr><th scope="row" class="en-lv">级别 0</th><td>圣徒瓦列里奥</td><td>领袖</td><td class="is-zero"><span class="en-val">—</span></td><td>近战</td><td>地面</td><td class="en-desc-cell">如果审判庭不能，他就亲手为自己的牺牲创造意义。</td></tr>
+  <tr><th scope="row" class="en-lv">级别 1</th><td>圣徒瓦列里奥</td><td>领袖</td><td class="is-zero"><span class="en-val">—</span></td><td>近战</td><td>地面</td><td class="en-desc-cell">如果审判庭不能，他就亲手为自己的牺牲创造意义。</td></tr>
+  </tbody>
+</table>
 </div>
 
 <h2 id="属性">属性</h2>
@@ -385,8 +397,6 @@
   </tbody>
 </table>
 </div>
-<p class="en-note"><span class="en-mark" aria-hidden="true"></span>与级别 0 不同的数值。评级字母按站内分档，点击查看阈值。</p>
-<p class="en-note">表中是敌人的默认数值；各关卡可能另行调整，以关卡页「敌方情报」为准。</p>
 
 <h2 id="技能与天赋">技能与天赋 <button type="button" class="en-help" aria-label="技能与天赋怎么读" aria-expanded="false" aria-controls="en-help-pop"></button></h2>   <!-- 问号 = 现网 {{Popup}}（mc-tooltips 的 help-circle-outline，链接色）；按钮里不放文字，目录读 heading 的文本时不会多出「?」 -->
 <div class="ak-popover en-help-pop" id="en-help-pop" role="tooltip" hidden><p><b>冷却与技力。</b><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>60</span> 是技能第一次就绪要等的秒数，<span class="ak-sp-dur"><span class="en-sp-label">冷却</span>50</span> 是之后每次释放后再就绪的秒数，<span class="ak-sp-cost"><span class="en-sp-label">技力</span>5</span> 是触发一次要消耗的技力；「60 / 50」这样写的是第一形态 / 第二形态各自的值。省略冷却的技能不会自动触发；只写技力的技能冷却完成后还要攒够技力才触发。名字后面的「[第一形态]」是技能绑定的模式，只在该模式下冷却和触发。</p><p><b>技能的默认行为。</b>自动触发会占用攻击间隔，可被<a href="#">缴械</a>干扰；多个技能同时就绪时按优先级，优先级相同随机；能重生的敌人重生后重置全部冷却。如无特殊说明，技能可被沉默、只选一个对立阵营的目标、优先仇恨最高者、可对空。</p><p><b>天赋与能力的数值计算顺序。</b>基础属性改变 → 直接加算 → 直接乘算 → 最终加算 → 最终乘算。如无特殊说明，天赋不可被沉默。</p></div>   <!-- 气泡内容放在标题外面（放里面会进目录），由脚本按问号的位置摆（现网 = tippy 挂到 body）；手机上是贴底的一张卡 -->
@@ -433,67 +443,21 @@
       <p>仅在被阻挡的情况下进行阻挡攻击，造成法术伤害并附带相当于攻击力 20% 的<a href="#">灼燃损伤</a>。<br>自身半径 1.25 内的我方单位每秒受到 <span class="en-delta" data-ak-tip="级别 0：50">60<i class="en-delta__i" aria-hidden="true"></i></span> 点<a href="#">灼燃损伤</a>和 <span class="en-delta" data-ak-tip="级别 0：200">300<i class="en-delta__i" aria-hidden="true"></i></span> 点法术伤害（光环效果，碰撞判定，无视<a href="#">迷彩</a>）。</p></td></tr>
     </tbody>
   </table>
-  <p class="en-note"><span class="en-mark" aria-hidden="true"></span>带 ▲ / ▼ 的数值与级别 0 不同，悬停看级别 0 的值。</p>
 
     </article>
   </section>
 </div>
-
-<h2 id="出场关卡">出场关卡</h2>
-<dl class="ak-kv ak-kv--boxed en-stages">   <!-- 带框的信息栏变体（设计系统 .ak-kv--boxed：外框 + 键列底色），同干员页「特性」节 -->
-  <dt>活动</dt><dd><a href="#">YW-8 鳞的记忆</a><a href="#">YW-EX-8 一件失物</a></dd>
-  <dt>相关敌人</dt><dd><a href="#">塑能基质</a></dd>
-</dl>
-
-<h2 id="普通敌人">普通敌人的样子</h2>
-<p>多数敌人没有技能与天赋、两个级别只差几个数（<a href="https://prts.wiki/w/%E6%BA%90%E7%9F%B3%E8%99%AB">源石虫</a>）。普通地位不出色条和标签，地位写进键值一行：</p>
-<div class="en-head">
-  <span class="en-avatar"><a href="https://prts.wiki/w/%E6%96%87%E4%BB%B6:%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/3/3e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png/120px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png" srcset="https://media.prts.wiki/3/3e/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E6%BA%90%E7%9F%B3%E8%99%AB.png 2x" width="120" height="120" class="mw-file-element" alt="" loading="lazy"></a><span class="en-avatar__code" aria-label="图鉴编号 B1">B1</span></span>
-  <div>
-    <div class="en-title"><span class="en-name">源石虫</span></div>
-    <dl class="ak-kv ak-kv--inline">
-      <div><dt>地位级别</dt><dd>普通</dd></div>
-      <div><dt>种类</dt><dd>感染生物</dd></div>
-      <div><dt>攻击方式</dt><dd>近战</dd></div>
-      <div><dt>伤害类型</dt><dd>物理</dd></div>
-      <div><dt>行动方式</dt><dd>地面</dd></div>
-      <div><dt>登场活动</dt><dd>初始</dd></div>
-    </dl>
-    <p class="en-desc">野生的被感染生物。这种低智能生物极有可能会被敌方术师操纵，以进入人工设施内发动集群攻击。</p>
-  </div>
-</div>
-<div class="ak-table-scroll">
-<table class="ak-table en-stats" style="--en-levels: 2;">
-  <tbody class="en-band">
-  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命值</th><th scope="col">攻击力</th><th scope="col">防御力</th><th scope="col">法术<wbr>抗性</th><th scope="col">攻击<wbr>间隔</th><th scope="col">移动<wbr>速度</th></tr>
-  <tr><th scope="row" class="en-lv">级别 0</th><td><span class="en-cell"><span class="en-val">550</span><button type="button" class="en-grade" data-tier="low" data-stat="hp" data-value="550" data-ak-tip="生命值评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">130</span><button type="button" class="en-grade" data-tier="low" data-stat="atk" data-value="130" data-ak-tip="攻击力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="def" data-value="0" data-ak-tip="防御力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="res" data-value="0" data-ak-tip="法术抗性评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">1.7</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="1.7" data-ak-tip="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.0</span><button type="button" class="en-grade" data-tier="a" data-stat="movespeed" data-value="1.0" data-ak-tip="移动速度评级 A，点击看分档阈值">A</button></span></td></tr>
-  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-diff" data-ak-tip="与级别 0 不同"><span class="en-cell"><span class="en-val">2050<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="low" data-stat="hp" data-value="2050" data-ak-tip="生命值评级 D，点击看分档阈值">D</button></span></td><td class="is-diff" data-ak-tip="与级别 0 不同"><span class="en-cell"><span class="en-val">300<span class="ak-sr-only">（与级别 0 不同）</span></span><button type="button" class="en-grade" data-tier="low" data-stat="atk" data-value="300" data-ak-tip="攻击力评级 C，点击看分档阈值">C</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="def" data-value="0" data-ak-tip="防御力评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="res" data-value="0" data-ak-tip="法术抗性评级 E，点击看分档阈值">E</button></span></td><td><span class="en-cell"><span class="en-val">1.7</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="1.7" data-ak-tip="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.0</span><button type="button" class="en-grade" data-tier="a" data-stat="movespeed" data-value="1.0" data-ak-tip="移动速度评级 A，点击看分档阈值">A</button></span></td></tr>
-  </tbody>
-  <tbody class="en-band">
-  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="没有攻击半径时只进行阻挡攻击；有攻击半径时未被阻挡也能普通攻击">攻击<wbr>半径</span></th><th scope="col">重量<wbr>等级</th><th scope="col">元素<wbr>抗性</th><th scope="col">损伤<wbr>抵抗</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="以属性值写入的嘲讽等级，实际嘲讽等级要算上自身所受效果；范围 −2 ～ 2">基础嘲讽<wbr>等级</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="到达终点退场时通常扣除的关卡生命值">目标<wbr>价值</span></th></tr>
-  <tr><th scope="row" class="en-lv">级别 0</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">1</span></span></td></tr>
-  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">1</span></span></td></tr>
-  </tbody>
-  <tbody class="en-band en-band--misc">
-  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命自回<wbr>速度</th><th scope="col" colspan="3" class="en-wide">异常抗性</th><th scope="col" colspan="2" class="en-wide">技力</th></tr>
-  <tr><th scope="row" class="en-lv">级别 0</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide is-zero" colspan="3"><span class="en-val">无</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
-  <tr><th scope="row" class="en-lv">级别 1</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide is-zero" colspan="3"><span class="en-val">无</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
-  </tbody>
-</table>
-</div>
-<p class="en-note"><span class="en-mark" aria-hidden="true"></span>与级别 0 不同的数值。</p>
-<p class="en-empty">该敌人没有技能与天赋。</p>
 
 <!-- ── 评级阈值弹窗（现网 微件:EnemyDataController 的评级表换成 .ak-dialog；阈值数据同微件）。标题不用 h2：写在 wikitext 里的 h2 会进目录，用 div[role=heading] ── -->
 <dialog class="ak-dialog ak-dialog--sm" id="en-grade-dialog" aria-labelledby="en-grade-dialog-title">
   <div class="ak-dialog__head"><div class="ak-dialog__title" role="heading" aria-level="2" id="en-grade-dialog-title">属性评级</div><button type="button" class="ak-btn ak-btn--ghost ak-btn--sm ak-btn--icon" title="关闭" data-dialog-close><svg class="ak-btn__icon"><use href="#i-x"/></svg></button></div>
   <div class="ak-dialog__body"><p id="en-grade-dialog-desc" class="ak-fs-sm"></p><table class="ak-table ak-table--compact en-rank-table"><thead><tr><th scope="col">评级</th><th scope="col" id="en-grade-dialog-th">阈值</th></tr></thead><tbody id="en-grade-dialog-rows"></tbody></table></div>
 </dialog>
-<script src="assets/enemy-page.js"></script>   <!-- 评级阈值弹窗 + 标题问号的气泡，与 enemy-touch.html 共用 -->
+<script src="assets/enemy-page.js"></script>   <!-- 评级阈值弹窗 + 标题问号的气泡，五张样例共用 -->
 
 
       </div></div><!-- /.mw-parser-output /.mw-body-content -->
-      <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2026年10月16日 (五) 21:10。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
+      <div class="ak-body-foot"><span class="ak-lastmod">本页面最后编辑于 2026年10月17日 (六) 14:10。</span><span>本站文本采用 CC BY-NC-SA 4.0 授权。游戏素材版权归鹰角网络所有。</span></div>
       </div><!-- /.ak-body -->
       <div class="catlinks" id="catlinks"><div class="mw-normal-catlinks" id="mw-normal-catlinks"><a href="#" title="特殊:页面分类">分类</a>：​<ul><li><a href="#">敌人</a></li><li><a href="#">领袖级别的敌人</a></li><li><a href="#">敌方敌人</a></li><li><a href="#">昨日海登场的敌人</a></li></ul></div></div>
     </div>

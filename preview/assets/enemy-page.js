@@ -1,4 +1,4 @@
-/*! 敌人页设计稿的脚本：评级阈值弹窗 + 标题问号的气泡。生产环境 = 微件:EnemyDataController 那一侧；preview/enemy.html 与 enemy-touch.html 共用 */
+/*! 敌人页设计稿的脚本：评级阈值弹窗 + 标题问号的气泡。生产环境 = 微件:EnemyDataController 那一侧；preview/enemy*.html 五张样例共用 */
 /* 评级阈值弹窗：阈值同现网 微件:EnemyDataController；生产环境这段进微件，点击代理照皮肤 interactive.js 的 data-dialog-open */
 (function () {
   var RANK = {
@@ -11,18 +11,21 @@
     eres: ['元素抗性', '越高越能接下元素伤害。', 'atLeast', [[0,'E'],[1,'D'],[10,'C'],[20,'B'],[30,'B+'],[50,'A'],[60,'A+'],[70,'S'],[80,'S+'],[90,'SS']]],
     epres: ['损伤抵抗', '越高受到的元素损伤衰减越多，越难进入元素爆发。', 'atLeast', [[0,'E'],[1,'D'],[10,'C'],[20,'B'],[30,'B+'],[50,'A'],[60,'A+'],[70,'S'],[80,'S+'],[90,'SS']]]
   };
-  /* 标题问号的气泡：悬停出、移开收；点一下钉住（触屏没有悬停），再点或点别处收。桌面按问号的位置摆（fixed），≤639 由样式贴底 */
+  /* 标题问号的气泡：悬停出、移开收；点一下钉住（触屏没有悬停），再点或点别处收。桌面按被悬停的那枚问号的位置摆（fixed），≤639 由样式贴底。
+   * 分立页面每组的「技能与天赋」标题各一枚问号，共用一张气泡（#en-help-pop） */
   (function () {
-    var btn = document.querySelector('.en-help'), pop = document.getElementById('en-help-pop'); if (!btn || !pop) return;
-    var pinned = false, phone = window.matchMedia('(max-width: 639px)');
-    function place() { if (phone.matches) return; var r = btn.getBoundingClientRect(); pop.style.top = (r.bottom + 6) + 'px'; pop.style.left = Math.min(r.left, window.innerWidth - pop.offsetWidth - 12) + 'px'; }
-    function show() { pop.hidden = false; btn.setAttribute('aria-expanded', 'true'); place(); }
-    function hide() { pop.hidden = true; pinned = false; btn.setAttribute('aria-expanded', 'false'); }
-    btn.addEventListener('mouseenter', show); btn.addEventListener('focus', show);
-    btn.addEventListener('mouseleave', function () { if (!pinned) setTimeout(function () { if (!pinned && !pop.matches(':hover')) hide(); }, 150); });
+    var btns = [].slice.call(document.querySelectorAll('.en-help')), pop = document.getElementById('en-help-pop'); if (!btns.length || !pop) return;
+    var cur = null, pinned = false, phone = window.matchMedia('(max-width: 639px)');
+    function place() { if (phone.matches || !cur) return; var r = cur.getBoundingClientRect(); pop.style.top = (r.bottom + 6) + 'px'; pop.style.left = Math.min(r.left, window.innerWidth - pop.offsetWidth - 12) + 'px'; }
+    function show(b) { if (cur && cur !== b) cur.setAttribute('aria-expanded', 'false'); cur = b; pop.hidden = false; b.setAttribute('aria-expanded', 'true'); place(); }
+    function hide() { pop.hidden = true; pinned = false; if (cur) cur.setAttribute('aria-expanded', 'false'); cur = null; }
+    btns.forEach(function (btn) {
+      btn.addEventListener('mouseenter', function () { if (!pinned) show(btn); }); btn.addEventListener('focus', function () { if (!pinned) show(btn); });
+      btn.addEventListener('mouseleave', function () { if (!pinned) setTimeout(function () { if (!pinned && !pop.matches(':hover')) hide(); }, 150); });
+      btn.addEventListener('blur', function () { if (!pinned) hide(); });
+    });
     pop.addEventListener('mouseleave', function () { if (!pinned) hide(); });
-    btn.addEventListener('blur', function () { if (!pinned) hide(); });
-    document.addEventListener('click', function (e) { if (e.target.closest('.en-help')) { pinned ? hide() : (pinned = true, show()); } else if (!e.target.closest('#en-help-pop')) { hide(); } });
+    document.addEventListener('click', function (e) { var b = e.target.closest('.en-help'); if (b) { (pinned && cur === b) ? hide() : (pinned = true, show(b)); } else if (!e.target.closest('#en-help-pop')) { hide(); } });
     window.addEventListener('scroll', function () { if (!pop.hidden) place(); }, { passive: true }); window.addEventListener('resize', function () { if (!pop.hidden) place(); });
   })();
   var fmt = function (n) { return n === Infinity ? '∞' : String(n); };

@@ -1,22 +1,18 @@
 <!--page
-order: 10
-nav: 敌人页（复杂样例：Misery）
-title: “Misery”，静默之刃 - PRTS · 敌人页设计稿（复杂样例）
+order: 11
+nav: 敌人页（合页样例：Misery）
+title: “Misery”，静默之刃 - PRTS · 敌人页设计稿（合页样例）
 h1: “Misery”，静默之刃
-h1en: 敌人页设计稿 · 复杂样例
+h1en: 敌人页设计稿 · 合页样例
 indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">设计稿</span>
 actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
-lastmod: 2026年10月17日 (六) 01:20
+lastmod: 2026年10月17日 (六) 14:10
 cats: 敌人, 领袖级别的敌人, 敌方敌人, 矢量突破S2登场的敌人
 -->
 <!--head
-<link rel="stylesheet" href="assets/enemy-page.css">   <!-- 与 enemy.html / enemy-touch.html 共用的页面样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles），设计说明写在那个文件开头 -->
+<link rel="stylesheet" href="assets/enemy-page.css">   <!-- 五张敌人页样例共用的页面样式 = 生产环境的 模板:敌人信息/styles.css（TemplateStyles），设计说明写在那个文件开头 -->
 -->
 <div class="ak-pathnav ak-not-prose" role="navigation" aria-label="所在位置"><span class="ak-pathnav__home"><a href="home.html" title="首页">首页</a></span><span class="ak-pathnav__up"><a href="enemies.html" title="敌人一览">敌人一览</a></span><span class="ak-pathnav__here">“Misery”，静默之刃</span></div>
-<div class="ak-cbox ak-cbox--tip">
-  <span class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></span>
-  <div class="ak-cbox__body">敌人页数据区设计稿的第二个<b>复杂样例</b>：现网 <a href="https://prts.wiki/w/%E2%80%9CMisery%E2%80%9D%EF%BC%8C%E9%9D%99%E9%BB%98%E4%B9%8B%E5%88%83">“Misery”，静默之刃</a>——三个 Rank 其实是三份独立图鉴（编辑在天赋开头写的说明，这里提成页面上的一条提示）、技能绑定阶段、Rank Ⅱ 起新增两个技能、Rank Ⅲ 新增一段天赋、异常效果链接成串。排布同 <a href="enemy.html">圣徒瓦列里奥</a> 与 <a href="enemy-touch.html">Touch</a> 那两张。</div>
-</div>
 
 <div class="en-head" data-rank="boss">
   <span class="en-avatar"><a href="https://prts.wiki/w/%E6%96%87%E4%BB%B6:%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E2%80%9CMisery%E2%80%9D%EF%BC%8C%E9%9D%99%E9%BB%98%E4%B9%8B%E5%88%83.png" tabindex="-1" aria-hidden="true"><img src="https://media.prts.wiki/thumb/a/a0/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E2%80%9CMisery%E2%80%9D%EF%BC%8C%E9%9D%99%E9%BB%98%E4%B9%8B%E5%88%83.png/120px-%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E2%80%9CMisery%E2%80%9D%EF%BC%8C%E9%9D%99%E9%BB%98%E4%B9%8B%E5%88%83.png" srcset="https://media.prts.wiki/a/a0/%E5%A4%B4%E5%83%8F_%E6%95%8C%E4%BA%BA_%E2%80%9CMisery%E2%80%9D%EF%BC%8C%E9%9D%99%E9%BB%98%E4%B9%8B%E5%88%83.png 2x" width="120" height="120" class="mw-file-element" alt="" loading="lazy"></a><span class="en-avatar__code" aria-label="图鉴编号 SFR12">SFR12</span></span>
@@ -24,8 +20,7 @@ cats: 敌人, 领袖级别的敌人, 敌方敌人, 矢量突破S2登场的敌人
     <div class="en-title"><span class="en-name">“Misery”，静默之刃</span><span class="ak-tag en-rank">领袖</span></div>
     <dl class="ak-kv ak-kv--inline">
       <div><dt>种类</dt><dd>萨卡兹</dd></div>
-      <div><dt>攻击方式</dt><dd>近战 / 远程</dd></div>
-      <div><dt>伤害类型</dt><dd>物理 / 法术</dd></div>
+      <div><dt>攻击性</dt><dd>近战 远程 物理 法术</dd></div>
       <div><dt>行动方式</dt><dd>地面</dd></div>
       <div><dt>登场活动</dt><dd><a href="#">矢量突破 S2</a></dd></div>
     </dl>
@@ -38,96 +33,136 @@ cats: 敌人, 领袖级别的敌人, 敌方敌人, 矢量突破S2登场的敌人
     <li>首次被击倒后，返回战场并改变行动方式：处于我方视野时立即移动到黑夜笼罩的地块并停止移动（移动路线中无友方单位）；施放【瞬时性伤痕】后或找不到目标时继续移动</li>
     <li><b>【弥散性裂变】</b>攻击和【瞬时性伤痕】施加持续法术伤害，持续期间内退场的目标再部署时间大幅延长</li>
   </ul>
-</div>
-<div class="ak-cbox ak-cbox--neutral">   <!-- 现网写在每级天赋开头的「※此页面的三个章节实际上并非…」：是关于这页怎么组织的说明，不是天赋，提成页面级的一条中性提示，只写一次 -->
-  <span class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-info"/></svg></span>
-  <div class="ak-cbox__body">下面的三个 Rank 并不是同一敌人的三个级别（内部 id 相同，为同种敌人），每个 Rank 各自有独立的<span class="ak-term ak-tip--wide" data-ak-tip="均可在游戏内关卡的「敌方情报」中查看；「敌方档案库」收录的不是三个 Rank 中的任何一个，而是图鉴特供版本（Rank Ⅲ 的描述、Rank Ⅰ 的数值），站内目前仅收录特供版本的图鉴">图鉴</span>，为方便查阅合并在一页。</div>
+  <dl class="ak-kv en-stages">   <!-- 出场关卡 / 相关敌人：同现网 common2 头表里的两行，留在图鉴卡里、紧跟能力，合页时不会沉到页底 -->
+  <dt>出场关卡</dt><dd><a href="#">VEC-04 空间盲点</a><a href="#">VEC-08 脉冲隔绝术</a><a href="#">VEC-12 维度误导</a><a href="#">VEC-C 惊吓幕后</a><a href="#">VEC-D 认知剥离界域</a></dd>
+  </dl>
 </div>
 
-<h2 id="属性">属性</h2>
+<h2 id="rank-1">Rank Ⅰ</h2>
 <div class="ak-table-scroll">
-<table class="ak-table en-stats" style="--en-levels: 3;">
+<table class="ak-table en-stats en-info" style="--en-levels: 1;">
+  <caption class="en-caption">级别信息</caption>
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">名称</th><th scope="col">地位</th><th scope="col">种类</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="常规认知上的攻击方式，本质是一个标签，与实现层面是否真的进行此类攻击无关；守林人、棘刺会检测这个标签。与普通攻击的攻击途径不一致时站内另行说明">攻击方式</span></th><th scope="col">行动方式</th><th scope="col">描述</th></tr>
+  <tr><th scope="row" class="en-lv">Rank Ⅰ</th><td>“Misery”，静默之刃</td><td>领袖</td><td>萨卡兹</td><td>近战 / 远程</td><td>地面</td><td class="en-desc-cell">以 Misery 的战力极限为模本构拟的突破训练官。</td></tr>
+  </tbody>
+</table>
+</div>
+<h3 id="rank-1-属性">属性</h3>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats" style="--en-levels: 1;">
   <tbody class="en-band">
   <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命值</th><th scope="col">攻击力</th><th scope="col">防御力</th><th scope="col">法术<wbr>抗性</th><th scope="col">攻击<wbr>间隔</th><th scope="col">移动<wbr>速度</th></tr>
-  <tr><th scope="row" class="en-lv">Rank Ⅰ</th><td><span class="en-cell"><span class="en-val">60000</span><button type="button" class="en-grade" data-tier="a" data-stat="hp" data-value="60000" data-ak-tip="生命值评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">1500</span><button type="button" class="en-grade" data-tier="a" data-stat="atk" data-value="1500" data-ak-tip="攻击力评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">700</span><button type="button" class="en-grade" data-tier="b" data-stat="def" data-value="700" data-ak-tip="防御力评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">20</span><button type="button" class="en-grade" data-tier="b" data-stat="res" data-value="20" data-ak-tip="法术抗性评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">2.0</span><button type="button" class="en-grade" data-tier="a" data-stat="atkspeed" data-value="2.0" data-ak-tip="攻击间隔评级 A，点击看分档阈值">A</button></span></td><td><span class="en-cell"><span class="en-val">1.5</span><button type="button" class="en-grade" data-tier="s" data-stat="movespeed" data-value="1.5" data-ak-tip="移动速度评级 S，点击看分档阈值">S</button></span></td></tr>
-  <tr><th scope="row" class="en-lv">Rank Ⅱ</th><td class="is-diff" data-ak-tip="与 Rank Ⅰ 不同"><span class="en-cell"><span class="en-val">70000<span class="ak-sr-only">（与 Rank Ⅰ 不同）</span></span><button type="button" class="en-grade" data-tier="a" data-stat="hp" data-value="70000" data-ak-tip="生命值评级 A+，点击看分档阈值">A+</button></span></td><td class="is-diff" data-ak-tip="与 Rank Ⅰ 不同"><span class="en-cell"><span class="en-val">1750<span class="ak-sr-only">（与 Rank Ⅰ 不同）</span></span><button type="button" class="en-grade" data-tier="a" data-stat="atk" data-value="1750" data-ak-tip="攻击力评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">700</span><button type="button" class="en-grade" data-tier="b" data-stat="def" data-value="700" data-ak-tip="防御力评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">20</span><button type="button" class="en-grade" data-tier="b" data-stat="res" data-value="20" data-ak-tip="法术抗性评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">2.0</span><button type="button" class="en-grade" data-tier="a" data-stat="atkspeed" data-value="2.0" data-ak-tip="攻击间隔评级 A，点击看分档阈值">A</button></span></td><td><span class="en-cell"><span class="en-val">1.5</span><button type="button" class="en-grade" data-tier="s" data-stat="movespeed" data-value="1.5" data-ak-tip="移动速度评级 S，点击看分档阈值">S</button></span></td></tr>
-  <tr><th scope="row" class="en-lv">Rank Ⅲ</th><td class="is-diff" data-ak-tip="与 Rank Ⅰ 不同"><span class="en-cell"><span class="en-val">80000<span class="ak-sr-only">（与 Rank Ⅰ 不同）</span></span><button type="button" class="en-grade" data-tier="a" data-stat="hp" data-value="80000" data-ak-tip="生命值评级 A+，点击看分档阈值">A+</button></span></td><td class="is-diff" data-ak-tip="与 Rank Ⅰ 不同"><span class="en-cell"><span class="en-val">2000<span class="ak-sr-only">（与 Rank Ⅰ 不同）</span></span><button type="button" class="en-grade" data-tier="s" data-stat="atk" data-value="2000" data-ak-tip="攻击力评级 S，点击看分档阈值">S</button></span></td><td><span class="en-cell"><span class="en-val">700</span><button type="button" class="en-grade" data-tier="b" data-stat="def" data-value="700" data-ak-tip="防御力评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">20</span><button type="button" class="en-grade" data-tier="b" data-stat="res" data-value="20" data-ak-tip="法术抗性评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">2.0</span><button type="button" class="en-grade" data-tier="a" data-stat="atkspeed" data-value="2.0" data-ak-tip="攻击间隔评级 A，点击看分档阈值">A</button></span></td><td><span class="en-cell"><span class="en-val">1.5</span><button type="button" class="en-grade" data-tier="s" data-stat="movespeed" data-value="1.5" data-ak-tip="移动速度评级 S，点击看分档阈值">S</button></span></td></tr>
+  <tr><th scope="row" class="en-lv">Rank Ⅰ</th><td><span class="en-cell"><span class="en-val">60000</span><button type="button" class="en-grade" data-tier="a" data-stat="hp" data-value="60000" data-ak-tip="生命值评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">1500</span><button type="button" class="en-grade" data-tier="a" data-stat="atk" data-value="1500" data-ak-tip="攻击力评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">700</span><button type="button" class="en-grade" data-tier="b" data-stat="def" data-value="700" data-ak-tip="防御力评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">20</span><button type="button" class="en-grade" data-tier="b" data-stat="res" data-value="20" data-ak-tip="法术抗性评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">2.0</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="2.0" data-ak-tip="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.5</span><button type="button" class="en-grade" data-tier="s" data-stat="movespeed" data-value="1.5" data-ak-tip="移动速度评级 S，点击看分档阈值">S</button></span></td></tr>
   </tbody>
   <tbody class="en-band">
   <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="没有攻击半径时只进行阻挡攻击；有攻击半径时未被阻挡也能普通攻击">攻击<wbr>半径</span></th><th scope="col">重量<wbr>等级</th><th scope="col">元素<wbr>抗性</th><th scope="col">损伤<wbr>抵抗</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="以属性值写入的嘲讽等级，实际嘲讽等级要算上自身所受效果；范围 −2 ～ 2">基础嘲讽<wbr>等级</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="到达终点退场时通常扣除的关卡生命值">目标<wbr>价值</span></th></tr>
   <tr><th scope="row" class="en-lv">Rank Ⅰ</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td><span class="en-cell"><span class="en-val">2</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">5</span></span></td></tr>
-  <tr><th scope="row" class="en-lv">Rank Ⅱ</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td><span class="en-cell"><span class="en-val">2</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">5</span></span></td></tr>
-  <tr><th scope="row" class="en-lv">Rank Ⅲ</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td><span class="en-cell"><span class="en-val">2</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">5</span></span></td></tr>
   </tbody>
   <tbody class="en-band en-band--misc">
   <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命自回<wbr>速度</th><th scope="col" colspan="3" class="en-wide">异常抗性</th><th scope="col" colspan="2" class="en-wide">技力</th></tr>
   <tr><th scope="row" class="en-lv">Rank Ⅰ</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide" colspan="3"><span>沉默</span><span class="ak-term ak-tip--wide" data-ak-tip="沉睡：无法行动，受到的伤害固定为 1，且无法被选中">沉睡</span><span class="ak-term ak-tip--wide" data-ak-tip="浮空：被抬离地面，无法行动，位移效果加强">浮空</span><span class="ak-term ak-tip--wide" data-ak-tip="战栗：无法攻击、使用技能，受到的伤害提高">战栗</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
+  </tbody>
+</table>
+</div>
+<h3 id="rank-1-技能与天赋">技能与天赋 <button type="button" class="en-help" aria-label="技能与天赋怎么读" aria-expanded="false" aria-controls="en-help-pop"></button></h3>
+<div class="ak-popover en-help-pop" id="en-help-pop" role="tooltip" hidden><p><b>冷却与技力。</b><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>60</span> 是技能第一次就绪要等的秒数，<span class="ak-sp-dur"><span class="en-sp-label">冷却</span>50</span> 是之后每次释放后再就绪的秒数，<span class="ak-sp-cost"><span class="en-sp-label">技力</span>5</span> 是触发一次要消耗的技力。名字下面的「初始模式 / 第二阶段」是技能绑定的模式，只在该模式下冷却和触发。省略冷却的技能不会自动触发；只写技力的技能冷却完成后还要攒够技力才触发。</p><p><b>技能的默认行为。</b>自动触发会占用攻击间隔，可被<a href="#">缴械</a>干扰；多个技能同时就绪时按优先级，优先级相同随机；能重生的敌人重生后重置全部冷却。如无特殊说明，技能可被沉默、只选一个对立阵营的目标、优先仇恨最高者、可对空。</p><p><b>天赋与能力的数值计算顺序。</b>基础属性改变 → 直接加算 → 直接乘算 → 最终加算 → 最终乘算。如无特殊说明，天赋不可被沉默。</p></div>   <!-- 气泡内容放在标题外面（放里面会进目录），由脚本按被悬停的那枚问号摆位；页上几枚问号共用这一张；手机上是贴底的一张卡 -->
+  <table class="ak-table en-skills">
+    <tbody>
+    <tr><th scope="row"><span class="en-skill__name">施加标记</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>1</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>999999</span></div></th>
+      <td><p>仅全场范围内存在我方干员时可触发：</p><p>释放技能后持续标记场上生命值上限最低的我方干员（若被<b>标记</b>的目标持有的<b>伤痕印记</b>离满层相差不高于 1 层，则<b>标记</b>的颜色将从<b>蓝</b>变<b>红</b>）。</p><p>※ 此技能仅能触发一次。<br>※ 索敌不受阻挡影响。</p></td></tr>
+    <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕</span><span class="en-skill__mode">初始模式</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>15</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
+      <td><p>仅全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p>※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
+    <tr class="en-talent"><th scope="row"><span class="en-skill__name">天赋与能力</span></th>
+      <td><p>※ 此页面的三个章节实际上并非同一敌人的三个级别（但内部 id 相同，为同种敌人），每个章节各自拥有独立的<span class="ak-term ak-tip--wide" data-ak-tip="均可在游戏内关卡的「敌方情报」中查看；「敌方档案库」收录的不是三个 Rank 中的任何一个，而是图鉴特供版本（拥有 Rank Ⅲ 的图鉴描述和 Rank Ⅰ 的实际数值），站内目前仅收录特供版本的图鉴">图鉴</span>，为方便查阅做合并处理。</p><p>免疫传送，普通攻击造成物理伤害。<br>位于黑夜环境的<b>无视野</b>地块时，获得 100% 物理 / 法术闪避。</p><p>【消解性空间】在 ① 自身进入失衡状态时 / ② 每 0.1 秒检测一次，若自身持有<a href="#">晕眩</a> / <a href="#">寒冷</a> / <a href="#">冻结</a> / <a href="#">恐惧</a> / <a href="#">诱导</a>时 触发：注射针剂，治疗自身最大生命值 10% 的生命值并获得 5 秒<a href="#">失衡免疫</a>、<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷免疫</a>、<a href="#">寒冷反制</a>、<a href="#">冻结免疫</a>、<a href="#">冻结反制</a>、<a href="#">恐惧免疫</a>、<a href="#">恐惧反制</a>、<a href="#">诱导免疫</a>、<a href="#">诱导反制</a>（此天赋在触发后的 10 秒内无法再次触发；注射针剂动画期间持有<a href="#">失衡免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷反制</a>、<a href="#">冻结反制</a>、<a href="#">恐惧反制</a>、<a href="#">诱导反制</a>，若由 ② 触发，则额外持有<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">寒冷免疫</a>、<a href="#">冻结免疫</a>、<a href="#">恐惧免疫</a>、<a href="#">诱导免疫</a>）。</p></td></tr>
+    </tbody>
+  </table>
+
+<h2 id="rank-2">Rank Ⅱ</h2>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats en-info" style="--en-levels: 1;">
+  <caption class="en-caption">级别信息</caption>
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">名称</th><th scope="col">地位</th><th scope="col">种类</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="常规认知上的攻击方式，本质是一个标签，与实现层面是否真的进行此类攻击无关；守林人、棘刺会检测这个标签。与普通攻击的攻击途径不一致时站内另行说明">攻击方式</span></th><th scope="col">行动方式</th><th scope="col">描述</th></tr>
+  <tr><th scope="row" class="en-lv">Rank Ⅱ</th><td>“Misery”，静默之刃</td><td>领袖</td><td>萨卡兹</td><td>近战 / 远程</td><td>地面</td><td class="en-desc-cell">以 Misery 的战力极限为模本构拟的突破训练官。</td></tr>
+  </tbody>
+</table>
+</div>
+<h3 id="rank-2-属性">属性</h3>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats" style="--en-levels: 1;">
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命值</th><th scope="col">攻击力</th><th scope="col">防御力</th><th scope="col">法术<wbr>抗性</th><th scope="col">攻击<wbr>间隔</th><th scope="col">移动<wbr>速度</th></tr>
+  <tr><th scope="row" class="en-lv">Rank Ⅱ</th><td><span class="en-cell"><span class="en-val">70000</span><button type="button" class="en-grade" data-tier="a" data-stat="hp" data-value="70000" data-ak-tip="生命值评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">1750</span><button type="button" class="en-grade" data-tier="a" data-stat="atk" data-value="1750" data-ak-tip="攻击力评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">700</span><button type="button" class="en-grade" data-tier="b" data-stat="def" data-value="700" data-ak-tip="防御力评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">20</span><button type="button" class="en-grade" data-tier="b" data-stat="res" data-value="20" data-ak-tip="法术抗性评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">2.0</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="2.0" data-ak-tip="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.5</span><button type="button" class="en-grade" data-tier="s" data-stat="movespeed" data-value="1.5" data-ak-tip="移动速度评级 S，点击看分档阈值">S</button></span></td></tr>
+  </tbody>
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="没有攻击半径时只进行阻挡攻击；有攻击半径时未被阻挡也能普通攻击">攻击<wbr>半径</span></th><th scope="col">重量<wbr>等级</th><th scope="col">元素<wbr>抗性</th><th scope="col">损伤<wbr>抵抗</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="以属性值写入的嘲讽等级，实际嘲讽等级要算上自身所受效果；范围 −2 ～ 2">基础嘲讽<wbr>等级</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="到达终点退场时通常扣除的关卡生命值">目标<wbr>价值</span></th></tr>
+  <tr><th scope="row" class="en-lv">Rank Ⅱ</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td><span class="en-cell"><span class="en-val">2</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">5</span></span></td></tr>
+  </tbody>
+  <tbody class="en-band en-band--misc">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命自回<wbr>速度</th><th scope="col" colspan="3" class="en-wide">异常抗性</th><th scope="col" colspan="2" class="en-wide">技力</th></tr>
   <tr><th scope="row" class="en-lv">Rank Ⅱ</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide" colspan="3"><span>沉默</span><span class="ak-term ak-tip--wide" data-ak-tip="沉睡：无法行动，受到的伤害固定为 1，且无法被选中">沉睡</span><span class="ak-term ak-tip--wide" data-ak-tip="浮空：被抬离地面，无法行动，位移效果加强">浮空</span><span class="ak-term ak-tip--wide" data-ak-tip="战栗：无法攻击、使用技能，受到的伤害提高">战栗</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
+  </tbody>
+</table>
+</div>
+<h3 id="rank-2-技能与天赋">技能与天赋 <button type="button" class="en-help" aria-label="技能与天赋怎么读" aria-expanded="false" aria-controls="en-help-pop"></button></h3>
+  <table class="ak-table en-skills">
+    <tbody>
+    <tr><th scope="row"><span class="en-skill__name">施加标记</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>1</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>999999</span></div></th>
+      <td><p>仅全场范围内存在我方干员时可触发：</p><p>释放技能后持续标记场上生命值上限最低的我方干员（若被<b>标记</b>的目标持有的<b>伤痕印记</b>离满层相差不高于 1 层，则<b>标记</b>的颜色将从<b>蓝</b>变<b>红</b>）。</p><p>※ 此技能仅能触发一次。<br>※ 索敌不受阻挡影响。</p></td></tr>
+    <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕</span><span class="en-skill__mode">初始模式</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>15</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
+      <td><p>仅全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p>※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
+    <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕</span><span class="en-skill__mode">第二阶段</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>5</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
+      <td><p>仅 ① 全场范围内存在被<b>标记</b>的非飞行我方干员时 / ② 若不满足 ①，则天赋的<a href="#">自缚</a>生效时 可触发：</p><p>由 ① 触发的情况下，对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p>由 ② 触发意味着没有可选目标，这种情况下释放的技能没有且不需要目标。</p><p>※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
+    <tr><th scope="row"><span class="en-skill__name">反馈性隐蔽</span><span class="en-skill__mode">第二阶段</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>0</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
+      <td><p>仅自身未处于黑夜环境的<b>无视野</b>地块、且全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>尝试闪现至距离自身最近且路径上没有角色类单位的黑夜环境的<b>无视野</b>地块，成功闪现后 1 秒内无法再次触发此技能，否则 10 秒内无法再次触发此技能。</p><p>※ 技能期间持有<a href="#">无敌</a>、<a href="#">不可选中</a>、<a href="#">不可阻挡</a>。</p></td></tr>
+    <tr class="en-talent"><th scope="row"><span class="en-skill__name">天赋与能力</span></th>
+      <td><p>※ 此页面的三个章节实际上并非同一敌人的三个级别（但内部 id 相同，为同种敌人），每个章节各自拥有独立的<span class="ak-term ak-tip--wide" data-ak-tip="均可在游戏内关卡的「敌方情报」中查看；「敌方档案库」收录的不是三个 Rank 中的任何一个，而是图鉴特供版本（拥有 Rank Ⅲ 的图鉴描述和 Rank Ⅰ 的实际数值），站内目前仅收录特供版本的图鉴">图鉴</span>，为方便查阅做合并处理。</p><p>免疫传送，普通攻击造成物理伤害。<br>位于黑夜环境的<b>无视野</b>地块时，获得 100% 物理 / 法术闪避。</p><p>【消解性空间】在 ① 自身进入失衡状态时 / ② 每 0.1 秒检测一次，若自身持有<a href="#">晕眩</a> / <a href="#">寒冷</a> / <a href="#">冻结</a> / <a href="#">恐惧</a> / <a href="#">诱导</a>时 触发：注射针剂，治疗自身最大生命值 10% 的生命值并获得 5 秒<a href="#">失衡免疫</a>、<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷免疫</a>、<a href="#">寒冷反制</a>、<a href="#">冻结免疫</a>、<a href="#">冻结反制</a>、<a href="#">恐惧免疫</a>、<a href="#">恐惧反制</a>、<a href="#">诱导免疫</a>、<a href="#">诱导反制</a>（此天赋在触发后的 10 秒内无法再次触发；注射针剂动画期间持有<a href="#">失衡免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷反制</a>、<a href="#">冻结反制</a>、<a href="#">恐惧反制</a>、<a href="#">诱导反制</a>，若由 ② 触发，则额外持有<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">寒冷免疫</a>、<a href="#">冻结免疫</a>、<a href="#">恐惧免疫</a>、<a href="#">诱导免疫</a>）。</p><h4>第一阶段［初始模式］</h4><p>首次被击倒后进行持续 10 秒的重生，回复 100% 生命值，随后闪现至特定位置，释放当前波次，若此时自身处于停驻检查点，跳过该停驻检查点。<br>重生结束后进入第二阶段。</p><h4>第二阶段</h4><p><a href="#">自缚</a>（于技能【瞬时性伤痕】结束时解除，于技能【反馈性隐蔽】结束时重新生效）。</p></td></tr>
+    </tbody>
+  </table>
+
+<h2 id="rank-3">Rank Ⅲ</h2>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats en-info" style="--en-levels: 1;">
+  <caption class="en-caption">级别信息</caption>
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">名称</th><th scope="col">地位</th><th scope="col">种类</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="常规认知上的攻击方式，本质是一个标签，与实现层面是否真的进行此类攻击无关；守林人、棘刺会检测这个标签。与普通攻击的攻击途径不一致时站内另行说明">攻击方式</span></th><th scope="col">行动方式</th><th scope="col">描述</th></tr>
+  <tr><th scope="row" class="en-lv">Rank Ⅲ</th><td>“Misery”，静默之刃</td><td>领袖</td><td>萨卡兹</td><td>近战 / 远程</td><td>地面</td><td class="en-desc-cell">以 Misery 的战力极限为模本构拟的突破训练官。</td></tr>
+  </tbody>
+</table>
+</div>
+<h3 id="rank-3-属性">属性</h3>
+<div class="ak-table-scroll">
+<table class="ak-table en-stats" style="--en-levels: 1;">
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命值</th><th scope="col">攻击力</th><th scope="col">防御力</th><th scope="col">法术<wbr>抗性</th><th scope="col">攻击<wbr>间隔</th><th scope="col">移动<wbr>速度</th></tr>
+  <tr><th scope="row" class="en-lv">Rank Ⅲ</th><td><span class="en-cell"><span class="en-val">80000</span><button type="button" class="en-grade" data-tier="a" data-stat="hp" data-value="80000" data-ak-tip="生命值评级 A+，点击看分档阈值">A+</button></span></td><td><span class="en-cell"><span class="en-val">2000</span><button type="button" class="en-grade" data-tier="s" data-stat="atk" data-value="2000" data-ak-tip="攻击力评级 S，点击看分档阈值">S</button></span></td><td><span class="en-cell"><span class="en-val">700</span><button type="button" class="en-grade" data-tier="b" data-stat="def" data-value="700" data-ak-tip="防御力评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">20</span><button type="button" class="en-grade" data-tier="b" data-stat="res" data-value="20" data-ak-tip="法术抗性评级 B，点击看分档阈值">B</button></span></td><td><span class="en-cell"><span class="en-val">2.0</span><button type="button" class="en-grade" data-tier="b" data-stat="atkspeed" data-value="2.0" data-ak-tip="攻击间隔评级 B+，点击看分档阈值">B+</button></span></td><td><span class="en-cell"><span class="en-val">1.5</span><button type="button" class="en-grade" data-tier="s" data-stat="movespeed" data-value="1.5" data-ak-tip="移动速度评级 S，点击看分档阈值">S</button></span></td></tr>
+  </tbody>
+  <tbody class="en-band">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="没有攻击半径时只进行阻挡攻击；有攻击半径时未被阻挡也能普通攻击">攻击<wbr>半径</span></th><th scope="col">重量<wbr>等级</th><th scope="col">元素<wbr>抗性</th><th scope="col">损伤<wbr>抵抗</th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="以属性值写入的嘲讽等级，实际嘲讽等级要算上自身所受效果；范围 −2 ～ 2">基础嘲讽<wbr>等级</span></th><th scope="col"><span class="ak-term ak-tip--wide" data-ak-tip="到达终点退场时通常扣除的关卡生命值">目标<wbr>价值</span></th></tr>
+  <tr><th scope="row" class="en-lv">Rank Ⅲ</th><td class="is-zero"><span class="en-cell"><span class="en-val">—</span></span></td><td><span class="en-cell"><span class="en-val">2</span></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="eres" data-value="0" data-ak-tip="元素抗性评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span><button type="button" class="en-grade" data-tier="low" data-stat="epres" data-value="0" data-ak-tip="损伤抵抗评级 E，点击看分档阈值">E</button></span></td><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td><span class="en-cell"><span class="en-val">5</span></span></td></tr>
+  </tbody>
+  <tbody class="en-band en-band--misc">
+  <tr class="en-head-row"><th scope="col" class="en-lv"><span class="ak-sr-only">级别</span></th><th scope="col">生命自回<wbr>速度</th><th scope="col" colspan="3" class="en-wide">异常抗性</th><th scope="col" colspan="2" class="en-wide">技力</th></tr>
   <tr><th scope="row" class="en-lv">Rank Ⅲ</th><td class="is-zero"><span class="en-cell"><span class="en-val">0</span></span></td><td class="en-wide" colspan="3"><span>沉默</span><span class="ak-term ak-tip--wide" data-ak-tip="沉睡：无法行动，受到的伤害固定为 1，且无法被选中">沉睡</span><span class="ak-term ak-tip--wide" data-ak-tip="浮空：被抬离地面，无法行动，位移效果加强">浮空</span><span class="ak-term ak-tip--wide" data-ak-tip="战栗：无法攻击、使用技能，受到的伤害提高">战栗</span></td><td class="en-wide is-zero" colspan="2"><span class="en-val">—</span></td></tr>
   </tbody>
 </table>
 </div>
-<p class="en-note"><span class="en-mark" aria-hidden="true"></span>与 Rank Ⅰ 不同的数值。评级字母按站内分档，点击查看阈值。</p>
-<p class="en-note">表中是敌人的默认数值；各关卡可能另行调整，以关卡页「敌方情报」为准。</p>
-
-<h2 id="技能与天赋">技能与天赋 <button type="button" class="en-help" aria-label="技能与天赋怎么读" aria-expanded="false" aria-controls="en-help-pop"></button></h2>
-<div class="ak-popover en-help-pop" id="en-help-pop" role="tooltip" hidden><p><b>冷却与技力。</b><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>60</span> 是技能第一次就绪要等的秒数，<span class="ak-sp-dur"><span class="en-sp-label">冷却</span>50</span> 是之后每次释放后再就绪的秒数，<span class="ak-sp-cost"><span class="en-sp-label">技力</span>5</span> 是触发一次要消耗的技力。省略冷却的技能不会自动触发；只写技力的技能冷却完成后还要攒够技力才触发。名字下面的「初始模式 / 第二阶段」是技能绑定的模式，只在该模式下冷却和触发。</p><p><b>技能的默认行为。</b>自动触发会占用攻击间隔，可被<a href="#">缴械</a>干扰；多个技能同时就绪时按优先级，优先级相同随机；能重生的敌人重生后重置全部冷却。如无特殊说明，技能可被沉默、只选一个对立阵营的目标、优先仇恨最高者、可对空。</p><p><b>天赋与能力的数值计算顺序。</b>基础属性改变 → 直接加算 → 直接乘算 → 最终加算 → 最终乘算。如无特殊说明，天赋不可被沉默。</p></div>
-<div class="tabber">
-  <header class="tabber__header"><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" href="#en-lv-0" id="en-lv-tab-0" aria-selected="true" aria-controls="en-lv-0">Rank Ⅰ</a><a class="tabber__tab" role="tab" href="#en-lv-1" id="en-lv-tab-1" aria-selected="false" aria-controls="en-lv-1" tabindex="-1">Rank Ⅱ</a><a class="tabber__tab" role="tab" href="#en-lv-2" id="en-lv-tab-2" aria-selected="false" aria-controls="en-lv-2" tabindex="-1">Rank Ⅲ</a></nav></header>
-  <section class="tabber__section">
-    <article class="tabber__panel" id="en-lv-0" role="tabpanel" aria-labelledby="en-lv-tab-0" data-title="Rank Ⅰ">
+<h3 id="rank-3-技能与天赋">技能与天赋 <button type="button" class="en-help" aria-label="技能与天赋怎么读" aria-expanded="false" aria-controls="en-help-pop"></button></h3>
   <table class="ak-table en-skills">
     <tbody>
     <tr><th scope="row"><span class="en-skill__name">施加标记</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>1</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>999999</span></div></th>
-      <td><p>仅全场范围内存在我方干员时可触发：</p><p>释放技能后持续标记场上生命值上限最低的我方干员（若被<b>标记</b>的目标持有的<b>伤痕印记</b>离满层相差不高于 1 层，则<b>标记</b>的颜色将从<b>蓝</b>变<b>红</b>）。</p><p class="en-note-inline">※ 此技能仅能触发一次。<br>※ 索敌不受阻挡影响。</p></td></tr>
+      <td><p>仅全场范围内存在我方干员时可触发：</p><p>释放技能后持续标记场上生命值上限最低的我方干员（若被<b>标记</b>的目标持有的<b>伤痕印记</b>离满层相差不高于 1 层，则<b>标记</b>的颜色将从<b>蓝</b>变<b>红</b>）。</p><p>※ 此技能仅能触发一次。<br>※ 索敌不受阻挡影响。</p></td></tr>
     <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕</span><span class="en-skill__mode">初始模式</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>15</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
-      <td><p>仅全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p class="en-note-inline">※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
+      <td><p>仅全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p>※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
+    <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕</span><span class="en-skill__mode">第二阶段</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>5</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
+      <td><p>仅 ① 全场范围内存在被<b>标记</b>的非飞行我方干员时 / ② 若不满足 ①，则天赋的<a href="#">自缚</a>生效时 可触发：</p><p>由 ① 触发的情况下，对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p>由 ② 触发意味着没有可选目标，这种情况下释放的技能没有且不需要目标。</p><p>※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
+    <tr><th scope="row"><span class="en-skill__name">反馈性隐蔽</span><span class="en-skill__mode">第二阶段</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>0</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
+      <td><p>仅自身未处于黑夜环境的<b>无视野</b>地块、且全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>尝试闪现至距离自身最近且路径上没有角色类单位的黑夜环境的<b>无视野</b>地块，成功闪现后 1 秒内无法再次触发此技能，否则 10 秒内无法再次触发此技能。</p><p>※ 技能期间持有<a href="#">无敌</a>、<a href="#">不可选中</a>、<a href="#">不可阻挡</a>。</p></td></tr>
     <tr class="en-talent"><th scope="row"><span class="en-skill__name">天赋与能力</span></th>
-      <td><p>免疫传送，普通攻击造成物理伤害。<br>位于黑夜环境的<b>无视野</b>地块时，获得 100% 物理 / 法术闪避。</p><p>【消解性空间】在 ① 自身进入失衡状态时 / ② 每 0.1 秒检测一次，若自身持有<a href="#">晕眩</a> / <a href="#">寒冷</a> / <a href="#">冻结</a> / <a href="#">恐惧</a> / <a href="#">诱导</a>时 触发：注射针剂，治疗自身最大生命值 10% 的生命值并获得 5 秒<a href="#">失衡免疫</a>、<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷免疫</a>、<a href="#">寒冷反制</a>、<a href="#">冻结免疫</a>、<a href="#">冻结反制</a>、<a href="#">恐惧免疫</a>、<a href="#">恐惧反制</a>、<a href="#">诱导免疫</a>、<a href="#">诱导反制</a>（此天赋在触发后的 10 秒内无法再次触发；注射针剂动画期间持有<a href="#">失衡免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷反制</a>、<a href="#">冻结反制</a>、<a href="#">恐惧反制</a>、<a href="#">诱导反制</a>，若由 ② 触发，则额外持有<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">寒冷免疫</a>、<a href="#">冻结免疫</a>、<a href="#">恐惧免疫</a>、<a href="#">诱导免疫</a>）。</p></td></tr>
+      <td><p>※ 此页面的三个章节实际上并非同一敌人的三个级别（但内部 id 相同，为同种敌人），每个章节各自拥有独立的<span class="ak-term ak-tip--wide" data-ak-tip="均可在游戏内关卡的「敌方情报」中查看；「敌方档案库」收录的不是三个 Rank 中的任何一个，而是图鉴特供版本（拥有 Rank Ⅲ 的图鉴描述和 Rank Ⅰ 的实际数值），站内目前仅收录特供版本的图鉴">图鉴</span>，为方便查阅做合并处理。</p><p>免疫传送，普通攻击造成物理伤害。<br>位于黑夜环境的<b>无视野</b>地块时，获得 100% 物理 / 法术闪避。</p><p>【消解性空间】在 ① 自身进入失衡状态时 / ② 每 0.1 秒检测一次，若自身持有<a href="#">晕眩</a> / <a href="#">寒冷</a> / <a href="#">冻结</a> / <a href="#">恐惧</a> / <a href="#">诱导</a>时 触发：注射针剂，治疗自身最大生命值 10% 的生命值并获得 5 秒<a href="#">失衡免疫</a>、<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷免疫</a>、<a href="#">寒冷反制</a>、<a href="#">冻结免疫</a>、<a href="#">冻结反制</a>、<a href="#">恐惧免疫</a>、<a href="#">恐惧反制</a>、<a href="#">诱导免疫</a>、<a href="#">诱导反制</a>（此天赋在触发后的 10 秒内无法再次触发；注射针剂动画期间持有<a href="#">失衡免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷反制</a>、<a href="#">冻结反制</a>、<a href="#">恐惧反制</a>、<a href="#">诱导反制</a>，若由 ② 触发，则额外持有<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">寒冷免疫</a>、<a href="#">冻结免疫</a>、<a href="#">恐惧免疫</a>、<a href="#">诱导免疫</a>）。</p><p>【弥散性裂变】自身造成伤害时，附加 10 秒<b>固定</b>每秒造成攻击力 20% 的无途径法术持续伤害的可<span class="ak-term ak-tip--wide" data-ak-tip="抵抗：持续时间按状态抵抗率缩短">抵抗</span>的 buff（此天赋不会被此天赋的伤害触发；重复施加时仅刷新持续时间）</p><h4>第一阶段［初始模式］</h4><p>首次被击倒后进行持续 10 秒的重生，回复 100% 生命值，随后闪现至特定位置，释放当前波次，若此时自身处于停驻检查点，跳过该停驻检查点。<br>重生结束后进入第二阶段。</p><h4>第二阶段</h4><p><a href="#">自缚</a>（于技能【瞬时性伤痕】结束时解除，于技能【反馈性隐蔽】结束时重新生效）。</p></td></tr>
     </tbody>
   </table>
-    </article>
-    <article class="tabber__panel" id="en-lv-1" role="tabpanel" aria-labelledby="en-lv-tab-1" data-title="Rank Ⅱ" hidden>
-  <table class="ak-table en-skills">
-    <tbody>
-    <tr><th scope="row"><span class="en-skill__name">施加标记</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>1</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>999999</span></div></th>
-      <td><p>仅全场范围内存在我方干员时可触发：</p><p>释放技能后持续标记场上生命值上限最低的我方干员（若被<b>标记</b>的目标持有的<b>伤痕印记</b>离满层相差不高于 1 层，则<b>标记</b>的颜色将从<b>蓝</b>变<b>红</b>）。</p><p class="en-note-inline">※ 此技能仅能触发一次。<br>※ 索敌不受阻挡影响。</p></td></tr>
-    <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕</span><span class="en-skill__mode">初始模式</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>15</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
-      <td><p>仅全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p class="en-note-inline">※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
-    <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕 <span class="ak-tag ak-tag--sm ak-tag--accent-soft" data-ak-tip="Rank Ⅰ 没有这个技能">新增</span></span><span class="en-skill__mode">第二阶段</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>5</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
-      <td><p>仅 ① 全场范围内存在被<b>标记</b>的非飞行我方干员时 / ② 若不满足 ①，则天赋的<a href="#">自缚</a>生效时 可触发：</p><p>由 ① 触发的情况下，对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p>由 ② 触发意味着没有可选目标，这种情况下释放的技能没有且不需要目标。</p><p class="en-note-inline">※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
-    <tr><th scope="row"><span class="en-skill__name">反馈性隐蔽 <span class="ak-tag ak-tag--sm ak-tag--accent-soft" data-ak-tip="Rank Ⅰ 没有这个技能">新增</span></span><span class="en-skill__mode">第二阶段</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>0</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
-      <td><p>仅自身未处于黑夜环境的<b>无视野</b>地块、且全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>尝试闪现至距离自身最近且路径上没有角色类单位的黑夜环境的<b>无视野</b>地块，成功闪现后 1 秒内无法再次触发此技能，否则 10 秒内无法再次触发此技能。</p><p class="en-note-inline">※ 技能期间持有<a href="#">无敌</a>、<a href="#">不可选中</a>、<a href="#">不可阻挡</a>。</p></td></tr>
-    <tr class="en-talent"><th scope="row"><span class="en-skill__name">天赋与能力</span></th>
-      <td><p>免疫传送，普通攻击造成物理伤害。<br>位于黑夜环境的<b>无视野</b>地块时，获得 100% 物理 / 法术闪避。</p><p>【消解性空间】在 ① 自身进入失衡状态时 / ② 每 0.1 秒检测一次，若自身持有<a href="#">晕眩</a> / <a href="#">寒冷</a> / <a href="#">冻结</a> / <a href="#">恐惧</a> / <a href="#">诱导</a>时 触发：注射针剂，治疗自身最大生命值 10% 的生命值并获得 5 秒<a href="#">失衡免疫</a>、<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷免疫</a>、<a href="#">寒冷反制</a>、<a href="#">冻结免疫</a>、<a href="#">冻结反制</a>、<a href="#">恐惧免疫</a>、<a href="#">恐惧反制</a>、<a href="#">诱导免疫</a>、<a href="#">诱导反制</a>（此天赋在触发后的 10 秒内无法再次触发；注射针剂动画期间持有<a href="#">失衡免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷反制</a>、<a href="#">冻结反制</a>、<a href="#">恐惧反制</a>、<a href="#">诱导反制</a>，若由 ② 触发，则额外持有<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">寒冷免疫</a>、<a href="#">冻结免疫</a>、<a href="#">恐惧免疫</a>、<a href="#">诱导免疫</a>）。</p><h4>第一阶段［初始模式］</h4><p>首次被击倒后进行持续 10 秒的重生，回复 100% 生命值，随后闪现至特定位置，释放当前波次，若此时自身处于停驻检查点，跳过该停驻检查点。<br>重生结束后进入第二阶段。</p><h4>第二阶段</h4><p><a href="#">自缚</a>（于技能【瞬时性伤痕】结束时解除，于技能【反馈性隐蔽】结束时重新生效）。</p></td></tr>
-    </tbody>
-  </table>
-  <p class="en-note"><span class="en-mark" aria-hidden="true"></span>带 ● 的文字与 Rank Ⅰ 不同（文字改了、没有数值方向）；「新增」= Rank Ⅰ 没有这个技能。</p>
-    </article>
-    <article class="tabber__panel" id="en-lv-2" role="tabpanel" aria-labelledby="en-lv-tab-2" data-title="Rank Ⅲ" hidden>
-  <table class="ak-table en-skills">
-    <tbody>
-    <tr><th scope="row"><span class="en-skill__name">施加标记</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>1</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>999999</span></div></th>
-      <td><p>仅全场范围内存在我方干员时可触发：</p><p>释放技能后持续标记场上生命值上限最低的我方干员（若被<b>标记</b>的目标持有的<b>伤痕印记</b>离满层相差不高于 1 层，则<b>标记</b>的颜色将从<b>蓝</b>变<b>红</b>）。</p><p class="en-note-inline">※ 此技能仅能触发一次。<br>※ 索敌不受阻挡影响。</p></td></tr>
-    <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕</span><span class="en-skill__mode">初始模式</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>15</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
-      <td><p>仅全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p class="en-note-inline">※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
-    <tr><th scope="row"><span class="en-skill__name">瞬时性伤痕 <span class="ak-tag ak-tag--sm ak-tag--accent-soft" data-ak-tip="Rank Ⅰ 没有这个技能">新增</span></span><span class="en-skill__mode">第二阶段</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>5</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
-      <td><p>仅 ① 全场范围内存在被<b>标记</b>的非飞行我方干员时 / ② 若不满足 ①，则天赋的<a href="#">自缚</a>生效时 可触发：</p><p>由 ① 触发的情况下，对目标造成攻击力 200% 的近战途径物理伤害，附加 1 层<b>伤痕印记</b>（最多叠加 3 层，叠加到满层时失去黑夜环境中提供的视野），被击倒的目标的当次再部署时间提升至 250%。</p><p>由 ② 触发意味着没有可选目标，这种情况下释放的技能没有且不需要目标。</p><p class="en-note-inline">※ 成功释放主效果时自身获得 0.8 秒<a href="#">无敌</a>、<a href="#">隐匿</a>。<br>※ 技能持续 3 秒，若期间未被打断，结束后的 15 秒内无法触发技能【瞬时性伤痕】。<br>※ 索敌不受阻挡影响。</p></td></tr>
-    <tr><th scope="row"><span class="en-skill__name">反馈性隐蔽 <span class="ak-tag ak-tag--sm ak-tag--accent-soft" data-ak-tip="Rank Ⅰ 没有这个技能">新增</span></span><span class="en-skill__mode">第二阶段</span><div class="en-skill__stats"><span class="ak-sp-init"><span class="en-sp-label">初始冷却</span>0</span><span class="ak-sp-dur"><span class="en-sp-label">冷却</span>0</span></div></th>
-      <td><p>仅自身未处于黑夜环境的<b>无视野</b>地块、且全场范围内存在被<b>标记</b>的非飞行我方干员时可触发：</p><p>尝试闪现至距离自身最近且路径上没有角色类单位的黑夜环境的<b>无视野</b>地块，成功闪现后 1 秒内无法再次触发此技能，否则 10 秒内无法再次触发此技能。</p><p class="en-note-inline">※ 技能期间持有<a href="#">无敌</a>、<a href="#">不可选中</a>、<a href="#">不可阻挡</a>。</p></td></tr>
-    <tr class="en-talent"><th scope="row"><span class="en-skill__name">天赋与能力</span></th>
-      <td><p>免疫传送，普通攻击造成物理伤害。<br>位于黑夜环境的<b>无视野</b>地块时，获得 100% 物理 / 法术闪避。</p><p>【消解性空间】在 ① 自身进入失衡状态时 / ② 每 0.1 秒检测一次，若自身持有<a href="#">晕眩</a> / <a href="#">寒冷</a> / <a href="#">冻结</a> / <a href="#">恐惧</a> / <a href="#">诱导</a>时 触发：注射针剂，治疗自身最大生命值 10% 的生命值并获得 5 秒<a href="#">失衡免疫</a>、<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷免疫</a>、<a href="#">寒冷反制</a>、<a href="#">冻结免疫</a>、<a href="#">冻结反制</a>、<a href="#">恐惧免疫</a>、<a href="#">恐惧反制</a>、<a href="#">诱导免疫</a>、<a href="#">诱导反制</a>（此天赋在触发后的 10 秒内无法再次触发；注射针剂动画期间持有<a href="#">失衡免疫</a>、<a href="#">晕眩反制</a>、<a href="#">寒冷反制</a>、<a href="#">冻结反制</a>、<a href="#">恐惧反制</a>、<a href="#">诱导反制</a>，若由 ② 触发，则额外持有<a href="#">状态免疫</a>、<a href="#">晕眩免疫</a>、<a href="#">寒冷免疫</a>、<a href="#">冻结免疫</a>、<a href="#">恐惧免疫</a>、<a href="#">诱导免疫</a>）。</p><p><span class="en-delta en-delta--text" data-ak-tip="Rank Ⅰ：Rank Ⅰ 没有这一段">【弥散性裂变】自身造成伤害时，附加 10 秒<b>固定</b>每秒造成攻击力 20% 的无途径法术持续伤害的可<span class="ak-term ak-tip--wide" data-ak-tip="抵抗：持续时间按状态抵抗率缩短">抵抗</span>的 buff（此天赋不会被此天赋的伤害触发；重复施加时仅刷新持续时间）<i class="en-delta__i" aria-hidden="true"></i></span></p><h4>第一阶段［初始模式］</h4><p>首次被击倒后进行持续 10 秒的重生，回复 100% 生命值，随后闪现至特定位置，释放当前波次，若此时自身处于停驻检查点，跳过该停驻检查点。<br>重生结束后进入第二阶段。</p><h4>第二阶段</h4><p><a href="#">自缚</a>（于技能【瞬时性伤痕】结束时解除，于技能【反馈性隐蔽】结束时重新生效）。</p></td></tr>
-    </tbody>
-  </table>
-  <p class="en-note"><span class="en-mark" aria-hidden="true"></span>带 ● 的文字与 Rank Ⅰ 不同（文字改了、没有数值方向）；「新增」= Rank Ⅰ 没有这个技能。</p>
-    </article>
-  </section>
-</div>
-
-<h2 id="出场关卡">出场关卡</h2>
-<dl class="ak-kv ak-kv--boxed en-stages">
-  <dt>活动</dt><dd><a href="#">VEC-04 空间盲点</a><a href="#">VEC-08 脉冲隔绝术</a><a href="#">VEC-12 维度误导</a><a href="#">VEC-C 惊吓幕后</a><a href="#">VEC-D 认知剥离界域</a></dd>
-</dl>
 
 <dialog class="ak-dialog ak-dialog--sm" id="en-grade-dialog" aria-labelledby="en-grade-dialog-title">
   <div class="ak-dialog__head"><div class="ak-dialog__title" role="heading" aria-level="2" id="en-grade-dialog-title">属性评级</div><button type="button" class="ak-btn ak-btn--ghost ak-btn--sm ak-btn--icon" title="关闭" data-dialog-close><svg class="ak-btn__icon"><use href="#i-x"/></svg></button></div>
