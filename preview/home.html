@@ -353,8 +353,13 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
   .mp-nav__zh:lang(en) { font-size: var(--ak-fs-xs); letter-spacing: 0; }   /* 英文名最长 10 个字母（Operations），14px 要 ~78px，放不进 77px 的格子 */
   .mp-section { margin-top: var(--ak-space-8); }
   .mp-site { grid-template-columns: 1fr; }
-  .mp-stages__grid { grid-template-columns: 1fr 1fr; }
-  .mp-stages__grid .ak-stage__code { min-width: 52px; }
+  /* 关卡格：两列、关卡码在上名字在下。并排时一格 ~150px，去掉内边距 / 关卡码 / 间距名字只剩 ~54px = 4 个字，5 字起就是「3 字 + …」，
+   *  还跟着关卡码长度变（YW-EX-10 / ECB-M03 只剩 2～3 字）。改成上下排名字拿到整格宽（~130px = 10 个字），超过的直接折行不省略；
+   *  格子高度随行数走，网格同一行的两格一样高。代价是 8 格从 156 长到 ~216px */
+  .mp-stages__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .mp-stages__grid .ak-stage { grid-template-columns: minmax(0, 1fr); gap: 2px; align-items: start; padding: 5px 10px 6px; }
+  .mp-stages__grid .ak-stage__code { min-width: 0; }
+  .mp-stages__grid .ak-stage__name { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.3; }
 }
 @media (max-width: 359px) {
   /* 再窄（320）：今日开放的竖排小格 ~45 / ~58px 宽，12px 的「作战记录」「近卫 & 特种」放不下——名字降到 11px（中文小字下限 max(…, --ak-fs-cjk-min)，低分屏抬回 12）、格子不留左右内边距 */
