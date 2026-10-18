@@ -355,9 +355,10 @@ table.mp-week__table { width: 100%; margin: 0; table-layout: fixed; border-colla
   .mp-site { grid-template-columns: 1fr; }
   /* 关卡格：两列、关卡码在上名字在下。并排时一格 ~150px，去掉内边距 / 关卡码 / 间距名字只剩 ~54px = 4 个字，5 字起就是「3 字 + …」，
    *  还跟着关卡码长度变（YW-EX-10 / ECB-M03 只剩 2～3 字）。改成上下排名字拿到整格宽（~130px = 10 个字），超过的直接折行不省略；
-   *  格子高度随行数走，网格同一行的两格一样高。代价是 8 格从 156 长到 ~216px */
+   *  格子高度随行数走，网格同一行的两格一样高；被邻格顶高的那格内容贴上边（align-content: start，.mp-a > a 继承过去——
+   *  不写的话链接盒的 stretch 会把多出的高度平分给两行，短名字就吊在格子中间），同干员页里被另一边顶开的那栏。代价是 8 格从 156 长到 ~216px */
   .mp-stages__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .mp-stages__grid .ak-stage { grid-template-columns: minmax(0, 1fr); gap: 2px; align-items: start; padding: 5px 10px 6px; }
+  .mp-stages__grid .ak-stage { grid-template-columns: minmax(0, 1fr); gap: 2px; align-items: start; align-content: start; padding: 5px 10px 6px; }
   .mp-stages__grid .ak-stage__code { min-width: 0; }
   .mp-stages__grid .ak-stage__name { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.3; }
 }
