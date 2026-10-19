@@ -130,7 +130,8 @@ body .charimg-m { z-index: calc(var(--ak-z-modal) + 1); }   /* 手机版「查�
 .sv__hint { position: absolute; left: 12px; bottom: 10px; pointer-events: none; font: 600 max(10px, var(--ak-fs-cjk-min))/1 var(--ak-font-label); letter-spacing: .08em; color: rgba(var(--sv-ink), .42); }
 .sv__veil { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 12px; text-align: center; background: var(--sv-bg, #0f0f10); color: rgba(255, 255, 255, .7); font-size: var(--ak-fs-sm); }
 .sv__veil[hidden] { display: none; }
-/* 动作列表：一行一个动作，点了就播（游戏的时装预览也是一排直达按钮 btn_play_enter / special / interact，不是下拉）。右边是帧数（30 帧 / 秒）与判定帧个数 */
+/* 动作列表：一行一个动作，点了就播（游戏的时装预览也是一排直达按钮 btn_play_enter / special / interact，不是下拉）。右边是帧数（30 帧 / 秒）与判定帧个数。
+   行里的字要能选中复制（动作名拿去写 wikitext），所以行不是 <button>（按钮里的字拖不出选区），是 role="button" 的 div：Enter / 空格照样播；拖选、双击选词时不当作点了这一行 */
 .sv__list { display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--ak-border); }
 .sv__list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 10px 12px 8px 14px; border-bottom: 1px solid var(--ak-border-subtle); }
 .sv__list-head b { font: 700 var(--ak-fs-sm)/1 var(--ak-font-body); }
@@ -1553,7 +1554,7 @@ document.addEventListener('click', (e) => {
 
   function mount(conf) {
     const skins = Object.keys(conf.skin).sort((a, b) => (b === '默认') - (a === '默认'));   // meta.json 里时装的次序不固定，「默认」提到最前
-    const st = { skin: skins[0], model: null, anim: null, t: 0, playing: true, loop: true, chain: false, speed: 1, flip: false, grid: false, bg: 'dark', picked: false, color: '#18d1ff', max: false, recording: false };
+    const st = { skin: skins[0], model: null, anim: null, t: 0, playing: true, loop: false, chain: false, speed: 1, flip: false, grid: false, bg: 'dark', picked: false, color: '#18d1ff', max: false, recording: false };
     const models = sk => Object.keys(conf.skin[sk]).sort((a, b) => (MODEL_ORDER.indexOf(a) + 1 || 99) - (MODEL_ORDER.indexOf(b) + 1 || 99));
     st.model = models(st.skin)[0];
 
@@ -1595,7 +1596,7 @@ document.addEventListener('click', (e) => {
       '<div class="sv__timerow"><div class="sv__timeline"><div class="sv__track"><div class="sv__fill"></div></div><div class="sv__marks"></div><div class="sv__playhead"></div><input class="sv__seek" type="range" min="0" max="1" step="1" value="0" aria-label="帧"></div><div class="sv__frame"></div></div>' +
       '<div class="sv__ctrl">' +
         `<div class="ak-btn-group"><button type="button" class="ak-btn ak-btn--contrast ak-btn--icon" data-act="play" aria-label="暂停">${ICON.pause}</button><button type="button" class="ak-btn ak-btn--icon" data-act="prev" data-ak-tip="上一帧 (←)" aria-label="上一帧">${ICON.prev}</button><button type="button" class="ak-btn ak-btn--icon" data-act="next" data-ak-tip="下一帧 (→)" aria-label="下一帧">${ICON.next}</button></div>` +
-        '<label class="ak-switch ak-switch--sm"><input type="checkbox" data-act="loop" checked>循环</label>' +
+        '<label class="ak-switch ak-switch--sm"><input type="checkbox" data-act="loop">循环</label>' +
         '<label class="ak-switch ak-switch--sm" data-ak-tip="一招的几段接着播：Begin → Loop → End"><input type="checkbox" data-act="chain">连播</label>' +
         `<label class="sv__speed">速度<select class="ak-select ak-select--sm" data-act="speed">${SPEEDS.map(v => `<option value="${v}"${v === 1 ? ' selected' : ''}>×${v}</option>`).join('')}</select></label>` +
         `<div class="sv__export"><span class="ak-overline">导出</span><div class="ak-btn-group">` +
@@ -1702,7 +1703,7 @@ document.addEventListener('click', (e) => {
         items.forEach(a => {
           const hits = a.events.filter(e => e.name === 'OnAttack');
           const text = hits.length ? `攻击判定：第 ${hits.map(e => Math.round(e.time * FPS)).join('、')} 帧` : '', id = hits.length ? 'sv-hit-' + (++n) : '';
-          rows.push(`<button type="button" class="sv__anim" data-anim="${esc(a.name)}" aria-pressed="false"${id ? ` aria-describedby="${id}"` : ''}><span>${esc(a.name)}</span>${GLOSS[a.name] ? `<small>${GLOSS[a.name]}</small>` : ''}<i>${hits.length ? `<em data-tip="${text}">${hits.length}</em>` : ''}${a.frames} F</i>${id ? `<span id="${id}" hidden>${text}</span>` : ''}</button>`);
+          rows.push(`<div class="sv__anim" role="button" tabindex="0" data-anim="${esc(a.name)}" aria-pressed="false"${id ? ` aria-describedby="${id}"` : ''}><span>${esc(a.name)}</span>${GLOSS[a.name] ? `<small>${GLOSS[a.name]}</small>` : ''}<i>${hits.length ? `<em data-tip="${text}">${hits.length}</em>` : ''}${a.frames} F</i>${id ? `<span id="${id}" hidden>${text}</span>` : ''}</div>`);
         });
       });
       animBox.innerHTML = rows.join(''); animCount.textContent = cur.anims.length;
@@ -1839,7 +1840,7 @@ document.addEventListener('click', (e) => {
     root.addEventListener('click', e => {
       const t = e.target.closest('[data-skin], [data-anim], [data-act], .sv__swatch'); if (!t || !root.contains(t)) return;
       if (t.dataset.skin) { st.skin = t.dataset.skin; if (!conf.skin[st.skin][st.model]) st.model = models(st.skin)[0]; load(); }
-      else if (t.dataset.anim) { if (cur) setAnim(t.dataset.anim); }   // 载入中 cur 是空的，先不理
+      else if (t.dataset.anim) { if (cur && !String(getSelection())) setAnim(t.dataset.anim); }   // 载入中 cur 是空的，先不理；拖选 / 双击选词（复制动作名）不算点了这一行
       else if (t.classList.contains('sv__swatch')) { setBg(t.dataset.bg); if (t.dataset.bg === 'custom') setPicker(!picking); }   // 自定义：先换回上次的自定义色，再开合取色面板
       else if (!cur && t.dataset.act !== 'retry') return;
       else switch (t.dataset.act) {
@@ -1908,6 +1909,7 @@ document.addEventListener('click', (e) => {
     animBox.addEventListener('mouseout', e => { if (e.target.closest('em[data-tip]')) hideTip(); });
     animBox.addEventListener('focusin', e => { const t = e.target.querySelector('em[data-tip]'); let kb = true; try { kb = e.target.matches(':focus-visible'); } catch (_) {} if (t && kb) showTip(t, true); });   // 只认键盘聚焦：鼠标点一行不弹
     animBox.addEventListener('focusout', hideTip);
+    animBox.addEventListener('keydown', e => { const t = e.target.closest('[data-anim]'); if (!t || (e.key !== 'Enter' && e.key !== ' ')) return; e.preventDefault(); if (cur) setAnim(t.dataset.anim); });   // 行是 role="button" 的 div（字要能选中），Enter / 空格自己接
     const onTipScroll = () => { if (tipAt && tipFocus) showTip(tipAt, true); else hideTip(); };
     animBox.addEventListener('scroll', onTipScroll, { passive: true });
     window.addEventListener('scroll', onTipScroll, { passive: true });
