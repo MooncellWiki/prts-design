@@ -87,8 +87,9 @@
     background: var(--ak-bg-surface); color: var(--ak-fg); border: 1px solid var(--ak-border); border-top-width: 3px; border-image: linear-gradient(var(--ak-accent) 3px, var(--ak-border) 3px) 3 1 1 1; box-shadow: var(--ak-shadow-lg); }
   .ak-nav-cb:checked ~ .ak-header__screen { display: flex; animation: ak-nav-screen-in var(--ak-dur-normal) var(--ak-ease); }
   /* 工具 → 第一行是 眼镜（阅读设置）· 通知图标（徽标压在铃铛右上角；外观三态开关已收进阅读设置面板），下面通栏是用户菜单。用 grid 而不是换行的 flex：卡片宽度是 max-content，换行 flex 会按「不换行」把几样的宽度加起来。
-   * 视觉顺序（通知在左）与 DOM 顺序（外观在前）相反，只影响这两个相邻控件的 Tab 先后 */
-  .ak-header__tools { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 0; margin: 0; padding: 0; }
+   * 视觉顺序（通知在左）与 DOM 顺序（外观在前）相反，只影响这两个相邻控件的 Tab 先后。
+   * 列间距同桌面工具区的 4px：Echo 的两枚徽标之间也是 4px（chrome/header.css），眼镜和铃铛之间是 0 的话，一行图标的间隔就不一样 */
+  .ak-header__tools { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 0 4px; margin: 0; padding: 0; }
   .ak-header__tools > .ak-header__prefs { grid-area: 1 / 1; justify-self: start; margin-left: calc(var(--ak-space-4) - 8px); }   /* 第一行：眼镜 · 通知（同桌面次序）；36px 按钮里 20px 图标两侧各 8px：图标落在面板左缘线上 */
   .ak-header__tools > .ak-header__notifications, .ak-header__tools > .ak-header__bell { grid-area: 1 / 2; justify-self: start; min-height: 52px; display: inline-flex; align-items: center; }
   .ak-header__tools .ak-header__user { width: auto; height: auto; justify-content: flex-start; border: 0; border-radius: 0; font-size: var(--ak-fs-body); font-weight: 400; color: var(--ak-fg); background: transparent; }

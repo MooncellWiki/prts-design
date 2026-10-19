@@ -107,9 +107,10 @@
 .ak-header__user-card .ak-icon { width: 18px; height: 18px; flex: none; color: var(--ak-fg-muted); }
 .ak-header__user-card a:hover .ak-icon { color: var(--ak-fg); }
 .ak-header__user-card .ak-avatar { border-color: var(--ak-chrome-line-strong); }
-/* Echo 通知徽标（MW #p-notifications > ul > li#pt-notifications-alert / -notice）：与工具区其它按钮同高并排 */
+/* Echo 通知徽标（MW #p-notifications > ul > li#pt-notifications-alert / -notice）：与工具区其它按钮同高并排；
+ * 两枚徽标之间也是工具区的 4px——原来 2px，铃铛和眼镜之间宽、和收件箱之间窄，一排图标的间隔不一样 */
 .ak-header__notifications { display: flex; align-items: center; height: 100%; }
-.ak-header__notifications ul { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.ak-header__notifications ul { display: flex; align-items: center; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .ak-header__notifications li { margin: 0; }
 .ak-header__notifications li::before { display: none !important; }
 .ak-header__notifications a:hover { color: var(--ak-theme-accent); }
