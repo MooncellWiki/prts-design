@@ -6,13 +6,13 @@
 import { computed, useId, useTemplateRef, type VNode } from "vue";
 
 import { Render, decorateTrigger } from "./trigger";
-import { usePopover, type PopoverPlacement, type PopoverTrigger } from "./usePopover";
+import { useAutoPlace, usePopover, type PopoverPlacement, type PopoverTrigger } from "./usePopover";
 
 const props = withDefaults(
   defineProps<{
     /** 标题（粗体一行）；也可以用 #header 插槽 */
     title?: string;
-    /** 出现在触发元素的哪一边：bottom（默认）· top · left · right；-start / -end 与触发元素左 / 右缘对齐。不自动翻转，贴边的触发元素自己选 */
+    /** 出现在触发元素的哪一边：bottom（默认）· top · left · right；-start / -end 与触发元素左 / 右缘对齐。贴着视口边缘放不下时自动换到对边、左右平移进视口 */
     placement?: PopoverPlacement;
     /** 触发方式：click 点击开合（默认）· hover 悬停 + 键盘聚焦 · focus 只看聚焦 · manual 只由 v-model 控制 */
     trigger?: PopoverTrigger;
@@ -40,7 +40,9 @@ const slots = defineSlots<{
 
 const id = useId();
 const anchor = useTemplateRef<HTMLElement>("anchor");
+const bubble = useTemplateRef<HTMLElement>("bubble");
 const { open, anchorOn, onTriggerClick } = usePopover(props, model, anchor);
+const { placed, bubbleStyle } = useAutoPlace(open, () => props.placement, anchor, bubble);
 
 /** 点击打开的是非模态对话框（触发元素 aria-expanded / aria-controls）；悬停 / 聚焦打开的等同富文本提示（aria-describedby） */
 const isDialog = computed(() => props.trigger === "click" || props.trigger === "manual");
@@ -56,9 +58,11 @@ const triggerAttrs = computed(() =>
     <Render :content="decorateTrigger(slots.trigger?.(), triggerAttrs)" />
     <div
       :id="id"
+      ref="bubble"
       :role="isDialog ? 'dialog' : 'tooltip'"
       :aria-labelledby="isDialog && (title || $slots.header) ? `${id}-title` : undefined"
-      :class="['ak-popover', `ak-popover--${placement}`]"
+      :class="['ak-popover', `ak-popover--${placed}`]"
+      :style="bubbleStyle"
       :hidden="!open"
     >
       <div v-if="title || $slots.header" :id="`${id}-title`" class="ak-popover__title"><slot name="header">{{ title }}</slot></div>

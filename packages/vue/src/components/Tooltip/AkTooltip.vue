@@ -7,11 +7,11 @@
 import { useId, useTemplateRef, type VNode } from "vue";
 
 import { Render, decorateTrigger } from "./trigger";
-import { usePopover, type PopoverPlacement, type PopoverTrigger } from "./usePopover";
+import { useAutoPlace, usePopover, type PopoverPlacement, type PopoverTrigger } from "./usePopover";
 
 const props = withDefaults(
   defineProps<{
-    /** 出现在触发元素的哪一边：top（默认）· bottom · left · right；-start / -end 与触发元素左 / 右缘对齐。不自动翻转，贴边的触发元素自己选 */
+    /** 出现在触发元素的哪一边：top（默认）· bottom · left · right；-start / -end 与触发元素左 / 右缘对齐。贴着视口边缘放不下时自动换到对边、左右平移进视口 */
     placement?: PopoverPlacement;
     /** 触发方式：hover 悬停 + 键盘聚焦（默认）· focus 只看聚焦 · click 点击开合 · manual 只由 v-model 控制 */
     trigger?: PopoverTrigger;
@@ -37,12 +37,14 @@ const slots = defineSlots<{
 
 const id = useId();
 const anchor = useTemplateRef<HTMLElement>("anchor");
+const bubble = useTemplateRef<HTMLElement>("bubble");
 const { open, anchorOn, onTriggerClick } = usePopover(props, model, anchor);
+const { placed, bubbleStyle } = useAutoPlace(open, () => props.placement, anchor, bubble);
 </script>
 
 <template>
   <span ref="anchor" class="ak-tip-anchor" v-on="anchorOn">
     <Render :content="decorateTrigger(slots.trigger?.(), { 'aria-describedby': id, onClick: onTriggerClick })" />
-    <span :id="id" role="tooltip" :class="['ak-tooltip', `ak-tooltip--${placement}`]" :hidden="!open"><slot /></span>
+    <span :id="id" ref="bubble" role="tooltip" :class="['ak-tooltip', `ak-tooltip--${placed}`]" :style="bubbleStyle" :hidden="!open"><slot /></span>
   </span>
 </template>

@@ -11,7 +11,7 @@ component: tooltip
 |---|---|---|
 | 写法 | 任意元素加 `data-ak-tip="文字"`（气泡是 `::after`） | `#trigger` 放触发元素，默认插槽放内容 |
 | 内容 | 属性里的一句字符串 | 任意内容（加粗、换行、链接） |
-| 方向 | 只在上方 | `placement`：上 / 下 / 左 / 右，上下可左 / 右缘对齐 |
+| 方向 | 只在上方（贴着视口左 / 右缘时皮肤脚本左右平移） | `placement`：上 / 下 / 左 / 右，上下可左 / 右缘对齐；贴边放不下时自动换边 / 平移 |
 | 触发 | 悬停 + 触发元素自己 `:focus-visible`（不可聚焦的元素由皮肤脚本补 `tabindex="0"`） | 悬停 + 聚焦（默认）/ 只聚焦 / 点击 / 手动（`v-model`） |
 | 读屏 | 皮肤脚本补 `aria-describedby`，指向页面里一个隐藏的描述节点（提示与元素自身名称相同时跳过，如道具图 `alt` = 道具名）；无 JS 时不关联 | 触发元素 `aria-describedby` 指向 `role="tooltip"`；`Esc` 收起 |
 | 用在 | MW 模板、Lua 输出、不需要 JS 的地方；`AkItem` 的 `tip` 也是它 | 小部件里需要上面任何一项时 |
@@ -34,6 +34,8 @@ component: tooltip
 
 纯 CSS 版的气泡闲置时收成 0 宽（`max-width: 0` + `overflow: hidden`），不只是透明——透明的气泡仍占布局，靠近右缘的长提示会把手机页面撑出横向滚动、整页跟着缩小（干员页 130 枚提示就是这么发现的，见[贡献一个组件 · 命名与约定](/guide/contributing#命名与约定)）。
 
+显示出来的气泡也不伸出视口：连内边距最宽到视口宽减 16px，再长就折行；贴着视口左 / 右缘时，皮肤脚本在悬停 / 聚焦时量出气泡宽度，把它整条挪回视口里、两边各留 8px（写在触发元素的 `--ak-tip-dx` 上），小部件后来渲染的提示也算（prts-widgets 干员模型最右的「GIF 2x」原来伸出去约 80px，手机上一点整页就缩小）。站外没有这段脚本，只有宽度上限——贴边的触发元素改用 `AkTooltip`（自己会避让，见下文「方向」）。
+
 ## 基本用法
 
 写法同 Naive UI 的 `n-tooltip`。触发元素取 `#trigger` 里的第一个元素 / 组件；是 `<span class="ak-term">` 这种不可聚焦的元素时自动补 `tabindex="0"`，键盘用户也能看到。`trigger="click"` 改成点击开合（点外面 / `Esc` 收起）。
@@ -42,7 +44,7 @@ component: tooltip
 
 ## 方向
 
-`placement`：`top`（默认）· `bottom` · `left` · `right`，间距 6px，同纯 CSS 版；`top-start` / `bottom-end` 这类是与触发元素左 / 右缘对齐（同 Naive）。**不自动翻转**（不引定位库）：贴着视口边缘的触发元素自己选方向 / 对齐。下面用 `v-model` 让四个提示常显。
+`placement`：`top`（默认）· `bottom` · `left` · `right`，间距 6px，同纯 CSS 版；`top-start` / `bottom-end` 这类是与触发元素左 / 右缘对齐（同 Naive）。`placement` 是首选方向，贴着视口边缘放不下时**自动避让**（同 Naive 的 flip + shift，不引定位库）：这一边放不下、对边放得下就换过去（上 ↔ 下、左 ↔ 右；左右都放不下改到上 / 下），上下方向的再左右平移进视口、两边各留 8px；气泡最宽到视口宽减 16px。打开时、气泡 / 窗口尺寸变了时重算，滚动时不跟（打开着的不来回翻）。下面用 `v-model` 让四个提示常显。
 
 @demo Tooltip/Placements
 

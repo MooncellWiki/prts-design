@@ -258,6 +258,21 @@
 	tipA11y( document );
 	if ( window.mw && mw.hook ) { mw.hook( 'wikipage.content' ).add( ( $c ) => tipA11y( $c[ 0 ] ) ); }
 
+	/* 纯 CSS 提示贴着视口左 / 右缘时整条挪回视口（components/tooltip.css 的 --ak-tip-dx）：气泡居中对着触发元素，伸出视口就把手机的布局视口撑宽、整页缩小。
+	 * 悬停 / 聚焦时量一次显示出来的气泡宽度（::after 的计算宽度就是用到的宽度），两边各留 8px；委托在 document 上，小部件后来渲染的提示也算。
+	 * 外层的提示一起量——它也在悬停，而且 --ak-tip-dx 会继承给里面的提示，每层都写自己的值 */
+	const tipFit = ( e ) => {
+		const vw = document.documentElement.clientWidth;
+		for ( let el = e.target.closest && e.target.closest( '[data-ak-tip]' ); el; el = el.parentElement && el.parentElement.closest( '[data-ak-tip]' ) ) {
+			const cs = getComputedStyle( el, '::after' ), r = el.getBoundingClientRect();
+			const w = parseFloat( cs.width ) + ( cs.boxSizing === 'border-box' ? 0 : parseFloat( cs.paddingLeft ) + parseFloat( cs.paddingRight ) );
+			const left = r.left + r.width / 2 - w / 2;
+			el.style.setProperty( '--ak-tip-dx', Math.round( Math.max( 8 - left, Math.min( 0, vw - 8 - left - w ) ) ) + 'px' );
+		}
+	};
+	document.addEventListener( 'mouseover', tipFit, { passive: true } );
+	document.addEventListener( 'focusin', tipFit );
+
 	/* Toast helper: mw.notify 已由 base/special-pages.css 主题化；这里提供 PRTS Design 样式的 toast */
 	window.akdsToast = function ( msg, type, title ) {
 		let wrap = $( '.ak-toasts' ); if ( !wrap ) { wrap = document.createElement( 'div' ); wrap.className = 'ak-toasts'; document.body.appendChild( wrap ); }

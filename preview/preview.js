@@ -310,6 +310,18 @@
     host.setAttribute('aria-describedby', ((host.getAttribute('aria-describedby') || '') + ' ' + d.id).trim());
     if (!host.matches('a[href], button, input, select, textarea, summary, [tabindex]') && !host.closest('a[href], button')) host.tabIndex = 0;
   });
+  /* 贴着视口左 / 右缘的提示整条挪回视口（与 skin.js 相同）：悬停 / 聚焦时量显示出来的气泡宽度，写进 --ak-tip-dx，两边各留 8px；外层的提示一起量 */
+  const tipFit = e => {
+    const vw = document.documentElement.clientWidth;
+    for (let el = e.target.closest && e.target.closest('[data-ak-tip]'); el; el = el.parentElement && el.parentElement.closest('[data-ak-tip]')) {
+      const cs = getComputedStyle(el, '::after'), r = el.getBoundingClientRect();
+      const w = parseFloat(cs.width) + (cs.boxSizing === 'border-box' ? 0 : parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight));
+      const left = r.left + r.width / 2 - w / 2;
+      el.style.setProperty('--ak-tip-dx', Math.round(Math.max(8 - left, Math.min(0, vw - 8 - left - w))) + 'px');
+    }
+  };
+  document.addEventListener('mouseover', tipFit, { passive: true });
+  document.addEventListener('focusin', tipFit);
 
   /* ── Voice play mock ───────────────────────────────────────── */
   document.addEventListener('click', e => { const p = e.target.closest('.ak-voice__play'); if (p && !p.closest('[data-no-toggle]')) p.classList.toggle('is-playing'); });
