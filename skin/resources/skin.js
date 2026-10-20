@@ -260,7 +260,9 @@
 
 	/* 纯 CSS 提示贴着视口左 / 右缘时整条挪回视口（components/tooltip.css 的 --ak-tip-dx）：气泡居中对着触发元素，伸出视口就把手机的布局视口撑宽、整页缩小。
 	 * 悬停 / 聚焦时量一次显示出来的气泡宽度（::after 的计算宽度就是用到的宽度），两边各留 8px；委托在 document 上，小部件后来渲染的提示也算。
-	 * 外层的提示一起量——它也在悬停，而且 --ak-tip-dx 会继承给里面的提示，每层都写自己的值 */
+	 * 外层的提示一起量——它也在悬停，而且 --ak-tip-dx 会继承给里面的提示，每层都写自己的值。
+	 * 听 pointerover、不只是 mouseover：iOS 点按时 :hover 在 touchstart 就生效、提示随即显示，这时只有 pointerover；mouseover 这类兼容鼠标事件要等点按完成才派发，
+	 * 长按 / 按住滑动根本没有（模拟器实测）。mouseover 留着兜底：有的浏览器（Android Chrome）点按完才进 :hover，pointerover 时气泡还没显示、量出来是 0 */
 	const tipFit = ( e ) => {
 		const vw = document.documentElement.clientWidth;
 		for ( let el = e.target.closest && e.target.closest( '[data-ak-tip]' ); el; el = el.parentElement && el.parentElement.closest( '[data-ak-tip]' ) ) {
@@ -270,6 +272,7 @@
 			el.style.setProperty( '--ak-tip-dx', Math.round( Math.max( 8 - left, Math.min( 0, vw - 8 - left - w ) ) ) + 'px' );
 		}
 	};
+	document.addEventListener( 'pointerover', tipFit, { passive: true } );
 	document.addEventListener( 'mouseover', tipFit, { passive: true } );
 	document.addEventListener( 'focusin', tipFit );
 

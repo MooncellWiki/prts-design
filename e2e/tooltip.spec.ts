@@ -3,7 +3,8 @@
  * 移动端浏览器就把布局视口撑宽、整页缩小（prts-widgets 干员模型的「GIF 2x」，innerWidth 393 → 470）。
  * 现在显示时宽度封顶到视口宽减 16px，伸出左 / 右缘的由 preview.js（与 skin.js 相同）量出来写进 --ak-tip-dx、整条挪回视口，两边各留 8px。
  * 气泡的位置按 ::after 的计算样式算（left + margin-left + transform 的平移，相对触发元素的内边距盒），不照抄脚本里的公式。
- * 不测点按：真机上点按合成的就是悬停那条 mouseover，而 CI 的 Linux headless shell 点按不进 :hover（本机 macOS 会），气泡不显示、测不到。
+ * iOS 点按（iOS 26 模拟器实测）：:hover 在 touchstart 就生效、提示随即显示，这时只有 pointerover；mouseover 要等点按完成才派发，长按 / 按住滑动根本没有——
+ * 脚本原先只听 mouseover，真机上照样伸出去。这里用 CDP 强制 :hover、只派发 pointerover 模拟（Playwright 的 tap() 不行：CI 的 Linux headless shell 点按不进 :hover）。
  * Vue 版 AkTooltip / AkPopover 自己避让（usePopover.ts 的 useAutoPlace：放不下的换到对边、伸出左 / 右缘的平移回来）：测构建好的 Storybook 里的
  * 「贴边自动避让」story（pnpm build:storybook；没有就跳过，同 stories.spec.ts）。
  */
@@ -76,6 +77,18 @@ test('比视口还长的提示折行，宽度不超过视口减 16px', async ({ 
   const b = await shown(page, 'tip-huge');
   expect(b.width).toBeLessThanOrEqual(b.vw - 16 + 0.5);
   expectInside(b);
+});
+
+test('iOS 点按：:hover 在 touchstart 就生效、只有 pointerover 没有 mouseover，同样挪回视口', async ({ page }) => {
+  await open(page);
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('DOM.enable');
+  await cdp.send('CSS.enable');
+  const { root } = await cdp.send('DOM.getDocument');
+  const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector: '#tip-right' });
+  await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: ['hover'] });
+  await page.locator('#tip-right').dispatchEvent('pointerover', { pointerType: 'touch' });
+  expectInside(await shown(page, 'tip-right'));
 });
 
 test('键盘聚焦贴右缘的按钮：同悬停', async ({ page }) => {
