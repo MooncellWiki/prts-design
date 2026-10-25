@@ -1,0 +1,78 @@
+<!--page
+skeleton: app-skeleton.html
+title: 剧情资源 · Arknights Asset Storage 设计稿
+-->
+<div class="ak-page-header">
+  <div class="ak-page-header__row">
+    <h1 class="ak-page-header__title">剧情资源<span class="ak-en">Story</span></h1>
+  </div>
+</div>
+
+<div class="ak-tabs" role="tablist" aria-label="类型" style="margin-bottom:var(--ak-space-4)">
+  <button type="button" class="ak-tab is-active" role="tab" aria-selected="true">背景</button>
+  <button type="button" class="ak-tab" role="tab" aria-selected="false">角色</button>
+  <button type="button" class="ak-tab" role="tab" aria-selected="false">图片</button>
+  <button type="button" class="ak-tab" role="tab" aria-selected="false">道具</button>
+</div>
+
+<div class="as-split">
+  <aside class="as-split__side" aria-label="背景">
+    <div class="as-split__side-head">
+      <label class="ak-search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input ak-input--sm" type="search" value="21_g" aria-label="搜索"></label>
+    </div>
+    <div class="as-split__side-body">
+      <ul class="as-res-list">
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g1_interrogat_room.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g1_interrogat_room</span></span><span class="as-res__count">8</span></a></li>
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g2_opera_room.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g2_opera_room</span></span><span class="as-res__count">8</span></a></li>
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g3_victoria_street_d.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g3_victoria_street_d</span></span><span class="as-res__count">18</span></a></li>
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g4_victoria_street_d_ruins.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g4_victoria_street_d_ruins</span></span><span class="as-res__count">4</span></a></li>
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g5_victoria_street_n_ruins.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g5_victoria_street_n_ruins</span></span><span class="as-res__count">5</span></a></li>
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g6_decisivebattlealley_n.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g6_decisivebattlealley_n</span></span><span class="as-res__count">11</span></a></li>
+        <li><a class="as-res is-selected" href="#" aria-current="true"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g7_decisivebattlealley_d.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g7_decisivebattlealley_d</span></span><span class="as-res__count">49</span></a></li>
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g8_cammunibase.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g8_cammunibase</span></span><span class="as-res__count">3</span></a></li>
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/21_g9_rhodes_xqoffice.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">21_g9_rhodes_xqoffice</span></span><span class="as-res__count">17</span></a></li>
+        <li><a class="as-res" href="#"><span class="as-res__thumb as-res__thumb--wide"><img src="https://torappu.prts.wiki/assets/avg/background/27_g21_goldenboat_deck.png" alt="" loading="lazy"></span><span class="as-res__text"><span class="as-res__id">27_g21_goldenboat_deck</span></span><span class="as-res__count">7</span></a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <section class="as-split__main as-pane" aria-label="21_g7_decisivebattlealley_d">
+    <div class="as-story-head">
+      <a class="as-story-head__img as-checker" href="akas-files.html"><img src="https://torappu.prts.wiki/assets/avg/background/21_g7_decisivebattlealley_d.png" alt=""></a>
+      <div class="as-story-head__text">
+        <h2 class="as-asset-name">21_g7_decisivebattlealley_d</h2>
+        <p class="as-story-head__count">49 个剧本使用</p>
+        <div class="ak-flex ak-wrap ak-gap-2">
+          <a class="ak-btn ak-btn--sm" href="akas-files.html"><svg class="as-icon-16"><use href="#i-image"/></svg>查看图片</a>
+          <button type="button" class="ak-btn ak-btn--ghost ak-btn--sm" data-copy="21_g7_decisivebattlealley_d"><svg class="as-icon-16"><use href="#i-copy"/></svg>复制 id</button>
+        </div>
+      </div>
+    </div>
+    <div class="as-pane__head">
+      <label class="ak-search" style="width:260px"><svg class="ak-search__icon"><use href="#i-filter"/></svg><input class="ak-input ak-input--sm" type="search" placeholder="筛选剧本" aria-label="筛选剧本"></label>
+    </div>
+    <table class="ak-table ak-table--compact">
+      <tbody class="as-group">
+        <tr><th colspan="2">act10mini</th></tr>
+        <tr><td class="as-path"><span>activities/act10mini/</span>level_act10mini_st01</td><td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="打开剧本" aria-label="打开剧本"><svg class="as-icon-16"><use href="#i-book"/></svg></a></span></td></tr>
+        <tr><td class="as-path"><span>activities/act10mini/</span>level_act10mini_st03</td><td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="打开剧本" aria-label="打开剧本"><svg class="as-icon-16"><use href="#i-book"/></svg></a></span></td></tr>
+        <tr><td class="as-path"><span>activities/act10mini/</span>level_act10mini_st04</td><td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="打开剧本" aria-label="打开剧本"><svg class="as-icon-16"><use href="#i-book"/></svg></a></span></td></tr>
+        <tr><td class="as-path"><span>activities/act10mini/</span>level_act10mini_st05</td><td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="打开剧本" aria-label="打开剧本"><svg class="as-icon-16"><use href="#i-book"/></svg></a></span></td></tr>
+      </tbody>
+      <tbody class="as-group">
+        <tr><th colspan="2">act14side</th></tr>
+        <tr><td class="as-path"><span>activities/act14side/</span>level_act14side_06_beg</td><td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="打开剧本" aria-label="打开剧本"><svg class="as-icon-16"><use href="#i-book"/></svg></a></span></td></tr>
+      </tbody>
+      <tbody class="as-group">
+        <tr><th colspan="2">act22side</th></tr>
+        <tr><td class="as-path"><span>activities/act22side/</span>level_act22side_04_end</td><td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="打开剧本" aria-label="打开剧本"><svg class="as-icon-16"><use href="#i-book"/></svg></a></span></td></tr>
+        <tr><td class="as-path"><span>activities/act22side/</span>level_act22side_st03</td><td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="打开剧本" aria-label="打开剧本"><svg class="as-icon-16"><use href="#i-book"/></svg></a></span></td></tr>
+      </tbody>
+      <tbody class="as-group">
+        <tr><th colspan="2">act27side</th></tr>
+        <tr><td class="as-path"><span>activities/act27side/</span>level_act27side_06_beg</td><td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="打开剧本" aria-label="打开剧本"><svg class="as-icon-16"><use href="#i-book"/></svg></a></span></td></tr>
+      </tbody>
+    </table>
+    <div class="as-pane__foot"><span class="as-dim">1–20 / 49</span><span class="as-toolbar__spacer"></span><nav class="ak-pagination" aria-label="分页"><a class="ak-pagination__item is-disabled" href="#" aria-label="上一页"><svg class="as-icon-14"><use href="#i-chevron-left"/></svg></a><a class="ak-pagination__item is-active" href="#" aria-current="page">1</a><a class="ak-pagination__item" href="#">2</a><a class="ak-pagination__item" href="#">3</a><a class="ak-pagination__item" href="#" aria-label="下一页"><svg class="as-icon-14"><use href="#i-chevron-right"/></svg></a></nav></div>
+  </section>
+</div>

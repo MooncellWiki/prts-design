@@ -1,0 +1,173 @@
+<!--page
+skeleton: app-skeleton.html
+title: 版本 · Arknights Asset Storage 设计稿
+-->
+<div class="ak-page-header">
+  <div class="ak-page-header__row">
+    <h1 class="ak-page-header__title">版本<span class="ak-en">Versions</span></h1>
+    <div class="ak-page-tools">
+      <a class="ak-page-tools__btn" href="akas-diff.html"><svg class="ak-icon"><use href="#i-diff"/></svg>对比最近两版</a>
+    </div>
+  </div>
+</div>
+
+<section class="ak-card ak-card--accent-left as-latest" aria-label="最新版本">
+  <div class="as-latest__id">
+    <div class="as-latest__client">2.7.81</div>
+    <div class="as-latest__res"><span class="as-ver">26-10-22-14-02-11-51447808</span><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--xs" data-copy="26-10-22-14-02-11-51447808" title="复制版本号" aria-label="复制版本号"><svg class="as-icon-14"><use href="#i-copy"/></svg></button></div>
+  </div>
+  <div class="as-latest__status"><span class="ak-tag ak-tag--success">已就绪</span><span class="as-dim">10 月 22 日 14:38 解包完成</span></div>
+  <div class="as-latest__actions">
+    <a class="ak-btn ak-btn--primary" href="akas-diff.html">对比上一版</a>
+    <a class="ak-btn" href="akas-manifest.html">清单</a>
+    <a class="ak-btn" href="akas-file.html">数据表</a>
+    <div class="ak-dropdown">
+      <details>
+        <summary class="ak-btn ak-btn--ghost ak-btn--icon" aria-label="更多" title="更多"><svg class="as-icon-16"><use href="#i-more"/></svg></summary>
+        <div class="ak-menu ak-menu--right">
+          <a class="ak-menu__item" href="#" data-copy="torappu run 2.7.81 26-10-22-14-02-11-51447808 -c 2.7.81 -r 26-10-14-13-45-10-99469376"><svg class="as-icon-16"><use href="#i-copy"/></svg>复制 torappu 命令</a>
+          <a class="ak-menu__item" href="#"><svg class="as-icon-16"><use href="#i-download"/></svg>下载热更新列表</a>
+          <a class="ak-menu__item" href="akas-states.html#relaunch"><svg class="as-icon-16"><use href="#i-docker"/></svg>重新解包…</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="as-pane" aria-label="全部版本">
+  <div class="as-pane__head">
+    <label class="ak-search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input ak-input--sm" type="search" placeholder="筛选版本" aria-label="筛选版本"></label>
+    <span class="as-toolbar__spacer"></span>
+    <div class="ak-seg" role="group" aria-label="显示">
+      <button type="button" aria-pressed="true">全部</button>
+      <button type="button" aria-pressed="false">有清单</button>
+    </div>
+  </div>
+  <div class="as-table-scroll">
+  <table class="ak-table">
+    <thead>
+      <tr>
+        <th>资源版本</th>
+        <th>时间</th>
+        <th class="as-num">变更</th>
+        <th>状态</th>
+        <th><span class="ak-sr-only">操作</span></th>
+      </tr>
+    </thead>
+    <tbody class="as-group">
+      <tr><th colspan="5"><span class="as-client">2.7.81</span></th></tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-10-22-14-02-11-51447808</a></td>
+        <td class="as-nowrap">10-22 14:02</td>
+        <td class="as-num"><span class="as-cnt as-add">+73</span> <span class="as-cnt as-chg">~58</span> <span class="as-cnt as-rem">−33</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-10-14-13-45-10-99469376</a></td>
+        <td class="as-nowrap">10-14 13:45</td>
+        <td class="as-num"><span class="as-cnt as-add">+110</span> <span class="as-cnt as-chg">~119</span> <span class="as-cnt as-rem">−34</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-10-08-04-51-28-56071834</a></td>
+        <td class="as-nowrap">10-08 04:51</td>
+        <td class="as-num"><span class="as-cnt as-add">+214</span> <span class="as-cnt as-chg">~1,369</span> <span class="as-cnt as-rem">−204</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+    </tbody>
+    <tbody class="as-group">
+      <tr><th colspan="5"><span class="as-client">2.7.71</span></th></tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-09-22-07-47-20_6c71fa</a></td>
+        <td class="as-nowrap">09-22 07:47</td>
+        <td class="as-num"><span class="as-cnt as-add">+111</span> <span class="as-cnt as-chg">~84</span> <span class="as-cnt as-rem">−30</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-09-18-14-18-57_b6fbbc</a></td>
+        <td class="as-nowrap">09-18 14:18</td>
+        <td class="as-num"><span class="as-cnt as-add">+79</span> <span class="as-cnt as-chg">~51</span> <span class="as-cnt as-rem">−29</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-09-09-07-16-57_d4e461</a></td>
+        <td class="as-nowrap">09-09 07:16</td>
+        <td class="as-num"><span class="as-cnt as-add">+32</span> <span class="as-cnt as-chg">~28</span> <span class="as-cnt as-rem">−16</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-09-03-04-06-00_ed95a2</a></td>
+        <td class="as-nowrap">09-03 04:06</td>
+        <td class="as-num"><span class="as-cnt as-add">+250</span> <span class="as-cnt as-chg">~3,514</span> <span class="as-cnt as-rem">−158</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+    </tbody>
+    <tbody class="as-group">
+      <tr><th colspan="5"><span class="as-client">2.7.61</span></th></tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-08-17-11-25-42_dbc172</a></td>
+        <td class="as-nowrap">08-17 11:25</td>
+        <td class="as-num"><span class="as-cnt as-add">+107</span> <span class="as-cnt as-chg">~38</span> <span class="as-cnt as-rem">−29</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-08-07-14-53-29_30b8f0</a></td>
+        <td class="as-nowrap">08-07 14:53</td>
+        <td class="as-num"><span class="as-cnt as-add">+149</span> <span class="as-cnt as-chg">~83</span> <span class="as-cnt as-rem">−35</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-08-03-23-34-20_a745fc</a></td>
+        <td class="as-nowrap">08-03 23:34</td>
+        <td class="as-num"><span class="as-cnt as-add">+14</span> <span class="as-cnt as-chg">~37</span> <span class="as-cnt as-rem">−14</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-07-30-09-02-37_bf3049</a></td>
+        <td class="as-nowrap">07-30 09:02</td>
+        <td class="as-num"><span class="as-cnt as-add">+321</span> <span class="as-cnt as-chg">~3,336</span> <span class="as-cnt as-rem">−176</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+    </tbody>
+    <tbody class="as-group">
+      <tr><th colspan="5"><span class="as-client">2.7.51</span></th></tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-07-20-09-52-12_5d4a43</a></td>
+        <td class="as-nowrap">07-20 09:52</td>
+        <td class="as-num"><span class="as-cnt as-add">+58</span> <span class="as-cnt as-chg">~41</span> <span class="as-cnt as-rem">−21</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+      <tr>
+        <td><a class="as-ver" href="akas-manifest.html">26-07-16-07-20-24_daf69e</a></td>
+        <td class="as-nowrap">07-16 07:20</td>
+        <td class="as-num"><span class="as-cnt as-add">+23</span> <span class="as-cnt as-chg">~30</span> <span class="as-cnt as-rem">−12</span></td>
+        <td><span class="ak-tag ak-tag--success ak-tag--sm">已就绪</span></td>
+        <td class="as-num"><span class="as-actions as-actions--hover"><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-diff.html" title="对比上一版" aria-label="对比上一版"><svg class="as-icon-16"><use href="#i-diff"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-manifest.html" title="清单" aria-label="清单"><svg class="as-icon-16"><use href="#i-bundle"/></svg></a><a class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" href="akas-file.html" title="数据表" aria-label="数据表"><svg class="as-icon-16"><use href="#i-json"/></svg></a></span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="as-pane__foot">
+    <nav class="ak-pagination" aria-label="分页">
+      <a class="ak-pagination__item is-disabled" href="#" aria-label="上一页"><svg class="as-icon-14"><use href="#i-chevron-left"/></svg></a>
+      <a class="ak-pagination__item is-active" href="#" aria-current="page">1</a>
+      <a class="ak-pagination__item" href="#">2</a>
+      <a class="ak-pagination__item" href="#">3</a>
+      <span class="ak-pagination__ellipsis">…</span>
+      <a class="ak-pagination__item" href="#">8</a>
+      <a class="ak-pagination__item" href="#" aria-label="下一页"><svg class="as-icon-14"><use href="#i-chevron-right"/></svg></a>
+    </nav>
+  </div>
+</section>

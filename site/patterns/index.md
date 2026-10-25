@@ -13,6 +13,7 @@ L5：把组件拼成整页。样例页运行在皮肤骨架里（`preview/`，�
 | [道具一览](/patterns/items) | 设计稿 | 第二张列表 / 筛选页：现网 `ItemList` Widget 换成干员一览那套排布——三行[筛选芯片](/components/chip)（分类按游戏仓库的页签分四组、稀有度是底框颜色的圆环）+ 仓库顺序 / 稀有度排序 + [道具图标](/arknights/item)网格 / 列表两种结果；「其他」改成真正的兜底 |
 | [后勤技能一览](/patterns/riic) | 设计稿 | 列表 / 筛选页：现网 <code v-pre>{{后勤技能信息/store}}</code> 的 10 张折叠表换成干员一览那套排布，数据改从游戏 `building_data` 来——五行[筛选芯片](/components/chip)（设施带游戏线稿、作用对象照进驻面板的效率分组、解锁阶段、干员稀有度 / 干员职业）+ 游戏顺序 / 效率 / 持有人数排序 + 按设施分组吸顶的技能行（技能名条底色的方砖、持有干员是干员卡（职业 / 星级角标）、解锁条件、替换关系）/ 干员卡两种结果 |
 | [公招计算](/patterns/recruit) | 设计稿 | 工具页：现网 `HrCalculator` Widget 照游戏的招募流程重排——四行标签芯片（个数不限，次序对齐游戏招募页）+ 按「保底几星」分层的组合（每组至多 3 个标签，保底按 9:00 算，不保底的那层默认收起）；没选标签时是全部保底组合的速查 |
+| [资源库 ak-asset-storage](/patterns/asset-storage) | 设计稿 | 站外工具页：torappu.prts.wiki 的前端换成设计系统——页眉导航（没有侧栏）、版本 / 变更 / 清单 / 文件 / 剧情资源五页 + 搜索面板 + 状态样例；用的是独立的 `app-skeleton.html`，不是皮肤骨架 |
 | 关卡页 | 规划 | [关卡](/arknights/stage) `.ak-stage` 头 + 地图 + [敌人](/arknights/enemy) `.ak-enemy` 列表 + 掉落 `.ak-item-list` |
 | 剧情页 | 规划 | [剧情对话](/arknights/dialogue) `.ak-dialogue` + 分段 + 剧透 `.ak-redacted` |
 | 特殊页 / 编辑页 | 规划 | OOUI / Codex 桥接令牌 + `.ak-body--flat`（见[特殊页面](/content/special-pages)） |

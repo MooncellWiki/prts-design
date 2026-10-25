@@ -1,0 +1,120 @@
+<!--page
+skeleton: app-skeleton.html
+title: 清单 · Arknights Asset Storage 设计稿
+-->
+<div class="ak-page-header">
+  <div class="ak-page-header__row">
+    <h1 class="ak-page-header__title">清单<span class="ak-en">Manifest</span></h1>
+    <div class="ak-page-tools">
+      <a class="ak-page-tools__btn" href="akas-diff.html"><svg class="ak-icon"><use href="#i-diff"/></svg>对比上一版</a>
+    </div>
+  </div>
+</div>
+
+<div class="as-toolbar">
+  <select class="ak-select ak-select--sm ak-select--ver" aria-label="版本">
+    <option>2.7.81 26-10-22-14-02-11-51447808</option>
+    <option>2.7.81 26-10-14-13-45-10-99469376</option>
+    <option>2.7.81 26-10-08-04-51-28-56071834</option>
+  </select>
+  <span class="as-toolbar__spacer"></span>
+  <label class="ak-search" style="width:min(100%,400px)"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input ak-input--sm" type="search" placeholder="搜索这个版本里的资源" aria-label="搜索资源"></label>
+</div>
+
+<div class="as-split">
+  <aside class="as-split__side" aria-label="目录">
+    <div class="as-split__side-body">
+      <ul class="as-tree" role="tree">
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">activity</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">arkvent</span></div></li>
+        <li class="is-open"><div class="as-tree__row" role="treeitem" aria-expanded="true"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder-open"/></svg><span class="as-tree__label">arts</span></div>
+          <ul>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">building</span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">charavatars</span></div></li>
+            <li class="is-open"><div class="as-tree__row" role="treeitem" aria-expanded="true"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder-open"/></svg><span class="as-tree__label">characters</span></div>
+              <ul>
+                <li class="is-open"><div class="as-tree__row" role="treeitem" aria-expanded="true"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder-open"/></svg><span class="as-tree__label">char_002_amiya</span></div>
+                  <ul>
+                    <li><div class="as-tree__row as-tree__row--leaf is-selected" role="treeitem" aria-selected="true"><span class="as-tree__caret"></span><svg class="as-tree__icon"><use href="#i-image"/></svg><span class="as-tree__label">illust_char_002_amiya_1</span></div></li>
+                    <li><div class="as-tree__row as-tree__row--leaf" role="treeitem"><span class="as-tree__caret"></span><svg class="as-tree__icon"><use href="#i-image"/></svg><span class="as-tree__label">illust_char_002_amiya_1+</span></div></li>
+                    <li><div class="as-tree__row as-tree__row--leaf" role="treeitem"><span class="as-tree__caret"></span><svg class="as-tree__icon"><use href="#i-image"/></svg><span class="as-tree__label">illust_char_002_amiya_2</span></div></li>
+                    <li><div class="as-tree__row as-tree__row--leaf" role="treeitem"><span class="as-tree__caret"></span><svg class="as-tree__icon"><use href="#i-image"/></svg><span class="as-tree__label">illust_char_002_amiya_2b</span></div></li>
+                    <li><div class="as-tree__row as-tree__row--leaf" role="treeitem"><span class="as-tree__caret"></span><svg class="as-tree__icon"><use href="#i-image"/></svg><span class="as-tree__label">illust_char_002_amiya_epoque#4</span></div></li>
+                    <li><div class="as-tree__row as-tree__row--leaf" role="treeitem"><span class="as-tree__caret"></span><svg class="as-tree__icon"><use href="#i-image"/></svg><span class="as-tree__label">illust_char_002_amiya_epoque#4b</span></div></li>
+                    <li><div class="as-tree__row as-tree__row--leaf" role="treeitem"><span class="as-tree__caret"></span><svg class="as-tree__icon"><use href="#i-file"/></svg><span class="as-tree__label">illust_char_002_amiya_epoque#4b_material</span></div></li>
+                  </ul>
+                </li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">char_003_kalts</span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">char_009_12fce</span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">char_010_chen</span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">char_017_huang</span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">char_1001_amiya2</span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">char_1011_lava2</span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">char_1012_skadi2</span></div></li>
+              </ul>
+            </li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">dynchars</span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">enemies</span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">items</span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">skills</span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">ui</span></div></li>
+          </ul>
+        </li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">audio</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">avg</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">battle</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">building</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">config</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">crisisv2longterm</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">cutin</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">gamedata</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">graphics</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">hotupdate</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">i18n</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">mouse</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">prefabs</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">premain</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">retro</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">scenes</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">[uc]lipsync</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">[uc]shaders</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">[uc]uishaders</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">ui</span></div></li>
+        <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">video</span></div></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="as-split__main">
+    <section class="as-pane" aria-label="资源">
+      <div class="as-pane__head">
+        <nav class="as-pathbar" aria-label="所在位置"><a href="#">arts</a><i>/</i><a href="#">characters</a><i>/</i><a href="#">char_002_amiya</a><i>/</i><b aria-current="page">illust_char_002_amiya_1</b><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--xs" data-copy="arts/characters/char_002_amiya/illust_char_002_amiya_1" title="复制资源名" aria-label="复制资源名"><svg class="as-icon-14"><use href="#i-copy"/></svg></button></nav>
+        <span class="as-toolbar__spacer"></span>
+        <button type="button" class="ak-btn ak-btn--primary ak-btn--sm"><svg class="as-icon-16"><use href="#i-download"/></svg>下载 bundle</button>
+      </div>
+      <div class="as-pane__body as-pane__body--flush">
+        <dl class="as-kv">
+          <dt>Bundle</dt><dd><span class="as-path">chararts/char_002_amiya.ab</span><span class="as-dim">2.98 MiB</span><a class="ak-btn ak-btn--ghost ak-btn--xs" href="akas-diff.html">历次变化</a></dd>
+          <dt>资源路径</dt><dd class="as-path">dyn/arts/characters/char_002_amiya/illust_char_002_amiya_1.prefab</dd>
+          <dt>SHA-256</dt><dd class="as-hash">986dc86184c1d64a36a0efe46aa98bddd59faf4c9f3d8d288cb41fec78eb890e<button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--xs" data-copy="986dc86184c1d64a36a0efe46aa98bddd59faf4c9f3d8d288cb41fec78eb890e" title="复制" aria-label="复制哈希"><svg class="as-icon-14"><use href="#i-copy"/></svg></button></dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="as-pane" aria-label="同目录">
+      <div class="as-pane__head"><h2 class="as-pane__title">char_002_amiya</h2><span class="as-toolbar__spacer"></span><span class="as-dim">14 项</span></div>
+      <table class="ak-table ak-table--compact">
+        <tbody>
+          <tr class="is-selected"><td><span class="as-ib"><svg class="as-icon-16"><use href="#i-image"/></svg><span class="as-mono">illust_char_002_amiya_1</span></span></td><td class="as-path as-dim">chararts/char_002_amiya.ab</td><td class="as-num">2.98 MiB</td></tr>
+          <tr><td><span class="as-ib"><svg class="as-icon-16"><use href="#i-image"/></svg><span class="as-mono">illust_char_002_amiya_1+</span></span></td><td class="as-path as-dim">chararts/char_002_amiya.ab</td><td class="as-num">2.98 MiB</td></tr>
+          <tr><td><span class="as-ib"><svg class="as-icon-16"><use href="#i-image"/></svg><span class="as-mono">illust_char_002_amiya_2</span></span></td><td class="as-path as-dim">chararts/char_002_amiya.ab</td><td class="as-num">2.98 MiB</td></tr>
+          <tr><td><span class="as-ib"><svg class="as-icon-16"><use href="#i-image"/></svg><span class="as-mono">illust_char_002_amiya_2b</span></span></td><td class="as-path as-dim">chararts/char_002_amiya.ab</td><td class="as-num">2.98 MiB</td></tr>
+          <tr><td><span class="as-ib"><svg class="as-icon-16"><use href="#i-image"/></svg><span class="as-mono">illust_char_002_amiya_epoque#4</span></span></td><td class="as-path as-dim">chararts/char_002_amiya_epoque#4.ab</td><td class="as-num">3.07 MiB</td></tr>
+          <tr><td><span class="as-ib"><svg class="as-icon-16"><use href="#i-image"/></svg><span class="as-mono">illust_char_002_amiya_epoque#4b</span></span></td><td class="as-path as-dim">chararts/char_002_amiya_epoque#4.ab</td><td class="as-num">3.07 MiB</td></tr>
+          <tr><td><span class="as-ib"><svg class="as-icon-16"><use href="#i-file"/></svg><span class="as-mono">illust_char_002_amiya_epoque#4b_material</span></span></td><td class="as-path as-dim">chararts/char_002_amiya_epoque#4.ab</td><td class="as-num">3.07 MiB</td></tr>
+          <tr><td><span class="as-ib"><svg class="as-icon-16"><use href="#i-folder"/></svg><span class="as-mono">spine</span></span></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>

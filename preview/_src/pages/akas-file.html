@@ -1,0 +1,98 @@
+<!--page
+skeleton: app-skeleton.html
+title: gamedata_const.json · Arknights Asset Storage 设计稿
+-->
+<div class="ak-page-header">
+  <div class="ak-page-header__row">
+    <h1 class="ak-page-header__title">文件<span class="ak-en">Files</span></h1>
+  </div>
+</div>
+
+<div class="as-toolbar">
+  <div class="ak-seg ak-seg--lg" role="group" aria-label="根目录">
+    <button type="button" aria-pressed="false">解包产物</button>
+    <button type="button" aria-pressed="true">数据表</button>
+  </div>
+  <select class="ak-select ak-select--sm ak-select--ver" aria-label="版本"><option>26-10-22-14-02-11-51447808</option><option>26-10-14-13-45-10-99469376</option><option>26-10-08-04-51-28-56071834</option></select>
+  <span class="as-toolbar__spacer"></span>
+  <label class="ak-search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input ak-input--sm" type="search" placeholder="搜索文件" aria-label="搜索文件"></label>
+</div>
+
+<div class="as-preview">
+  <section class="as-preview__stage" aria-label="gamedata_const.json">
+    <div class="as-pane__head">
+      <nav class="as-pathbar" aria-label="所在位置"><a href="#">26-10-22-14-02-11-51447808</a><i>/</i><a href="#">excel</a><i>/</i><b aria-current="page">gamedata_const.json</b><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--xs" data-copy="gamedata/26-10-22-14-02-11-51447808/excel/gamedata_const.json" title="复制路径" aria-label="复制路径"><svg class="as-icon-14"><use href="#i-copy"/></svg></button></nav>
+    </div>
+    <div class="as-preview__tabs">
+      <span class="as-dim">44.0 KiB</span>
+      <div class="ak-tabs" role="tablist" aria-label="查看方式">
+        <button type="button" class="ak-tab is-active" role="tab" aria-selected="true">格式化</button>
+        <button type="button" class="ak-tab" role="tab" aria-selected="false">原始</button>
+      </div>
+      <div class="as-actions">
+        <button type="button" class="ak-btn ak-btn--sm" data-copy="{ … }"><svg class="as-icon-16"><use href="#i-copy"/></svg>复制</button>
+        <a class="ak-btn ak-btn--sm" href="#"><svg class="as-icon-16"><use href="#i-download"/></svg>下载</a>
+      </div>
+    </div>
+    <pre class="as-code" tabindex="0"><div><span class="p">{</span></div>
+<div>  <span class="k">"maxLevel"</span><span class="p">: [</span></div>
+<div>    <span class="p">[</span><span class="n">30</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">30</span><span class="p">, </span><span class="n">30</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">40</span><span class="p">, </span><span class="n">55</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">45</span><span class="p">, </span><span class="n">60</span><span class="p">, </span><span class="n">70</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">50</span><span class="p">, </span><span class="n">70</span><span class="p">, </span><span class="n">80</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">50</span><span class="p">, </span><span class="n">80</span><span class="p">, </span><span class="n">90</span><span class="p">]</span></div>
+<div>  <span class="p">],</span></div>
+<div>  <span class="k">"maxPlayerLevel"</span><span class="p">: </span><span class="n">120</span><span class="p">,</span></div>
+<div>  <span class="k">"maxPracticeTicket"</span><span class="p">: </span><span class="n">30</span><span class="p">,</span></div>
+<div>  <span class="k">"isDynIllustEnabled"</span><span class="p">: </span><span class="b">true</span><span class="p">,</span></div>
+<div>  <span class="k">"richTextStyles"</span><span class="p">: {</span></div>
+<div>    <span class="k">"ba.vup"</span><span class="p">: </span><span class="s">"&lt;color=#0098DC&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.vdown"</span><span class="p">: </span><span class="s">"&lt;color=#FF6237&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.rem"</span><span class="p">: </span><span class="s">"&lt;color=#F49800&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.kw"</span><span class="p">: </span><span class="s">"&lt;color=#00B0FF&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.talpu"</span><span class="p">: </span><span class="s">"&lt;color=#0098DC&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.dt.element"</span><span class="p">: </span><span class="s">"&lt;color=#FF6237&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.buffres"</span><span class="p">: </span><span class="s">"&lt;color=#FF6237&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.pn"</span><span class="p">: </span><span class="s">"&lt;color=#0098DC&gt;"</span></div>
+<div>  <span class="p">},</span></div>
+<div>  <span class="k">"termDescriptionDict"</span><span class="p">: {</span></div>
+<div>    <span class="k">"ba.stun"</span><span class="p">: {</span></div>
+<div>      <span class="k">"termId"</span><span class="p">: </span><span class="s">"ba.stun"</span><span class="p">,</span></div>
+<div>      <span class="k">"termName"</span><span class="p">: </span><span class="s">"晕眩"</span><span class="p">,</span></div>
+<div>      <span class="k">"description"</span><span class="p">: </span><span class="s">"无法移动、阻挡、攻击及使用技能"</span></div>
+<div>    <span class="p">},</span></div>
+<div>    <span class="k">"ba.sluggish"</span><span class="p">: {</span></div>
+<div>      <span class="k">"termId"</span><span class="p">: </span><span class="s">"ba.sluggish"</span><span class="p">,</span></div>
+<div>      <span class="k">"termName"</span><span class="p">: </span><span class="s">"停顿"</span><span class="p">,</span></div>
+<div>      <span class="k">"description"</span><span class="p">: </span><span class="s">"无法移动、攻击及使用技能，但仍然可以阻挡"</span></div>
+<div>    <span class="p">},</span></div>
+<div>    <span class="k">"ba.sleep"</span><span class="p">: {</span></div>
+<div>      <span class="k">"termId"</span><span class="p">: </span><span class="s">"ba.sleep"</span><span class="p">,</span></div>
+<div>      <span class="k">"termName"</span><span class="p">: </span><span class="s">"沉睡"</span><span class="p">,</span></div>
+<div>      <span class="k">"description"</span><span class="p">: </span><span class="s">"无敌且不能行动，不会阻挡敌人，沉睡时受到攻击则解除沉睡"</span></div>
+<div>    <span class="p">}</span></div>
+<div>  <span class="p">},</span></div>
+<div>  <span class="k">"dataVersion"</span><span class="p">: </span><span class="s">"26-10-22-14-02-11-51447808"</span></div>
+<div><span class="p">}</span></div></pre>
+  </section>
+
+  <aside class="as-pane" aria-label="文件信息">
+    <dl class="as-kv">
+      <dt>路径</dt><dd class="as-path"><span>gamedata/26-10-22-14-02-11-51447808/excel/</span>gamedata_const.json</dd>
+      <dt>大小</dt><dd>44.0 KiB</dd>
+      <dt>修改时间</dt><dd>2026-10-22 14:31</dd>
+      <dt>直链</dt><dd><button type="button" class="ak-btn ak-btn--sm" data-copy="https://torappu.prts.wiki/gamedata/26-10-22-14-02-11-51447808/excel/gamedata_const.json"><svg class="as-icon-16"><use href="#i-link"/></svg>复制直链</button></dd>
+    </dl>
+    <h3 class="as-pane__sub">excel</h3>
+    <ul class="as-res-list">
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">character_table.json</span></span><span class="as-res__count">7.6 MiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">charword_table.json</span></span><span class="as-res__count">8.3 MiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">enemy_handbook_table.json</span></span><span class="as-res__count">1.3 MiB</span></a></li>
+      <li><a class="as-res is-selected" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">gamedata_const.json</span></span><span class="as-res__count">44 KiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">item_table.json</span></span><span class="as-res__count">1.3 MiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">skill_table.json</span></span><span class="as-res__count">5.9 MiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-file"/></svg><span class="as-res__text"><span class="as-res__id">data_version.txt</span></span><span class="as-res__count">85 B</span></a></li>
+    </ul>
+  </aside>
+</div>

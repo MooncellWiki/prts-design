@@ -1,0 +1,128 @@
+<!--page
+skeleton: app-skeleton.html
+title: 状态 · Arknights Asset Storage 设计稿
+-->
+<div class="ak-page-header">
+  <div class="ak-page-header__row">
+    <h1 class="ak-page-header__title">状态<span class="ak-en">States</span></h1>
+  </div>
+</div>
+
+<div class="as-states">
+  <section class="as-state" id="downloading">
+    <div class="as-state__head">下载中</div>
+    <div class="as-state__body">
+      <section class="ak-card ak-card--accent-left as-latest as-latest--inline">
+        <div class="as-latest__id">
+          <div class="as-latest__client">2.7.81</div>
+          <div class="as-latest__res"><span class="as-ver">26-10-29-13-12-40-7b3e91a0</span></div>
+        </div>
+        <div class="as-latest__status"><span class="ak-tag ak-tag--warning">下载中</span><span class="as-dim">81 / 131 个 bundle</span></div>
+        <div class="ak-progress ak-progress--stripes" style="--_v:62%" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="下载进度"></div>
+      </section>
+    </div>
+  </section>
+
+  <section class="as-state" id="importing">
+    <div class="as-state__head">清单导入中</div>
+    <div class="as-state__body">
+      <section class="ak-card ak-card--accent-left as-latest as-latest--inline">
+        <div class="as-latest__id">
+          <div class="as-latest__client">2.7.81</div>
+          <div class="as-latest__res"><span class="as-ver">26-10-29-13-12-40-7b3e91a0</span></div>
+        </div>
+        <div class="as-latest__status"><span class="ak-tag ak-tag--warning">正在导入清单</span></div>
+        <div class="ak-progress ak-progress--indeterminate" role="progressbar" aria-label="导入中"></div>
+      </section>
+    </div>
+  </section>
+
+  <section class="as-state" id="failed">
+    <div class="as-state__head">解包失败</div>
+    <div class="as-state__body">
+      <div class="ak-message ak-message--danger" role="alert" style="margin:0">
+        <svg class="ak-message__icon"><use href="#i-warn"/></svg>
+        <div class="ak-message__body">
+          <div class="ak-message__title">解包没有完成</div>
+          CharSpine、EnemySpine 两个任务失败，其余 35 个已完成。
+          <div class="ak-flex ak-gap-2" style="margin-top:10px"><button type="button" class="ak-btn ak-btn--sm ak-btn--primary" data-open="#relaunch">重新解包</button><button type="button" class="ak-btn ak-btn--sm">查看日志</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="as-state" id="empty">
+    <div class="as-state__head">没有结果</div>
+    <div class="as-state__body">
+      <div class="ak-empty">
+        <div class="ak-empty__code">NO MATCH</div>
+        <p class="ak-empty__title">没有匹配「amiyaa」的文件</p>
+        <button type="button" class="ak-btn ak-btn--sm" style="margin-top:8px">清除关键词</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="as-state" id="loading">
+    <div class="as-state__head">加载中</div>
+    <div class="as-state__body">
+      <table class="ak-table ak-table--compact" aria-busy="true" aria-label="加载中">
+        <thead><tr><th>资源版本</th><th>时间</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td><span class="ak-skeleton ak-skeleton--text" style="width:220px"></span></td><td><span class="ak-skeleton ak-skeleton--text" style="width:80px"></span></td><td><span class="ak-skeleton ak-skeleton--text" style="width:56px"></span></td></tr>
+          <tr><td><span class="ak-skeleton ak-skeleton--text" style="width:220px"></span></td><td><span class="ak-skeleton ak-skeleton--text" style="width:80px"></span></td><td><span class="ak-skeleton ak-skeleton--text" style="width:56px"></span></td></tr>
+          <tr><td><span class="ak-skeleton ak-skeleton--text" style="width:220px"></span></td><td><span class="ak-skeleton ak-skeleton--text" style="width:80px"></span></td><td><span class="ak-skeleton ak-skeleton--text" style="width:56px"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="as-state" id="large">
+    <div class="as-state__head">文件太大</div>
+    <div class="as-state__body">
+      <div class="ak-empty">
+        <svg class="ak-empty__icon"><use href="#i-file"/></svg>
+        <p class="ak-empty__title">resource_manifest_idx.json 有 37.0 MiB，不在页面里预览</p>
+        <button type="button" class="ak-btn ak-btn--sm ak-btn--primary" style="margin-top:8px"><svg class="as-icon-16"><use href="#i-download"/></svg>下载</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="as-state" id="relaunch-state" style="grid-column:1/-1">
+    <div class="as-state__head">重新解包</div>
+    <div class="as-state__body as-stage">
+      <dialog class="ak-dialog" id="relaunch" open aria-labelledby="relaunch-title">
+        <div class="ak-dialog__head"><h2 class="ak-dialog__title" id="relaunch-title">重新解包</h2></div>
+        <div class="ak-dialog__body">
+          <div class="ak-field"><label class="ak-label">版本</label><input class="ak-input" value="2.7.81  26-10-22-14-02-11-51447808" readonly></div>
+          <div class="ak-field"><label class="ak-label">对比的上一版</label><select class="ak-select"><option>2.7.81  26-10-14-13-45-10-99469376</option><option>2.7.71  26-09-22-07-47-20_6c71fa</option><option>不对比，全量解包</option></select></div>
+          <div class="ak-grid-2" style="gap:var(--ak-space-4)">
+            <div class="ak-field"><label class="ak-label">只跑这些任务</label><input class="ak-input" placeholder="CharSpine, EnemySpine"></div>
+            <div class="ak-field"><label class="ak-label">跳过这些任务</label><input class="ak-input" placeholder="Video, Audio"></div>
+          </div>
+          <div class="ak-field" style="margin-bottom:0"><label class="ak-label">令牌 <span class="req">*</span></label><input class="ak-input" type="password"></div>
+        </div>
+        <div class="ak-dialog__foot"><button type="button" class="ak-btn" data-close>取消</button><button type="button" class="ak-btn ak-btn--primary">开始解包</button></div>
+      </dialog>
+    </div>
+  </section>
+
+  <section class="as-state" id="toasts">
+    <div class="as-state__head">提示</div>
+    <div class="as-state__body ak-flex-col ak-gap-2" style="display:flex">
+      <div class="ak-toast ak-toast--success" style="position:relative;overflow:hidden"><svg style="width:18px;height:18px;color:var(--_c);flex:none"><use href="#i-check"/></svg><div class="ak-toast__body">已复制</div><i class="ak-toast__progress" style="--_dur:5s;width:60%"></i></div>
+      <div class="ak-toast ak-toast--danger" style="position:relative;overflow:hidden"><svg style="width:18px;height:18px;color:var(--_c);flex:none"><use href="#i-warn"/></svg><div class="ak-toast__body">搜索太频繁，稍后再试</div></div>
+      <div class="ak-toast" style="position:relative;overflow:hidden"><svg style="width:18px;height:18px;color:var(--_c);flex:none"><use href="#i-info"/></svg><div class="ak-toast__body">发现新版本 26-10-29-13-12-40-7b3e91a0，开始下载</div></div>
+    </div>
+  </section>
+
+  <section class="as-state" id="error">
+    <div class="as-state__head">连不上服务</div>
+    <div class="as-state__body">
+      <div class="ak-empty">
+        <div class="ak-empty__code">503</div>
+        <p class="ak-empty__title">暂时拿不到版本列表</p>
+        <button type="button" class="ak-btn ak-btn--sm" style="margin-top:8px"><svg class="as-icon-16"><use href="#i-refresh"/></svg>重试</button>
+      </div>
+    </div>
+  </section>
+</div>

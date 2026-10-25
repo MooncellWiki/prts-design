@@ -1,0 +1,152 @@
+<!--page
+skeleton: app-skeleton.html
+title: 变更 · Arknights Asset Storage 设计稿
+-->
+<div class="ak-page-header">
+  <div class="ak-page-header__row">
+    <h1 class="ak-page-header__title">变更<span class="ak-en">Diff</span></h1>
+    <div class="ak-page-tools">
+      <button type="button" class="ak-page-tools__btn" data-copy="torappu run 2.7.81 26-10-22-14-02-11-51447808 -c 2.7.81 -r 26-10-14-13-45-10-99469376"><svg class="ak-icon"><use href="#i-copy"/></svg>复制 torappu 命令</button>
+      <button type="button" class="ak-page-tools__btn" data-copy="https://torappu.prts.wiki/diff?diff=26-10-14-13-45-10-99469376...26-10-22-14-02-11-51447808"><svg class="ak-icon"><use href="#i-link"/></svg>复制链接</button>
+    </div>
+  </div>
+</div>
+
+<div class="as-toolbar">
+  <select class="ak-select ak-select--sm ak-select--ver" aria-label="基准版本">
+    <option>2.7.81 26-10-14-13-45-10-99469376</option>
+    <option>2.7.81 26-10-08-04-51-28-56071834</option>
+    <option>2.7.71 26-09-22-07-47-20_6c71fa</option>
+  </select>
+  <button type="button" class="ak-btn ak-btn--icon ak-btn--sm" title="交换" aria-label="交换两边"><svg class="as-icon-16"><use href="#i-swap"/></svg></button>
+  <select class="ak-select ak-select--sm ak-select--ver" aria-label="对比版本">
+    <option>2.7.81 26-10-22-14-02-11-51447808</option>
+    <option>2.7.81 26-10-14-13-45-10-99469376</option>
+  </select>
+  <span class="as-toolbar__sep"></span>
+  <div class="as-kinds" role="group" aria-label="变更类型">
+    <button type="button" class="as-kind as-add" aria-pressed="true">新增 <b>73</b></button>
+    <button type="button" class="as-kind as-chg" aria-pressed="true">修改 <b>58</b></button>
+    <button type="button" class="as-kind as-rem" aria-pressed="true">删除 <b>33</b></button>
+  </div>
+  <span class="as-toolbar__spacer"></span>
+  <label class="ak-search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input ak-input--sm" type="search" placeholder="筛选路径" aria-label="筛选路径"></label>
+</div>
+
+<div class="as-split as-split--3">
+  <aside class="as-split__side" aria-label="目录">
+    <div class="as-split__side-body">
+      <ul class="as-tree" role="tree">
+        <li class="is-open"><div class="as-tree__row" role="treeitem" aria-expanded="true"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><span class="as-tree__label">全部</span><span class="as-tree__meta"><span class="as-cnt as-add">+73</span><span class="as-cnt as-chg">~58</span><span class="as-cnt as-rem">−33</span></span></div>
+          <ul>
+            <li><div class="as-tree__row" role="treeitem" aria-expanded="false"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">activity</span><span class="as-tree__meta"><span class="as-cnt as-add">+3</span><span class="as-cnt as-chg">~1</span></span></div></li>
+            <li class="is-open"><div class="as-tree__row is-selected" role="treeitem" aria-expanded="true" aria-selected="true"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder-open"/></svg><span class="as-tree__label">arts</span><span class="as-tree__meta"><span class="as-cnt as-add">+4</span><span class="as-cnt as-chg">~22</span></span></div>
+              <ul>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">charavatars</span><span class="as-tree__meta"><span class="as-cnt as-chg">~1</span></span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">dynchars</span><span class="as-tree__meta"><span class="as-cnt as-chg">~3</span></span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">enemies</span><span class="as-tree__meta"><span class="as-cnt as-chg">~1</span></span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">guidebookpages</span><span class="as-tree__meta"><span class="as-cnt as-chg">~1</span></span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">items</span><span class="as-tree__meta"><span class="as-cnt as-chg">~2</span></span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">shop</span><span class="as-tree__meta"><span class="as-cnt as-chg">~1</span></span></div></li>
+                <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">skills</span><span class="as-tree__meta"><span class="as-cnt as-chg">~1</span></span></div></li>
+                <li class="is-open"><div class="as-tree__row" role="treeitem" aria-expanded="true"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder-open"/></svg><span class="as-tree__label">ui</span><span class="as-tree__meta"><span class="as-cnt as-add">+4</span><span class="as-cnt as-chg">~9</span></span></div>
+                  <ul>
+                    <li><div class="as-tree__row as-tree__row--leaf"><span class="as-tree__caret"></span><span class="as-mark as-chg">M</span><span class="as-tree__label">[uc]campaign.ab</span></div></li>
+                    <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">homebackground</span><span class="as-tree__meta"><span class="as-cnt as-add">+1</span><span class="as-cnt as-chg">~3</span></span></div></li>
+                    <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">namecardskin</span><span class="as-tree__meta"><span class="as-cnt as-add">+1</span><span class="as-cnt as-chg">~1</span></span></div></li>
+                    <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">stage</span><span class="as-tree__meta"><span class="as-cnt as-chg">~2</span></span></div></li>
+                    <li><div class="as-tree__row as-tree__row--leaf"><span class="as-tree__caret"></span><span class="as-mark as-add">A</span><span class="as-tree__label">stage_mappreview_h2_act1museum_a_0.ab</span></div></li>
+                    <li><div class="as-tree__row as-tree__row--leaf"><span class="as-tree__caret"></span><span class="as-mark as-add">A</span><span class="as-tree__label">stage_mappreview_h2_camp_r_34_0.ab</span></div></li>
+                  </ul>
+                </li>
+                <li><div class="as-tree__row as-tree__row--leaf"><span class="as-tree__caret"></span><span class="as-mark as-chg">M</span><span class="as-tree__label">loadingillusts_5.ab</span></div></li>
+                <li><div class="as-tree__row as-tree__row--leaf"><span class="as-tree__caret"></span><span class="as-mark as-chg">M</span><span class="as-tree__label">ui_item_icons_7.ab</span></div></li>
+                <li><div class="as-tree__row as-tree__row--leaf"><span class="as-tree__caret"></span><span class="as-mark as-chg">M</span><span class="as-tree__label">ui_item_icons_8.ab</span></div></li>
+              </ul>
+            </li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">audio</span><span class="as-tree__meta"><span class="as-cnt as-add">+6</span><span class="as-cnt as-chg">~3</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">battle</span><span class="as-tree__meta"><span class="as-cnt as-chg">~5</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">building</span><span class="as-tree__meta"><span class="as-cnt as-chg">~1</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">config</span><span class="as-tree__meta"><span class="as-cnt as-chg">~2</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">pkgrps</span><span class="as-tree__meta"><span class="as-cnt as-chg">~4</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">refs</span><span class="as-tree__meta"><span class="as-cnt as-chg">~4</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">scenes</span><span class="as-tree__meta"><span class="as-cnt as-add">+26</span><span class="as-cnt as-chg">~1</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">skinpack</span><span class="as-tree__meta"><span class="as-cnt as-chg">~1</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">spritepack</span><span class="as-tree__meta"><span class="as-cnt as-add">+1</span><span class="as-cnt as-chg">~10</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">ui</span><span class="as-tree__meta"><span class="as-cnt as-chg">~4</span></span></div></li>
+            <li><div class="as-tree__row" role="treeitem"><span class="as-tree__caret"><svg><use href="#i-chevron-right"/></svg></span><svg class="as-tree__icon"><use href="#i-folder"/></svg><span class="as-tree__label">anon</span><span class="as-tree__meta"><span class="as-cnt as-add">+32</span><span class="as-cnt as-rem">−32</span></span></div></li>
+            <li><div class="as-tree__row as-tree__row--leaf"><span class="as-tree__caret"></span><span class="as-mark as-add">A</span><span class="as-tree__label">8a782b75e777e72970434663bbc18095.idx</span></div></li>
+            <li><div class="as-tree__row as-tree__row--leaf"><span class="as-tree__caret"></span><span class="as-mark as-rem">D</span><span class="as-tree__label">ddb70df40db1ff930a01dd077b0f6cab.idx</span></div></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <section class="as-split__main as-pane" aria-label="变更列表">
+    <div class="as-pane__head">
+      <nav class="as-pathbar" aria-label="所在位置"><a href="#">全部</a><i>/</i><b aria-current="page">arts</b></nav>
+      <span class="as-toolbar__spacer"></span>
+      <label class="ak-switch ak-switch--sm"><input type="checkbox" checked><span>含子目录</span></label>
+    </div>
+    <div class="as-table-scroll">
+    <table class="ak-table ak-table--compact">
+      <thead>
+        <tr><th style="width:28px"><span class="ak-sr-only">变更</span></th><th>路径</th><th class="as-num">大小</th><th class="as-num">变化</th><th><span class="ak-sr-only">操作</span></th></tr>
+      </thead>
+      <tbody>
+        <tr class="as-row as-add"><td><span class="as-mark">A</span></td><td class="as-path"><span>arts/ui/homebackground/wrapper/</span>bg_arcade_1.ab</td><td class="as-num">1.72 MiB</td><td class="as-num as-dim">新增</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-add"><td><span class="as-mark">A</span></td><td class="as-path"><span>arts/ui/namecardskin/</span>[uc]nc_7d5_1.ab</td><td class="as-num">419.7 KiB</td><td class="as-num as-dim">新增</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-add"><td><span class="as-mark">A</span></td><td class="as-path"><span>arts/ui/</span>stage_mappreview_h2_act1museum_a_0.ab</td><td class="as-num">755.4 KiB</td><td class="as-num as-dim">新增</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-add"><td><span class="as-mark">A</span></td><td class="as-path"><span>arts/ui/</span>stage_mappreview_h2_camp_r_34_0.ab</td><td class="as-num">67.5 KiB</td><td class="as-num as-dim">新增</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg is-selected" aria-selected="true"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/ui/</span>[uc]campaign.ab</td><td class="as-num">11.79 MiB</td><td class="as-num as-delta as-delta--up">+2.61 MiB</td><td class="as-num"><span class="as-actions"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/ui/stage/</span>[uc]homeentry.ab</td><td class="as-num">549.7 KiB</td><td class="as-num as-delta as-delta--up">+44.8 KiB</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/ui/stage/hometheme/</span>theme_hub.ab</td><td class="as-num">2.47 KiB</td><td class="as-num as-delta as-delta--up">+20 B</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/ui/homebackground/previewitem/</span>home_background_preview_hub.ab</td><td class="as-num">2.84 KiB</td><td class="as-num as-delta as-delta--up">+28 B</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/</span>loadingillusts_5.ab</td><td class="as-num">4.81 MiB</td><td class="as-num as-delta as-delta--up">+189.8 KiB</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/dynchars/</span>char_2025_shu_nlc#1.ab</td><td class="as-num">6.77 MiB</td><td class="as-num as-delta as-delta--down">−5.98 KiB</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/dynchars/</span>char_1028_texas2_epoque#36.ab</td><td class="as-num">3.69 MiB</td><td class="as-num as-delta as-delta--down">−2.30 KiB</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/dynchars/</span>effect.ab</td><td class="as-num">15.59 MiB</td><td class="as-num as-delta as-delta--down">−1.41 KiB</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/charavatars/</span>avatar_hub.ab</td><td class="as-num">36.6 KiB</td><td class="as-num as-delta as-delta--up">+134 B</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/enemies/</span>ahub_enemy_icons.ab</td><td class="as-num">21.5 KiB</td><td class="as-num as-delta as-delta--up">+135 B</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/guidebookpages/</span>[pack]actarcadev2.ab</td><td class="as-num">2.11 MiB</td><td class="as-num as-delta as-delta--up">+435.7 KiB</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/items/icons/</span>icon_hub.ab</td><td class="as-num">18.3 KiB</td><td class="as-num as-delta as-delta--up">+30 B</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+        <tr class="as-row as-chg"><td><span class="as-mark">M</span></td><td class="as-path"><span>arts/</span>ui_item_icons_8.ab</td><td class="as-num">130.4 KiB</td><td class="as-num as-delta as-delta--up">+26.4 KiB</td><td class="as-num"><span class="as-actions as-actions--hover"><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="下载" aria-label="下载"><svg class="as-icon-16"><use href="#i-download"/></svg></button></span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <aside class="as-pane as-detail" aria-label="详情">
+    <div class="as-pane__head">
+      <h2 class="as-pane__title"><span class="as-mark as-chg">M</span><span class="as-path">arts/ui/[uc]campaign.ab</span></h2>
+      <span class="as-toolbar__spacer"></span>
+      <button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--sm" title="关闭" aria-label="关闭"><svg class="as-icon-16"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="as-compare">
+      <div class="as-compare__col">
+        <div class="as-compare__ver">26-10-14-13-45-10-99469376</div>
+        <div class="as-compare__size">9.18 MiB</div>
+        <div class="as-compare__hash">2596b5e4d4f8…</div>
+        <button type="button" class="ak-btn ak-btn--sm"><svg class="as-icon-16"><use href="#i-download"/></svg>下载</button>
+      </div>
+      <div class="as-compare__col is-new">
+        <div class="as-compare__ver">26-10-22-14-02-11-51447808</div>
+        <div class="as-compare__size">11.79 MiB <span class="as-delta as-delta--up">+2.61 MiB</span></div>
+        <div class="as-compare__hash">502a3c4eb3a1…</div>
+        <button type="button" class="ak-btn ak-btn--primary ak-btn--sm"><svg class="as-icon-16"><use href="#i-download"/></svg>下载</button>
+      </div>
+    </div>
+    <h3 class="as-pane__sub">历次变化</h3>
+    <table class="ak-table ak-table--compact">
+      <tbody>
+        <tr class="is-selected"><td><span class="as-ver">26-10-22-14-02-11-51447808</span></td><td class="as-num">11.79 MiB</td></tr>
+        <tr><td><span class="as-ver">26-10-14-13-45-10-99469376</span></td><td class="as-num">9.18 MiB</td></tr>
+        <tr><td><span class="as-ver">26-09-03-04-06-00_ed95a2</span></td><td class="as-num">9.18 MiB</td></tr>
+        <tr><td><span class="as-ver">26-07-30-09-02-37_bf3049</span></td><td class="as-num">8.92 MiB</td></tr>
+        <tr><td><span class="as-ver">26-05-27-13-32-37_d44f28</span></td><td class="as-num">8.90 MiB</td></tr>
+      </tbody>
+    </table>
+    <div class="as-pane__foot"><button type="button" class="ak-btn ak-btn--ghost ak-btn--sm">全部 23 次</button></div>
+  </aside>
+</div>

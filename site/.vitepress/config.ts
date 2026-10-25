@@ -108,6 +108,7 @@ const sidebar: DefaultTheme.Sidebar = [
       { text: "后勤技能一览", link: "/patterns/riic" },
       { text: "公招计算", link: "/patterns/recruit" },
       { text: "干员页（陈）", link: "/patterns/operator" },
+      { text: "资源库 ak-asset-storage", link: "/patterns/asset-storage" },
     ],
   },
 ];

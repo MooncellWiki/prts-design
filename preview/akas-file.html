@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!-- 生成物：由 scripts/build-preview.py 从 preview/_src/app-skeleton.html + _src/pages/akas-file.html 生成，改源文件再重跑 -->
+<html lang="zh-CN" class="skin-theme-clientpref-os">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gamedata_const.json · Arknights Asset Storage 设计稿 · Arknights Asset Storage</title>
+<script>(function(){var t='os';try{t=localStorage.getItem('akas-theme')||'os'}catch(e){}var q=new URLSearchParams(location.search).get('theme');if(q)t=q;var h=document.documentElement;h.classList.remove('skin-theme-clientpref-os','skin-theme-clientpref-day','skin-theme-clientpref-night');if(t==='light'){h.setAttribute('data-theme','light');h.classList.add('skin-theme-clientpref-day')}else if(t==='dark'){h.setAttribute('data-theme','dark');h.classList.add('skin-theme-clientpref-night')}else{h.classList.add('skin-theme-clientpref-os')}h.dataset.akasTheme=t})();</script>
+<link rel="stylesheet" href="../src/index.css">   <!-- 皮肤全套：字体 → 令牌 → 组件 → 页眉 / 页脚 / 搜索面板骨架；实现时 ak-asset-storage 自己出页眉那一层样式 -->
+<link rel="stylesheet" href="assets/asset-storage.css">   <!-- 这套页面自己的排布（.as-*） -->
+
+</head>
+<body class="ak-scope as-body">
+<a class="ak-skip" href="#content">跳到内容</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM16 16l5 5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0-6v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M4.9 19.1 7 17m10-10 2.1-2.1"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 4h18v12H3zm5 16h8m-4-4v4"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.5 1.5M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.5-1.5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 4v12m-5-5 5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 8v5m0-9v1"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 3l10 18H2zm0 7v5m0 3v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M9 9h11v11H9zM4 15V4h11"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 8h14m-4-4 4 4-4 4M20 16H6m4 4-4-4 4-4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h6l2 2h10v12H3z"/></symbol>
+  <symbol id="i-folder-open" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h6l2 2h9v3M3 5v14h16l2.5-9H6.5L3 19"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 3h8l4 4v14H6zm8 0v4h4"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h18v14H3zm3 11 4-5 3 3 2-2 4 4M15 9h.01"/></symbol>
+  <symbol id="i-audio" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 10v4h3l5 4V6L7 10zm11-1a4 4 0 0 1 0 6m2.5-9a8 8 0 0 1 0 12"/></symbol>
+  <symbol id="i-json" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 3-2 3 1 0 2 1.5 2 3v2c0 2 1 3 3 3m8-16c2 0 3 1 3 3v2c0 1.5 1 3 2 3-1 0-2 1.5-2 3v2c0 2-1 3-3 3"/></symbol>
+  <symbol id="i-bundle" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10M7.5 5l9 4"/></symbol>
+  <symbol id="i-diff" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h7v7H4zm9 9h7v7h-7zM7.5 6v3m-1.5-1.5h3M14.5 16.5h3"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5m4-1v5l3 2"/></symbol>
+  <symbol id="i-docker" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 13h14l2-3h2c0 5-3 8-9 8s-9-3-9-5zm2-3h3v3H5zm4 0h3v3H9zm4 0h3v3h-3zM9 6h3v3H9z"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M14 4h6v6m0-6L10 14M20 14v6H4V4h6"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 5h18l-7 8v6l-4 2v-8z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zm16 0h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></symbol>
+  <symbol id="i-person" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9c0-4 3.6-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-empty" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10"/></symbol>
+</svg>
+
+<header class="ak-header as-header">
+  <div class="ak-header__inner">
+    <a class="ak-header__logo" href="akas-versions.html">
+      <img src="assets/camp/rhodes.png" alt="">
+      <span class="ak-header__wordmark">AK ASSETS</span>
+    </a>
+    <nav class="as-nav" aria-label="主导航">
+      <a href="akas-versions.html" data-nav="versions">版本</a>
+      <a href="akas-diff.html" data-nav="diff">变更</a>
+      <a href="akas-manifest.html" data-nav="manifest">清单</a>
+      <a href="akas-files.html" data-nav="assets">文件</a>
+      <a href="akas-story.html" data-nav="story">剧情资源</a>
+    </nav>
+    <button type="button" class="ak-search-trigger as-header__search" id="as-search-trigger" aria-haspopup="dialog" aria-expanded="false">
+      <span class="ak-search-trigger__icon"><svg><use href="#i-search"/></svg></span>
+      <span class="ak-search-trigger__label">搜索文件、资源、bundle</span>
+      <kbd class="ak-kbd">⌘K</kbd>
+    </button>
+    <div class="ak-header__tools">
+      <a class="ak-btn ak-btn--ghost ak-btn--sm as-header__api" href="https://torappu.prts.wiki/api/v1/scalar">API</a>
+      <div class="ak-theme-toggle" role="group" aria-label="外观">
+        <button type="button" data-theme="os" title="跟随系统" aria-label="跟随系统"><svg><use href="#i-monitor"/></svg></button>
+        <button type="button" data-theme="light" title="亮" aria-label="亮"><svg><use href="#i-sun"/></svg></button>
+        <button type="button" data-theme="dark" title="暗" aria-label="暗"><svg><use href="#i-moon"/></svg></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="as-main" id="content">
+<div class="ak-page-header">
+  <div class="ak-page-header__row">
+    <h1 class="ak-page-header__title">文件<span class="ak-en">Files</span></h1>
+  </div>
+</div>
+
+<div class="as-toolbar">
+  <div class="ak-seg ak-seg--lg" role="group" aria-label="根目录">
+    <button type="button" aria-pressed="false">解包产物</button>
+    <button type="button" aria-pressed="true">数据表</button>
+  </div>
+  <select class="ak-select ak-select--sm ak-select--ver" aria-label="版本"><option>26-10-22-14-02-11-51447808</option><option>26-10-14-13-45-10-99469376</option><option>26-10-08-04-51-28-56071834</option></select>
+  <span class="as-toolbar__spacer"></span>
+  <label class="ak-search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input ak-input--sm" type="search" placeholder="搜索文件" aria-label="搜索文件"></label>
+</div>
+
+<div class="as-preview">
+  <section class="as-preview__stage" aria-label="gamedata_const.json">
+    <div class="as-pane__head">
+      <nav class="as-pathbar" aria-label="所在位置"><a href="#">26-10-22-14-02-11-51447808</a><i>/</i><a href="#">excel</a><i>/</i><b aria-current="page">gamedata_const.json</b><button type="button" class="ak-btn ak-btn--ghost ak-btn--icon ak-btn--xs" data-copy="gamedata/26-10-22-14-02-11-51447808/excel/gamedata_const.json" title="复制路径" aria-label="复制路径"><svg class="as-icon-14"><use href="#i-copy"/></svg></button></nav>
+    </div>
+    <div class="as-preview__tabs">
+      <span class="as-dim">44.0 KiB</span>
+      <div class="ak-tabs" role="tablist" aria-label="查看方式">
+        <button type="button" class="ak-tab is-active" role="tab" aria-selected="true">格式化</button>
+        <button type="button" class="ak-tab" role="tab" aria-selected="false">原始</button>
+      </div>
+      <div class="as-actions">
+        <button type="button" class="ak-btn ak-btn--sm" data-copy="{ … }"><svg class="as-icon-16"><use href="#i-copy"/></svg>复制</button>
+        <a class="ak-btn ak-btn--sm" href="#"><svg class="as-icon-16"><use href="#i-download"/></svg>下载</a>
+      </div>
+    </div>
+    <pre class="as-code" tabindex="0"><div><span class="p">{</span></div>
+<div>  <span class="k">"maxLevel"</span><span class="p">: [</span></div>
+<div>    <span class="p">[</span><span class="n">30</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">30</span><span class="p">, </span><span class="n">30</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">40</span><span class="p">, </span><span class="n">55</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">45</span><span class="p">, </span><span class="n">60</span><span class="p">, </span><span class="n">70</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">50</span><span class="p">, </span><span class="n">70</span><span class="p">, </span><span class="n">80</span><span class="p">],</span></div>
+<div>    <span class="p">[</span><span class="n">50</span><span class="p">, </span><span class="n">80</span><span class="p">, </span><span class="n">90</span><span class="p">]</span></div>
+<div>  <span class="p">],</span></div>
+<div>  <span class="k">"maxPlayerLevel"</span><span class="p">: </span><span class="n">120</span><span class="p">,</span></div>
+<div>  <span class="k">"maxPracticeTicket"</span><span class="p">: </span><span class="n">30</span><span class="p">,</span></div>
+<div>  <span class="k">"isDynIllustEnabled"</span><span class="p">: </span><span class="b">true</span><span class="p">,</span></div>
+<div>  <span class="k">"richTextStyles"</span><span class="p">: {</span></div>
+<div>    <span class="k">"ba.vup"</span><span class="p">: </span><span class="s">"&lt;color=#0098DC&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.vdown"</span><span class="p">: </span><span class="s">"&lt;color=#FF6237&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.rem"</span><span class="p">: </span><span class="s">"&lt;color=#F49800&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.kw"</span><span class="p">: </span><span class="s">"&lt;color=#00B0FF&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.talpu"</span><span class="p">: </span><span class="s">"&lt;color=#0098DC&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.dt.element"</span><span class="p">: </span><span class="s">"&lt;color=#FF6237&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.buffres"</span><span class="p">: </span><span class="s">"&lt;color=#FF6237&gt;"</span><span class="p">,</span></div>
+<div>    <span class="k">"ba.pn"</span><span class="p">: </span><span class="s">"&lt;color=#0098DC&gt;"</span></div>
+<div>  <span class="p">},</span></div>
+<div>  <span class="k">"termDescriptionDict"</span><span class="p">: {</span></div>
+<div>    <span class="k">"ba.stun"</span><span class="p">: {</span></div>
+<div>      <span class="k">"termId"</span><span class="p">: </span><span class="s">"ba.stun"</span><span class="p">,</span></div>
+<div>      <span class="k">"termName"</span><span class="p">: </span><span class="s">"晕眩"</span><span class="p">,</span></div>
+<div>      <span class="k">"description"</span><span class="p">: </span><span class="s">"无法移动、阻挡、攻击及使用技能"</span></div>
+<div>    <span class="p">},</span></div>
+<div>    <span class="k">"ba.sluggish"</span><span class="p">: {</span></div>
+<div>      <span class="k">"termId"</span><span class="p">: </span><span class="s">"ba.sluggish"</span><span class="p">,</span></div>
+<div>      <span class="k">"termName"</span><span class="p">: </span><span class="s">"停顿"</span><span class="p">,</span></div>
+<div>      <span class="k">"description"</span><span class="p">: </span><span class="s">"无法移动、攻击及使用技能，但仍然可以阻挡"</span></div>
+<div>    <span class="p">},</span></div>
+<div>    <span class="k">"ba.sleep"</span><span class="p">: {</span></div>
+<div>      <span class="k">"termId"</span><span class="p">: </span><span class="s">"ba.sleep"</span><span class="p">,</span></div>
+<div>      <span class="k">"termName"</span><span class="p">: </span><span class="s">"沉睡"</span><span class="p">,</span></div>
+<div>      <span class="k">"description"</span><span class="p">: </span><span class="s">"无敌且不能行动，不会阻挡敌人，沉睡时受到攻击则解除沉睡"</span></div>
+<div>    <span class="p">}</span></div>
+<div>  <span class="p">},</span></div>
+<div>  <span class="k">"dataVersion"</span><span class="p">: </span><span class="s">"26-10-22-14-02-11-51447808"</span></div>
+<div><span class="p">}</span></div></pre>
+  </section>
+
+  <aside class="as-pane" aria-label="文件信息">
+    <dl class="as-kv">
+      <dt>路径</dt><dd class="as-path"><span>gamedata/26-10-22-14-02-11-51447808/excel/</span>gamedata_const.json</dd>
+      <dt>大小</dt><dd>44.0 KiB</dd>
+      <dt>修改时间</dt><dd>2026-10-22 14:31</dd>
+      <dt>直链</dt><dd><button type="button" class="ak-btn ak-btn--sm" data-copy="https://torappu.prts.wiki/gamedata/26-10-22-14-02-11-51447808/excel/gamedata_const.json"><svg class="as-icon-16"><use href="#i-link"/></svg>复制直链</button></dd>
+    </dl>
+    <h3 class="as-pane__sub">excel</h3>
+    <ul class="as-res-list">
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">character_table.json</span></span><span class="as-res__count">7.6 MiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">charword_table.json</span></span><span class="as-res__count">8.3 MiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">enemy_handbook_table.json</span></span><span class="as-res__count">1.3 MiB</span></a></li>
+      <li><a class="as-res is-selected" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">gamedata_const.json</span></span><span class="as-res__count">44 KiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">item_table.json</span></span><span class="as-res__count">1.3 MiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-json"/></svg><span class="as-res__text"><span class="as-res__id">skill_table.json</span></span><span class="as-res__count">5.9 MiB</span></a></li>
+      <li><a class="as-res" href="#"><svg class="as-icon-16"><use href="#i-file"/></svg><span class="as-res__text"><span class="as-res__id">data_version.txt</span></span><span class="as-res__count">85 B</span></a></li>
+    </ul>
+  </aside>
+</div>
+</main>
+
+<footer class="ak-footer as-footer">
+  <div class="ak-footer__bottom">
+    <div class="ak-footer__bottom-text"><span>Arknights Asset Storage 0.24.1</span><a href="#">GitHub</a><a href="#">torappu</a><a href="#">PRTS Design</a><span>游戏素材版权归鹰角网络所有</span></div>
+  </div>
+</footer>
+
+<script src="assets/asset-storage.js"></script>
+</body>
+</html>

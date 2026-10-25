@@ -1,0 +1,56 @@
+<!--page
+skeleton: app-skeleton.html
+title: 搜索 · Arknights Asset Storage 设计稿
+-->
+<!--head
+<style>.ak-palette__group > ul{list-style:none;margin:0;padding:0}.as-body{overflow:hidden;height:100vh}</style>
+-->
+<div class="ak-page-header" aria-hidden="true">
+  <div class="ak-page-header__row">
+    <h1 class="ak-page-header__title">版本<span class="ak-en">Versions</span></h1>
+  </div>
+</div>
+<div class="as-pane" aria-hidden="true" style="height:720px"></div>
+
+<div class="ak-palette-backdrop as-layer"></div>
+<div class="ak-palette has-query as-layer" role="dialog" aria-modal="true" aria-label="搜索">
+  <div class="ak-palette__head">
+    <svg class="ak-palette__icon"><use href="#i-search"/></svg>
+    <form class="ak-palette__form" onsubmit="return false"><input type="search" value="amiya" aria-label="搜索" autocomplete="off"></form>
+    <button type="button" class="ak-palette__clear" aria-label="清空"><svg><use href="#i-x"/></svg></button>
+    <div class="ak-palette__loading ak-progress ak-progress--sm" aria-hidden="true"></div>
+  </div>
+  <div class="ak-palette__body">
+    <div class="ak-palette__viewport">
+      <ul class="ak-palette__list" role="listbox" aria-label="结果">
+        <li class="ak-palette__group" role="group" aria-label="文件">
+          <div class="ak-palette__label">文件</div>
+          <ul>
+            <li class="ak-palette__item is-active" role="option" aria-selected="true"><a class="ak-palette__link" href="akas-files.html"><span class="ak-palette__thumb as-checker"><img src="https://torappu.prts.wiki/assets/char_avatar/char_002_amiya.png" alt=""></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">char_002_<mark>amiya</mark>.png</bdi></span><span class="ak-palette__desc">raw/char_avatar</span></span><span class="ak-palette__meta">55.6 KiB</span></a><span class="ak-palette__actions"><button type="button" class="ak-palette__action" title="复制直链" aria-label="复制直链"><svg><use href="#i-link"/></svg></button><button type="button" class="ak-palette__action" title="下载" aria-label="下载"><svg><use href="#i-download"/></svg></button></span></li>
+            <li class="ak-palette__item" role="option"><a class="ak-palette__link" href="akas-files.html"><span class="ak-palette__thumb as-checker"><img src="https://torappu.prts.wiki/assets/char_avatar/char_1001_amiya2.png" alt=""></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">char_1001_<mark>amiya</mark>2.png</bdi></span><span class="ak-palette__desc">raw/char_avatar</span></span><span class="ak-palette__meta">62.7 KiB</span></a><span class="ak-palette__actions"></span></li>
+            <li class="ak-palette__item" role="option"><a class="ak-palette__link" href="akas-file.html"><span class="ak-palette__thumb ak-palette__thumb--icon"><svg><use href="#i-json"/></svg></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">char_002_<mark>amiya</mark>_defaultskin.json</bdi></span><span class="ak-palette__desc">gamedata/26-10-22-14-02-11-51447808/bakemuzzledata/character</span></span><span class="ak-palette__meta">23.9 KiB</span></a><span class="ak-palette__actions"></span></li>
+            <li class="ak-palette__item" role="option"><a class="ak-palette__link" href="akas-files.html"><span class="ak-palette__thumb ak-palette__thumb--icon"><svg><use href="#i-folder"/></svg></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">char_002_<mark>amiya</mark></bdi></span><span class="ak-palette__desc">raw/char_spine</span></span></a><span class="ak-palette__actions"></span></li>
+          </ul>
+        </li>
+        <li class="ak-palette__group" role="group" aria-label="清单资源">
+          <div class="ak-palette__label">清单资源</div>
+          <ul>
+            <li class="ak-palette__item" role="option"><a class="ak-palette__link" href="akas-manifest.html"><span class="ak-palette__thumb ak-palette__thumb--icon"><svg><use href="#i-image"/></svg></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">illust_char_002_<mark>amiya</mark>_1</bdi></span><span class="ak-palette__desc">arts/characters/char_002_amiya</span></span><span class="ak-palette__meta">2.98 MiB</span></a><span class="ak-palette__actions"><button type="button" class="ak-palette__action" title="下载 bundle" aria-label="下载 bundle"><svg><use href="#i-download"/></svg></button></span></li>
+            <li class="ak-palette__item" role="option"><a class="ak-palette__link" href="akas-manifest.html"><span class="ak-palette__thumb ak-palette__thumb--icon"><svg><use href="#i-file"/></svg></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">spine_char_002_<mark>amiya</mark></bdi></span><span class="ak-palette__desc">activity/[uc]actfun/arts/act7funcharspine</span></span><span class="ak-palette__meta">291 KiB</span></a><span class="ak-palette__actions"></span></li>
+            <li class="ak-palette__item" role="option"><a class="ak-palette__link" href="akas-manifest.html"><span class="ak-palette__thumb ak-palette__thumb--icon"><svg><use href="#i-file"/></svg></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">bskill_ctrl_<mark>amiya</mark></bdi></span><span class="ak-palette__desc">arts/building/skills</span></span><span class="ak-palette__meta">18 KiB</span></a><span class="ak-palette__actions"></span></li>
+          </ul>
+        </li>
+        <li class="ak-palette__group" role="group" aria-label="Bundle">
+          <div class="ak-palette__label">Bundle</div>
+          <ul>
+            <li class="ak-palette__item" role="option"><a class="ak-palette__link" href="akas-diff.html"><span class="ak-palette__thumb ak-palette__thumb--dark"><svg><use href="#i-bundle"/></svg></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">chararts/char_002_<mark>amiya</mark>.ab</bdi></span><span class="ak-palette__desc">最近变化 26-09-03</span></span><span class="ak-palette__meta">2.98 MiB</span></a><span class="ak-palette__actions"></span></li>
+            <li class="ak-palette__item" role="option"><a class="ak-palette__link" href="akas-diff.html"><span class="ak-palette__thumb ak-palette__thumb--dark"><svg><use href="#i-bundle"/></svg></span><span class="ak-palette__text"><span class="ak-palette__title"><bdi class="has-match">chararts/char_1001_<mark>amiya</mark>2.ab</bdi></span><span class="ak-palette__desc">最近变化 26-07-30</span></span><span class="ak-palette__meta">5.02 MiB</span></a><span class="ak-palette__actions"></span></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="ak-palette__foot">
+    <div class="ak-palette__hints"><span><kbd class="ak-kbd">↑↓</kbd> 选择</span><span><kbd class="ak-kbd">↵</kbd> 打开</span><span><kbd class="ak-kbd">Esc</kbd> 关闭</span></div>
+  </div>
+</div>
