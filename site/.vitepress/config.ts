@@ -105,6 +105,7 @@ const sidebar: DefaultTheme.Sidebar = [
       { text: "干员一览", link: "/patterns/operators" },
       { text: "敌人一览", link: "/patterns/enemies" },
       { text: "道具一览", link: "/patterns/items" },
+      { text: "后勤技能一览", link: "/patterns/riic" },
       { text: "公招计算", link: "/patterns/recruit" },
       { text: "干员页（陈）", link: "/patterns/operator" },
     ],

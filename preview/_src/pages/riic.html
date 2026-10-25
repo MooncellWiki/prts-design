@@ -1,0 +1,564 @@
+<!--page
+order: 6
+nav: 后勤技能一览（列表页）
+title: 后勤技能一览 - PRTS · 列表 / 筛选页样例
+crumb: 首页 > 后勤技能一览
+h1: 后勤技能一览
+h1en: Base Skills
+indicators: <span class="ak-tag ak-tag--sm ak-tag--outline ak-tag--label">游戏数据快照</span>
+actions: <li id="ca-watch"><a href="#" title="将本页面加入监视列表"><svg class="ak-icon"><use href="#i-star"/></svg><span>监视</span></a></li>
+toc: false
+lastmod: 2026年10月15日 (三) 02:10
+-->
+<!--head
+<script src="vendor/riic/data.js"></script>   <!-- 游戏数据 building_data / character_table / gamedata_const 整理成的快照，scripts/build-riic-data.py 生成；生产环境 = Widget 自己取这份数据（见文档站 /patterns/riic#数据从哪来） -->
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   后勤技能一览 · Base skills — 现网「后勤技能一览」（{{后勤技能信息/store}} 的 Cargo 输出：10 个设施各一张默认折叠的 wikitable，
+   列 = 图标 / 名称 / 描述 / 持有干员）换成干员一览那套列表 / 筛选页排布，数据改从游戏的 building_data 来：
+   一条提示（中间产物）→ 筛选（设施 / 作用对象 / 解锁阶段 / 干员稀有度 / 干员职业）→ 搜索 · 排序 · 两种显示方式 → 条数 · 已选条件 · 复制链接 · 分页 → 结果。
+   「技能」视图一行一条技能、按设施分组；「干员」视图一张卡一位干员、两个技能槽各列出按精英阶段替换的技能链——见文档站 /patterns/riic。
+   除了开头那条提示，下面都是「Widget 自己的东西」：生产环境 = prts-widgets 输出下面这些结构（.ak-* 是设计系统组件，.rs-* 是它自己的排布），样式 = Widget 的样式表；
+   页面脚本只是 Widget 的替身。开头「0. 页面级」段是这份静态预览的补丁，别照抄。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. 页面级：预览骨架的补丁（同道具一览样例）──
+ *  现网这页有目录（10 个设施各一章）；这里设施是筛选芯片 + 结果里的分组标题，不再需要目录：front matter toc: false → .ak-layout--no-toc，页眉的「本页目录」藏掉。
+ *  现网这页没有分类：骨架是静态的，按空列表藏掉。 */
+.ak-local-nav__toc { display: none; }
+.catlinks:has(.mw-normal-catlinks > ul:empty) { display: none; }
+@media (max-width: 639px) { .ak-body { padding-left: var(--ak-space-3); padding-right: var(--ak-space-3); } }
+
+/* ── 设施色 ──
+ *  每个设施两种颜色，都是游戏自己的：亮色主题用技能名条的底色 buffColor（building_data，游戏里 BuildingBuffDescView 的 _bkgTitle，深、能压白字），
+ *  暗色主题用进驻面板技能图标的光环色（arts/building/buffs/buff_image_config，亮、在黑底上看得清）。两种都由数据写进 style="--rs-c; --rs-h"，这里只选用哪个。
+ *  三条选择器 = 皮肤的三种定主题的方式（data-theme / clientpref-night / 跟随系统），同公招计算样例；
+ *  选用哪个得写在带着这两个变量的元素（[data-rc]）上：写在外层的话 var(--rs-c) 在外层就解析成空了。 */
+.rs [data-rc] { --rs-room: var(--rs-c); }
+:root[data-theme="dark"] .rs [data-rc], html.skin-theme-clientpref-night .rs [data-rc] { --rs-room: var(--rs-h); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]):not(.skin-theme-clientpref-day):not([data-theme="dark"]):not(.skin-theme-clientpref-night) .rs [data-rc] { --rs-room: var(--rs-h); } }
+/* 设施线稿图标：游戏进驻面板技能图标用的那套白色线稿（arts/building/buffs/buff_icon_hub，23px），当 mask、填 currentColor——同干员一览的职业 / 分支图标 */
+.rs-glyph { flex: none; width: 16px; height: 16px; background: currentColor; mask: center / contain no-repeat; }
+.rs-glyph[data-glyph="control"] { mask-image: url(assets/building/control.png); }
+.rs-glyph[data-glyph="power"] { mask-image: url(assets/building/power.png); }
+.rs-glyph[data-glyph="manufacture"] { mask-image: url(assets/building/manufacture.png); }
+.rs-glyph[data-glyph="trading"] { mask-image: url(assets/building/trading.png); }
+.rs-glyph[data-glyph="dormitory"] { mask-image: url(assets/building/dormitory.png); }
+.rs-glyph[data-glyph="workshop"] { mask-image: url(assets/building/workshop.png); }
+.rs-glyph[data-glyph="hire"] { mask-image: url(assets/building/hire.png); }
+.rs-glyph[data-glyph="training"] { mask-image: url(assets/building/training.png); }
+.rs-glyph[data-glyph="recycle"] { mask-image: url(assets/building/recycle.png); }
+.rs-glyph[data-glyph="meeting"] { mask-image: url(assets/building/meeting.png); }
+/* 职业线稿（持有干员的职业筛选、干员卡）：同干员一览 */
+.rs-glyph[data-prof="PIONEER"] { mask-image: url(assets/profession/line_pioneer.png); } .rs-glyph[data-prof="WARRIOR"] { mask-image: url(assets/profession/line_warrior.png); }
+.rs-glyph[data-prof="TANK"] { mask-image: url(assets/profession/line_tank.png); } .rs-glyph[data-prof="SNIPER"] { mask-image: url(assets/profession/line_sniper.png); }
+.rs-glyph[data-prof="CASTER"] { mask-image: url(assets/profession/line_caster.png); } .rs-glyph[data-prof="MEDIC"] { mask-image: url(assets/profession/line_medic.png); }
+.rs-glyph[data-prof="SUPPORT"] { mask-image: url(assets/profession/line_support.png); } .rs-glyph[data-prof="SPECIAL"] { mask-image: url(assets/profession/line_special.png); }
+
+/* ── 1. 筛选 ──
+ *  现网没有筛选，10 个设施是 10 章折叠表。这里五行，每行 = 标签 + 筛选芯片 .ak-chip（排布同道具一览），行内「或」、行间「且」：
+ *   · 设施：10 枚芯片带设施线稿（线稿取设施色，选中后跟文字）；
+ *   · 作用对象：选了制造站 / 加工站 / 训练室才出（同干员一览「分支」行），选项 = 游戏进驻面板按效率排序时的分组（buffSortData：贵金属 / 作战记录 / 源石碎片、
+ *     基建材料 / 精英材料 / 技巧概要 / 芯片、八个职业），只约束这三个设施的技能；
+ *   · 解锁阶段：技能在哪个精英阶段解锁（精英零 / 精英零 30 级 / 精英一 / 精英二）；
+ *   · 干员稀有度 / 干员职业：这两行和解锁阶段一样看的是「持有干员」——技能只要有一位持有者符合就留下，不符合的持有者压淡，不藏。
+ *  点了也不会多出技能的芯片压淡（.is-empty，仍可点）。手机上收成一枚「筛选」钮。 */
+.rs-filter { margin: 0 0 var(--ak-space-3); background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
+.rs-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); }
+.rs-row { display: grid; grid-template-columns: max-content minmax(0, 1fr); grid-column: 1 / -1; }
+@supports (grid-template-columns: subgrid) { .rs-row { grid-template-columns: subgrid; } }
+.rs-row[hidden] { display: none; }
+.rs-row + .rs-row:not([hidden]) { border-top: 1px solid var(--ak-border); }
+.rs-row__label { display: flex; align-items: baseline; align-content: start; gap: 10px; padding: 12px var(--ak-space-4) 8px var(--ak-space-3); border-left: var(--ak-bar-w) solid transparent;
+  font-weight: 600; font-size: var(--ak-fs-sm); line-height: 1.4; color: var(--ak-fg-secondary); white-space: nowrap; }
+.rs-row__label small { font-weight: 400; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.rs-row.has-active > .rs-row__label { border-left-color: var(--ak-accent); color: var(--ak-fg); }
+.rs-row__clear { all: unset; font-size: var(--ak-fs-xs); font-weight: 500; color: var(--ak-link); cursor: pointer; }
+.rs-row__clear:hover { text-decoration: underline; }
+.rs-row__clear:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.rs-row:not(.has-active) .rs-row__clear { visibility: hidden; }
+.rs-row__opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px var(--ak-space-3) 8px 0; min-width: 0; }
+.rs-filter .ak-chip.is-empty:not([aria-pressed="true"]) { opacity: .38; }
+.rs-filter .ak-chip:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
+.rs-filter .ak-chip[hidden] { display: none; }
+.rs-filter .ak-chip .rs-glyph { margin-left: -2px; color: var(--rs-room, currentColor); }
+.rs-filter .ak-chip[aria-pressed="true"] .rs-glyph { color: currentColor; }
+/* 作用对象分成几段（一个设施一段，段首是设施名）——只在选了多于一个带对象的设施时才看得出是分段 */
+.rs-group { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.rs-group[hidden] { display: none; }
+.rs-group__label { flex: none; font-size: var(--ak-fs-xs); line-height: 28px; color: var(--ak-fg-muted); white-space: nowrap; }
+.rs-group__list { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+/* 解锁阶段芯片上的精英图标（白色线稿，亮色主题反转，同 .ak-elite） */
+.rs-filter .ak-chip > img { height: 14px; width: 18px; margin-left: -4px; object-fit: contain; filter: var(--ak-glyph-filter); }
+.rs-filter .ak-chip[aria-pressed="true"] > img { filter: none; }
+/* 稀有度芯片：星 + 数字，同干员一览 */
+.rs-star { width: 11px; height: 11px; background: var(--ak-r-text); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.ak-chip[aria-pressed="true"] .rs-star { background: currentColor; }
+/* 「筛选」钮（只在手机上出）：同道具一览 */
+.rs-more { all: unset; box-sizing: border-box; display: none; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 0 var(--ak-space-4) 0 var(--ak-space-3); cursor: pointer; user-select: none;
+  background: var(--ak-bg-surface-2); border-left: var(--ak-bar-w) solid var(--ak-border-strong); font-weight: 700; font-size: var(--ak-fs-sm); }
+.rs-more:hover { background: var(--ak-bg-hover); }
+.rs-more:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.rs-more.has-active { border-left-color: var(--ak-accent); }
+.rs-more .ak-en { font-size: 10px; color: var(--ak-fg-subtle); }
+.rs-more__count:empty { display: none; }
+.rs-more::after { content: ""; flex: none; width: 10px; height: 10px; margin-left: auto; opacity: .6; transition: background-size var(--ak-dur-fast);
+  background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat, linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat; }
+.rs-more[aria-expanded="true"]::after { background-size: 100% 2px, 2px 0; }
+@media (max-width: 639px) {
+  .rs-more { display: flex; }
+  .rs-more[aria-expanded="false"] + .rs-rows { display: none; }
+  .rs-rows { grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--ak-border); }
+  .rs-row { grid-template-columns: minmax(0, 1fr); }
+  .rs-row__label { align-items: center; padding: 8px var(--ak-space-3) 0 8px; }
+  .rs-row__opts { padding: 8px var(--ak-space-3) 10px calc(8px + var(--ak-bar-w)); }
+  .rs-row.has-active > .rs-row__opts { box-shadow: inset var(--ak-bar-w) 0 0 var(--ak-accent); }
+  .rs-group { flex-direction: column; gap: 2px; }
+  .rs-group__label { line-height: 1.6; }
+}
+
+/* ── 2. 工具条：搜索 · 排序（排序项 + 升降）· 显示方式 ── */
+.rs-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 0 0 var(--ak-space-3); padding: 10px var(--ak-space-3); background: var(--ak-bg-surface-2); border: 1px solid var(--ak-border); }
+.rs-toolbar__search { flex: 1 1 240px; min-width: 0; }
+.rs-field { display: inline-flex; align-items: center; font-size: var(--ak-fs-xs); font-weight: 600; color: var(--ak-fg-muted); white-space: nowrap; }
+.rs-field .ak-select { width: auto; min-height: 36px; color: var(--ak-fg); font-weight: 400; }
+.rs-sort > label { margin-right: 8px; }
+.rs-sort > .ak-btn { margin-left: -1px; min-width: 76px; padding: 0 var(--ak-space-3); font-weight: 500; }
+.rs-view .ak-btn { gap: 6px; }
+.rs-view .ak-btn[aria-pressed="true"] { --_bg: var(--ak-accent); --_fg: var(--ak-accent-fg); --_bd: var(--ak-accent); z-index: 1; }
+.rs-view .ak-icon { width: 14px; height: 14px; }
+
+/* ── 3. 结果栏：条数 · 已选条件（可逐个移除）· 复制链接 · 每页条数 · 分页 ── */
+.rs-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 var(--ak-space-3); min-height: 32px; }
+.rs-bar__count { flex: none; font-size: var(--ak-fs-sm); color: var(--ak-fg-muted); white-space: nowrap; }
+.rs-bar__count b { font: 700 var(--ak-fs-h3)/1 var(--ak-font-label); color: var(--ak-fg); font-variant-numeric: tabular-nums; margin-right: 2px; }
+.rs-bar__active { flex: 1 1 200px; min-width: 0; align-items: center; }
+.rs-bar__active .ak-tag { height: 24px; }
+.rs-bar__active .ak-tag__remove:focus-visible { outline: 2px solid var(--ak-focus); }
+.rs-bar__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.rs-bar__tools .ak-select { width: auto; min-height: 32px; font-size: var(--ak-fs-xs); }
+.rs-bar .ak-icon, .rs-pager .ak-icon { width: 14px; height: 14px; }
+.rs-foot { display: flex; justify-content: flex-end; margin: var(--ak-space-4) 0 0; }
+#rs-result { scroll-margin-top: calc(var(--ak-header-h) + var(--ak-space-3)); }
+@media (max-width: 639px) { .rs-bar__tools { margin-left: 0; width: 100%; justify-content: space-between; } .rs-pager { display: flex; flex: 1 0 100%; } .rs-pager > * { flex: 1 1 0; min-width: 0; text-align: center; } .rs-pager .ak-pagination__item { min-width: 26px; padding: 0 6px; } .rs-foot { justify-content: center; } }
+
+/* ── 4. 结果 · 技能 ──
+ *  按游戏顺序排时按设施分组：组头 = 设施线稿 + 名字 + 英文代号 + 本组条数，左缘是设施色条，滚动时贴在页眉下面（吸顶），随时知道看到哪个设施；
+ *  别的排序不分组，每行自己带一枚设施名（.rs-roomtag）。
+ *  一行一条技能：技能名条底色的方砖（游戏里技能名条 _bkgTitle 的颜色 + 白色技能图标）‖ 名字 · 解锁条件 · 替换关系 · 描述 ‖ 持有干员。
+ *  现网把技能图标放在 #999 灰底上、名字 / 描述 / 干员各一列、描述列定宽 520；这里描述随列宽，持有干员定宽一列（一行四张 64px 干员卡、多了折行）。 */
+.rs-list { display: grid; gap: var(--ak-space-3); }
+.rs-section { background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
+.rs-section__head { position: sticky; top: var(--ak-header-h); z-index: 2; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 var(--ak-space-3) 0 calc(var(--ak-space-3) - var(--ak-bar-w));
+  border-left: var(--ak-bar-w) solid var(--rs-room); border-bottom: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); }
+.rs-section__head .rs-glyph { width: 18px; height: 18px; color: var(--rs-room); }
+.rs-section__title { margin: 0; font-size: var(--ak-fs-body); font-weight: 700; }
+.rs-section__head .ak-en { font-size: var(--ak-fs-overline); letter-spacing: var(--ak-tracking-overline); color: var(--ak-fg-subtle); }
+.rs-section__count { margin-left: auto; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; }
+.rs-row-item { display: grid; grid-template-columns: 48px minmax(0, 1fr) 268px; gap: 4px 14px; align-items: center; padding: 10px var(--ak-space-3); border-top: 1px solid var(--ak-border); }   /* 三列垂直居中：一行描述的行比 64px 的干员卡矮，方砖和文字对着卡的中线 */
+.rs-section > .rs-row-item:first-of-type, .rs-section__head + .rs-row-item { border-top: 0; }
+.rs-row-item:hover { background: var(--ak-bg-hover); }
+.rs-tile { position: relative; display: grid; place-items: center; width: 48px; height: 48px; background: var(--rs-bg, var(--ak-gray-700)); }
+.rs-tile > img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 0 1px rgba(0, 0, 0, .25)); }   /* 游戏的技能图标是白色线稿，淡底色（制造站的黄、加工站的黄绿）上描一圈淡影 */
+.rs-tile--sm { width: 28px; height: 28px; }
+.rs-tile--sm > img { width: 22px; height: 22px; }
+.rs-main { min-width: 0; }
+.rs-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.rs-name { margin: 0; font-size: var(--ak-fs-body); font-weight: 700; line-height: 1.3; }
+.rs-roomtag { display: inline-flex; align-items: center; gap: 4px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
+.rs-roomtag .rs-glyph { width: 13px; height: 13px; color: var(--rs-room); }
+.rs-roomtag[hidden] { display: none; }
+.rs-eff { font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); font-variant-numeric: tabular-nums; }   /* 游戏按效率排序用的 efficiency（只有带效率排序的设施才有） */
+.rs-chain { margin: 2px 0 0; font-size: var(--ak-fs-xs); line-height: 1.5; color: var(--ak-fg-muted); }
+.rs-chain b { font-weight: 600; color: var(--ak-fg-secondary); }
+.rs-desc { margin: 4px 0 0; font-size: var(--ak-fs-sm); line-height: 1.65; color: var(--ak-fg); overflow-wrap: anywhere; }
+.rs-desc mark { background: var(--ak-yellow-soft, rgba(255, 216, 0, .35)); color: inherit; padding: 0 1px; }
+/* 干员头像：设计系统的干员卡 .ak-op-card（同首页「亮点干员」：纯头像、不出名字栏，角标排法同现网 微件:干员头像——职业左上、星级右下），
+ *  技能行的持有干员和干员卡的卡头共用。宽 64（现网头像 60），角标按卡宽等比收：职业 18px 黑框 / 15px 图，星级 12px 高。
+ *  精英图标不叠在卡上（64px 的卡叠三枚角标把脸盖掉一半）：解锁条件在行里写一次——持有者条件都一样（763 条里 729 条）就写在技能名旁边，
+ *  不一样的（线索搜集·β 这类 34 条）把持有干员按条件分成几段、段首写条件。 */
+.rs-holders .ak-op-card, .rs-op__head .ak-op-card { --_w: 64px; flex: none; }
+.rs .ak-op-card__rarity { height: 12px; }
+.rs .ak-op-card__prof { width: 18px; height: 18px; } .rs .ak-op-card__prof img { width: 15px; height: 15px; }
+.rs-head .ak-elite { font-weight: 500; color: var(--ak-fg-secondary); }
+/* 持有干员：悬停 / 聚焦出「名字 · 稀有度 职业 · 解锁条件」（提示挂在卡里的链接上）；被干员那三行筛掉的压淡 */
+.rs-holders { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 4px; min-width: 0; }
+.rs-hgroup { display: flex; flex-direction: column; gap: 4px; flex: 1 1 100%; min-width: 0; }
+.rs-hgroup + .rs-hgroup { margin-top: 4px; }
+.rs-hgroup .ak-elite { font-weight: 500; color: var(--ak-fg-muted); }
+.rs-hgroup__list { display: flex; flex-wrap: wrap; gap: 4px; }
+.rs-holders .ak-op-card > a:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: -2px; }
+.rs-holder.is-dim { opacity: .3; }
+.rs-holder.is-dim:hover, .rs-holder.is-dim:focus-within { opacity: 1; }
+.rs-holders__more { display: grid; place-items: center; width: 64px; height: 64px; box-sizing: border-box; font: 600 var(--ak-fs-xs)/1 var(--ak-font-label); color: var(--ak-fg-muted); background: var(--ak-bg-surface-2); border: 1px dashed var(--ak-border-strong); cursor: pointer; }
+.rs-holders__more:hover { color: var(--ak-fg); border-color: var(--ak-fg-muted); }
+/* 结果区窄于 860（.rs--compact）：持有干员移到描述下面一整行，方砖缩小、和名字同一行 */
+.rs--compact .rs-row-item { grid-template-columns: 36px minmax(0, 1fr); }
+.rs--compact .rs-tile { width: 36px; height: 36px; }
+.rs--compact .rs-tile > img { width: 28px; height: 28px; }
+.rs--compact .rs-holders { grid-column: 2; margin-top: 4px; }
+.rs--compact :is(.rs-holders, .rs-op__head) .ak-op-card { --_w: 56px; } .rs--compact .rs-holders__more { width: 56px; height: 56px; }
+@media (max-width: 639px) { .rs--compact .rs-row-item { padding: 10px var(--ak-space-3); } .rs--compact .rs-holders { grid-column: 1 / -1; } }
+
+/* ── 5. 结果 · 干员 ──
+ *  现网没有：要看「某位干员有哪些后勤技能」得去干员页。一张卡一位干员：干员卡头像（职业 / 星级在角上）· 名字，下面两个技能槽（游戏里就是两槽；只有一槽的不出空的「技能 2」），
+ *  每槽按精英阶段依次替换的技能链一行一条（方砖 + 名字 + 解锁条件 + 设施），描述在下面——同干员页「后勤技能」那张表的信息，换成游戏进驻面板干员卡的摆法。 */
+.rs-ops { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: var(--ak-space-3); }
+.rs-op { display: flex; flex-direction: column; background: var(--ak-bg-surface); border: 1px solid var(--ak-border); }
+.rs-op__head { display: flex; align-items: center; gap: 12px; padding: 8px var(--ak-space-3); border-bottom: 1px solid var(--ak-border); }
+.rs-op__name { margin: 0; font-size: var(--ak-fs-body); font-weight: 700; line-height: 1.3; }
+.rs-op__name a { color: inherit; text-decoration: none; }
+.rs-op__name a:hover { color: var(--ak-accent); text-decoration: underline; }
+.rs-slot { padding: 8px var(--ak-space-3) 10px; }
+.rs-slot + .rs-slot { border-top: 1px solid var(--ak-border); }
+.rs-slot__label { margin: 0 0 6px; font: 700 var(--ak-fs-overline)/1 var(--ak-font-display); letter-spacing: var(--ak-tracking-overline); text-transform: uppercase; color: var(--ak-fg-subtle); }
+.rs-step { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 2px 10px; padding: 6px 0; }
+.rs-step + .rs-step { border-top: 1px dashed var(--ak-border); }
+.rs-step.is-dim { opacity: .35; }
+.rs-step__head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 28px; }
+.rs-step__name { font-weight: 700; font-size: var(--ak-fs-sm); }
+.rs-step .ak-elite { font-weight: 500; color: var(--ak-fg-muted); }
+.rs-step .rs-desc { grid-column: 2; margin: 0; font-size: var(--ak-fs-xs); line-height: 1.6; color: var(--ak-fg-secondary); }
+@media (max-width: 639px) { .rs-ops { grid-template-columns: minmax(0, 1fr); } }
+</style>
+-->
+<!-- 现网页面开头的「参阅」（{{参阅|后勤技能中间产物一览|…}} 输出的一条 {{Cbox2}}）：是页面正文，不归 Widget 管 -->
+<div class="ak-cbox ak-cbox--tip">
+  <div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-arrow-ne"/></svg></div>
+  <div class="ak-cbox__body">如需了解<b>后勤技能中出现的<span class="ak-rt-term ak-tip--wide" data-ak-tip="中间产物：感知信息、思维链环、记忆碎片、梦境、人间烟火、情报储备、乌萨斯特饮" tabindex="0">各种中间产物</span>的关系</b>，您也可以查阅<a href="https://prts.wiki/w/%E5%90%8E%E5%8B%A4%E6%8A%80%E8%83%BD%E4%B8%AD%E9%97%B4%E4%BA%A7%E7%89%A9%E4%B8%80%E8%A7%88">后勤技能中间产物一览</a>页面。</div>
+</div>
+
+<div class="rs ak-not-prose" id="rs" data-no-toggle>
+
+<noscript><div class="ak-cbox ak-cbox--warning"><div class="ak-cbox__icon"><svg class="ak-icon"><use href="#i-warn"/></svg></div><div class="ak-cbox__body">后勤技能列表由脚本生成，需要启用 JavaScript。</div></div></noscript>
+
+<!-- 以下 = Widget 的输出（生产环境挂在 #root 上）。筛选行与结果由脚本按数据生成；工具条 / 结果栏结构固定，直接写在这里 -->
+<div id="rs-root" hidden>
+
+  <section class="rs-filter" aria-label="筛选">
+    <button type="button" class="rs-more" id="rs-more" aria-expanded="false" aria-controls="rs-rows"><span>筛选</span><span class="ak-en">Filter</span><span class="ak-tag ak-tag--sm ak-tag--accent-soft rs-more__count" id="rs-more-count"></span></button>
+    <div class="rs-rows" id="rs-rows"></div>
+  </section>
+
+  <div class="rs-toolbar">
+    <label class="ak-search rs-toolbar__search"><svg class="ak-search__icon"><use href="#i-search"/></svg><input class="ak-input" type="search" id="rs-search" placeholder="搜索技能名 / 描述 / 干员名" aria-label="搜索技能名、描述或持有干员" autocomplete="off"></label>
+    <div class="rs-field rs-sort">
+      <label for="rs-sort">排序</label>
+      <select class="ak-select" id="rs-sort"><option value="order">游戏顺序</option><option value="eff">效率</option><option value="holders">持有人数</option><option value="name">技能名</option></select>
+      <button type="button" class="ak-btn" id="rs-dir">正序 ↑</button>
+    </div>
+    <div class="ak-btn-group rs-view" id="rs-view" role="group" aria-label="显示方式">
+      <button type="button" class="ak-btn" data-view="0" aria-pressed="true"><svg class="ak-icon"><use href="#i-list"/></svg>技能</button>
+      <button type="button" class="ak-btn" data-view="1" aria-pressed="false"><svg class="ak-icon"><use href="#i-grid"/></svg>干员</button>
+    </div>
+  </div>
+
+  <div class="rs-bar">
+    <div class="rs-bar__count" id="rs-count" role="status"></div>
+    <div class="rs-bar__active ak-tags" id="rs-active"></div>
+    <div class="rs-bar__tools">
+      <button type="button" class="ak-btn ak-btn--sm ak-btn--ghost" id="rs-copy"><svg class="ak-icon"><use href="#i-link"/></svg>复制链接</button>
+      <select class="ak-select" id="rs-step" aria-label="每页条数"><option value="50">每页 50</option><option value="100">每页 100</option><option value="200">每页 200</option><option value="1000">全部</option></select>
+      <nav class="ak-pagination rs-pager" aria-label="分页"></nav>
+    </div>
+  </div>
+
+  <div id="rs-result"></div>
+
+  <div class="rs-foot"><nav class="ak-pagination rs-pager" aria-label="分页（底部）"></nav></div>
+</div>
+
+</div>
+
+<script>
+/* 后勤技能一览脚本——未来 prts-widgets 里那个 Widget 的替身：数据、筛选项、筛选与排序逻辑、地址栏 # 参数都在这里定，输出同样的结构。
+ * 生产环境这段不存在：Widget 用 Vue + @mooncellwiki/prts-design-vue 输出。 */
+(function () {
+  'use strict';
+  const D = window.PRTS_RIIC, root = document.getElementById('rs-root');
+  if (!D || !root) return;
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const WIKI = 'https://prts.wiki/w/', TORAPPU = 'https://torappu.prts.wiki/assets/';
+  const PROF = { PIONEER: '先锋', WARRIOR: '近卫', TANK: '重装', SNIPER: '狙击', CASTER: '术师', MEDIC: '医疗', SUPPORT: '辅助', SPECIAL: '特种' };
+  const CN = ['零', '一', '二'];
+
+  /* ── 数据 ── */
+  const rooms = D.rooms, roomOf = Object.fromEntries(rooms.map(r => [r.id, r]));
+  const chars = D.chars.map((c, index) => ({ ...c, index, href: WIKI + encodeURIComponent(c.name), avatar: TORAPPU + 'char_avatar/' + c.id + '.png' }));
+  const text = html => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent; };
+  const condText = h => '精英' + CN[h.phase] + (h.level > 1 ? ' ' + h.level + ' 级' : '');
+  const condId = h => 'e' + h.phase + (h.level > 1 ? 'l' + h.level : '');
+  const buffs = D.buffs.map((b, index) => {
+    const holders = b.holders.map(h => ({ ...h, char: chars[h.c] }));
+    /* 替换关系：技能链里的下一条 / 上一条（每位持有者各自的槽里看；多位持有者的链一般相同，不同时都列） */
+    const next = new Set(), prev = new Set();
+    holders.forEach(h => { const chain = h.char.slots[h.slot]; if (chain[h.step + 1]) next.add(chain[h.step + 1].b); if (h.step > 0) prev.add(chain[h.step - 1].b); });
+    return { ...b, index, holders, next: [...next], prev: [...prev], icon: TORAPPU + 'build_skill_icon/' + b.icon + '.png',
+      haystack: [b.name, text(b.desc), ...holders.map(h => h.char.name)].join('\n').toLowerCase() };
+  });
+  const conds = buffs.flatMap(b => b.holders.map(condId));
+
+  /* ── 筛选项 ──
+   * 设施 / 作用对象看的是技能本身；解锁阶段 / 稀有度 / 职业看的是持有干员（技能只要有一位持有者符合就留下，不符合的持有者压淡）。 */
+  const targetGroups = rooms.filter(r => r.targets.length).map(r => ({ room: r, options: r.targets.map(t => ({ id: t.id, label: t.label, targets: t.targets, room: r.id })) }));
+  const filters = [
+    { id: 'room', title: '设施', options: rooms.map(r => ({ id: r.id, label: r.name, room: r })) },
+    { id: 'target', title: '作用对象', hint: '制造站 / 加工站 / 训练室', options: targetGroups.flatMap(g => g.options), groups: targetGroups, dependent: true },
+    { id: 'phase', title: '解锁阶段', holder: true, options: [['e0', 0, '精英零'], ['e0l30', 0, '精英零 30 级'], ['e1', 1, '精英一'], ['e2', 2, '精英二']].filter(o => conds.includes(o[0])).map(([id, phase, label]) => ({ id, phase, label })) },
+    { id: 'rarity', title: '干员稀有度', holder: true, options: [6, 5, 4, 3, 2, 1].map(n => ({ id: String(n), label: String(n), rarity: n - 1 })) },
+    { id: 'prof', title: '干员职业', holder: true, options: Object.keys(PROF).map(p => ({ id: p, label: PROF[p] })) },
+  ];
+  const F = Object.fromEntries(filters.map(f => [f.id, f]));
+  /* 每条技能 / 每位持有者落在哪些选项上，先算好 */
+  buffs.forEach(b => {
+    b.opt = { room: new Set([b.room]), target: new Set(F.target.options.filter(o => o.room === b.room && o.targets.some(t => b.targets.includes(t))).map(o => o.id)) };
+    b.holders.forEach(h => { h.opt = { phase: new Set([condId(h)]), rarity: new Set([String(h.char.rarity + 1)]), prof: new Set([h.char.prof]) }; });
+  });
+
+  /* ── 状态 ── */
+  const state = { sel: {}, q: '', sort: { key: 'order', dir: 1 }, view: 0, page: 1, step: 100, compact: false, open: false, expanded: new Set() };
+  const FIRST_DIR = k => (k === 'order' || k === 'name' ? 1 : -1);
+  const needle = () => state.q.trim().toLowerCase();
+  const activeRooms = () => (state.sel.room.size ? rooms.filter(r => state.sel.room.has(r.id)) : []);
+  const targetRooms = () => new Set(activeRooms().filter(r => r.targets.length).map(r => r.id));   // 作用对象行只在选了带对象的设施时生效
+  const targetSel = roomId => (roomOf[roomId].targets || []).filter(t => state.sel.target.has(t.id));   // 选中的对象里属于这个设施的那些
+  const holderPass = (h, skip) => filters.every(f => !f.holder || f === skip || !state.sel[f.id].size || [...h.opt[f.id]].some(o => state.sel[f.id].has(o)));
+  /* skip = 算「这一行还有没有可点的选项」时跳过的那一行；noHolder = 不看持有者那三行（干员视图里持有者就是这位干员，另算） */
+  const buffPass = (b, q, skip, noHolder) => {
+    if (q && !b.haystack.includes(q)) return false;
+    if (F.room !== skip && state.sel.room.size && !state.sel.room.has(b.room)) return false;
+    if (F.target !== skip && targetSel(b.room).length && ![...b.opt.target].some(o => state.sel.target.has(o))) return false;   // 只认这个设施自己的对象：选了「贵金属」，加工站的技能不受影响
+    if (noHolder) return true;
+    const holderActive = filters.some(f => f.holder && f !== skip && state.sel[f.id].size);
+    return !holderActive || b.holders.some(h => holderPass(h, skip));
+  };
+  /* 干员视图：干员要过持有者那三行（看他自己每条技能的条件），且至少有一条技能过设施 / 对象 / 搜索 */
+  const stepOf = (c, si, step) => buffs[c.slots[si][step].b].holders.find(h => h.char === c && h.slot === si && h.step === step);
+  const stepPass = (c, si, step, q) => buffPass(buffs[c.slots[si][step].b], q, null, true) && holderPass(stepOf(c, si, step));
+  const charPass = (c, q) => c.slots.some((chain, si) => chain.some((x, step) => stepPass(c, si, step, q)));
+
+  /* 排序：游戏顺序 = 设施次序 + sortId（同游戏进驻面板的 CharSortType.BUFF_SORTID）；效率 = efficiency（CharSortType.EFFICIENCY，只有带效率排序的设施才有值）；持有人数；技能名 */
+  const byOrder = (a, b) => a.index - b.index;
+  const cmp = {
+    order: (a, b) => byOrder(a, b) * state.sort.dir,
+    eff: (a, b) => (a.eff - b.eff) * state.sort.dir || byOrder(a, b),
+    holders: (a, b) => (a.holders.length - b.holders.length) * state.sort.dir || byOrder(a, b),
+    name: (a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN') * state.sort.dir || byOrder(a, b),
+  };
+  const sortChars = list => state.sort.key === 'name' ? list.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN') * state.sort.dir || a.index - b.index) : list.sort((a, b) => (a.index - b.index) * state.sort.dir);
+
+  /* ── 地址栏 # 参数（写法同干员一览 / 道具一览）──
+   *   <行>=1-CONTROL;POWER   一行筛选（room / target / phase / rarity / prof）
+   *   _s 搜索 · _o 排序（order-d / eff-d / holders-d / name-a，游戏正序不写）· _d 显示方式（1 = 干员，技能不写） */
+  function readHash() {
+    filters.forEach(f => { state.sel[f.id] = new Set(); });
+    Object.assign(state, { q: '', sort: { key: 'order', dir: 1 }, view: 0 });
+    for (const [k, v] of new URLSearchParams(location.hash.slice(1))) {
+      const f = F[k], m = /^(order|eff|holders|name)-([ad])$/.exec(v);
+      if (k === '_s') state.q = v;
+      else if (k === '_o') { if (m) state.sort = { key: m[1], dir: m[2] === 'a' ? 1 : -1 }; }
+      else if (k === '_d') { if (v === '1') state.view = 1; }
+      else if (f && v.startsWith('1-')) state.sel[k] = new Set(v.slice(2).split(';').filter(o => f.options.some(x => x.id === o)));
+    }
+  }
+  function writeHash() {
+    const p = new URLSearchParams(), sort = state.sort.key + '-' + (state.sort.dir > 0 ? 'a' : 'd');
+    filters.forEach(f => { const ids = f.options.filter(o => state.sel[f.id].has(o.id)).map(o => o.id); if (ids.length) p.set(f.id, '1-' + ids.join(';')); });
+    if (state.q) p.set('_s', state.q);
+    if (sort !== 'order-a') p.set('_o', sort);
+    if (state.view) p.set('_d', '1');
+    const h = p.toString();
+    if (h !== location.hash.slice(1)) history.replaceState(null, '', h ? '#' + h : location.pathname + location.search);
+  }
+
+  /* ── 筛选面板 ── */
+  const roomStyle = r => `data-rc style="--rs-c:${r.color};--rs-h:${r.halo}"`;
+  const glyph = r => `<i class="rs-glyph" data-glyph="${r.glyph}" aria-hidden="true"></i>`;
+  const chipHtml = (f, o, inner, attrs) => `<button type="button" class="ak-chip" aria-pressed="false" data-no-toggle data-f="${f.id}" data-o="${esc(o.id)}"${attrs || ''}>${inner || esc(o.label)}</button>`;
+  function renderFilters() {
+    $('#rs-rows').innerHTML = filters.map(f => `<div class="rs-row" role="group" aria-labelledby="rs-l-${f.id}" data-row="${f.id}"${f.dependent ? ' hidden' : ''}>
+      <div class="rs-row__label"><span id="rs-l-${f.id}">${f.title}${f.hint ? ` <small>${f.hint}</small>` : ''}</span><button type="button" class="rs-row__clear" data-clear="${f.id}" aria-label="清除「${f.title}」的选择">清除</button></div>
+      <div class="rs-row__opts">${
+        f.id === 'room' ? f.options.map(o => chipHtml(f, o, `${glyph(o.room)}${esc(o.label)}`, ' ' + roomStyle(o.room))).join('')
+        : f.groups ? f.groups.map(g => `<div class="rs-group" role="group" aria-label="${g.room.name}" data-room="${g.room.id}"><span class="rs-group__label" aria-hidden="true">${g.room.name}</span><div class="rs-group__list">${g.options.map(o => chipHtml(f, o)).join('')}</div></div>`).join('')
+        : f.id === 'phase' ? f.options.map(o => chipHtml(f, o, `<img src="assets/elite/elite_${o.phase}.png" alt="">${esc(o.label)}`)).join('')
+        : f.id === 'rarity' ? f.options.map(o => `<span data-rarity="${o.id}" style="display:contents">${chipHtml(f, o, `<i class="rs-star" aria-hidden="true"></i>${o.label}<span class="ak-sr-only">星</span>`)}</span>`).join('')
+        : f.options.map(o => chipHtml(f, o, `<i class="rs-glyph" data-prof="${o.id}" aria-hidden="true"></i>${esc(o.label)}`)).join('')
+      }</div></div>`).join('');
+  }
+  function updateFilters() {
+    const q = needle();
+    let total = 0;
+    /* 作用对象行：选了带对象的设施才出，只出那几个设施的段；没选时清掉这一行的选择 */
+    const tr = targetRooms();
+    if (!tr.size) state.sel.target.clear();
+    $('[data-row="target"]').hidden = !tr.size;
+    $$('.rs-group[data-room]').forEach(g => { g.hidden = !tr.has(g.dataset.room); });
+    filters.forEach(f => {
+      const reach = new Set();   // 其余条件不变，这一行里有技能落在上面的选项；不在里面的 = 点了也不会多出技能
+      buffs.forEach(b => {
+        if (!buffPass(b, q, f)) return;
+        if (f.holder) b.holders.forEach(h => { if (holderPass(h, f)) h.opt[f.id].forEach(o => reach.add(o)); });
+        else b.opt[f.id].forEach(o => reach.add(o));
+      });
+      $$(`.ak-chip[data-f="${f.id}"]`).forEach(c => { c.setAttribute('aria-pressed', state.sel[f.id].has(c.dataset.o)); c.classList.toggle('is-empty', !reach.has(c.dataset.o)); });
+      $(`[data-row="${f.id}"]`).classList.toggle('has-active', state.sel[f.id].size > 0);
+      total += state.sel[f.id].size;
+    });
+    $('#rs-more-count').textContent = total ? '已选 ' + total : '';
+    $('#rs-more').classList.toggle('has-active', total > 0);
+    $('#rs-more').setAttribute('aria-expanded', state.open);
+  }
+
+  /* ── 结果 · 技能 ── */
+  const img = (src, w, h, alt) => `<img src="${src}" alt="${esc(alt || '')}" width="${w}" height="${h}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+  const tileHtml = (b, sm) => `<span class="rs-tile${sm ? ' rs-tile--sm' : ''}" style="--rs-bg:${b.color}" aria-hidden="true">${img(b.icon, sm ? 22 : 38, sm ? 22 : 38)}</span>`;
+  const roomTag = (b, hidden) => { const r = roomOf[b.room]; return `<span class="rs-roomtag" ${roomStyle(r)}${hidden ? ' hidden' : ''}>${glyph(r)}${r.name}</span>`; };
+  const mark = (html, q) => {   // 搜索命中的字高亮：只在文本节点里换，不碰标签与属性
+    if (!q) return html;
+    const d = document.createElement('div'); d.innerHTML = html;
+    const walk = n => { Array.from(n.childNodes).forEach(c => { if (c.nodeType === 3) { const t = c.nodeValue, i = t.toLowerCase().indexOf(q); if (i >= 0) { const s = document.createElement('span'); s.innerHTML = esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + q.length)) + '</mark>' + esc(t.slice(i + q.length)); c.replaceWith(...s.childNodes); } } else walk(c); }); };
+    walk(d); return d.innerHTML;
+  };
+  const charText = c => `${c.rarity + 1}★ ${PROF[c.prof] || c.prof}`;
+  /* 头像 = 设计系统的干员卡（同首页亮点干员）：头像 + 右下星级（游戏星级原图）+ 左上职业小图（+ 左下精英小牌，只有持有干员才有） */
+  const PROF_ICON = { PIONEER: 'pioneer', WARRIOR: 'warrior', TANK: 'tank', SNIPER: 'sniper', CASTER: 'caster', MEDIC: 'medic', SUPPORT: 'support', SPECIAL: 'special' };
+  const RARITY_ALT = ['一星', '二星', '三星', '四星', '五星', '六星'];
+  const avatarHtml = (c, attrs, extra) => `<div class="ak-op-card ak-op-card--sm${attrs.cls || ''}" data-rarity="${c.rarity + 1}"><a href="${c.href}"${attrs.rest || ''}><span class="ak-op-card__portrait">${img(c.avatar, 64, 64, attrs.alt || '')}<span class="ak-op-card__rarity"><img src="assets/rarity/rarity_yellow_${c.rarity}.png" alt="${RARITY_ALT[c.rarity]}"></span><span class="ak-op-card__prof"><img src="assets/profession/icon_${PROF_ICON[c.prof] || 'warrior'}.png" alt="${PROF[c.prof] || esc(c.prof)}"></span>${extra || ''}</span></a></div>`;
+  const holderHtml = (h, dim) => avatarHtml(h.char, { cls: ' rs-holder' + (dim ? ' is-dim' : ''), alt: h.char.name, rest: ` data-ak-tip="${esc(`${h.char.name} · ${charText(h.char)} · ${condText(h)}`)}"` });
+  const eliteHtml = h => `<span class="ak-elite"><img src="assets/elite/elite_${h.phase}.png" alt="">${condText(h)}</span>`;
+  const MAX_HOLDERS = 10;
+  function rowHtml(b, q, grouped) {
+    const holderActive = filters.some(f => f.holder && state.sel[f.id].size);
+    const all = holderActive ? [...b.holders].sort((x, y) => holderPass(y) - holderPass(x)) : b.holders;   // 符合持有者筛选的排前面
+    const open = state.expanded.has(b.index), list = open ? all : all.slice(0, MAX_HOLDERS);
+    /* 解锁条件：持有者都一样 → 写在技能名旁边；不一样 → 持有干员按条件分段（段按精英阶段 / 等级排），段首写条件 */
+    const conds = [...new Map(b.holders.map(h => [condId(h), h])).values()].sort((x, y) => x.phase - y.phase || x.level - y.level);
+    const cardsOf = hs => hs.map(h => holderHtml(h, holderActive && !holderPass(h))).join('');
+    const holdersHtml = conds.length > 1
+      ? conds.map(c => `<div class="rs-hgroup">${eliteHtml(c)}<div class="rs-hgroup__list">${cardsOf(all.filter(h => condId(h) === condId(c)))}</div></div>`).join('')
+      : cardsOf(list) + (all.length > list.length ? `<button type="button" class="rs-holders__more" data-expand="${b.index}" aria-label="展开全部 ${all.length} 位持有干员">+${all.length - list.length}</button>` : '');
+    const nextOf = i => { const n = buffs[i], c = n.holders.find(h => b.holders.some(x => x.char === h.char)) || n.holders[0]; return `${c ? condText(c) : ''}替换为 <b>${esc(n.name)}</b>`; };
+    const chain = [   // 替换关系：多位持有者各有各的下一级（线索搜集·α 后面接 8 种）就不逐个列了
+      ...(b.prev.length > 2 ? [`由 ${b.prev.length} 种技能升级而来`] : b.prev.map(i => `由 <b>${esc(buffs[i].name)}</b> 升级而来`)),
+      ...(b.next.length > 2 ? [`${condText(buffs[b.next[0]].holders[0])}替换为各自的下一级技能（${b.next.length} 种）`] : b.next.map(nextOf)),
+    ];
+    return `<article class="rs-row-item" data-b="${b.index}">
+      ${tileHtml(b)}
+      <div class="rs-main">
+        <div class="rs-head"><h3 class="rs-name">${mark(esc(b.name), q)}</h3>${conds.length === 1 ? eliteHtml(conds[0]) : ''}${roomTag(b, grouped)}${b.eff ? `<span class="rs-eff" data-ak-tip="游戏进驻面板按效率排序用的数值">效率 ${b.eff}</span>` : ''}</div>
+        ${chain.length ? `<p class="rs-chain">${chain.join('；')}</p>` : ''}
+        <p class="rs-desc">${mark(b.desc, q)}</p>
+      </div>
+      <div class="rs-holders">${holdersHtml}</div>
+    </article>`;
+  }
+  function listHtml(list, q) {
+    if (state.sort.key !== 'order') return `<div class="rs-list"><div class="rs-section">${list.map(b => rowHtml(b, q, false)).join('')}</div></div>`;
+    const groups = [];
+    list.forEach(b => { const g = groups[groups.length - 1]; if (g && g.room.id === b.room) g.items.push(b); else groups.push({ room: roomOf[b.room], items: [b] }); });
+    return `<div class="rs-list">${groups.map(g => `<section class="rs-section" aria-labelledby="rs-g-${g.room.id}">
+      <div class="rs-section__head" ${roomStyle(g.room)}>${glyph(g.room)}<h2 class="rs-section__title" id="rs-g-${g.room.id}">${g.room.name}</h2><span class="ak-en">${g.room.id}</span><span class="rs-section__count">${g.items.length} / ${g.room.count}</span></div>
+      ${g.items.map(b => rowHtml(b, q, true)).join('')}</section>`).join('')}</div>`;
+  }
+
+  /* ── 结果 · 干员 ── */
+  function opHtml(c, q) {
+    const slots = c.slots.map((chain, si) => !chain.length ? '' : `<div class="rs-slot"><p class="rs-slot__label">技能 ${si + 1}</p>${chain.map((x, step) => {
+      const b = buffs[x.b], h = stepOf(c, si, step), ok = stepPass(c, si, step, q);
+      return `<div class="rs-step${ok ? '' : ' is-dim'}">${tileHtml(b, true)}<div class="rs-step__head"><span class="rs-step__name">${mark(esc(b.name), q)}</span><span class="ak-elite"><img src="assets/elite/elite_${h.phase}.png" alt="">${condText(h)}</span>${roomTag(b)}</div><p class="rs-desc">${mark(b.desc, q)}</p></div>`;
+    }).join('')}</div>`);
+    return `<article class="rs-op"><div class="rs-op__head">${avatarHtml(c, { rest: ' tabindex="-1" aria-hidden="true"' })}
+      <h3 class="rs-op__name"><a href="${c.href}">${mark(esc(c.name), q)}</a></h3></div>${slots.join('')}</article>`;
+  }
+
+  const emptyHtml = () => `<div class="ak-empty"><svg class="ak-empty__icon"><use href="#i-empty"/></svg><p class="ak-empty__title">没有符合条件的后勤技能</p><p>放宽几项筛选条件，或者<button type="button" class="ak-btn ak-btn--link" data-reset>清除全部条件</button>。</p></div>`;
+  function pagerHtml(pages) {
+    const p = state.page, out = [];
+    const btn = (n, label, extra) => `<button type="button" class="ak-pagination__item${extra || ''}" data-page="${n}"${n === p && !label ? ' aria-current="page"' : ''}${label ? ` aria-label="${label}"` : ''}>${label ? `<svg class="ak-icon"><use href="#i-chevron-${label === '上一页' ? 'left' : 'right'}"/></svg>` : n}</button>`;
+    out.push(btn(Math.max(1, p - 1), '上一页', p === 1 ? ' is-disabled' : ''));
+    let prev = 0;
+    for (let n = 1; n <= pages; n++) {
+      if (n !== 1 && n !== pages && Math.abs(n - p) > 1 && !(p <= 3 && n <= 4) && !(p >= pages - 2 && n >= pages - 3)) continue;
+      if (n - prev > 1) out.push('<span class="ak-pagination__ellipsis">…</span>');
+      out.push(btn(n, '', n === p ? ' is-active' : '')); prev = n;
+    }
+    out.push(btn(Math.min(pages, p + 1), '下一页', p === pages ? ' is-disabled' : ''));
+    return pages > 1 ? out.join('') : '';
+  }
+  function renderActive() {
+    const out = [];
+    if (state.q) out.push(`<span class="ak-tag">搜索：${esc(state.q)}<button type="button" class="ak-tag__remove" data-unq aria-label="清除搜索">×</button></span>`);
+    filters.forEach(f => f.options.forEach(o => { if (state.sel[f.id].has(o.id)) out.push(`<span class="ak-tag">${f.title}：${esc(o.label)}${f.id === 'rarity' ? ' 星' : ''}<button type="button" class="ak-tag__remove" data-f="${f.id}" data-o="${esc(o.id)}" aria-label="移除「${f.title}：${esc(o.label)}」">×</button></span>`); }));
+    if (out.length > 1) out.push('<button type="button" class="ak-btn ak-btn--link ak-btn--xs" data-reset>清除全部</button>');
+    $('#rs-active').innerHTML = out.join('');
+  }
+  function renderResults() {
+    const q = needle();
+    const list = buffs.filter(b => buffPass(b, q)).sort(cmp[state.sort.key]);
+    const ops = state.view === 1 ? sortChars(chars.filter(c => charPass(c, q))) : null;
+    const items = ops || list, pages = Math.max(1, Math.ceil(items.length / state.step));
+    state.page = Math.min(Math.max(1, state.page), pages);
+    const slice = items.slice((state.page - 1) * state.step, state.page * state.step);
+    /* 条数只写当前视图的那一种：技能视图数技能，干员视图数干员 */
+    const [n, total, unit] = ops ? [ops.length, chars.length, '位干员'] : [list.length, buffs.length, '条技能'];
+    $('#rs-count').innerHTML = n === total ? `共 <b>${total}</b> ${unit}` : `<b>${n}</b> / ${total} ${unit}`;
+    $('#rs-result').innerHTML = !items.length ? emptyHtml() : ops ? `<div class="rs-ops">${slice.map(c => opHtml(c, q)).join('')}</div>` : listHtml(slice, q);
+    $$('.rs-pager').forEach(n => { n.innerHTML = pagerHtml(pages); });
+    renderActive();
+  }
+  function renderControls() {
+    const dir = $('#rs-dir'), up = state.sort.dir > 0, k = state.sort.key;
+    const word = k === 'order' ? (up ? '正序' : '倒序') : k === 'name' ? (up ? '升序' : '降序') : (up ? '从低到高' : '从高到低');
+    $$('#rs-sort > option').forEach(o => { o.hidden = o.disabled = state.view === 1 && (o.value === 'eff' || o.value === 'holders'); });   // 干员视图里效率 / 持有人数没有意义
+    if (state.view === 1 && (k === 'eff' || k === 'holders')) state.sort = { key: 'order', dir: 1 };
+    $('#rs-sort').value = state.sort.key;
+    dir.textContent = word + (up ? ' ↑' : ' ↓'); dir.setAttribute('aria-label', '排序方向：' + word + '，点击切换');
+    $('#rs-search').value = state.q; $('#rs-step').value = String(state.step);
+    $$('#rs-view > button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.view === state.view));
+  }
+  function update(keepPage) {
+    if (!keepPage) state.page = 1;
+    updateFilters(); renderControls(); renderResults(); writeHash();
+  }
+  const reset = () => { filters.forEach(f => state.sel[f.id].clear()); state.q = ''; update(); };
+
+  /* ── 事件 ── */
+  root.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t || !root.contains(t)) return;
+    if (t.id === 'rs-more') { state.open = !state.open; updateFilters(); }
+    else if (t.matches('.ak-chip, .ak-tag__remove[data-f]')) { const sel = state.sel[t.dataset.f], o = t.dataset.o; sel.has(o) ? sel.delete(o) : sel.add(o); update(); }
+    else if (t.dataset.clear) { state.sel[t.dataset.clear].clear(); update(); }
+    else if ('unq' in t.dataset) { state.q = ''; update(); }
+    else if ('reset' in t.dataset) reset();
+    else if (t.dataset.view) { state.view = +t.dataset.view; update(); }
+    else if (t.dataset.expand) { state.expanded.add(+t.dataset.expand); renderResults(); }
+    else if (t.id === 'rs-dir') { state.sort = { key: state.sort.key, dir: -state.sort.dir }; update(); }
+    else if (t.dataset.page) {
+      state.page = +t.dataset.page; update(true);
+      if (t.closest('.rs-foot')) $('#rs-result').scrollIntoView({ block: 'start' });
+    }
+    else if (t.id === 'rs-copy') {
+      const url = WIKI + encodeURIComponent('后勤技能一览') + location.hash;
+      const done = () => window.akdsToast && window.akdsToast(esc(decodeURIComponent(url)), 'success', '链接已复制');
+      navigator.clipboard ? navigator.clipboard.writeText(url).then(done, () => {}) : done();
+    }
+  });
+  root.addEventListener('change', e => {
+    const t = e.target;
+    if (t.id === 'rs-sort') { state.sort = { key: t.value, dir: FIRST_DIR(t.value) }; update(); }
+    else if (t.id === 'rs-step') { const first = (state.page - 1) * state.step; state.step = +t.value; state.page = Math.floor(first / state.step) + 1; update(true); }
+  });
+  $('#rs-search').addEventListener('input', e => { state.q = e.target.value; state.page = 1; updateFilters(); renderResults(); writeHash(); });
+  root.addEventListener('error', e => { const img = e.target; if (img.tagName === 'IMG') img.style.visibility = 'hidden'; }, true);   // 图取不到：留位、不显示裂图
+  window.addEventListener('hashchange', () => { readHash(); update(); });
+
+  /* 列表宽 ↔ 窄：看结果区自己的宽度，不看视口 */
+  const fit = () => root.classList.toggle('rs--compact', root.clientWidth < 860);
+
+  root.hidden = false;
+  readHash(); renderFilters(); fit(); update();
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(root);
+})();
+</script>
