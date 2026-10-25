@@ -52,7 +52,7 @@ torappu 的解包产物与数据表两个根。目录视图默认缩略图网格
 
 <PageFrame page="akas-search.html" />
 
-皮肤的[搜索面板](/chrome/search-palette)原样搬来：页眉触发器 / <kbd>⌘K</kbd> / <kbd>/</kbd> 打开，一次查询分三组列出——文件 · 清单资源 · Bundle；高亮行右端出复制直链 / 下载。
+皮肤的[搜索面板](/chrome/search)原样搬来：页眉触发器 / <kbd>⌘K</kbd> / <kbd>/</kbd> 打开，一次查询分三组列出——文件 · 清单资源 · Bundle；高亮行右端出复制直链 / 下载。
 
 ## 状态
 
