@@ -6,7 +6,7 @@ title: 敌人一览
 
 列表 / 筛选页的样例，排布同[干员一览](/patterns/operators)。prts.wiki 现网[敌人一览](https://prts.wiki/w/%E6%95%8C%E4%BA%BA%E4%B8%80%E8%A7%88)（= prts-widgets 的 `EnemiesListV2` Widget）的重新设计：筛选 → 工具条（搜索 · 排序 · 显示方式）→ 结果栏（条数 · 已选条件 · 复制链接 · 分页）→ 结果。**敌人数据与现网是同一份**，换的是视觉与排布；交互上能对着游戏的地方对着游戏——游戏的敌人图鉴（`Torappu.UI.EnemyHandBook`）自己就有一套筛选和排序。
 
-源文件 `preview/_src/pages/enemies.html`，`python3 scripts/build-preview.py` 生成。数据是现网那份 JSON 的快照 `preview/vendor/enemies/data.js`（1710 个敌人，`node scripts/fetch-enemies.ts` 重抓）；头像不入库，运行时从 `media.prts.wiki` 取，取不到时留深色底框和编号。
+源文件 `preview/_src/pages/enemies.html`，`python3 scripts/build-preview.py` 生成。数据是现网那份 JSON 的快照 `preview/vendor/enemies/data.js`（1710 个敌人，`node scripts/fetch-enemies.ts` 重抓）；头像不入库，运行时从 `media.prts.wiki` 取，取不到时只留编号。
 
 <PageFrame page="enemies.html" />
 
@@ -37,7 +37,7 @@ title: 敌人一览
 
 ## 结果
 
-**头像**。方图原样铺满，**图鉴编号叠在左上角的深色条上**——游戏敌人图鉴的格子就是这样（`EnemyHandBookItemView` 的 `_viewPart` + `_idPart`）。不裁成圆（原图是方的，系统默认直角），也不另写「NORMAL · B1」那样的一行。
+**头像**。方图原样铺满，**图鉴编号叠在左上角的深色条上**——游戏敌人图鉴的格子就是这样（`EnemyHandBookItemView` 的 `_viewPart` + `_idPart`）。不裁成圆（原图是方的，系统默认直角），也不另写「NORMAL · B1」那样的一行。**不垫底色**，同现网敌人页的头像（`.enemyicon`）：图四周自带一圈半透明的阴影，垫了底会变成一道实心的黑框；编号条照它缩进 7 / 130，贴着图的实边。
 
 **地位只看侧边色条**：精英橙、领袖红，普通没有颜色（色值同[敌人卡](/arknights/enemy)的左色条）。读屏另有一遍文字（`.ak-sr-only`）。
 
@@ -54,7 +54,9 @@ title: 敌人一览
 
 **卡片**。结果区窄于 1000（平板 / 手机）时表格换成卡片——看的是结果区自己的宽度，不是视口。外框是[敌人卡](/arknights/enemy) `.ak-enemy`（细框 + 精英 / 领袖的左色条），里面是头像 + 名字，下面摊开八项属性的 4 × 2 格与能力全文。
 
-**头像视图**。敌人卡排成网格，整张卡是链接；按属性排序时卡上带出那项的等级。手机上默认是这个视图（现网手机皮肤上默认的「简」模式只有图、没有名字）。
+**头像视图**（简易模式）。**只有头像**，同现网的「简」：80px 方图一个挨一个、不留缝（图四周自带的那圈阴影就是间距），每张链到敌人页，不写名字、不套敌人卡。名字在悬停 / 聚焦的提示里（读屏另有名字与地位的文字）；按属性排序时提示里带出那项的等级，不然在这个视图里看不出排的是什么。
+
+**默认视图看设备**：手机上（打开页面时视口 < 640）默认头像视图，其余默认表格（窄于 1000 是卡片）——同现网手机皮肤默认「简」、桌面默认表格。进页面时定下来，之后转屏 / 缩放窗口不跟着变；和默认值一样时分享链接里不写 `_d`。
 
 ## 分享链接
 
@@ -70,7 +72,7 @@ title: 敌人一览
 | 两块折叠面板（筛选 / 六维筛选） | 常用三行 + 「属性筛选」`.el-more` | 多了行动方式、元素抗性、损伤抵抗 |
 | 搜索框 | [`.ak-search`](/components/search) | 多搜图鉴编号；不分大小写 |
 | 表头上的排序箭头 | `.ak-select` + 方向钮（表头也能点） | |
-| 「简」钮 | [`.ak-btn-group`](/components/button/)：表格 / 头像 | 头像视图带名字 |
+| 「简」钮 | [`.ak-btn-group`](/components/button/)：表格 / 头像 | 头像视图同「简」：只有头像，名字在提示里 |
 | `NDataTable`（十三栏） | `.ak-table.el-table`（一敌一组） | 窄了换 `.el-card` |
 | 头像 65px 方图 | `.el-avatar`：方图 + 左上角编号 | |
 | 「地位」一栏的文字 | 侧边色条 | 精英橙 / 领袖红 |

@@ -103,10 +103,11 @@ lastmod: 2025年3月1日 (六) 00:07
 
 /* ── 4. 头像 / 等级 / 能力：三种结果视图共用 ──
  *  头像 = 方图原样铺满，图鉴编号叠在左上角的深色条上（游戏敌人图鉴的格子 EnemyHandBookItemView 同款：_viewPart + _idPart）。边长由外面用 --el-avatar 定。
+ *  同现网敌人页的头像（.enemyicon）：不垫底色——图四周自带一圈半透明的阴影，垫了底会变成一道实心的黑框；编号条照它缩进 7 / 130，贴着图的实边。
  *  不用 .ak-enemy__img（裁成圆的那种）：原图是方的，系统默认直角；也不写「NORMAL · B1」那行——编号在头像上，地位看色条。 */
-.el-avatar { position: relative; display: block; width: var(--el-avatar, 64px); height: var(--el-avatar, 64px); background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
+.el-avatar { position: relative; display: block; width: var(--el-avatar, 64px); height: var(--el-avatar, 64px); overflow: hidden; }
 .el-avatar > img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.el-avatar__index { position: absolute; top: 0; left: 0; box-sizing: border-box; min-width: 42%; padding: 2px 4px 1px; background: rgba(29, 31, 32, .78); color: #fff; font: 700 10px/1.15 var(--ak-font-label); letter-spacing: .02em; text-align: center; white-space: nowrap; }
+.el-avatar__index { position: absolute; top: calc(100% * 7 / 130); left: calc(100% * 7 / 130); box-sizing: border-box; min-width: 38%; padding: 2px 4px 1px; background: rgba(29, 31, 32, .78); color: #fff; font: 700 10px/1.15 var(--ak-font-label); letter-spacing: .02em; text-align: center; white-space: nowrap; }
 /* 等级：不另配颜色，只分轻重——S 档最重，往下一档比一档淡，一列扫下去先看到高的；?（游戏里隐藏数值的敌人）最淡 */
 .el-grade { font-family: var(--ak-font-label); font-weight: 600; color: var(--ak-fg-muted); }
 .el-grade[data-tier="s"] { font-weight: 700; color: var(--ak-fg); }
@@ -162,16 +163,12 @@ lastmod: 2025年3月1日 (六) 00:07
 .el-card__stats dd { margin: 0; font-size: var(--ak-fs-sm); line-height: 1; }
 .el-card p { grid-column: 1 / -1; margin: 0; }
 
-/* ── 7. 结果 · 头像：敌人卡 .ak-enemy 排成网格，整张卡是链接；按属性排序时卡上带出那项的等级 ── */
-.el-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); gap: var(--ak-space-2); }
-.el-cell.ak-enemy { align-items: center; min-width: 0; color: var(--ak-fg); text-decoration: none; transition: border-color var(--ak-dur-normal); }
-.el-cell.ak-enemy:hover { border-color: var(--ak-accent); color: var(--ak-fg); text-decoration: none; }
-.el-cell:is(.ak-enemy--elite, .ak-enemy--boss):hover { border-image-source: linear-gradient(to right, var(--_bar) 4px, var(--ak-accent) 4px); }   /* 悬停只换细框那一段，色条照旧 */
-.el-cell:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 2px; }
-.el-cell__id { min-width: 0; }
-.el-cell .ak-enemy__name { line-height: 1.25; overflow-wrap: anywhere; }
-.el-cell__stat { margin-top: 3px; font-size: var(--ak-fs-xs); line-height: 1.2; color: var(--ak-fg-muted); }
-@media (max-width: 639px) { .el-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .el-cell.ak-enemy { --el-avatar: 52px; grid-template-columns: var(--el-avatar) 1fr; gap: 8px; padding: 8px; } }   /* 手机上一行两张：头像收小一号 */
+/* ── 7. 结果 · 头像（简易模式）：只有头像，同现网的「简」——80px 方图一个挨一个、不留缝（图四周自带的那圈阴影就是间距），每张链到敌人页，不写名字、不套敌人卡；
+ *  名字在悬停 / 聚焦的提示里（读屏另有文字），按属性排序时提示里带出那项的等级。 */
+.el-grid { display: flex; flex-wrap: wrap; }
+.el-cell { --el-avatar: 80px; position: relative; display: block; }
+.el-cell:hover::after { content: ""; position: absolute; inset: calc(100% * 7 / 130); box-shadow: inset 0 0 0 2px var(--ak-accent); pointer-events: none; }   /* 悬停：图的实边上压一圈强调色的内框（压在编号条上面）；四周那圈阴影同编号条一样留 7 / 130 */
+.el-cell:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: calc(var(--el-avatar) * -7 / 130); }   /* 聚焦框也贴着图的实边画 */
 
 /* ── 8. 提示（能力里的 {{术语}}、属性筛选芯片的数值范围）：气泡挂在 body 上、按视口定位，不被表格裁掉 ── */
 .el-tip { position: fixed; left: 0; top: 0; max-width: min(340px, calc(100vw - 16px)); white-space: pre-line; line-height: 1.55; pointer-events: none; }
@@ -308,7 +305,7 @@ lastmod: 2025年3月1日 (六) 00:07
   const byId = Object.fromEntries(filters.map(f => [f.id, f]));
   const ADV_KEY = 'elFilterAdvanced';   // 属性筛选开没开
   /* ── 状态 ── */
-  const DEFAULT_VIEW = window.innerWidth < 640 ? 1 : 0;   // 手机上默认头像，其余默认表格；进页面时定下来
+  const DEFAULT_VIEW = window.innerWidth < 640 ? 1 : 0;   // 手机上默认头像（简易），其余默认表格（详细）；进页面时定下来
   const FIRST_DIR = k => (isStat(k) ? -1 : 1);   // 选中一种排序时先给的方向：图鉴顺序、名称升序，属性降序（等级高的在前）
   const state = { q: '', sort: { key: 'index', dir: 1 }, view: DEFAULT_VIEW, page: 1, step: 50, compact: false };
   let advOpen = false;
@@ -415,7 +412,8 @@ lastmod: 2025年3月1日 (六) 00:07
   }
   function gridHtml(list) {
     const col = COLS.find(c => c[0] === sortKey());
-    return `<div class="el-grid">${list.map(e => `<a class="el-cell ${enemyCls(e)}" href="${e.href}">${avatar(e)}<div class="el-cell__id"><div class="ak-enemy__name">${esc(e.name)}</div>${rankText(e)}${col ? `<div class="el-cell__stat">${col[1]} ${grade(e.stats[col[0]])}</div>` : ''}</div></a>`).join('')}</div>`;
+    const tip = e => e.name + (col ? `\n${col[2]} ${e.stats[col[0]]}` : '');   // 按属性排序时带出那项的等级，不然在这个视图里看不出排的是什么
+    return `<div class="el-grid">${list.map(e => `<a class="el-cell" href="${e.href}" data-tip="${esc(tip(e))}">${avatar(e)}<span class="ak-sr-only">${esc(e.name)}</span>${rankText(e)}</a>`).join('')}</div>`;
   }
   const emptyHtml = () => `<div class="ak-empty"><svg class="ak-empty__icon"><use href="#i-empty"/></svg><p class="ak-empty__title">没有符合条件的敌人</p><p>放宽几项筛选条件，或者<button type="button" class="ak-btn ak-btn--link" data-reset>清除全部条件</button>。</p></div>`;
   function pagerHtml(pages) {
@@ -488,7 +486,7 @@ lastmod: 2025年3月1日 (六) 00:07
     else if (t.id === 'el-step') { const first = (state.page - 1) * state.step; state.step = +t.value; state.page = Math.floor(first / state.step) + 1; update(true); }   // 换每页条数：停在原来第一条所在的页
   });
   $('#el-search').addEventListener('input', e => { state.q = e.target.value; state.page = 1; updateFilters(); renderResults(); });
-  root.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);   // 头像取不到（离线 / 站内还没传图）：留下深色底框和编号
+  root.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.remove(); }, true);   // 头像取不到（离线 / 站内还没传图）：只留编号
   const loadHash = () => { if (location.hash.includes('=')) { readHash(); return true; } return false; };   // 不带 = 的是页内锚点（#top），不当成清空
   window.addEventListener('hashchange', () => { if (loadHash()) { setAdv(advOpen); update(); } });
   /* 提示：.ak-tooltip 挂到 body，贴在锚点上方（放不下就放下方），左右不出视口 */

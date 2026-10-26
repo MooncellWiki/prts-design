@@ -20,10 +20,10 @@ body.skin-arknights .enemy-info-common, body.skin-arknights .prts-enemy-level-ta
 .en-head[data-rank="elite"] { --_rank: var(--ak-orange-500); --_rank-fg: var(--ak-orange-500); }
 .en-head[data-rank="boss"] { --_rank: var(--ak-red-700); --_rank-fg: var(--ak-red-500); }
 .en-head[data-rank] { border-left-width: var(--ak-bar-w); border-image: linear-gradient(to right, var(--_rank) 4px, var(--ak-border) 4px) 1 1 1 4; }
-.en-avatar { position: relative; display: block; width: 120px; height: 120px; background: #1d1f20 linear-gradient(180deg, #2b2d2f, #141516); overflow: hidden; }
+.en-avatar { position: relative; display: block; width: 120px; height: 120px; overflow: hidden; }   /* 不垫底色，同现网敌人页的 .enemyicon：图四周自带一圈半透明的阴影，垫了底会变成一道实心的黑框；编号条照它缩进 7 / 130，贴着图的实边 */
 .en-avatar img { display: block; width: 120px; height: 120px; max-width: none; object-fit: cover; }
 .en-avatar a { display: block; }
-.en-avatar__code { position: absolute; left: 0; top: 0; padding: 4px 7px; background: rgba(0, 0, 0, .72); color: #fff; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .06em; }
+.en-avatar__code { position: absolute; left: calc(100% * 7 / 130); top: calc(100% * 7 / 130); padding: 4px 7px; background: rgba(0, 0, 0, .72); color: #fff; font: 700 var(--ak-fs-xs)/1 var(--ak-font-label); letter-spacing: .06em; }
 .en-main { min-width: 0; }
 .en-title { display: flex; align-items: center; flex-wrap: wrap; gap: var(--ak-space-2) var(--ak-space-3); margin: 0 0 var(--ak-space-2); }
 .en-name { font-size: var(--ak-fs-h3); font-weight: 800; line-height: 1.2; }
