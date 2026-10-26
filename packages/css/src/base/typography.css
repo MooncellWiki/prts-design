@@ -148,5 +148,9 @@ pre, .mw-code, .mw-highlight pre {
   padding: var(--ak-space-3) var(--ak-space-4); overflow-x: auto; line-height: 1.55; color: var(--ak-fg);
   margin: 0 0 var(--ak-space-4);
 }
+/* 正文里的 pre 折行，同核心 mediawiki.skinning 的 elements（T2260；皮肤没开这一项）：行首空格、<pre> 标签、Flow 留言都产出 pre，
+ * 中文帖子习惯行首空两格当段首缩进，整帖就成了一块 pre，不折行是一段一行、横向滚出几千像素。
+ * 代码不折：SyntaxHighlight 的 .mw-highlight pre、代码页的 .mw-code 照旧横向滚动（行号钉在左侧）。:where() 让特指度同 pre，Gadget / 页面样式一条 pre 规则就能改回 */
+pre:where(:not(.mw-code, .mw-highlight pre)) { white-space: pre-wrap; overflow-wrap: break-word; }
 .mw-highlight { margin: 0 0 var(--ak-space-4); }
 .mw-highlight .linenos { color: var(--ak-fg-subtle); user-select: none; padding-right: 1em; border-right: 1px solid var(--ak-border); }

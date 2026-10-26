@@ -67,7 +67,7 @@ h2 = 官网式标题：左侧 4px 青色色条 + 1px 细底线 + 底线上 96px 
 
 ## 引用与代码
 
-`blockquote`：左侧 4px 青条 + 浅一档的底、次要文字色；`<poem>` 只有一道 1px 左线（表格单元格里不画：模板把描述包进 poem 只为保留换行）。`pre`（含 SyntaxHighlight 的 `.mw-highlight`）是下沉底 + 3px 青色色条 + 1px 细框——色条和细框用 `border-image` 直角拼接，不让不同宽度的 border 在角上斜接出一道小斜边（见[装饰语言 · 色条 + 细框](/foundations/decoration#色条-细框)）。行内 `code` 是浅底细框的小块。
+`blockquote`：左侧 4px 青条 + 浅一档的底、次要文字色；`<poem>` 只有一道 1px 左线（表格单元格里不画：模板把描述包进 poem 只为保留换行）。`pre`（含 SyntaxHighlight 的 `.mw-highlight`）是下沉底 + 3px 青色色条 + 1px 细框——色条和细框用 `border-image` 直角拼接，不让不同宽度的 border 在角上斜接出一道小斜边（见[装饰语言 · 色条 + 细框](/foundations/decoration#色条-细框)）。正文里的 `pre` 自动折行（同核心；行首空格、`<pre>` 标签、Flow 留言都会产出 `pre`，中文帖子行首空两格缩进时整段都在里面），代码——`.mw-highlight` 和代码页的 `.mw-code`——不折、横向滚动。行内 `code` 是浅底细框的小块。
 
 ```html demo
 <blockquote><p>「博士，现在起由我担任你的护卫。」</p><p class="ak-fs-xs ak-fg-muted">—— 陈 · 任命助理</p></blockquote>
