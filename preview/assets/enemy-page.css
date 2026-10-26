@@ -1,12 +1,12 @@
 /*! 敌人页设计稿的页面样式。与线上 微件:EnemyPage（prts-skin-migration migration/enemy-page/微件_EnemyPage.css）是同一份规则，只有这段头注释不同，改一边要同步另一边。
    preview/enemy.html / enemy-slug.html / enemy-touch.html / enemy-misery.html / enemy-dukare.html / enemy-unicycle.html 共用。
-   结构同线上 模块:EnemyPage 的输出：图鉴卡（.en-head）+ 每个「级别N」章节里这一级的三张表（.en-level：级别信息 / 属性 / 技能与天赋），表里没有级别列。
+   结构同线上 模块:EnemyPage 的输出：图鉴卡（.en-head）+ 每个「级别N」章节里这一级的几张表（.en-level：级别信息 / 属性 / 技能 / 天赋与能力），表里没有级别列。
    两份数据：图鉴（common2 = 游戏【敌方档案库】那份）只在图鉴卡里写一次；每级的「级别信息」是关卡内「敌方情报」那份，两者常不一样。
    组：同一敌人的若干级别（index=0 或 reindex 起新组）；组里第一级以后的各级，与第一级不同的值出强调色 + 角标、变了的芯片带角标并在气泡里给第一级的值、新出现的技能带「新增」。
    线上不放 TemplateStyles：css-sanitizer 只让 var() 用在颜色里、不认 --x: 声明 / :is() / :focus-visible，设计系统的令牌写法放不进去，所以走微件；
    线上两个模板的 styles.css 默认藏起新版、所有皮肤看原来的表格，第 0 节在 Arknights 皮肤上把新版换上来（样例页没有原来的表格，第 0 节在这里不起作用）。
    wikitext 写不出来、所以和一般表格写法不同的地方：属性三段是三张叠起来的表（wikitext 不认 <tbody>）；评级字母 / 问号线上是 span[role=button]（样例页是 <button>，
-   两种都按 all: unset 起头）；「技能与天赋」是技能表的 caption；文中变了的数值是 模板:变动数值 输出的 .prts-delta，这里改画成淡青底 + ▲ / ▼ / ● */
+   两种都按 all: unset 起头）；「技能」「天赋与能力」是两张表的 caption；文中变了的数值是 模板:变动数值 输出的 .prts-delta，这里改画成淡青底 + ▲ / ▼ / ● */
 
 /* ── 0. 新旧二选一：两个模板的 styles.css（TemplateStyles）默认藏起新版、所有皮肤都看原来的表格；这里在 Arknights 皮肤上把新版换上来。
  *  所以这份样式没到（任何原因）时，Arknights 皮肤上看到的也是原来那版能用的表格，不会是一块没样式的新版。
@@ -91,14 +91,18 @@ body.skin-arknights .enemy-info-common, body.skin-arknights .prts-enemy-level-ta
    浅色底上几乎看不见；改画成设计系统的富文本关键词（--ak-rt-kw：日间 #0077b3、夜间浅蓝，加粗），同游戏的 <@ba.kw> */
 .en-head span[style*="00FFFF" i], .en-level span[style*="00FFFF" i] { color: var(--ak-rt-kw) !important; font-weight: 600; }
 
-/* ── 3. 技能与天赋：两列表（名称 + 冷却 / 技力芯片 ‖ 效果），天赋与能力是最后一行；只有天赋时标题写「天赋与能力」、表里直接是正文 ── */
-.en-help { all: unset; margin-left: 4px; cursor: pointer; }   /* 图标同 {{Popup}}：mdi help-circle-outline，颜色由行内 var(--darkblue) 给，字号跟着标题行 */
+/* ── 3. 技能 / 天赋与能力：两张表，同现网分两块。技能是两列表（名称 + 冷却 / 技力芯片 ‖ 效果），天赋与能力表里直接是正文；
+ *  标题旁的「关于技能 / 关于能力」同现网：.open-about-skill / -talent，打开 微件:EnemyDataController 建的对话框（文案是 common2 里藏着的那几段）── */
+.en-help { all: unset; margin-left: 4px; cursor: pointer; }   /* 表头说明的问号 = {{Popup}}：mdi help-circle-outline，颜色由行内 var(--darkblue) 给，字号跟着表头 */
+.en-help::before { display: inline; }   /* mdi 把字形画成 inline-block，前面总能断行，窄格里问号会单独掉到下一行；改成行内，再由字段名后的 U+2060 粘住 */
 .en-help:focus-visible { outline: 2px solid var(--ak-focus); outline-offset: 1px; border-radius: 50%; }
+.en-about { margin-left: var(--ak-space-2); vertical-align: 1px; }
 .en-skills { margin: 0; }
+.en-skills + .en-skills { margin-top: var(--ak-space-4); }
+.en-intro { font-size: var(--ak-fs-sm); }   /* 对话框正文（设计稿把对话框直接写在页里；生产环境由微件建） */
 .en-skills th[scope="row"] { width: 9.5em; vertical-align: top; font-weight: 400; background: var(--ak-bg-surface-2); }
 .en-skills td { vertical-align: top; font-size: var(--ak-fs-sm); line-height: 1.7; }
 .en-skill__name { display: block; margin: 0 0 6px; font-size: var(--ak-fs-body); font-weight: 800; line-height: 1.3; }
-.en-skills tr.en-talent .en-skill__name { margin: 0; }
 .en-skill__stats { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .en-sp-label { font: 600 var(--ak-fs-xs)/1 var(--ak-font-body); letter-spacing: 0; opacity: .85; }
 .en-skill__mode { display: block; margin: -4px 0 6px; font-size: var(--ak-fs-xs); color: var(--ak-fg-muted); }
@@ -117,10 +121,8 @@ body.skin-arknights .enemy-info-common, body.skin-arknights .prts-enemy-level-ta
 
 /* 悬停说明：都是现网的 mc-tooltips（同 {{Popup}} / {{术语}}，站点脚本 Tooltip.js 用 tippy 挂到 body 上，日间 light-border / 夜间 dark-border），
    不用皮肤 tooltip.css 的 CSS-only 气泡——那个画在载体的 ::after 上，会被表格的横滑容器裁掉，也会和格子里另一个气泡叠在一起。
-   触发点外面那层 .mc-tooltips 是行内的，评级字母照旧按格子定位；气泡里的「技能与天赋」说明一段一个块（.mc-tooltips 的内容是 <span>，wikitext 里不能放 <p>） */
-.en-help-p { display: block; margin: 0 0 .6em; }
-.en-help-p:last-child { margin-bottom: 0; }
-.en-head-row .ak-term { border-bottom-color: var(--ak-fg-subtle); }
+   触发点外面那层 .mc-tooltips 是行内的，评级字母照旧按格子定位。表头四处说明同现网 {{Popup}}：字段名后一枚问号（.en-help），文案照现网。
+   「关于技能 / 关于能力」对话框里的气泡挂进对话框（data-append-to），挂到 body 会被对话框的顶层盖住（现网微件是建好对话框后重建 tippy 挂进去） */
 
 /* ── 4. 出场关卡 / 出场敌袭 / 相关敌人：图鉴卡里紧跟能力的无框键值；一个关卡名不从中间断开，分隔点挂在前一个链接后面 ── */
 .en-head > .en-stages { grid-column: 2; margin: 0; border: 0; row-gap: 2px; font-size: var(--ak-fs-sm); }
@@ -145,8 +147,11 @@ body.skin-arknights .enemy-info-common, body.skin-arknights .prts-enemy-level-ta
   .en-band--misc > tbody, .en-info > tbody { border-bottom: 1px solid var(--ak-border); }
   .en-stats tr { display: contents; }
   .en-stats th, .en-stats td { display: flex; align-items: center; box-sizing: border-box; min-height: 38px; padding: 6px 8px; border: 0; border-bottom: 1px solid var(--ak-border); border-left: 1px solid var(--ak-border); }
-  .en-head-row > th { justify-content: flex-start; text-align: left; white-space: normal; border-bottom: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); }
-  .en-head-row .ak-term { white-space: nowrap; }
+  /* 压回桌面的两条：段间线画在下一段字段格的上边（这里由 tbody 的上边画；不压掉的话下面两段的字段格每行多一条，左半边横线成了 2px）；
+   * 每行第一格不画左线（值行的第一格转置后在第 2 列，左边挨着字段格，要线） */
+  .en-band + .en-band .en-head-row > th { border-top: 0; }
+  .en-stats tr > td:first-child { border-left: 1px solid var(--ak-border); }
+  .en-head-row > th { display: block; align-content: center; text-align: left; white-space: normal; border-bottom: 1px solid var(--ak-border); font-size: var(--ak-fs-xs); }   /* 字段格是块：问号跟在字后面一起折行（flex 会把文字和问号拆成两项，问号被挤到格子右边） */
   /* 属性前两段：第 1、2 个字段一行，3、4 一行，5、6 一行；奇数在左半、偶数在右半 */
   .en-band tr > :nth-child(1), .en-band tr > :nth-child(2) { grid-row: 1; }
   .en-band tr > :nth-child(3), .en-band tr > :nth-child(4) { grid-row: 2; }
@@ -181,7 +186,7 @@ body.skin-arknights .enemy-info-common, body.skin-arknights .prts-enemy-level-ta
   .en-stats td.en-wide > .en-res { flex: none; white-space: nowrap; }
   .en-stats td.en-wide > .en-res--extra { flex: 1 1 100%; white-space: normal; }
   .en-sp__n { min-width: 0; }
-  .en-caption { display: block; }
+  .en-stats > .en-caption { display: block; }   /* 只给已转成 block 的级别信息 / 属性表；技能表还是表格，caption 成了 block 会掉进表框里（带上表的边框和底色） */
   .en-info td.en-desc-cell { width: auto; min-width: 0; }
   .en-grade { font-size: 12px; padding-top: 3px; }
   .en-skills th[scope="row"], .en-skills td { display: block; width: auto; }
