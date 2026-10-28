@@ -19,9 +19,9 @@
 - **方舟的形状语言**：直角、色条、斜纹、半调网点、角标三角、黑白反转、大写拉丁字；不做圆角，不做辉光。
 - **终端 / 档案双主题**：走 MediaWiki 1.43 的 clientPrefs 机制，Codex 令牌桥接到 `--ak-*`。
 
-## 包
+## NPM 发布包
 
-| 包 | 说明 |
+| 包名 | 说明 |
 |---|---|
 | [`@mooncellwiki/prts-design-tokens`](https://www.npmjs.com/package/@mooncellwiki/prts-design-tokens) | 令牌源（W3C DTCG），生成 CSS 变量与 `tokens.json` |
 | [`@mooncellwiki/prts-design-css`](https://www.npmjs.com/package/@mooncellwiki/prts-design-css) | CSS 实现，框架无关；默认入口 `standalone.css`，不含字体与游戏素材 |
