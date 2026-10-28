@@ -1,133 +1,83 @@
-# PRTS Design · 明日方舟网页设计系统（for prts.wiki 新皮肤）
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.png">
+    <img alt="PRTS Design · 明日方舟网页设计系统" src=".github/assets/banner-light.png">
+  </picture>
+</p>
 
-> 明日方舟网页设计系统——令牌 → 组件 → 模式分层，视觉母体为 [明日方舟官网](https://ak.hypergryph.com/) 与游戏内 UI（torappu 解包），目标是 prts.wiki（MediaWiki 1.43）的新皮肤。
+<p align="center">
+  <a href="https://mooncellwiki.github.io/prts-design/">文档站</a> ·
+  <a href="https://mooncellwiki.github.io/prts-design/storybook/">Storybook</a> ·
+  <a href="https://mooncellwiki.github.io/prts-design/patterns/">整页样例</a>
+</p>
 
-## 在线预览
+# PRTS Design
 
-GitHub Pages（`master` 推送后由 `.github/workflows/pages.yml` 构建部署，`scripts/build-site.sh` 组装；e2e 是单独的 `.github/workflows/e2e.yml`，不挡部署）：
+明日方舟网页设计系统，为 [prts.wiki](https://prts.wiki/) 的新皮肤而做。视觉取自[明日方舟官网](https://ak.hypergryph.com/)与游戏内 UI，分 令牌 → CSS → Vue 三层实现。
 
-- **文档站**（参考 [primer.style](https://primer.style/)，VitePress，`site/`）：https://mooncellwiki.github.io/prts-design/ ——
-  入门（含 MediaWiki 接入：模块与层序 / skin.mustache 结构 / 模板与 TemplateStyles / 迁移与上线）· 基础（令牌表由 `packages/tokens/tokens.json` 生成：设计理念 / 色彩 / 字体 / 尺寸 / 装饰语言 / 图标 / 可访问性）· 组件（页头列出 CSS / Vue 两种实现各自的状态、源码、Storybook、现网模板；
-  概览 / 指南 / 可访问性 三个页签；每个示例在 iframe 里跑全套样式，带「Vue」源码与「HTML」结构两个页签——HTML 就是 Vue 组件实际渲染出的结构，模板照着输出即可；Props 表由组件的 TS 类型自动生成；CSS 类名表直接从样式表抽取）· 整页样例
-- **Storybook**（Vue 组件工作台 + 整页样例，工具栏切 终端 / 档案 / 跟随系统、示例活动主题，以及宿主 Arknights 皮肤 / Vector 2022 / 站外）：https://mooncellwiki.github.io/prts-design/storybook/
-  文档站也收录两层纯 CSS：[MediaWiki 内容样式](https://mooncellwiki.github.io/prts-design/content/)（L1，编辑写的 wikitext / MW 生成的 HTML）与 [皮肤骨架](https://mooncellwiki.github.io/prts-design/chrome/)（L2，页眉 / 侧栏 / 目录 / 主题接口）。
-  原来运行在皮肤骨架里的 5 张展示页（基础 / 皮肤骨架 / MediaWiki 内容 / 通用组件 / 方舟组件）已退役，内容都在文档站；旧地址（`/components.html`、`/preview/components.html` …）留了跳转页。
-- 首页设计稿（信息结构取自 prts.wiki 现网首页；Swiper 自动轮播，一张横幅 + 左右箭头、收窄到横幅宽居中，进度长在说明栏右端指示条的当前格里；手机（≤639）上入口网格一行 4 格、图标在上字在下（图标收到 36px、格高 64px）；今日信息收成「时间条一行 + 今日开放小格 + 未来七天排期折叠」，各宽度都紧跟入口网格、在亮点干员前面；页面只管自己——各区块样式在页面的 `<style>` 里，对应生产环境的 TemplateStyles，整页标 `ak-not-prose`，正文排版规则不进组件，见文档站 /foundations/principles#prose-not-prose；去标题 / 去目录 / 去白纸归皮肤，Skin:Arknights 已内置，站点不用写 `MediaWiki:Common.css`，见文档站 /patterns/home#页面与皮肤的分工）：https://mooncellwiki.github.io/prts-design/preview/home.html
-- 干员页整页样例（陈；信息结构 1:1 取自 prts.wiki 现网「陈」页面的 19 个章节——异格一览 / 干员信息 / 特性 / 获得方式 / 属性（含属性计算器 + 模组选择）/ 攻击范围 / 天赋（潜能 · 算法开关）/ 潜能提升 / 技能 / 后勤技能 / 精英化材料 / 技能升级材料 / 模组 / 相关道具 / 干员档案 / 语音记录 / 干员密录 / 悖论模拟 / 干员异格任务 / 干员模型（= 现网 SpineViewer 换新排布：时装 / 模型选择条 + 随列宽的正方形舞台（= 导出画幅）+ 一行一个的动作列表 + 标出判定帧的时间轴 + 导出 PNG / WebM / GIF，真的从 torappu.prts.wiki 取模型来播，运行时快照在 `preview/vendor/spine/`、GIF 编码器在 `preview/vendor/gifenc/`，见文档站 /patterns/operator#干员模型）；顶部「干员信息」**= 现网 `{{CharinfoV2}}` Widget 原样**——DOM / CSS / JS 一字不改（静态文件钉版本抓成快照 `preview/vendor/charinfo/`，`scripts/fetch-charinfo.py`；立绘 / 场景 / BGM / 语音运行时从现网拉，试听语音 · BGM · 时装 / 场景抽屉 · 看图 / 全屏都是现网的行为），页面只加几条接缝规则（正文列窄时整块 zoom、全屏层 z-index），先把现网的动效 / 文本排布 / 小交互原样看全，再定换皮范围（`packages/css/src/charinfo.css` 那份皮肤化样式表暂不接入）；其余章节 = 现网各模板 → 设计系统组件的映射，见文档站 /patterns/operator）：https://mooncellwiki.github.io/prts-design/preview/operator.html
-- 干员一览整页样例（列表 / 筛选页；信息结构取自 prts.wiki 现网「干员一览」= prts-widgets 的 CharList Widget：两条提示 / 三组筛选 / 排序 · 搜索 · 满潜能 · 满信赖 / 表格 · 半身像 · 头像三种显示方式 / 复制短链接 · 分页；筛选项、431 位干员的数据、筛选逻辑、地址栏 # 参数都与现网一致——数据是现网页面的快照 `preview/vendor/charlist/data.js`（`scripts/fetch-charlist.ts`），头像 / 半身像运行时从现网拉；筛选分两层（常用的职业 / 稀有度 · 位置一直在，分支选了职业才出，其余 12 行收进「高级筛选」按五类分页签）、职业 / 分支带游戏筛选面板的白线稿图标、会筛出 0 条的芯片压淡、八项数值各占一列可排序（排序项与同值次序照游戏的 `CharacterSortType` / `COMPARE_PRIORITY`）、结果区 <1000 换卡片，见文档站 /patterns/operators）：https://mooncellwiki.github.io/prts-design/preview/operators.html
-- 敌人一览整页样例（列表 / 筛选页；现网「敌人一览」= prts-widgets 的 EnemiesListV2 Widget 换成干员一览那套排布：筛选对着游戏敌人图鉴的五组（地位 · 行动方式 / 种类 / 攻击方式 · 伤害类型，行内「或」、行间「且」，照 `EnemyHandbookShuffleViewModel`）+ 默认收起的属性筛选（八项属性 SS … E，芯片悬停给出这一档的数值范围，取自 `enemy_handbook_table.levelInfoList`）/ 搜索 · 排序（图鉴顺序 / 名称 / 八项属性）· 表格 / 头像两种显示方式 / 已选条件 · 复制链接 · 分页；头像是方图、图鉴编号叠在左上角（同游戏图鉴的格子），地位看侧边色条；能力一行一条，尖括号里的名字不再被当成标签吞掉；1710 个敌人的数据是现网那份 JSON 的快照 `preview/vendor/enemies/data.js`（`scripts/fetch-enemies.ts`），头像运行时从现网拉，见文档站 /patterns/enemies）：https://mooncellwiki.github.io/prts-design/preview/enemies.html
-- 道具一览整页样例（第二张列表 / 筛选页；现网「道具一览」= prts-widgets 的 ItemList Widget 换成干员一览那套排布：一条提示 / 三行筛选芯片（分类按游戏仓库的页签分四组、稀有度是底框颜色的圆环、点了也不会多出道具的芯片压淡、手机上收成一枚「筛选」钮）/ 搜索 · 排序（仓库顺序照游戏的 `ItemRepoUtil.GetCurrentItemList` / 稀有度）· 图标 / 列表两种显示方式 / 已选条件 · 复制链接 · 分页；1392 件道具的数据是现网页面的快照 `preview/vendor/itemlist/data.js`（`scripts/fetch-itemlist.ts`），图标运行时从现网拉；「其他」改成真正的兜底、状态写进地址栏 # 参数，见文档站 /patterns/items）：https://mooncellwiki.github.io/prts-design/preview/items.html
-- 后勤技能一览整页样例（列表 / 筛选页；现网「后勤技能一览」不是 Widget，是 `{{后勤技能信息/store}}` 的 Cargo 输出——10 个设施各一张默认折叠的 wikitable（图标 / 名称 / 描述 / 持有干员），没有搜索和筛选；换成干员一览那套排布，数据改从游戏的 `building_data` 来（现网那张表本来就是它的誊抄，游戏里还多着设施次序 / `sortId` / 作用对象 / 效率 / 技能名条的底色 / 按精英阶段替换的技能链）：五行筛选芯片（设施带游戏进驻面板的白色线稿、作用对象只在选了制造站 / 加工站 / 训练室时出且只约束自己那个设施、解锁阶段、干员稀有度 / 干员职业——后三行看持有者，不符合的持有者压淡不藏）/ 搜索（技能名 · 描述 · 干员名，命中高亮）· 排序（游戏顺序 / 效率 / 持有人数 / 技能名）· 技能 / 干员两种显示方式 / 已选条件 · 复制链接 · 分页；技能视图按设施分组吸顶、一行 = 技能名条底色的方砖 + 名字 · 替换关系 · 描述 + 持有干员 = 设计系统的干员卡（同首页亮点干员：职业左上 / 星级右下；解锁条件写在行里，持有者条件不同的按条件分段；超过 10 位收起）；干员视图一张卡一位干员（同一张干员卡头像）、两个技能槽各列技能链；设施色亮色用游戏技能名条的 `buffColor`、暗色用进驻面板光环色 `buff_image_config`；763 条技能、432 位干员的数据是游戏数据的快照 `preview/vendor/riic/data.js`（`scripts/build-riic-data.py` 从 torappu 解包的 gamedata 生成，描述的富文本与术语在生成时转成 HTML），图标 / 头像运行时从 torappu.prts.wiki 取，见文档站 /patterns/riic）：https://mooncellwiki.github.io/prts-design/preview/riic.html
-- 公招计算整页样例（工具页；现网「公招计算」= prts-widgets 的 HrCalculator Widget 的重新设计，算法口径照游戏的招募流程改：标签个数不限、次序对齐游戏招募页 / 不选招募时限：带齐标签的 1–5★ 都列（6★ 只随【高级资深干员】），保底按 9:00 算（只看 3★ 以上）/ 每组至多 3 个标签、按「保底几星」分层、不保底的那层默认收起 / 没选标签时是全部保底组合的速查；干员数据是现网 Widget 那条 cargoquery 的快照 `preview/vendor/recruit/data.js`（`scripts/fetch-recruit.ts`），地址栏 `?filter=` 与现网互通，见文档站 /patterns/recruit）：https://mooncellwiki.github.io/prts-design/preview/recruit.html
-- 资源库 ak-asset-storage 设计稿（站外工具页：torappu.prts.wiki 的前端换成设计系统；不在皮肤骨架里、用独立的 `preview/_src/app-skeleton.html`——页眉放五个入口（官网导航栏的黑底 + 青色当前项），版本 / 变更 / 清单 / 文件 / 剧情资源五页 + 搜索面板打开态 + 中间态样例，页面只写排布 `preview/assets/asset-storage.css`、组件全是 `.ak-*`，数据是线上实例的真实返回，见文档站 /patterns/asset-storage）：https://mooncellwiki.github.io/prts-design/preview/akas-versions.html
-- 关卡页「敌方情报」单页设计稿（A-3 最后的炎魔；只画这一节，现网 `模板:敌方情报` 那张表的重新设计：头像 / 名称 / 地位 / 级别合成「敌人」一列，十一项数值分三组、四字表头在 `<wbr>` 处折成两行，头像外壳定宽 50px（现网在新皮肤下被挤到 27px），精英 / 领袖左缘色条 + 标签、级别不为 0 才出标签，本关改过的数值用强调色 + 角标 + 图例（现网的 #2F2F2F 深底在暗色主题下看不出），0 压淡；视口 <900 一个敌人一张卡、4 列属性格对上三组。样式写在页面的 `<style>` 里，对应生产环境的 `模板:敌方情报/styles.css`，只用 TemplateStyles 认的写法（没有 @container）；结构是 wikitext 能写出来的、表头行在 tbody 里（没跑 tablesorter 的样子））：https://mooncellwiki.github.io/prts-design/preview/stage.html
-- 敌人页设计稿（现网 `模板:敌人信息/common2` + `敌人信息/levelcontent`（1832 个敌人页）2026-10 那版卡片的重新设计，敌人模型一节不画；结构与样式同线上落地版 prts-skin-migration 的 `模块:EnemyPage` / `微件:EnemyPage`——**页面正文不动**：编辑写的「级别N」章节保留，每一级的章节下依次是这一级的「级别信息」「属性」「技能与天赋」三张表，表里没有级别列）。**两份数据，两个地方**：图鉴（common2 = 游戏【敌方档案库】那份：描述 / 种类 / 地位级别 / 攻击性 / 行动方式 / 能力 / 登场活动）在页顶的图鉴卡里只写一次，标签照图鉴的叫法（攻击性 = 攻击方式 + 伤害类型），出场关卡 / 相关敌人留在卡里、紧跟能力（无框的键值，出场关卡一行一串、超过 12 个先收起）；每级的「级别信息」（levelcontent = 关卡内「敌方情报」那份：名称 / 地位 / 种类 / 攻击方式 / 行动方式 / 描述）在这一级的章节里——两份常不一样（圆仔 / 源石虫的图鉴描述一整段、级别描述只一句；杜卡雷图鉴「远程」、第一形态「近战 远程」）。**组**：同一敌人的若干级别（`index=0` 或 `reindex=true` 起新组）；组里第一级以后的各级，与第一级不同的值出强调色 + 角标、变了的冷却 / 技力芯片带角标且气泡给第一级的值、新出现的技能带「新增」，文中变了的数值（现网 `{{变动数值}}`）画成淡青底 + ▲ / ▼ / ●（不染青：正文里青字 = 链接）；矢量突破的 Rank 页、入梦砖、血魔大君这类几个不同敌人合写一页的，各级各在自己的章节里，组间不比。**表**：「级别信息」是文字表；「属性」三张叠起来的表、同原版 wikitable 的 6 列网格（标签行压在值行上；wikitext 不认 `<tbody>`，三张表 table-layout: fixed 同宽、列照样对齐），评级字母是压淡的展示字落在格子左上角、不占行内（仍是按钮，点开分档阈值弹窗；各档同一灰度），0 / — 压淡；「技能与天赋」同原版的两列表（名称 + 写明「初始冷却 / 冷却 / 技力」的 SP 芯片 ‖ 效果），天赋与能力是最后一行，只有天赋时标题直接写「天赋与能力」、表里直接是正文，都没有时写「该敌人没有技能与天赋。」；级别描述里的关键词（游戏「敌方情报」的 `{{color|#00FFFF|…}}`，原本画在深色底上）改画成设计系统的富文本关键词色 `--ak-rt-kw`。**悬停说明一律走现网的 mc-tooltips**（`.mc-tooltips`，同 `{{Popup}}` / `{{术语}}` 的输出；样例页加载现网 Tooltip.js 的快照 `preview/vendor/tooltip/`，tippy 挂到 body 上、日间 light-border / 夜间 dark-border，不会被表格的横滑容器裁掉）：「技能与天赋」后的问号就是一个 `{{Popup}}`（mdi help-circle-outline、颜色 var(--darkblue)，样例页加载同版 mdi 的子集 `preview/vendor/mdi/`；悬停 / 聚焦 / 点击出读法说明、点一下钉住），表头的攻击方式 / 攻击半径 / 基础嘲讽等级 / 目标价值同现网 `{{popup}}` 点一下钉住，评级字母、技力回复方式、变了的芯片、文中术语悬停出说明；与第一级不同的格子不带气泡（角标已经说明了）。手机上每张表用 grid 转置成「字段 | 值 | 字段 | 值」两列、不横滑（属性的数值两两并排、3 行排完，杂项段与级别信息的名称 / 描述各占一整行，数值靠右；级别信息的文字格是块，正文和关键词不会被拆成几列；表格不跟着整行悬停变底色），技能名与芯片一行，能力列表横跨头像下方。样式 `preview/assets/enemy-page.css` 与线上 `微件:EnemyPage` 是同一份规则（线上不放 TemplateStyles：css-sanitizer 只让 var() 用在颜色里、不认 --x: 声明 / :is() / :focus-visible），脚本 `preview/assets/enemy-page.js`（评级阈值弹窗）。六页只画线上会有的部分：圣徒瓦列里奥（两级、技能 + 天赋）：https://mooncellwiki.github.io/prts-design/preview/enemy.html　源石虫（普通敌人，没有技能与天赋）`preview/enemy-slug.html`：https://mooncellwiki.github.io/prts-design/preview/enemy-slug.html　“弹跳独轮车”（只有一级、只有天赋、级别描述带关键词；标记取自线上模块的输出）`preview/enemy-unicycle.html`：https://mooncellwiki.github.io/prts-design/preview/enemy-unicycle.html　合页样例“Touch”，再生之流（三个 RANK 各一级、各在自己的章节里，技能绑定形态写在名字下）`preview/enemy-touch.html`：https://mooncellwiki.github.io/prts-design/preview/enemy-touch.html　“Misery”，静默之刃（三个 Rank 是三份独立图鉴，编辑写在每级天赋开头的 ※ 说明照原样留在天赋里）`preview/enemy-misery.html`：https://mooncellwiki.github.io/prts-design/preview/enemy-misery.html　杜卡雷，“君主之红”（两个形态各有级别 0 / 1：「第一形态 > 级别0 / 级别1」，组内比、组间不比；第二形态是非常规敌人）`preview/enemy-dukare.html`：https://mooncellwiki.github.io/prts-design/preview/enemy-dukare.html
+- **黑白为体、青为用**：大面积黑 / 白 / 灰，青只做选中、链接与主动作；黄是次强调，红只表示危险。
+- **方舟的形状语言**：直角、色条、斜纹、半调网点、角标三角、黑白反转、大写拉丁字；不做圆角，不做辉光。
+- **终端 / 档案双主题**：走 MediaWiki 1.43 的 clientPrefs 机制，Codex 令牌桥接到 `--ak-*`。
 
-本地预览站（十三张整页样例，运行在皮肤骨架里）：直接打开 `preview/home.html` / `preview/operators.html` / `preview/enemies.html` / `preview/items.html` / `preview/riic.html` / `preview/recruit.html` / `preview/operator.html` / `preview/stage.html` / `preview/enemy.html` / `preview/enemy-slug.html` / `preview/enemy-touch.html` / `preview/enemy-misery.html` / `preview/enemy-dukare.html`（右上角切换 终端(暗) / 档案(亮) / 跟随系统；页眉在两套主题下都是黑色「终端」顶栏——官网导航栏 / 游戏主界面顶栏 / 档案页顶部黑边的框架语言，配色只读 `--ak-chrome-*`；侧栏「示例活动主题」按钮（或 `?demo=1`）演示大活换皮：头图 / 站标 / 活动主色 / 画布底纹 / 页眉玻璃透度全部只是覆盖 `tokens.css §2d` 的接口变量，见 `packages/css/src/chrome/demo-theme.css`——头图从页面顶端铺起、垫在页眉与版面背后、只露一小条，页眉是压在它上面的一块均匀黑玻璃，版面压住的那段先糊（`--ak-keyart-veil-filter`）再蒙一层画布色的纱，可读性由玻璃和纱保证、不赌画面；页眉不放站点级主导航——那 8 项与侧栏「通用」组重复，导航只由侧栏承担；页眉在所有宽度都只有一行、始终贴顶：桌面是与正文三列对齐的 品牌 · 搜索 · 工具（阅读设置的眼镜 · 通知 · 用户；外观三态收在眼镜拉下的面板里），窗口 <1120 时最左多出 » 菜单、阅读设置 / 通知 / 用户收进右上角 ⋮ 拉下的卡片，手机（≤639）上全是图标：» 菜单 · 品牌 · 目录 · 搜索 · ⋮）。预览侧栏使用 prts.wiki 现网 `#MenuSidebar` 的真实结构（分组 → 分组项 → 子项，可多层），悬停可预览、点击展开并记忆。搜索是参考 Citizen（starcitizen.tools）的悬浮面板：点页眉搜索框或按 `/`、`⌘K` 打开，试试 `陈`、`yh`（拼音首字母）、`>`（动作）、`/`（命令列表）。另有跨宿主对照页 `preview/gallery.html`（不在侧栏里）：同一份组件 HTML 按 `?host=akds|vector|bare` 放进 Arknights 皮肤 / Vector 2022 / 站外三种页面，`?theme=` 切主题（Vector 那一种要先 `node scripts/fetch-vector-css.ts`）。
+## 包
 
-本地文档站 / Storybook：`pnpm install` 后 `pnpm dev:docs`、`pnpm storybook`（见下「重新生成」）。
-
-## 目录
-
-分层同 [Primer](https://github.com/primer)：令牌（≈ primer/primitives）→ CSS 实现（≈ primer/css）→ Vue 实现（≈ primer/react）→ 文档站（≈ primer.style），放在一个 pnpm workspace 里。前三层在 `packages/` 下，都发 npm（scope `@mooncellwiki`；CSS 包只含代码，不含字体与游戏素材——皮肤全套在仓库里），文档站 / Storybook / 预览站 / 皮肤是根目录下的应用。
-
-```
-packages/tokens/    @mooncellwiki/prts-design-tokens 令牌源（≈ primer/primitives）：src/**/*.json5（W3C DTCG 格式；base/ 原始色板 · 字体 · 尺寸 · 动效 · 层级，functional/ themes/light · dark · contrast-more 语义令牌 + chrome 页眉 / 头图 / 画布主题接口 + control，bridge/codex MediaWiki Codex 桥接）
-                    build.ts（Style Dictionary）→ packages/css/src/tokens.css（按原选择器结构输出：亮 :root / 暗 data-theme · clientpref-night / 跟随系统 @media 同一份源 / 局部主题 .ak-scope[data-theme] / 高对比；同一份复制到 packages/tokens/tokens.css 随令牌包发布）+ bridge-codex.css（Codex 桥接）+ tokens.json（每个令牌带 CSS 写法与亮 / 暗解析值，文档站读它）
-packages/css/src/   CSS 实现（≈ primer/css；npm 包 @mooncellwiki/prts-design-css 只发代码——字体 fonts/ 与素材 img/ 不在包里），每个组件一份样式表；index.css 与各层 index.css 的 @import 顺序 = 唯一的加载顺序
-  fonts.css         自托管 web 字体的 @font-face（scripts/fetch-fonts.py 生成；最先加载）
-  fonts/            woff2 + 各族 LICENSE / NOTICE：Novecento Sans Wide 500–800（500–700 为完整字形，800 为官网同源 ASCII 子集）· 官网同源 Bender 400/700（ASCII 子集）——来源见 NOTICE.md；OFL 的 Noto Sans SC 可变字重（101 片）· Oswald VF · Chakra Petch 400–700 · JetBrains Mono VF（合计 ≈4.9MB）
-  img/              CSS 引用的游戏素材（item/bg_1–6.png 道具稀有度底框 = prts.wiki 文件:道具_背景_N.png，即游戏 sprite_item_r1–r6，给 .ak-item--bare 裸图标叠框用，经 base/skin-assets.css 的变量引；scripts/fetch-item-bg.py 抓取；NOTICE.md）
-  tokens.css        生成物（pnpm tokens）：令牌 + 双主题 + 局部主题 + 页眉/头图/画布主题接口（§2d）；任何宿主都能加载
-  bridge-codex.css  生成物（pnpm tokens）：Codex/MW 令牌桥接——只属于皮肤（加载到别的皮肤上会改掉宿主的 Codex 配色）
-  scope.css         作用域根：排版基线挂在 body.skin-arknights / .ak-scope 上；别的宿主上把宿主的继承属性 / 元素规则 / 裸控件 / 链接色换成皮肤上那一套（Vue：<AkScope>）
-  base/             L1 MediaWiki 内容：root（html / body 基底）· skin-assets（皮肤持有的素材接口 --ak-item-bg-*，由 index.css 直接引；放在 base/ 这一层是因为 Chromium 按使用处解析自定义属性里的相对 url()）· typography（正文排版，带 prose / not-prose 作用域，见文档站 /foundations/principles#prose-not-prose）· tables · media · toc · collapsible · sections（章节折叠）· references · notices · catlinks · tabber · forms（裸控件）· special-pages · print
-  components/       L3 通用组件：button · tag · chip · badge · card · panel · heading · tabs · seg · message · cbox · tooltip · dropdown · dialog · toast · progress · stat · skeleton · spinner · empty · avatar · breadcrumb · pagination · timeline · stepper · form · table · accordion · divider · fab · title-reset · keyframes
-  decor/            L4 方舟装饰语言（色条/斜纹/网点/角标/线稿/反转/拉丁字…）
-  arknights/        L4 游戏数据组件（稀有度/职业/精英化/潜能/干员卡/道具/技能（卡 + 全等级表 + 参数矩阵）/天赋条件表/属性/键值表/攻击范围/模组/语音/档案/关卡/敌人/活动…；table-numerals（B99）最后）
-  chrome/           L2 皮肤骨架：黑色页眉/头图 .ak-keyart/侧栏（含多层树 + 悬停飞出）/页面头/TOC/阅读设置 prefs（页眉眼镜图标 + 特殊页面 Special:ReadingPreferences：章节 / 字号）/搜索面板/页脚/responsive（各块断点，最后）；demo-theme.css = 示例活动主题（只覆盖接口变量，不进 index.css）
-  utilities.css     工具类（含 .ak-sr-only）
-  forced-colors.css 强制色模式（Windows 高对比度；组件层最后）
-  index.css         皮肤全套的汇总入口（按层 @import；chrome 最后）
-  standalone.css    组件入口（npm 包的默认入口；别的皮肤 / 站外用）：tokens + scope + components + decor + arknights + utilities + forced-colors，是 index.css 的子序列
-  charinfo.css      干员页「干员信息」舞台的皮肤化样式表草案（**预览页目前不接入**，见 preview/vendor/charinfo/ 与文档站 /patterns/operator#charinfov2-怎么接）
-  sidebar-tree.js   侧栏多层导航增强（皮肤与预览共用）
-  client-prefs.js   阅读设置（章节 / 字号）偏好读写 + 分段开关（皮肤与预览共用）
-  sections.js       章节折叠：顶层 h2 一节一开关（同 Minerva / MobileFrontend；皮肤与预览共用）
-  search-palette.js 悬浮搜索面板核心（数据源由调用方注入，皮肤与预览共用）
-packages/vue/       @mooncellwiki/prts-design-vue Vue 3 实现（≈ primer/react；pnpm build 出 dist/：Vite 库模式 JS + vue-tsc 类型）：src/components/<Name>/{Ak<Name>.vue, Ak<Name>.stories.ts, demos/*.vue}（demos 由 Storybook 与文档站共用）· src/icons.ts（界面线稿图标，= 骨架 sprite）· src/index.ts。组件只输出 .ak-* 结构 + 状态 / 键盘 / ARIA，不带样式
-.storybook/         Storybook 10（@storybook/vue3-vite）：pages/ 整页样例 stories；主题 / 活动主题 / 宿主（Arknights 皮肤 / Vector 2022 / 站外）工具栏，组件包在 .ak-scope（+ 宿主的正文容器类）里渲染；preview/ 挂到 /preview/
-site/               文档站（≈ primer.style，VitePress）：.vitepress/registry.ts 组件注册表（侧栏 / 总览 / 页头都读它）· plugins/（`@demo X/Y` 示例、```html demo 代码块、vue-component-meta → Props 表）· theme/；public/ 链着 preview/ 与 src/
-skin/               MediaWiki 皮肤骨架：skin.json（样式模块 skins.akds.base / components / fonts / shell 进皮肤的 styles——MW 按模块名字母序输出，字母序即层序；另有只给别的皮肤用的 skins.akds.tokens；逐文件列表由 scripts/css-order.ts 从 packages/css/src/index.css 同步）· templates/skin.mustache · resources/skin.js + search-providers.js（MW 搜索数据源）（base/ components/ decor/ arknights/ chrome/ fonts/ img/ 与 tokens.css、bridge-codex.css、scope.css、utilities.css、共用 JS 为 src 的符号链接）· i18n
-preview/            预览站（home / operators / enemies / items / riic / recruit / operator / stage / enemy（+ enemy-slug 普通敌人 + enemy-unicycle 单级样例 + enemy-touch / enemy-misery / enemy-dukare 三张合页样例）/ prefs 十四张整页样例 + gallery 跨宿主对照页（?host=akds|vector|bare，骨架是 _src/gallery-skeleton.html），scripts/build-preview.py 从 _src/ 生成：_src/skeleton.html 皮肤骨架只写一份 + _src/pages/*.html 各页 front matter + 正文；改源文件再重跑，别直接改生成物）+ preview.js + search-mock.js + assets/（torappu 解包的游戏图标 / 现网拼好的道具图 item/framed/ / 头图 keyart/ / 首页素材 mainpage/ / 页脚徽章 badge/ / 模组图 module/ …）+ vendor/（Swiper 11、现网 Widget:CharinfoV2 快照、现网干员一览数据快照 charlist/、现网敌人一览数据快照 enemies/、现网道具一览数据快照 itemlist/、现网公招计算数据快照 recruit/、游戏后勤技能数据快照 riic/、prts-widgets 的 Spine 运行时 spine/、现网 mc-tooltips 脚本 tooltip/（prts-widgets 的 Tooltip 入口）、现网同版 Material Design Icons 的子集 mdi/、jQuery 3.7.1，各见其 NOTICE.md；vector/ 是 Vector 2022 样式夹具，脚本抓取，入库只作回归测试、不随站点发布）
-scripts/            fetch-*.py（字体 / 道具图 / 底框 / Widget 快照）· fetch-vector-css.ts（Vector 2022 样式夹具）· fetch-charlist.ts（现网干员一览数据快照）· fetch-enemies.ts（现网敌人一览数据快照）· fetch-itemlist.ts（现网道具一览数据快照） · build-riic-data.py（游戏数据 → 后勤技能一览数据快照）· fetch-recruit.ts（现网公招计算数据快照）· fetch-spine.ts（Spine 运行时）· fetch-tooltip.ts（现网 mc-tooltips 脚本）· fetch-mdi.py（现网同版 mdi 的子集）· fetch-gifenc.ts（GIF 编码器）· build-preview.py（_src → preview/*.html）· build-site.sh（组装 Pages 站点）· css-order.ts（skin.json ↔ index.css 同序，按 MW 的字母序加载核；scope.css 的裸控件副本 ↔ base/forms.css）· sprite-sync.ts（三处图标 sprite 一致）
-e2e/                Playwright Test（playwright.config.ts）：hosts.spec.ts 跨宿主比对 · snapshots.spec.ts 整页计算样式快照 · stories.spec.ts Storybook 每个 story 自检（测 _build/storybook）· support/（静态服务、计算样式快照、控制台收集）
-```
-
-## 三句话看懂这套系统
-
-1. **黑白为体、青为用**：大面积黑/白/灰；青 `#18D1FF`（官网，暗色主题）/ `#0098DC`（游戏内，亮色主题）只做选中、链接、主动作与强调条；黄 `#FFD800` 为次强调；红只表示危险/NEW。
-2. **直角、斜纹、半调网点、角标三角、黑白反转、大写拉丁装饰字、白色线稿图标**——这组几何装饰语言（`.ak-stripes .ak-halftone .ak-corner .ak-inverse .ak-en .ak-glyph`）就是方舟本体的形状语言：不做圆角，不做辉光，也没有切角 / 斜切 / 斜带（色条与细框用 border-image 直角拼接，不让 border 斜接出斜边）。
-3. **终端 / 档案双主题**是双正典（游戏本身就是双色 UI），走 MediaWiki 1.43 的 `skin-theme-clientpref-*` 机制，并把 Codex 令牌桥接到 `--ak-*`，核心/扩展 UI 自动跟随。
-
-## 颜色出处（可追溯）
-
-| 来源 | 取得的令牌 |
+| 包 | 说明 |
 |---|---|
-| 官网 CSS（`web.hycdn.cn/arknights/official/_next/static/css/*`） | `#18D1FF` 青、灰阶 `#1D1F20 #8D8D8D #D2D2D2`、字体 Novecento Sans Wide / Bender / Oswald / 思源黑体、标题左 8px 色条与短横条、右上三角 |
-| 游戏解包精灵（torappu：`ui/pages/home_page` `ui/character/*` `arts/*_hub` `arts/ui/hometheme/*` `arts/ui/homebackground/*` …） | 选中蓝 `#0098DC`、`#22BBFF`、开关 `#0075A9`、黄 `#FFD800`、SP 荧光绿 `#CAEC46`、红 `#A40000/#711111/#C82A36`、标准按钮灰 `#313131`、亮色面板 `#F5F5F5`、稀有度星/职业/精英/潜能/专精/势力图标；页眉的半调网点（`img_back` / `bkg_openserver`）、搜索触发器的图标框（`announce_title_on`）、选中块的青（`selected_back` / `toggle_on`）；示例头图 = 主界面「罗德岛 · 昼 / 夜」背景 |
-| gamedata（`gamedata_const.richTextStyles`、`sandbox_table.charRarityColorList`） | 富文本 `ba.vup #0098DC / ba.vdown #FF6237 / ba.rem #F49800 / ba.kw #00B0FF …`；稀有度 `#BABABA #D3DC35 #82C5F5 #BF96ED #EFD691 #FF9433` |
+| [`@mooncellwiki/prts-design-tokens`](https://www.npmjs.com/package/@mooncellwiki/prts-design-tokens) | 令牌源（W3C DTCG），生成 CSS 变量与 `tokens.json` |
+| [`@mooncellwiki/prts-design-css`](https://www.npmjs.com/package/@mooncellwiki/prts-design-css) | CSS 实现，框架无关；默认入口 `standalone.css`，不含字体与游戏素材 |
+| [`@mooncellwiki/prts-design-vue`](https://www.npmjs.com/package/@mooncellwiki/prts-design-vue) | Vue 3 组件，只输出 `.ak-*` 结构与交互，样式由宿主提供 |
 
 ## 使用
 
-- 皮肤全套（本地 / 预览）：`<link rel="stylesheet" href="packages/css/src/index.css">`（按层 @import；`fonts.css` 在最前）。
-- MediaWiki（生产）：prts.wiki 用的是 [mediawiki-skins-Arknights](https://github.com/MooncellWiki/mediawiki-skins-Arknights)（Skin:Arknights，`wfLoadSkin('Arknights')`）——它的 `scripts/sync-design-system.sh` 把 `packages/css/src/` 原样拷进自己的 `resources/design-system/`、按 `index.css` 的顺序写进 skin.json（模块 `skins.arknights.base / components / fonts / shell / tokens`，`chrome/` 整层进 `shell`），它自己的 LESS 只剩 MediaWiki 胶水。改 CSS 只在这里改，然后去那边重跑同步脚本。
-- MediaWiki（仓库内骨架 `skin/`，参考实现）：把 `skin/` 复制到 `skins/AKDS/`，`wfLoadSkin('AKDS')`；`resources/` 下的样式目录 / 文件是指向 `packages/css/src/` 的符号链接。skin.json 里样式模块逐文件列出（ResourceLoader 不跟 @import），顺序由 `node scripts/css-order.ts --write` 从 `packages/css/src/index.css` 同步。字体是独立模块 `skins.akds.fonts`，可整体关掉。详见文档站「在 MediaWiki 中使用」（/guide/mediawiki 及其下各页）。
-- 纯 HTML（静态页面 / 后端模板，不用打包器）：`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mooncellwiki/prts-design-css@0.1/dist/prts-design.min.css">`（单文件版，`pnpm build` 由 `packages/css/build.ts` 从 `standalone.css` 内联生成），根节点加 `class="ak-scope"`，结构照抄文档站「HTML」页签（文档站 /guide/html）。
-- 模板/TemplateStyles：直接输出 `.ak-*` 结构（文档站每个示例的「HTML」页签就是要输出的结构），令牌可在 TemplateStyles 中 `var(--ak-accent)` 引用。
-- Vue（prts-widgets 等）：`import { AkButton, AkScope, AkTabs } from "@mooncellwiki/prts-design-vue"`（`packages/vue/`）；组件不带样式，样式按宿主来，三种宿主上看起来一样（文档站 /guide/vue#样式从哪来）：
-  - prts.wiki · Arknights 皮肤：皮肤已加载全套，什么都不用做；
-  - prts.wiki · 其它皮肤（Vector 2022 …）：widget 挂载前 `await mw.loader.using(["skins.arknights.components"])`（Skin:Arknights 注册的模块，令牌 + 作用域 + 组件一个模块就齐；Arknights 皮肤上是空操作；仓库内 `skin/` 骨架里叫 `skins.akds.components`），根节点包 `<AkScope>`（= `class="ak-scope"`）；
-  - 站外：`import "@mooncellwiki/prts-design-css"`（= `standalone.css`，不含字体与素材），根节点包 `<AkScope>`；`<AkScope theme="dark|light">` 可局部固定主题。
+- **prts.wiki**：生产皮肤是 [Skin:Arknights](https://github.com/MooncellWiki/mediawiki-skins-Arknights)，它的 `scripts/sync-design-system.sh` 把 `packages/css/src/` 同步过去。CSS 只在本仓库改。见[在 MediaWiki 中使用](https://mooncellwiki.github.io/prts-design/guide/mediawiki)。
+- **纯 HTML**：引单文件版，根节点加 `class="ak-scope"`，结构照抄文档站示例的「HTML」页签。见[在纯 HTML 中使用](https://mooncellwiki.github.io/prts-design/guide/html)。
 
-## 重新生成
+  ```html
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mooncellwiki/prts-design-css@0.1/dist/prts-design.min.css">
+  ```
+
+- **Vue**：站外 `import "@mooncellwiki/prts-design-css"`，根节点包 `<AkScope>`；prts.wiki 上样式由皮肤加载，别的皮肤下先 `mw.loader.using`。见[在 Vue / prts-widgets 中使用](https://mooncellwiki.github.io/prts-design/guide/vue)。
+
+  ```ts
+  import { AkScope, AkButton } from "@mooncellwiki/prts-design-vue";
+  ```
+
+## 目录
+
+```
+packages/tokens/   令牌源 → tokens.css / tokens.json
+packages/css/      CSS 实现：base（MW 内容）· components · decor · arknights · chrome（皮肤骨架）
+packages/vue/      Vue 3 组件（示例与 Storybook 共用）
+site/              文档站（VitePress）
+.storybook/        Storybook
+preview/           整页样例（源文件在 _src/，scripts/build-preview.py 生成）
+skin/              MediaWiki 皮肤骨架（参考实现）
+scripts/           构建脚本、现网数据与第三方快照的抓取脚本
+e2e/               Playwright：跨宿主比对 · 计算样式快照 · Storybook 自检
+```
+
+完整结构与组件约定见[贡献一个组件](https://mooncellwiki.github.io/prts-design/guide/contributing)。
+
+## 开发
 
 ```bash
-pnpm install                                           # Node 24 + pnpm（版本见 package.json 的 packageManager）
-pnpm tokens                                            # packages/tokens/src/**/*.json5 → packages/css/src/tokens.css + bridge-codex.css + packages/tokens/tokens.css + tokens.json（CI 会检查是否最新）
-pnpm build                                             # 构建要发布的包：令牌 → CSS 单文件版 packages/css/dist/prts-design{,.min}.css → Vue packages/vue/dist/
-pnpm dev:docs                                              # 文档站开发（site/）
-pnpm storybook                                         # Storybook 开发（:6006）
-pnpm typecheck                                         # vue-tsc
-node scripts/css-order.ts [--write]                    # 检查 / 同步 skin/skin.json 的样式列表与 packages/css/src/index.css 同序
-pnpm exec playwright install --only-shell chromium     # e2e 的浏览器：Playwright 的 headless shell（装一次）
-node scripts/fetch-vector-css.ts                       # 现网 Vector 2022 的皮肤 + 扩展样式 → preview/vendor/vector/vector.css，站点自定义样式 → site.css（回归夹具，入库、不随站点发布；e2e 不出网、CI 不抓，现网 MW 升级或 Common.css 改了再本地重抓提交；prts.wiki 的 WAF 拦 curl / urllib 与 headless shell，所以用本机的 Google Chrome 取）
-pnpm e2e --project=hosts                               # 跨宿主：对照页 preview/gallery.html 在 Arknights 皮肤 / Vector 2022 / 站外 × 暗 / 亮 下逐元素比对（静态 + :hover / :focus-visible / :visited），组件的计算样式必须一样（白名单写在 e2e/hosts.spec.ts 里）；e2e.yml 每次推送 / PR 跑，不挡部署
-pnpm e2e --project=snapshots [-u]                      # 预览页每个元素（含伪元素）在 亮 / 暗 / 跟随系统 / 平板 / 手机 / 活动主题 下的计算样式快照：重构 CSS 前 -u 拍基准（_verify/snapshots/），改完再跑一遍比对，保证视觉零变化
-pnpm e2e --project=stories                             # Storybook 每个 story 渲染成功、控制台干净（测构建好的 _build/storybook，先 pnpm build:storybook；-g 按 story id 挑）
-pnpm exec playwright show-report                       # e2e 的 HTML 报告：失败的差异列表、截图、trace 都在附件里
-python3 scripts/fetch-fonts.py                         # 官网静态资源（Novecento 800 / Bender）+ npm 上的 Fontsource 包 → packages/css/src/fonts/ + fonts.css（URL / 版本钉死，官网 hash 变了会自动重新发现；Novecento 500–700 没有下载地址，用已落盘的；--registry https://registry.npmmirror.com 走镜像）
-python3 scripts/fetch-item-framed.py                   # 现网拼好的道具图 道具_带框_<名>.png → preview/assets/item/framed/<id>.png（扫各页用到的 id，manifest 查名，按文件名 md5 算 media 路径；已有的跳过，--force 重抓）
-python3 scripts/fetch-item-bg.py                       # 游戏道具稀有度底框（prts.wiki 文件:道具_背景_1–6.png，钉 media 路径）→ packages/css/src/img/item/bg_1–6.png（.ak-item--bare 用）
-python3 scripts/fetch-charinfo.py                      # 现网 Widget:CharinfoV2 的 CSS / JS / 字体 / HUD 图标 + jQuery → preview/vendor/{charinfo,jquery}/（版本号钉在脚本里；charVoice 只留 --chars 指定的干员）
-node scripts/fetch-spine.ts                            # prts-widgets 的 Spine 运行时（spine-webgl 3.8 + 修补，提交号钉在脚本里）→ preview/vendor/spine/spine-webgl.js（干员页样例的「干员模型」用；模型本身运行时从 torappu.prts.wiki 取）
-node scripts/fetch-tooltip.ts                          # 现网 mc-tooltips 脚本（static.prts.wiki/widgets/production/Tooltip.js，prts-widgets 的 Tooltip 入口，内含 tippy / Popper）→ preview/vendor/tooltip/Tooltip.js（敌人页样例的悬停说明用；只包一层立即执行函数，记下抓取日期与 SHA-256，现网换了就重跑）
-python3 scripts/fetch-mdi.py                           # Material Design Icons（@mdi/font，同现网 static.prts.wiki/mdi 的 7.4.47）→ preview/vendor/mdi/（只留样例页用到的 mdi-* 图标，fontTools 子集；不直接引 static.prts.wiki：那边只给 prts.wiki 回 CORS 头）
-node scripts/fetch-gifenc.ts                           # npm 上的 gifenc（同 prts-widgets 的版本，钉在脚本里）→ preview/vendor/gifenc/gifenc.js（「干员模型」导出 GIF 用，点了导出才加载）
-node scripts/fetch-charlist.ts                         # 现网「干员一览」正文里的筛选项定义 + 每位干员一条数据 → preview/vendor/charlist/data.js（干员一览样例的数据快照；同样用本机的 Google Chrome 取）
-node scripts/fetch-enemies.ts                          # 现网「敌人一览」Widget 运行时取的那份 JSON（敌人一览/数据：每个敌人一条）→ preview/vendor/enemies/data.js（敌人一览样例的数据快照；同样用本机的 Google Chrome 取）
-node scripts/fetch-itemlist.ts                         # 现网「道具一览」正文里每件道具一条的数据（#cargo-data）→ preview/vendor/itemlist/data.js（道具一览样例的数据快照；同样用本机的 Google Chrome 取）
-python3 scripts/build-riic-data.py --gamedata <dir>   # 游戏数据（torappu 解包的 gamedata 目录：excel/building_data.json · character_table.json · gamedata_const.json）→ preview/vendor/riic/data.js（后勤技能一览样例的数据快照：763 条技能 / 432 位干员，描述的富文本与术语提示在这里就转成 HTML）
-node scripts/fetch-recruit.ts                          # 现网「公招计算」Widget 运行时发的那条 cargoquery（可公开招募的干员）→ preview/vendor/recruit/data.js（公招计算样例的数据快照；同样用本机的 Google Chrome 取）
-python3 scripts/build-preview.py                       # preview/_src/{skeleton.html, gallery-skeleton.html, pages/*.html} → preview/*.html（改了骨架或任一页都要跑；页面 front matter 的 skeleton: 选骨架）
-pnpm build:site                                        # = bash scripts/build-site.sh _site：构建文档站 + Storybook 并组装 Pages 站点（本地自查：PRTS_DESIGN_BASE=/ pnpm build:site，python3 -m http.server -d _site）
+pnpm install        # Node 24 + pnpm
+pnpm dev:docs       # 文档站
+pnpm storybook      # Storybook（:6006）
+pnpm tokens         # 改了 packages/tokens/src/ 后重新生成令牌
+pnpm build          # 构建三个包
+pnpm typecheck
+pnpm e2e            # 先装一次浏览器：pnpm exec playwright install --only-shell chromium
 ```
+
+- 改了 `preview/_src/`：`python3 scripts/build-preview.py`
+- 改了 `packages/css/src/index.css` 的层序：`node scripts/css-order.ts --write`
+- `scripts/fetch-*` 抓现网数据与第三方快照，用法写在各脚本开头
 
 ## 发布
 
-`packages/` 下的三个公开包（`@mooncellwiki/prts-design-tokens`、`@mooncellwiki/prts-design-css`、`@mooncellwiki/prts-design-vue`，MIT）用同一个版本号，推 `v*` tag 由 `.github/workflows/release.yml` 发布（同 MooncellWiki/sponsorkit：sxzz/workflows 的 release，changelogithub 生成 GitHub Release，`pnpm -r publish` + OIDC trusted publishing，不存 npm token）：改三个 `package.json` 的 `version` → 提交 → `git tag vX.Y.Z` → `git push --follow-tags`。新包第一次需要有 `@mooncellwiki` 组织权限的人手动发布一次（`pnpm build && pnpm -r publish`），之后才能在 npm 上给它配 trusted publisher（Publisher 选 GitHub Actions，仓库 `MooncellWiki/prts-design`，workflow 填调用方的 `release.yml`，environment 留空）。`prts-design-css` 的 tarball 带构建出的 `dist/`（单文件版，给 CDN / 纯 HTML 用），不含 `fonts/`、`fonts.css`、`img/`、`base/skin-assets.css`、`charinfo.css`、`chrome/demo-theme.css`（`npm pack --dry-run` 可核）；默认入口是 `standalone.css`，包里的 `index.css` 引了字体与素材，不在 `exports` 里。
+三个包用同一个版本号：改 `packages/*/package.json` 的 `version` → 提交 → `git tag vX.Y.Z` → `git push --follow-tags`，由 `.github/workflows/release.yml` 发布到 npm。
 
-## 说明
+## 许可
 
-- 字体：预览与皮肤自托管全部 web 字体（`packages/css/src/fonts.css`），人人看到一致——展示字 **Novecento Sans Wide** 800、HUD 标签 / 数值 **Bender** 取自官网静态资源（官网发布的是 ASCII 子集，非 ASCII 字符逐字落到后一段），Novecento 500–700 是完整字形的文件（带 `lnum`：数字用大写高度的那一套）；正文 Noto Sans SC（= 思源黑体，Google 的 101 片切分、页面只下用到的片）、压缩字 Oswald、Chakra Petch（接 Bender 缺字）、等宽 JetBrains Mono 为 OFL。
-- **许可**：代码（令牌源与构建脚本、CSS、Vue 组件、文档站 / Storybook / 预览站的程序部分、scripts/）以 [MIT](LICENSE) 授权。其余内容不在 MIT 范围内、不对外授权：游戏素材（`preview/assets/`、`packages/css/src/img/` 等）版权归鹰角网络所有；字体按各自目录里的 NOTICE / LICENSE；现网 Widget 快照（`preview/vendor/charinfo/`）归 PRTS；现网干员一览 / 敌人一览 / 道具一览 / 公招计算数据快照（`preview/vendor/charlist/`、`preview/vendor/enemies/`、`preview/vendor/itemlist/`、`preview/vendor/recruit/`）文本按 CC BY-NC-SA 4.0、游戏数据归鹰角网络；后勤技能一览的数据快照（`preview/vendor/riic/`）整理自游戏数据，归鹰角网络；Spine 运行时（`preview/vendor/spine/`）归 Esoteric Software、按 Spine Runtimes License；GIF 编码器（`preview/vendor/gifenc/`）是 gifenc，归 Matt DesLauriers、按其 MIT 许可；现网 mc-tooltips 脚本（`preview/vendor/tooltip/`）是 prts-widgets 的打包产物（内含 tippy.js、Popper），均按其 MIT 许可；Material Design Icons 子集（`preview/vendor/mdi/`）按 Pictogrammers Free License（字体与图标 Apache-2.0）；Vector 2022 样式夹具（`preview/vendor/vector/`，Vector 与 MW 核心样式 GPL-2.0-or-later，站点自定义样式版权归 prts.wiki 编者）入库只作回归测试，不随站点发布；本仓库仅作 PRTS 皮肤设计用途。npm 包 `@mooncellwiki/prts-design-css` 只含 MIT 的代码部分。
+代码以 [MIT](LICENSE) 授权，npm 包只含这部分。游戏素材（`preview/assets/`、`packages/css/src/img/` 等）版权归鹰角网络所有，不在 MIT 范围内；字体与 `preview/vendor/` 下的第三方代码、现网数据快照按各自目录里的 NOTICE / 许可。

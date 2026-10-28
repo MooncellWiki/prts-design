@@ -1,0 +1,83 @@
+<!doctype html>
+<!-- README 头图的源文件：node scripts/build-readme-banner.ts 按 ?theme=dark|light 各截一张 → banner-{dark,light}.png -->
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>PRTS Design · README 头图</title>
+<script>document.documentElement.dataset.theme = new URLSearchParams(location.search).get('theme') ?? 'dark';</script>
+<link rel="stylesheet" href="../../packages/css/src/fonts.css">
+<link rel="stylesheet" href="../../packages/css/src/tokens.css">
+<style>
+  html, body { margin: 0; }
+  .banner { position: relative; box-sizing: border-box; width: 1200px; height: 360px; padding: 60px 72px; overflow: hidden; isolation: isolate;
+    background: var(--ak-bg-canvas); color: var(--ak-fg); font-family: var(--ak-font-body); }
+  .banner > i { position: absolute; display: block; pointer-events: none; }
+
+  /* 底：网格 + 半调网点，都从右往左淡出 */
+  .grid { inset: 0; z-index: -2; background-image: linear-gradient(var(--ak-grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--ak-grid-color) 1px, transparent 1px);
+    background-size: 40px 40px; background-position: -1px -1px; mask-image: linear-gradient(90deg, transparent 30%, #000 85%); }
+  .dots { inset: 0; z-index: -1; background-image: radial-gradient(var(--ak-halftone-color) 1.5px, transparent 1.6px); background-size: 10px 10px;
+    mask-image: linear-gradient(90deg, transparent 45%, #000 100%); }
+
+  /* 官网右上角三角 + 四角 HUD 括号 */
+  .corner { top: 0; right: 0; border-style: solid; border-width: 0 40px 40px 0; border-color: transparent var(--ak-accent) transparent transparent; }
+  .hud { width: 22px; height: 22px; border: 0 solid var(--ak-fg-subtle); }
+  .hud--tl { top: 22px; left: 22px; border-width: 2px 0 0 2px; }
+  .hud--bl { bottom: 22px; left: 22px; border-width: 0 0 2px 2px; }
+  .hud--br { bottom: 22px; right: 22px; border-width: 0 2px 2px 0; }
+
+  /* 主题标签（右上） */
+  .theme { position: absolute; top: 60px; right: 72px; margin: 0; display: flex; align-items: center; gap: 12px;
+    font: 700 15px/1 var(--ak-font-label); letter-spacing: .28em; color: var(--ak-fg-muted); }
+  .theme::before { content: ""; width: 8px; height: 8px; background: var(--ak-accent); }
+  .theme span { font: 700 15px/1 "Noto Sans SC", sans-serif; letter-spacing: .2em; }
+
+  .over { margin: 0; font: 700 15px/1 var(--ak-font-label); letter-spacing: .28em; color: var(--ak-fg-muted); text-transform: uppercase; }
+
+  /* 标题：左侧 8px 色条 + 色条下的短横条（官网标题的写法） */
+  .title { position: relative; margin: 26px 0 0; font: 800 88px/.86 var(--ak-font-display); letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; }
+  .title::before { content: ""; position: absolute; left: -32px; top: .135em; bottom: .015em; width: 8px; background: var(--ak-accent); }
+  .sub { display: flex; align-items: center; gap: 18px; margin: 22px 0 0; font: 700 28px/1 "Noto Sans SC", sans-serif; letter-spacing: .3em; color: var(--ak-fg-secondary); }
+  .sub small { font: 700 15px/1 var(--ak-font-label); letter-spacing: .28em; color: var(--ak-fg-muted); }
+
+  /* 三层：令牌 → CSS → Vue */
+  .layers { position: absolute; left: 72px; bottom: 60px; display: flex; align-items: center; gap: 16px; margin: 0; padding: 0; list-style: none;
+    font: 700 17px/1 var(--ak-font-label); letter-spacing: .18em; }
+  .layers li { display: flex; align-items: center; gap: 10px; }
+  .layers li + li::before { content: "»"; margin-right: 6px; color: var(--ak-fg-subtle); letter-spacing: 0; }
+  .layers b { color: var(--ak-accent); }
+
+  /* 斜纹（黄黑）+ 色板 */
+  .hazard { left: 72px; bottom: 0; width: 160px; height: 8px;
+    background: repeating-linear-gradient(-45deg, var(--ak-yellow-500) 0 6px, #1d1f20 6px 12px); }
+  /* 色板：黑白为体、青 / 蓝为用、黄次强调、红只表示危险 */
+  .palette { position: absolute; right: 72px; bottom: 60px; display: flex; gap: 6px; margin: 0; padding: 0; list-style: none;
+    font: 700 13px/1 var(--ak-font-label); letter-spacing: .08em; color: var(--ak-fg-muted); }
+  .palette li { display: flex; flex-direction: column; gap: 10px; width: 64px; }
+  .palette li::before { content: ""; box-sizing: border-box; height: 32px; background: var(--c); border: 1px solid color-mix(in srgb, var(--ak-fg) 12%, transparent); }
+</style>
+</head>
+<body>
+<main class="banner">
+  <i class="grid"></i><i class="dots"></i>
+  <i class="corner"></i>
+  <i class="hud hud--tl"></i><i class="hud hud--bl"></i><i class="hud hud--br"></i>
+  <i class="hazard"></i>
+
+  <p class="theme"><b class="theme-en"></b><span class="theme-zh"></span></p>
+  <ul class="palette">
+    <li style="--c: #1d1f20">1D1F20</li><li style="--c: #f5f5f5">F5F5F5</li><li style="--c: #18d1ff">18D1FF</li><li style="--c: #0098dc">0098DC</li><li style="--c: #ffd800">FFD800</li><li style="--c: #c82a36">C82A36</li>
+  </ul>
+
+  <p class="over">Arknights web design system</p>
+  <h1 class="title">PRTS Design</h1>
+  <p class="sub">明日方舟网页设计系统<small>FOR PRTS.WIKI</small></p>
+  <ol class="layers"><li><b>01</b>TOKENS</li><li><b>02</b>CSS</li><li><b>03</b>VUE</li></ol>
+</main>
+<script>
+  const dark = document.documentElement.dataset.theme === 'dark';
+  document.querySelector('.theme-en').textContent = dark ? 'TERMINAL' : 'ARCHIVE';
+  document.querySelector('.theme-zh').textContent = dark ? '终端' : '档案';
+</script>
+</body>
+</html>
