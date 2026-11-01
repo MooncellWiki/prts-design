@@ -15,7 +15,7 @@ const src = pathToFileURL(resolve(dir, 'banner.html')).href;
 /* file:// 页面默认不能跨文件取字体（CORS），放开 */
 const browser = await chromium.launch({ args: ['--allow-file-access-from-files'] });
 try {
-  const page = await browser.newPage({ viewport: { width: 1200, height: 360 }, deviceScaleFactor: 2 });
+  const page = await browser.newPage({ viewport: { width: 1200, height: 300 }, deviceScaleFactor: 2 });
   for (const theme of ['dark', 'light']) {
     await page.goto(`${src}?theme=${theme}`);
     await page.evaluate(() => document.fonts.ready);
