@@ -19,9 +19,11 @@ const ICON_NAMES = Object.keys(icons);
 export interface PropDoc { name: string; type: string; values?: string[]; default?: string; required: boolean; description: string }
 export interface ComponentDoc { props: PropDoc[]; events: { name: string; signature: string; description: string }[]; slots: { name: string; description: string }[] }
 
-/** 类型显示：图标名那一长串收成 IconName；字面量联合拆成可选值 */
+/** 类型显示：图标名收成 IconName（不把几十个图标名列成可选值）；字面量联合拆成可选值 */
 function describeType(type: string, schema: PropertyMetaSchema): Pick<PropDoc, "type" | "values"> {
   const t = type.replace(/ \| undefined$/, "");
+  // IconName 是字面量联合：类型里一般保留别名（「false | IconName」），万一被展开成那一长串也收回来
+  if (/\bIconName\b/.test(t)) return { type: t };
   if (ICON_NAMES.every(n => t.includes(`"${n}"`))) return { type: "IconName" };
   if (typeof schema === "object" && schema.kind === "enum" && Array.isArray(schema.schema)) {
     const values = schema.schema.filter((s): s is string => typeof s === "string" && s !== "undefined");

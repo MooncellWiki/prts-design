@@ -49,6 +49,57 @@ export const icons = {
   "play": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\" d=\"M7 4v16l12-8z\"/>",
   "pause": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M6 4h4v16H6zm8 0h4v16h-4z\"/>",
   "empty": "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" d=\"M3 7l9-4 9 4v10l-9 4-9-4zm9 4 9-4M12 11 3 7m9 4v10\"/>",
-} as const;
+} as const satisfies Record<IconName, string>;
 
-export type IconName = keyof typeof icons;
+/**
+ * 图标名。写成字面量联合而不是 `keyof typeof icons`：Vue 编译 defineProps 的类型时解析不了对普通 const 的 typeof，
+ * 会把 `IconName` 当成未知类型——单独用时只是不做运行时类型检查，和别的类型并起来（AkEmpty 的 `IconName | false`）
+ * 未知的那一半被丢掉，运行时类型就成了 Boolean，传图标名开发模式下会报 Invalid prop。
+ * 上面的 `satisfies` 让两边对得上：这里少写、多写或写错一个，类型检查都会报。
+ */
+export type IconName =
+  | "menu"
+  | "search"
+  | "bell"
+  | "user"
+  | "sun"
+  | "moon"
+  | "monitor"
+  | "edit"
+  | "history"
+  | "book"
+  | "talk"
+  | "more"
+  | "star"
+  | "link"
+  | "linkin"
+  | "arrow-ne"
+  | "mic"
+  | "list"
+  | "print"
+  | "upload"
+  | "download"
+  | "grid"
+  | "refresh"
+  | "quote"
+  | "table"
+  | "source"
+  | "move"
+  | "lock"
+  | "trash"
+  | "lang"
+  | "glasses"
+  | "gear"
+  | "watchlist"
+  | "contribs"
+  | "logout"
+  | "info"
+  | "warn"
+  | "check"
+  | "x"
+  | "up"
+  | "chevron-left"
+  | "chevron-right"
+  | "play"
+  | "pause"
+  | "empty";
