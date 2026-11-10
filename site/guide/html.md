@@ -119,13 +119,13 @@ pnpm add @mooncellwiki/prts-design-css
 |---|---|---|
 | `--ak-font-display` | 拉丁展示字：大写标题、英文副标 | `"Oswald"` |
 | `--ak-font-label` | HUD 标签、数值 | `"Chakra Petch"` |
-| `--ak-font-mono` | 代码、键帽 | `"JetBrains Mono"` |
+| `--ak-font-mono` | 代码、键帽 | 不用加载，令牌里就是系统等宽 |
 | `--ak-font-body` | 正文 | 系统中文字体即可；要统一字形再加 `"Noto Sans SC"` |
 
 例如用 Google Fonts（国内访问不了时换镜像，或自托管字体文件）：
 
 ```html
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400..700&family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400..700&family=Chakra+Petch:wght@400;600;700&display=swap">
 ```
 
 也可以直接换成自己的字体：在样式表之后覆盖令牌，例如 `:root { --ak-font-display: "Your Display Font", sans-serif; }`。

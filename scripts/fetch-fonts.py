@@ -9,8 +9,9 @@
     原文件没有 gasp 表，落盘前补一张（见 with_gasp）——这一步要 fontTools：pip install fonttools brotli（--offline 不需要）。
   · 已落盘的文件（SITE_FONTS 里没有 'url' 的面）：Novecento Sans Wide Medium / DemiBold / Bold —— 完整字形（590 字形，带 lnum / case：
     大写高度的数字与标点）。没有下载地址：脚本不动这些 woff2，只把它们写进 fonts.css。
-  · Fontsource npm 包（PKG_FONTS）：Noto Sans SC / Oswald / Chakra Petch / JetBrains Mono —— = Google Fonts 同一批 woff2 切片 +
+  · Fontsource npm 包（PKG_FONTS）：Noto Sans SC / Oswald / Chakra Petch —— = Google Fonts 同一批 woff2 切片 +
     unicode-range，随包带 OFL 全文，版本钉死。
+  等宽（--ak-font-mono）不自托管，直接用系统等宽：只有代码、编辑框和键帽用它，不值得为顶栏搜索框的「/」键帽让每页多下一片字体。
 
     python3 scripts/fetch-fonts.py                     # 默认走 registry.npmjs.org
     python3 scripts/fetch-fonts.py --registry https://registry.npmmirror.com   # 国内镜像
@@ -77,11 +78,6 @@ PKG_FONTS = [
         'pkg': '@fontsource/chakra-petch', 'version': '5.3.0', 'css': ['latin.css', 'latin-ext.css'],
         'dir': 'chakra-petch', 'family': 'Chakra Petch', 'role': 'HUD 标签 / 数值缺字接住（--ak-font-label 第二位）',
         'keep': lambda f: re.search(r'-(latin|latin-ext)-(400|500|600|700)-normal\.woff2$', f) is not None,
-    },
-    {   # 等宽 —— 可变字重 100–800，正体 + 斜体（语法高亮的注释用斜体）
-        'pkg': '@fontsource-variable/jetbrains-mono', 'version': '5.3.0', 'css': ['wght.css', 'wght-italic.css'],
-        'dir': 'jetbrains-mono', 'family': 'JetBrains Mono', 'role': '等宽（--ak-font-mono）',
-        'keep': lambda f: re.search(r'-(latin|latin-ext)-', f) is not None,
     },
 ]
 

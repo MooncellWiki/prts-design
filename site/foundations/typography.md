@@ -1,6 +1,6 @@
 # 字体排印
 
-中文永远用思源黑体（行高 1.7）；大写拉丁展示字只做标题旁英文、编号、数值、水印——**Latin as ornament**。全部字体自托管，不论访客装没装，看到的都是同一套——这也就是上线效果（例外只有一处：Windows 低分屏的正文换微软雅黑，见[低分屏](#低分屏)）。
+中文永远用思源黑体（行高 1.7）；大写拉丁展示字只做标题旁英文、编号、数值、水印——**Latin as ornament**。除等宽外全部字体自托管，不论访客装没装，看到的都是同一套——这也就是上线效果（例外只有一处：Windows 低分屏的正文换微软雅黑，见[低分屏](#低分屏)）。
 
 ## 字族
 
@@ -13,9 +13,9 @@
 | 正文 | Noto Sans SC 可变字重 100–900（= 思源黑体的 Google 构建） | OFL；沿用 Google Fonts 的 101 片 `unicode-range` 切分（共 ≈ 4.5MB），一页只下载用到的几片 |
 | 压缩字 | Oswald 可变字重 200–700 | OFL；官网也自托管 Oswald。同时是展示字链在 Novecento / Bender 之后的接字 |
 | 标签缺字 | Chakra Petch 400 / 500 / 600 / 700 | OFL；同为方形 HUD 字，只在 Bender 缺字时逐字顶上 |
-| 等宽 | JetBrains Mono 可变字重 100–800，正体 + 斜体 | OFL；语法高亮的注释用斜体 |
+| 等宽 | —（系统等宽） | 不自托管：SF Mono / Menlo / Consolas / Liberation Mono，各平台自带的那一款。只有代码、编辑框和键帽用等宽，不值得为顶栏搜索框的「/」键帽让每页多下一片字体；系统等宽也都不带编程连字，`->` `!=` `<!--` 逐字显示 |
 
-`packages/css/src/fonts.css`（122 条 `@font-face`，`font-display: swap`）与 `packages/css/src/fonts/` 由 `python3 scripts/fetch-fonts.py` 生成（官网同源的抓官网静态资源，Novecento 500–700 没有下载地址，用已落盘的文件；OFL 四族取 Fontsource 的 npm 包，版本钉死）；各族目录里的 `NOTICE.md` / `LICENSE` 记着来源。字体链（上表 `--ak-font-*`）的后段——装机备选、系统字——只在字体模块被关掉时起作用：MW 上字体是独立的 `skins.akds.fonts` 模块，可以整体关掉（低带宽 / 用户偏好 / Gadget）。
+`packages/css/src/fonts.css`（118 条 `@font-face`，`font-display: swap`）与 `packages/css/src/fonts/` 由 `python3 scripts/fetch-fonts.py` 生成（官网同源的抓官网静态资源，Novecento 500–700 没有下载地址，用已落盘的文件；OFL 三族取 Fontsource 的 npm 包，版本钉死）；各族目录里的 `NOTICE.md` / `LICENSE` 记着来源。字体链（上表 `--ak-font-*`）的后段——装机备选、系统字——只在字体模块被关掉时起作用：MW 上字体是独立的 `skins.akds.fonts` 模块，可以整体关掉（低带宽 / 用户偏好 / Gadget）。
 
 官网发布的 Novecento（现在只剩 800 用它）/ Bender 是 **ASCII 子集**（各 101 字形：A–Z a–z 0–9 与 ASCII 标点）：`·` `»` `—` `–` `…` `×` `°` 这类非 ASCII 字符逐字回退到后一段（展示字落到 Oswald、标签落到 Chakra Petch），两者风格相近，视觉上是间隔号 / 破折号级别的差异；日后拿到全字符集文件，替换 `packages/css/src/fonts/` 里同名 woff2 即可（同样要补 `gasp` 表：放进 `SITE_FONTS` 重跑 `fetch-fonts.py`，或手动过一遍其中的 `with_gasp`）。拉丁 OFL 字体只带 latin + latin-ext 子集（拼音声调在 latin-ext）。
 
@@ -60,7 +60,7 @@ Windows 100% / 125% 缩放（< 1.5dppx，`@media (max-resolution: 1.49dppx)`）�
   <span class="ak-fs-xs ak-fg-muted">body · 16/1.7</span><div>正文：龙门近卫局特别督察组组长陈，正依合约前来协助罗德岛的任务。生气的时候很可怕，平常也最好别惹她。</div>
   <span class="ak-fs-xs ak-fg-muted">body-sm · 14/1.6</span><div class="ak-fs-sm">辅助正文：用于表格、卡片描述、图注。行高 1.6，中文最小 12px。</div>
   <span class="ak-fs-xs ak-fg-muted">overline · 11 · .14em</span><div class="ak-overline">Section · 干员档案 · Operator Files</div>
-  <span class="ak-fs-xs ak-fg-muted">mono · JetBrains Mono</span><div><code>{{干员|陈|稀有度=6}}</code></div>
+  <span class="ak-fs-xs ak-fg-muted">mono · 系统等宽</span><div><code>{{干员|陈|稀有度=6}}</code></div>
 </div>
 ```
 
