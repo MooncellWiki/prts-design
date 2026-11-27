@@ -287,7 +287,7 @@
 
   /* ── Dialog / Toast / Dropdown ─────────────────────────────── */
   document.addEventListener('click', e => {
-    const o = e.target.closest('[data-dialog-open]'); if (o) { const d = $(o.dataset.dialogOpen); if (d && d.showModal) d.showModal(); }
+    const o = e.target.closest('[data-dialog-open]'); if (o) { const d = $(o.dataset.dialogOpen); if (d && d.showModal && !d.open) { d.showModal(); scrollLock(d, true); d.addEventListener('close', () => scrollLock(d, false), { once: true }); } }   // showModal() 不锁页面滚动：锁到 close（Esc / ✕ / d.close() 都会派发）
     const c = e.target.closest('[data-dialog-close]'); if (c) { const d = c.closest('dialog'); if (d) d.close(); }
   });
   function toast(msg, type, title) {

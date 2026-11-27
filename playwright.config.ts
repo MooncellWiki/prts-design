@@ -9,6 +9,7 @@
  *   pnpm e2e --project=stories -g chip         Storybook 每个 story 渲染成功、控制台干净（先 pnpm build:storybook）
  *   pnpm e2e --project=home                    首页轮播：减弱动效下不自动播、手动一次只切一张；平时 6 秒自动切
  *   pnpm e2e --project=tooltip                 提示在手机上贴着视口边缘也不伸出去、不把页面撑宽（纯 CSS 版；Vue 版测 Storybook，没有就跳过）
+ *   pnpm e2e --project=dialog                  AkDialog 开着时页面滚不动（叠开也是）；没有 showModal() 时退回照样能用（测 Storybook，没有就跳过）
  *   pnpm exec playwright show-report           看 HTML 报告（失败的差异 / 截图 / trace 都在附件里）
  */
 import { defineConfig } from '@playwright/test';
@@ -47,5 +48,6 @@ export default defineConfig({
     { name: 'stories', testMatch: 'stories.spec.ts' },
     { name: 'home', testMatch: 'home.spec.ts' },
     { name: 'tooltip', testMatch: 'tooltip.spec.ts' },
+    { name: 'dialog', testMatch: 'dialog.spec.ts' },
   ],
 });

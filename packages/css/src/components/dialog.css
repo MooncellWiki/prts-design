@@ -8,6 +8,13 @@
 .ak-dialog__body { padding: var(--ak-space-4); max-height: 70vh; overflow: auto; }
 .ak-dialog__foot { display: flex; justify-content: flex-end; gap: var(--ak-space-2); padding: var(--ak-space-3) var(--ak-space-4); border-top: 1px solid var(--ak-border); background: var(--ak-bg-surface-2); }
 .ak-dialog[open] { animation: ak-dialog-in var(--ak-dur-normal) var(--ak-ease); }
+/* 不认 showModal() 的浏览器（Safari ≤ 15.3 · Firefox ≤ 97）：脚本在 dialog 前面插一层 .ak-dialog-backdrop 当遮罩、给 dialog 写 open 属性，两层都 fixed、靠 z-index 盖住页面
+ * （没有 top layer：叠开的对话框按 DOM 顺序上下，后打开的要排在后面）。这些浏览器里 <dialog> 是未知元素、没有 UA 样式，没开时自己藏起来；
+ * 也就只写它们认得的属性：不用 inset、:where()。高度 fit-content + 四边 0 + margin: auto 上下左右居中，不用 transform（开场动画要用） */
+.ak-dialog:not([open]) { display: none; }
+.ak-dialog-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: var(--ak-z-modal); background: var(--ak-bg-overlay); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.ak-dialog-backdrop + .ak-dialog { display: block; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: var(--ak-z-modal); margin: auto; height: -webkit-fit-content; height: -moz-fit-content; height: fit-content; max-height: calc(100% - 2em); overflow: auto; }
+.ak-dialog-backdrop + .ak-dialog--full { height: 92vh; }
 .ak-overlay { position: fixed; inset: 0; background: var(--ak-bg-overlay); z-index: var(--ak-z-overlay); }
 .ak-drawer { position: fixed; top: 0; bottom: 0; width: min(88vw, 320px); background: var(--ak-bg-surface); z-index: var(--ak-z-modal); box-shadow: var(--ak-shadow-lg); overflow-y: auto; transition: transform var(--ak-dur-normal) var(--ak-ease); }
 .ak-drawer--left { left: 0; transform: translateX(-100%); } .ak-drawer--right { right: 0; transform: translateX(100%); }

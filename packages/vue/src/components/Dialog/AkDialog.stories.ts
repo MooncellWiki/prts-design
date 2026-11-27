@@ -45,3 +45,21 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {};
 export const Basic: Story = { name: "确认对话框", ...demo(BasicDemo) };
 export const Options: Story = { name: "尺寸 · 自定义底栏 · 不可随手关", ...demo(OptionsDemo) };
+
+/** 叠开（列表里再开预览）+ 页面比视口长：开着时页面滚不动、正文照常内滚，关掉上面那层仍锁着，全关后恢复（e2e/dialog.spec.ts） */
+export const Stacked: Story = {
+  name: "叠开 · 滚动锁",
+  tags: ["!autodocs"],
+  render: () => ({
+    components: { AkDialog, AkButton },
+    setup: () => ({ list: ref(false), preview: ref(false), items: Array.from({ length: 40 }, (_, i) => `资源 ${i + 1}`) }),
+    template: `<div style="height: 300vh; padding-top: 100vh">
+  <AkButton id="open-list" @click="list = true">导出</AkButton>
+  <AkDialog v-model="list" title="资源列表">
+    <AkButton id="open-preview" size="sm" @click="preview = true">预览</AkButton>
+    <p v-for="it in items" :key="it">{{ it }}</p>
+  </AkDialog>
+  <AkDialog v-model="preview" size="sm" title="预览">图片预览</AkDialog>
+</div>`,
+  }),
+};

@@ -27,6 +27,11 @@ component: dialog
 - **Esc** 关闭（`close-on-esc` 可关）；点遮罩关闭（`mask-closable` 可关）——从框里拖选到框外松手不算点遮罩。
 - **名字**：`title` 作 `aria-labelledby`；没有标题时写 `label`（`aria-label`）。
 - 对话框里的提示、下拉菜单按 `Esc` 只收起自己，不会连对话框一起关。
+- **滚动**：`showModal()` 只让页面 inert、不锁滚动，滚轮停在遮罩上照样带着页面滚——`AkDialog` 开着时自己锁住页面滚动，对话框正文照常内滚；叠开时（列表里再开预览）关掉上面那层仍锁着，最后一层关上才恢复。prts.wiki 上交给皮肤的滚动锁（`window.akdsScrollLock`，与侧栏抽屉共用一把，见[响应式 · 滚动锁](/chrome/responsive#滚动锁)），站外是 `<html>` 的 `overflow: hidden`，有实体滚动条时加 `scrollbar-gutter: stable` 免得页面左右抖。
+
+## 浏览器支持
+
+`showModal()`：Chrome 37 · Safari 15.4 · Firefox 98。更老的浏览器（prts-widgets 的构建目标覆盖到 Safari 12、Firefox 70）里 `AkDialog` 自动退回：在 `<dialog>` 前面垫一层 `.ak-dialog-backdrop` 当遮罩、写 `open` 属性，打开居中、锁滚动、`Esc` / 点遮罩关闭、`Tab` 只在对话框里走、关闭后还焦点都照旧。差别：背后的页面不是 inert（焦点跑出去时拉回对话框）；没有 top layer，靠 `z-index` 盖住页面，叠开的对话框按 DOM 顺序上下——后打开的写在后面。
 
 ## Vue API
 
@@ -34,6 +39,6 @@ component: dialog
 
 ## CSS 实现
 
-模板 / Gadget 输出 `dialog.ak-dialog(.ak-dialog--sm …)` > `.ak-dialog__head( .ak-dialog__title + 关闭按钮 )` + `.ak-dialog__body` + `.ak-dialog__foot`，脚本里 `showModal()` 打开（预览站的 `data-dialog-open="#id"` / `data-dialog-close` 就是这么做的）。同一个文件里还有抽屉 `.ak-drawer--left/--right`（`.is-open` 滑入）与全屏遮罩 `.ak-overlay`——皮肤的手机侧栏在用，暂无 Vue 版。
+模板 / Gadget 输出 `dialog.ak-dialog(.ak-dialog--sm …)` > `.ak-dialog__head( .ak-dialog__title + 关闭按钮 )` + `.ak-dialog__body` + `.ak-dialog__foot`，脚本里 `showModal()` 打开（皮肤与预览站的 `data-dialog-open="#id"` / `data-dialog-close` 就是这么做的）。`showModal()` 不锁页面滚动：打开时调 `window.akdsScrollLock(dialog, true)`、`close` 事件里 `false`（`data-dialog-open` 已经这么做）。没有 `showModal()` 的浏览器上，在 dialog 前面插一个 `div.ak-dialog-backdrop`、写 `open` 属性，就是同一套样式的模态框（Esc、焦点要脚本自己管）。同一个文件里还有抽屉 `.ak-drawer--left/--right`（`.is-open` 滑入）与全屏遮罩 `.ak-overlay`——皮肤的手机侧栏在用，暂无 Vue 版。
 
 <CssClasses :files="['components/dialog.css']" />

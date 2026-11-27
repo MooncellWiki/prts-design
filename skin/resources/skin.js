@@ -202,7 +202,7 @@
 		const chip = e.target.closest( '.ak-chip' ); if ( chip && !chip.closest( '[data-no-toggle]' ) ) { chip.classList.toggle( 'is-active' ); chip.setAttribute( 'aria-pressed', chip.classList.contains( 'is-active' ) ); }
 		const grp = e.target.closest( '.ak-btn-group > .ak-btn, .ak-phase-tabs > button, .ak-skill-levels > button' );
 		if ( grp && !grp.closest( '[data-no-toggle]' ) ) { const parent = grp.parentElement; $$( ':scope > *', parent ).forEach( ( b ) => b.classList.toggle( 'is-active', b === grp ) ); parent.dispatchEvent( new CustomEvent( 'akds:select', { bubbles: true, detail: { value: grp.dataset.value, el: grp } } ) ); }
-		const o = e.target.closest( '[data-dialog-open]' ); if ( o ) { const d = $( o.dataset.dialogOpen ); if ( d && d.showModal ) { d.showModal(); } }
+		const o = e.target.closest( '[data-dialog-open]' ); if ( o ) { const d = $( o.dataset.dialogOpen ); if ( d && d.showModal && !d.open ) { d.showModal(); scrollLock( d, true ); d.addEventListener( 'close', () => scrollLock( d, false ), { once: true } ); } }   // showModal() 不锁页面滚动：锁到 close（Esc / ✕ / d.close() 都会派发）
 		const c = e.target.closest( '[data-dialog-close]' ); if ( c ) { const d = c.closest( 'dialog' ); if ( d ) { d.close(); } }
 		const vp = e.target.closest( '.ak-voice__play' ); if ( vp && !vp.closest( '[data-no-toggle]' ) ) { vp.classList.toggle( 'is-playing' ); }
 	} );
